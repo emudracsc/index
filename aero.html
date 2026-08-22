@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Digitization Report - GitHub Sync</title>
+    
+    <!-- SheetJS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-green: #1b5e20;
+            --primary-dark: #003300;
+            --accent-blue: #0288d1;
+            --accent-orange: #e65100;
+            --bg-canvas: #f8fafc;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            
+            /* Custom Border Thickness Variables */
+            --border-thin: 1px solid #cbd5e1;
+            --border-medium: 2px solid #64748b;
+            --border-thick: 3px solid #1e293b;
+            --border-subtotal: 2px solid #2e7d32;
+            --border-grandtotal: 3px double #b71c1c;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-canvas);
+            color: #1e293b;
+            margin: 0;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #e2e8f0;
+        }
+
+        h2 { 
+            color: var(--primary-green); 
+            text-align: center; 
+            margin-top: 0;
+            margin-bottom: 6px; 
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        
+        p.subtitle { 
+            text-align: center; 
+            color: #64748b; 
+            margin-bottom: 30px; 
+            font-size: 15px;
+        }
+
+        /* UPLOAD AREA STYLING */
+        .upload-card {
+            border: 2px dashed #81c784;
+            background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%);
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-card:hover {
+            border-color: var(--primary-green);
+            background: #e8f5e9;
+            transform: translateY(-2px);
+        }
+
+        .custom-file-upload {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 12px 26px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(27, 94, 32, 0.25);
+            transition: background 0.2s;
+        }
+
+        .custom-file-upload:hover { background-color: var(--primary-dark); }
+        input[type="file"] { display: none; }
+
+        /* DASHBOARD STATS CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-top: 5px solid var(--primary-green);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .stat-card h4 { margin: 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card .value { font-size: 28px; font-weight: 800; margin-top: 8px; }
+
+        /* BUTTONS */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 22px;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-area { background-color: #2e7d32; color: white; }
+        .btn-area:hover { background-color: #1b5e20; transform: translateY(-1px); }
+
+        .btn-popup { background-color: #e65100; color: white; }
+        .btn-popup:hover { background-color: #bf360c; transform: translateY(-1px); }
+
+        .btn-download { background-color: #0288d1; color: white; }
+        .btn-download:hover { background-color: #0277bd; transform: translateY(-1px); }
+
+        .btn-github { background-color: #24292e; color: white; }
+        .btn-github:hover { background-color: #0f1419; transform: translateY(-1px); }
+
+        .btn-print { background-color: #475569; color: white; }
+        .btn-print:hover { background-color: #334155; transform: translateY(-1px); }
+
+        /* TABLES WITH CUSTOM THICKNESS & STYLING */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 25px;
+            display: none;
+            border-radius: 8px;
+            border: var(--border-thin);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+        }
+
+        th, td {
+            border: var(--border-thin);
+            padding: 10px 12px;
+            text-align: center;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        th {
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #0f172a;
+            font-weight: 700;
+            border-bottom: var(--border-thick);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        tr:hover { background-color: #f8fafc; }
+
+        .valign-center {
+            vertical-align: middle !important;
+            text-align: center !important;
+            font-weight: 700;
+            background-color: #ffffff;
+            border-right: var(--border-medium);
+        }
+
+        /* CUSTOM BORDER THICKNESS FOR ROW TOTALS */
+        .sup-subtotal {
+            background-color: #f0fdf4;
+            font-weight: 700;
+            color: #166534;
+            border-top: var(--border-subtotal);
+            border-bottom: var(--border-subtotal);
+        }
+
+        .ero-subtotal {
+            background-color: #dcfce7;
+            font-weight: 800;
+            color: #14532d;
+            border-top: var(--border-thick);
+            border-bottom: var(--border-thick);
+        }
+
+        .grand-total {
+            background-color: #fef9c3;
+            font-weight: 800;
+            color: #991b1b;
+            font-size: 14px;
+            border-top: var(--border-grandtotal);
+            border-bottom: var(--border-grandtotal);
+        }
+
+        /* POPUP MODAL STYLES */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 2% auto;
+            padding: 25px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 1300px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: var(--border-thin);
+        }
+
+        .close-btn {
+            color: #94a3b8;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover { color: #0f172a; }
+
+        /* FILTER BUTTONS IN POPUP */
+        .filter-btn-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid #cbd5e1;
+            background-color: #f1f5f9;
+            color: #334155;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn.active {
+            background-color: var(--accent-orange);
+            color: white;
+            border-color: var(--accent-orange);
+            box-shadow: 0 2px 4px rgba(230, 81, 0, 0.3);
+        }
+
+        .modal-scrollable {
+            overflow-y: auto;
+            max-height: 55vh;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: var(--border-medium);
+        }
+
+        .summary-boxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+            padding: 18px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            border: var(--border-thin);
+        }
+
+        .summary-box {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: var(--border-thin);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .summary-box .title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        .summary-box .count { font-size: 22px; font-weight: 800; margin-top: 4px; }
+
+        /* PRINT STYLING */
+        @media print {
+            @page { size: auto; margin: 5mm; }
+            body { 
+                background-color: #ffffff !important; 
+                padding: 0 !important; 
+                margin: 0 !important; 
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            p.subtitle, .upload-card, .btn-group, .stats-grid, .filter-btn-group { 
+                display: none !important; 
+            }
+
+            .container { 
+                max-width: 100% !important; 
+                width: 100% !important; 
+                box-shadow: none !important; 
+                padding: 0 !important; 
+                margin: 0 !important; 
+                border: none !important; 
+            }
+
+            .table-container { 
+                overflow: visible !important; 
+                display: block !important; 
+                width: 100% !important; 
+                margin-top: 0 !important; 
+                border: none !important; 
+            }
+
+            #areaReportContainer {
+                page-break-before: always !important; 
+                break-before: page !important;
+                margin-top: 20px !important;
+            }
+
+            table { 
+                width: 100% !important; 
+                max-width: 100% !important;
+                border-collapse: collapse !important; 
+                table-layout: auto !important; 
+            }
+
+            th, td { 
+                font-size: 6.5pt !important; 
+                padding: 2px 3px !important;  
+                border: 1px solid #000000 !important;
+                white-space: normal !important; 
+                word-wrap: break-word !important;
+            }
+
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid !important; }
+
+            body.modal-open .container { display: none !important; }
+            body.modal-open .modal {
+                position: absolute !important; left: 0 !important; top: 0 !important;
+                width: 100% !important; height: auto !important; background-color: transparent !important;
+                display: block !important; overflow: visible !important;
+            }
+            body.modal-open .modal-content {
+                border: none !important; box-shadow: none !important; padding: 0 !important;
+                margin: 0 !important; width: 100% !important; max-width: 100% !important; max-height: none !important;
+            }
+            body.modal-open .modal-scrollable { overflow: visible !important; max-height: none !important; border: 1px solid #000 !important; }
+            body.modal-open .close-btn, body.modal-open .modal-print-btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Voter Digitization Report</h2>
+    <p class="subtitle">AERO-wise Summary (Hierarchy Wise) & GitHub Sync</p>
+
+    <div class="upload-card" onclick="document.getElementById('excelFile').click()">
+        <p style="margin-bottom: 12px; font-weight: 600; font-size: 16px; color: #334155;">इथे क्लिक करून तुमची Excel फाईल निवडा</p>
+        <label class="custom-file-upload">Choose File</label>
+        <input type="file" id="excelFile" accept=".xlsx, .xls" onchange="handleFile(event)">
+        <p id="fileName" style="margin-top: 12px; font-weight: 700; color: var(--primary-green); margin-bottom: 0;"></p>
+    </div>
+
+    <div class="stats-grid" id="statsArea">
+        <div class="stat-card">
+            <h4>Total Elector</h4>
+            <div class="value" id="totalVoters">0</div>
+        </div>
+        <div class="stat-card" style="border-top-color: #2e7d32;">
+            <h4>Total EFs Digitized</h4>
+            <div class="value" id="totalDigitized" style="color: #2e7d32;">0</div>
+        </div>
+        <div class="stat-card" style="border-top-color: #c62828;">
+            <h4>Pending Digitized</h4>
+            <div class="value" id="pendingDigitized" style="color: #c62828;">0</div>
+        </div>
+        <div class="stat-card" style="border-top-color: #0288d1;">
+            <h4>Digitized % (EFs + UEF)</h4>
+            <div class="value" id="digitizedPercent" style="color: #0288d1;">0%</div>
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn btn-area" id="areaReportBtn" onclick="generateAreaWiseReport()">AERO-wise Summary Report</button>
+        <button class="btn btn-popup" id="bloPopupBtn" onclick="openBloModal()">सर्व BLO विश्लेषणात्मक पॉपअप</button>
+        <button class="btn btn-download" id="downloadBtn" onclick="downloadExcel()">Excel डाउनलोड</button>
+        <button class="btn btn-github" id="saveGithubBtn" onclick="saveDataToGitHub()">☁️ Save to GitHub</button>
+        <button class="btn btn-print" id="printBtn" onclick="window.print()">मुख्य रिपोर्ट प्रिंट करा</button>
+    </div>
+
+    <!-- Main Detailed Table -->
+    <div class="table-container" id="tableArea">
+        <table id="reportTable">
+            <thead>
+                <tr>
+                    <th>SR. No</th>
+                    <th>ERO/AERO</th>
+                    <th>Supervisor Name</th>
+                    <th>Part No.</th>
+                    <th>Part Name</th>
+                    <th>Blo Name</th>
+                    <th>Total Elector</th>
+                    <th>Total EFs Digitized</th>
+                    <th>Total UEF</th>
+                    <th>Pending Digitized</th>
+                    <th>BLO Digitized %</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Area-wise Summary Table -->
+    <div class="table-container" id="areaReportContainer">
+        <h3 style="color: var(--primary-green); text-align: center; margin: 15px 0;">AERO-wise Summary Report</h3>
+        <table id="areaReportTable">
+            <thead>
+                <tr>
+                    <th>SR. No</th>
+                    <th>AERO / ERO Name</th>
+                    <th>Total Elector</th>
+                    <th>Total EFs Digitized</th>
+                    <th>Total UEF</th>
+                    <th>Pending Digitized</th>
+                    <th>Digitized %</th>
+                </tr>
+            </thead>
+            <tbody id="areaTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- POPUP MODAL WITH SORTING BUTTONS -->
+<div id="bloModal" class="modal">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <button class="modal-print-btn" onclick="window.print()" style="background-color: var(--primary-green); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                🖨️ पॉपअप रिपोर्ट प्रिंट / PDF
+            </button>
+
+            <!-- 🔽 Ascending & Descending Filter Buttons -->
+            <div class="filter-btn-group">
+                <span style="font-weight: bold; font-size: 13px; color: #475569;">Sort By %:</span>
+                <button id="btnDesc" class="filter-btn active" onclick="setBloSortOrder('DESC')">⬇️ High to Low (Descending)</button>
+                <button id="btnAsc" class="filter-btn" onclick="setBloSortOrder('ASC')">⬆️ Low to High (Ascending)</button>
+            </div>
+
+            <span class="close-btn" onclick="closeBloModal()">&times;</span>
+        </div>
+
+        <h3 id="bloModalTitle" style="color: var(--accent-orange); text-align: center; margin: 10px 0 10px 0; font-size: 20px;">
+            सर्व BLO ची विश्लेषणात्मक यादी (Descending Order By % )
+        </h3>
+
+        <div class="modal-scrollable">
+            <table>
+                <thead>
+                    <tr style="background-color: #e65100; color: white;">
+                        <th style="background: #e65100; color: white;">Rank</th>
+                        <th style="background: #e65100; color: white;">Part No.</th>
+                        <th style="background: #e65100; color: white;">Part / Village Name</th>
+                        <th style="background: #e65100; color: white;">BLO Name</th>
+                        <th style="background: #e65100; color: white;">Total Elector</th>
+                        <th style="background: #e65100; color: white;">Total EFs</th>
+                        <th style="background: #e65100; color: white;">Total UEF</th>
+                        <th style="background: #e65100; color: white;">Pending</th>
+                        <th style="background: #e65100; color: white;">Digitized %</th>
+                    </tr>
+                </thead>
+                <tbody id="bloModalTableBody"></tbody>
+            </table>
+        </div>
+
+        <h4 style="margin: 15px 0 8px 0; color: var(--primary-green);">BLO टक्कावारीनुसार गोषवारा (Category-wise Count):</h4>
+        <div class="summary-boxes">
+            <div class="summary-box" style="border-top: 4px solid #d32f2f;">
+                <div class="title">Below 60%</div>
+                <div class="count" id="countBelow60" style="color: #d32f2f;">0</div>
+            </div>
+            <div class="summary-box" style="border-top: 4px solid #f57c00;">
+                <div class="title">61% - 70%</div>
+                <div class="count" id="count61to70" style="color: #f57c00;">0</div>
+            </div>
+            <div class="summary-box" style="border-top: 4px solid #fbc02d;">
+                <div class="title">71% - 80%</div>
+                <div class="count" id="count71to80" style="color: #e65100;">0</div>
+            </div>
+            <div class="summary-box" style="border-top: 4px solid #0288d1;">
+                <div class="title">81% - 90%</div>
+                <div class="count" id="count81to90" style="color: #0288d1;">0</div>
+            </div>
+            <div class="summary-box" style="border-top: 4px solid #388e3c;">
+                <div class="title">91% - 99.99%</div>
+                <div class="count" id="count91to99" style="color: #388e3c;">0</div>
+            </div>
+            <div class="summary-box" style="border-top: 4px solid #1b5e20; background-color: #f0fdf4;">
+                <div class="title">100% Completed</div>
+                <div class="count" id="count100" style="color: #1b5e20;">0</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const GITHUB_CONFIG = {
+        username: "YOUR_GITHUB_USERNAME",
+        repo: "YOUR_REPO_NAME",
+        filePath: "data.json",
+        token: "YOUR_PERSONAL_ACCESS_TOKEN"
+    };
+
+    let globalProcessedData = [];
+    let currentBloSortOrder = 'DESC'; // Default Descending
+    const eroHierarchy = ["katkar", "deshpande", "varak", "mandale"];
+
+    function getEroRank(eroText) {
+        let text = String(eroText || "").toLowerCase();
+        for (let i = 0; i < eroHierarchy.length; i++) {
+            if (text.includes(eroHierarchy[i])) return i;
+        }
+        return 999;
+    }
+
+    function handleFile(e) {
+        if (typeof XLSX === 'undefined') {
+            alert("Excel Library लोड झाली नाही. इंटरनेट तपासा.");
+            return;
+        }
+
+        const file = e.target.files[0];
+        if (!file) return;
+
+        document.getElementById('fileName').innerText = "निवडलेली फाईल: " + file.name;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array', cellDates: true, cellText: true });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "", raw: false });
+                
+                processData(jsonData);
+            } catch (err) {
+                alert("Excel फाईल वाचताना त्रुटी आली: " + err.message);
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function processData(rows) {
+        if (!rows || rows.length === 0) {
+            alert("Excel फाईल रिकामी आहे!");
+            return;
+        }
+
+        let headerIndex = -1;
+        let colIdx = { ero: -1, sup: -1, partNo: -1, partName: -1, bloName: -1, elector: -1, digi: -1, uef: -1, pend: -1 };
+
+        for (let i = 0; i < Math.min(rows.length, 20); i++) {
+            const rowStr = rows[i].map(c => String(c).toLowerCase().trim());
+            
+            if (rowStr.some(cell => cell.includes("supervisor") || cell.includes("blo") || cell.includes("part"))) {
+                headerIndex = i;
+                rowStr.forEach((cell, idx) => {
+                    let isPercent = cell.includes("%") || cell.includes("percent") || cell.includes("pct");
+                    if ((cell.includes("ero") || cell.includes("aero")) && colIdx.ero === -1) colIdx.ero = idx;
+                    else if (cell.includes("supervisor") && colIdx.sup === -1) colIdx.sup = idx;
+                    else if ((cell.includes("part no") || cell.includes("part_no") || cell.includes("partno")) && colIdx.partNo === -1) colIdx.partNo = idx;
+                    else if ((cell.includes("part name") || cell.includes("village")) && colIdx.partName === -1) colIdx.partName = idx;
+                    else if (cell.includes("blo") && colIdx.bloName === -1) colIdx.bloName = idx;
+                    else if ((cell.includes("elector") || cell.includes("voter")) && !isPercent && colIdx.elector === -1) colIdx.elector = idx;
+                    else if ((cell.includes("digitized") || cell.includes("digitised") || cell.includes("efs")) && !isPercent && colIdx.digi === -1) colIdx.digi = idx;
+                    else if (cell.includes("uef") && !isPercent && colIdx.uef === -1) colIdx.uef = idx;
+                    else if (cell.includes("pending") && !isPercent && colIdx.pend === -1) colIdx.pend = idx;
+                });
+                break;
+            }
+        }
+
+        if (colIdx.ero === -1) colIdx.ero = 1;
+        if (colIdx.sup === -1) colIdx.sup = 2;
+        if (colIdx.partNo === -1) colIdx.partNo = 3;
+        if (colIdx.partName === -1) colIdx.partName = 4;
+        if (colIdx.bloName === -1) colIdx.bloName = 5;
+        if (colIdx.elector === -1) colIdx.elector = 6;
+        if (colIdx.digi === -1) colIdx.digi = 7;
+        if (colIdx.uef === -1) colIdx.uef = 8;
+        if (colIdx.pend === -1) colIdx.pend = 9;
+
+        let rawData = headerIndex !== -1 ? rows.slice(headerIndex + 1) : rows;
+        let cleanedRows = [];
+        let currentEro = "";
+        let currentSup = "";
+
+        rawData.forEach(row => {
+            let eroVal = String(row[colIdx.ero] || "").trim();
+            let supVal = String(row[colIdx.sup] || "").trim();
+            let partNo = String(row[colIdx.partNo] || "").trim();
+            let partName = String(row[colIdx.partName] || "").trim();
+            let bloName = String(row[colIdx.bloName] || "").trim();
+
+            if (eroVal !== "") currentEro = eroVal;
+            if (supVal !== "") currentSup = supVal;
+
+            if (partNo !== "" || partName !== "" || bloName !== "") {
+                let parseNum = (val) => {
+                    if (!val) return 0;
+                    let num = parseFloat(String(val).replace(/,/g, '').trim());
+                    return isNaN(num) ? 0 : num;
+                };
+
+                cleanedRows.push({
+                    ero: currentEro,
+                    sup: currentSup,
+                    partNo: partNo,
+                    partName: partName,
+                    bloName: bloName,
+                    elector: parseNum(row[colIdx.elector]),
+                    digi: parseNum(row[colIdx.digi]),
+                    uef: parseNum(row[colIdx.uef]),
+                    pend: parseNum(row[colIdx.pend])
+                });
+            }
+        });
+
+        if (cleanedRows.length === 0) {
+            alert("डेटा लोड झाला नाही, कृपया फाईल तपासा.");
+            return;
+        }
+
+        globalProcessedData = cleanedRows;
+        renderTableWithMergeAndSubtotals(globalProcessedData);
+        generateAreaWiseReport();
+    }
+
+    function renderTableWithMergeAndSubtotals(rows) {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+
+        let overallElector = 0, overallDigi = 0, overallUef = 0, overallPend = 0;
+        let srNo = 1;
+        let groupedData = {};
+
+        rows.forEach(r => {
+            let ero = r.ero || "Unknown ERO";
+            let sup = r.sup || "Unknown Supervisor";
+            if (!groupedData[ero]) groupedData[ero] = {};
+            if (!groupedData[ero][sup]) groupedData[ero][sup] = [];
+            groupedData[ero][sup].push(r);
+        });
+
+        let sortedEros = Object.keys(groupedData).sort((a, b) => {
+            let rankA = getEroRank(a);
+            let rankB = getEroRank(b);
+            if (rankA !== rankB) return rankA - rankB;
+            return a.localeCompare(b, 'mr', { sensitivity: 'base' });
+        });
+
+        sortedEros.forEach(ero => {
+            let eroElector = 0, eroDigi = 0, eroUef = 0, eroPend = 0;
+            let supList = [];
+
+            for (let sup in groupedData[ero]) {
+                let supRows = groupedData[ero][sup];
+                supRows.sort((a, b) => {
+                    let pctA = a.elector > 0 ? ((a.digi + a.uef) / a.elector) : 0;
+                    let pctB = b.elector > 0 ? ((b.digi + b.uef) / b.elector) : 0;
+                    return pctB - pctA;
+                });
+
+                let sElector = 0, sDigi = 0, sUef = 0, sPend = 0;
+                supRows.forEach(r => {
+                    sElector += r.elector;
+                    sDigi += r.digi;
+                    sUef += r.uef;
+                    sPend += r.pend;
+                });
+
+                let sPct = sElector > 0 ? ((sDigi + sUef) / sElector) : 0;
+                supList.push({ supName: sup, rows: supRows, elector: sElector, digi: sDigi, uef: sUef, pend: sPend, pct: sPct });
+            }
+
+            supList.sort((a, b) => b.pct - a.pct);
+
+            let totalEroRowsCount = 0;
+            supList.forEach(s => { totalEroRowsCount += s.rows.length + 1; });
+
+            let isFirstRowOfEro = true;
+
+            supList.forEach(supObj => {
+                let supRows = supObj.rows;
+                let supRowSpanCount = supRows.length;
+
+                supRows.forEach((r, idx) => {
+                    let tr = document.createElement('tr');
+                    let tdEro = isFirstRowOfEro ? `<td rowspan="${totalEroRowsCount}" class="valign-center">${ero}</td>` : "";
+                    if (isFirstRowOfEro) isFirstRowOfEro = false;
+
+                    let tdSup = idx === 0 ? `<td rowspan="${supRowSpanCount}" class="valign-center">${supObj.supName}</td>` : "";
+                    let bloPct = r.elector > 0 ? (((r.digi + r.uef) / r.elector) * 100).toFixed(2) : "0.00";
+
+                    tr.innerHTML = `
+                        <td>${srNo++}</td>
+                        ${tdEro}
+                        ${tdSup}
+                        <td>${r.partNo || ''}</td>
+                        <td style="text-align: left;">${r.partName || ''}</td>
+                        <td style="text-align: left;">${r.bloName || ''}</td>
+                        <td>${r.elector.toLocaleString()}</td>
+                        <td>${r.digi.toLocaleString()}</td>
+                        <td>${r.uef.toLocaleString()}</td>
+                        <td>${r.pend.toLocaleString()}</td>
+                        <td style="font-weight: 700; color: #0288d1;">${bloPct}%</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                let supPctDisplay = (supObj.pct * 100).toFixed(2);
+                let supTr = document.createElement('tr');
+                supTr.className = 'sup-subtotal';
+                supTr.innerHTML = `
+                    <td colspan="6" style="text-align: right;">Total for ${supObj.supName}:</td>
+                    <td>${supObj.elector.toLocaleString()}</td>
+                    <td>${supObj.digi.toLocaleString()}</td>
+                    <td>${supObj.uef.toLocaleString()}</td>
+                    <td>${supObj.pend.toLocaleString()}</td>
+                    <td style="color: #15803d;">${supPctDisplay}%</td>
+                `;
+                tbody.appendChild(supTr);
+
+                eroElector += supObj.elector;
+                eroDigi += supObj.digi;
+                eroUef += supObj.uef;
+                eroPend += supObj.pend;
+            });
+
+            let eroPct = eroElector > 0 ? (((eroDigi + eroUef) / eroElector) * 100).toFixed(2) : "0.00";
+            let eroTr = document.createElement('tr');
+            eroTr.className = 'ero-subtotal';
+            eroTr.innerHTML = `
+                <td colspan="6" style="text-align: right;">TOTAL FOR ${ero}:</td>
+                <td>${eroElector.toLocaleString()}</td>
+                <td>${eroDigi.toLocaleString()}</td>
+                <td>${eroUef.toLocaleString()}</td>
+                <td>${eroPend.toLocaleString()}</td>
+                <td style="color: #14532d;">${eroPct}%</td>
+            `;
+            tbody.appendChild(eroTr);
+
+            overallElector += eroElector;
+            overallDigi += eroDigi;
+            overallUef += eroUef;
+            overallPend += eroPend;
+        });
+
+        let overallPct = overallElector > 0 ? (((overallDigi + overallUef) / overallElector) * 100).toFixed(2) : "0.00";
+        let grandTr = document.createElement('tr');
+        grandTr.className = 'grand-total';
+        grandTr.innerHTML = `
+            <td colspan="6" style="text-align: right;">GRAND TOTAL:</td>
+            <td>${overallElector.toLocaleString()}</td>
+            <td>${overallDigi.toLocaleString()}</td>
+            <td>${overallUef.toLocaleString()}</td>
+            <td>${overallPend.toLocaleString()}</td>
+            <td style="color: #b71c1c;">${overallPct}%</td>
+        `;
+        tbody.appendChild(grandTr);
+
+        document.getElementById('totalVoters').innerText = overallElector.toLocaleString();
+        document.getElementById('totalDigitized').innerText = overallDigi.toLocaleString();
+        document.getElementById('pendingDigitized').innerText = overallPend.toLocaleString();
+        document.getElementById('digitizedPercent').innerText = overallPct + "%";
+
+        document.getElementById('statsArea').style.display = 'grid';
+        document.getElementById('tableArea').style.display = 'block';
+        document.getElementById('areaReportBtn').style.display = 'inline-block';
+        document.getElementById('bloPopupBtn').style.display = 'inline-block';
+        document.getElementById('downloadBtn').style.display = 'inline-block';
+        document.getElementById('saveGithubBtn').style.display = 'inline-block';
+        document.getElementById('printBtn').style.display = 'inline-block';
+    }
+
+    /* ---------------------------------------------------- */
+    /* 🔄 POPUP SORTING LOGIC (ASCENDING / DESCENDING)      */
+    /* ---------------------------------------------------- */
+    function setBloSortOrder(order) {
+        currentBloSortOrder = order;
+        
+        // Update active class on buttons
+        if (order === 'DESC') {
+            document.getElementById('btnDesc').classList.add('active');
+            document.getElementById('btnAsc').classList.remove('active');
+            document.getElementById('bloModalTitle').innerText = "सर्व BLO ची विश्लेषणात्मक यादी (Descending Order By % )";
+        } else {
+            document.getElementById('btnAsc').classList.add('active');
+            document.getElementById('btnDesc').classList.remove('active');
+            document.getElementById('bloModalTitle').innerText = "सर्व BLO ची विश्लेषणात्मक यादी (Ascending Order By % )";
+        }
+        
+        renderBloModalData();
+    }
+
+    function openBloModal() {
+        if (!globalProcessedData || globalProcessedData.length === 0) return;
+        renderBloModalData();
+        document.body.classList.add('modal-open');
+        document.getElementById('bloModal').style.display = 'block';
+    }
+
+    function renderBloModalData() {
+        let bloList = globalProcessedData.map(r => {
+            let pct = r.elector > 0 ? (((r.digi + r.uef) / r.elector) * 100) : 0;
+            return { ...r, pctVal: pct, pctFormatted: pct.toFixed(2) };
+        });
+
+        // Sorting Logic Based on Active Selection
+        if (currentBloSortOrder === 'ASC') {
+            bloList.sort((a, b) => a.pctVal - b.pctVal);
+        } else {
+            bloList.sort((a, b) => b.pctVal - a.pctVal);
+        }
+
+        const modalTbody = document.getElementById('bloModalTableBody');
+        modalTbody.innerHTML = '';
+
+        let cBelow60 = 0, c61to70 = 0, c71to80 = 0, c81to90 = 0, c91to99 = 0, c100 = 0;
+        let popupTotElector = 0, popupTotDigi = 0, popupTotUef = 0, popupTotPend = 0;
+
+        bloList.forEach((b, index) => {
+            let pct = b.pctVal;
+            if (pct < 60.0) cBelow60++;
+            else if (pct >= 60.0 && pct <= 70.0) c61to70++;
+            else if (pct > 70.0 && pct <= 80.0) c71to80++;
+            else if (pct > 80.0 && pct <= 90.0) c81to90++;
+            else if (pct > 90.0 && pct < 100.0) c91to99++;
+            else if (pct >= 100.0) c100++;
+
+            popupTotElector += b.elector;
+            popupTotDigi += b.digi;
+            popupTotUef += b.uef;
+            popupTotPend += b.pend;
+
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${index + 1}</strong></td>
+                <td>${b.partNo || ''}</td>
+                <td style="text-align: left;">${b.partName || ''}</td>
+                <td style="text-align: left; font-weight: 600;">${b.bloName || ''}</td>
+                <td>${b.elector.toLocaleString()}</td>
+                <td>${b.digi.toLocaleString()}</td>
+                <td>${b.uef.toLocaleString()}</td>
+                <td>${b.pend.toLocaleString()}</td>
+                <td style="font-weight: 700; color: #d84315; background-color: #fff3e0;">${b.pctFormatted}%</td>
+            `;
+            modalTbody.appendChild(tr);
+        });
+
+        let popupOverallPct = popupTotElector > 0 ? (((popupTotDigi + popupTotUef) / popupTotElector) * 100).toFixed(2) : "0.00";
+        let totalTr = document.createElement('tr');
+        totalTr.className = 'grand-total';
+        totalTr.innerHTML = `
+            <td colspan="4" style="text-align: right;">TOTAL:</td>
+            <td>${popupTotElector.toLocaleString()}</td>
+            <td>${popupTotDigi.toLocaleString()}</td>
+            <td>${popupTotUef.toLocaleString()}</td>
+            <td>${popupTotPend.toLocaleString()}</td>
+            <td style="color: #b71c1c;">${popupOverallPct}%</td>
+        `;
+        modalTbody.appendChild(totalTr);
+
+        document.getElementById('countBelow60').innerText = cBelow60;
+        document.getElementById('count61to70').innerText = c61to70;
+        document.getElementById('count71to80').innerText = c71to80;
+        document.getElementById('count81to90').innerText = c81to90;
+        document.getElementById('count91to99').innerText = c91to99;
+        document.getElementById('count100').innerText = c100;
+    }
+
+    function closeBloModal() {
+        document.body.classList.remove('modal-open');
+        document.getElementById('bloModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        let modal = document.getElementById('bloModal');
+        if (event.target == modal) closeBloModal();
+    }
+
+    function generateAreaWiseReport() {
+        if (!globalProcessedData || globalProcessedData.length === 0) return;
+
+        let eroSummary = {};
+        globalProcessedData.forEach(r => {
+            let eroName = r.ero || "Unknown ERO";
+            if (!eroSummary[eroName]) eroSummary[eroName] = { elector: 0, digi: 0, uef: 0, pend: 0 };
+            eroSummary[eroName].elector += r.elector;
+            eroSummary[eroName].digi += r.digi;
+            eroSummary[eroName].uef += r.uef;
+            eroSummary[eroName].pend += r.pend;
+        });
+
+        let sortedEros = Object.keys(eroSummary).sort((a, b) => {
+            let rankA = getEroRank(a);
+            let rankB = getEroRank(b);
+            if (rankA !== rankB) return rankA - rankB;
+            return a.localeCompare(b, 'mr', { sensitivity: 'base' });
+        });
+
+        const areaTbody = document.getElementById('areaTableBody');
+        areaTbody.innerHTML = '';
+
+        let srNo = 1;
+        let totElector = 0, totDigi = 0, totUef = 0, totPend = 0;
+
+        sortedEros.forEach(ero => {
+            let data = eroSummary[ero];
+            let pct = data.elector > 0 ? (((data.digi + data.uef) / data.elector) * 100).toFixed(2) : "0.00";
+
+            totElector += data.elector;
+            totDigi += data.digi;
+            totUef += data.uef;
+            totPend += data.pend;
+
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${srNo++}</td>
+                <td style="text-align: left; font-weight: 700;">${ero}</td>
+                <td>${data.elector.toLocaleString()}</td>
+                <td style="color: #2e7d32; font-weight: 700;">${data.digi.toLocaleString()}</td>
+                <td>${data.uef.toLocaleString()}</td>
+                <td style="color: #c62828; font-weight: 700;">${data.pend.toLocaleString()}</td>
+                <td style="font-weight: 700; color: #0288d1;">${pct}%</td>
+            `;
+            areaTbody.appendChild(tr);
+        });
+
+        let totalPct = totElector > 0 ? (((totDigi + totUef) / totElector) * 100).toFixed(2) : "0.00";
+        let grandTr = document.createElement('tr');
+        grandTr.className = 'grand-total';
+        grandTr.innerHTML = `
+            <td colspan="2" style="text-align: right;">TOTAL:</td>
+            <td>${totElector.toLocaleString()}</td>
+            <td style="color: #2e7d32;">${totDigi.toLocaleString()}</td>
+            <td>${totUef.toLocaleString()}</td>
+            <td style="color: #c62828;">${totPend.toLocaleString()}</td>
+            <td style="color: #0288d1;">${totalPct}%</td>
+        `;
+        areaTbody.appendChild(grandTr);
+
+        const areaContainer = document.getElementById('areaReportContainer');
+        areaContainer.style.display = 'block';
+        areaContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function downloadExcel() {
+        if (typeof XLSX === 'undefined') return;
+
+        const table = document.getElementById('reportTable');
+        const worksheet = XLSX.utils.table_to_sheet(table);
+
+        worksheet['!cols'] = [
+            { wch: 8 }, { wch: 25 }, { wch: 25 }, { wch: 10 }, 
+            { wch: 30 }, { wch: 25 }, { wch: 15 }, { wch: 18 }, 
+            { wch: 12 }, { wch: 16 }, { wch: 16 }
+        ];
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Voter_Report");
+
+        if (document.getElementById('areaReportContainer').style.display !== 'none') {
+            const areaTable = document.getElementById('areaReportTable');
+            const areaWorksheet = XLSX.utils.table_to_sheet(areaTable);
+            XLSX.utils.book_append_sheet(workbook, areaWorksheet, "AERO_Wise_Summary");
+        }
+
+        XLSX.writeFile(workbook, "Voter_Digitization_Report.xlsx");
+    }
+
+    async function saveDataToGitHub() {
+        if (!globalProcessedData || globalProcessedData.length === 0) {
+            alert("सेव्ह करण्यासाठी डेटा उपलब्ध नाही!");
+            return;
+        }
+
+        if (GITHUB_CONFIG.username === "YOUR_GITHUB_USERNAME" || GITHUB_CONFIG.token === "YOUR_PERSONAL_ACCESS_TOKEN") {
+            alert("कृपया GITHUB_CONFIG मध्ये तुमचे Username, Repo नेम आणि Token टाका!");
+            return;
+        }
+
+        const btn = document.getElementById('saveGithubBtn');
+        btn.innerText = "⏳ Saving...";
+        btn.disabled = true;
+
+        try {
+            const getFileUrl = `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.filePath}`;
+            
+            let sha = "";
+            const getResponse = await fetch(getFileUrl, {
+                headers: { 
+                    "Authorization": `token ${GITHUB_CONFIG.token}`,
+                    "Accept": "application/vnd.github.v3+json"
+                }
+            });
+
+            if (getResponse.ok) {
+                const fileData = await getResponse.json();
+                sha = fileData.sha;
+            }
+
+            const payloadData = {
+                lastUpdated: new Date().toISOString(),
+                totalRecords: globalProcessedData.length,
+                data: globalProcessedData
+            };
+
+            const jsonString = JSON.stringify(payloadData, null, 2);
+            const utf8Bytes = new TextEncoder().encode(jsonString);
+            let binary = '';
+            utf8Bytes.forEach(b => binary += String.fromCharCode(b));
+            const contentBase64 = btoa(binary);
+
+            const putResponse = await fetch(getFileUrl, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${GITHUB_CONFIG.token}`,
+                    "Content-Type": "application/json",
+                    "Accept": "application/vnd.github.v3+json"
+                },
+                body: JSON.stringify({
+                    message: "Automated Data Update via Voter Digitization Dashboard",
+                    content: contentBase64,
+                    sha: sha !== "" ? sha : undefined
+                })
+            });
+
+            if (putResponse.ok) {
+                alert("✅ डेटा GitHub मधील " + GITHUB_CONFIG.filePath + " फाईलमध्ये सेव्ह झाला आहे!");
+            } else {
+                const errData = await putResponse.json();
+                alert("❌ GitHub वर डेटा सेव्ह करताना अडचण आली: " + (errData.message || "Unknown error"));
+            }
+
+        } catch (error) {
+            console.error("GitHub Sync Error:", error);
+            alert("त्रुटी आली: " + error.message);
+        } finally {
+            btn.innerText = "☁️ Save to GitHub";
+            btn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ई-मुद्रा सीएससी व आपले सरकार सेवा केंद्र | उपविभागीय अधिकारी कार्यालय परिक्षेत्र</title>
+  <meta name="description" content="उपविभागीय अधिकारी (SDO) कार्यालयाच्या मार्गदर्शनाखाली चालणारे अधिकृत ई-मुद्रा सीएससी केंद्र. उत्पन्न दाखला, जात प्रमाणपत्र, अधिवास, ७/१२, eMudra DSC, पॅन कार्ड आणि सर्व शासकीय योजनांचे अधिकृत पोर्टल.">
+  <meta name="keywords" content="eMudra CSC, Aaple Sarkar, SDO Office, उपविभागीय अधिकारी, उत्पन्न दाखला, जात प्रमाणपत्र, अधिवास, 7/12 उतारा, eMudra DSC, Digital Signature, PM Kisan, लाडकी बहीण योजना">
+
+  <!-- Google Fonts: Noto Sans Devanagari & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Main Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/print.css">
+</head>
+<body>
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-tricolor-stripe"></div>
+
+  <!-- Top Accessibility Bar -->
+  <div class="top-accessibility-bar">
+    <div class="container">
+      <div class="dept-badge">
+        <i class="fa-solid fa-landmark"></i>
+        <span data-i18n="portal_dept">महाराष्ट्र शासन • महसूल व वन विभाग</span>
+      </div>
+      <div class="access-controls">
+        <div class="live-time-chip" id="live-time-display">
+          <i class="fa-regular fa-clock"></i> दिनांक लोड होत आहे...
+        </div>
+        <div class="font-resizer">
+          <span style="font-size: 0.75rem; color: #94a3b8;" data-i18n="font_size">फॉन्ट:</span>
+          <button class="font-btn" id="font-decrease" title="Decrease Font">A-</button>
+          <button class="font-btn" id="font-reset" title="Reset Font">A</button>
+          <button class="font-btn" id="font-increase" title="Increase Font">A+</button>
+        </div>
+        <button class="contrast-toggle-btn" id="contrast-toggle" title="Toggle Contrast">
+          <i class="fa-solid fa-circle-half-stroke"></i> <span data-i18n="high_contrast">कॉन्ट्रास्ट</span>
+        </button>
+        <button class="dark-mode-toggle-btn" id="dark-mode-toggle" title="डार्क / लाईट मोड बदला">
+          <i class="fa-solid fa-moon" id="dark-mode-icon"></i> <span id="dark-mode-text" data-i18n="dark_mode_btn">डार्क मोड</span>
+        </button>
+        <button class="lang-toggle-btn" id="lang-toggle-btn" title="Change Language">
+          <i class="fa-solid fa-language"></i> English
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Government Header -->
+  <header class="portal-header">
+    <div class="container">
+      <div class="brand-wrapper">
+        <div class="gov-emblem-badge" title="Government Emblem">
+          <i class="fa-solid fa-building-columns"></i>
+        </div>
+        <div class="brand-info">
+          <div class="sub-div-tag">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span data-i18n="portal_sub">उपविभागीय अधिकारी कार्यालय संलग्न • अधिकृत डिजिटल सेवा केंद्र</span>
+          </div>
+          <h1 class="main-title" data-i18n="portal_title">ई-मुद्रा सीएससी व आपले सरकार केंद्र</h1>
+          <p class="tagline" data-i18n="portal_tagline">पारदर्शक, गतिमान आणि सुरक्षित ई-नागरिक सेवा दालन</p>
+        </div>
+      </div>
+      <div class="header-badges-right">
+        <div class="vle-info-card">
+          <div class="reg-no"><span data-i18n="reg_id">केंद्र नोंदणी क्र:</span> <span>152153410016</span></div>
+          <div class="vle-name"><i class="fa-solid fa-circle-check"></i> <span data-i18n="vle_operator">VLE केंद्र संचालक:</span> आपले सरकार सेवा केंद्र</div>
+        </div>
+        <div class="portal-logos">
+          <div class="logo-pill emudra">
+            <i class="fa-solid fa-fingerprint"></i> eMudra
+          </div>
+          <div class="logo-pill csc">
+            <i class="fa-solid fa-laptop-code"></i> CSC Seva
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky Main Navigation -->
+  <nav class="main-navbar">
+    <div class="container">
+      <ul class="nav-links" id="main-nav-links">
+        <li class="nav-item active"><a href="#home"><i class="fa-solid fa-house"></i> <span data-i18n="nav_home">मुख्यपृष्ठ</span></a></li>
+        <li class="nav-item"><a href="#services"><i class="fa-solid fa-grid-2"></i> <span data-i18n="nav_services">नागरिक सेवा</span></a></li>
+        <li class="nav-item"><a href="javascript:void(0)" onclick="switchTab('tab-apply-form')"><i class="fa-solid fa-file-pen"></i> <span data-i18n="nav_apply">ऑनलाइन अर्ज</span></a></li>
+        <li class="nav-item"><a href="javascript:void(0)" onclick="switchTab('tab-tracker')"><i class="fa-solid fa-magnifying-glass-chart"></i> <span data-i18n="nav_track">स्थिती तपासा</span></a></li>
+        <li class="nav-item"><a href="javascript:void(0)" onclick="switchTab('tab-docs-fees')"><i class="fa-solid fa-calculator"></i> <span data-i18n="nav_docs">कागदपत्रे व फी</span></a></li>
+        <li class="nav-item"><a href="javascript:void(0)" onclick="switchTab('tab-tokens')"><i class="fa-solid fa-ticket"></i> <span data-i18n="nav_token">टोकन बुकिंग</span></a></li>
+        <li class="nav-item"><a href="#citizen-charter"><i class="fa-solid fa-scroll"></i> <span data-i18n="nav_charter">नागरिक सनद</span></a></li>
+        <li class="nav-item"><a href="#contact"><i class="fa-solid fa-headset"></i> <span data-i18n="nav_contact">संपर्क</span></a></li>
+        <li class="nav-item mobile-only"><a href="javascript:void(0)" onclick="openUsefulLinksModal()"><i class="fa-solid fa-link"></i> <span data-i18n="nav_useful_links">महत्त्वाच्या लिंक्स</span></a></li>
+        <li class="nav-item mobile-only"><a href="javascript:void(0)" onclick="openSoftwareModal()"><i class="fa-solid fa-box-archive"></i> <span data-i18n="nav_softwares">उपयुक्त सॉफ्टवेअर</span></a></li>
+      </ul>
+      <div class="nav-actions-cluster">
+        <button class="nav-softwares-btn" onclick="openSoftwareModal()" title="सर्व शासकीय व सीएससी सॉफ्टवेअर्स डाउनलोड करा">
+          <i class="fa-solid fa-box-archive"></i> <span data-i18n="nav_softwares">उपयुक्त सॉफ्टवेअर</span>
+        </button>
+        <button class="nav-links-btn" onclick="openUsefulLinksModal()" title="सर्व शासकीय व ई-मुद्रा अधिकृत लिंक्स">
+          <i class="fa-solid fa-link"></i> <span data-i18n="nav_useful_links">महत्त्वाच्या लिंक्स</span>
+        </button>
+        <button class="nav-banner-btn" onclick="openWelcomeModal()" title="आपले सरकार स्वागत बॅनर पहा">
+          <i class="fa-solid fa-image"></i> <span data-i18n="banner_btn_view">स्वागत बॅनर</span>
+        </button>
+        <button class="nav-admin-btn" onclick="openAdminLogin()" title="अधिकारी लॉगिन">
+          <i class="fa-solid fa-user-lock"></i> <span data-i18n="nav_admin">अधिकारी लॉगिन</span>
+        </button>
+        <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Toggle Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Flash News / Announcements Ticker -->
+  <div class="flash-ticker-bar">
+    <div class="container">
+      <div class="ticker-wrapper">
+        <div class="ticker-badge">
+          <i class="fa-solid fa-bullhorn"></i> <span data-i18n="ticker_label">महत्वाच्या सूचना:</span>
+        </div>
+        <div class="ticker-marquee">
+          <div class="ticker-marquee-inner" data-i18n="ticker_text">
+            📌 लाडकी बहीण योजना eKYC व बँक लिंकिंग चालू आहे • ई-पीक पाहणी खरीप हंगाम नोंदणी सुरू • eMudra Class 3 डिजिटल सिग्नेचर (DSC) तात्काळ उपलब्ध • ७/१२ डिजिटल स्वाक्षरी उतारा १० मिनिटांत मिळेल • PM किसान १८ वा हप्ता eKYC अनिवार्य.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="home">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge-pill">
+            <i class="fa-solid fa-stamp"></i>
+            <span data-i18n="hero_badge">अधिकृत महसूल व डिजिटल स्वाक्षरी साहाय्यता कक्ष</span>
+          </div>
+          <h2 class="hero-h1" data-i18n="hero_h1">
+            उपविभागीय अधिकारी (SDO) परिक्षेत्रातील सर्व शासकीय व ई-मुद्रा सेवा एकाच छताखाली!
+          </h2>
+          <p class="hero-p" data-i18n="hero_p">
+            उत्पन्न दाखला, अधिवास, जात प्रमाणपत्र, ७/१२, ई-मुद्रा क्लास ३ DSC, पॅन कार्ड, पीक विमा आणि सर्व शासकीय योजनांचे तत्पर व खात्रीशीर ऑनलाइन काम.
+          </p>
+          <div class="hero-actions-grid">
+            <button class="btn-hero btn-hero-primary" onclick="switchTab('tab-apply-form')">
+              <i class="fa-solid fa-file-pen"></i> <span data-i18n="btn_apply_now">नवीन अर्ज सादर करा</span>
+            </button>
+            <button class="btn-hero btn-hero-navy" onclick="switchTab('tab-tracker')">
+              <i class="fa-solid fa-magnifying-glass-location"></i> <span data-i18n="btn_track_app">अर्जाची स्थिती तपासा</span>
+            </button>
+            <button class="btn-hero btn-hero-green" onclick="switchTab('tab-docs-fees')">
+              <i class="fa-solid fa-file-circle-check"></i> <span data-i18n="btn_calc_fee">कागदपत्रे व शासकीय फी तपासा</span>
+            </button>
+            <button class="btn-hero btn-hero-gold" onclick="switchTab('tab-tokens')">
+              <i class="fa-solid fa-calendar-check"></i> <span data-i18n="btn_book_slot">टोकन / अपॉइंटमेंट बुक करा</span>
+            </button>
+            <button class="btn-hero btn-hero-purple" onclick="openSoftwareModal()">
+              <i class="fa-solid fa-box-archive"></i> <span>💾 उपयुक्त सॉफ्टवेअर्स सेटअप</span>
+            </button>
+            <button class="btn-hero btn-hero-blue" onclick="openUsefulLinksModal()" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff;">
+              <i class="fa-solid fa-link"></i> <span>🔗 महत्त्वाच्या लिंक्स व टूल्स</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Official Officer & Guidance Card -->
+        <div class="hero-official-card">
+          <div style="width: 100%; height: 130px; overflow: hidden; border-bottom: 2px solid #e2e8f0;">
+            <img src="Aaple Sarkar Sewa Kendra.jpg" alt="आपले सरकार सेवा केंद्र" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div class="card-top-header">
+            <i class="fa-solid fa-landmark-flag"></i>
+            <h3 data-i18n="officerDesignation_mr">उपविभागीय दंडाधिकारी व महसूल साहाय्यक कक्ष</h3>
+          </div>
+          <div class="card-body-content">
+            <div class="officer-profile-row">
+              <div class="officer-avatar">
+                <i class="fa-solid fa-user-tie"></i>
+              </div>
+              <div class="officer-details">
+                <h4>मा. उपविभागीय अधिकारी (SDO)</h4>
+                <p>उपविभाग महसूल कार्यक्षेत्र, महाराष्ट्र</p>
+              </div>
+            </div>
+            <ul class="quick-guidance-list">
+              <li><i class="fa-solid fa-check-double"></i> <span>सर्व दाखले डिजिटल स्वाक्षरीत व QR कोड प्रमाणित</span></li>
+              <li><i class="fa-solid fa-check-double"></i> <span>eMudra Class 3 DSC अवघ्या ३० मिनिटांत तयार</span></li>
+              <li><i class="fa-solid fa-check-double"></i> <span>शासकीय फी पावतीसह पारदर्शक कामकाज</span></li>
+            </ul>
+            <div class="helpline-box">
+              <div>
+                <div class="label"><i class="fa-solid fa-phone-volume"></i> थेट साहाय्यता क्रमांक:</div>
+                <div class="num">+91 98908 69793</div>
+              </div>
+              <a href="javascript:void(0)" class="btn-card-apply" style="padding: 6px 12px; font-size: 0.8rem;" onclick="switchTab('tab-tokens')">
+                स्लॉट बुक करा
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Realtime Stats Counter Section -->
+  <section class="stats-bar-section">
+    <div class="container">
+      <div class="stats-card-container">
+        <div class="stat-box">
+          <div class="stat-icon"><i class="fa-solid fa-folder-tree"></i></div>
+          <div class="stat-meta">
+            <div class="number">२५+</div>
+            <div class="label" data-i18n="stat_services">उपलब्ध सेवा</div>
+          </div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="stat-meta">
+            <div class="number">१२,४५०+</div>
+            <div class="label" data-i18n="stat_processed">यशस्वीरित्या पूर्ण अर्ज</div>
+          </div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon"><i class="fa-solid fa-face-smile"></i></div>
+          <div class="stat-meta">
+            <div class="number">९९.४%</div>
+            <div class="label" data-i18n="stat_satisfaction">नागरिक समाधान</div>
+          </div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+          <div class="stat-meta">
+            <div class="number">१० मि.</div>
+            <div class="label" data-i18n="stat_instant">तात्काळ डिजिटल सेवा</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Web Application Module (Central Hub) -->
+  <section class="webapp-section" id="interactive-app">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fa-solid fa-laptop"></i> ई-सेवा प्रणाली</span>
+        <h2>नागरिक ई-सेवा वेब ॲप्लिकेशन</h2>
+        <p>ऑनलाइन अर्ज दाखल करा, स्थिती तपासा, आवश्यक कागदपत्रे व फी कॅल्क्युलेट करा किंवा भेट देण्याचे टोकन बुक करा.</p>
+      </div>
+
+      <div class="app-container-card">
+        <!-- App Tabs Navigation -->
+        <div class="app-tabs-header">
+          <button class="app-tab-btn active" data-tab-target="tab-apply-form">
+            <i class="fa-solid fa-file-signature"></i> <span data-i18n="nav_apply">ऑनलाइन अर्ज</span>
+          </button>
+          <button class="app-tab-btn" data-tab-target="tab-tracker">
+            <i class="fa-solid fa-location-crosshairs"></i> <span data-i18n="nav_track">अर्जाची स्थिती तपासा</span>
+          </button>
+          <button class="app-tab-btn" data-tab-target="tab-docs-fees">
+            <i class="fa-solid fa-calculator"></i> <span data-i18n="nav_docs">कागदपत्रे व फी गणक</span>
+          </button>
+          <button class="app-tab-btn" data-tab-target="tab-tokens">
+            <i class="fa-solid fa-calendar-check"></i> <span data-i18n="nav_token">टोकन बुकिंग</span>
+          </button>
+          <button class="app-tab-btn" data-tab-target="tab-admin" id="admin-tab-btn" style="margin-left: auto;">
+            <i class="fa-solid fa-gauge-high"></i> <span data-i18n="admin_dash_title">व्यवस्थापक डॅशबोर्ड</span>
+          </button>
+        </div>
+
+        <!-- Tab 1: Application Form -->
+        <div class="app-tab-panel active" id="tab-apply-form">
+          <div style="margin-bottom: 1.5rem;">
+            <h3 style="color: var(--primary-navy); font-size: 1.35rem;" data-i18n="form_heading">ऑनलाइन नागरिक सेवा अर्ज प्रणाली</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem;" data-i18n="form_sub">आवश्यक माहिती भरा आणि थेट ऑनलाइन अर्ज दाखल करून अधिकृत पोच पावती मिळवा.</p>
+          </div>
+
+          <form id="citizen-application-form">
+            <div class="app-form-grid">
+              <div class="form-group form-full-width">
+                <label for="app-service-select" data-i18n="lbl_select_service">अर्ज करायची सेवा निवडा *</label>
+                <select id="app-service-select" class="form-control" required>
+                  <!-- Dynamically populated -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="app-name" data-i18n="lbl_applicant_name">अर्जदाराचे पूर्ण नाव *</label>
+                <input type="text" id="app-name" class="form-control" placeholder="उदा. रमेश विठ्ठल पाटील" required>
+              </div>
+
+              <div class="form-group">
+                <label for="app-father" data-i18n="lbl_father_name">वडील / पतीचे पूर्ण नाव *</label>
+                <input type="text" id="app-father" class="form-control" placeholder="उदा. विठ्ठल बाबुराव पाटील" required>
+              </div>
+
+              <div class="form-group">
+                <label for="app-gender" data-i18n="lbl_gender">लिंग *</label>
+                <select id="app-gender" class="form-control" required>
+                  <option value="male" data-i18n="gender_male">पुरुष</option>
+                  <option value="female" data-i18n="gender_female">स्त्री</option>
+                  <option value="other" data-i18n="gender_other">इतर</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="app-dob" data-i18n="lbl_dob">जन्मतारीख *</label>
+                <input type="date" id="app-dob" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label for="app-mobile" data-i18n="lbl_mobile">मोबाईल नंबर (WhatsApp) *</label>
+                <input type="tel" id="app-mobile" class="form-control" placeholder="९८XXXXXXXX" maxlength="10" required>
+              </div>
+
+              <div class="form-group">
+                <label for="app-email" data-i18n="lbl_email">ईमेल आयडी</label>
+                <input type="email" id="app-email" class="form-control" placeholder="example@email.com">
+              </div>
+
+              <div class="form-group">
+                <label for="app-aadhaar" data-i18n="lbl_aadhaar">आधार कार्ड क्रमांक (१२ अंकी) *</label>
+                <input type="text" id="app-aadhaar" class="form-control" placeholder="XXXX-XXXX-XXXX" maxlength="14" required>
+              </div>
+
+              <div class="form-group">
+                <label for="app-income" data-i18n="lbl_annual_income">वार्षिक उत्पन्न (अंदाजे रु.)</label>
+                <input type="number" id="app-income" class="form-control" placeholder="उदा. 85000">
+              </div>
+
+              <div class="form-group form-full-width">
+                <label for="app-address" data-i18n="lbl_address">पूर्ण निवासी पत्ता *</label>
+                <textarea id="app-address" class="form-control" rows="2" placeholder="घर क्र., गल्ली, गाव/शहर" required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="app-taluka" data-i18n="lbl_taluka">तालुका *</label>
+                <input type="text" id="app-taluka" class="form-control" placeholder="तालुका नाव" required>
+              </div>
+
+              <div class="form-group">
+                <label for="app-district" data-i18n="lbl_district">जिल्हा *</label>
+                <input type="text" id="app-district" class="form-control" placeholder="जिल्हा नाव" value="महाराष्ट्र" required>
+              </div>
+
+              <div class="form-group">
+                <label for="app-pincode" data-i18n="lbl_pincode">पिन कोड *</label>
+                <input type="text" id="app-pincode" class="form-control" placeholder="413512" maxlength="6" required>
+              </div>
+
+              <div class="form-group form-full-width">
+                <label for="app-purpose" data-i18n="lbl_purpose">अर्जाचे कारण / प्रयोजन *</label>
+                <input type="text" id="app-purpose" class="form-control" placeholder="उदा. शिक्षण, शिष्यवृत्ती, शेती, नोकरी, निविदा" required>
+              </div>
+
+              <!-- Cloudinary Document Upload Section -->
+              <div class="form-group form-full-width">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 6px;">
+                  <label data-i18n="lbl_upload_docs" style="font-weight: 700; color: var(--primary-navy); margin-bottom: 0;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="color: var(--saffron-orange);"></i> आवश्यक कागदपत्रे अपलोड (PDF किंवा इमेज):
+                  </label>
+                  <span class="cloud-storage-badge"><i class="fa-solid fa-shield-halved"></i> Cloudinary सुरक्षित क्लाउड स्टोरेज</span>
+                </div>
+                
+                <div class="docs-upload-grid">
+                  <!-- 1. Aadhaar Card -->
+                  <div class="doc-upload-card" id="upload-card-aadhaar">
+                    <div class="doc-upload-top">
+                      <span class="doc-title" data-i18n="lbl_doc_aadhaar"><i class="fa-solid fa-id-card"></i> आधार कार्ड प्रत *</span>
+                      <span class="upload-status-chip" id="status-aadhaar">प्रत निवडा</span>
+                    </div>
+                    <div class="doc-file-action">
+                      <input type="file" id="doc-file-aadhaar" accept="image/jpeg,image/png,image/webp,application/pdf" class="doc-file-input">
+                    </div>
+                    <div class="upload-progress-track" id="progress-track-aadhaar">
+                      <div class="upload-progress-fill" id="progress-fill-aadhaar"></div>
+                    </div>
+                    <div class="doc-preview-link" id="preview-aadhaar"></div>
+                  </div>
+
+                  <!-- 2. Ration Card / Residence Proof -->
+                  <div class="doc-upload-card" id="upload-card-ration">
+                    <div class="doc-upload-top">
+                      <span class="doc-title" data-i18n="lbl_doc_ration"><i class="fa-solid fa-address-book"></i> रेशन कार्ड / LC / रहिवासी पुरावा</span>
+                      <span class="upload-status-chip" id="status-ration">प्रत निवडा</span>
+                    </div>
+                    <div class="doc-file-action">
+                      <input type="file" id="doc-file-ration" accept="image/jpeg,image/png,image/webp,application/pdf" class="doc-file-input">
+                    </div>
+                    <div class="upload-progress-track" id="progress-track-ration">
+                      <div class="upload-progress-fill" id="progress-fill-ration"></div>
+                    </div>
+                    <div class="doc-preview-link" id="preview-ration"></div>
+                  </div>
+
+                  <!-- 3. Income / 7-12 / Other Docs -->
+                  <div class="doc-upload-card" id="upload-card-income">
+                    <div class="doc-upload-top">
+                      <span class="doc-title" data-i18n="lbl_doc_income"><i class="fa-solid fa-file-pdf"></i> उत्पन्न पुरावा / ७-१२ / इतर</span>
+                      <span class="upload-status-chip" id="status-income">प्रत निवडा</span>
+                    </div>
+                    <div class="doc-file-action">
+                      <input type="file" id="doc-file-income" accept="image/jpeg,image/png,image/webp,application/pdf" class="doc-file-input">
+                    </div>
+                    <div class="upload-progress-track" id="progress-track-income">
+                      <div class="upload-progress-fill" id="progress-fill-income"></div>
+                    </div>
+                    <div class="doc-preview-link" id="preview-income"></div>
+                  </div>
+                </div>
+
+                <div class="doc-upload-hint">
+                  <i class="fa-solid fa-circle-info"></i> PDF, JPG किंवा PNG फाईल निवडताच ती Cloudinary क्लाउडवर आपोआप सुरक्षित सेव्ह होईल.
+                </div>
+              </div>
+
+              <div class="form-full-width">
+                <div class="form-check-group">
+                  <input type="checkbox" id="app-declaration" required checked>
+                  <label for="app-declaration" data-i18n="lbl_declaration">
+                    मी याद्वारे जाहीर करतो/करते की वरील सर्व माहिती सत्य व बिनचूक असून कागदपत्रांची जबाबदारी माझी राहील.
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-btn-row">
+              <button type="reset" class="btn-form-reset" data-i18n="btn_reset">माहिती पूर्ववत करा</button>
+              <button type="submit" class="btn-form-submit">
+                <i class="fa-solid fa-paper-plane"></i> <span data-i18n="btn_submit_app">अर्ज सादर करा व पावती मिळवा</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tab 2: Application Status Tracker -->
+        <div class="app-tab-panel" id="tab-tracker">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h3 style="color: var(--primary-navy); font-size: 1.45rem;" data-i18n="track_heading">अर्जाची सद्यस्थिती तपासा (Live Status Tracker)</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem;" data-i18n="track_sub">आपला अर्ज क्रमांक (Application ID) किंवा नोंदणीकृत मोबाईल नंबर टाकून स्थिती जाणून घ्या.</p>
+          </div>
+
+          <div class="tracker-search-box">
+            <input type="text" id="tracker-search-input" placeholder="उदा. EMU-2026-1001 किंवा 9823456789">
+            <button id="tracker-search-btn">
+              <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="btn_search_status">स्थिती शोधा</span>
+            </button>
+          </div>
+
+          <div id="tracker-result-container" style="display: none;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Tab 3: Document Checklist & Fees Calculator -->
+        <div class="app-tab-panel" id="tab-docs-fees">
+          <div style="margin-bottom: 1.5rem;">
+            <h3 style="color: var(--primary-navy); font-size: 1.35rem;" data-i18n="docs_heading">कागदपत्रे मार्गदर्शक व अधिकृत शुल्क गणक</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem;" data-i18n="docs_sub">कोणत्याही दाखल्यासाठी लागणारे आवश्यक पुरावे, पडताळणी निकष व शासनमान्य दर.</p>
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <label style="font-weight: 700; color: var(--primary-navy); font-size: 0.95rem;" data-i18n="select_service_for_docs">सेवा निवडा:</label>
+            <select id="docs-service-select" class="form-control" style="margin-top: 0.35rem; font-weight: 600;">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+
+          <div class="docs-calculator-grid">
+            <div class="docs-checklist-card">
+              <h4><i class="fa-solid fa-list-check" style="color: var(--saffron-orange);"></i> <span data-i18n="req_docs_title">आवश्यक कागदपत्रे:</span></h4>
+              <div class="doc-items-list" id="docs-items-container">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <div class="fee-breakdown-card">
+              <h4><i class="fa-solid fa-file-invoice-dollar" style="color: #16a34a;"></i> <span data-i18n="fee_breakdown_title">शुल्क विवरण (Fee Structure)</span></h4>
+              <table class="fee-table-mini">
+                <tbody id="fee-breakdown-tbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+              <div style="margin-top: 1.5rem; text-align: center;">
+                <button class="btn-form-submit" style="width: 100%;" onclick="startApplyForService(document.getElementById('docs-service-select').value)">
+                  <i class="fa-solid fa-file-pen"></i> या सेवेसाठी थेट अर्ज करा
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Token Booking -->
+        <div class="app-tab-panel" id="tab-tokens">
+          <div style="margin-bottom: 1.5rem;">
+            <h3 style="color: var(--primary-navy); font-size: 1.35rem;" data-i18n="token_heading">ऑनलाइन टोकन व अपॉइंटमेंट बुकिंग</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem;" data-i18n="token_sub">केंद्रावर न थांबता आपल्या सोयीनुसार वेळेचा स्लॉट बुक करा.</p>
+          </div>
+
+          <form id="token-booking-form">
+            <div class="app-form-grid">
+              <div class="form-group">
+                <label for="token-name" data-i18n="lbl_token_name">आपले नाव *</label>
+                <input type="text" id="token-name" class="form-control" placeholder="उदा. प्रवीण कदम" required>
+              </div>
+
+              <div class="form-group">
+                <label for="token-mobile" data-i18n="lbl_token_mobile">मोबाईल नंबर *</label>
+                <input type="tel" id="token-mobile" class="form-control" placeholder="९८XXXXXXXX" maxlength="10" required>
+              </div>
+
+              <div class="form-group form-full-width">
+                <label for="token-service-select" data-i18n="lbl_token_service">केंद्रावर येण्याचे कारण / सेवा *</label>
+                <select id="token-service-select" class="form-control" required>
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="token-date" data-i18n="lbl_token_date">भेट देण्याची तारीख *</label>
+                <input type="date" id="token-date" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label for="token-slot" data-i18n="lbl_token_slot">वेळेचा स्लॉट निवडा *</label>
+                <select id="token-slot" class="form-control" required>
+                  <option value="09:30 AM - 10:30 AM">सकाळी ०९:३० ते १०:३०</option>
+                  <option value="11:00 AM - 12:00 PM">सकाळी ११:०० ते १२:००</option>
+                  <option value="12:30 PM - 01:30 PM">दुपारी १२:३० ते ०१:३०</option>
+                  <option value="03:00 PM - 04:00 PM">दुपारी ०३:०० ते ०४:००</option>
+                  <option value="04:30 PM - 05:30 PM">संध्याकाळी ०४:३० ते ०५:३०</option>
+                  <option value="06:00 PM - 07:00 PM">संध्याकाळी ०६:०० ते ०७:००</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-btn-row">
+              <button type="submit" class="btn-form-submit">
+                <i class="fa-solid fa-calendar-check"></i> <span data-i18n="btn_book_token">टोकन कन्फर्म करा</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tab 5: Admin / Operator Dashboard -->
+        <div class="app-tab-panel" id="tab-admin">
+          <!-- Admin Sub-Navigation Tabs -->
+          <div class="admin-subtabs-nav">
+            <button class="admin-subtab-btn active" id="btn-subtab-apps" onclick="switchAdminSubTab('apps')">
+              <i class="fa-solid fa-folder-open"></i> <span>प्राप्त अर्ज व्यवस्थापन (<span id="admin-apps-badge">०</span>)</span>
+            </button>
+            <button class="admin-subtab-btn" id="btn-subtab-add-service" onclick="switchAdminSubTab('add-service')">
+              <i class="fa-solid fa-circle-plus"></i> <span>➕ नवीन सेवा / दाखला जोडा</span>
+            </button>
+            <button class="admin-subtab-btn" id="btn-subtab-manage-services" onclick="switchAdminSubTab('manage-services')">
+              <i class="fa-solid fa-layer-group"></i> <span>सक्रिय सेवा सूची व्यवस्थापन (<span id="admin-services-badge">०</span>)</span>
+            </button>
+            <button class="admin-subtab-btn" id="btn-subtab-manage-softwares" onclick="switchAdminSubTab('manage-softwares')">
+              <i class="fa-solid fa-box-archive"></i> <span>💾 सॉफ्टवेअर सेटअप व्यवस्थापन (<span id="admin-softwares-badge">०</span>)</span>
+            </button>
+            <button class="admin-subtab-btn" id="btn-subtab-manage-links" onclick="switchAdminSubTab('manage-links')">
+              <i class="fa-solid fa-link"></i> <span>🔗 लिंक्स व टूल्स व्यवस्थापन (<span id="admin-links-badge">०</span>)</span>
+            </button>
+          </div>
+
+          <!-- Admin Sub-Panel 1: Applications Management -->
+          <div class="admin-subtab-content active" id="admin-subtab-apps">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h3 style="color: var(--primary-navy); font-size: 1.25rem;" data-i18n="admin_dash_title">प्राप्त अर्ज नियंत्रण कक्ष (VLE Admin Dashboard)</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">सर्व प्राप्त अर्जांची पडताळणी, स्थिती बदल व अहवाल व्यवस्थापन.</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-card-apply" id="btn-export-csv" style="padding: 0.5rem 1rem;">
+                  <i class="fa-solid fa-file-excel"></i> <span data-i18n="btn_export_csv">CSV एक्सपोर्ट करा</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="admin-stats-grid">
+              <div class="admin-stat-card">
+                <div class="count" id="stat-total-apps">०</div>
+                <div class="lbl" data-i18n="dash_total_apps">एकूण प्राप्त अर्ज</div>
+              </div>
+              <div class="admin-stat-card">
+                <div class="count" id="stat-pending-apps" style="color: #b45309;">०</div>
+                <div class="lbl" data-i18n="dash_pending">पडताळणी प्रलंबित</div>
+              </div>
+              <div class="admin-stat-card">
+                <div class="count" id="stat-proc-apps" style="color: #6d28d9;">०</div>
+                <div class="lbl" data-i18n="dash_processing">प्रक्रिया सुरू</div>
+              </div>
+              <div class="admin-stat-card">
+                <div class="count" id="stat-comp-apps" style="color: #15803d;">०</div>
+                <div class="lbl" data-i18n="dash_completed">मंजूर व पूर्ण</div>
+              </div>
+            </div>
+
+            <div class="admin-table-wrapper">
+              <table class="admin-data-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="th_app_id">अर्ज क्र.</th>
+                    <th data-i18n="th_name">अर्जदाराचे नाव</th>
+                    <th data-i18n="th_service">सेवा</th>
+                    <th data-i18n="th_date">तारीख</th>
+                    <th data-i18n="th_mobile">मोबाईल</th>
+                    <th data-i18n="th_status">स्थिती</th>
+                    <th data-i18n="th_action">कृती</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-apps-tbody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Admin Sub-Panel 2: Add New Service / Certificate -->
+          <div class="admin-subtab-content" id="admin-subtab-add-service">
+            <div style="margin-bottom: 1.25rem;">
+              <h3 style="color: var(--primary-navy); font-size: 1.25rem;">
+                <i class="fa-solid fa-folder-plus" style="color: var(--saffron-orange);"></i> नवीन सेवा / दाखला नोंदणी (Add New Service)
+              </h3>
+              <p style="color: var(--text-muted); font-size: 0.85rem;">
+                येथे भरलेली नवीन सेवा तात्काळ <strong>नागरिक सेवा सूची, ऑनलाइन अर्ज ड्रॉपडाऊन, कागदपत्रे व फी कॅल्क्युलेटर, टोकन बुकिंग आणि नागरिक सनद</strong> या सर्वांमध्ये स्वयंचलित जोडली जाईल.
+              </p>
+            </div>
+
+            <form id="admin-new-service-form" class="admin-service-form">
+              <input type="hidden" id="service-edit-id" value="">
+              
+              <div class="app-form-grid">
+                <!-- Service Category -->
+                <div class="form-group">
+                  <label for="new-service-category">विभाग / संवर्ग (Service Category) *</label>
+                  <select id="new-service-category" class="form-control" required>
+                    <option value="revenue">महसूल व दाखले विभाग (Revenue Certificates)</option>
+                    <option value="emudra">ई-मुद्रा व DSC सेवा (eMudra & Signatures)</option>
+                    <option value="schemes">शेतकरी व शासकीय योजना (Agricultural & Schemes)</option>
+                    <option value="citizen">इतर नागरिक सेवा (Citizen Services)</option>
+                  </select>
+                </div>
+
+                <!-- FontAwesome Icon -->
+                <div class="form-group">
+                  <label for="new-service-icon">चिन्ह / आयकॉन (Icon Style) *</label>
+                  <select id="new-service-icon" class="form-control" required>
+                    <option value="fa-solid fa-file-invoice-dollar">📜 दाखला / कर (Invoice/Tax)</option>
+                    <option value="fa-solid fa-signature">✍️ डिजिटल स्वाक्षरी / DSC</option>
+                    <option value="fa-solid fa-wheat-awn">🌾 शेतकरी / ७/१२ योजना</option>
+                    <option value="fa-solid fa-id-card">💳 ओळखपत्र / स्मार्ट कार्ड</option>
+                    <option value="fa-solid fa-landmark">🏛️ महसूल / तहसील कार्यालय</option>
+                    <option value="fa-solid fa-stamp">🔘 मुद्रांक / नोंदणी</option>
+                    <option value="fa-solid fa-hand-holding-heart">💖 सामाजिक / महिला योजना</option>
+                    <option value="fa-solid fa-certificate">🏅 प्रमाणपत्र / अधिवास</option>
+                  </select>
+                </div>
+
+                <!-- Service Title Marathi -->
+                <div class="form-group">
+                  <label for="new-service-title-mr">सेवेचे नाव (मराठीत) *</label>
+                  <input type="text" id="new-service-title-mr" class="form-control" placeholder="उदा. अधिवास दाखला (Domicile Certificate)" required>
+                </div>
+
+                <!-- Service Title English -->
+                <div class="form-group">
+                  <label for="new-service-title-en">Service Name (English) *</label>
+                  <input type="text" id="new-service-title-en" class="form-control" placeholder="e.g. Age, Nationality & Domicile Certificate" required>
+                </div>
+
+                <!-- Description Marathi -->
+                <div class="form-group form-full-width">
+                  <label for="new-service-desc-mr">सेवेचा संक्षिप्त तपशील व उपयोग (मराठीत) *</label>
+                  <input type="text" id="new-service-desc-mr" class="form-control" placeholder="उदा. शिक्षण, शासकीय नोकरी व सवलतींसाठी आवश्यक अधिकृत अधिवास दाखला." required>
+                </div>
+
+                <!-- Expected Delivery Timeline -->
+                <div class="form-group">
+                  <label for="new-service-timeline">अपेक्षित वितरण कालावधी (Delivery SLA) *</label>
+                  <input type="text" id="new-service-timeline" class="form-control" placeholder="उदा. ७ ते १५ दिवस" value="७ ते १५ दिवस" required>
+                </div>
+
+                <!-- Designated Officer -->
+                <div class="form-group">
+                  <label for="new-service-authority">नियत शासकीय अधिकारी (Designated Officer)</label>
+                  <input type="text" id="new-service-authority" class="form-control" placeholder="उदा. तहसीलदार / उपविभागीय अधिकारी" value="तहसीलदार / नायब तहसीलदार">
+                </div>
+
+                <!-- First Appellate Authority -->
+                <div class="form-group">
+                  <label for="new-service-appeal">प्रथम अपील अधिकारी (Appellate Officer)</label>
+                  <input type="text" id="new-service-appeal" class="form-control" placeholder="उदा. उपविभागीय अधिकारी (SDO)" value="उपविभागीय अधिकारी (SDO)">
+                </div>
+
+                <!-- Popular Tag -->
+                <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin-top: 24px;">
+                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0;">
+                    <input type="checkbox" id="new-service-popular" style="width: 18px; height: 18px;">
+                    <span style="font-weight: 700; color: var(--primary-navy);">⭐ लोकप्रिय सेवा म्हणून चिन्हांकित करा (Mark as Popular)</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Fee Breakdown Configuration -->
+              <div class="admin-fee-config-box">
+                <div class="admin-config-header">
+                  <i class="fa-solid fa-calculator text-primary"></i>
+                  <h4>पारदर्शक दरपत्रक विवरण (Transparent Fee Breakdown)</h4>
+                </div>
+                <div class="app-form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                  <div class="form-group">
+                    <label for="fee-govt">शासकीय शुल्क (Govt Fee ₹) *</label>
+                    <input type="number" id="fee-govt" class="form-control fee-calc-input" value="69.00" step="0.5" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="fee-form">छापील अर्ज + फॉर्म (₹) *</label>
+                    <input type="number" id="fee-form" class="form-control fee-calc-input" value="30.00" step="0.5" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="fee-scan">स्कॅनिंग खर्च (₹) *</label>
+                    <input type="number" id="fee-scan" class="form-control fee-calc-input" value="30.00" step="0.5" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="fee-filing">पुनर्लेखन व फाईलिंग (₹) *</label>
+                    <input type="number" id="fee-filing" class="form-control fee-calc-input" value="41.00" step="0.5" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="fee-lamination">लॅमिनेशन खर्च (₹) *</label>
+                    <input type="number" id="fee-lamination" class="form-control fee-calc-input" value="30.00" step="0.5" required>
+                  </div>
+                </div>
+                <div class="fee-summary-strip">
+                  <span>एकूण देय ग्राहक शुल्क (Total Fee):</span>
+                  <strong id="fee-total-display">₹200.00</strong>
+                </div>
+              </div>
+
+              <!-- Required Documents Input -->
+              <div class="form-group form-full-width" style="margin-top: 1rem;">
+                <label for="new-service-docs">
+                  <i class="fa-solid fa-list-check" style="color: var(--saffron-orange);"></i> 
+                  आवश्यक कागदपत्रांची यादी (गटनिहाय ओळी प्रविष्ट करा) *
+                </label>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">
+                  टिप: प्रत्येक ओळीवर एक कागदपत्र लिहा. गटाचे नाव देण्यासाठी ओळीच्या सुरुवातीला क्रमांक किंवा नाव द्या (उदा. <code>१) ओळखीचा पुरावा: आधार कार्ड</code> किंवा <code>• रेशन कार्ड</code>).
+                </div>
+                <textarea id="new-service-docs" class="form-control" rows="5" placeholder="१) ओळखीचा पुरावा (कोणतेही एक):
+• आधार कार्ड (अनिवार्य)
+• मतदान कार्ड / पॅन कार्ड
+
+२) पत्त्याचा पुरावा:
+• रेशन कार्ड
+• लाईट बिल / ७/१२ उतारा
+
+३) इतर पुरावे:
+• शाळा सोडल्याचा दाखला (LC)
+• फोटो" required></textarea>
+              </div>
+
+              <div class="form-btn-row" style="margin-top: 1.5rem;">
+                <button type="button" class="btn-form-reset" onclick="resetNewServiceForm()">
+                  <i class="fa-solid fa-arrow-rotate-left"></i> फॉर्म साफ करा
+                </button>
+                <button type="submit" class="btn-form-submit">
+                  <i class="fa-solid fa-floppy-disk"></i> <span id="btn-save-service-label">नवीन सेवा संपूर्ण पोर्टलवर सेव्ह करा</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Admin Sub-Panel 3: Manage Existing Services List -->
+          <div class="admin-subtab-content" id="admin-subtab-manage-services">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h3 style="color: var(--primary-navy); font-size: 1.25rem;">
+                  <i class="fa-solid fa-list-check" style="color: var(--saffron-orange);"></i> सक्रिय सेवा सूची व्यवस्थापन (Manage All Active Services)
+                </h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">सर्व उपलब्ध दाखले, योजना व सेवा पहा, संपादित करा अथवा हटवा.</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-form-reset" onclick="handleResetAllServices()" style="padding: 0.45rem 0.9rem; font-size: 0.8rem;">
+                  <i class="fa-solid fa-arrow-rotate-left"></i> मूळ सेवा रिसेट करा
+                </button>
+                <button class="btn-card-apply" onclick="switchAdminSubTab('add-service')" style="padding: 0.45rem 0.9rem; font-size: 0.8rem;">
+                  <i class="fa-solid fa-plus"></i> नवीन सेवा जोडा
+                </button>
+              </div>
+            </div>
+
+            <div class="admin-table-wrapper">
+              <table class="admin-data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">अ.क्र.</th>
+                    <th>सेवेचे नाव</th>
+                    <th>विभाग</th>
+                    <th>कालावधी</th>
+                    <th>एकूण फी</th>
+                    <th>प्रकार</th>
+                    <th style="text-align: center;">कृती</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-services-tbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Admin Sub-Panel 4: Software Setup Manager (सॉफ्टवेअर सेटअप व्यवस्थापन) -->
+          <div class="admin-subtab-content" id="admin-subtab-manage-softwares">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h3 style="color: var(--primary-navy); font-size: 1.25rem;">
+                  <i class="fa-solid fa-box-archive" style="color: #0284c7;"></i> उपयुक्त सॉफ्टवेअर व ड्रायव्हर सेटअप व्यवस्थापन
+                </h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">
+                  येथून तुम्ही पोर्टलवर नवीन सॉफ्टवेअर, ड्रायव्हर किंवा टूल्सच्या थेट डाऊनलोड लिंक्स जोडू किंवा संपादित करू शकता.
+                </p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn-card-apply" onclick="toggleAdminSoftwareForm(true)" id="btn-toggle-soft-form" style="padding: 0.5rem 1rem;">
+                  <i class="fa-solid fa-plus"></i> ➕ नवीन सॉफ्टवेअर जोडा
+                </button>
+              </div>
+            </div>
+
+            <!-- Form to Add / Edit Software (Collapsible) -->
+            <div id="admin-software-form-container" style="display: none; margin-bottom: 1.5rem;">
+              <form id="admin-software-form" class="admin-service-form">
+                <input type="hidden" id="soft-edit-id" value="">
+                <h4 id="soft-form-heading" style="color: var(--primary-navy); border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 1rem;">
+                  ➕ नवीन सॉफ्टवेअर / ड्रायव्हर सेटअप जोडा
+                </h4>
+                <div class="app-form-grid">
+                  <div class="form-group">
+                    <label for="soft-name-mr">सॉफ्टवेअरचे नाव (मराठीत) *</label>
+                    <input type="text" id="soft-name-mr" class="form-control" placeholder="उदा. Morpho MSO 1300 RD Service" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="soft-name-en">सॉफ्टवेअर नाव (इंग्रजीत) *</label>
+                    <input type="text" id="soft-name-en" class="form-control" placeholder="उदा. Morpho RD Service Driver Setup" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="soft-category">वर्गवारी (Category) *</label>
+                    <select id="soft-category" class="form-control" required>
+                      <option value="biometric">बायोमेट्रिक ड्रायव्हर (Biometric RD Service)</option>
+                      <option value="dsc">डिजिटल सिग्नेचर (DSC Token Driver)</option>
+                      <option value="system">सिस्टीम सॉफ्टवेअर (System Software/Java)</option>
+                      <option value="utility">उपयुक्त टूल / ॲप (Utility Tool/PDF/Remote)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="soft-version">व्हर्जन व फाइल साइज (उदा. v2.0.1 • 25 MB) *</label>
+                    <input type="text" id="soft-version" class="form-control" placeholder="उदा. v2.0.1 • 24.5 MB" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="soft-os">ऑपरेटिंग सिस्टीम (OS Support)</label>
+                    <input type="text" id="soft-os" class="form-control" placeholder="उदा. Windows 10 / 11 (64-bit)" value="Windows 10 / 11 (64-bit)">
+                  </div>
+                  <div class="form-group">
+                    <label for="soft-icon">चिन्ह (FontAwesome Icon Style)</label>
+                    <select id="soft-icon" class="form-control">
+                      <option value="fa-solid fa-fingerprint">👆 बायोमेट्रिक (Fingerprint)</option>
+                      <option value="fa-solid fa-hand-point-up">☝️ मंत्रा / स्कॅनर (Scanner)</option>
+                      <option value="fa-solid fa-signature">✍️ डिजिटल सिग्नेचर (DSC)</option>
+                      <option value="fa-brands fa-java">☕ जावा रनटाइम (Java)</option>
+                      <option value="fa-solid fa-file-zipper">📦 झिप / फाइल टूल (ZIP/PDF)</option>
+                      <option value="fa-solid fa-display">🖥️ रिमोट डेस्कटॉप (AnyDesk)</option>
+                      <option value="fa-solid fa-box-archive">💾 सॉफ्टवेअर पॅकेज (Software Box)</option>
+                      <option value="fa-solid fa-shield-halved">🛡️ सुरक्षितता टूल (Security)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Software File Upload Option via Cloudinary -->
+                <div class="form-group" style="margin-bottom: 1rem; background: #f0f9ff; padding: 14px; border-radius: 8px; border: 1.5px dashed #0284c7;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                    <label for="soft-file-upload" style="font-weight: 700; color: #0369a1; margin: 0; display: flex; align-items: center; gap: 6px;">
+                      <i class="fa-solid fa-cloud-arrow-up" style="color: #0284c7; font-size: 1.1rem;"></i> 
+                      <span>पर्याय १: थेट सॉफ्टवेअर फाइल अपलोड करा (.exe / .zip / .rar / .msi)</span>
+                    </label>
+                    <span style="background: #e0f2fe; color: #0369a1; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; font-weight: 700;">
+                      ☁️ Cloudinary सुरक्षित क्लाउड स्टोरेज
+                    </span>
+                  </div>
+                  <input type="file" id="soft-file-upload" class="form-control" accept=".exe,.zip,.rar,.msi,.apk,.pdf,.7z" style="padding: 6px; background: #ffffff;">
+                  <div id="soft-upload-progress-container" style="display: none; margin-top: 8px; background: #e2e8f0; border-radius: 6px; height: 10px; overflow: hidden;">
+                    <div id="soft-upload-progress-bar" style="background: linear-gradient(90deg, #0284c7, #10b981); height: 100%; width: 0%; transition: width 0.2s ease;"></div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                    <small style="color: #64748b; font-size: 0.76rem;">फाइल निवडल्यास ती थेट Cloudinary क्लाउडवर अपलोड होऊन सुरक्षित कायमस्वरूपी लिंक तयार होईल.</small>
+                    <span id="soft-upload-status" style="font-size: 0.76rem; color: #16a34a; font-weight: 700;"></span>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                  <label for="soft-download-url">
+                    <i class="fa-solid fa-link" style="color: var(--saffron-orange);"></i> पर्याय २: किंवा थेट डाउनलोड लिंक / Google Drive / Cloud URL *
+                  </label>
+                  <input type="url" id="soft-download-url" class="form-control" placeholder="उदा. https://drive.google.com/... किंवा https://.../setup.exe" required>
+                  <small style="color: #64748b; font-size: 0.76rem;">येथे .exe, .zip किंवा Google Drive / MediaFire डाउनलोड लिंक टाका.</small>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label for="soft-desc-mr">तपशील व इन्स्टॉलेशन मार्गदर्शक *</label>
+                  <textarea id="soft-desc-mr" class="form-control" rows="2" placeholder="हे सॉफ्टवेअर कशासाठी आवश्यक आहे व कसे इन्स्टॉल करावे याचा संक्षिप्त तपशील..." required></textarea>
+                </div>
+
+                <div class="form-btn-row">
+                  <button type="button" class="btn-form-reset" onclick="toggleAdminSoftwareForm(false)">रद्द करा</button>
+                  <button type="submit" class="btn-form-submit"><i class="fa-solid fa-check"></i> सॉफ्टवेअर सेव्ह करा</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Softwares Table -->
+            <div class="admin-table-wrapper">
+              <table class="admin-data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">अ.क्र.</th>
+                    <th>चिन्ह</th>
+                    <th>सॉफ्टवेअर नाव</th>
+                    <th>वर्गवारी</th>
+                    <th>व्हर्जन व साइज</th>
+                    <th>डाउनलोड लिंक</th>
+                    <th style="text-align: center;">कृती</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-softwares-tbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Admin Sub-Panel 5: Links & HTML Tools Manager (महत्त्वाच्या लिंक्स व टूल्स व्यवस्थापन) -->
+          <div class="admin-subtab-content" id="admin-subtab-manage-links">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h3 style="color: var(--primary-navy); font-size: 1.25rem;">
+                  <i class="fa-solid fa-link" style="color: var(--saffron-orange);"></i> महत्त्वाची लिंक्स व HTML टूल्स व्यवस्थापन
+                </h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">
+                  येथून तुम्ही "महत्त्वाच्या लिंक्स" पॉपअपमधील सर्व सरकारी पोर्टल्स व नवीन HTML पेजेसच्या लिंक्स जोडू किंवा संपादित करू शकता.
+                </p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn-card-apply" onclick="toggleAdminLinkForm(true)" id="btn-toggle-link-form" style="padding: 0.5rem 1rem;">
+                  <i class="fa-solid fa-plus"></i> ➕ नवीन लिंक / टूल जोडा
+                </button>
+              </div>
+            </div>
+
+            <!-- Form to Add / Edit Link (Collapsible) -->
+            <div id="admin-link-form-container" style="display: none; margin-bottom: 1.5rem;">
+              <form id="admin-link-form" class="admin-service-form">
+                <input type="hidden" id="link-edit-id" value="">
+                <h4 id="link-form-heading" style="color: var(--primary-navy); border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 1rem;">
+                  ➕ नवीन लिंक किंवा HTML पेज जोडा
+                </h4>
+                <div class="app-form-grid">
+                  <div class="form-group">
+                    <label for="link-title-mr">लिंक / टूलचे नाव (मराठीत) *</label>
+                    <input type="text" id="link-title-mr" class="form-control" placeholder="उदा. नवीन दाखला फॉर्म / महाभूमी" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="link-title-en">लिंक नाव (इंग्रजीत) *</label>
+                    <input type="text" id="link-title-en" class="form-control" placeholder="उदा. New Form / Mahabhumi Portal" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="link-category">वर्गवारी (Category) *</label>
+                    <select id="link-category" class="form-control" required>
+                      <option value="अधिकृत शासकीय टूल्स व दाखले">अधिकृत शासकीय टूल्स व दाखले</option>
+                      <option value="शासकीय सेवा व महसूल">शासकीय सेवा व महसूल</option>
+                      <option value="शेतकरी व महसूल योजना">शेतकरी व महसूल योजना</option>
+                      <option value="कामगार कल्याण योजना (BOCW)">कामगार कल्याण योजना (BOCW)</option>
+                      <option value="निवडणूक व मतदार सेवा">निवडणूक व मतदार सेवा</option>
+                      <option value="इतर उपयुक्त लिंक्स">इतर उपयुक्त लिंक्स</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="link-icon">चिन्ह (FontAwesome Icon Style)</label>
+                    <select id="link-icon" class="form-control">
+                      <option value="fa-solid fa-file-signature">✍️ स्वाक्षरी / फॉर्म (Signature)</option>
+                      <option value="fa-solid fa-gem">💎 प्रीमियम टूल (Gem)</option>
+                      <option value="fa-solid fa-ticket-simple">🎟️ टोकन (Ticket)</option>
+                      <option value="fa-solid fa-wheat-awn">🌾 शेतकरी योजना (Wheat)</option>
+                      <option value="fa-solid fa-person-digging">⛏️ कामगार (Labor)</option>
+                      <option value="fa-solid fa-check-to-slot">🗳️ निवडणूक / मतदार (Vote)</option>
+                      <option value="fa-solid fa-landmark">🏛️ शासकीय पोर्टल (Govt)</option>
+                      <option value="fa-solid fa-link">🔗 लिंक (Link)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                  <label for="link-url">URL किंवा HTML फाईलचे नाव (उदा. new-page.html किंवा https://...) *</label>
+                  <input type="text" id="link-url" class="form-control" placeholder="उदा. custom-page.html किंवा https://aaplesarkar.mahaonline.gov.in" required>
+                  <small style="color: #64748b; font-size: 0.76rem;">जर प्रोजेक्टमधील HTML पेज असेल तर फक्त फाइलचे नाव द्या (उदा. <code>form.html</code>) किंवा संपूर्ण वेब URL द्या.</small>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label for="link-desc-mr">संक्षिप्त माहिती / उपयोग *</label>
+                  <textarea id="link-desc-mr" class="form-control" rows="2" placeholder="या लिंकचा उपयोग व संक्षिप्त माहिती..." required></textarea>
+                </div>
+
+                <div class="form-btn-row">
+                  <button type="button" class="btn-form-reset" onclick="toggleAdminLinkForm(false)">रद्द करा</button>
+                  <button type="submit" class="btn-form-submit"><i class="fa-solid fa-check"></i> लिंक सेव्ह करा</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Links Table -->
+            <div class="admin-table-wrapper">
+              <table class="admin-data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">अ.क्र.</th>
+                    <th>चिन्ह</th>
+                    <th>लिंक / टूल नाव</th>
+                    <th>वर्गवारी</th>
+                    <th>URL / फाइल पाथ</th>
+                    <th style="text-align: center;">कृती</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-links-tbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Comprehensive Services Directory Catalog -->
+  <section class="services-section" id="services">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fa-solid fa-list"></i> सर्व अधिकृत सेवा</span>
+        <h2>नागरिक सेवा सूची (Service Directory)</h2>
+        <p>महसूल, ई-मुद्रा, शेतकरी व इतर सर्व शासकीय दाखले व प्रमाणपत्रांची संपूर्ण माहिती.</p>
+      </div>
+
+      <div class="services-filter-bar">
+        <div class="category-pills">
+          <button class="cat-btn active" data-category="all" data-i18n="cat_all">सर्व सेवा</button>
+          <button class="cat-btn" data-category="revenue" data-i18n="cat_revenue">महसूल व दाखले विभाग</button>
+          <button class="cat-btn" data-category="emudra" data-i18n="cat_emudra">ई-मुद्रा व DSC सेवा</button>
+          <button class="cat-btn" data-category="schemes" data-i18n="cat_schemes">शेतकरी व शासकीय योजना</button>
+          <button class="cat-btn" data-category="citizen" data-i18n="cat_citizen">इतर नागरिक सेवा</button>
+        </div>
+        <div class="search-box-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="services-search-input" placeholder="सेवेचे नाव शोधा (उदा. उत्पन्न, DSC)..." data-i18n="search_placeholder">
+        </div>
+      </div>
+
+      <div class="services-grid" id="services-grid-container">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Citizen's Charter Section -->
+  <section class="charter-section" id="citizen-charter">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fa-solid fa-award"></i> पारदर्शकता व विश्वास</span>
+        <h2 data-i18n="charter_heading">नागरिक सनद (Citizen's Charter)</h2>
+        <p data-i18n="charter_sub">महाराष्ट्र लोकसेवा हक्क अधिनियम अंतर्गत पारदर्शक व वेळेत सेवा हमी.</p>
+      </div>
+
+      <div class="charter-grid">
+        <div class="charter-card">
+          <div class="charter-icon"><i class="fa-solid fa-business-time"></i></div>
+          <h3 data-i18n="charter_r1_title">वेळेत सेवा वितरण</h3>
+          <p data-i18n="charter_r1_desc">शासनाने ठरवून दिलेल्या विहित मुदतीत सर्व दाखले व प्रमाणपत्रे उपलब्ध करून देण्याची हमी.</p>
+        </div>
+        <div class="charter-card">
+          <div class="charter-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+          <h3 data-i18n="charter_r2_title">पारदर्शक दरपत्रक</h3>
+          <p data-i18n="charter_r2_desc">शासकीय फी व सीएससी नियमावलीनुसार अचूक शुल्क आकारणी; कोणतीही छुपी फी नाही.</p>
+        </div>
+        <div class="charter-card">
+          <div class="charter-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <h3 data-i18n="charter_r3_title">डिजिटल व अचूक काम</h3>
+          <p data-i18n="charter_r3_desc">डिजिटल स्वाक्षरी, बारकोड व QR कोड असलेले १००% अधिकृत व सर्वत्र ग्राह्य दस्तऐवज.</p>
+        </div>
+        <div class="charter-card">
+          <div class="charter-icon"><i class="fa-solid fa-headset"></i></div>
+          <h3 data-i18n="charter_r4_title">नागरिक तक्रार निवारण</h3>
+          <p data-i18n="charter_r4_desc">अर्जासंदर्भातील कोणत्याही अडचणीसाठी २४ तासांत मदत व निवारण कक्ष उपलब्ध.</p>
+        </div>
+      </div>
+
+      <!-- Dynamic Citizen Charter SLA Table -->
+      <div class="charter-table-card" style="margin-top: 3rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 1.75rem; box-shadow: var(--shadow-md);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h3 style="color: var(--primary-navy); font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-scale-balanced" style="color: var(--saffron-orange);"></i>
+              <span>महाराष्ट्र लोकसेवा हक्क अधिनियम - सर्व सेवांची सनद व मुदत हमी</span>
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 3px;">विहित मुदतीत सेवा उपलब्ध करून देणे हे शासनाचे बंधनकारक कर्तव्य आहे.</p>
+          </div>
+          <div style="width: 100%; max-width: 300px;">
+            <input type="text" id="charter-search-input" placeholder="दाखला किंवा अधिकारी शोधा..." class="form-control" style="font-size: 0.85rem; padding: 6px 12px;">
+          </div>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-data-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">अ.क्र.</th>
+                <th>सेवेचे नाव</th>
+                <th>विभाग / संवर्ग</th>
+                <th>विहित कालमर्यादा (SLA)</th>
+                <th>नियत सक्षम अधिकारी</th>
+                <th>प्रथम अपील अधिकारी</th>
+                <th style="text-align: right;">अधिकृत शुल्क</th>
+              </tr>
+            </thead>
+            <tbody id="charter-table-tbody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact & Location Section -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fa-solid fa-location-dot"></i> संपर्क दालन</span>
+        <h2 data-i18n="contact_heading">संपर्क व साहाय्यता कक्ष</h2>
+        <p data-i18n="contact_sub">उपविभागीय अधिकारी कार्यालय परिसरात थेट भेट द्या किंवा ऑनलाइन मदत मिळवा.</p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-info-card">
+          <div class="contact-detail-row">
+            <div class="contact-icon-bubble"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div class="contact-detail-content">
+              <h4 data-i18n="lbl_address_title">केंद्राचा पत्ता:</h4>
+              <p>घर नं. ४६५, तिवरे, धनाचीवाडी, तालुका - कणकवली, जि. सिंधुदुर्ग, महाराष्ट्र - ४१६६०१</p>
+            </div>
+          </div>
+
+          <div class="contact-detail-row">
+            <div class="contact-icon-bubble"><i class="fa-solid fa-phone-volume"></i></div>
+            <div class="contact-detail-content">
+              <h4 data-i18n="lbl_phone">हेल्पलाईन फोन:</h4>
+              <p style="font-family: var(--font-sans); font-weight: 700; color: var(--primary-navy);">+91 98908 69793 / १८०० १२० ८०४० (टोल फ्री)</p>
+            </div>
+          </div>
+
+          <div class="contact-detail-row">
+            <div class="contact-icon-bubble"><i class="fa-brands fa-whatsapp"></i></div>
+            <div class="contact-detail-content">
+              <h4 data-i18n="lbl_whatsapp">व्हॉट्सॲप साहाय्यता:</h4>
+              <p style="font-family: var(--font-sans); font-weight: 700; color: #16a34a;">+91 98908 69793 (२४x७ चॅट उपलब्ध)</p>
+            </div>
+          </div>
+
+          <div class="contact-detail-row">
+            <div class="contact-icon-bubble"><i class="fa-solid fa-envelope-open-text"></i></div>
+            <div class="contact-detail-content">
+              <h4 data-i18n="lbl_email_id">अधिकृत ईमेल:</h4>
+              <p style="font-family: var(--font-sans);">helpdesk@emudracsc.in</p>
+            </div>
+          </div>
+
+          <div class="contact-detail-row">
+            <div class="contact-icon-bubble"><i class="fa-solid fa-clock"></i></div>
+            <div class="contact-detail-content">
+              <h4 data-i18n="lbl_timing_title">कामाचे तास:</h4>
+              <p>सोमवार ते शनिवार: सकाळी ०९:०० ते रात्री ०८:०० (रविवार: सकाळी १०:०० ते दुपारी ०२:००)</p>
+            </div>
+          </div>
+
+          <a href="javascript:void(0)" class="btn-whatsapp-direct">
+            <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i> <span data-i18n="direct_whatsapp_btn">थेट WhatsApp वर चॅट करा</span>
+          </a>
+        </div>
+
+        <div class="links-card">
+          <h3 data-i18n="quick_links">महत्वाच्या शासकीय लिंक्स</h3>
+          <div class="official-links-list">
+            <a href="https://aaplesarkar.mahaonline.gov.in" target="_blank" rel="noopener">
+              <span>आपले सरकार (Aaple Sarkar Portal)</span>
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="https://mahabhumi.gov.in" target="_blank" rel="noopener">
+              <span>महाभूमी (७/१२, ८-अ व फेरफार)</span>
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="https://www.emudhra.com" target="_blank" rel="noopener">
+              <span>eMudra Digital Signatures (DSC)</span>
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="https://uidai.gov.in" target="_blank" rel="noopener">
+              <span>UIDAI आधार सेवा पोर्टल</span>
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="https://pmkisan.gov.in" target="_blank" rel="noopener">
+              <span>PM किसान सन्मान निधी</span>
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="https://ladakibahin.maharashtra.gov.in" target="_blank" rel="noopener">
+              <span>मुख्यमंत्री माझी लाडकी बहीण योजना</span>
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Official Footer -->
+  <footer class="portal-footer">
+    <div class="container">
+      <div class="footer-content">
+        <p data-i18n="footer_text">© 2026 ई-मुद्रा सीएससी व आपले सरकार सेवा केंद्र. सर्व हक्क राखीव. उपविभागीय अधिकारी (SDO) कार्यालयाच्या मार्गदर्शक तत्त्वानुसार संचालित.</p>
+        <p style="font-size: 0.78rem; color: #64748b;" data-i18n="disclaimer">
+          सूचना: हे केंद्र महाराष्ट्र शासन व CSC SPV अंतर्गत अधिकृत सेवा केंद्र म्हणून नागरिकांना सेवा प्रदान करते.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Action -->
+  <a href="javascript:void(0)" class="floating-whatsapp" title="WhatsApp वर संपर्क करा" aria-label="WhatsApp Support">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <!-- MODALS -->
+
+  <!-- Modal: Welcome Banner Popup (Shows on Site Open) -->
+  <div class="welcome-modal-overlay" id="welcome-banner-modal" role="dialog" aria-modal="true" aria-labelledby="welcome-modal-title">
+    <div class="welcome-modal-card">
+      <div class="welcome-modal-topbar">
+        <div class="welcome-modal-badge" id="welcome-modal-title">
+          <i class="fa-solid fa-bullhorn"></i> <span data-i18n="welcome_badge">अधिकृत स्वागत बॅनर • आपले सरकार सेवा केंद्र</span>
+        </div>
+        <button class="welcome-close-circle" onclick="closeWelcomeModal()" title="बंद करा / Close" aria-label="Close Welcome Banner">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="welcome-banner-container">
+        <img src="Aaple Sarkar Sewa Kendra.jpg" alt="आपले सरकार सेवा केंद्र - अधिकृत स्वागत बॅनर" class="welcome-banner-img" loading="eager">
+      </div>
+
+      <div class="welcome-modal-footer">
+        <div class="welcome-footer-info">
+          <i class="fa-solid fa-circle-info"></i>
+          <span data-i18n="welcome_subtext">आपले सरकार सेवा केंद्रात आपले सहर्ष स्वागत आहे! सर्व शासकीय योजना व दाखल्यांची कामे येथे तत्पर केली जातात.</span>
+        </div>
+        
+        <div class="welcome-center-chips">
+          <div class="welcome-chip"><i class="fa-solid fa-id-card"></i> <span>Center ID: <strong>152153410016</strong></span></div>
+          <div class="welcome-chip"><i class="fa-solid fa-phone"></i> <span>मोबाईल: <strong>9890869793</strong></span></div>
+          <div class="welcome-chip"><i class="fa-solid fa-headset"></i> <span>टोल फ्री: <strong>1800 120 8040 (24x7)</strong></span></div>
+        </div>
+
+        <div class="welcome-modal-actions">
+          <button class="btn-welcome-action primary" onclick="handleWelcomeAction('services')">
+            <i class="fa-solid fa-list-check"></i> <span data-i18n="welcome_btn_services">सर्व सेवा पहा</span>
+          </button>
+          <button class="btn-welcome-action accent" onclick="handleWelcomeAction('apply')">
+            <i class="fa-solid fa-file-pen"></i> <span data-i18n="welcome_btn_apply">ऑनलाइन अर्ज करा</span>
+          </button>
+          <button class="btn-welcome-action secondary" onclick="closeWelcomeModal()">
+            <i class="fa-solid fa-arrow-right"></i> <span data-i18n="welcome_btn_continue">वेबसाईट सुरू ठेवा</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Document Checklist Info -->
+  <div class="modal-overlay" id="docs-info-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="docs-modal-title">माहिती</h3>
+        <button class="modal-close-btn" onclick="closeModal('docs-info-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="docs-modal-body">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Official Acknowledgment Receipt -->
+  <div class="modal-overlay" id="receipt-modal">
+    <div class="modal-card" style="max-width: 850px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-receipt"></i> अधिकृत पोच पावती (Acknowledgment Slip)</h3>
+        <button class="modal-close-btn" onclick="closeModal('receipt-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div id="receipt-modal-content">
+          <!-- Rendered by JS -->
+        </div>
+        <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button class="btn-form-reset" onclick="closeModal('receipt-modal')">बंद करा</button>
+          <button class="btn-form-submit" onclick="printReceipt()">
+            <i class="fa-solid fa-print"></i> पोच पावती प्रिंट करा
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Officer / VLE Login PIN -->
+  <div class="modal-overlay" id="admin-login-modal">
+    <div class="modal-card" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 data-i18n="admin_login_title"><i class="fa-solid fa-user-lock"></i> अधिकारी लॉगिन</h3>
+        <button class="modal-close-btn" onclick="closeModal('admin-login-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="admin-login-form">
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label for="admin-pin-input" data-i18n="admin_pin_label">सुरक्षा पिन (Default: 1234) प्रविष्ट करा:</label>
+            <input type="password" id="admin-pin-input" class="form-control" placeholder="••••" maxlength="8" required style="font-size: 1.2rem; letter-spacing: 4px; text-align: center;">
+          </div>
+          <button type="submit" class="btn-form-submit" style="width: 100%;">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> <span data-i18n="btn_admin_login">डॅशबोर्ड उघडा</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: High-Definition Document Preview Popup Modal (In-Page Lightbox) -->
+  <div class="modal-overlay" id="doc-viewer-modal" role="dialog" aria-modal="true" aria-labelledby="doc-viewer-title">
+    <div class="modal-card doc-viewer-card">
+      <div class="modal-header doc-viewer-header">
+        <div class="doc-viewer-title-box">
+          <i class="fa-solid fa-file-shield text-primary" id="doc-viewer-icon"></i>
+          <div>
+            <h3 id="doc-viewer-title">कागदपत्र पूर्वावलोकन</h3>
+            <span id="doc-viewer-meta" class="doc-viewer-meta">दस्तऐवज दर्शक</span>
+          </div>
+        </div>
+        <div class="doc-viewer-header-actions">
+          <button class="doc-action-circle-btn" id="doc-btn-download" title="डाउनलोड करा">
+            <i class="fa-solid fa-download"></i>
+          </button>
+          <button class="doc-action-circle-btn" id="doc-btn-print" title="प्रिंट करा">
+            <i class="fa-solid fa-print"></i>
+          </button>
+          <button class="modal-close-btn" onclick="closeModal('doc-viewer-modal')" title="बंद करा / Close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body doc-viewer-body" id="doc-viewer-body">
+        <!-- Rendered dynamically: High-res image or responsive embedded PDF viewer -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Useful Official Links Modal Popup (महत्त्वाच्या शासकीय लिंक्स) -->
+  <div class="modal-overlay" id="useful-links-modal" role="dialog" aria-modal="true" aria-labelledby="useful-links-title">
+    <div class="modal-card useful-links-modal-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-layer-group" style="color: var(--saffron-orange); font-size: 1.3rem;"></i>
+          <div>
+            <h3 id="useful-links-title">उपयुक्त शासकीय टूल्स व पेजेस (Useful Tools & Pages)</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">प्रतिज्ञा पत्र टोकन जनरेटर, संमतीपत्र / शपथपत्र व इतर शासकीय पेजेस</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('useful-links-modal')" title="बंद करा / Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem;">
+        <div class="useful-links-search-bar" style="margin-bottom: 1.25rem;">
+          <input type="text" id="useful-links-search" placeholder="टूल्स, प्रतिज्ञा पत्र, संमतीपत्र किंवा पेज शोधा..." class="form-control" style="padding: 8px 14px;">
+        </div>
+        <div class="useful-links-grid" id="useful-links-container">
+          <!-- Populated dynamically by JS from IMPORTANT_LINKS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Useful Softwares & Setup Files Hub (उपयुक्त सॉफ्टवेअर डाउनलोड केंद्र) -->
+  <div class="modal-overlay" id="software-modal" role="dialog" aria-modal="true" aria-labelledby="software-modal-title">
+    <div class="modal-card software-modal-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-box-archive" style="color: #0284c7; font-size: 1.35rem;"></i>
+          <div>
+            <h3 id="software-modal-title">उपयुक्त सॉफ्टवेअर्स व ड्रायव्हर सेटअप दालन</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">CSC, बायोमेट्रिक, DSC, महा-ई-सेवा व शासकीय कामांसाठी अधिकृत सॉफ्टवेअर्स</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('software-modal')" title="बंद करा / Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem;">
+        <div class="software-search-filter-row" style="margin-bottom: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between;">
+          <div style="flex: 1; min-width: 250px;">
+            <input type="text" id="software-search-input" placeholder="सॉफ्टवेअरचे नाव शोधा (उदा. Morpho, Mantra, Java, AnyDesk)..." class="form-control" style="padding: 8px 14px;">
+          </div>
+          <div class="software-cat-pills" id="software-cat-filter" style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+            <button class="soft-cat-btn active" data-cat="all">सर्व</button>
+            <button class="soft-cat-btn" data-cat="biometric">बायोमेट्रिक RD</button>
+            <button class="soft-cat-btn" data-cat="dsc">DSC ड्रायव्हर</button>
+            <button class="soft-cat-btn" data-cat="system">सिस्टीम</button>
+            <button class="soft-cat-btn" data-cat="utility">टूल्स</button>
+          </div>
+        </div>
+        <div class="software-grid-container" id="software-grid-container">
+          <!-- Rendered dynamically by JS from SOFTWARES_DATA -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Container exclusively for clean window.print() execution -->
+  <div id="printable-receipt-area"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/services-data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/supabase-db.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
