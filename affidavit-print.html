@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Print Studio Pro - Beautiful Edit Popup</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-gradient-start: #e0eafc;
+            --bg-gradient-end: #cfdef3;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-border: rgba(255, 255, 255, 0.18);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --input-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --shadow-sm: 0 8px 32px rgba(31, 38, 135, 0.1);
+            --paper-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            --photo-border: #333;
+            --photo-bg: #f1f5f9;
+        }
+
+        body.dark {
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-end: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.95);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --input-bg: #1e293b;
+            --input-border: #475569;
+            --shadow-sm: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --paper-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            --photo-border: #94a3b8;
+            --photo-bg: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 999;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 40px;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-primary);
+        }
+
+        .control-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            max-width: 700px;
+            margin: 12px auto 20px auto;
+            padding: 18px 24px;
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .control-panel h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+        body.dark .control-panel h3 {
+            background: linear-gradient(135deg, #a5b4fc, #818cf8);
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin-bottom: 18px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+        .input-group input[type="text"] {
+            width: 100%;
+            max-width: 350px;
+            padding: 8px 14px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        /* 🟢 नवीन: फोटो साइज कंट्रोल स्लाइडर */
+        .size-control-group {
+            margin: 12px auto 16px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            background: var(--input-bg);
+            padding: 8px 18px;
+            border-radius: 60px;
+            border: 1px solid var(--input-border);
+            max-width: 400px;
+        }
+        .size-control-group label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .size-control-group input[type="range"] {
+            width: 160px;
+            accent-color: #4b6cb7;
+            cursor: pointer;
+        }
+        .size-control-group .size-value {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #4b6cb7;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .file-camera-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: var(--input-bg);
+            padding: 4px 12px;
+            border-radius: 60px;
+            border: 1px solid var(--input-border);
+        }
+        .file-camera-group input[type="file"] {
+            font-size: 0.75rem;
+            background: transparent;
+            border: none;
+            padding: 6px 0;
+            color: var(--text-primary);
+        }
+        .camera-icon-btn {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .add-record-btn {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .center-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        .print-action-btn {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .clear-action-btn {
+            background: linear-gradient(135deg, #cb2d3e, #ef473a);
+            color: white;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        button:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+        /* ========== MODAL BUTTONS ========== */
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin: 6px;
+            min-width: 120px;
+        }
+        .modal-btn-secondary {
+            background: linear-gradient(135deg, #64748b, #475569);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin: 6px;
+            min-width: 120px;
+        }
+        .modal-btn-danger {
+            background: linear-gradient(135deg, #cb2d3e, #ef473a);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin: 6px;
+            min-width: 120px;
+        }
+        .modal-btn-success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin: 6px;
+            min-width: 120px;
+        }
+
+        /* Print Area */
+        #printArea {
+            width: 100%;
+            max-width: 800px;
+            height: 157mm;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: var(--paper-shadow);
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-end;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+        body.dark #printArea { background: #ffffff; }
+
+        .record-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 4px 0px 4px 10px;
+            width: 100%;
+        }
+        .record-row.half-width { width: 48%; justify-content: flex-end; }
+        .text-box { width: 210px; flex: none; padding-right: 12px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+        .record-row.half-width .text-box { flex: 1; width: auto; }
+        .sign-space { flex: 1; }
+        .name-text { font-weight: 700; font-size: 0.95rem; padding-top: 25px; color: #000; }
+        
+        /* 🟢 फोटो बॉक्स - साइज स्लाइडरने बदलण्यासाठी dynamic class */
+        .photo-box { 
+            border: 2px solid var(--photo-border); 
+            border-radius: 8px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: var(--photo-bg); 
+            overflow: hidden; 
+            flex-shrink: 0; 
+            height: 80%;  /* हे स्लाइडरने बदलेल */
+            aspect-ratio: 3.5/4.5; /* हे स्लाइडरने बदलेल */
+        }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .edit-btn, .delete-btn {
+            width: 30px; height: 30px; border-radius: 10px; margin-left: 6px;
+            font-size: 0.8rem; display: inline-flex; align-items: center; justify-content: center;
+        }
+        .edit-btn { background: #f59e0b; color: white; }
+        .delete-btn { background: #ef4444; color: white; }
+
+        /* ========== MODAL STYLES (Crop & Edit both) ========== */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; 
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.75); 
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 28px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            margin: auto;
+        }
+        
+        .modal-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        
+        .modal-content input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 2px solid var(--input-border);
+            border-radius: 60px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .modal-content input:focus {
+            outline: none;
+            border-color: #4b6cb7;
+        }
+        
+        .img-container { 
+            width: 100%; 
+            max-height: 280px; 
+            overflow: hidden; 
+            border-radius: 16px; 
+            background: #1e293b; 
+            margin-bottom: 15px; 
+        }
+        
+        .img-container img, 
+        .img-container video { 
+            width: 100%; 
+            display: block; 
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        @media print {
+            @page { size: A4 portrait; margin-top: 25mm; margin-left: 20mm; margin-right: 12mm; margin-bottom: 114.3mm; }
+            body { background: none; padding: 0; }
+            .no-print { display: none !important; }
+            #printArea { height: 157mm; box-shadow: none; border: none; }
+            .photo-box { border: 2px solid #000; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="theme-toggle no-print" id="themeToggleBtn">🌙 Dark</button>
+
+<div class="control-panel no-print">
+    <h3>✨संमती पत्र प्रिंट पोर्टल</h3>
+   
+    <div class="input-group">
+        <label>👤 व्यक्तीचे नाव</label>
+        <input type="text" id="personName" placeholder="उदा. संजय पाटील">
+    </div>
+
+    <!-- 🟢 नवीन: फोटो साइज कंट्रोल स्लाइडर -->
+    <div class="size-control-group">
+        <label>🖼️ फोटो साइज:</label>
+        <input type="range" id="photoSizeSlider" min="20" max="100" value="80">
+        <span class="size-value" id="sizeDisplay">80%</span>
+    </div>
+
+    <div class="action-row">
+        <div class="file-camera-group">
+            <input type="file" id="personPhoto" accept="image/*">
+            <button type="button" class="camera-icon-btn" onclick="openCamera()">📷 कॅमेरा</button>
+        </div>
+        <button class="add-record-btn" onclick="addRecord()">➕ रेकॉर्ड जोडा</button>
+    </div>
+
+    <div class="center-actions">
+        <button class="print-action-btn" onclick="window.print()">🖨️ प्रिंट काढा</button>
+        <button class="clear-action-btn" onclick="clearAll()">🗑️ सर्व हटवा</button>
+    </div>
+</div>
+
+<div id="cameraModal" class="modal no-print">
+    <div class="modal-content">
+        <h3>📷 Web Camera</h3>
+        <div class="img-container">
+            <video id="cameraStream" autoplay playsinline></video>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn-success" onclick="capturePhoto()">📸 फोटो काढा</button>
+            <button class="modal-btn-danger" onclick="closeCamera()">❌ बंद करा</button>
+        </div>
+    </div>
+</div>
+
+<div id="cropModal" class="modal no-print">
+    <div class="modal-content">
+        <h3>✂️ फोटो क्रॉप करा</h3>
+        <div class="img-container">
+            <img id="imageToCrop" src="">
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn-success" onclick="cropAndSave()">✅ क्रॉप करा</button>
+            <button class="modal-btn-secondary" onclick="closeCropModal()">❌ रद्द</button>
+        </div>
+    </div>
+</div>
+
+<div id="editModal" class="modal no-print">
+    <div class="modal-content">
+        <h3>✏️ नाव बदला</h3>
+        <input type="text" id="editNameInput" placeholder="नवीन नाव टाका...">
+        <div class="modal-buttons">
+            <button class="modal-btn-success" onclick="saveEditedName()">✅ सेव्ह करा</button>
+            <button class="modal-btn-secondary" onclick="closeEditModal()">❌ रद्द</button>
+        </div>
+    </div>
+</div>
+
+<div id="printArea"></div>
+
+<script>
+    let cropper, finalCroppedImage = null, videoStream = null;
+    let currentEditNameDiv = null;
+
+    // 🟢 फोटो साइज स्लाइडर फंक्शन
+    const slider = document.getElementById('photoSizeSlider');
+    const sizeDisplay = document.getElementById('sizeDisplay');
+    
+    slider.addEventListener('input', function() {
+        const val = this.value;
+        sizeDisplay.textContent = val + '%';
+        // सर्व existing फोटो बॉक्सची साइज बदला
+        document.querySelectorAll('.photo-box').forEach(box => {
+            box.style.height = val + '%';
+        });
+    });
+
+    // Camera Functions
+    function openCamera() {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => { videoStream = stream; document.getElementById('cameraStream').srcObject = stream; document.getElementById('cameraModal').style.display = 'flex'; })
+            .catch(() => alert("कॅमेरा परवानगी आवश्यक"));
+    }
+    function closeCamera() { document.getElementById('cameraModal').style.display = 'none'; if(videoStream) videoStream.getTracks().forEach(t=>t.stop()); videoStream=null; }
+    function capturePhoto() {
+        let video = document.getElementById('cameraStream');
+        let canvas = document.createElement('canvas'); canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video,0,0);
+        closeCamera(); openCropper(canvas.toDataURL('image/jpeg'));
+    }
+    
+    // File Upload
+    document.getElementById('personPhoto').addEventListener('change', e=>{ if(e.target.files[0]){ let r=new FileReader(); r.onload=ev=>openCropper(ev.target.result); r.readAsDataURL(e.target.files[0]); } });
+    
+    // Cropper Functions
+    function openCropper(src){ 
+        let img=document.getElementById('imageToCrop'); 
+        img.src=src; 
+        document.getElementById('cropModal').style.display = 'flex'; 
+        if(cropper) cropper.destroy(); 
+        cropper = new Cropper(img, {
+            aspectRatio: 3.5/4.5,
+            viewMode: 1,
+            autoCropArea: 0.8, 
+            responsive: true
+        }); 
+    }
+    function cropAndSave(){ 
+        if(cropper){ 
+            finalCroppedImage = cropper.getCroppedCanvas({width:350,height:450}).toDataURL('image/jpeg'); 
+            document.getElementById('cropModal').style.display = 'none'; 
+        } 
+    }
+    function closeCropModal(){ 
+        document.getElementById('cropModal').style.display = 'none'; 
+        document.getElementById('personPhoto').value = ''; 
+        finalCroppedImage = null; 
+    }
+    
+    // ========== EDIT FUNCTIONS ==========
+    function openEditModal(nameDivElement) {
+        currentEditNameDiv = nameDivElement;
+        document.getElementById('editNameInput').value = nameDivElement.innerText;
+        document.getElementById('editModal').style.display = 'flex';
+    }
+    
+    function saveEditedName() {
+        let newName = document.getElementById('editNameInput').value.trim();
+        if (newName !== "" && currentEditNameDiv) {
+            currentEditNameDiv.innerText = newName;
+        }
+        closeEditModal();
+    }
+    
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+        currentEditNameDiv = null;
+    }
+    
+    // Add Record
+    function addRecord(){
+        let name=document.getElementById('personName').value;
+        if(!name && !finalCroppedImage) return alert("नाव व फोटो आवश्यक");
+        let row=document.createElement('div'); row.className='record-row';
+        let textDiv=document.createElement('div'); textDiv.className='text-box';
+        let sign=document.createElement('div'); sign.className='sign-space';
+        let nameDiv=document.createElement('div'); nameDiv.className='name-text'; nameDiv.innerText=name || "(नाव नाही)";
+        textDiv.appendChild(sign); textDiv.appendChild(nameDiv);
+        let photoDiv=document.createElement('div'); photoDiv.className='photo-box';
+        
+        // 🟢 स्लाइडरची current value apply करा
+        const currentSize = document.getElementById('photoSizeSlider').value;
+        photoDiv.style.height = currentSize + '%';
+        
+        if(finalCroppedImage){ let img=document.createElement('img'); img.src=finalCroppedImage; photoDiv.appendChild(img); }
+        else photoDiv.innerHTML="<span style='font-size:11px;color:gray'>फोटो नाही</span>";
+        
+        let editBtn=document.createElement('button'); 
+        editBtn.className='edit-btn no-print'; 
+        editBtn.innerHTML='✏️'; 
+        editBtn.onclick=()=>{ openEditModal(nameDiv); };
+        
+        let delBtn=document.createElement('button'); 
+        delBtn.className='delete-btn no-print'; 
+        delBtn.innerHTML='❌'; 
+        delBtn.onclick=()=>{ row.remove(); updateLayout(); };
+        
+        row.appendChild(textDiv); 
+        row.appendChild(photoDiv); 
+        row.appendChild(editBtn); 
+        row.appendChild(delBtn);
+        
+        document.getElementById('printArea').prepend(row); 
+        updateLayout();
+        document.getElementById('personName').value=''; 
+        document.getElementById('personPhoto').value=''; 
+        finalCroppedImage=null;
+    }
+    
+    function updateLayout(){
+        let rows=document.querySelectorAll('#printArea .record-row'); 
+        let c=rows.length; 
+        if(!c) return;
+        let half=c>5; 
+        let perCol=half?Math.ceil(c/2):c; 
+        let h=100/Math.max(5,perCol);
+        
+        rows.forEach(r=>{ 
+            r.style.height= h + '%'; 
+            if(half) r.classList.add('half-width'); 
+            else r.classList.remove('half-width'); 
+        });
+    }
+    
+    function clearAll(){ 
+        if(confirm("सर्व हटवायचे?")) 
+            document.getElementById('printArea').innerHTML=''; 
+    }
+
+    // Dark/Light Mode
+    const themeBtn=document.getElementById('themeToggleBtn');
+    if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark');
+    themeBtn.onclick=()=>{ 
+        document.body.classList.toggle('dark'); 
+        let isDark=document.body.classList.contains('dark'); 
+        themeBtn.innerHTML=isDark?'☀️ Light':'🌙 Dark'; 
+        localStorage.setItem('theme',isDark?'dark':'light'); 
+    };
+    if(document.body.classList.contains('dark')) themeBtn.innerHTML='☀️ Light'; 
+    else themeBtn.innerHTML='🌙 Dark';
+</script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>स्वघोषणापत्र जनरेटर</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: white !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .print-container {
+                box-shadow: none !important;
+                background-color: white !important;
+                color: black !important;
+                padding: 10mm !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                border: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 min-h-screen py-8 px-4 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+
+    <div class="max-w-4xl mx-auto space-y-8">
+        
+        <div class="flex justify-between items-center no-print">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-white">स्वघोषणापत्र जनरेटर</h1>
+                <p class="text-slate-600 dark:text-slate-400 mt-1">माहिती भरा, तारीख निवडा आणि थेट प्रिन्ट/PDF सेव्ह करा.</p>
+            </div>
+            <button onclick="toggleDarkMode()" class="bg-slate-200 dark:bg-slate-800 p-2.5 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition shadow" title="डार्क मोड बदला">
+                <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-500 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-700 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 md:p-8 no-print border border-slate-200 dark:border-slate-700 space-y-6">
+            <h2 class="text-xl font-semibold text-blue-600 dark:text-blue-400 border-b dark:border-slate-700 pb-2">१. वैयक्तिक माहिती भरा</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">अर्जदाराचे नाव</label>
+                    <input type="text" id="applicantName" placeholder="उदा. राहुल प्रकाश पाटील" value="" oninput="updateLetter()" class="w-full px-3 py-2 border dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">वडिलांचे नाव</label>
+                    <input type="text" id="fatherName" placeholder="उदा. प्रकाश रावजी पाटील" value="" oninput="updateLetter()" class="w-full px-3 py-2 border dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">वय (वर्षे)</label>
+                    <input type="text" id="age" placeholder="उदा. ३२" value="" oninput="updateLetter()" class="w-full px-3 py-2 border dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">राहण्याचे ठिकाण (गाव)</label>
+                    <input type="text" id="village" placeholder="उदा. कणकवली" value="" oninput="updateLetter()" class="w-full px-3 py-2 border dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">तालुका</label>
+                    <input type="text" id="taluka" placeholder="उदा. कणकवली" value="कणकवली" oninput="updateLetter()" class="w-full px-3 py-2 border dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">जिल्हा</label>
+                    <input type="text" id="district" placeholder="उदा. सिंधुदुर्ग" value="सिंधुदुर्ग" oninput="updateLetter()" class="w-full px-3 py-2 border dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">कामाचे स्वरूप / पद</label>
+                    <input type="text" id="workType" placeholder="उदा. बांधकाम कामगार" value="बांधकाम कामगार" oninput="updateLetter()" class="w-full px-3 py-2 border dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">सन / वर्ष</label>
+                    <input type="text" id="workYear" placeholder="उदा. २०२५-२०२६" value="२०२५-२०२६" oninput="updateLetter()" class="w-full px-3 py-2 border dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-b dark:border-slate-700 pb-2 pt-4">
+                <h2 class="text-xl font-semibold text-blue-600 dark:text-blue-400">२. कामाचा तपशील (तक्ता)</h2>
+                <button type="button" onclick="addRow()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1">
+                    + नवीन ओळ जोडा
+                </button>
+            </div>
+            
+            <div class="space-y-4" id="rowsContainer">
+                <!-- Single Initial Row with Date Pickers -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end bg-slate-50 dark:bg-slate-900 p-3 rounded-lg border dark:border-slate-700 row-item">
+                    <div class="md:col-span-5">
+                        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">मालकाचे नाव व पत्ता</label>
+                        <input type="text" class="row-owner w-full px-3 py-2 border dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm" placeholder="उदा. श्री. सुरेश विष्णू राऊत, कणकवली" value="" oninput="updateLetter()">
+                    </div>
+                    <div class="md:col-span-3">
+                        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">सुरुवात तारीख</label>
+                        <input type="date" class="row-start-date w-full px-3 py-2 border dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm" value="" onchange="calculateDays(this); updateLetter()">
+                    </div>
+                    <div class="md:col-span-3">
+                        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">शेवट तारीख</label>
+                        <input type="date" class="row-end-date w-full px-3 py-2 border dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm" value="" onchange="calculateDays(this); updateLetter()">
+                    </div>
+                    <div class="md:col-span-1">
+                        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">दिवस</label>
+                        <input type="text" class="row-days w-full px-3 py-2 border dark:border-slate-600 rounded bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold text-center" readonly value="">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-4 pt-4 border-t dark:border-slate-700">
+                <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-lg shadow transition flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                    </svg>
+                    प्रिन्ट करा / PDF सेव्ह करा
+                </button>
+            </div>
+        </div>
+
+        <div class="print-container bg-white shadow-xl rounded-2xl p-8 md:p-12 border border-slate-200 text-slate-900 leading-relaxed text-justify relative">
+            
+            <!-- Form Number Top Right -->
+            <div class="absolute top-6 right-8 text-sm font-semibold">
+                फॉर्म नं. ४
+            </div>
+
+            <!-- Heading -->
+            <div class="text-center my-6">
+                <h2 class="text-2xl font-bold underline decoration-2 underline-offset-4 inline-block">स्वघोषणापत्र</h2>
+            </div>
+
+            <!-- Paragraph 1 -->
+            <div class="mt-8 text-base md:text-lg leading-loose">
+                मी श्री. <span id="previewApplicant" class="border-b border-dotted border-slate-500 px-2 font-medium min-w-[120px] inline-block text-center">&nbsp;</span>, 
+                श्री. <span id="previewFather" class="border-b border-dotted border-slate-500 px-2 font-medium min-w-[120px] inline-block text-center">&nbsp;</span> यांचा मुलगा वय <span id="previewAge" class="border-b border-dotted border-slate-500 px-1 font-medium min-w-[40px] inline-block text-center">&nbsp;</span> वर्षे 
+                रा. <span id="previewVillage" class="border-b border-dotted border-slate-500 px-2 font-medium min-w-[80px] inline-block text-center">&nbsp;</span> ता. <span id="previewTaluka" class="border-b border-dotted border-slate-500 px-2 font-medium min-w-[80px] inline-block text-center">&nbsp;</span> जि. <span id="previewDistrict" class="border-b border-dotted border-slate-500 px-2 font-medium min-w-[80px] inline-block text-center">&nbsp;</span> स्वघोषणापत्र लिहून देतो की,<br><br>
+                
+                मी श्री. <span id="previewApplicant2" class="border-b border-dotted border-slate-500 px-2 font-medium min-w-[100px] inline-block text-center">&nbsp;</span>, रा. <span id="previewVillage2" class="border-b border-dotted border-slate-500 px-2 font-medium min-w-[80px] inline-block text-center">&nbsp;</span> या गावाचा रहिवासी असून मी <span id="previewWorkType" class="border-b border-dotted border-slate-500 px-2 font-medium">बांधकाम कामगार</span> हे काम करतो. मी <span id="previewWorkTypeSub" class="border-b border-dotted border-slate-500 px-2 font-medium">बांधकाम कामगार</span> असून मी सन <span id="previewWorkYear" class="border-b border-dotted border-slate-500 px-2 font-medium min-w-[80px] inline-block text-center">&nbsp;</span> या वर्षात खालीलप्रमाणे मालकांकडे <span id="previewWorkTypeSub2" class="border-b border-dotted border-slate-500 px-2 font-medium">बांधकाम कामगार</span> म्हणून काम केलेले आहे. त्याचा तपशील पुढील प्रमाणे आहे.
+            </div>
+
+            <!-- Table -->
+            <div class="my-6 overflow-x-auto">
+                <table class="w-full border-collapse border border-slate-400 text-sm md:text-base text-center">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-900">
+                            <th class="border border-slate-400 p-2 w-16">अ.क्र</th>
+                            <th class="border border-slate-400 p-2">मालकाचे नाव व पत्ता</th>
+                            <th class="border border-slate-400 p-2">काम केल्याचा कालावधी<br><span class="text-xs font-normal">(दिनांक पासुन - पर्यंत)</span></th>
+                            <th class="border border-slate-400 p-2 w-36">कामाचे एकुण दिवस</th>
+                        </tr>
+                    </thead>
+                    <tbody id="previewTableBody">
+                        <!-- Populated dynamically via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paragraph 2 -->
+            <div class="mt-6 text-base md:text-lg leading-loose">
+                वरील प्रमाणे मालकाकडे सुरु असलेल्या कामापैकी मी <span id="previewWorkType3" class="border-b border-dotted border-slate-500 px-2 font-medium">बांधकाम कामगार</span> म्हणून काम केलेले आहे. हे अगदी सत्य व बरोबर आहे. सदरचे स्वघोषणापत्र मी ग्रामपंचायतीकडून <span id="previewWorkType4" class="border-b border-dotted border-slate-500 px-2 font-medium">बांधकाम कामगार</span> असल्याबाबतचे प्रमाणपत्र मिळवूनकामी सादर करीत असून त्यात दिलेली माहिती ही सत्य व बरोबर आहे.<br><br>
+                
+                वर नमूद केलेली माहिती खोटा किंवा लबाडीची आढळल्यास मी भारतीय दंड संहिता कलम १९९ व २०० अन्वे होणाऱ्या शिक्षेस मी पात्र राहीन म्हणून मनावर कोणतेही दपण किंवा दबाब नसताना लिहून दिले स्वघोषणापत्र.
+            </div>
+
+            <!-- Signature Section -->
+            <div class="mt-16 flex justify-end">
+                <div class="text-center">
+                    <div class="h-12"></div>
+                    <p class="font-medium">सही/-</p>
+                    <p id="previewSignName" class="text-sm font-semibold mt-1">&nbsp;</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Toggle Dark Mode Function
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Check local storage for theme
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // Number to Marathi digits mapping helper
+        function toMarathiDigits(num) {
+            if (num === '' || num === null || isNaN(num)) return '';
+            const englishToMarathi = {
+                '0': '०', '1': '१', '2': '२', '3': '३', '4': '४',
+                '5': '५', '6': '६', '7': '७', '8': '८', '9': '९'
+            };
+            return num.toString().split('').map(char => englishToMarathi[char] || char).join('');
+        }
+
+        // Format Date from YYYY-MM-DD to DD/MM/YYYY with Marathi Digits
+        function formatMarathiDate(dateString) {
+            if (!dateString) return '';
+            const parts = dateString.split('-');
+            if (parts.length !== 3) return dateString;
+            const day = toMarathiDigits(parts[2]);
+            const month = toMarathiDigits(parts[1]);
+            const year = toMarathiDigits(parts[0]);
+            return `${day}/${month}/${year}`;
+        }
+
+        function calculateDays(element) {
+            const row = element.closest('.row-item');
+            const startDateInput = row.querySelector('.row-start-date').value;
+            const endDateInput = row.querySelector('.row-end-date').value;
+            const daysInput = row.querySelector('.row-days');
+
+            if (startDateInput && endDateInput) {
+                const start = new Date(startDateInput);
+                const end = new Date(endDateInput);
+                const diffTime = end - start;
+                if (diffTime >= 0) {
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1; // inclusive of both days
+                    daysInput.value = diffDays;
+                } else {
+                    daysInput.value = '०';
+                }
+            } else {
+                daysInput.value = '';
+            }
+        }
+
+        function addRow() {
+            const container = document.getElementById('rowsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = "grid grid-cols-1 md:grid-cols-12 gap-3 items-end bg-slate-50 dark:bg-slate-900 p-3 rounded-lg border dark:border-slate-700 row-item";
+            newRow.innerHTML = `
+                <div class="md:col-span-5">
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">मालकाचे नाव व पत्ता</label>
+                    <input type="text" class="row-owner w-full px-3 py-2 border dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm" placeholder="मालकाचे नाव व पत्ता" value="" oninput="updateLetter()">
+                </div>
+                <div class="md:col-span-3">
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">सुरुवात तारीख</label>
+                    <input type="date" class="row-start-date w-full px-3 py-2 border dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm" value="" onchange="calculateDays(this); updateLetter()">
+                </div>
+                <div class="md:col-span-3">
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">शेवट तारीख</label>
+                    <input type="date" class="row-end-date w-full px-3 py-2 border dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm" value="" onchange="calculateDays(this); updateLetter()">
+                </div>
+                <div class="md:col-span-1 flex items-end gap-1">
+                    <div class="w-full">
+                        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">दिवस</label>
+                        <input type="text" class="row-days w-full px-2 py-2 border dark:border-slate-600 rounded bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold text-center" readonly value="">
+                    </div>
+                    <button type="button" onclick="this.closest('.row-item').remove(); updateLetter();" class="bg-red-500 hover:bg-red-600 text-white h-[38px] px-2 rounded text-xs" title="ओळ हटवा">✕</button>
+                </div>
+            `;
+            container.appendChild(newRow);
+            updateLetter();
+        }
+
+        function updateLetter() {
+            // Get values from inputs
+            const applicantName = document.getElementById('applicantName').value;
+            const fatherName = document.getElementById('fatherName').value;
+            const ageRaw = document.getElementById('age').value;
+            const age = ageRaw ? toMarathiDigits(ageRaw) : '';
+            const village = document.getElementById('village').value;
+            const taluka = document.getElementById('taluka').value;
+            const district = document.getElementById('district').value;
+            const workType = document.getElementById('workType').value;
+            const workYearRaw = document.getElementById('workYear').value;
+            const workYear = workYearRaw ? toMarathiDigits(workYearRaw) : '';
+
+            // Bind values to preview elements
+            document.getElementById('previewApplicant').innerText = applicantName || '..................';
+            document.getElementById('previewApplicant2').innerText = applicantName || '..................';
+            document.getElementById('previewSignName').innerText = applicantName;
+            document.getElementById('previewFather').innerText = fatherName || '..................';
+            document.getElementById('previewAge').innerText = age || '...';
+            document.getElementById('previewVillage').innerText = village || '..........';
+            document.getElementById('previewVillage2').innerText = village || '..........';
+            document.getElementById('previewTaluka').innerText = taluka || '..........';
+            document.getElementById('previewDistrict').innerText = district || '..........';
+            
+            document.getElementById('previewWorkType').innerText = workType || 'बांधकाम कामगार';
+            document.getElementById('previewWorkTypeSub').innerText = workType || 'बांधकाम कामगार';
+            document.getElementById('previewWorkTypeSub2').innerText = workType || 'बांधकाम कामगार';
+            document.getElementById('previewWorkType3').innerText = workType || 'बांधकाम कामगार';
+            document.getElementById('previewWorkType4').innerText = workType || 'बांधकाम कामगार';
+            document.getElementById('previewWorkYear').innerText = workYear || '............';
+
+            // Update table rows
+            const ownerInputs = document.querySelectorAll('.row-owner');
+            const startDateInputs = document.querySelectorAll('.row-start-date');
+            const endDateInputs = document.querySelectorAll('.row-end-date');
+            const daysInputs = document.querySelectorAll('.row-days');
+            
+            let tableHTML = '';
+            for(let i = 0; i < ownerInputs.length; i++) {
+                const startFormatted = formatMarathiDate(startDateInputs[i].value);
+                const endFormatted = formatMarathiDate(endDateInputs[i].value);
+                const periodText = (startFormatted && endFormatted) ? `${startFormatted} ते ${endFormatted}` : '';
+                const daysVal = daysInputs[i].value ? toMarathiDigits(daysInputs[i].value) : '';
+                
+                tableHTML += `
+                    <tr>
+                        <td class="border border-slate-400 p-2">${toMarathiDigits(i + 1)}</td>
+                        <td class="border border-slate-400 p-2 text-left">${ownerInputs[i].value || '&nbsp;'}</td>
+                        <td class="border border-slate-400 p-2">${periodText || '&nbsp;'}</td>
+                        <td class="border border-slate-400 p-2">${daysVal || '&nbsp;'}</td>
+                    </tr>
+                `;
+            }
+            document.getElementById('previewTableBody').innerHTML = tableHTML;
+        }
+
+        // Initial call on load
+        window.onload = function() {
+            updateLetter();
+        };
+    </script>
+</body>
+</html>

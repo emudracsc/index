@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>बांधकाम कामगार ९० दिवस काम केल्याचे प्रमाणपत्र</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+        @media print {
+            @page { size: A4 portrait; margin: 10mm 10mm; }
+            .no-print { display: none !important; }
+            body { background-color: white !important; padding: 0 !important; margin: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .print-container { box-shadow: none !important; border: none !important; margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+            input, textarea, select { border: none !important; border-bottom: 1px dotted #64748b !important; background: transparent !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; color: #000 !important; -webkit-appearance: none; appearance: none; }
+            input::placeholder, textarea::placeholder { color: transparent !important; }
+            select { background-image: none !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen py-2 px-2 sm:px-4">
+
+    <div class="max-w-[800px] mx-auto bg-white rounded-xl shadow-2xl border border-slate-300 print-container p-4 relative">
+
+        <div class="no-print flex flex-wrap justify-between items-center mb-3 pb-2 border-b border-slate-200 gap-4">
+            <div>
+                <h1 class="text-sm sm:text-base font-bold text-slate-800">ग्रामपंचायत ९० दिवस प्रमाणपत्र (अचूक प्रिंट लेआउट)</h1>
+                <p class="text-[11px] text-slate-500">माहिती फॉर्ममधून आपोआप घेतली जाईल. प्रिंट किंवा PDF म्हणून जतन करा.</p>
+            </div>
+            <div class="flex gap-2">
+                <button type="button" onclick="resetForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-medium px-3 py-1.5 rounded-lg shadow transition">
+                    रीसेट
+                </button>
+                <button type="button" onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    प्रिन्ट / PDF
+                </button>
+            </div>
+        </div>
+
+        <form id="certificateForm">
+            
+            <div class="text-center mb-2">
+                <p class="font-bold text-slate-900 text-[15px] sm:text-[16px] leading-tight mb-1">
+                    <select id="officeTypeTitle" onchange="syncOfficeType(this.value)" class="font-bold text-slate-900 bg-transparent focus:outline-none print:border-none cursor-pointer appearance-none text-center inline-block w-auto">
+                        <option value="ग्रामपंचायत">ग्रामपंचायत</option>
+                        <option value="महानगरपालिका">महानगरपालिका</option>
+                        <option value="नगरपंचायत">नगरपंचायत</option>
+                        <option value="नगरपालिका">नगरपालिका</option>
+                        <option value="नगरपरिषद">नगरपरिषद</option>
+                    </select> यांच्या मार्फत बांधकाम कामगारास
+                </p>
+                <p class="font-bold text-slate-900 text-[15px] sm:text-[16px] leading-tight">
+                    मागील वर्षात ९० दिवस किंवा अधिक दिवस काम केल्याचे प्रमाणपत्र
+                </p>
+            </div>
+
+            <div class="flex justify-between items-end mb-1 px-1">
+                <div class="flex items-end gap-1">
+                    <span class="font-bold text-slate-900 text-[13px] whitespace-nowrap">जावक क्रमांक :</span>
+                    <input type="text" id="print_outwardNumber" class="w-32 border-b border-slate-500 bg-transparent px-1 focus:outline-none text-[13px] font-medium leading-none">
+                </div>
+                <div class="flex items-end gap-1">
+                    <span class="font-bold text-slate-900 text-[13px] whitespace-nowrap">जावक दिनांक :</span>
+                    <input type="date" id="print_outwardDate" class="w-32 border-b border-slate-500 bg-transparent px-1 focus:outline-none text-[13px] font-medium leading-none">
+                </div>
+            </div>
+
+            <div class="flex justify-between items-start mb-2 mt-2 w-full gap-2">
+                <div class="flex-1"></div>
+                <div class="w-[100px] h-[130px] border-[1.5px] border-slate-800 flex flex-col items-center justify-center text-center p-1 relative bg-white overflow-hidden cursor-pointer shrink-0 ml-auto mr-1" onclick="document.getElementById('photoInput').click()">
+                    <img id="photoPreview" class="absolute inset-0 w-full h-full object-cover hidden">
+                    <span class="text-[10px] text-slate-900 font-bold leading-tight mb-1">पासपोर्ट साईज फोटो</span>
+                    <span class="text-[8px] text-slate-800 font-medium leading-tight block text-center">(प्राधिकृत अधिकाऱ्यामार्फत साक्षांकित)</span>
+                    <input type="file" id="photoInput" accept="image/*" class="hidden" onchange="previewPhoto(event)">
+                </div>
+            </div>
+
+            <!-- Office Details Form -->
+            <div class="space-y-1.5 mb-2 mt-1 w-full text-[13px]">
+                <div class="flex items-end gap-1 w-full">
+                    <select id="officeTypeLabel" onchange="syncOfficeType(this.value)" class="font-bold text-slate-900 text-[13px] bg-transparent focus:outline-none print:border-none cursor-pointer appearance-none inline-block w-auto shrink-0">
+                        <option value="ग्रामपंचायत">ग्रामपंचायतीचे</option>
+                        <option value="महानगरपालिका">महानगरपालिकेचे</option>
+                        <option value="नगरपंचायत">नगरपंचायतीचे</option>
+                        <option value="नगरपालिका">नगरपालिकेचे</option>
+                        <option value="नगरपरिषद">नगरपरिषदेचे</option>
+                    </select>
+                    <span class="font-bold text-slate-900 whitespace-nowrap">नाव :</span>
+                    <input type="text" id="print_officeName" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none font-medium w-full">
+                </div>
+                <div class="flex items-end gap-1 w-full">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">अधिकाऱ्याचे नाव :</span>
+                    <input type="text" id="print_officerName" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none font-medium w-full">
+                </div>
+                <div class="flex items-end gap-2 w-full">
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">पद :</span>
+                        <input type="text" id="print_officerDesignation" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none font-medium w-full">
+                    </div>
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">तालुका :</span>
+                        <input type="text" id="print_officeTaluka" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none font-medium w-full">
+                    </div>
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">पिन कोड :</span>
+                        <input type="text" id="print_officePincode" maxlength="6" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none font-medium w-full">
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-slate-900 leading-snug text-justify mb-2 font-medium text-[12px]">
+                <p>
+                    इमारत व इतर बांधकाम कामगार (रोजगार विनियमन व सेवा शर्ती) अधिनियम, 1996 व महाराष्ट्र इमारत व इतर बांधकाम कामगार (रोजगार विनियमन व सेवा शर्ती) नियम 2007 अन्वये बांधकाम कामगार लाभार्थी म्हणून खाली नमूद बांधकाम कामगारास नाका बांधकाम कामगार म्हणून नोंदणी करण्यासाठी ९० दिवस काम केल्याचे प्रमाणपत्र देण्यात येत आहे.
+                </p>
+            </div>
+
+            <!-- Worker Details Section -->
+            <div class="space-y-1.5 pt-1 text-[13px]">
+                <div class="flex items-end gap-1 w-full">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">बांधकाम कामगारांचे नाव :</span>
+                    <input type="text" id="print_workerName" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium">
+                </div>
+
+                <div class="flex items-end gap-2 w-full">
+                    <div class="flex flex-[3] items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">कामगाराचा पत्ता :</span>
+                        <input type="text" id="print_workerAddress" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium">
+                    </div>
+                    <div class="flex flex-[1] items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">वय :</span>
+                        <input type="number" id="print_workerAge" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium text-center">
+                    </div>
+                </div>
+
+                <div class="flex items-end gap-2 w-full">
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">गाव :</span>
+                        <input type="text" id="print_workerVillage" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium">
+                    </div>
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">तालुका :</span>
+                        <input type="text" id="print_workerTaluka" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium">
+                    </div>
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">जिल्हा :</span>
+                        <input type="text" id="print_workerDistrict" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium">
+                    </div>
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">पिन कोड :</span>
+                        <input type="text" id="print_workerPincode" maxlength="6" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium text-center">
+                    </div>
+                </div>
+
+                <div class="flex items-end gap-2 w-full">
+                    <div class="flex flex-[1.5] items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">संपर्क क्रमांक :</span>
+                        <input type="tel" id="print_workerPhone" maxlength="10" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium tracking-widest text-center">
+                    </div>
+                    <div class="flex flex-[2] items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">कामाचा प्रकार/स्वरूप :</span>
+                        <input type="text" id="print_workType" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium">
+                    </div>
+                    <div class="flex flex-[1] items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">वर्ष :</span>
+                        <input type="text" id="print_workYear" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium text-center">
+                    </div>
+                </div>
+
+                <div class="flex items-end gap-1 w-full pt-1.5">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">कामगाराच्या सध्याच्या कामाचे ठिकाण व पत्ता :</span>
+                    <input type="text" id="print_currentWorkAddress" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium">
+                </div>
+
+                <div class="flex items-end gap-2 w-full">
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">गाव :</span>
+                        <input type="text" id="print_currentVillage" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium">
+                    </div>
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">तालुका :</span>
+                        <input type="text" id="print_currentTaluka" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium">
+                    </div>
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">जिल्हा :</span>
+                        <input type="text" id="print_currentDistrict" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium">
+                    </div>
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">पिन कोड :</span>
+                        <input type="text" id="print_currentPincode" maxlength="6" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium text-center">
+                    </div>
+                    <div class="flex flex-1 items-end gap-1">
+                        <span class="font-bold text-slate-900 whitespace-nowrap">दिवसाचे वेतन :</span>
+                        <input type="number" id="print_dailyWage" class="flex-1 border-b border-slate-400 bg-transparent px-1 focus:outline-none w-full font-medium text-center">
+                    </div>
+                </div>
+
+                <div class="flex items-end gap-1 w-full pt-1">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">नमुद बांधकाम कामगाराची नियुक्ती दि. :</span>
+                    <input type="date" id="print_appointmentDate" class="w-36 border-b border-slate-400 bg-transparent px-1 focus:outline-none font-medium">
+                </div>
+            </div>
+
+            <div class="space-y-1 mt-2.5">
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="font-bold text-slate-950 text-[12px]">
+                        मागील वर्षात बांधकाम कामगाराने ९० दिवस किंवा त्यापेक्षा अधिक दिवस काम केल्याचा तपशील :-
+                    </h3>
+                    <button type="button" onclick="addTableColumn()" class="no-print bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] px-2 py-0.5 rounded font-medium shadow flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        कॉलम जोडा
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto border border-slate-400">
+                    <table id="workTable" class="w-full text-left border-collapse text-[11px]">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-400 text-slate-800">
+                                <th class="p-1 border-r border-slate-400 w-6 text-center font-bold">अ.क्र.</th>
+                                <th class="p-1 border-r border-slate-400 min-w-[140px] font-bold">तपशील / माहिती</th>
+                                <th class="p-1 border-r border-slate-400 min-w-[100px] relative font-bold text-center">
+                                    <div class="flex justify-between items-center"><span>१</span><button type="button" onclick="removeColumn(this)" class="no-print text-red-500 hover:text-red-700 font-bold ml-1">×</button></div>
+                                </th>
+                                <th class="p-1 border-r border-slate-400 min-w-[100px] relative font-bold text-center">
+                                    <div class="flex justify-between items-center"><span>२</span><button type="button" onclick="removeColumn(this)" class="no-print text-red-500 hover:text-red-700 font-bold ml-1">×</button></div>
+                                </th>
+                                <th class="p-1 min-w-[100px] relative font-bold text-center">
+                                    <div class="flex justify-between items-center"><span>३</span><button type="button" onclick="removeColumn(this)" class="no-print text-red-500 hover:text-red-700 font-bold ml-1">×</button></div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-300">
+                                <td class="p-1 text-center font-bold border-r border-slate-400">१</td>
+                                <td class="p-1 font-bold text-slate-800 border-r border-slate-400">नियोक्त्याचे / ठेकेदाराचे / विकासकाचे / मालकाचे नाव</td>
+                                <td class="p-1 border-r border-slate-300"><input type="text" id="print_contractorName1" class="w-full border-b border-slate-300 p-0.5 bg-transparent font-medium"></td>
+                                <td class="p-1 border-r border-slate-300"><input type="text" class="w-full border-b border-slate-300 p-0.5 bg-transparent font-medium"></td>
+                                <td class="p-1"><input type="text" class="w-full border-b border-slate-300 p-0.5 bg-transparent font-medium"></td>
+                            </tr>
+                            <tr class="border-b border-slate-300">
+                                <td class="p-1 text-center font-bold border-r border-slate-400">२</td>
+                                <td class="p-1 font-bold text-slate-800 border-r border-slate-400">नियोक्त्याचा / ठेकेदाराचा / विकासकाचा / मालकाचा पत्ता</td>
+                                <td class="p-1 border-r border-slate-300"><textarea id="print_contractorAddress1" rows="2" class="w-full border border-slate-300 rounded p-1 bg-transparent font-medium"></textarea></td>
+                                <td class="p-1 border-r border-slate-300"><textarea rows="2" class="w-full border border-slate-300 rounded p-1 bg-transparent font-medium"></textarea></td>
+                                <td class="p-1"><textarea rows="2" class="w-full border border-slate-300 rounded p-1 bg-transparent font-medium"></textarea></td>
+                            </tr>
+                            <tr class="border-b border-slate-300">
+                                <td class="p-1 text-center font-bold border-r border-slate-400">३</td>
+                                <td class="p-1 font-bold text-slate-800 border-r border-slate-400">मोबाईल / भ्रमणध्वनी क्रमांक</td>
+                                <td class="p-1 border-r border-slate-300"><input type="tel" id="print_contractorPhone1" maxlength="10" class="w-full border-b border-slate-300 p-0.5 bg-transparent tracking-wider font-medium text-center"></td>
+                                <td class="p-1 border-r border-slate-300"><input type="tel" maxlength="10" class="w-full border-b border-slate-300 p-0.5 bg-transparent tracking-wider font-medium text-center"></td>
+                                <td class="p-1"><input type="tel" maxlength="10" class="w-full border-b border-slate-300 p-0.5 bg-transparent tracking-wider font-medium text-center"></td>
+                            </tr>
+                            <tr class="border-b border-slate-300">
+                                <td class="p-1 text-center font-bold border-r border-slate-400">४</td>
+                                <td class="p-1 font-bold text-slate-800 border-r border-slate-400">या तारखेपासून कामाचा तारखेपर्यंत कालावधी</td>
+                                <td class="p-1 border-r border-slate-300 space-y-1">
+                                    <input type="date" id="print_workStartDate1" class="w-full border border-slate-300 rounded p-0.5 text-[10px] font-medium">
+                                    <input type="date" id="print_workEndDate1" class="w-full border border-slate-300 rounded p-0.5 text-[10px] font-medium">
+                                </td>
+                                <td class="p-1 border-r border-slate-300 space-y-1">
+                                    <input type="date" class="w-full border border-slate-300 rounded p-0.5 text-[10px] font-medium">
+                                    <input type="date" class="w-full border border-slate-300 rounded p-0.5 text-[10px] font-medium">
+                                </td>
+                                <td class="p-1 space-y-1">
+                                    <input type="date" class="w-full border border-slate-300 rounded p-0.5 text-[10px] font-medium">
+                                    <input type="date" class="w-full border border-slate-300 rounded p-0.5 text-[10px] font-medium">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-1 text-center font-bold border-r border-slate-400">५</td>
+                                <td class="p-1 font-bold text-slate-800 border-r border-slate-400">नियोक्त्याची / ठेकेदाराची / विकासकाची / मालकाची सही</td>
+                                <td class="p-1 border-r border-slate-300 h-10 align-bottom text-center text-[10px] text-slate-400">स्वाक्षरी / शिक्का</td>
+                                <td class="p-1 border-r border-slate-300 h-10 align-bottom text-center text-[10px] text-slate-400">स्वाक्षरी / शिक्का</td>
+                                <td class="p-1 h-10 align-bottom text-center text-[10px] text-slate-400">स्वाक्षरी / शिक्का</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+                <div class="text-center space-y-1 w-48 mt-4">
+                    <div class="h-8 border-b border-dotted border-slate-500 flex items-end justify-center pb-1">
+                    </div>
+                    <p class="font-bold text-[12px] text-slate-900">प्राधिकृत अधिकाऱ्याची सही व शिक्का</p>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Form Data Load Logic
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedData = localStorage.getItem('gramsevakFormData');
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    
+                    const setVal = (id, val) => {
+                        const el = document.getElementById(id);
+                        if (el && val !== undefined && val !== null && val !== "") {
+                            el.value = val;
+                        }
+                    };
+
+                    setVal('print_outwardNumber', data.outwardNumber);
+                    setVal('print_outwardDate', data.outwardDate);
+                    
+                    if(data.officeType) {
+                        setVal('officeTypeTitle', data.officeType);
+                        setVal('officeTypeLabel', data.officeType);
+                    }
+
+                    setVal('print_officeName', data.officeName);
+                    setVal('print_officerName', data.officerName);
+                    setVal('print_officerDesignation', data.officerDesignation);
+                    setVal('print_officeTaluka', data.officeTaluka);
+                    setVal('print_officePincode', data.officePincode);
+                    
+                    setVal('print_workerName', data.workerName);
+                    setVal('print_workerAge', data.workerAge);
+                    setVal('print_workerAddress', data.workerAddress);
+                    setVal('print_workerVillage', data.workerVillage);
+                    setVal('print_workerTaluka', data.workerTaluka);
+                    setVal('print_workerDistrict', data.workerDistrict);
+                    setVal('print_workerPincode', data.workerPincode);
+                    setVal('print_workerPhone', data.workerPhone);
+                    
+                    setVal('print_workType', data.workType);
+                    setVal('print_workYear', data.workYear);
+                    setVal('print_currentWorkAddress', data.currentWorkAddress);
+                    setVal('print_currentVillage', data.currentVillage);
+                    setVal('print_currentTaluka', data.currentTaluka);
+                    setVal('print_currentDistrict', data.currentDistrict);
+                    setVal('print_currentPincode', data.currentPincode);
+                    setVal('print_dailyWage', data.dailyWage);
+                    setVal('print_appointmentDate', data.appointmentDate);
+
+                    setVal('print_contractorName1', data.contractorName1);
+                    setVal('print_contractorAddress1', data.contractorAddress1);
+                    setVal('print_contractorPhone1', data.contractorPhone1);
+                    setVal('print_workStartDate1', data.workStartDate1);
+                    setVal('print_workEndDate1', data.workEndDate1);
+
+                    // Load Photo
+                    if (data.workerPhotoUrl) {
+                        const img = document.getElementById('photoPreview');
+                        if(img) {
+                            img.src = data.workerPhotoUrl;
+                            img.classList.remove('hidden');
+                        }
+                    }
+
+                } catch(e) {
+                    console.error("Error parsing saved data:", e);
+                }
+            }
+        });
+
+        // Other utility functions
+        function previewPhoto(event) {
+            if(event.target.files && event.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(){
+                    const output = document.getElementById('photoPreview');
+                    output.src = reader.result;
+                    output.classList.remove('hidden');
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+
+        function addTableColumn() {
+            const table = document.getElementById('workTable');
+            const headerRow = table.rows[0];
+            const colCount = headerRow.cells.length - 2;
+            
+            const th = document.createElement('th');
+            th.className = 'p-1 border-r border-slate-400 min-w-[100px] relative font-bold text-center';
+            th.innerHTML = `<div class="flex justify-between items-center"><span>${colCount + 1}</span><button type="button" onclick="removeColumn(this)" class="no-print text-red-500 hover:text-red-700 font-bold ml-1">×</button></div>`;
+            headerRow.appendChild(th);
+
+            const r1 = table.rows[1];
+            const c1 = r1.insertCell();
+            c1.className = 'p-1 border-r border-slate-300';
+            c1.innerHTML = `<input type="text" class="w-full border-b border-slate-300 p-0.5 bg-transparent font-medium">`;
+
+            const r2 = table.rows[2];
+            const c2 = r2.insertCell();
+            c2.className = 'p-1 border-r border-slate-300';
+            c2.innerHTML = `<textarea rows="2" class="w-full border border-slate-300 rounded p-1 bg-transparent font-medium"></textarea>`;
+
+            const r3 = table.rows[3];
+            const c3 = r3.insertCell();
+            c3.className = 'p-1 border-r border-slate-300';
+            c3.innerHTML = `<input type="tel" maxlength="10" class="w-full border-b border-slate-300 p-0.5 bg-transparent tracking-wider font-medium text-center">`;
+
+            const r4 = table.rows[4];
+            const c4 = r4.insertCell();
+            c4.className = 'p-1 border-r border-slate-300 space-y-1';
+            c4.innerHTML = `<input type="date" class="w-full border border-slate-300 rounded p-0.5 text-[10px] font-medium"><input type="date" class="w-full border border-slate-300 rounded p-0.5 text-[10px] font-medium">`;
+
+            const r5 = table.rows[5];
+            const c5 = r5.insertCell();
+            c5.className = 'p-1 h-10 align-bottom text-center text-[10px] text-slate-400';
+            c5.innerText = 'स्वाक्षरी / शिक्का';
+        }
+
+        function removeColumn(btn) {
+            const th = btn.closest('th');
+            const table = document.getElementById('workTable');
+            const colIndex = Array.from(th.parentNode.children).indexOf(th);
+            
+            if (table.rows[0].cells.length <= 4) return;
+
+            for (let i = 0; i < table.rows.length; i++) {
+                table.rows[i].deleteCell(colIndex);
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('certificateForm').reset();
+            document.getElementById('photoPreview').classList.add('hidden');
+            localStorage.removeItem('gramsevakFormData'); // Clear saved data on reset
+        }
+
+        function syncOfficeType(val) {
+            const title = document.getElementById('officeTypeTitle');
+            const label = document.getElementById('officeTypeLabel');
+            if(title) title.value = val;
+            if(label) label.value = val;
+        }
+    </script>
+</body>
+</html>

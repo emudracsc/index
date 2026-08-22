@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <title>Printable Round Lunch Tokens | सेतु सुविधा केंद्र</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        @page { size: A4; margin: 15mm; }
+        body { font-family: 'Poppins', Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .control-panel { background-color: #ffffff; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .control-group { display: inline-block; margin: 0 10px; }
+        .control-panel label { font-size: 15px; font-weight: 600; margin-right: 8px; }
+        .control-panel input { font-family: 'Poppins', sans-serif; padding: 6px; font-size: 15px; border: 1px solid #ccc; border-radius: 4px; }
+        .control-panel input[type="number"] { width: 80px; }
+        .control-panel input[type="text"] { width: 140px; }
+        .btn-generate { font-family: 'Poppins', sans-serif; padding: 7px 15px; font-size: 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .btn-generate:hover { background-color: #218838; }
+        .print-container { background-color: #fff; }
+        .page { width: 180mm; height: 260mm; page-break-after: always; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); gap: 15mm; justify-items: center; align-items: center; box-sizing: border-box; background: #fff; margin: 0 auto; }
+        .page:last-child { page-break-after: avoid; }
+        .token { width: 35mm; height: 35mm; border: 2px solid #000000; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #fff; box-shadow: 0 0 0 1px #ccc; box-sizing: border-box; padding: 2px; }
+        .heading-display { font-size: 11pt; font-weight: 600; color: #000; text-transform: uppercase; margin-bottom: -2px; }
+        .number { font-size: 32pt; font-weight: 900; color: #000; line-height: 0.95; margin-bottom: 2px; letter-spacing: -1px; }
+        .date-display { font-size: 10pt; font-weight: 600; color: #222; }
+        @media print { .control-panel { display: none; } body { background-color: #fff; } .page { margin: 0; } }
+    </style>
+</head>
+<body>
+<div class="control-panel">
+    <div class="control-group"><label>टोकन नाव:</label><input type="text" id="tokenHeading" value="प्रतिज्ञा पत्र"></div>
+    <div class="control-group"><label>तारीख:</label><input type="date" id="tokenDate"></div>
+    <div class="control-group"><label>पासून:</label><input type="number" id="startRange" value="1"></div>
+    <div class="control-group"><label>पर्यंत:</label><input type="number" id="endRange" value="100"></div>
+    <button class="btn-generate" onclick="generateTokens()">टोकन जनरेट करा</button>
+</div>
+<div class="print-container" id="tokenContainer"></div>
+<script>
+    let today = new Date();
+    document.getElementById('tokenDate').value = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+    generateTokens();
+    
+    function generateTokens() {
+        let headingValue = document.getElementById('tokenHeading').value || "टोकन";
+        let start = parseInt(document.getElementById('startRange').value) || 1;
+        let end = parseInt(document.getElementById('endRange').value) || 100;
+        let dateValue = document.getElementById('tokenDate').value;
+        let formattedDate = "";
+        if (dateValue) { let d = dateValue.split('-'); formattedDate = d[2]+'/'+d[1]+'/'+d[0]; }
+        let container = document.getElementById('tokenContainer'); container.innerHTML = "";
+        let tokensPerPage = 20, currentCount = 0, pageDiv = null;
+        for (let j = start; j <= end; j++) {
+            if (currentCount % tokensPerPage === 0) { pageDiv = document.createElement('div'); pageDiv.className = 'page'; container.appendChild(pageDiv); }
+            let tokenDiv = document.createElement('div'); tokenDiv.className = 'token';
+            let headDiv = document.createElement('div'); headDiv.className = 'heading-display'; headDiv.innerText = headingValue;
+            let numDiv = document.createElement('div'); numDiv.className = 'number'; numDiv.innerText = j;
+            let dateDiv = document.createElement('div'); dateDiv.className = 'date-display'; dateDiv.innerText = formattedDate;
+            tokenDiv.appendChild(headDiv); tokenDiv.appendChild(numDiv); tokenDiv.appendChild(dateDiv); pageDiv.appendChild(tokenDiv);
+            currentCount++;
+        }
+    }
+</script>
+</body>
+</html>
