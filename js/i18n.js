@@ -6,7 +6,7 @@ const I18N_DATA = {
   mr: {
     // Header & Brand
     portal_dept: "महाराष्ट्र शासन • महसूल व वन विभाग",
-    portal_sub: "उपविभागीय अधिकारी कार्यालय संलग्न • अधिकृत डिजिटल सेवा केंद्र",
+    portal_sub: "अधिकृत डिजिटल सेवा केंद्र",
     portal_title: "ई-मुद्रा सीएससी व आपले सरकार केंद्र",
     portal_tagline: "पारदर्शक, गतिमान आणि सुरक्षित ई-नागरिक सेवा दालन",
     reg_id: "केंद्र नोंदणी क्र:",
@@ -198,7 +198,7 @@ const I18N_DATA = {
   en: {
     // Header & Brand
     portal_dept: "Government of Maharashtra • Revenue & Forest Department",
-    portal_sub: "Sub-Divisional Officer (SDO) Office Affiliated • Authorized Digital Seva Center",
+    portal_sub: "Authorized Digital Seva Center",
     portal_title: "eMudra CSC & Aaple Sarkar Center",
     portal_tagline: "Transparent, Swift & Secure Citizen e-Services Portal",
     reg_id: "Center Reg ID:",
