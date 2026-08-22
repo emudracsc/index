@@ -1,0 +1,149 @@
+/* ==========================================================================
+   Print Stylesheet for eMudra CSC Official Acknowledgment Receipt & Slips
+   ========================================================================== */
+
+@media print {
+  /* Hide all non-printable portal components */
+  body * {
+    visibility: hidden;
+  }
+
+  .top-accessibility-bar,
+  .portal-header,
+  .main-navbar,
+  .flash-ticker-bar,
+  .hero-section,
+  .stats-bar-section,
+  .services-section,
+  .webapp-section,
+  .charter-section,
+  .contact-section,
+  .portal-footer,
+  .floating-whatsapp,
+  .toast-container,
+  .modal-overlay:not(.print-active) {
+    display: none !important;
+  }
+
+  /* Make print container visible */
+  #printable-receipt-area,
+  #printable-receipt-area * {
+    visibility: visible;
+  }
+
+  #printable-receipt-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background: #ffffff;
+    color: #000000;
+    font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif;
+  }
+
+  .receipt-official-box {
+    border: 2px solid #000000;
+    padding: 25px;
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .receipt-header {
+    text-align: center;
+    border-bottom: 2px solid #000000;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+
+  .receipt-header h2 {
+    font-size: 18pt;
+    font-weight: 800;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .receipt-header h3 {
+    font-size: 13pt;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .receipt-header p {
+    font-size: 9.5pt;
+    color: #333333;
+  }
+
+  .receipt-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+    font-size: 10.5pt;
+  }
+
+  .receipt-meta-grid .item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #999999;
+    padding-bottom: 4px;
+  }
+
+  .receipt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+
+  .receipt-table th, .receipt-table td {
+    border: 1px solid #000000;
+    padding: 8px 12px;
+    font-size: 10pt;
+    text-align: left;
+  }
+
+  .receipt-table th {
+    background-color: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-weight: 700;
+  }
+
+  .receipt-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 40px;
+    padding-top: 20px;
+  }
+
+  .qr-barcode-box {
+    text-align: center;
+  }
+
+  .qr-barcode-box canvas {
+    border: 1px solid #000000;
+    padding: 4px;
+    background: #ffffff;
+  }
+
+  .sign-seal-box {
+    text-align: center;
+    width: 220px;
+    border-top: 1.5px solid #000000;
+    padding-top: 8px;
+    font-size: 9.5pt;
+    font-weight: 700;
+  }
+
+  .receipt-note {
+    font-size: 8.5pt;
+    margin-top: 25px;
+    text-align: center;
+    border-top: 1px solid #cccccc;
+    padding-top: 8px;
+    color: #444444;
+  }
+}
