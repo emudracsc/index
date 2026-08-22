@@ -163,7 +163,7 @@ const I18N_DATA = {
 
     // Operator Dashboard / Admin
     admin_login_title: "अधिकारी / VLE व्यवस्थापक लॉगिन",
-    admin_pin_label: "सुरक्षा पिन (Default: 1234) प्रविष्ट करा:",
+    admin_pin_label: "सुरक्षा पासवर्ड प्रविष्ट करा:",
     btn_admin_login: "डॅशबोर्ड उघडा",
     admin_dash_title: "व्यवस्थापक नियंत्रण कक्ष (VLE Admin Dashboard)",
     dash_total_apps: "एकूण प्राप्त अर्ज",
@@ -355,7 +355,7 @@ const I18N_DATA = {
 
     // Operator Dashboard / Admin
     admin_login_title: "Officer / VLE Operator Login",
-    admin_pin_label: "Enter Security PIN (Default: 1234):",
+    admin_pin_label: "Enter Security Password:",
     btn_admin_login: "Access Dashboard",
     admin_dash_title: "VLE Center Control Dashboard",
     dash_total_apps: "Total Applications",

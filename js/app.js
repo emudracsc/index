@@ -1352,13 +1352,13 @@ function initAdminDashboard() {
   loginForm?.addEventListener("submit", (e) => {
     e.preventDefault();
     const pin = document.getElementById("admin-pin-input").value;
-    if (pin === "1234" || pin === "admin") {
+    if (pin === "Mudra@123") {
       closeModal("admin-login-modal");
       renderAdminDashboard();
       switchTab("tab-admin");
       showToast(CURRENT_LANG === "mr" ? "अधिकारी लॉगिन यशस्वी!" : "Officer Login Successful!", "success");
     } else {
-      showToast(CURRENT_LANG === "mr" ? "चुकीचा सुरक्षा पिन. (Default: 1234)" : "Invalid Security PIN. (Default: 1234)", "error");
+      showToast(CURRENT_LANG === "mr" ? "चुकीचा सुरक्षा पासवर्ड." : "Invalid Security Password.", "error");
     }
   });
 
