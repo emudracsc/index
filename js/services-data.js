@@ -1094,6 +1094,28 @@ const DEFAULT_IMPORTANT_LINKS = [
     isInternal: true
   },
   {
+    id: "link-main-setu-server",
+    category: "सेतू व शासकीय सर्व्हर",
+    icon: "fa-solid fa-server",
+    title_mr: "🖥️ मेन सेतू सर्व्हर (Main Setu Server)",
+    title_en: "Main Setu Server Web App",
+    desc_mr: "अधिकृत मुख्य सेतू सर्व्हर वेब ॲप्लिकेशन लिंक.",
+    desc_en: "Official Main Setu Server Web Application Portal.",
+    url: "https://script.google.com/macros/s/AKfycbxB1OZRgrwFzv626rfAH_5pRHyZ6n5t8fTZe7jId6dQUv-66ckJ1ewKvUAfa9GGH3yd/exec",
+    isInternal: false
+  },
+  {
+    id: "link-old-server",
+    category: "सेतू व शासकीय सर्व्हर",
+    icon: "fa-solid fa-database",
+    title_mr: "🗄️ ओल्ड सर्व्हर लिंक (Old Server)",
+    title_en: "Old Setu Server Portal",
+    desc_mr: "मागील रेकॉर्ड्स व संदर्भासाठी ओल्ड सर्व्हर वेब ॲप्लिकेशन लिंक.",
+    desc_en: "Setu Old Server Web Application Portal for previous records.",
+    url: "https://script.google.com/macros/s/AKfycbzuX5jHIVLw5uHThJ3vGmZvPV7rldexEtgx1XsQGdNO-_l2w1cxTG9sK1FlkdLrm9Ma/exec",
+    isInternal: false
+  },
+  {
     id: "link-aero",
     category: "निवडणूक व मतदार सेवा",
     icon: "fa-solid fa-check-to-slot",
