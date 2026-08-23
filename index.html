@@ -177,12 +177,116 @@
 
         <!-- Official Officer & Guidance Card -->
         <div class="hero-official-card">
-          <div style="width: 100%; height: 130px; overflow: hidden; border-bottom: 2px solid #e2e8f0;">
-            <img src="Aaple Sarkar Sewa Kendra.jpg" alt="आपले सरकार सेवा केंद्र" style="width: 100%; height: 100%; object-fit: cover;">
+          <style>
+            .cinematic-slider-banner {
+              width: 100%;
+              height: 155px;
+              background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              overflow: hidden;
+              border-bottom: 2px solid #cbd5e1;
+              position: relative;
+              border-radius: 12px 12px 0 0;
+              box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
+            }
+            .cinematic-glow-bg {
+              position: absolute;
+              width: 160px;
+              height: 160px;
+              background: radial-gradient(circle, rgba(2, 132, 199, 0.18) 0%, rgba(245, 158, 11, 0.12) 50%, transparent 75%);
+              border-radius: 50%;
+              filter: blur(20px);
+              animation: ambientPulse 6s ease-in-out infinite alternate;
+              pointer-events: none;
+            }
+            @keyframes ambientPulse {
+              0% { transform: scale(0.85) translate(-10px, -5px); opacity: 0.6; }
+              100% { transform: scale(1.2) translate(10px, 5px); opacity: 1; }
+            }
+            .slide-item {
+              position: absolute;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+              height: 100%;
+              padding: 10px 20px;
+              opacity: 0;
+              transform: scale(0.92) translateY(12px);
+              animation: cinematicLogoCycle 16s infinite cubic-bezier(0.4, 0, 0.2, 1);
+              pointer-events: none;
+            }
+            .slide-item img {
+              max-width: 90%;
+              max-height: 115px;
+              object-fit: contain;
+              filter: drop-shadow(0 8px 16px rgba(15, 23, 42, 0.12));
+              transition: transform 0.4s ease;
+            }
+            .slide-item:nth-child(2) { animation-delay: 0s; }
+            .slide-item:nth-child(3) { animation-delay: 4s; }
+            .slide-item:nth-child(4) { animation-delay: 8s; }
+            .slide-item:nth-child(5) { animation-delay: 12s; }
+
+            @keyframes cinematicLogoCycle {
+              0% { opacity: 0; transform: scale(0.9) translateY(14px) filter(blur(4px)); }
+              4% { opacity: 1; transform: scale(1) translateY(0) filter(blur(0px)); }
+              21% { opacity: 1; transform: scale(1.03) translateY(0) filter(blur(0px)); }
+              25% { opacity: 0; transform: scale(1.08) translateY(-14px) filter(blur(4px)); }
+              100% { opacity: 0; }
+            }
+
+            .cinematic-badge-bar {
+              position: absolute;
+              bottom: 6px;
+              display: flex;
+              gap: 6px;
+              z-index: 5;
+            }
+            .cinematic-dot {
+              width: 6px;
+              height: 6px;
+              border-radius: 50%;
+              background: rgba(100, 116, 139, 0.35);
+              animation: dotHighlight 16s infinite;
+            }
+            .cinematic-dot:nth-child(1) { animation-delay: 0s; }
+            .cinematic-dot:nth-child(2) { animation-delay: 4s; }
+            .cinematic-dot:nth-child(3) { animation-delay: 8s; }
+            .cinematic-dot:nth-child(4) { animation-delay: 12s; }
+
+            @keyframes dotHighlight {
+              0%, 25% { background: #0284c7; transform: scale(1.4); }
+              26%, 100% { background: rgba(100, 116, 139, 0.35); transform: scale(1); }
+            }
+          </style>
+          
+          <div class="cinematic-slider-banner">
+            <div class="cinematic-glow-bg"></div>
+            <div class="slide-item">
+              <img src="images/aadhaar.svg" alt="Aadhaar Card Official Logo">
+            </div>
+            <div class="slide-item">
+              <img src="images/pan.svg" alt="Income Tax & PAN Card Logo">
+            </div>
+            <div class="slide-item">
+              <img src="images/voter.svg" alt="Election Commission Voter ID Logo">
+            </div>
+            <div class="slide-item">
+              <img src="images/mahabocw.svg" alt="Mahabocw Kamgar Kalyan Logo">
+            </div>
+            <div class="cinematic-badge-bar">
+              <div class="cinematic-dot"></div>
+              <div class="cinematic-dot"></div>
+              <div class="cinematic-dot"></div>
+              <div class="cinematic-dot"></div>
+            </div>
           </div>
           <div class="card-top-header">
             <i class="fa-solid fa-landmark-flag"></i>
-            <h3 data-i18n="officerDesignation_mr">उपविभागीय दंडाधिकारी व महसूल साहाय्यक कक्ष</h3>
+            <h3 data-i18n="officerDesignation_mr">अधिकृत ई-सेवा केंद्र</h3>
           </div>
           <div class="card-body-content">
             <div class="officer-profile-row">
@@ -190,8 +294,8 @@
                 <i class="fa-solid fa-user-tie"></i>
               </div>
               <div class="officer-details">
-                <h4>मा. उपविभागीय अधिकारी (SDO)</h4>
-                <p>उपविभाग महसूल कार्यक्षेत्र, महाराष्ट्र</p>
+                <h4>अधिकृत केंद्र संचालक</h4>
+                <p>ग्राहक सेवा कार्यक्षेत्र, महाराष्ट्र</p>
               </div>
             </div>
             <ul class="quick-guidance-list">

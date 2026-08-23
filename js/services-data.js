@@ -1136,6 +1136,50 @@ const DEFAULT_IMPORTANT_LINKS = [
     desc_en: "Voter digitization Excel import & analytics reporting engine.",
     url: "aero.html",
     isInternal: true
+  },
+  {
+    id: "link-aadhaar-certificate",
+    category: "आधार व UIDAI सेवा",
+    icon: "fa-solid fa-id-card",
+    title_mr: "🆔 आधार पत्ता प्रमाणपत्र (Aadhaar Certificate Filler)",
+    title_en: "UIDAI Aadhaar Enrolment / Address Certificate Form Filler",
+    desc_mr: "अधिकृत UIDAI फॉरमॅटमध्ये कॅपिटल बॉक्ससह पत्ता प्रमाणपत्र फॉर्म भरा व थेट A4 प्रिंट करा.",
+    desc_en: "Official UIDAI Certificate for Enrolment / Update with Capital Box Auto-Fill & A4 Print.",
+    url: "aadhaar-certificate.html",
+    isInternal: true
+  },
+  {
+    id: "link-myaadhaar",
+    category: "आधार व UIDAI सेवा",
+    icon: "fa-solid fa-globe",
+    title_mr: "🌐 myAadhaar अधिकृत पोर्टल (UIDAI Portal)",
+    title_en: "Official myAadhaar Portal - UIDAI",
+    desc_mr: "आधार डाउनलोड, पीव्हीसी कार्ड ऑर्डर, पत्ता अपडेट आणि बायोमेट्रिक लॉक/अनलॉक अधिकृत पोर्टल.",
+    desc_en: "Download Aadhaar, Order PVC Card, Address Update & Online Services.",
+    url: "https://myaadhaar.uidai.gov.in/",
+    isInternal: false
+  },
+  {
+    id: "link-aadhaar-status",
+    category: "आधार व UIDAI सेवा",
+    icon: "fa-solid fa-magnifying-glass-location",
+    title_mr: "🔍 आधार अपडेट/नोंदणी स्थिती तपासा (Check Status)",
+    title_en: "Check Aadhaar Enrolment / Update Status",
+    desc_mr: "SRN / URN किंवा एनरोलमेंट आयडी (EID) टाकून आधार अपडेटची सद्यस्थिती तपासा.",
+    desc_en: "Check current status of Aadhaar enrolment or address update request.",
+    url: "https://myaadhaar.uidai.gov.in/CheckAadhaarStatus",
+    isInternal: false
+  },
+  {
+    id: "link-aadhaar-bank-seeding",
+    category: "आधार व UIDAI सेवा",
+    icon: "fa-solid fa-building-columns",
+    title_mr: "🏦 आधार बँक खात्याशी लिंकिंग स्थिती (Bank Seeding)",
+    title_en: "Check Aadhaar Bank Account Seeding Status",
+    desc_mr: "शासकीय योजना, लाडकी बहीण, PM किसान व DBT लाभासाठी बँक लिंकिंग तपासा.",
+    desc_en: "Check NPCI & Aadhaar Bank account seeding status for DBT benefits.",
+    url: "https://myaadhaar.uidai.gov.in/bank-seeding-status",
+    isInternal: false
   }
 ];
 

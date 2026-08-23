@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>आधार फॉर्म (Direct Online Filing)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- PDF.js and PDF Viewer styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css">
+    
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.js"></script>
+    
+    <!-- PDF-Lib for flattening -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+    <style>
+        :root {
+            --primary-navy: #0b2545;
+            --primary-blue: #0284c7;
+            --gov-red: #c81e1e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mukta', 'Poppins', sans-serif;
+            background-color: #e2e8f0;
+            color: #334155;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .top-navbar {
+            background-color: var(--primary-navy);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #93c5fd;
+        }
+
+        .brand-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .page-badge {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            font-family: 'Mukta', sans-serif;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0369a1;
+        }
+
+        /* PDF Viewer Container Wrapper */
+        .pdf-wrapper {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* The container passed to pdfViewer must be absolutely positioned */
+        .pdf-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: auto;
+            background-color: #525659;
+        }
+
+        /* Customizing the viewer page to look centered like a standard viewer */
+        .pdfViewer .page {
+            margin: 20px auto;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: none;
+        }
+        
+        #loading-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-navy);
+            z-index: 50;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-navbar">
+        <a href="index.html" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            मागे जा
+        </a>
+        
+        <div class="brand-heading">
+            <i class="fa-solid fa-file-pdf" style="color: #ef4444; font-size: 1.2rem;"></i>
+            <span>आधार फॉर्म फिलर</span>
+            <span class="page-badge">ऑनलाइन भरणे</span>
+        </div>
+
+        <div class="action-group">
+            <button id="btn-download" class="btn btn-primary" onclick="downloadFlattenedPDF()">
+                <i class="fa-solid fa-download"></i>
+                Flatten & Download (PDF)
+            </button>
+        </div>
+    </nav>
+
+    <div class="pdf-wrapper">
+        <div id="loading-overlay">PDF लोड होत आहे... कृपया थांबा.</div>
+        <div id="viewerContainer" class="pdf-container">
+            <div id="viewer" class="pdfViewer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Set worker path
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        let currentPdfDocument = null;
+        let pdfViewer = null;
+
+        async function initViewer() {
+            try {
+                const container = document.getElementById('viewerContainer');
+                
+                // Initialize the event bus
+                const eventBus = new pdfjsViewer.EventBus();
+
+                const linkService = new pdfjsViewer.PDFLinkService({
+                    eventBus: eventBus,
+                });
+
+                // Initialize the PDF Viewer
+                pdfViewer = new pdfjsViewer.PDFViewer({
+                    container: container,
+                    eventBus: eventBus,
+                    linkService: linkService,
+                    renderInteractiveForms: true // Crucial for rendering AcroForm fields
+                });
+
+                linkService.setViewer(pdfViewer);
+
+                // Auto-scale to fit page nicely
+                eventBus.on('pagesinit', function () {
+                    pdfViewer.currentScaleValue = 'page-width';
+                });
+
+                // Fetch the PDF with a cache-buster
+                const pdfUrl = 'aadhaar_original.pdf?v=' + new Date().getTime();
+                
+                // Load Document
+                const loadingTask = pdfjsLib.getDocument(pdfUrl);
+                currentPdfDocument = await loadingTask.promise;
+                
+                // Set the document in the viewer
+                pdfViewer.setDocument(currentPdfDocument);
+                linkService.setDocument(currentPdfDocument, null);
+                
+                document.getElementById('loading-overlay').style.display = 'none';
+
+            } catch (error) {
+                console.error("Error loading PDF Viewer:", error);
+                alert("PDF लोड करताना एरर आली: " + error.message);
+            }
+        }
+
+        async function downloadFlattenedPDF() {
+            const btn = document.getElementById('btn-download');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            try {
+                if (!currentPdfDocument) throw new Error("PDF not loaded yet.");
+
+                // 1. Get the filled bytes directly from pdf.js (includes user input)
+                // Note: saveDocument internally asks annotation storage for values
+                const filledPdfData = await currentPdfDocument.saveDocument();
+                
+                // 2. Load the filled bytes into pdf-lib
+                const pdfDoc = await PDFLib.PDFDocument.load(filledPdfData);
+                
+                // 3. Flatten the form (makes fields un-editable text)
+                const form = pdfDoc.getForm();
+                form.flatten();
+                
+                // 4. Save and Download the flattened PDF
+                const flattenedBytes = await pdfDoc.save();
+                const blob = new Blob([flattenedBytes], { type: 'application/pdf' });
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Aadhaar_Form_Flattened.pdf';
+                document.body.appendChild(a);
+                a.click();
+                
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+
+            } catch (error) {
+                console.error("Error flattening PDF:", error);
+                alert("PDF डाऊनलोड करताना एरर आली: " + error.message);
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-download"></i> Flatten & Download (PDF)';
+                btn.disabled = false;
+            }
+        }
+
+        // Initialize when DOM is ready
+        window.addEventListener("DOMContentLoaded", initViewer);
+    </script>
+</body>
+</html>

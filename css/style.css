@@ -174,27 +174,68 @@ button, input, select, textarea {
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 3px 10px;
-  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  border-radius: 20px;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  transition: var(--transition);
+  gap: 0.4rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  user-select: none;
 }
 
 .dark-mode-toggle-btn {
-  background: rgba(251, 191, 36, 0.15);
-  color: #fde047;
-  border: 1px solid rgba(253, 224, 71, 0.4);
-  font-weight: 600;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.3) 100%);
+  color: #fef08a;
+  border: 1px solid rgba(250, 204, 21, 0.5);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.2);
 }
 
 .dark-mode-toggle-btn:hover {
-  background: rgba(251, 191, 36, 0.3);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.35) 0%, rgba(245, 158, 11, 0.5) 100%);
   color: #ffffff;
-  border-color: #facc15;
+  border-color: #fde047;
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.4);
+}
+
+.dark-mode-toggle-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.dark-mode-toggle-btn #dark-mode-icon {
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
+  font-size: 0.95rem;
+}
+
+/* Theme Ripple Transition Wave Effect */
+.theme-ripple-wave {
+  position: fixed;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  z-index: 999999;
+  width: 180px;
+  height: 180px;
+  opacity: 0.95;
+  transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.75s ease-out;
+}
+
+.theme-ripple-wave.animate {
+  transform: translate(-50%, -50%) scale(25);
+  opacity: 0;
+}
+
+/* Smooth Global Transition when Theme switches */
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: background 0.35s ease, background-color 0.35s ease, border-color 0.35s ease, color 0.25s ease, box-shadow 0.35s ease !important;
 }
 
 .lang-toggle-btn {
@@ -2501,24 +2542,24 @@ body.dark-mode .doc-file-input {
    3D Dark Mode Theme System (Ultra-Premium Midnight Obsidian & 3D Effects)
    ========================================================================== */
 body.dark-mode {
-  --primary-navy: #0f172a;
-  --primary-dark: #020617;
-  --primary-blue: #1e293b;
+  --primary-navy: #ffffff;
+  --primary-dark: #f8fafc;
+  --primary-blue: #38bdf8;
   --primary-light: #1e293b;
-  --saffron-orange: #f97316;
-  --saffron-dark: #ea580c;
-  --saffron-light: rgba(249, 115, 22, 0.15);
-  --gov-green: #22c55e;
-  --gov-green-light: rgba(34, 197, 94, 0.15);
-  --gov-gold: #eab308;
+  --saffron-orange: #fb923c;
+  --saffron-dark: #f97316;
+  --saffron-light: rgba(249, 115, 22, 0.2);
+  --gov-green: #4ade80;
+  --gov-green-light: rgba(74, 222, 128, 0.2);
+  --gov-gold: #facc15;
   
-  --text-dark: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-light: #f8fafc;
+  --text-dark: #ffffff;
+  --text-muted: #e2e8f0;
+  --text-light: #ffffff;
   --bg-body: #060913;
   --bg-card: #0f172a;
-  --border-color: #1e293b;
-  --border-light: #151f38;
+  --border-color: #334155;
+  --border-light: #1e293b;
 
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.7);
@@ -2526,7 +2567,87 @@ body.dark-mode {
   --shadow-xl: 0 24px 45px rgba(0, 0, 0, 0.9), 0 0 35px rgba(249, 115, 22, 0.15);
   
   background-color: #060913 !important;
-  color: #f8fafc !important;
+  color: #ffffff !important;
+}
+
+/* Universal Bright White Text in Dark Mode */
+body.dark-mode,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode p,
+body.dark-mode label,
+body.dark-mode span,
+body.dark-mode li,
+body.dark-mode strong,
+body.dark-mode b,
+body.dark-mode em,
+body.dark-mode small,
+body.dark-mode div,
+body.dark-mode th,
+body.dark-mode td,
+body.dark-mode table,
+body.dark-mode form,
+body.dark-mode legend {
+  color: #ffffff;
+}
+
+/* Force override any dark inline styles in Dark Mode */
+body.dark-mode [style*="color: var(--primary-navy)"],
+body.dark-mode [style*="color:var(--primary-navy)"],
+body.dark-mode [style*="color: var(--text-muted)"],
+body.dark-mode [style*="color:var(--text-muted)"],
+body.dark-mode [style*="color: #0f172a"],
+body.dark-mode [style*="color: #1e293b"],
+body.dark-mode [style*="color: #334155"],
+body.dark-mode [style*="color: #475569"],
+body.dark-mode [style*="color: #64748b"],
+body.dark-mode [style*="color: #94a3b8"],
+body.dark-mode [style*="color: #1f2937"],
+body.dark-mode [style*="color: #111827"] {
+  color: #ffffff !important;
+}
+
+/* Ensure all labels, descriptions, and hint texts are pure white */
+body.dark-mode .section-header p,
+body.dark-mode .tagline,
+body.dark-mode .hero-p,
+body.dark-mode .form-group label,
+body.dark-mode .doc-title,
+body.dark-mode .stat-meta .label,
+body.dark-mode .service-card p,
+body.dark-mode .service-card .card-desc,
+body.dark-mode .faq-answer p,
+body.dark-mode .charter-item p,
+body.dark-mode .quick-guidance-list li span,
+body.dark-mode .officer-details p,
+body.dark-mode .officer-details h4,
+body.dark-mode .card-top-header h3,
+body.dark-mode .app-form-grid label,
+body.dark-mode .doc-upload-hint,
+body.dark-mode .form-check-group label,
+body.dark-mode .helpline-box .label,
+body.dark-mode .helpline-box .num,
+body.dark-mode .vle-name,
+body.dark-mode .reg-no,
+body.dark-mode .dept-badge span,
+body.dark-mode .live-time-chip,
+body.dark-mode .doc-viewer-meta {
+  color: #ffffff !important;
+}
+
+body.dark-mode .stat-box .number {
+  color: #ffffff !important;
+}
+
+body.dark-mode .doc-viewer-title-box h3,
+body.dark-mode .doc-viewer-header,
+body.dark-mode .doc-viewer-card {
+  background: #0f172a !important;
+  color: #ffffff !important;
 }
 
 /* 1. Header & Navigation */
@@ -2584,15 +2705,32 @@ body.dark-mode .hero-section {
 
 body.dark-mode .hero-official-card {
   background: #0f172a !important;
-  border: 1px solid #1e293b !important;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(249, 115, 22, 0.12) !important;
-  transform: perspective(1000px) rotateY(-1deg);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85), 0 0 30px rgba(56, 189, 248, 0.15) !important;
+  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
 body.dark-mode .hero-official-card:hover {
-  transform: perspective(1000px) rotateY(0deg) translateY(-6px);
-  box-shadow: 0 25px 55px rgba(0, 0, 0, 0.9), 0 0 35px rgba(249, 115, 22, 0.2) !important;
+  transform: translateY(-6px);
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  box-shadow: 0 25px 55px rgba(0, 0, 0, 0.95), 0 0 40px rgba(56, 189, 248, 0.25) !important;
+}
+
+body.dark-mode .cinematic-slider-banner {
+  background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%) !important;
+  border-bottom: 2px solid #1e293b !important;
+  box-shadow: inset 0 2px 15px rgba(0, 0, 0, 0.7) !important;
+}
+
+body.dark-mode .cinematic-slider-banner .slide-item img {
+  background: rgba(255, 255, 255, 0.96);
+  padding: 8px 18px;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.35), 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-mode .cinematic-dot {
+  background: rgba(255, 255, 255, 0.2) !important;
 }
 
 body.dark-mode .hero-official-card .card-body-content {

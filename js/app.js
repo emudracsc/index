@@ -110,23 +110,40 @@ function initAccessibility() {
 }
 
 /**
- * Dark Mode Theme Controller with persistence & smooth UI feedback
+ * Advanced Dark/Light Mode Theme Controller with Radial Ripple & Smooth Transitions
  */
 function initDarkMode() {
   const toggleBtn = document.getElementById("dark-mode-toggle");
   const savedTheme = localStorage.getItem("emudra_theme");
   const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
   
+  // Apply initial theme without transitions to prevent flash
   if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
-    applyTheme("dark", false);
+    applyTheme("dark", false, null);
   } else {
-    applyTheme("light", false);
+    applyTheme("light", false, null);
   }
 
-  toggleBtn?.addEventListener("click", () => {
+  // OS theme change listener
+  if (window.matchMedia) {
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+      if (!localStorage.getItem("emudra_theme")) {
+        applyTheme(e.matches ? "dark" : "light", true, null);
+      }
+    });
+  }
+
+  toggleBtn?.addEventListener("click", (e) => {
     const isDark = document.body.classList.contains("dark-mode");
     const nextTheme = isDark ? "light" : "dark";
-    applyTheme(nextTheme, true);
+    
+    // Create animated ripple origin from click coordinates
+    const rect = toggleBtn.getBoundingClientRect();
+    const x = e.clientX || rect.left + rect.width / 2;
+    const y = e.clientY || rect.top + rect.height / 2;
+    
+    triggerThemeRipple(x, y, nextTheme);
+    applyTheme(nextTheme, true, { x, y });
   });
 
   window.addEventListener("languageChanged", () => {
@@ -134,21 +151,50 @@ function initDarkMode() {
   });
 }
 
-function applyTheme(theme, showNotice = false) {
+function triggerThemeRipple(x, y, nextTheme) {
+  const ripple = document.createElement("div");
+  ripple.className = "theme-ripple-wave";
+  ripple.style.left = `${x}px`;
+  ripple.style.top = `${y}px`;
+  ripple.style.background = nextTheme === "dark" 
+    ? "radial-gradient(circle, rgba(15, 23, 42, 0.95) 0%, rgba(7, 11, 20, 1) 100%)" 
+    : "radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 1) 100%)";
+  document.body.appendChild(ripple);
+
+  // Trigger animation
+  requestAnimationFrame(() => {
+    ripple.classList.add("animate");
+  });
+
+  setTimeout(() => {
+    ripple.remove();
+  }, 750);
+}
+
+function applyTheme(theme, showNotice = false, origin = null) {
   const isDark = theme === "dark";
+  
+  // Enable smooth transition class
+  document.documentElement.classList.add("theme-transitioning");
+  
   if (isDark) {
     document.body.classList.add("dark-mode");
   } else {
     document.body.classList.remove("dark-mode");
   }
+  
   localStorage.setItem("emudra_theme", theme);
   updateDarkModeBtnUi(isDark);
+
+  setTimeout(() => {
+    document.documentElement.classList.remove("theme-transitioning");
+  }, 400);
 
   if (showNotice) {
     const isMr = CURRENT_LANG === "mr";
     const msg = isDark 
-      ? (isMr ? "🌙 डार्क मोड सुरू केला." : "🌙 Dark Mode activated.") 
-      : (isMr ? "☀️ लाईट मोड सुरू केला." : "☀️ Light Mode activated.");
+      ? (isMr ? "🌙 आधुनिक डार्क मोड सुरू केला." : "🌙 Advanced Dark Mode activated.") 
+      : (isMr ? "☀️ क्लासिक लाईट मोड सुरू केला." : "☀️ Classic Light Mode activated.");
     showToast(msg, "info");
   }
 }
@@ -161,7 +207,7 @@ function updateDarkModeBtnUi(isDark) {
 
   if (icon) {
     icon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
-    icon.style.color = isDark ? "#facc15" : "#fde047";
+    icon.style.transform = isDark ? "rotate(180deg) scale(1.15)" : "rotate(0deg) scale(1)";
   }
   if (text) {
     text.textContent = isDark 
@@ -169,9 +215,10 @@ function updateDarkModeBtnUi(isDark) {
       : (isMr ? "डार्क मोड" : "Dark Mode");
   }
   if (btn) {
+    btn.setAttribute("data-theme", isDark ? "dark" : "light");
     btn.title = isDark 
-      ? (isMr ? "लाईट मोडवर स्विच करा" : "Switch to Light Mode") 
-      : (isMr ? "डार्क मोडवर स्विच करा" : "Switch to Dark Mode");
+      ? (isMr ? "लाईट मोडवर स्विच करा (Alt+T)" : "Switch to Light Mode") 
+      : (isMr ? "डार्क मोडवर स्विच करा (Alt+T)" : "Switch to Dark Mode");
   }
 }
 
