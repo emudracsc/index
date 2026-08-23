@@ -637,54 +637,62 @@ button, input, select, textarea {
   font-weight: 700;
   font-size: 0.96rem;
   cursor: pointer;
-  border: none;
-  transition: var(--transition);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .btn-hero-primary {
   background: linear-gradient(135deg, var(--saffron-orange), var(--saffron-dark));
-  color: #ffffff;
-  box-shadow: 0 6px 18px rgba(255, 119, 0, 0.4);
+  color: #ffffff !important;
+  box-shadow: 0 6px 18px rgba(255, 119, 0, 0.4), 0 0 15px rgba(255, 119, 0, 0.2);
 }
 
 .btn-hero-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(255, 119, 0, 0.6);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(255, 119, 0, 0.6), 0 0 25px rgba(255, 119, 0, 0.4);
+  border-color: #fef08a;
 }
 
 .btn-hero-navy {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.25) 0%, rgba(11, 37, 69, 0.6) 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.25);
 }
 
 .btn-hero-navy:hover {
-  background: #ffffff;
-  color: var(--primary-navy);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  color: #ffffff !important;
+  transform: translateY(-3px) scale(1.02);
+  border-color: #38bdf8;
+  box-shadow: 0 10px 25px rgba(2, 132, 199, 0.5), 0 0 20px rgba(56, 189, 248, 0.35);
 }
 
 .btn-hero-green {
   background: linear-gradient(135deg, #16a34a, #15803d);
-  color: #ffffff;
+  color: #ffffff !important;
   box-shadow: 0 6px 18px rgba(22, 163, 74, 0.35);
 }
 
 .btn-hero-green:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.5);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.5), 0 0 20px rgba(34, 197, 94, 0.35);
+  border-color: #86efac;
 }
 
 .btn-hero-gold {
   background: linear-gradient(135deg, #d97706, #b45309);
-  color: #ffffff;
+  color: #ffffff !important;
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.35);
 }
 
 .btn-hero-gold:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.4);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(217, 119, 6, 0.5), 0 0 20px rgba(251, 191, 36, 0.35);
+  border-color: #fef08a;
 }
 
 /* Hero Right Card: Official Officer Notice Board */
@@ -2539,7 +2547,7 @@ body.dark-mode .doc-file-input {
 }
 
 /* ==========================================================================
-   3D Dark Mode Theme System (Ultra-Premium Midnight Obsidian & 3D Effects)
+   3D Dark Mode Theme System (Ultra-Premium Midnight Obsidian & Glamorous Glass Effects)
    ========================================================================== */
 body.dark-mode {
   --primary-navy: #ffffff;
@@ -2554,67 +2562,89 @@ body.dark-mode {
   --gov-gold: #facc15;
   
   --text-dark: #ffffff;
-  --text-muted: #e2e8f0;
+  --text-muted: #cbd5e1;
   --text-light: #ffffff;
   --bg-body: #060913;
   --bg-card: #0f172a;
-  --border-color: #334155;
-  --border-light: #1e293b;
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-light: rgba(255, 255, 255, 0.08);
 
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 16px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(249, 115, 22, 0.08);
-  --shadow-xl: 0 24px 45px rgba(0, 0, 0, 0.9), 0 0 35px rgba(249, 115, 22, 0.15);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 15px rgba(2, 132, 199, 0.1);
+  --shadow-lg: 0 16px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(249, 115, 22, 0.12);
+  --shadow-xl: 0 24px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(249, 115, 22, 0.2);
   
   background-color: #060913 !important;
   color: #ffffff !important;
 }
 
-/* Universal Bright White Text in Dark Mode */
-body.dark-mode,
+/* High-Contrast Legibility Rules in Dark Mode (No White Text on Light Badges!) */
 body.dark-mode h1,
 body.dark-mode h2,
 body.dark-mode h3,
 body.dark-mode h4,
 body.dark-mode h5,
-body.dark-mode h6,
+body.dark-mode h6 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
 body.dark-mode p,
-body.dark-mode label,
-body.dark-mode span,
-body.dark-mode li,
-body.dark-mode strong,
-body.dark-mode b,
-body.dark-mode em,
-body.dark-mode small,
-body.dark-mode div,
-body.dark-mode th,
-body.dark-mode td,
-body.dark-mode table,
-body.dark-mode form,
-body.dark-mode legend {
-  color: #ffffff;
+body.dark-mode .tagline,
+body.dark-mode .hero-p {
+  color: #cbd5e1 !important;
+}
+
+body.dark-mode label {
+  color: #f1f5f9 !important;
+  font-weight: 600;
+}
+
+/* Specific Badges and Light Elements with Dark Text for Crystal Clear Contrast */
+body.dark-mode .service-type-badge.default,
+body.dark-mode .soft-badge-pill.cat {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(56, 189, 248, 0.5) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.3) !important;
+}
+
+body.dark-mode .service-type-badge.custom,
+body.dark-mode .soft-badge-pill.os {
+  background: #d97706 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(251, 191, 36, 0.5) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 10px rgba(217, 119, 6, 0.3) !important;
+}
+
+body.dark-mode .soft-badge-pill {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+body.dark-mode .welcome-chip {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #fef08a !important;
+  border: 1px solid rgba(251, 191, 36, 0.4) !important;
 }
 
 /* Force override any dark inline styles in Dark Mode */
 body.dark-mode [style*="color: var(--primary-navy)"],
 body.dark-mode [style*="color:var(--primary-navy)"],
-body.dark-mode [style*="color: var(--text-muted)"],
-body.dark-mode [style*="color:var(--text-muted)"],
 body.dark-mode [style*="color: #0f172a"],
 body.dark-mode [style*="color: #1e293b"],
 body.dark-mode [style*="color: #334155"],
 body.dark-mode [style*="color: #475569"],
-body.dark-mode [style*="color: #64748b"],
-body.dark-mode [style*="color: #94a3b8"],
 body.dark-mode [style*="color: #1f2937"],
 body.dark-mode [style*="color: #111827"] {
   color: #ffffff !important;
 }
 
-/* Ensure all labels, descriptions, and hint texts are pure white */
+/* Ensure all labels, descriptions, and hint texts are crisp */
 body.dark-mode .section-header p,
-body.dark-mode .tagline,
-body.dark-mode .hero-p,
 body.dark-mode .form-group label,
 body.dark-mode .doc-title,
 body.dark-mode .stat-meta .label,
@@ -2636,11 +2666,12 @@ body.dark-mode .reg-no,
 body.dark-mode .dept-badge span,
 body.dark-mode .live-time-chip,
 body.dark-mode .doc-viewer-meta {
-  color: #ffffff !important;
+  color: #f1f5f9 !important;
 }
 
 body.dark-mode .stat-box .number {
   color: #ffffff !important;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
 }
 
 body.dark-mode .doc-viewer-title-box h3,
@@ -2650,15 +2681,15 @@ body.dark-mode .doc-viewer-card {
   color: #ffffff !important;
 }
 
-/* 1. Header & Navigation */
+/* 1. Header & Navigation with Glamorous Glowing Borders */
 body.dark-mode .top-accessibility-bar {
   background: #030610 !important;
-  border-bottom: 1px solid #1a2238 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 body.dark-mode .portal-header {
   background: linear-gradient(135deg, #0a1128 0%, #030712 100%) !important;
-  border-bottom: 1px solid #1a2238 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
 body.dark-mode .logo-pill {
