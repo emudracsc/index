@@ -924,13 +924,21 @@
                 <i class="fa-solid fa-users"></i> ६. समक्ष पंच तपशील (Page 8 - पंचयादी)
             </div>
             <div class="grid-inputs">
-                <div class="input-item full">
-                    <label>पंच १: नाव व पत्ता</label>
-                    <input type="text" id="m_panch1" value="" placeholder="उदा. श्री. विलास बाबुराव सावंत, रा. कणकवली" oninput="syncAllFields()">
+                <div class="input-item">
+                    <label>पंच १: संपूर्ण नाव</label>
+                    <input type="text" id="m_panch1_name" value="" placeholder="उदा. श्री. विलास बाबुराव सावंत" oninput="syncAllFields()">
                 </div>
-                <div class="input-item full">
-                    <label>पंच २: नाव व पत्ता</label>
-                    <input type="text" id="m_panch2" value="" placeholder="उदा. श्री. मारुती दत्तात्रय राणे, रा. कणकवली" oninput="syncAllFields()">
+                <div class="input-item">
+                    <label>पंच १: पत्ता / राहणार</label>
+                    <input type="text" id="m_panch1_address" value="" placeholder="उदा. कणकवली" oninput="syncAllFields()">
+                </div>
+                <div class="input-item">
+                    <label>पंच २: संपूर्ण नाव</label>
+                    <input type="text" id="m_panch2_name" value="" placeholder="उदा. श्री. मारुती दत्तात्रय राणे" oninput="syncAllFields()">
+                </div>
+                <div class="input-item">
+                    <label>पंच २: पत्ता / राहणार</label>
+                    <input type="text" id="m_panch2_address" value="" placeholder="उदा. कणकवली" oninput="syncAllFields()">
                 </div>
                 <div class="input-item">
                     <label>कुटुंबातील एकूण माणसे</label>
@@ -2188,8 +2196,24 @@
         const benRel = document.getElementById('m_beneficiary_rel').value.trim();
 
         // Panch
-        const panch1 = document.getElementById('m_panch1').value.trim();
-        const panch2 = document.getElementById('m_panch2').value.trim();
+        const panch1Name = document.getElementById('m_panch1_name').value.trim();
+        const panch1Addr = document.getElementById('m_panch1_address').value.trim();
+        let panch1Full = "";
+        if (panch1Name && panch1Addr) {
+            panch1Full = `${panch1Name}, रा. ${panch1Addr}`;
+        } else if (panch1Name) {
+            panch1Full = panch1Name;
+        }
+
+        const panch2Name = document.getElementById('m_panch2_name').value.trim();
+        const panch2Addr = document.getElementById('m_panch2_address').value.trim();
+        let panch2Full = "";
+        if (panch2Name && panch2Addr) {
+            panch2Full = `${panch2Name}, रा. ${panch2Addr}`;
+        } else if (panch2Name) {
+            panch2Full = panch2Name;
+        }
+
         const famCount = document.getElementById('m_fam_count').value.trim();
         const earnersCount = document.getElementById('m_earners_count').value.trim();
 
@@ -2320,8 +2344,8 @@
         document.getElementById('p8_ben_name').innerHTML = benName ? benName : `<span class="empty-line" style="min-width:140px;"></span>`;
         document.getElementById('p8_purpose').innerHTML = purpose ? purpose : `<span class="empty-line" style="min-width:140px;"></span>`;
         document.getElementById('p8_date').innerText = dateFormatted;
-        document.getElementById('p8_panch1_display').innerHTML = panch1 ? panch1 : `<span class="empty-long" style="min-width:280px;"></span>`;
-        document.getElementById('p8_panch2_display').innerHTML = panch2 ? panch2 : `<span class="empty-long" style="min-width:280px;"></span>`;
+        document.getElementById('p8_panch1_display').innerHTML = panch1Full ? panch1Full : `<span class="empty-long" style="min-width:280px;"></span>`;
+        document.getElementById('p8_panch2_display').innerHTML = panch2Full ? panch2Full : `<span class="empty-long" style="min-width:280px;"></span>`;
 
         // --- PAGE 9 SYNC ---
         document.getElementById('p9_name').innerHTML = name ? name : `<span class="empty-line" style="min-width:140px;"></span>`;
@@ -2389,8 +2413,10 @@
         document.getElementById('m_beneficiary_name').value = "अमित सुरेश पाटील";
         document.getElementById('m_beneficiary_rel').value = "मुलगा";
 
-        document.getElementById('m_panch1').value = "श्री. विलास बाबुराव सावंत, रा. कणकवली";
-        document.getElementById('m_panch2').value = "श्री. मारुती दत्तात्रय राणे, रा. कणकवली";
+        document.getElementById('m_panch1_name').value = "श्री. विलास बाबुराव सावंत";
+        document.getElementById('m_panch1_address').value = "कणकवली";
+        document.getElementById('m_panch2_name').value = "श्री. मारुती दत्तात्रय राणे";
+        document.getElementById('m_panch2_address').value = "कणकवली";
 
         // Fill sample family rows
         const tbody = document.getElementById('masterFamilyBody');
@@ -2474,8 +2500,10 @@
         document.getElementById('m_inc_yr1').value = "";
         document.getElementById('m_inc_yr2').value = "";
         document.getElementById('m_inc_yr3').value = "";
-        document.getElementById('m_panch1').value = "";
-        document.getElementById('m_panch2').value = "";
+        document.getElementById('m_panch1_name').value = "";
+        document.getElementById('m_panch1_address').value = "";
+        document.getElementById('m_panch2_name').value = "";
+        document.getElementById('m_panch2_address').value = "";
         document.getElementById('m_fam_count').value = "";
         document.getElementById('m_earners_count').value = "";
         document.getElementById('m_beneficiary_name').value = "";
