@@ -236,13 +236,14 @@
             font-weight: 700;
         }
 
-        .interactive-table input {
+        .interactive-table input, .interactive-table select {
             width: 100%;
             padding: 3px 5px;
             border: 1px solid #e2e8f0;
             border-radius: 3px;
             font-size: 0.8rem;
             font-family: inherit;
+            background: #fff;
         }
 
         /* -------------------------------------------------------------
@@ -960,7 +961,7 @@
                     <tr>
                         <th style="width:30px;">क्र.</th>
                         <th>कुटुंबातील व्यक्तीचे नाव</th>
-                        <th style="width:100px;">नाते</th>
+                        <th style="width:130px;">नाते (Relation)</th>
                         <th style="width:60px;">वय (वर्ष)</th>
                         <th>व्यवसाय / नोकरी</th>
                         <th style="width:90px;">उत्पन्न (रु.)</th>
@@ -972,7 +973,33 @@
                     <tr>
                         <td style="text-align:center;">१</td>
                         <td><input type="text" class="f-name" placeholder="व्यक्तीचे नाव" oninput="syncFamilyToDocs()"></td>
-                        <td><input type="text" class="f-rel" placeholder="नाते" oninput="syncFamilyToDocs()"></td>
+                        <td>
+                            <select class="f-rel" onchange="syncFamilyToDocs()">
+                                <option value="">-- नाते निवडा --</option>
+                                <option value="स्वतः">स्वतः (Self)</option>
+                                <option value="पत्नी">पत्नी (Wife)</option>
+                                <option value="पती">पती (Husband)</option>
+                                <option value="मुलगा">मुलगा (Son)</option>
+                                <option value="मुलगी">मुलगी (Daughter)</option>
+                                <option value="वडील">वडील (Father)</option>
+                                <option value="आई">आई (Mother)</option>
+                                <option value="भाऊ">भाऊ (Brother)</option>
+                                <option value="बहीण">बहीण (Sister)</option>
+                                <option value="सून">सून (Daughter-in-law)</option>
+                                <option value="जावई">जावई (Son-in-law)</option>
+                                <option value="नातू">नातू (Grandson)</option>
+                                <option value="नावात">नावात (Granddaughter)</option>
+                                <option value="आजोबा">आजोबा (Grandfather)</option>
+                                <option value="आजी">आजी (Grandmother)</option>
+                                <option value="काका">काका (Uncle)</option>
+                                <option value="काकू">काकू (Aunt)</option>
+                                <option value="पुतण्या">पुतण्या (Nephew)</option>
+                                <option value="पुतणी">पुतणी (Niece)</option>
+                                <option value="भाचा">भाचा (Nephew)</option>
+                                <option value="भाची">भाची (Niece)</option>
+                                <option value="इतर">इतर (Other)</option>
+                            </select>
+                        </td>
                         <td><input type="text" class="f-age" placeholder="वय" oninput="syncFamilyToDocs()"></td>
                         <td><input type="text" class="f-job" placeholder="व्यवसाय" oninput="syncFamilyToDocs()"></td>
                         <td><input type="text" class="f-inc" placeholder="निरंक" oninput="syncFamilyToDocs()"></td>
@@ -983,16 +1010,40 @@
             </table>
         </div>
         
-        <!-- Beneficiary Display & Override -->
+        <!-- Beneficiary Display & Override with Marathi Relation Dropdown -->
         <div style="display:flex; align-items:center; gap:12px; margin-top:8px; flex-wrap:wrap; background:#e0f2fe; padding:6px 12px; border-radius:6px; border:1px solid #bae6fd;">
             <span style="font-weight:700; font-size:0.85rem; color:#0369a1;"><i class="fa-solid fa-award"></i> निवडलेला लाभार्थी:</span>
             <div style="display:flex; align-items:center; gap:6px;">
                 <label style="font-size:0.8rem; font-weight:600;">नाव:</label>
-                <input type="text" id="m_beneficiary_name" value="" placeholder="लाभार्थ्याचे नाव" style="padding:3px 8px; font-size:0.85rem; border:1px solid #7dd3fc; border-radius:4px;" oninput="syncAllFields()">
+                <input type="text" id="m_beneficiary_name" value="" placeholder="लाभार्थ्याचे नाव" style="padding:3px 8px; font-size:0.85rem; border:1px solid #7dd3fc; border-radius:4px; min-width:180px;" oninput="syncAllFields()">
             </div>
             <div style="display:flex; align-items:center; gap:6px;">
                 <label style="font-size:0.8rem; font-weight:600;">नाते:</label>
-                <input type="text" id="m_beneficiary_rel" value="" placeholder="नाते" style="padding:3px 8px; font-size:0.85rem; border:1px solid #7dd3fc; border-radius:4px; width:100px;" oninput="syncAllFields()">
+                <select id="m_beneficiary_rel" style="padding:3px 8px; font-size:0.85rem; border:1px solid #7dd3fc; border-radius:4px; min-width:140px; background:#fff;" onchange="syncAllFields()">
+                    <option value="">-- नाते निवडा --</option>
+                    <option value="स्वतः">स्वतः (Self)</option>
+                    <option value="मुलगा">मुलगा (Son)</option>
+                    <option value="मुलगी">मुलगी (Daughter)</option>
+                    <option value="पत्नी">पत्नी (Wife)</option>
+                    <option value="पती">पती (Husband)</option>
+                    <option value="वडील">वडील (Father)</option>
+                    <option value="आई">आई (Mother)</option>
+                    <option value="भाऊ">भाऊ (Brother)</option>
+                    <option value="बहीण">बहीण (Sister)</option>
+                    <option value="सून">सून (Daughter-in-law)</option>
+                    <option value="जावई">जावई (Son-in-law)</option>
+                    <option value="नातू">नातू (Grandson)</option>
+                    <option value="नावात">नावात (Granddaughter)</option>
+                    <option value="आजोबा">आजोबा (Grandfather)</option>
+                    <option value="आजी">आजी (Grandmother)</option>
+                    <option value="काका">काका (Uncle)</option>
+                    <option value="काकू">काकू (Aunt)</option>
+                    <option value="पुतण्या">पुतण्या (Nephew)</option>
+                    <option value="पुतणी">पुतणी (Niece)</option>
+                    <option value="भाचा">भाचा (Nephew)</option>
+                    <option value="भाची">भाची (Niece)</option>
+                    <option value="इतर">इतर (Other)</option>
+                </select>
             </div>
             <button type="button" class="btn btn-secondary btn-sm" onclick="setApplicantAsBeneficiary()">
                 अर्जदार स्वतः लाभार्थी
@@ -1591,8 +1642,8 @@
                     <h2 style="font-weight:800; font-size:15pt; letter-spacing:0.5px;">स्वयंघोषणापत्र</h2>
                 </div>
                 
-                <!-- Clean Photo Box with photo upload preview support -->
-                <div id="p9_photo_box" style="width:35mm; height:42mm; border:1.5px solid #16a34a; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:2px; background:#fafafa; flex-shrink:0; margin-right:10px; overflow:hidden;">
+                <!-- Clean Photo Box with photo upload preview support (Clickable to trigger upload/crop) -->
+                <div id="p9_photo_box" onclick="document.getElementById('m_photo_input').click()" title="फोटो बदलण्यासाठी क्लिक करा" style="width:35mm; height:42mm; border:1.5px solid #16a34a; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:2px; background:#fafafa; flex-shrink:0; margin-right:10px; overflow:hidden; cursor:pointer;">
                     <img id="p9_photo_img" src="" alt="पासपोर्ट फोटो" style="display:none; width:100%; height:100%; object-fit:cover;">
                     <div id="p9_photo_placeholder">
                         <i class="fa-regular fa-user" style="font-size:24px; color:#16a34a; margin-bottom:3px;"></i>
@@ -1681,6 +1732,33 @@
     let cropper = null;
     let originalPhotoSrc = null;
     let currentCroppedDataUrl = null;
+
+    // Standard Marathi Relationship Options HTML
+    const MARATHI_RELATION_OPTIONS = `
+        <option value="">-- नाते निवडा --</option>
+        <option value="स्वतः">स्वतः (Self)</option>
+        <option value="पत्नी">पत्नी (Wife)</option>
+        <option value="पती">पती (Husband)</option>
+        <option value="मुलगा">मुलगा (Son)</option>
+        <option value="मुलगी">मुलगी (Daughter)</option>
+        <option value="वडील">वडील (Father)</option>
+        <option value="आई">आई (Mother)</option>
+        <option value="भाऊ">भाऊ (Brother)</option>
+        <option value="बहीण">बहीण (Sister)</option>
+        <option value="सून">सून (Daughter-in-law)</option>
+        <option value="जावई">जावई (Son-in-law)</option>
+        <option value="नातू">नातू (Grandson)</option>
+        <option value="नावात">नावात (Granddaughter)</option>
+        <option value="आजोबा">आजोबा (Grandfather)</option>
+        <option value="आजी">आजी (Grandmother)</option>
+        <option value="काका">काका (Uncle)</option>
+        <option value="काकू">काकू (Aunt)</option>
+        <option value="पुतण्या">पुतण्या (Nephew)</option>
+        <option value="पुतणी">पुतणी (Niece)</option>
+        <option value="भाचा">भाचा (Nephew)</option>
+        <option value="भाची">भाची (Niece)</option>
+        <option value="इतर">इतर (Other)</option>
+    `;
 
     // Initialize Date on Page Load
     window.addEventListener('DOMContentLoaded', () => {
@@ -1952,7 +2030,11 @@
         tr.innerHTML = `
             <td style="text-align:center;">${count}</td>
             <td><input type="text" class="f-name" placeholder="व्यक्तीचे नाव" oninput="syncFamilyToDocs()"></td>
-            <td><input type="text" class="f-rel" placeholder="नाते" oninput="syncFamilyToDocs()"></td>
+            <td>
+                <select class="f-rel" onchange="syncFamilyToDocs()">
+                    ${MARATHI_RELATION_OPTIONS}
+                </select>
+            </td>
             <td><input type="text" class="f-age" placeholder="वय" oninput="syncFamilyToDocs()"></td>
             <td><input type="text" class="f-job" placeholder="व्यवसाय" oninput="syncFamilyToDocs()"></td>
             <td><input type="text" class="f-inc" placeholder="निरंक" oninput="syncFamilyToDocs()"></td>
@@ -1993,7 +2075,7 @@
         document.querySelectorAll('input[name="beneficiary_radio"]').forEach(r => r.checked = false);
         const name = document.getElementById('m_name').value;
         document.getElementById('m_beneficiary_name').value = name;
-        document.getElementById('m_beneficiary_rel').value = "स्वतः (Self)";
+        document.getElementById('m_beneficiary_rel').value = "स्वतः";
         syncAllFields();
     }
 
@@ -2316,7 +2398,11 @@
             <tr>
                 <td style="text-align:center;">१</td>
                 <td><input type="text" class="f-name" value="सुनिता सुरेश पाटील" oninput="syncFamilyToDocs()"></td>
-                <td><input type="text" class="f-rel" value="पत्नी" oninput="syncFamilyToDocs()"></td>
+                <td>
+                    <select class="f-rel" onchange="syncFamilyToDocs()">
+                        ${MARATHI_RELATION_OPTIONS}
+                    </select>
+                </td>
                 <td><input type="text" class="f-age" value="४०" oninput="syncFamilyToDocs()"></td>
                 <td><input type="text" class="f-job" value="घरकाम" oninput="syncFamilyToDocs()"></td>
                 <td><input type="text" class="f-inc" value="निरंक" oninput="syncFamilyToDocs()"></td>
@@ -2326,7 +2412,11 @@
             <tr>
                 <td style="text-align:center;">२</td>
                 <td><input type="text" class="f-name" value="अमित सुरेश पाटील" oninput="syncFamilyToDocs()"></td>
-                <td><input type="text" class="f-rel" value="मुलगा" oninput="syncFamilyToDocs()"></td>
+                <td>
+                    <select class="f-rel" onchange="syncFamilyToDocs()">
+                        ${MARATHI_RELATION_OPTIONS}
+                    </select>
+                </td>
                 <td><input type="text" class="f-age" value="२०" oninput="syncFamilyToDocs()"></td>
                 <td><input type="text" class="f-job" value="शिक्षण" oninput="syncFamilyToDocs()"></td>
                 <td><input type="text" class="f-inc" value="निरंक" oninput="syncFamilyToDocs()"></td>
@@ -2334,6 +2424,10 @@
                 <td><button type="button" class="btn btn-secondary btn-sm" style="color:red;" onclick="deleteFamilyRow(this)">×</button></td>
             </tr>
         `;
+
+        const selects = tbody.querySelectorAll('.f-rel');
+        if (selects[0]) selects[0].value = "पत्नी";
+        if (selects[1]) selects[1].value = "मुलगा";
 
         handleDurationChange();
         calculateTotalIncome();
@@ -2395,7 +2489,11 @@
             <tr>
                 <td style="text-align:center;">१</td>
                 <td><input type="text" class="f-name" placeholder="व्यक्तीचे नाव" oninput="syncFamilyToDocs()"></td>
-                <td><input type="text" class="f-rel" placeholder="नाते" oninput="syncFamilyToDocs()"></td>
+                <td>
+                    <select class="f-rel" onchange="syncFamilyToDocs()">
+                        ${MARATHI_RELATION_OPTIONS}
+                    </select>
+                </td>
                 <td><input type="text" class="f-age" placeholder="वय" oninput="syncFamilyToDocs()"></td>
                 <td><input type="text" class="f-job" placeholder="व्यवसाय" oninput="syncFamilyToDocs()"></td>
                 <td><input type="text" class="f-inc" placeholder="निरंक" oninput="syncFamilyToDocs()"></td>
