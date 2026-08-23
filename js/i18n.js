@@ -7,7 +7,7 @@ const I18N_DATA = {
     // Header & Brand
     portal_dept: "महाराष्ट्र शासन • महसूल व वन विभाग",
     portal_sub: "अधिकृत डिजिटल सेवा केंद्र",
-    portal_title: "ई-मुद्रा सीएससी व आपले सरकार केंद्र",
+    portal_title: "ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र",
     portal_tagline: "पारदर्शक, गतिमान आणि सुरक्षित ई-नागरिक सेवा दालन",
     reg_id: "केंद्र नोंदणी क्र:",
     vle_operator: "VLE संचालक:",
@@ -191,7 +191,7 @@ const I18N_DATA = {
     quick_links: "महत्वाच्या शासकीय लिंक्स",
     direct_whatsapp_btn: "थेट WhatsApp वर चॅट करा",
     btn_send_feedback: "अभिप्राय / संदेश पाठवा",
-    footer_text: "© 2026 ई-मुद्रा सीएससी व आपले सरकार सेवा केंद्र. सर्व हक्क राखीव. उपविभागीय अधिकारी (SDO) कार्यालयाच्या मार्गदर्शक तत्त्वानुसार संचालित.",
+    footer_text: "© 2026 ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र. सर्व हक्क राखीव. उपविभागीय अधिकारी (SDO) कार्यालयाच्या मार्गदर्शक तत्त्वानुसार संचालित.",
     disclaimer: "सूचना: हे केंद्र महाराष्ट्र शासन व CSC SPV अंतर्गत अधिकृत सेवा केंद्र म्हणून नागरिकांना सेवा प्रदान करते."
   },
 
@@ -199,7 +199,7 @@ const I18N_DATA = {
     // Header & Brand
     portal_dept: "Government of Maharashtra • Revenue & Forest Department",
     portal_sub: "Authorized Digital Seva Center",
-    portal_title: "eMudra CSC & Aaple Sarkar Center",
+    portal_title: "eMudra Aaple Sarkar & Aadhaar Seva Kendra",
     portal_tagline: "Transparent, Swift & Secure Citizen e-Services Portal",
     reg_id: "Center Reg ID:",
     vle_operator: "VLE Operator:",

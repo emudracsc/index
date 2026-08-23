@@ -1006,8 +1006,8 @@ function resetServicesToDefault() {
 
 // Officer & Center Info (कणकवली केंद्र माहिती)
 const CENTER_INFO = {
-  centerName_mr: "ई-मुद्रा सीएससी व आपले सरकार सेवा केंद्र",
-  centerName_en: "eMudra CSC & Aaple Sarkar Seva Kendra",
+  centerName_mr: "ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र",
+  centerName_en: "eMudra Aaple Sarkar & Aadhaar Seva Kendra",
   subDivision_mr: "उपविभागीय अधिकारी कार्यालय परिक्षेत्र • कणकवली (सिंधुदुर्ग)",
   subDivision_en: "Sub-Divisional Officer Jurisdiction Area • Kankavli (Sindhudurg)",
   cscId: "152153410016",

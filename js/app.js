@@ -1010,7 +1010,7 @@ function showReceiptModal(app) {
           🏛️
         </div>
         <h2>महाराष्ट्र शासन • उपविभागीय अधिकारी कार्यालय</h2>
-        <h3>ई-मुद्रा सीएससी व आपले सरकार केंद्र (अधिकृत पोच पावती)</h3>
+        <h3>ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र (अधिकृत पोच पावती)</h3>
         <p>Center ID: ${CENTER_INFO.cscId} | Contact: ${CENTER_INFO.phone} | Address: ${CENTER_INFO.address_mr}</p>
       </div>
 
@@ -1979,7 +1979,7 @@ function exportApplicationsToCsv() {
  * Direct WhatsApp Link Launcher with prefilled query
  */
 function initWhatsAppDirect() {
-  const defaultMsgMr = "नमस्कार, मला ई-मुद्रा सीएससी केंद्रावरील शासकीय सेवांबद्दल / अर्जाबद्दल अधिक माहिती हवी आहे.";
+  const defaultMsgMr = "नमस्कार, मला ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्रावरील शासकीय सेवांबद्दल / अर्जाबद्दल अधिक माहिती हवी आहे.";
   const encoded = encodeURIComponent(defaultMsgMr);
   const waUrl = `https://wa.me/${CENTER_INFO.whatsapp}?text=${encoded}`;
 
