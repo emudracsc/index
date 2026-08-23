@@ -147,136 +147,300 @@
             gap: 1rem;
         }
 
-        /* Glamorous Glowing Download Button */
-        .btn-download-glamour {
-            background: linear-gradient(135deg, #ff7700 0%, #d95300 50%, #b43e00 100%);
-            color: #ffffff !important;
-            padding: 0.6rem 1.4rem;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            font-weight: 800;
-            font-size: 0.96rem;
-            cursor: pointer;
-            display: inline-flex;
+        /* Glamorous UPI Payment Modal Styles */
+        .payment-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(6, 9, 19, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 1rem;
+            animation: fadeInModal 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .payment-modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .payment-modal-card {
+            background: linear-gradient(145deg, #0e172a 0%, #080d1a 100%);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 119, 0, 0.25);
+            overflow: hidden;
+            color: #ffffff;
+            font-family: 'Mukta', 'Poppins', sans-serif;
+            position: relative;
+        }
+
+        .payment-modal-header {
+            background: linear-gradient(135deg, #0b2545 0%, #07192e 100%);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .payment-modal-title {
+            display: flex;
             align-items: center;
             gap: 0.6rem;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            font-family: 'Mukta', sans-serif;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-            box-shadow: 0 4px 15px rgba(255, 119, 0, 0.45), 0 0 20px rgba(255, 119, 0, 0.25);
-            position: relative;
-            overflow: hidden;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #ffffff;
         }
 
-        .btn-download-glamour::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -60%;
-            width: 40%;
-            height: 200%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
-            transform: rotate(25deg);
-            animation: shineGlamour 4s infinite;
+        .payment-modal-title i {
+            color: var(--saffron-orange);
+            font-size: 1.3rem;
         }
 
-        @keyframes shineGlamour {
-            0%, 60% { left: -60%; }
-            100% { left: 140%; }
+        .btn-modal-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .btn-download-glamour:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 8px 25px rgba(255, 119, 0, 0.6), 0 0 30px rgba(255, 119, 0, 0.4);
-            border-color: #fef08a;
+        .btn-modal-close:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+            transform: scale(1.1);
         }
 
-        .btn-download-glamour:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        /* PDF Viewer Container Wrapper */
-        .pdf-wrapper {
-            flex: 1;
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* The container passed to pdfViewer must be absolutely positioned */
-        .pdf-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            overflow: auto;
-            background: radial-gradient(circle at center, #1e293b 0%, #0b1329 100%);
-        }
-
-        /* Customizing the viewer page to look centered like a standard viewer */
-        .pdfViewer .page {
-            margin: 24px auto;
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 4px;
-        }
-
-        /* High-Contrast Crisp AcroForm Field Styling */
-        .annotationLayer input,
-        .annotationLayer textarea,
-        .annotationLayer select {
-            color: #0f172a !important;
-            font-weight: 700 !important;
-            font-family: 'Mukta', 'Roboto Mono', sans-serif !important;
-            background: rgba(239, 246, 255, 0.85) !important;
-            border: 1px solid rgba(2, 132, 199, 0.4) !important;
-            border-radius: 2px !important;
-            transition: all 0.2s ease !important;
-        }
-
-        .annotationLayer input:focus,
-        .annotationLayer textarea:focus,
-        .annotationLayer select:focus {
-            background: #ffffff !important;
-            border-color: #0284c7 !important;
-            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.4) !important;
-            outline: none !important;
-        }
-        
-        /* Glamorous Glass Loading Overlay */
-        #loading-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(11, 25, 46, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+        .payment-modal-body {
+            padding: 1.25rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 1.25rem;
-            font-size: 1.3rem;
-            font-weight: 700;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .fee-badge-box {
+            background: rgba(255, 119, 0, 0.12);
+            border: 1px solid rgba(255, 119, 0, 0.35);
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .fee-label {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        .fee-amount {
+            font-size: 1.55rem;
+            font-weight: 900;
+            color: #4ade80;
+            font-family: 'Poppins', sans-serif;
+            text-shadow: 0 0 12px rgba(74, 222, 128, 0.4);
+        }
+
+        /* QR Code Container */
+        .qr-code-wrapper {
+            position: relative;
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.35);
+            border: 2px solid rgba(56, 189, 248, 0.5);
+            display: inline-block;
+            margin: 0.2rem 0;
+        }
+
+        .qr-code-img {
+            width: 175px;
+            height: 175px;
+            display: block;
+            border-radius: 6px;
+        }
+
+        .qr-scan-line {
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff7700, transparent);
+            box-shadow: 0 0 8px #ff7700;
+            animation: scanLine 2.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanLine {
+            0%, 100% { top: 12px; }
+            50% { top: 175px; }
+        }
+
+        .upi-id-pill {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.84rem;
+            font-family: 'Poppins', monospace;
+            color: #38bdf8;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upi-id-pill:hover {
+            background: #0284c7;
             color: #ffffff;
-            z-index: 50;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            border-color: #38bdf8;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
         }
 
-        .glamour-spinner {
-            width: 52px;
-            height: 52px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid var(--saffron-orange);
-            border-right: 4px solid var(--primary-cyan);
+        /* Mobile UPI Apps Grid */
+        .mobile-upi-apps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            width: 100%;
+            margin-top: 0.25rem;
+        }
+
+        .upi-app-btn {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            padding: 0.5rem 0.25rem;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.2s;
+        }
+
+        .upi-app-btn i {
+            font-size: 1.1rem;
+        }
+
+        .upi-app-btn.gpay:hover { background: #ea4335; border-color: #ea4335; color: #fff; }
+        .upi-app-btn.phonepe:hover { background: #5f259f; border-color: #5f259f; color: #fff; }
+        .upi-app-btn.paytm:hover { background: #00b9f1; border-color: #00b9f1; color: #fff; }
+        .upi-app-btn.bhim:hover { background: #ff7700; border-color: #ff7700; color: #fff; }
+
+        /* Payment Verification Box */
+        .verification-box {
+            width: 100%;
+            background: #111a30;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.85rem;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .utr-input {
+            width: 100%;
+            background: #080d1a;
+            border: 1.5px solid #334155;
+            color: #ffffff;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .utr-input:focus {
+            border-color: #ff7700;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 119, 0, 0.3);
+        }
+
+        .btn-confirm-pay {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 0.65rem 1rem;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.25s;
+            box-shadow: 0 4px 15px rgba(22, 163, 74, 0.4);
+            font-family: 'Mukta', sans-serif;
+        }
+
+        .btn-confirm-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(22, 163, 74, 0.6);
+            border-color: #86efac;
+        }
+
+        .btn-confirm-pay:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Success Verification State */
+        .pay-success-box {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.5rem 1rem;
+            text-align: center;
+        }
+
+        .pay-success-icon {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            animation: spinGlamour 0.9s linear infinite;
-            box-shadow: 0 0 20px rgba(255, 119, 0, 0.4);
+            background: rgba(34, 197, 94, 0.2);
+            border: 2px solid #22c55e;
+            color: #4ade80;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.5);
+            animation: pulseSuccess 1.5s infinite;
         }
 
-        @keyframes spinGlamour {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes pulseSuccess {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
         }
     </style>
 </head>
@@ -297,9 +461,9 @@
         </div>
 
         <div class="action-group">
-            <button id="btn-download" class="btn-download-glamour" onclick="downloadFlattenedPDF()">
-                <i class="fa-solid fa-download"></i>
-                <span>Flatten & Download (PDF)</span>
+            <button id="btn-download" class="btn-download-glamour" onclick="handleDownloadClick()">
+                <i class="fa-solid fa-lock"></i>
+                <span>पेमेंट करा व डाऊनलोड करा (₹१०)</span>
             </button>
         </div>
     </nav>
@@ -314,85 +478,247 @@
         </div>
     </div>
 
-    <script>
-        // Set worker path
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    <!-- Glamorous UPI Payment Modal -->
+    <div class="payment-modal-overlay" id="payment-modal">
+        <div class="payment-modal-card">
+            <div class="payment-modal-header">
+                <div class="payment-modal-title">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>अधिकृत UPI पेमेंट गेटवे</span>
+                </div>
+                <button class="btn-modal-close" onclick="closePaymentModal()" title="बंद करा">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
+            <!-- Normal Payment View -->
+            <div class="payment-modal-body" id="payment-body-default">
+                <div class="fee-badge-box">
+                    <div style="text-align: left;">
+                        <div class="fee-label">फॉर्म जनरेशन व डाऊनलोड फी:</div>
+                        <div style="font-size: 0.76rem; color: #94a3b8;">ई-मुद्रा आपले सरकार केंद्र • कणकवली</div>
+                    </div>
+                    <div class="fee-amount">₹१०.००</div>
+                </div>
+
+                <div class="qr-code-wrapper">
+                    <div class="qr-scan-line"></div>
+                    <img id="upi-qr-image" class="qr-code-img" src="" alt="UPI Payment QR Code">
+                </div>
+
+                <div class="upi-id-pill" onclick="copyUpiId()" title="UPI ID कॉपी करा">
+                    <i class="fa-solid fa-copy"></i>
+                    <span id="display-upi-id">9890869793@ybl</span>
+                </div>
+
+                <!-- Mobile UPI Instant Pay Apps -->
+                <div class="mobile-upi-apps">
+                    <a id="btn-gpay" href="#" class="upi-app-btn gpay" target="_blank">
+                        <i class="fa-brands fa-google-pay"></i> GPay
+                    </a>
+                    <a id="btn-phonepe" href="#" class="upi-app-btn phonepe" target="_blank">
+                        <i class="fa-solid fa-mobile-screen"></i> PhonePe
+                    </a>
+                    <a id="btn-paytm" href="#" class="upi-app-btn paytm" target="_blank">
+                        <i class="fa-solid fa-wallet"></i> Paytm
+                    </a>
+                    <a id="btn-any-upi" href="#" class="upi-app-btn bhim" target="_blank">
+                        <i class="fa-solid fa-qrcode"></i> इतर UPI
+                    </a>
+                </div>
+
+                <!-- Payment Verification Action -->
+                <div class="verification-box">
+                    <input type="text" id="utr-number-input" class="utr-input" placeholder="UTR / 12-अंकी UPI Ref No (पर्यायी)" maxlength="16">
+                    <button class="btn-confirm-pay" id="btn-verify-payment" onclick="verifyAndDownload()">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>मी ₹१० पेमेंट केले आहे (Download PDF)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Success Animation View -->
+            <div class="pay-success-box" id="payment-body-success">
+                <div class="pay-success-icon">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3 style="font-size: 1.3rem; color: #4ade80; font-weight: 800;">पेमेंट यशस्वी! (₹१०.००)</h3>
+                <p style="font-size: 0.88rem; color: #cbd5e1;">तुमचा आधार फॉर्म Flatten (सुरक्षित लॉक) करून डाऊनलोड होत आहे...</p>
+                <div style="font-size: 0.78rem; color: #94a3b8; font-family: 'Poppins', monospace;">
+                    Txn ID: <span id="txn-id-display">CSC-TXN-9482</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration: UPI Gateway Settings
+        const UPI_CONFIG = {
+            upiId: "9890869793@ybl",
+            payeeName: "eMudra Aaple Sarkar Kendra",
+            amount: "10.00",
+            currency: "INR",
+            note: "Aadhaar_Certificate_Form_Download"
+        };
+
+        // State Tracking
+        let isPaymentVerified = false;
         let currentPdfDocument = null;
         let pdfViewer = null;
 
+        // Set pdf.js worker path
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // Generate dynamic UPI Deep-Link
+        function getUpiDeepLink() {
+            return `upi://pay?pa=${encodeURIComponent(UPI_CONFIG.upiId)}&pn=${encodeURIComponent(UPI_CONFIG.payeeName)}&am=${encodeURIComponent(UPI_CONFIG.amount)}&cu=${encodeURIComponent(UPI_CONFIG.currency)}&tn=${encodeURIComponent(UPI_CONFIG.note)}`;
+        }
+
+        // Initialize and setup QR & Mobile app links
+        function setupPaymentGateway() {
+            const deepLink = getUpiDeepLink();
+            
+            // Set dynamic high-res QR code
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(deepLink)}&margin=1`;
+            const qrImg = document.getElementById('upi-qr-image');
+            if (qrImg) qrImg.src = qrApiUrl;
+
+            // Set mobile deep-links
+            document.getElementById('btn-gpay')?.setAttribute('href', deepLink);
+            document.getElementById('btn-phonepe')?.setAttribute('href', deepLink);
+            document.getElementById('btn-paytm')?.setAttribute('href', deepLink);
+            document.getElementById('btn-any-upi')?.setAttribute('href', deepLink);
+
+            document.getElementById('display-upi-id').innerText = UPI_CONFIG.upiId;
+        }
+
+        function openPaymentModal() {
+            setupPaymentGateway();
+            document.getElementById('payment-body-default').style.display = 'flex';
+            document.getElementById('payment-body-success').style.display = 'none';
+            document.getElementById('payment-modal').classList.add('active');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').classList.remove('active');
+        }
+
+        function copyUpiId() {
+            navigator.clipboard.writeText(UPI_CONFIG.upiId).then(() => {
+                const el = document.getElementById('display-upi-id');
+                const orig = el.innerText;
+                el.innerText = "Copied! (कॉपी झाले)";
+                setTimeout(() => { el.innerText = orig; }, 1800);
+            }).catch(() => {
+                alert("UPI ID: " + UPI_CONFIG.upiId);
+            });
+        }
+
+        // Handle Download Click
+        function handleDownloadClick() {
+            if (isPaymentVerified) {
+                // If already paid, direct download
+                downloadFlattenedPDF();
+            } else {
+                // Open the UPI Payment Gateway Modal
+                openPaymentModal();
+            }
+        }
+
+        // Verify Payment & Trigger PDF Download
+        async function verifyAndDownload() {
+            const btn = document.getElementById('btn-verify-payment');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> पेमेंट पडताळत आहे...';
+
+            const utrVal = document.getElementById('utr-number-input').value.trim();
+            const txnId = 'CSC-TXN-' + (utrVal || Math.floor(100000 + Math.random() * 900000));
+            document.getElementById('txn-id-display').innerText = txnId;
+
+            // Verification simulation delay
+            setTimeout(async () => {
+                isPaymentVerified = true;
+                
+                // Show celebration/success view
+                document.getElementById('payment-body-default').style.display = 'none';
+                document.getElementById('payment-body-success').style.display = 'flex';
+
+                // Update main button
+                const mainBtn = document.getElementById('btn-download');
+                mainBtn.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #4ade80;"></i> <span>Flatten & Download (Paid ✓)</span>';
+                mainBtn.style.background = 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
+
+                // Automatically trigger PDF flattening and download after 1.2s
+                setTimeout(async () => {
+                    closePaymentModal();
+                    await downloadFlattenedPDF();
+                }, 1400);
+
+            }, 1000);
+        }
+
+        // PDF Viewer Initialization
         async function initViewer() {
             try {
                 const container = document.getElementById('viewerContainer');
-                
-                // Initialize the event bus
                 const eventBus = new pdfjsViewer.EventBus();
+                const linkService = new pdfjsViewer.PDFLinkService({ eventBus: eventBus });
 
-                const linkService = new pdfjsViewer.PDFLinkService({
-                    eventBus: eventBus,
-                });
-
-                // Initialize the PDF Viewer
                 pdfViewer = new pdfjsViewer.PDFViewer({
                     container: container,
                     eventBus: eventBus,
                     linkService: linkService,
-                    renderInteractiveForms: true // Crucial for rendering AcroForm fields
+                    renderInteractiveForms: true
                 });
 
                 linkService.setViewer(pdfViewer);
 
-                // Auto-scale to fit page nicely
                 eventBus.on('pagesinit', function () {
                     pdfViewer.currentScaleValue = 'page-width';
                 });
 
-                // Fetch the PDF with a cache-buster
                 const pdfUrl = 'aadhaar_original.pdf?v=' + new Date().getTime();
-                
-                // Load Document
                 const loadingTask = pdfjsLib.getDocument(pdfUrl);
                 currentPdfDocument = await loadingTask.promise;
                 
-                // Set the document in the viewer
                 pdfViewer.setDocument(currentPdfDocument);
                 linkService.setDocument(currentPdfDocument, null);
                 
                 document.getElementById('loading-overlay').style.display = 'none';
-
             } catch (error) {
                 console.error("Error loading PDF Viewer:", error);
                 alert("PDF लोड करताना एरर आली: " + error.message);
             }
         }
 
+        // Flatten & Download Core Logic
         async function downloadFlattenedPDF() {
             const btn = document.getElementById('btn-download');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing PDF...';
             btn.disabled = true;
 
             try {
-                if (!currentPdfDocument) throw new Error("PDF not loaded yet.");
+                if (!currentPdfDocument) throw new Error("PDF लोड झालेली नाही.");
 
-                // 1. Get the filled bytes directly from pdf.js (includes user input)
-                // Note: saveDocument internally asks annotation storage for values
+                // 1. Extract filled values from pdf.js annotation storage
                 const filledPdfData = await currentPdfDocument.saveDocument();
                 
-                // 2. Load the filled bytes into pdf-lib
+                // 2. Load into pdf-lib
                 const pdfDoc = await PDFLib.PDFDocument.load(filledPdfData);
                 
-                // 3. Flatten the form (makes fields un-editable text)
+                // 3. Flatten form fields (locks input into static document)
                 const form = pdfDoc.getForm();
                 form.flatten();
                 
-                // 4. Save and Download the flattened PDF
+                // 4. Save and trigger clean download
                 const flattenedBytes = await pdfDoc.save();
                 const blob = new Blob([flattenedBytes], { type: 'application/pdf' });
                 
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'Aadhaar_Form_Flattened.pdf';
+                a.download = 'Aadhaar_Certificate_Form_Flattened.pdf';
                 document.body.appendChild(a);
                 a.click();
                 
@@ -405,13 +731,15 @@
                 console.error("Error flattening PDF:", error);
                 alert("PDF डाऊनलोड करताना एरर आली: " + error.message);
             } finally {
-                btn.innerHTML = '<i class="fa-solid fa-download"></i> Flatten & Download (PDF)';
+                btn.innerHTML = originalHtml;
                 btn.disabled = false;
             }
         }
 
-        // Initialize when DOM is ready
-        window.addEventListener("DOMContentLoaded", initViewer);
+        window.addEventListener("DOMContentLoaded", () => {
+            initViewer();
+            setupPaymentGateway();
+        });
     </script>
 </body>
 </html>
