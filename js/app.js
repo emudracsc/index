@@ -1399,7 +1399,7 @@ function initAdminDashboard() {
   loginForm?.addEventListener("submit", (e) => {
     e.preventDefault();
     const pin = document.getElementById("admin-pin-input").value;
-    if (pin === "Mudra@123") {
+    if (pin === "341992") {
       closeModal("admin-login-modal");
       renderAdminDashboard();
       switchTab("tab-admin");
