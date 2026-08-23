@@ -1039,6 +1039,17 @@ const DEFAULT_IMPORTANT_LINKS = [
     isInternal: true
   },
   {
+    id: "link-income-certificate",
+    category: "अधिकृत शासकीय टूल्स व दाखले",
+    icon: "fa-solid fa-file-invoice-dollar",
+    title_mr: "💰 उत्पन्नाचा दाखला फॉर्म फिलर (Income Certificate)",
+    title_en: "Income Certificate Form Filler & PDF Generator",
+    desc_mr: "१ किंवा ३ वर्षांचे उत्पन्नाचे स्वयंघोषणापत्र व अर्ज भरा, फोटो जोडा व थेट A4 PDF / प्रिंट करा.",
+    desc_en: "1-Year & 3-Year Income Certificate self-declaration filler with instant A4 PDF print.",
+    url: "income-certificate.html",
+    isInternal: true
+  },
+  {
     id: "link-affidavit",
     category: "अधिकृत शासकीय टूल्स व दाखले",
     icon: "fa-solid fa-gem",
