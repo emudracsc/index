@@ -13,6 +13,10 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- Cropper.js CSS & JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
     <style>
         :root {
             --primary: #1e3a8a;
@@ -239,6 +243,112 @@
             border-radius: 3px;
             font-size: 0.8rem;
             font-family: inherit;
+        }
+
+        /* -------------------------------------------------------------
+           CROPPER MODAL POPUP
+        ------------------------------------------------------------- */
+        .crop-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            padding: 16px;
+        }
+
+        .crop-modal-card {
+            background: #ffffff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 540px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: modalPop 0.2s ease-out;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .crop-modal-header {
+            padding: 12px 18px;
+            background: #1e3a8a;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .crop-modal-header h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .crop-modal-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .crop-img-container {
+            width: 100%;
+            height: 340px;
+            background: #0f172a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .crop-img-container img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .crop-tools-bar {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .crop-tool-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #334155;
+            transition: all 0.15s;
+        }
+
+        .crop-tool-btn:hover { background: #e2e8f0; color: #0f172a; }
+
+        .crop-modal-footer {
+            padding: 12px 18px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
         }
 
         /* -------------------------------------------------------------
@@ -469,7 +579,7 @@
                 print-color-adjust: exact;
             }
 
-            .master-controls-bar, .no-print {
+            .master-controls-bar, .crop-modal-overlay, .no-print {
                 display: none !important;
             }
 
@@ -656,9 +766,22 @@
                     <label>पॅन कार्ड क्रमांक</label>
                     <input type="text" id="m_pan" value="" placeholder="१० अंकी पॅन कार्ड क्र." oninput="syncAllFields()">
                 </div>
-                <div class="input-item full" style="background:#eef2ff; padding:6px 8px; border-radius:6px; border:1px solid #c7d2fe;">
-                    <label style="color:#3730a3;"><i class="fa-solid fa-camera"></i> पासपोर्ट साईज फोटो अपलोड करा (Page 9 साठी):</label>
-                    <input type="file" id="m_photo_input" accept="image/*" onchange="handlePhotoUpload(event)" style="padding:3px; background:#fff;">
+                
+                <!-- Photo Upload Box with Cropping Trigger -->
+                <div class="input-item full" style="background:#eef2ff; padding:8px 10px; border-radius:6px; border:1.5px dashed #6366f1;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <label style="color:#3730a3; font-weight:800;"><i class="fa-solid fa-camera"></i> पासपोर्ट साईज फोटो (Page 9 साठी):</label>
+                        <span id="photo_status_badge" style="font-size:0.75rem; color:#4338ca; font-weight:700;">(अपलोड केल्यावर क्रॉप करता येईल)</span>
+                    </div>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="file" id="m_photo_input" accept="image/*" onchange="handlePhotoUpload(event)" style="padding:4px; background:#fff; flex:1;">
+                        <button type="button" class="btn btn-secondary btn-sm" id="btn_recrop" onclick="reopenCropper()" style="display:none;" title="पुन्हा क्रॉप करा">
+                            <i class="fa-solid fa-crop-simple"></i> क्रॉप करा
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btn_remove_photo" onclick="removePhoto()" style="display:none; color:#ef4444;" title="फोटो हटवा">
+                            <i class="fa-solid fa-trash-can"></i> हटवा
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -846,7 +969,6 @@
                     </tr>
                 </thead>
                 <tbody id="masterFamilyBody">
-                    <!-- Blank rows by default -->
                     <tr>
                         <td style="text-align:center;">१</td>
                         <td><input type="text" class="f-name" placeholder="व्यक्तीचे नाव" oninput="syncFamilyToDocs()"></td>
@@ -878,6 +1000,35 @@
         </div>
     </div>
 
+</div>
+
+
+<!-- ==============================================================
+     PHOTO CROPPER POPUP MODAL
+============================================================== -->
+<div id="cropPhotoModal" class="crop-modal-overlay no-print" role="dialog" aria-modal="true">
+    <div class="crop-modal-card">
+        <div class="crop-modal-header">
+            <h3><i class="fa-solid fa-crop-simple"></i> पासपोर्ट फोटो क्रॉप व ॲडजस्ट करा</h3>
+            <button type="button" onclick="closeCropModal()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="crop-modal-body">
+            <div class="crop-img-container">
+                <img id="imageToCrop" src="" alt="Crop Preview">
+            </div>
+            <div class="crop-tools-bar">
+                <button type="button" class="crop-tool-btn" onclick="cropperZoom(0.1)" title="झूम इन"><i class="fa-solid fa-magnifying-glass-plus"></i> झूम इन</button>
+                <button type="button" class="crop-tool-btn" onclick="cropperZoom(-0.1)" title="झूम आउट"><i class="fa-solid fa-magnifying-glass-minus"></i> झूम आउट</button>
+                <button type="button" class="crop-tool-btn" onclick="cropperRotate(-90)" title="डावीकडे फिरवा"><i class="fa-solid fa-rotate-left"></i> डावीकडे</button>
+                <button type="button" class="crop-tool-btn" onclick="cropperRotate(90)" title="उजवीकडे फिरवा"><i class="fa-solid fa-rotate-right"></i> उजवीकडे</button>
+                <button type="button" class="crop-tool-btn" onclick="cropperReset()" title="रीसेट करा"><i class="fa-solid fa-arrows-rotate"></i> रीसेट</button>
+            </div>
+        </div>
+        <div class="crop-modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeCropModal()"><i class="fa-solid fa-xmark"></i> रद्द</button>
+            <button type="button" class="btn btn-success" onclick="cropAndApplyPhoto()"><i class="fa-solid fa-check"></i> ✅ फोटो सेव्ह करा (Save & Apply)</button>
+        </div>
+    </div>
 </div>
 
 
@@ -1527,6 +1678,10 @@
      JAVASCRIPT LOGIC
 ============================================================== -->
 <script>
+    let cropper = null;
+    let originalPhotoSrc = null;
+    let currentCroppedDataUrl = null;
+
     // Initialize Date on Page Load
     window.addEventListener('DOMContentLoaded', () => {
         const today = new Date();
@@ -1540,20 +1695,112 @@
         syncAllFields();
     });
 
-    // Handle Photo Upload
+    // Handle Photo File Upload & Open Crop Modal
     function handlePhotoUpload(event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = document.getElementById('p9_photo_img');
-                const placeholder = document.getElementById('p9_photo_placeholder');
-                img.src = e.target.result;
-                img.style.display = 'block';
-                placeholder.style.display = 'none';
+                originalPhotoSrc = e.target.result;
+                openCropperModal(originalPhotoSrc);
             };
             reader.readAsDataURL(file);
         }
+    }
+
+    // Open Cropper Modal
+    function openCropperModal(src) {
+        const modal = document.getElementById('cropPhotoModal');
+        const img = document.getElementById('imageToCrop');
+        img.src = src;
+        modal.style.display = 'flex';
+
+        if (cropper) {
+            cropper.destroy();
+        }
+
+        setTimeout(() => {
+            cropper = new Cropper(img, {
+                aspectRatio: 35 / 45, // Standard passport ratio 3.5cm x 4.5cm
+                viewMode: 1,
+                autoCropArea: 0.85,
+                responsive: true,
+                movable: true,
+                zoomable: true,
+                rotatable: true,
+                scalable: true
+            });
+        }, 150);
+    }
+
+    // Cropper Control Functions
+    function cropperZoom(delta) {
+        if (cropper) cropper.zoom(delta);
+    }
+
+    function cropperRotate(deg) {
+        if (cropper) cropper.rotate(deg);
+    }
+
+    function cropperReset() {
+        if (cropper) cropper.reset();
+    }
+
+    // Close Crop Modal
+    function closeCropModal() {
+        document.getElementById('cropPhotoModal').style.display = 'none';
+        if (!currentCroppedDataUrl) {
+            document.getElementById('m_photo_input').value = "";
+        }
+    }
+
+    // Crop and Save/Apply to Page 9
+    function cropAndApplyPhoto() {
+        if (cropper) {
+            currentCroppedDataUrl = cropper.getCroppedCanvas({
+                width: 350,
+                height: 450,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            }).toDataURL('image/jpeg', 0.95);
+
+            // Apply to Page 9 Photo Box
+            const img = document.getElementById('p9_photo_img');
+            const placeholder = document.getElementById('p9_photo_placeholder');
+            img.src = currentCroppedDataUrl;
+            img.style.display = 'block';
+            placeholder.style.display = 'none';
+
+            // Show Recrop / Remove buttons in Master Form
+            document.getElementById('btn_recrop').style.display = 'inline-flex';
+            document.getElementById('btn_remove_photo').style.display = 'inline-flex';
+            document.getElementById('photo_status_badge').innerHTML = '<span style="color:#059669;"><i class="fa-solid fa-circle-check"></i> फोटो जोडला व क्रॉप केला</span>';
+
+            document.getElementById('cropPhotoModal').style.display = 'none';
+        }
+    }
+
+    // Reopen Cropper with Original Image
+    function reopenCropper() {
+        if (originalPhotoSrc) {
+            openCropperModal(originalPhotoSrc);
+        }
+    }
+
+    // Remove Uploaded Photo
+    function removePhoto() {
+        currentCroppedDataUrl = null;
+        originalPhotoSrc = null;
+        const img = document.getElementById('p9_photo_img');
+        const placeholder = document.getElementById('p9_photo_placeholder');
+        img.src = "";
+        img.style.display = 'none';
+        placeholder.style.display = 'block';
+
+        document.getElementById('m_photo_input').value = "";
+        document.getElementById('btn_recrop').style.display = 'none';
+        document.getElementById('btn_remove_photo').style.display = 'none';
+        document.getElementById('photo_status_badge').innerText = "(अपलोड केल्यावर क्रॉप करता येईल)";
     }
 
     // Tab Navigation
@@ -1788,14 +2035,6 @@
             }
             p6Body.appendChild(tr);
         }
-    }
-
-    // Helper for rendering empty line or text
-    function getValOrLine(val, minWidth = '100px') {
-        if (!val || val.trim() === '') {
-            return `<span class="fill-text empty-line" style="min-width:${minWidth};"></span>`;
-        }
-        return `<span class="fill-text">${val}</span>`;
     }
 
     // Master Synchronization to all 10 pages
@@ -2148,13 +2387,7 @@
         document.getElementById('m_beneficiary_name').value = "";
         document.getElementById('m_beneficiary_rel').value = "";
         
-        // Reset photo
-        const img = document.getElementById('p9_photo_img');
-        const placeholder = document.getElementById('p9_photo_placeholder');
-        img.src = "";
-        img.style.display = 'none';
-        placeholder.style.display = 'block';
-        document.getElementById('m_photo_input').value = "";
+        removePhoto();
 
         // Reset Family Table
         const tbody = document.getElementById('masterFamilyBody');
