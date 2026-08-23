@@ -438,9 +438,136 @@
             animation: pulseSuccess 1.5s infinite;
         }
 
-        @keyframes pulseSuccess {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+        /* PDF Viewer Container Wrapper */
+        .pdf-wrapper {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* The container passed to pdfViewer must be absolutely positioned */
+        .pdf-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: auto;
+            background: radial-gradient(circle at center, #1e293b 0%, #0b1329 100%);
+        }
+
+        /* Customizing the viewer page to look centered like a standard viewer */
+        .pdfViewer .page {
+            margin: 24px auto;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+
+        /* High-Contrast Crisp AcroForm Field Styling */
+        .annotationLayer input,
+        .annotationLayer textarea,
+        .annotationLayer select {
+            color: #0f172a !important;
+            font-weight: 700 !important;
+            font-family: 'Mukta', 'Roboto Mono', sans-serif !important;
+            background: rgba(239, 246, 255, 0.85) !important;
+            border: 1px solid rgba(2, 132, 199, 0.4) !important;
+            border-radius: 2px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .annotationLayer input:focus,
+        .annotationLayer textarea:focus,
+        .annotationLayer select:focus {
+            background: #ffffff !important;
+            border-color: #0284c7 !important;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.4) !important;
+            outline: none !important;
+        }
+        
+        /* Glamorous Glass Loading Overlay */
+        #loading-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(11, 25, 46, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffffff;
+            z-index: 50;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        .glamour-spinner {
+            width: 52px;
+            height: 52px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--saffron-orange);
+            border-right: 4px solid var(--primary-cyan);
+            border-radius: 50%;
+            animation: spinGlamour 0.9s linear infinite;
+            box-shadow: 0 0 20px rgba(255, 119, 0, 0.4);
+        }
+
+        @keyframes spinGlamour {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Glamorous Glowing Download Button */
+        .btn-download-glamour {
+            background: linear-gradient(135deg, #ff7700 0%, #d95300 50%, #b43e00 100%);
+            color: #ffffff !important;
+            padding: 0.6rem 1.4rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-weight: 800;
+            font-size: 0.96rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Mukta', sans-serif;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 119, 0, 0.45), 0 0 20px rgba(255, 119, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-download-glamour::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 40%;
+            height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+            transform: rotate(25deg);
+            animation: shineGlamour 4s infinite;
+        }
+
+        @keyframes shineGlamour {
+            0%, 60% { left: -60%; }
+            100% { left: 140%; }
+        }
+
+        .btn-download-glamour:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(255, 119, 0, 0.6), 0 0 30px rgba(255, 119, 0, 0.4);
+            border-color: #fef08a;
+        }
+
+        .btn-download-glamour:active {
+            transform: translateY(0) scale(0.98);
         }
     </style>
 </head>
