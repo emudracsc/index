@@ -695,7 +695,14 @@
                     <input type="text" id="m_ref_no" value="" placeholder="उदा. MHK/2026/089" oninput="syncAllFields()">
                 </div>
                 <div class="input-item">
-                    <label>सेतू केंद्र जावक क्र. (Page 4 & 5)</label>
+                    <label>केंद्राचा प्रकार (Center Type)</label>
+                    <select id="m_center_type" onchange="syncAllFields()">
+                        <option value="सेतू केंद्र" selected>सेतू केंद्र</option>
+                        <option value="आ.स.से.केंद्र">आ.स.से.केंद्र</option>
+                    </select>
+                </div>
+                <div class="input-item">
+                    <label>जावक क्र. (Page 4 & 5)</label>
                     <input type="text" id="m_setu_outward" value="" placeholder="जावक क्र." oninput="syncAllFields()">
                 </div>
                 <div class="input-item">
@@ -1362,7 +1369,7 @@
             <!-- Staggering Fixed: Block placed at top-right with all 3 lines starting at the exact same left vertical line -->
             <div style="display:flex; justify-content:flex-end; margin-bottom:14px; padding-right:20px;">
                 <div style="text-align:left; font-size:11.5pt; line-height:2.0; display:inline-block;">
-                    सेतू केंद्र /उ. दा./ जा.क्र./ <span class="fill-text" id="p4_outward" style="min-width:50px;"></span> /२०२६<br>
+                    <span id="p4_center_type_text">सेतू केंद्र</span> /उ. दा./ जा.क्र./ <span class="fill-text" id="p4_outward" style="min-width:50px;"></span> /२०२६<br>
                     तहसिलदार कार्यालय <span class="fill-text" id="p4_taluka_head">कणकवली</span><br>
                     दिनांक :- <span class="fill-text" id="p4_date"></span>
                 </div>
@@ -1392,7 +1399,7 @@
                 <li style="margin-bottom:8px;">अर्जदार यांचा जबाब नोंदविताना अर्जदार कोणत्या कारणासाठी दाखला वापरणार आहे याचा स्पष्ट उल्लेख करावा.</li>
             </ol>
 
-            <div class="sign-block-right" style="margin-top:40px; font-weight:700; font-size:11.5pt;">
+            <div class="sign-block-right" style="margin-top:40px; font-weight:700; font-size:11.5pt;" id="p4_sign_designation">
                 सेतू लिपिक
             </div>
 
@@ -1423,7 +1430,7 @@
 
             <div style="text-align:center; font-weight:800; font-size:12.5pt; margin:12px 0; line-height:2.0;">
                 विषयः- मिळकतीच्या चौकशीबाबत अहवाल<br>
-                <span style="font-weight:normal; font-size:10.5pt;">संदर्भ :- क्र. सेतू/ उ.दा. / <span class="fill-text" id="p5_ref" style="min-width:40px;"></span> /२०२६</span>
+                <span style="font-weight:normal; font-size:10.5pt;">संदर्भ :- क्र. <span id="p5_ref_center_type">सेतू</span>/ उ.दा. / <span class="fill-text" id="p5_ref" style="min-width:40px;"></span> /२०२६</span>
             </div>
 
             <div style="font-size:11.5pt; margin-top:10px;">
@@ -2285,6 +2292,17 @@
         document.getElementById('p3_sign_name').innerText = name;
 
         // --- PAGE 4 SYNC ---
+        const centerType = document.getElementById('m_center_type').value;
+        if (centerType === "आ.स.से.केंद्र") {
+            document.getElementById('p4_center_type_text').innerText = "आ.स.से.केंद्र";
+            document.getElementById('p4_sign_designation').innerText = "आपले सरकार सेवा केंद्रचालक";
+            document.getElementById('p5_ref_center_type').innerText = "आ.स.से.केंद्र";
+        } else {
+            document.getElementById('p4_center_type_text').innerText = "सेतू केंद्र";
+            document.getElementById('p4_sign_designation').innerText = "सेतू लिपिक";
+            document.getElementById('p5_ref_center_type').innerText = "सेतू";
+        }
+
         document.getElementById('p4_outward').innerHTML = setuOutward ? setuOutward : `<span class="empty-line" style="min-width:40px;"></span>`;
         document.getElementById('p4_taluka_head').innerText = taluka;
         document.getElementById('p4_date').innerText = dateFormatted;
@@ -2465,6 +2483,7 @@
     function clearAllForm() {
         if (!confirm("सर्व फील्ड्स रीसेट करायचे आहेत का?")) return;
         document.getElementById('m_ref_no').value = "";
+        document.getElementById('m_center_type').value = "सेतू केंद्र";
         document.getElementById('m_setu_outward').value = "";
         document.getElementById('m_officer_type').value = "ग्राम महसूल अधिकारी (तलाठी)";
         document.getElementById('m_mandal_village').value = "";
