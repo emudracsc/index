@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ई-पुस्तकालय दालन | ई-मुद्रा आपले सरकार व आधार सेवा केंद्र</title>
+  <meta name="description" content="ई-मुद्रा आपले सरकार केंद्र - 3D ई-पुस्तकालय, वाचन साहित्य व संदर्भ ग्रंथ" />
+  <link rel="stylesheet" href="dalan-styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Ambient Glow Elements -->
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+  <div class="glow-orb glow-orb-3"></div>
+
+  <!-- Top Info Bar -->
+  <div class="top-info-bar">
+    <div class="top-info-left">
+      <span class="gov-badge">
+        <i class="fas fa-landmark"></i> महाराष्ट्र शासन • ई-मुद्रा आपले सरकार केंद्र
+      </span>
+      <span class="live-clock-badge">
+        <i class="far fa-clock"></i> <span id="live-clock-text">--:--:--</span>
+      </span>
+    </div>
+    <div class="top-info-right">
+      <span id="live-greeting-text" style="color: #fed7aa; font-weight: 600; font-size: 0.85rem;">नमस्कार!</span>
+      <button id="audio-toggle-btn" class="audio-toggle-btn" onclick="toggleAudioFeedback()">
+        <i class="fas fa-volume-up"></i> ध्वनी
+      </button>
+    </div>
+  </div>
+
+  <!-- Master Header -->
+  <header class="main-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-wrapper">
+        <div class="emblem-icon">
+          🏛️
+        </div>
+        <div class="brand-text">
+          <h1>सर्व शासकीय व ई-मुद्रा सेवा एकाच छताखाली!</h1>
+          <p>ई-पुस्तकालय दालन (Digital Library)</p>
+        </div>
+      </a>
+
+      <button id="mobile-nav-toggle" class="nav-toggle" aria-label="Toggle Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <ul id="main-nav-links" class="nav-links">
+        <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> मुख्य दालन</a></li>
+        <li><a href="digital-wall.html" class="nav-link"><i class="fas fa-tv"></i> डिजिटल वॉल</a></li>
+        <li><a href="logo-wall.html" class="nav-link"><i class="fas fa-qrcode"></i> महसूल ई-सेवा</a></li>
+        <li><a href="book-wall.html" class="nav-link active"><i class="fas fa-book-open"></i> ई-पुस्तके</a></li>
+        <li><a href="news_paper.html" class="nav-link"><i class="fas fa-newspaper"></i> वृत्तपत्रे</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="hero-section" style="padding-bottom: 20px;">
+      <div class="hero-pill">
+        <i class="fas fa-book-reader"></i> 3D व्हर्च्युअल ग्रंथालय
+      </div>
+      <h2 class="hero-title">
+        ई-पुस्तकालय वाचन दालन
+      </h2>
+      <p class="hero-subtitle">
+        नागरिकांसाठी आणि विद्यार्थ्यांसाठी विविध विषयांवरील समृद्ध ई-पुस्तकांचे डिजिटल दालन. पुस्तकावर क्लिक करून वाचन सुरू करा.
+      </p>
+    </section>
+
+    <!-- Search & Filter Controls -->
+    <section class="controls-wrapper">
+      <div class="search-filter-box">
+        <div class="search-input-wrapper">
+          <input 
+            type="text" 
+            id="portal-search-input" 
+            class="search-input" 
+            placeholder="पुस्तकाचे नाव किंवा विषय शोधा (उदा. कायदा, इतिहास, स्पर्धा परीक्षा, मार्गदर्शन...)" 
+          />
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="filter-pills-row">
+          <button class="filter-pill active" data-category="all">सर्व पुस्तके (All)</button>
+          <button class="filter-pill" data-category="general">सामान्य ज्ञान व मार्गदर्शन</button>
+          <button class="filter-pill" data-category="revenue">महसूल व कायदे</button>
+          <button class="filter-pill" data-category="literature">साहित्य व विचार</button>
+          <span id="results-count-badge" class="results-count-badge">११ ई-पुस्तके उपलब्ध</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3D Book Grid -->
+    <section class="book-shelf-grid">
+      
+      <!-- Book 1 -->
+      <div 
+        class="book-card-3d searchable-item" 
+        data-category="general"
+        data-title="ई-पुस्तक संग्रह भाग १ संदर्भ ग्रंथ"
+        data-desc="वाचन साहित्य व उपयुक्त माहिती"
+        onclick="openQRModal('ई-पुस्तक संग्रह - भाग १', 'हे पुस्तक ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा उघडा.', './Images/books/3.jpg', '#')"
+      >
+        <div class="book-inner-wrap">
+          <div class="book-cover">
+            <img src="./Images/books/3.jpg" alt="ई-पुस्तक १" />
+            <div class="book-badge-overlay">
+              <span>ई-ग्रंथ १</span>
+              <i class="fas fa-book-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 2 -->
+      <div 
+        class="book-card-3d searchable-item" 
+        data-category="revenue"
+        data-title="महसूल मार्गदर्शिका व शासकीय नियम भाग २"
+        data-desc="महसुली कायदे व कार्यपद्धती"
+        onclick="openQRModal('महसूल मार्गदर्शिका - भाग २', 'हे पुस्तक ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा उघडा.', './Images/books/4.jpg', '#')"
+      >
+        <div class="book-inner-wrap">
+          <div class="book-cover">
+            <img src="./Images/books/4.jpg" alt="ई-पुस्तक २" />
+            <div class="book-badge-overlay">
+              <span>महसूल मार्गदर्शिका</span>
+              <i class="fas fa-book-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 3 -->
+      <div 
+        class="book-card-3d searchable-item" 
+        data-category="general"
+        data-title="प्रशासन व लोकसेवा भाग ३"
+        data-desc="लोकप्रशासन आणि नागरिक सनद"
+        onclick="openQRModal('प्रशासन व लोकसेवा - भाग ३', 'हे पुस्तक ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा उघडा.', './Images/books/5.jpg', '#')"
+      >
+        <div class="book-inner-wrap">
+          <div class="book-cover">
+            <img src="./Images/books/5.jpg" alt="ई-पुस्तक ३" />
+            <div class="book-badge-overlay">
+              <span>लोकप्रशासन</span>
+              <i class="fas fa-book-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 4 -->
+      <div 
+        class="book-card-3d searchable-item" 
+        data-category="literature"
+        data-title="इतिहास व संस्कृती ज्ञान भाग ४"
+        data-desc="महाराष्ट्र इतिहास व वारसा"
+        onclick="openQRModal('इतिहास व संस्कृती ज्ञान - भाग ४', 'हे पुस्तक ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा उघडा.', './Images/books/6.jpg', '#')"
+      >
+        <div class="book-inner-wrap">
+          <div class="book-cover">
+            <img src="./Images/books/6.jpg" alt="ई-पुस्तक ४" />
+            <div class="book-badge-overlay">
+              <span>इतिहास व संस्कृती</span>
+              <i class="fas fa-book-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 5 -->
+      <div 
+        class="book-card-3d searchable-item" 
+        data-category="revenue"
+        data-title="जमीन महसूल संहिता भाग ५"
+        data-desc="महाराष्ट्र जमीन महसूल नियम"
+        onclick="openQRModal('जमीन महसूल संहिता - भाग ५', 'हे पुस्तक ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा उघडा.', './Images/books/7.jpg', '#')"
+      >
+        <div class="book-inner-wrap">
+          <div class="book-cover">
+            <img src="./Images/books/7.jpg" alt="ई-पुस्तक ५" />
+            <div class="book-badge-overlay">
+              <span>जमीन महसूल</span>
+              <i class="fas fa-book-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 6 -->
+      <div 
+        class="book-card-3d searchable-item" 
+        data-category="general"
+        data-title="सामान्य अध्ययन संदर्भ ग्रंथ भाग ६"
+        data-desc="स्पर्धा परीक्षा मार्गदर्शन"
+        onclick="openQRModal('सामान्य अध्ययन संदर्भ ग्रंथ - भाग ६', 'हे पुस्तक ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा उघडा.', './Images/books/8.jpg', '#')"
+      >
+        <div class="book-inner-wrap">
+          <div class="book-cover">
+            <img src="./Images/books/8.jpg" alt="ई-पुस्तक ६" />
+            <div class="book-badge-overlay">
+              <span>सामान्य अध्ययन</span>
+              <i class="fas fa-book-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 7 -->
+      <div 
+        class="book-card-3d searchable-item" 
+        data-category="literature"
+        data-title="विचारवंत व समाजसुधारक चरित्र भाग ७"
+        data-desc="महापुरुषांचे विचार व कार्य"
+        onclick="openQRModal('विचारवंत व समाजसुधारक चरित्र - भाग ७', 'हे पुस्तक ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा उघडा.', './Images/books/9.jpg', '#')"
+      >
+        <div class="book-inner-wrap">
+          <div class="book-cover">
+            <img src="./Images/books/9.jpg" alt="ई-पुस्तक ७" />
+            <div class="book-badge-overlay">
+              <span>समाजसुधारक विचार</span>
+              <i class="fas fa-book-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 8 -->
+      <div 
+        class="book-card-3d searchable-item" 
+        data-category="revenue"
+        data-title="गाव नमुने व दप्तर तपासणी भाग ८"
+        data-desc="महसुली अभिलेख व नमुने"
+        onclick="openQRModal('गाव नमुने व दप्तर तपासणी - भाग ८', 'हे पुस्तक ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा उघडा.', './Images/books/10.jpg', '#')"
+      >
+        <div class="book-inner-wrap">
+          <div class="book-cover">
+            <img src="./Images/books/10.jpg" alt="ई-पुस्तक ८" />
+            <div class="book-badge-overlay">
+              <span>गाव नमुने अभिलेख</span>
+              <i class="fas fa-book-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 9 -->
+      <div 
+        class="book-card-3d searchable-item" 
+        data-category="general"
+        data-title="नागरिक हक्क व कर्तव्ये भाग ९"
+        data-desc="संविधान व मूलभूत हक्क"
+        onclick="openQRModal('नागरिक हक्क व कर्तव्ये - भाग ९', 'हे पुस्तक ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा उघडा.', './Images/books/11.jpg', '#')"
+      >
+        <div class="book-inner-wrap">
+          <div class="book-cover">
+            <img src="./Images/books/11.jpg" alt="ई-पुस्तक ९" />
+            <div class="book-badge-overlay">
+              <span>नागरिक हक्क</span>
+              <i class="fas fa-book-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 10 -->
+      <div 
+        class="book-card-3d searchable-item" 
+        data-category="literature"
+        data-title="कोकण इतिहास व लोकसंस्कृती भाग १०"
+        data-desc="सिंधुदुर्ग व कोकण वैभव"
+        onclick="openQRModal('कोकण इतिहास व लोकसंस्कृती - भाग १०', 'हे पुस्तक ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा उघडा.', './Images/books/16.jpg', '#')"
+      >
+        <div class="book-inner-wrap">
+          <div class="book-cover">
+            <img src="./Images/books/16.jpg" alt="ई-पुस्तक १०" />
+            <div class="book-badge-overlay">
+              <span>कोकण वैभव</span>
+              <i class="fas fa-book-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 11 -->
+      <div 
+        class="book-card-3d searchable-item" 
+        data-category="general"
+        data-title="पर्यावरण व निसर्ग संवर्धन भाग ११"
+        data-desc="सह्याद्री व जैवविविधता"
+        onclick="openQRModal('पर्यावरण व निसर्ग संवर्धन - भाग ११', 'हे पुस्तक ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा उघडा.', './Images/books/17.jpg', '#')"
+      >
+        <div class="book-inner-wrap">
+          <div class="book-cover">
+            <img src="./Images/books/17.jpg" alt="ई-पुस्तक ११" />
+            <div class="book-badge-overlay">
+              <span>पर्यावरण संवर्धन</span>
+              <i class="fas fa-book-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Master Footer -->
+  <footer class="main-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">🏛️ ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र</div>
+      <div class="footer-nav">
+        <a href="index.html">मुख्य दालन</a>
+        <a href="digital-wall.html">डिजिटल वॉल</a>
+        <a href="logo-wall.html">महसूल ई-सेवा</a>
+        <a href="book-wall.html">ई-पुस्तके</a>
+        <a href="news_paper.html">वृत्तपत्रे</a>
+      </div>
+      <p class="footer-copy">
+        © 2026 ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र. सर्व हक्क राखीव.
+      </p>
+    </div>
+  </footer>
+
+  <script src="dalan-script.js"></script>
+</body>
+</html>

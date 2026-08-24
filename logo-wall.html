@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>महसूल ई-सेवा दालन | ई-मुद्रा आपले सरकार व आधार सेवा केंद्र</title>
+  <meta name="description" content="ई-मुद्रा आपले सरकार केंद्र - महसूल ई-लिंक्स, ७/१२, ई-हक्क, ई-मोजणी, ई-चावडी व शासकीय योजना" />
+  <link rel="stylesheet" href="dalan-styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Ambient Glow Elements -->
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+  <div class="glow-orb glow-orb-3"></div>
+
+  <!-- Top Info Bar -->
+  <div class="top-info-bar">
+    <div class="top-info-left">
+      <span class="gov-badge">
+        <i class="fas fa-landmark"></i> महाराष्ट्र शासन • ई-मुद्रा आपले सरकार केंद्र
+      </span>
+      <span class="live-clock-badge">
+        <i class="far fa-clock"></i> <span id="live-clock-text">--:--:--</span>
+      </span>
+    </div>
+    <div class="top-info-right">
+      <span id="live-greeting-text" style="color: #fed7aa; font-weight: 600; font-size: 0.85rem;">नमस्कार!</span>
+      <button id="audio-toggle-btn" class="audio-toggle-btn" onclick="toggleAudioFeedback()">
+        <i class="fas fa-volume-up"></i> ध्वनी
+      </button>
+    </div>
+  </div>
+
+  <!-- Master Header -->
+  <header class="main-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-wrapper">
+        <div class="emblem-icon">
+          🏛️
+        </div>
+        <div class="brand-text">
+          <h1>सर्व शासकीय व ई-मुद्रा सेवा एकाच छताखाली!</h1>
+          <p>महसूल ई-सेवा दालन (Revenue E-Services)</p>
+        </div>
+      </a>
+
+      <button id="mobile-nav-toggle" class="nav-toggle" aria-label="Toggle Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <ul id="main-nav-links" class="nav-links">
+        <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> मुख्य दालन</a></li>
+        <li><a href="digital-wall.html" class="nav-link"><i class="fas fa-tv"></i> डिजिटल वॉल</a></li>
+        <li><a href="logo-wall.html" class="nav-link active"><i class="fas fa-qrcode"></i> महसूल ई-सेवा</a></li>
+        <li><a href="book-wall.html" class="nav-link"><i class="fas fa-book-open"></i> ई-पुस्तके</a></li>
+        <li><a href="news_paper.html" class="nav-link"><i class="fas fa-newspaper"></i> वृत्तपत्रे</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="hero-section" style="padding-bottom: 20px;">
+      <div class="hero-pill">
+        <i class="fas fa-qrcode"></i> डिजिटल महसूल सेवा लिंक्स
+      </div>
+      <h2 class="hero-title">
+        महसूल ई-सेवा महादालन
+      </h2>
+      <p class="hero-subtitle">
+        ७/१२, फेरफार (ई-हक्क), ई-मोजणी, ई-चावडी, नकाशे व शासकीय योजनांच्या अधिकृत पोर्टल्ससाठी QR कोड स्कॅन करा किंवा थेट लिंक उघडा.
+      </p>
+    </section>
+
+    <!-- Search & Category Filters -->
+    <section class="controls-wrapper">
+      <div class="search-filter-box">
+        <div class="search-input-wrapper">
+          <input 
+            type="text" 
+            id="portal-search-input" 
+            class="search-input" 
+            placeholder="महसूल सेवा शोधा (उदा. ई-हक्क, ७/१२, ई-मोजणी, भुलेख, अग्रिस्टॅक, कोर्ट...)" 
+          />
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="filter-pills-row">
+          <button class="filter-pill active" data-category="all">सर्व सेवा (All)</button>
+          <button class="filter-pill" data-category="land">जमीन व ७/१२</button>
+          <button class="filter-pill" data-category="survey">मोजणी व नकाशे</button>
+          <button class="filter-pill" data-category="legal">कोर्ट व कायदे</button>
+          <button class="filter-pill" data-category="schemes">शेतकरी योजना व जीआर</button>
+          <span id="results-count-badge" class="results-count-badge">१५ सेवा उपलब्ध</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Revenue Cards Grid -->
+    <section class="logo-wall-grid">
+      
+      <!-- 1. E-Hakk -->
+      <div class="revenue-card searchable-item" data-category="land" data-title="ई-हक्क फेरफार अर्ज ऑनलाइन नोंदणी" data-desc="फेरफार करिता ऑनलाइन अर्ज करण्यासाठी">
+        <div class="revenue-qr-frame" onclick="openQRModal('ई-हक्क (E-Hakk)', 'फेरफार करिता ऑनलाइन अर्ज करण्यासाठी पोर्टल.', './Images/logo/logo-e-hakk.jpg', 'https://pdeigr.maharashtra.gov.in/frmLogin')">
+          <img src="./Images/logo/logo-e-hakk.jpg" alt="ई-हक्क QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">ई-हक्क</h3>
+        <p class="revenue-desc">फेरफार करिता ऑनलाइन अर्ज करण्यासाठी अधिकृत पोर्टल.</p>
+        <div class="revenue-card-footer">
+          <a href="https://pdeigr.maharashtra.gov.in/frmLogin" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://pdeigr.maharashtra.gov.in/frmLogin')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. E-Chavadi -->
+      <div class="revenue-card searchable-item" data-category="land" data-title="ई-चावडी जमीन महसूल भरणा कर पावती" data-desc="जमीन महसूल भरणा करण्यासाठी">
+        <div class="revenue-qr-frame" onclick="openQRModal('ई-चावडी (E-Chavadi)', 'जमीन महसूल ऑनलाइन भरणा करण्यासाठी.', './Images/logo/logo-e-chavadi.jpg', 'https://echawadicitizen.mahabhumi.gov.in/')">
+          <img src="./Images/logo/logo-e-chavadi.jpg" alt="ई-चावडी QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">ई-चावडी</h3>
+        <p class="revenue-desc">जमीन महसूल ऑनलाइन भरणा व तपासणी करण्यासाठी.</p>
+        <div class="revenue-card-footer">
+          <a href="https://echawadicitizen.mahabhumi.gov.in/" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://echawadicitizen.mahabhumi.gov.in/')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. E-Mojani -->
+      <div class="revenue-card searchable-item" data-category="survey" data-title="ई-मोजणी जमीन मोजणी अर्ज नकाशा ट्रॅकिंग" data-desc="आपल्या जमिनीच्या मोजणीसाठी">
+        <div class="revenue-qr-frame" onclick="openQRModal('ई-मोजणी (E-Mojani)', 'आपल्या जमिनीच्या मोजणीसाठी अर्ज व स्थिती तपासणी.', './Images/logo/logo-e-mojani.jpg', 'https://emojni.mahabhumi.gov.in/citizensite/pgLogin.aspx')">
+          <img src="./Images/logo/logo-e-mojani.jpg" alt="ई-मोजणी QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">ई-मोजणी</h3>
+        <p class="revenue-desc">आपल्या जमिनीच्या मोजणीसाठी ऑनलाइन अर्ज व ट्रॅकिंग.</p>
+        <div class="revenue-card-footer">
+          <a href="https://emojni.mahabhumi.gov.in/citizensite/pgLogin.aspx" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://emojni.mahabhumi.gov.in/citizensite/pgLogin.aspx')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. E-Bhulekh -->
+      <div class="revenue-card searchable-item" data-category="land" data-title="ई-भुलेख ७/१२ ८अ मालमत्ता पत्रक सातबारा" data-desc="७/१२, ८अ व मालमत्ता पत्रक पाहण्यासाठी">
+        <div class="revenue-qr-frame" onclick="openQRModal('ई-भुलेख (E-Bhulekh)', '७/१२, ८अ व मालमत्ता पत्रक पाहण्यासाठी महाभूमी पोर्टल.', './Images/logo/logo-e-bhulekh.jpg', 'https://bhulekh.mahabhumi.gov.in/')">
+          <img src="./Images/logo/logo-e-bhulekh.jpg" alt="ई-भुलेख QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">ई-भुलेख</h3>
+        <p class="revenue-desc">७/१२, ८अ व मालमत्ता पत्रक ऑनलाइन पाहण्यासाठी.</p>
+        <div class="revenue-card-footer">
+          <a href="https://bhulekh.mahabhumi.gov.in/" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://bhulekh.mahabhumi.gov.in/')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. E-Nakasha -->
+      <div class="revenue-card searchable-item" data-category="survey" data-title="ई-नकाशा महाभू नकाशा जमीन गट नकाशा" data-desc="आपल्या जमिनीचा नकाशा पाहण्यासाठी">
+        <div class="revenue-qr-frame" onclick="openQRModal('ई-नकाशा (Mahabhunakasha)', 'आपल्या जमिनीचा नकाशा ऑनलाइन पाहण्यासाठी व डाऊनलोड करण्यासाठी.', './Images/logo/logo-e-nakasha.jpg', 'https://mahabhunakasha.mahabhumi.gov.in/27/index.html')">
+          <img src="./Images/logo/logo-e-nakasha.jpg" alt="ई-नकाशा QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">ई-नकाशा</h3>
+        <p class="revenue-desc">आपल्या जमिनीचा अधिकृत नकाशा पाहण्यासाठी.</p>
+        <div class="revenue-card-footer">
+          <a href="https://mahabhunakasha.mahabhumi.gov.in/27/index.html" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://mahabhunakasha.mahabhumi.gov.in/27/index.html')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 6. E-Pik Pahani -->
+      <div class="revenue-card searchable-item" data-category="schemes" data-title="ई-पीक पहाणी डिजिटल क्रॉप सर्व्हे मोबाईल ॲप शेती" data-desc="Digital Crop Survey Mobile App">
+        <div class="revenue-qr-frame" onclick="openQRModal('ई-पीक पहाणी मोबाईल ॲप', 'शेतकऱ्यांसाठी डिजिटल क्रॉप सर्व्हे मोबाईल ॲप डाउनलोड करा.', './Images/logo/logo-e-pikPahani.png', 'https://play.google.com/store/apps/details?id=io.sc.eppCordova&hl=en_IN&pli=1')">
+          <img src="./Images/logo/logo-e-pikPahani.png" alt="ई-पीक पहाणी QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">ई-पीक पहाणी</h3>
+        <p class="revenue-desc">शेतकऱ्यांसाठी डिजिटल क्रॉप सर्व्हे अधिकृत मोबाईल ॲप.</p>
+        <div class="revenue-card-footer">
+          <a href="https://play.google.com/store/apps/details?id=io.sc.eppCordova&hl=en_IN&pli=1" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-mobile-alt"></i> ॲप डाउनलोड
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://play.google.com/store/apps/details?id=io.sc.eppCordova&hl=en_IN&pli=1')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. E-Records -->
+      <div class="revenue-card searchable-item" data-category="land" data-title="ई-रेकॉर्डस सातबारा डिजिटल स्वाक्षरी डीएसएलआर" data-desc="7/12, 8अ व प्रॉपर्टी कार्ड काढण्यासाठी">
+        <div class="revenue-qr-frame" onclick="openQRModal('ई-रेकॉर्डस (DSLR)', 'डिजिटल स्वाक्षरीत ७/१२, ८अ व प्रॉपर्टी कार्ड मिळवण्यासाठी.', './Images/logo/logo-e-records.jpg', 'https://digitalsatbara.mahabhumi.gov.in/DSLR')">
+          <img src="./Images/logo/logo-e-records.jpg" alt="ई-रेकॉर्डस QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">ई-रेकॉर्डस</h3>
+        <p class="revenue-desc">7/12, 8अ व प्रॉपर्टी कार्ड डिजिटल डाउनलोड करण्यासाठी.</p>
+        <div class="revenue-card-footer">
+          <a href="https://digitalsatbara.mahabhumi.gov.in/DSLR" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://digitalsatbara.mahabhumi.gov.in/DSLR')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 8. E-Mulyankan -->
+      <div class="revenue-card searchable-item" data-category="land" data-title="ई-मूल्यांकन जमीन दर रेडी रेकनर मुद्रांक शुल्क" data-desc="आपल्या जमिनीचे मूल्य काढण्यासाठी">
+        <div class="revenue-qr-frame" onclick="openQRModal('ई-मूल्यांकन (IGR Maharashtra)', 'जमिनीचे शासकीय मूल्य व मुद्रांक शुल्क मूल्यांकन.', './Images/logo/logo-e-mulyankan.jpg', 'https://valuation.igrmaharashtra.gov.in/EVALUATION/')">
+          <img src="./Images/logo/logo-e-mulyankan.jpg" alt="ई-मूल्यांकन QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">ई-मूल्यांकन</h3>
+        <p class="revenue-desc">आपल्या जमिनीचे शासकीय मूल्य व दर काढण्यासाठी.</p>
+        <div class="revenue-card-footer">
+          <a href="https://valuation.igrmaharashtra.gov.in/EVALUATION/" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://valuation.igrmaharashtra.gov.in/EVALUATION/')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 9. E-Search -->
+      <div class="revenue-card searchable-item" data-category="land" data-title="ई-सर्च नोंदणीकृत दस्त डिजिटल स्वाक्षरी प्रत" data-desc="नोंदणीकृत दस्तांच्या प्रमाणित प्रती मिळवण्यासाठी">
+        <div class="revenue-qr-frame" onclick="openQRModal('ई-सर्च (E-Search IGR)', 'नोंदणीकृत दस्तांच्या डिजिटल स्वाक्षरीकृत प्रमाणित प्रति मिळवण्यासाठी.', './Images/logo/logo-e-search.png', 'https://esearchigr.maharashtra.gov.in/')">
+          <img src="./Images/logo/logo-e-search.png" alt="ई-सर्च QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">ई-सर्च</h3>
+        <p class="revenue-desc">नोंदणीकृत दस्तांच्या डिजिटल प्रमाणित प्रति मिळवण्यासाठी.</p>
+        <div class="revenue-card-footer">
+          <a href="https://esearchigr.maharashtra.gov.in/" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://esearchigr.maharashtra.gov.in/')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 10. E-Malmatta Patrak -->
+      <div class="revenue-card searchable-item" data-category="land" data-title="ई-मालमत्ता पत्रक प्रॉपर्टी कार्ड डाऊनलोड भूमी अभिलेख" data-desc="प्रॉपर्टी कार्ड काढण्यासाठी">
+        <div class="revenue-qr-frame" onclick="openQRModal('ई-मालमत्ता पत्रक', 'अधिकृत प्रॉपर्टी कार्ड डाऊनलोड करण्यासाठी पोर्टल.', './Images/logo/logo-e-malMatta.jpg', 'https://bhumiabhilekh.maharashtra.gov.in/Services/PropertyCardDownload')">
+          <img src="./Images/logo/logo-e-malMatta.jpg" alt="ई-मालमत्ता पत्रक QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">ई-मालमत्ता पत्रक</h3>
+        <p class="revenue-desc">शहरी व ग्रामीण भागातील प्रॉपर्टी कार्ड काढण्यासाठी.</p>
+        <div class="revenue-card-footer">
+          <a href="https://bhumiabhilekh.maharashtra.gov.in/Services/PropertyCardDownload" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://bhumiabhilekh.maharashtra.gov.in/Services/PropertyCardDownload')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 11. E-Quze Court -->
+      <div class="revenue-card searchable-item" data-category="legal" data-title="ई-क्युजेकोर्ट महसुली प्रकरणे न्यायालय सुनावणी आदेश" data-desc="महसुली प्रकरणे व कोर्ट आदेश">
+        <div class="revenue-qr-frame" onclick="openQRModal('ई-क्युजेकोर्ट (E-Court Revenue)', 'महसुली कोर्ट प्रकरणे व सुनावणीची स्थिती तपासण्यासाठी.', './Images/logo/logo-e-quzeCourt.jpg', 'https://eqjcourts.gov.in/startup/default.php')">
+          <img src="./Images/logo/logo-e-quzeCourt.jpg" alt="ई-क्युजेकोर्ट QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">ई-क्युजेकोर्ट</h3>
+        <p class="revenue-desc">महसुली न्यायालयीन प्रकरणे व सुनावणी तारीख पाहण्यासाठी.</p>
+        <div class="revenue-card-footer">
+          <a href="https://eqjcourts.gov.in/startup/default.php" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://eqjcourts.gov.in/startup/default.php')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 12. Digital 7/12 & 8A -->
+      <div class="revenue-card searchable-item" data-category="land" data-title="डिजिटल स्वाक्षरीत ७/१२ व ८अ फेरफार ऑनलाइन डाऊनलोड" data-desc="ऑनलाइन डिजिटल स्वाक्षरीत 7/12, 8अ व फेरफार">
+        <div class="revenue-qr-frame" onclick="openQRModal('डिजिटल स्वाक्षरीत ७/१२ व ८अ', 'कायदेशीर कामांसाठी ग्राह्य असणारा डिजिटल स्वाक्षरीत सातबारा व आठ-अ.', './Images/logo/logo-e-onlineDigital.jpg', 'https://digitalsatbara.mahabhumi.gov.in/DSLR')">
+          <img src="./Images/logo/logo-e-onlineDigital.jpg" alt="डिजिटल स्वाक्षरीत 7/12 QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">डिजिटल स्वाक्षरीत ७/१२</h3>
+        <p class="revenue-desc">कायदेशीर कामांसाठी अधिकृत डिजिटल ७/१२, ८-अ व फेरफार.</p>
+        <div class="revenue-card-footer">
+          <a href="https://digitalsatbara.mahabhumi.gov.in/DSLR" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://digitalsatbara.mahabhumi.gov.in/DSLR')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 13. Maharashtra Gazette -->
+      <div class="revenue-card searchable-item" data-category="legal" data-title="महाराष्ट्र शासन राजपत्र गॅझेट शासकीय अधिसूचना" data-desc="महाराष्ट्र शासन राजपत्र">
+        <div class="revenue-qr-frame" onclick="openQRModal('महाराष्ट्र शासन राजपत्र (Gazette)', 'शासकीय राजपत्रातील अधिसूचना व नावात बदल शोधण्यासाठी.', './Images/logo/logo-e-maharashtraShasan.jpg', 'https://egazzete.mahaonline.gov.in/Forms/GazetteSearch.aspx?MenuID=1124')">
+          <img src="./Images/logo/logo-e-maharashtraShasan.jpg" alt="महाराष्ट्र राजपत्र QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">महाराष्ट्र शासन राजपत्र</h3>
+        <p class="revenue-desc">शासकीय राजपत्र (Gazette) शोधण्यासाठी व पाहण्यासाठी.</p>
+        <div class="revenue-card-footer">
+          <a href="https://egazzete.mahaonline.gov.in/Forms/GazetteSearch.aspx?MenuID=1124" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://egazzete.mahaonline.gov.in/Forms/GazetteSearch.aspx?MenuID=1124')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 14. Government Resolutions (GR) -->
+      <div class="revenue-card searchable-item" data-category="schemes" data-title="महाराष्ट्र शासन निर्णय जीआर परिपत्रक शासन आदेश" data-desc="महाराष्ट्र शासन निर्णय (GR)">
+        <div class="revenue-qr-frame" onclick="openQRModal('महाराष्ट्र शासन निर्णय (GR Portal)', 'महाराष्ट्र शासनाचे अधिकृत शासन निर्णय व जीआर शोधण्यासाठी.', './Images/logo/logo-e-maharashtraShasanNirnay.jpg', 'https://gr.maharashtra.gov.in/1145/Government-Resolutions')">
+          <img src="./Images/logo/logo-e-maharashtraShasanNirnay.jpg" alt="महाराष्ट्र शासन निर्णय QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">महाराष्ट्र शासन निर्णय (GR)</h3>
+        <p class="revenue-desc">शासकीय विभागनिहाय शासन निर्णय व परिपत्रके शोधण्यासाठी.</p>
+        <div class="revenue-card-footer">
+          <a href="https://gr.maharashtra.gov.in/1145/Government-Resolutions" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://gr.maharashtra.gov.in/1145/Government-Resolutions')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 15. AgriStack Scheme -->
+      <div class="revenue-card searchable-item" data-category="schemes" data-title="अग्रिस्टॅक योजना शेतकरी नोंदणी फार्मर आयडी डिजिटल शेती" data-desc="अग्रिस्टॅक योजना Farmer Registry">
+        <div class="revenue-qr-frame" onclick="openQRModal('अग्रिस्टॅक योजना (Farmer Registry)', 'शेतकऱ्यांसाठी डिजिटल नोंदणी व फार्मर आयडी योजना पोर्टल.', './Images/logo/logo-e-agriStrick.jpeg', 'https://mhfr.agristack.gov.in/farmer-registry-mh/#/')">
+          <img src="./Images/logo/logo-e-agriStrick.jpeg" alt="अग्रिस्टॅक योजना QR Code" />
+          <div class="revenue-qr-overlay">
+            <i class="fas fa-qrcode"></i>
+            <span>स्कॅन करा</span>
+          </div>
+        </div>
+        <h3 class="revenue-title">अग्रिस्टॅक योजना</h3>
+        <p class="revenue-desc">शेतकरी डिजिटल नोंदणी व शासकीय योजना लाभ पोर्टल.</p>
+        <div class="revenue-card-footer">
+          <a href="https://mhfr.agristack.gov.in/farmer-registry-mh/#/" target="_blank" class="btn-visit-portal" onclick="playClickSound()">
+            <i class="fas fa-external-link-alt"></i> पोर्टल उघडा
+          </a>
+          <button class="btn-copy-link" title="लिंक कॉपी करा" onclick="copyServiceUrl('https://mhfr.agristack.gov.in/farmer-registry-mh/#/')">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Master Footer -->
+  <footer class="main-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">🏛️ ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र</div>
+      <div class="footer-nav">
+        <a href="index.html">मुख्य दालन</a>
+        <a href="digital-wall.html">डिजिटल वॉल</a>
+        <a href="logo-wall.html">महसूल ई-सेवा</a>
+        <a href="book-wall.html">ई-पुस्तके</a>
+        <a href="news_paper.html">वृत्तपत्रे</a>
+      </div>
+      <p class="footer-copy">
+        © 2026 ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र. सर्व हक्क राखीव.
+      </p>
+    </div>
+  </footer>
+
+  <script src="dalan-script.js"></script>
+</body>
+</html>

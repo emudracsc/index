@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ई-पुस्तिकालय डिजिटल वॉल | ई-मुद्रा आपले सरकार व आधार सेवा केंद्र</title>
+  <meta name="description" content="ई-मुद्रा आपले सरकार केंद्र - डिजिटल वॉल व ई-पुस्तिकालय सेवा शेल्फ्स" />
+  <link rel="stylesheet" href="dalan-styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Ambient Glow Elements -->
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+  <div class="glow-orb glow-orb-3"></div>
+
+  <!-- Top Info Bar -->
+  <div class="top-info-bar">
+    <div class="top-info-left">
+      <span class="gov-badge">
+        <i class="fas fa-landmark"></i> महाराष्ट्र शासन • ई-मुद्रा आपले सरकार केंद्र
+      </span>
+      <span class="live-clock-badge">
+        <i class="far fa-clock"></i> <span id="live-clock-text">--:--:--</span>
+      </span>
+    </div>
+    <div class="top-info-right">
+      <span id="live-greeting-text" style="color: #fed7aa; font-weight: 600; font-size: 0.85rem;">नमस्कार!</span>
+      <button id="audio-toggle-btn" class="audio-toggle-btn" onclick="toggleAudioFeedback()">
+        <i class="fas fa-volume-up"></i> ध्वनी
+      </button>
+    </div>
+  </div>
+
+  <!-- Master Header -->
+  <header class="main-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-wrapper">
+        <div class="emblem-icon">
+          🏛️
+        </div>
+        <div class="brand-text">
+          <h1>सर्व शासकीय व ई-मुद्रा सेवा एकाच छताखाली!</h1>
+          <p>ई-पुस्तिकालय डिजिटल वॉल (Digital Services Wall)</p>
+        </div>
+      </a>
+
+      <button id="mobile-nav-toggle" class="nav-toggle" aria-label="Toggle Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <ul id="main-nav-links" class="nav-links">
+        <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> मुख्य दालन</a></li>
+        <li><a href="digital-wall.html" class="nav-link active"><i class="fas fa-tv"></i> डिजिटल वॉल</a></li>
+        <li><a href="logo-wall.html" class="nav-link"><i class="fas fa-qrcode"></i> महसूल ई-सेवा</a></li>
+        <li><a href="book-wall.html" class="nav-link"><i class="fas fa-book-open"></i> ई-पुस्तके</a></li>
+        <li><a href="news_paper.html" class="nav-link"><i class="fas fa-newspaper"></i> वृत्तपत्रे</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="hero-section" style="padding-bottom: 20px;">
+      <div class="hero-pill">
+        <i class="fas fa-layer-group"></i> 3D डिजिटल ई-पुस्तिकालय शेल्फ्स
+      </div>
+      <h2 class="hero-title">
+        ई-पुस्तिकालय डिजिटल वॉल
+      </h2>
+      <p class="hero-subtitle">
+        शासकीय सेवा, स्पर्धा परीक्षा ई-पुस्तके, वृत्तपत्रे व सायबर सुरक्षेची माहिती मिळवण्यासाठी थेट QR कोड स्कॅन करा किंवा कार्डवर क्लिक करा.
+      </p>
+    </section>
+
+    <!-- Search & Filter Controls -->
+    <section class="controls-wrapper">
+      <div class="search-filter-box">
+        <div class="search-input-wrapper">
+          <input 
+            type="text" 
+            id="portal-search-input" 
+            class="search-input" 
+            placeholder="डिजिटल सेवेचे नाव शोधा (उदा. वृत्तपत्र, सायबर, ई बुक, एमपीएससी...)" 
+          />
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="filter-pills-row">
+          <button class="filter-pill active" data-category="all">सर्व शेल्फ्स (All)</button>
+          <button class="filter-pill" data-category="news">वृत्तपत्र</button>
+          <button class="filter-pill" data-category="security">सुरक्षा</button>
+          <button class="filter-pill" data-category="books">पुस्तके व अभ्यास</button>
+          <button class="filter-pill" data-category="citizen">नागरिक सेवा</button>
+          <span id="results-count-badge" class="results-count-badge">७ शेल्फ्स सेवा उपलब्ध</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3D Realistic Wooden Shelves Grid -->
+    <section class="shelf-system">
+      
+      <!-- SHELF TIER 1 -->
+      <div class="shelf-tier">
+        <!-- 1. News Paper -->
+        <div 
+          class="digital-service-card theme-news searchable-item" 
+          data-category="news"
+          data-title="ई-वृत्त पत्र मराठी हिंदी इंग्रजी वर्तमानपत्रे"
+          data-desc="सर्व प्रमुख राष्ट्रीय व प्रादेशिक वर्तमानपत्रे ऑनलाइन वाचा"
+          onclick="openQRModal('ई-वृत्त पत्र दालन (मराठी, हिंदी, इंग्रजी)', 'सर्व प्रमुख वर्तमानपत्रे ऑनलाइन वाचण्यासाठी QR कोड स्कॅन करा किंवा वृत्तपत्र पोर्टल उघडा.', './Images/digital-wall-QR/1.jpg', 'news_paper.html')"
+        >
+          <div class="card-top-row">
+            <div class="qr-thumb-box">
+              <img src="./Images/digital-wall-QR/1.jpg" alt="ई-वृत्त पत्र QR" />
+              <div class="qr-scan-hint"><i class="fas fa-qrcode"></i> स्कॅन करा</div>
+            </div>
+            <div class="service-icon-bubble">📰</div>
+          </div>
+          <h3 class="service-meta-title">ई-वृत्त पत्र (मराठी, हिंदी, इंग्रजी)</h3>
+          <p class="service-meta-desc">सर्व प्रमुख राष्ट्रीय व स्थानिक वर्तमानपत्रे एकाच दालनात.</p>
+          <div class="service-card-action">
+            <span class="card-badge-pill">वृत्तपत्र पोर्टल</span>
+            <button class="btn-open-service" onclick="event.stopPropagation(); navigateToPage('news_paper.html')">
+              उघडा <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Cyber Security -->
+        <div 
+          class="digital-service-card theme-security searchable-item" 
+          data-category="security"
+          data-title="सायबर सुरक्षा ऑनलाइन मार्गदर्शन फसवणूक संरक्षण"
+          data-desc="नागरिकांच्या ऑनलाइन सुरक्षिततेसाठी मार्गदर्शक माहिती"
+          onclick="openQRModal('सायबर सुरक्षा दालन', 'डिजिटल व्यवहारांमध्ये सुरक्षित राहण्यासाठी व सायबर सुरक्षेचे नियम समजून घेण्यासाठी QR कोड स्कॅन करा.', './Images/digital-wall-QR/2.jpg', 'https://cybercrime.gov.in/')"
+        >
+          <div class="card-top-row">
+            <div class="qr-thumb-box">
+              <img src="./Images/digital-wall-QR/2.jpg" alt="सायबर सुरक्षा QR" />
+              <div class="qr-scan-hint"><i class="fas fa-qrcode"></i> स्कॅन करा</div>
+            </div>
+            <div class="service-icon-bubble">🔒</div>
+          </div>
+          <h3 class="service-meta-title">सायबर सुरक्षा</h3>
+          <p class="service-meta-desc">डिजिटल व्यवहार व ऑनलाइन सायबर फसवणुकीपासून संरक्षणाचे नियम.</p>
+          <div class="service-card-action">
+            <span class="card-badge-pill">नागरिक सुरक्षा</span>
+            <button class="btn-open-service" onclick="event.stopPropagation(); openQRModal('सायबर सुरक्षा दालन', 'डिजिटल सुरक्षेचे नियम व सायबर क्राइम पोर्टल.', './Images/digital-wall-QR/2.jpg', 'https://cybercrime.gov.in/')">
+              तपशील <i class="fas fa-expand"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHELF TIER 2 -->
+      <div class="shelf-tier">
+        <!-- 3. E-Book -->
+        <div 
+          class="digital-service-card theme-books searchable-item" 
+          data-category="books"
+          data-title="ई बुक डिजिटल वाचनालय ग्रंथालय"
+          data-desc="विविध विषयांवरील वाचनीय ई-पुस्तकांचा संग्रह"
+          onclick="openQRModal('ई-बुक दालन', 'नागरिकांसाठी विविध विषयांवरील वाचनीय ई-पुस्तकांचा संग्रह पाहण्यासाठी QR कोड स्कॅन करा.', './Images/digital-wall-QR/3.jpg', 'book-wall.html')"
+        >
+          <div class="card-top-row">
+            <div class="qr-thumb-box">
+              <img src="./Images/digital-wall-QR/3.jpg" alt="ई बुक QR" />
+              <div class="qr-scan-hint"><i class="fas fa-qrcode"></i> स्कॅन करा</div>
+            </div>
+            <div class="service-icon-bubble">📚</div>
+          </div>
+          <h3 class="service-meta-title">ई-बुक वाचनालय</h3>
+          <p class="service-meta-desc">साहित्य, इतिहास आणि सामान्य ज्ञानाचा समृद्ध ई-पुस्तक संग्रह.</p>
+          <div class="service-card-action">
+            <span class="card-badge-pill">ई-ग्रंथालय</span>
+            <button class="btn-open-service" onclick="event.stopPropagation(); navigateToPage('book-wall.html')">
+              वाचा <i class="fas fa-book-open"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. E-MPSC Book -->
+        <div 
+          class="digital-service-card theme-mpsc searchable-item" 
+          data-category="books"
+          data-title="ई एमपीएससी बुक स्पर्धा परीक्षा तयारी साहित्य नोट्स"
+          data-desc="एमपीएससी व स्पर्धा परीक्षा मार्गदर्शक ई-पुस्तके"
+          onclick="openQRModal('ई-एमपीएससी बुक दालन', 'एमपीएससी व इतर शासकीय स्पर्धा परीक्षांच्या तयारीसाठी उपयुक्त अभ्यास साहित्य व ई-पुस्तके.', './Images/digital-wall-QR/4.jpg', 'https://mpsc.gov.in/')"
+        >
+          <div class="card-top-row">
+            <div class="qr-thumb-box">
+              <img src="./Images/digital-wall-QR/4.jpg" alt="ई एमपीएससी बुक QR" />
+              <div class="qr-scan-hint"><i class="fas fa-qrcode"></i> स्कॅन करा</div>
+            </div>
+            <div class="service-icon-bubble">🎓</div>
+          </div>
+          <h3 class="service-meta-title">ई-एमपीएससी बुक</h3>
+          <p class="service-meta-desc">स्पर्धा परीक्षांसाठी अभ्यासक्रम, संदर्भ साहित्य व मार्गदर्शक नोट्स.</p>
+          <div class="service-card-action">
+            <span class="card-badge-pill">स्पर्धा परीक्षा</span>
+            <button class="btn-open-service" onclick="event.stopPropagation(); openQRModal('ई-एमपीएससी बुक दालन', 'स्पर्धा परीक्षा संदर्भ साहित्य.', './Images/digital-wall-QR/4.jpg', 'https://mpsc.gov.in/')">
+              तपशील <i class="fas fa-expand"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. Revenue E-Pustika -->
+        <div 
+          class="digital-service-card theme-mahasul searchable-item" 
+          data-category="citizen"
+          data-title="महसूल ई-पुस्तिका शासकीय कायदे फेरफार नियम"
+          data-desc="महसूल विभागाचे नियम, कायदे व नागरिक मार्गदर्शिका"
+          onclick="openQRModal('महसूल ई-पुस्तिका', 'महसूल विषयक सर्व कार्यपद्धती, कायदे, शेती व जमीन संबंधित मार्गदर्शिका.', './Images/digital-wall-QR/5.jpg', 'logo-wall.html')"
+        >
+          <div class="card-top-row">
+            <div class="qr-thumb-box">
+              <img src="./Images/digital-wall-QR/5.jpg" alt="महसूल ई-पुस्तिका QR" />
+              <div class="qr-scan-hint"><i class="fas fa-qrcode"></i> स्कॅन करा</div>
+            </div>
+            <div class="service-icon-bubble">📜</div>
+          </div>
+          <h3 class="service-meta-title">महसूल ई-पुस्तिका</h3>
+          <p class="service-meta-desc">जमीन महसूल कायदा, ७/१२ नियम व महसुली कामकाजाची माहिती.</p>
+          <div class="service-card-action">
+            <span class="card-badge-pill">महसूल विभाग</span>
+            <button class="btn-open-service" onclick="event.stopPropagation(); navigateToPage('logo-wall.html')">
+              सेवा पहा <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHELF TIER 3 -->
+      <div class="shelf-tier">
+        <!-- 6. Citizen E-Library -->
+        <div 
+          class="digital-service-card theme-citizen searchable-item" 
+          data-category="citizen"
+          data-title="नागरिकांसाठी ई-पुस्तिकालय शासकीय योजना अर्ज नमुने"
+          data-desc="नागरिकांसाठी सर्व शासकीय सेवांचे माहितीपत्रक व अर्ज"
+          onclick="openQRModal('नागरिकांसाठी ई-पुस्तिकालय', 'नागरिकांसाठी उपयुक्त माहिती, प्रमाणपत्रे व अर्जांचे नमुने.', './Images/digital-wall-QR/6.jpg', 'https://aaplesarkar.mahaonline.gov.in/')"
+        >
+          <div class="card-top-row">
+            <div class="qr-thumb-box">
+              <img src="./Images/digital-wall-QR/6.jpg" alt="नागरिकांसाठी ई-पुस्तिकालय QR" />
+              <div class="qr-scan-hint"><i class="fas fa-qrcode"></i> स्कॅन करा</div>
+            </div>
+            <div class="service-icon-bubble">📋</div>
+          </div>
+          <h3 class="service-meta-title">नागरिकांसाठी ई-पुस्तिकालय</h3>
+          <p class="service-meta-desc">आपले सरकार सेवा, प्रमाणपत्रे, दाखले व शासकीय योजनांचे अर्ज.</p>
+          <div class="service-card-action">
+            <span class="card-badge-pill">आपले सरकार</span>
+            <button class="btn-open-service" onclick="event.stopPropagation(); openQRModal('नागरिकांसाठी ई-पुस्तिकालय', 'आपले सरकार पोर्टल.', './Images/digital-wall-QR/6.jpg', 'https://aaplesarkar.mahaonline.gov.in/')">
+              तपशील <i class="fas fa-expand"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 7. Govt Jobs -->
+        <div 
+          class="digital-service-card theme-jobs searchable-item" 
+          data-category="books"
+          data-title="ई-सरकारी नोकरी भरती जाहिराती रोजगार संधी"
+          data-desc="शासकीय नोकरी भरती व रोजगार जाहिरातींची अधिकृत माहिती"
+          onclick="openQRModal('ई-सरकारी नोकरी पोर्टल', 'नवीनतम शासकीय भरती, परीक्षा जाहिराती व अधिकृत रोजगार संधी.', './Images/digital-wall-QR/7.jpg', 'https://mahajobs.maharashtra.gov.in/')"
+        >
+          <div class="card-top-row">
+            <div class="qr-thumb-box">
+              <img src="./Images/digital-wall-QR/7.jpg" alt="ई-सरकारी नोकरी QR" />
+              <div class="qr-scan-hint"><i class="fas fa-qrcode"></i> स्कॅन करा</div>
+            </div>
+            <div class="service-icon-bubble">ℹ️</div>
+          </div>
+          <h3 class="service-meta-title">ई-सरकारी नोकरी</h3>
+          <p class="service-meta-desc">महाराष्ट्र शासन अंतर्गत शासकीय भरती, जाहिराती व रोजगार संधी.</p>
+          <div class="service-card-action">
+            <span class="card-badge-pill">रोजगार पोर्टल</span>
+            <button class="btn-open-service" onclick="event.stopPropagation(); openQRModal('ई-सरकारी नोकरी पोर्टल', 'महाजॉब्स व शासकीय भरती पोर्टल.', './Images/digital-wall-QR/7.jpg', 'https://mahajobs.maharashtra.gov.in/')">
+              तपशील <i class="fas fa-expand"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Master Footer -->
+  <footer class="main-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">🏛️ ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र</div>
+      <div class="footer-nav">
+        <a href="index.html">मुख्य दालन</a>
+        <a href="digital-wall.html">डिजिटल वॉल</a>
+        <a href="logo-wall.html">महसूल ई-सेवा</a>
+        <a href="book-wall.html">ई-पुस्तके</a>
+        <a href="news_paper.html">वृत्तपत्रे</a>
+      </div>
+      <p class="footer-copy">
+        © 2026 ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र. सर्व हक्क राखीव.
+      </p>
+    </div>
+  </footer>
+
+  <script src="dalan-script.js"></script>
+</body>
+</html>

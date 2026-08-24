@@ -1029,6 +1029,187 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
+  // 🏛️ Official Digital Dalans & Portals Hub (Final Pages)
+  {
+    id: "link-logo-wall",
+    category: "डिजिटल सेवा व महसूल दालने",
+    icon: "fa-solid fa-landmark-flag",
+    title_mr: "🏛️ महसूल ई-सेवा महादालन (Logo Wall)",
+    title_en: "Revenue E-Services Logo Wall (15+ Portals)",
+    desc_mr: "७/१२, ई-हक्क, ई-मोजणी, ई-चावडी, नकाशे व महसूल योजनांचे १५+ अधिकृत पोर्टल्स.",
+    desc_en: "15+ Revenue portals including 7/12, E-Hakk, E-Mojani, E-Chavadi & Maps.",
+    url: "logo-wall.html",
+    isInternal: true
+  },
+  {
+    id: "link-news-paper",
+    category: "डिजिटल सेवा व महसूल दालने",
+    icon: "fa-solid fa-newspaper",
+    title_mr: "📰 त्रिभाषी वृत्तपत्र दालन (E-Newspapers)",
+    title_en: "Tri-lingual Newspaper Hub (20+ Papers)",
+    desc_mr: "लोकसत्ता, सकाळ, पुढारी, मटा, The Hindu, Indian Express, TOI इ. २०+ वृत्तपत्रे.",
+    desc_en: "20+ Regional & National Marathi, Hindi, English E-Newspapers.",
+    url: "news_paper.html",
+    isInternal: true
+  },
+  {
+    id: "link-digital-wall",
+    category: "डिजिटल सेवा व महसूल दालने",
+    icon: "fa-solid fa-tv",
+    title_mr: "📱 ई-पुस्तिकालय डिजिटल वॉल (Digital Wall)",
+    title_en: "Digital Wall QR & Public Apps Portal",
+    desc_mr: "शासकीय ॲप्स, सेवा व पोर्टल स्कॅनर डिजिटल वॉल.",
+    desc_en: "Public digital service apps and QR scanner wall.",
+    url: "digital-wall.html",
+    isInternal: true
+  },
+  {
+    id: "link-book-wall",
+    category: "डिजिटल सेवा व महसूल दालने",
+    icon: "fa-solid fa-book-bookmark",
+    title_mr: "📚 ई-पुस्तकालय दालन (E-Library Books)",
+    title_en: "E-Library Wall - Constitution, Laws & Literature",
+    desc_mr: "संविधान, कायदे, महापुरुष ग्रंथ, स्पर्धा परीक्षा व संदर्भ पुस्तके.",
+    desc_en: "Constitution of India, laws, historical literature & reference books.",
+    url: "book-wall.html",
+    isInternal: true
+  },
+  {
+    id: "link-aadhar-kendra",
+    category: "आधार व UIDAI सेवा",
+    icon: "fa-solid fa-fingerprint",
+    title_mr: "🆔 आधार सेवा केंद्र नोंदवही (Aadhaar Ledger)",
+    title_en: "UIDAI Aadhaar Kendra Daily Register & Ledger",
+    desc_mr: "आधार ऑपरेटर दैनिक हिशोब, ऑनलाइन नोंदवही व ऑपरेटर व्यवस्थापन प्रणाली.",
+    desc_en: "Official Aadhaar Kendra daily transaction ledger and management app.",
+    url: "aadhar-kendra.html",
+    isInternal: true
+  },
+  {
+    id: "link-digital-dalan",
+    category: "डिजिटल सेवा व महसूल दालने",
+    icon: "fa-solid fa-building-columns",
+    title_mr: "🌐 डिजिटल सेवा महादालन (Master Dalan)",
+    title_en: "Kankavli Digital Seva Master Hub",
+    desc_mr: "सर्व शासकीय व ई-मुद्रा सेवा एकाच छताखाली - डिजिटल सेवा महादालन मुख्य हब.",
+    desc_en: "Sub-Divisional Office Kankavli Digital Seva Master Hub.",
+    url: "digital-dalan.html",
+    isInternal: true
+  },
+
+  // 🚜 15 Key Revenue & Citizen Portals
+  {
+    id: "link-rev-ehakk",
+    category: "जमीन महसूल व फेरफार सेवा",
+    icon: "fa-solid fa-file-signature",
+    title_mr: "📑 ई-हक्क (E-Hakk फेरफार अर्ज)",
+    title_en: "E-Hakk Online Mutation Application",
+    desc_mr: "वारस नोंद, खरेदीखत व फेरफार करिता ऑनलाइन अर्ज करण्यासाठी अधिकृत पोर्टल.",
+    desc_en: "Official Portal for online 7/12 mutation applications in Maharashtra.",
+    url: "https://pdeigr.maharashtra.gov.in/frmLogin",
+    isInternal: false
+  },
+  {
+    id: "link-rev-echavadi",
+    category: "जमीन महसूल व फेरफार सेवा",
+    icon: "fa-solid fa-receipt",
+    title_mr: "🏛️ ई-चावडी (जमीन महसूल भरणा)",
+    title_en: "E-Chavadi Land Revenue Online Payment",
+    desc_mr: "जमीन महसूल ऑनलाइन भरणा, कर पावती व गाव नमुना तपासणी.",
+    desc_en: "Online payment of land revenue tax & village records.",
+    url: "https://echawadicitizen.mahabhumi.gov.in/",
+    isInternal: false
+  },
+  {
+    id: "link-rev-emojani",
+    category: "मोजणी व भू-नकाशे सेवा",
+    icon: "fa-solid fa-compass-drafting",
+    title_mr: "📐 ई-मोजणी (E-Mojani जमीन मोजणी)",
+    title_en: "E-Mojani Land Measurement Portal",
+    desc_mr: "आपल्या जमिनीच्या मोजणीसाठी ऑनलाइन अर्ज व ट्रॅकिंग.",
+    desc_en: "Apply online for land survey and track measurement status.",
+    url: "https://emojni.mahabhumi.gov.in/citizensite/pgLogin.aspx",
+    isInternal: false
+  },
+  {
+    id: "link-rev-bhulekh",
+    category: "जमीन महसूल व फेरफार सेवा",
+    icon: "fa-solid fa-map-location-dot",
+    title_mr: "📜 ई-भुलेख (महाभूमी ७/१२ व ८-अ)",
+    title_en: "E-Bhulekh Mahabhumi 7/12 & 8-A",
+    desc_mr: "७/१२, ८अ व मालमत्ता पत्रक मोफत ऑनलाइन पाहण्यासाठी.",
+    desc_en: "View 7/12, 8A and property card online.",
+    url: "https://bhulekh.mahabhumi.gov.in/",
+    isInternal: false
+  },
+  {
+    id: "link-rev-nakasha",
+    category: "मोजणी व भू-नकाशे सेवा",
+    icon: "fa-solid fa-map",
+    title_mr: "🗺️ ई-नकाशा (MahaBhunakasha भू-नकाशा)",
+    title_en: "MahaBhunakasha Official Land Map Portal",
+    desc_mr: "आपल्या जमिनीचा, गटाचा व गावाचा अधिकृत नकाशा पाहण्यासाठी.",
+    desc_en: "Download official cadastral and village land maps online.",
+    url: "https://mahabhunakasha.mahabhumi.gov.in/27/index.html",
+    isInternal: false
+  },
+  {
+    id: "link-rev-pikpahani",
+    category: "शेतकरी व महसूल योजना",
+    icon: "fa-solid fa-mobile-screen",
+    title_mr: "📱 ई-पीक पाहणी (Digital Crop Survey App)",
+    title_en: "E-Pik Pahani Digital Crop Survey App",
+    desc_mr: "शेतकऱ्यांसाठी खरीप व रब्बी डिजिटल पीक नोंदणी मोबाईल ॲप.",
+    desc_en: "Official Mobile App for farmers digital crop survey registration.",
+    url: "https://play.google.com/store/apps/details?id=io.sc.eppCordova&hl=en_IN&pli=1",
+    isInternal: false
+  },
+  {
+    id: "link-rev-records",
+    category: "जमीन महसूल व फेरफार सेवा",
+    icon: "fa-solid fa-certificate",
+    title_mr: "🔏 ई-रेकॉर्डस (DSLR डिजिटल स्वाक्षरी ७/१२)",
+    title_en: "E-Records DSLR Digital Signed 7/12",
+    desc_mr: "कायदेशीर कामासाठी डिजिटल स्वाक्षरीत ७/१२, ८अ व प्रॉपर्टी कार्ड डाऊनलोड करा.",
+    desc_en: "Download digitally signed 7/12, 8A and Property Cards for legal use.",
+    url: "https://digitalsatbara.mahabhumi.gov.in/DSLR",
+    isInternal: false
+  },
+  {
+    id: "link-rev-mulyankan",
+    category: "मुद्रांक शुल्क व नोंदणी",
+    icon: "fa-solid fa-calculator",
+    title_mr: "🏷️ ई-मूल्यांकन (IGR Ready Reckoner)",
+    title_en: "IGR Ready Reckoner & Stamp Duty Valuation",
+    desc_mr: "जमिनीचे व मालमत्तेचे शासकीय दर, मूल्यांकन व मुद्रांक शुल्क काढा.",
+    desc_en: "Check ready reckoner market rates & stamp duty valuation.",
+    url: "https://valuation.igrmaharashtra.gov.in/EVALUATION/",
+    isInternal: false
+  },
+  {
+    id: "link-rev-agristack",
+    category: "शेतकरी व महसूल योजना",
+    icon: "fa-solid fa-seedling",
+    title_mr: "🌾 अग्रिस्टॅक (AgriStack Farmer Registry)",
+    title_en: "AgriStack Digital Agriculture Platform",
+    desc_mr: "शेतकरी आयडी, डिजिटल शेती व शासकीय अनुदान थेट लाभ पोर्टल.",
+    desc_en: "National Digital Agriculture platform and farmer registry.",
+    url: "https://agristack.gov.in/",
+    isInternal: false
+  },
+  {
+    id: "link-rev-gr",
+    category: "शासकीय आदेश व कायदे",
+    icon: "fa-solid fa-scale-balanced",
+    title_mr: "⚖️ महाराष्ट्र शासन निर्णय (GR Portal)",
+    title_en: "Government Resolutions (GR Portal)",
+    desc_mr: "महाराष्ट्र शासनाचे सर्व विभागांचे अधिकृत शासन निर्णय (GRs).",
+    desc_en: "Official Maharashtra Government Resolutions portal.",
+    url: "https://gr.maharashtra.gov.in/",
+    isInternal: false
+  },
+
+  // Official Tools & Support
   {
     id: "link-telegram",
     category: "अधिकृत शासकीय टूल्स व दाखले",
