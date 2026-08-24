@@ -947,6 +947,7 @@
         नावची पहिली ४ अक्षरे (CAPITAL) + जन्माचे वर्ष (उदा. SANT1985)
       </p>
       <input type="password" id="pdf-password-input" class="modal-input" placeholder="उदा. SANT1985" maxlength="20">
+      <div id="modal-error-msg" style="display: none; color: #ef4444; font-size: 0.85rem; font-weight: 700; margin-bottom: 10px;"></div>
       <div style="display: flex; gap: 8px;">
         <button class="btn btn-primary" style="flex: 1;" onclick="submitPdfPassword()">
           <i class="fa-solid fa-unlock"></i> अनलॉक करा
@@ -1004,14 +1005,15 @@
     function handleFile(file) {
       if (!file) return;
 
-      if (file.type === 'application/pdf') {
+      if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
         const reader = new FileReader();
         reader.onload = function(ev) {
+          // Store original ArrayBuffer copy
           currentPdfBytes = new Uint8Array(ev.target.result);
           loadPdfWithPassword(currentPdfBytes, '');
         };
         reader.readAsArrayBuffer(file);
-      } else if (file.type.startsWith('image/')) {
+      } else if (file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp)$/i.test(file.name)) {
         const reader = new FileReader();
         reader.onload = function(ev) {
           setupImageOnStage(ev.target.result);
@@ -1020,10 +1022,15 @@
       }
     }
 
-    // Load PDF using PDF.js with password handling
+    // Load PDF using PDF.js with password handling & buffer clone protection
     function loadPdfWithPassword(pdfData, password) {
+      if (!pdfData || !pdfData.length) return;
+
+      // CRITICAL FIX: Clone the typed array buffer so worker transfer does not detach currentPdfBytes!
+      const dataCopy = new Uint8Array(pdfData.buffer.slice(0));
+
       const loadingTask = pdfjsLib.getDocument({
-        data: pdfData,
+        data: dataCopy,
         password: password
       });
 
@@ -1032,17 +1039,23 @@
         closePasswordModal();
         renderPdfPage(1);
       }).catch(function(err) {
-        if (err.name === 'PasswordException') {
-          openPasswordModal();
+        if (err && (err.name === 'PasswordException' || (err.message && err.message.toLowerCase().includes('password')))) {
+          openPasswordModal(password !== '' ? 'पासवर्ड चुकीचा आहे. कृपया पुन्हा तपासा.' : '');
         } else {
-          alert('PDF लोड करताना अडचण आली: ' + (err.message || 'अवैध पासवर्ड'));
+          console.error('PDF error:', err);
+          alert('PDF लोड करताना अडचण आली: ' + (err.message || 'अवैध फाईल किंवा पासवर्ड'));
         }
       });
     }
 
-    function openPasswordModal() {
+    function openPasswordModal(errorMessage) {
       document.getElementById('password-modal').classList.add('show');
       const input = document.getElementById('pdf-password-input');
+      const errorEl = document.getElementById('modal-error-msg');
+      if (errorEl) {
+        errorEl.innerText = errorMessage || '';
+        errorEl.style.display = errorMessage ? 'block' : 'none';
+      }
       input.value = '';
       input.focus();
     }
@@ -1053,9 +1066,24 @@
 
     function submitPdfPassword() {
       const pass = document.getElementById('pdf-password-input').value.trim();
-      if (!pass) return;
+      if (!pass) {
+        alert('कृपया पासवर्ड टाका (उदा. SANT1985)');
+        return;
+      }
       loadPdfWithPassword(currentPdfBytes, pass);
     }
+
+    // Allow pressing Enter in password input
+    document.addEventListener('DOMContentLoaded', () => {
+      const passInput = document.getElementById('pdf-password-input');
+      if (passInput) {
+        passInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            submitPdfPassword();
+          }
+        });
+      }
+    });
 
     // Render PDF page to high-res canvas (300 DPI equivalent scale)
     function renderPdfPage(pageNumber) {
