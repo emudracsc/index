@@ -1180,6 +1180,50 @@ const DEFAULT_IMPORTANT_LINKS = [
     desc_en: "Check NPCI & Aadhaar Bank account seeding status for DBT benefits.",
     url: "https://myaadhaar.uidai.gov.in/bank-seeding-status",
     isInternal: false
+  },
+  {
+    id: "link-nsdl-merapan",
+    category: "पॅन कार्ड व आयकर सेवा",
+    icon: "fa-solid fa-address-card",
+    title_mr: "💳 NSDL मेरा पॅन पोर्टल (MeraPAN)",
+    title_en: "NSDL MeraPAN Official Portal",
+    desc_mr: "नवीन पॅन कार्ड अर्ज, पॅन दुरुस्ती, ई-पॅन व पॅन सर्व्हिसेस अधिकृत पोर्टल.",
+    desc_en: "Official NSDL MeraPAN Services Portal for New PAN, Correction & Status.",
+    url: "https://nsdlmerapan.com/#/",
+    isInternal: false
+  },
+  {
+    id: "link-idsign-partner",
+    category: "डिजिटल सिग्नेचर (DSC) सेवा",
+    icon: "fa-solid fa-key",
+    title_mr: "🔐 IDSIGN CA पार्टनर लॉगिन (IDsign DSC)",
+    title_en: "Register :: IDSIGNCA Partner Portal",
+    desc_mr: "Class 3 डिजिटल सिग्नेचर (DSC), टोकन नोंदणी व पार्टनर मॅनेजमेंट पोर्टल.",
+    desc_en: "Official IDSIGN CA Partner login for Class 3 DSC issuance and tokens.",
+    url: "https://partner.idsign.app/loginpage",
+    isInternal: false
+  },
+  {
+    id: "link-pcs-mahaonline",
+    category: "महा-ई-सेवा व शासकीय पडताळणी",
+    icon: "fa-solid fa-shield-halved",
+    title_mr: "👮 पोलीस क्लिअरन्स प्रमाणपत्र (PCS MahaOnline)",
+    title_en: "Police Clearance Certificate (PCS MahaOnline)",
+    desc_mr: "पोलीस चरित्र प्रमाणपत्र (PCC) व चारित्र्य पडताळणी अधिकृत पोर्टल.",
+    desc_en: "Official Maharashtra Police Clearance & Character Verification Portal.",
+    url: "https://pcs.mahaonline.gov.in/Forms/Home.aspx",
+    isInternal: false
+  },
+  {
+    id: "link-cscservices-mahaonline",
+    category: "आपले सरकार व CSC सेवा",
+    icon: "fa-solid fa-building-columns",
+    title_mr: "🏛️ CSC Services महाऑनलाइन (MahaOnline CSC)",
+    title_en: "CSC Services MahaOnline Official Portal",
+    desc_mr: "आपले सरकार, महसूल दाखले, महा-ई-सेवा केंद्र अधिकृत VLE सर्व्हिसेस पोर्टल.",
+    desc_en: "Official MahaOnline CSC VLE Services & Revenue Certificate Portal.",
+    url: "https://cscservices.mahaonline.gov.in/",
+    isInternal: false
   }
 ];
 

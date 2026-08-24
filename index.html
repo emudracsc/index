@@ -93,10 +93,7 @@
       <ul class="nav-links" id="main-nav-links">
         <li class="nav-item active"><a href="#home"><i class="fa-solid fa-house"></i> <span data-i18n="nav_home">मुख्यपृष्ठ</span></a></li>
         <li class="nav-item"><a href="#services"><i class="fa-solid fa-grid-2"></i> <span data-i18n="nav_services">नागरिक सेवा</span></a></li>
-        <li class="nav-item"><a href="javascript:void(0)" onclick="switchTab('tab-apply-form')"><i class="fa-solid fa-file-pen"></i> <span data-i18n="nav_apply">ऑनलाइन अर्ज</span></a></li>
-        <li class="nav-item"><a href="javascript:void(0)" onclick="switchTab('tab-tracker')"><i class="fa-solid fa-magnifying-glass-chart"></i> <span data-i18n="nav_track">स्थिती तपासा</span></a></li>
-        <li class="nav-item"><a href="javascript:void(0)" onclick="switchTab('tab-docs-fees')"><i class="fa-solid fa-calculator"></i> <span data-i18n="nav_docs">कागदपत्रे व फी</span></a></li>
-        <li class="nav-item"><a href="javascript:void(0)" onclick="switchTab('tab-tokens')"><i class="fa-solid fa-ticket"></i> <span data-i18n="nav_token">टोकन बुकिंग</span></a></li>
+
         <li class="nav-item"><a href="#citizen-charter"><i class="fa-solid fa-scroll"></i> <span data-i18n="nav_charter">नागरिक सनद</span></a></li>
         <li class="nav-item"><a href="#contact"><i class="fa-solid fa-headset"></i> <span data-i18n="nav_contact">संपर्क</span></a></li>
         <li class="nav-item mobile-only"><a href="javascript:void(0)" onclick="openUsefulLinksModal()"><i class="fa-solid fa-link"></i> <span data-i18n="nav_useful_links">महत्त्वाच्या लिंक्स</span></a></li>
@@ -112,8 +109,8 @@
         <button class="nav-banner-btn" onclick="openWelcomeModal()" title="आपले सरकार स्वागत बॅनर पहा">
           <i class="fa-solid fa-image"></i> <span data-i18n="banner_btn_view">स्वागत बॅनर</span>
         </button>
-        <button class="nav-admin-btn" onclick="openAdminLogin()" title="अधिकारी लॉगिन">
-          <i class="fa-solid fa-user-lock"></i> <span data-i18n="nav_admin">अधिकारी लॉगिन</span>
+        <button class="nav-admin-btn" id="nav-admin-login-btn" onclick="handleNavAdminClick()" title="अधिकारी लॉगिन">
+          <span id="nav-admin-btn-text"><i class="fa-solid fa-user-lock"></i> अधिकारी लॉगिन</span>
         </button>
         <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Toggle Menu">
           <i class="fa-solid fa-bars"></i>
@@ -140,6 +137,75 @@
 
   <!-- Hero Section -->
   <section class="hero-section" id="home">
+    <!-- 🎬 CINEMATIC RIGHT-TO-LEFT HERO BACKGROUND SLIDESHOW -->
+    <div class="hero-bg-slideshow" aria-hidden="true">
+      <div class="hero-bg-slider-track" id="hero-slider-track">
+        <!-- Slide 1: Aadhaar -->
+        <div class="hero-bg-slide slide-aadhaar">
+          <div class="hero-slide-bg-gradient"></div>
+          <div class="hero-slide-watermark">
+            <img src="images/aadhaar_hd.jpg" alt="UIDAI Aadhaar HD Logo">
+          </div>
+          <div class="hero-slide-floating-badge">
+            <div class="slide-badge-stamp">
+              <img src="images/aadhaar_hd.jpg" alt="Aadhaar Emblem">
+              <span>UIDAI आधार अधिकृत सेवा केंद्र</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2: Income Tax & PAN Card -->
+        <div class="hero-bg-slide slide-pan">
+          <div class="hero-slide-bg-gradient"></div>
+          <div class="hero-slide-watermark">
+            <img src="images/incometax_pan_hd.jpg" alt="Income Tax PAN Card HD Logo">
+          </div>
+          <div class="hero-slide-floating-badge">
+            <div class="slide-badge-stamp">
+              <img src="images/incometax_pan_hd.jpg" alt="Income Tax Emblem">
+              <span>आयकर विभाग व NSDL / UTI पॅन केंद्र</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3: Election Commission Voter ID -->
+        <div class="hero-bg-slide slide-voter">
+          <div class="hero-slide-bg-gradient"></div>
+          <div class="hero-slide-watermark">
+            <img src="images/eci_voter_hd.jpg" alt="Election Commission Voter HD Logo">
+          </div>
+          <div class="hero-slide-floating-badge">
+            <div class="slide-badge-stamp">
+              <img src="images/eci_voter_hd.jpg" alt="ECI Voter Emblem">
+              <span>भारतीय निवडणूक आयोग (मतदार साहाय्यता)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 4: MahaBOCW Kamgar -->
+        <div class="hero-bg-slide slide-mahabocw">
+          <div class="hero-slide-bg-gradient"></div>
+          <div class="hero-slide-watermark">
+            <img src="images/mahabocw_hd.jpg" alt="MahaBOCW Kamgar HD Logo">
+          </div>
+          <div class="hero-slide-floating-badge">
+            <div class="slide-badge-stamp">
+              <img src="images/mahabocw_hd.jpg" alt="MahaBOCW Emblem">
+              <span>महाराष्ट्र इमारत व इतर बांधकाम कामगार मंडळ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slideshow Navigation / Indicators -->
+      <div class="hero-slideshow-indicators">
+        <span class="slide-dot active" onclick="setHeroBgSlide(0)" title="UIDAI Aadhaar"></span>
+        <span class="slide-dot" onclick="setHeroBgSlide(1)" title="Income Tax PAN"></span>
+        <span class="slide-dot" onclick="setHeroBgSlide(2)" title="Voter ID ECI"></span>
+        <span class="slide-dot" onclick="setHeroBgSlide(3)" title="MahaBOCW"></span>
+      </div>
+    </div>
+
     <div class="container">
       <div class="hero-grid">
         <div class="hero-content">
@@ -154,18 +220,6 @@
             उत्पन्न दाखला, अधिवास, जात प्रमाणपत्र, ७/१२, ई-मुद्रा क्लास ३ DSC, पॅन कार्ड, पीक विमा आणि सर्व शासकीय योजनांचे तत्पर व खात्रीशीर ऑनलाइन काम.
           </p>
           <div class="hero-actions-grid">
-            <button class="btn-hero btn-hero-primary" onclick="switchTab('tab-apply-form')">
-              <i class="fa-solid fa-file-pen"></i> <span data-i18n="btn_apply_now">नवीन अर्ज सादर करा</span>
-            </button>
-            <button class="btn-hero btn-hero-navy" onclick="switchTab('tab-tracker')">
-              <i class="fa-solid fa-magnifying-glass-location"></i> <span data-i18n="btn_track_app">अर्जाची स्थिती तपासा</span>
-            </button>
-            <button class="btn-hero btn-hero-green" onclick="switchTab('tab-docs-fees')">
-              <i class="fa-solid fa-file-circle-check"></i> <span data-i18n="btn_calc_fee">कागदपत्रे व शासकीय फी तपासा</span>
-            </button>
-            <button class="btn-hero btn-hero-gold" onclick="switchTab('tab-tokens')">
-              <i class="fa-solid fa-calendar-check"></i> <span data-i18n="btn_book_slot">टोकन / अपॉइंटमेंट बुक करा</span>
-            </button>
             <button class="btn-hero btn-hero-purple" onclick="openSoftwareModal()">
               <i class="fa-solid fa-box-archive"></i> <span>💾 उपयुक्त सॉफ्टवेअर्स सेटअप</span>
             </button>
@@ -174,491 +228,43 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Official Officer & Guidance Card -->
-        <div class="hero-official-card">
-          <style>
-            .cinematic-slider-banner {
-              width: 100%;
-              height: 155px;
-              background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              overflow: hidden;
-              border-bottom: 2px solid #cbd5e1;
-              position: relative;
-              border-radius: 12px 12px 0 0;
-              box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
-            }
-            .cinematic-glow-bg {
-              position: absolute;
-              width: 160px;
-              height: 160px;
-              background: radial-gradient(circle, rgba(2, 132, 199, 0.18) 0%, rgba(245, 158, 11, 0.12) 50%, transparent 75%);
-              border-radius: 50%;
-              filter: blur(20px);
-              animation: ambientPulse 6s ease-in-out infinite alternate;
-              pointer-events: none;
-            }
-            @keyframes ambientPulse {
-              0% { transform: scale(0.85) translate(-10px, -5px); opacity: 0.6; }
-              100% { transform: scale(1.2) translate(10px, 5px); opacity: 1; }
-            }
-            .slide-item {
-              position: absolute;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 100%;
-              height: 100%;
-              padding: 10px 20px;
-              opacity: 0;
-              transform: scale(0.92) translateY(12px);
-              animation: cinematicLogoCycle 16s infinite cubic-bezier(0.4, 0, 0.2, 1);
-              pointer-events: none;
-            }
-            .slide-item img {
-              max-width: 90%;
-              max-height: 115px;
-              object-fit: contain;
-              filter: drop-shadow(0 8px 16px rgba(15, 23, 42, 0.12));
-              transition: transform 0.4s ease;
-            }
-            .slide-item:nth-child(2) { animation-delay: 0s; }
-            .slide-item:nth-child(3) { animation-delay: 4s; }
-            .slide-item:nth-child(4) { animation-delay: 8s; }
-            .slide-item:nth-child(5) { animation-delay: 12s; }
-
-            @keyframes cinematicLogoCycle {
-              0% { opacity: 0; transform: scale(0.9) translateY(14px) filter(blur(4px)); }
-              4% { opacity: 1; transform: scale(1) translateY(0) filter(blur(0px)); }
-              21% { opacity: 1; transform: scale(1.03) translateY(0) filter(blur(0px)); }
-              25% { opacity: 0; transform: scale(1.08) translateY(-14px) filter(blur(4px)); }
-              100% { opacity: 0; }
-            }
-
-            .cinematic-badge-bar {
-              position: absolute;
-              bottom: 6px;
-              display: flex;
-              gap: 6px;
-              z-index: 5;
-            }
-            .cinematic-dot {
-              width: 6px;
-              height: 6px;
-              border-radius: 50%;
-              background: rgba(100, 116, 139, 0.35);
-              animation: dotHighlight 16s infinite;
-            }
-            .cinematic-dot:nth-child(1) { animation-delay: 0s; }
-            .cinematic-dot:nth-child(2) { animation-delay: 4s; }
-            .cinematic-dot:nth-child(3) { animation-delay: 8s; }
-            .cinematic-dot:nth-child(4) { animation-delay: 12s; }
-
-            @keyframes dotHighlight {
-              0%, 25% { background: #0284c7; transform: scale(1.4); }
-              26%, 100% { background: rgba(100, 116, 139, 0.35); transform: scale(1); }
-            }
-          </style>
-          
-          <div class="cinematic-slider-banner">
-            <div class="cinematic-glow-bg"></div>
-            <div class="slide-item">
-              <img src="images/aadhaar.svg" alt="Aadhaar Card Official Logo">
-            </div>
-            <div class="slide-item">
-              <img src="images/pan.svg" alt="Income Tax & PAN Card Logo">
-            </div>
-            <div class="slide-item">
-              <img src="images/voter.svg" alt="Election Commission Voter ID Logo">
-            </div>
-            <div class="slide-item">
-              <img src="images/mahabocw.svg" alt="Mahabocw Kamgar Kalyan Logo">
-            </div>
-            <div class="cinematic-badge-bar">
-              <div class="cinematic-dot"></div>
-              <div class="cinematic-dot"></div>
-              <div class="cinematic-dot"></div>
-              <div class="cinematic-dot"></div>
-            </div>
-          </div>
-          <div class="card-top-header">
-            <i class="fa-solid fa-landmark-flag"></i>
-            <h3 data-i18n="officerDesignation_mr">अधिकृत ई-सेवा केंद्र</h3>
-          </div>
-          <div class="card-body-content">
-            <div class="officer-profile-row">
-              <div class="officer-avatar">
-                <i class="fa-solid fa-user-tie"></i>
-              </div>
-              <div class="officer-details">
-                <h4>अधिकृत केंद्र संचालक</h4>
-                <p>ग्राहक सेवा कार्यक्षेत्र, महाराष्ट्र</p>
-              </div>
-            </div>
-            <ul class="quick-guidance-list">
-              <li><i class="fa-solid fa-check-double"></i> <span>सर्व दाखले डिजिटल स्वाक्षरीत व QR कोड प्रमाणित</span></li>
-              <li><i class="fa-solid fa-check-double"></i> <span>eMudra Class 3 DSC अवघ्या ३० मिनिटांत तयार</span></li>
-              <li><i class="fa-solid fa-check-double"></i> <span>शासकीय फी पावतीसह पारदर्शक कामकाज</span></li>
-            </ul>
-            <div class="helpline-box">
-              <div>
-                <div class="label"><i class="fa-solid fa-phone-volume"></i> थेट साहाय्यता क्रमांक:</div>
-                <div class="num">+91 98908 69793</div>
-              </div>
-              <a href="javascript:void(0)" class="btn-card-apply" style="padding: 6px 12px; font-size: 0.8rem;" onclick="switchTab('tab-tokens')">
-                स्लॉट बुक करा
-              </a>
-            </div>
-          </div>
-        </div>
+    <!-- 🔗 LIVE USEFUL TOOLS & LINKS TICKER SLIDESHOW STRIP -->
+    <div class="hero-guarantee-strip" id="hero-links-ticker-container">
+      <div class="ticker-label-badge">
+        <i class="fa-solid fa-bolt text-gold"></i>
+        <span>महत्त्वाच्या लिंक्स:</span>
+      </div>
+      <div class="guarantee-marquee-track" id="hero-marquee-links-track">
+        <!-- Populated dynamically by JS from IMPORTANT_LINKS -->
       </div>
     </div>
   </section>
 
-  <!-- Realtime Stats Counter Section -->
-  <section class="stats-bar-section">
-    <div class="container">
-      <div class="stats-card-container">
-        <div class="stat-box">
-          <div class="stat-icon"><i class="fa-solid fa-folder-tree"></i></div>
-          <div class="stat-meta">
-            <div class="number">२५+</div>
-            <div class="label" data-i18n="stat_services">उपलब्ध सेवा</div>
-          </div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-          <div class="stat-meta">
-            <div class="number">१२,४५०+</div>
-            <div class="label" data-i18n="stat_processed">यशस्वीरित्या पूर्ण अर्ज</div>
-          </div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-icon"><i class="fa-solid fa-face-smile"></i></div>
-          <div class="stat-meta">
-            <div class="number">९९.४%</div>
-            <div class="label" data-i18n="stat_satisfaction">नागरिक समाधान</div>
-          </div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
-          <div class="stat-meta">
-            <div class="number">१० मि.</div>
-            <div class="label" data-i18n="stat_instant">तात्काळ डिजिटल सेवा</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Interactive Web Application Module (Central Hub) -->
-  <section class="webapp-section" id="interactive-app">
+  <!-- Interactive Web Application Module (Central Hub) - Hidden until Admin Login -->
+  <section class="webapp-section" id="interactive-app" style="display: none;">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag"><i class="fa-solid fa-laptop"></i> ई-सेवा प्रणाली</span>
-        <h2>नागरिक ई-सेवा वेब ॲप्लिकेशन</h2>
-        <p>ऑनलाइन अर्ज दाखल करा, स्थिती तपासा, आवश्यक कागदपत्रे व फी कॅल्क्युलेट करा किंवा भेट देण्याचे टोकन बुक करा.</p>
+        <span class="section-tag"><i class="fa-solid fa-gauge-high"></i> केंद्र व्यवस्थापन</span>
+        <h2>अधिकृत ई-सेवा व व्यवस्थापक दालन</h2>
+        <p>सर्व अधिकृत दाखले, शासकीय योजना, सॉफ्टवेअर्स व डिजिटल सेवा व्यवस्थापन प्रणाली.</p>
       </div>
 
       <div class="app-container-card">
         <!-- App Tabs Navigation -->
         <div class="app-tabs-header">
-          <button class="app-tab-btn active" data-tab-target="tab-apply-form">
-            <i class="fa-solid fa-file-signature"></i> <span data-i18n="nav_apply">ऑनलाइन अर्ज</span>
-          </button>
-          <button class="app-tab-btn" data-tab-target="tab-tracker">
-            <i class="fa-solid fa-location-crosshairs"></i> <span data-i18n="nav_track">अर्जाची स्थिती तपासा</span>
-          </button>
-          <button class="app-tab-btn" data-tab-target="tab-docs-fees">
-            <i class="fa-solid fa-calculator"></i> <span data-i18n="nav_docs">कागदपत्रे व फी गणक</span>
-          </button>
-          <button class="app-tab-btn" data-tab-target="tab-tokens">
-            <i class="fa-solid fa-calendar-check"></i> <span data-i18n="nav_token">टोकन बुकिंग</span>
-          </button>
-          <button class="app-tab-btn" data-tab-target="tab-admin" id="admin-tab-btn" style="margin-left: auto;">
+          <button class="app-tab-btn active" data-tab-target="tab-admin" id="admin-tab-btn">
             <i class="fa-solid fa-gauge-high"></i> <span data-i18n="admin_dash_title">व्यवस्थापक डॅशबोर्ड</span>
           </button>
         </div>
 
-        <!-- Tab 1: Application Form -->
-        <div class="app-tab-panel active" id="tab-apply-form">
-          <div style="margin-bottom: 1.5rem;">
-            <h3 style="color: var(--primary-navy); font-size: 1.35rem;" data-i18n="form_heading">ऑनलाइन नागरिक सेवा अर्ज प्रणाली</h3>
-            <p style="color: var(--text-muted); font-size: 0.92rem;" data-i18n="form_sub">आवश्यक माहिती भरा आणि थेट ऑनलाइन अर्ज दाखल करून अधिकृत पोच पावती मिळवा.</p>
-          </div>
 
-          <form id="citizen-application-form">
-            <div class="app-form-grid">
-              <div class="form-group form-full-width">
-                <label for="app-service-select" data-i18n="lbl_select_service">अर्ज करायची सेवा निवडा *</label>
-                <select id="app-service-select" class="form-control" required>
-                  <!-- Dynamically populated -->
-                </select>
-              </div>
+        <!-- Admin / Operator Dashboard -->
+        <div class="app-tab-panel active" id="tab-admin">
 
-              <div class="form-group">
-                <label for="app-name" data-i18n="lbl_applicant_name">अर्जदाराचे पूर्ण नाव *</label>
-                <input type="text" id="app-name" class="form-control" placeholder="उदा. रमेश विठ्ठल पाटील" required>
-              </div>
-
-              <div class="form-group">
-                <label for="app-father" data-i18n="lbl_father_name">वडील / पतीचे पूर्ण नाव *</label>
-                <input type="text" id="app-father" class="form-control" placeholder="उदा. विठ्ठल बाबुराव पाटील" required>
-              </div>
-
-              <div class="form-group">
-                <label for="app-gender" data-i18n="lbl_gender">लिंग *</label>
-                <select id="app-gender" class="form-control" required>
-                  <option value="male" data-i18n="gender_male">पुरुष</option>
-                  <option value="female" data-i18n="gender_female">स्त्री</option>
-                  <option value="other" data-i18n="gender_other">इतर</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="app-dob" data-i18n="lbl_dob">जन्मतारीख *</label>
-                <input type="date" id="app-dob" class="form-control" required>
-              </div>
-
-              <div class="form-group">
-                <label for="app-mobile" data-i18n="lbl_mobile">मोबाईल नंबर (WhatsApp) *</label>
-                <input type="tel" id="app-mobile" class="form-control" placeholder="९८XXXXXXXX" maxlength="10" required>
-              </div>
-
-              <div class="form-group">
-                <label for="app-email" data-i18n="lbl_email">ईमेल आयडी</label>
-                <input type="email" id="app-email" class="form-control" placeholder="example@email.com">
-              </div>
-
-              <div class="form-group">
-                <label for="app-aadhaar" data-i18n="lbl_aadhaar">आधार कार्ड क्रमांक (१२ अंकी) *</label>
-                <input type="text" id="app-aadhaar" class="form-control" placeholder="XXXX-XXXX-XXXX" maxlength="14" required>
-              </div>
-
-              <div class="form-group">
-                <label for="app-income" data-i18n="lbl_annual_income">वार्षिक उत्पन्न (अंदाजे रु.)</label>
-                <input type="number" id="app-income" class="form-control" placeholder="उदा. 85000">
-              </div>
-
-              <div class="form-group form-full-width">
-                <label for="app-address" data-i18n="lbl_address">पूर्ण निवासी पत्ता *</label>
-                <textarea id="app-address" class="form-control" rows="2" placeholder="घर क्र., गल्ली, गाव/शहर" required></textarea>
-              </div>
-
-              <div class="form-group">
-                <label for="app-taluka" data-i18n="lbl_taluka">तालुका *</label>
-                <input type="text" id="app-taluka" class="form-control" placeholder="तालुका नाव" required>
-              </div>
-
-              <div class="form-group">
-                <label for="app-district" data-i18n="lbl_district">जिल्हा *</label>
-                <input type="text" id="app-district" class="form-control" placeholder="जिल्हा नाव" value="महाराष्ट्र" required>
-              </div>
-
-              <div class="form-group">
-                <label for="app-pincode" data-i18n="lbl_pincode">पिन कोड *</label>
-                <input type="text" id="app-pincode" class="form-control" placeholder="413512" maxlength="6" required>
-              </div>
-
-              <div class="form-group form-full-width">
-                <label for="app-purpose" data-i18n="lbl_purpose">अर्जाचे कारण / प्रयोजन *</label>
-                <input type="text" id="app-purpose" class="form-control" placeholder="उदा. शिक्षण, शिष्यवृत्ती, शेती, नोकरी, निविदा" required>
-              </div>
-
-              <!-- Cloudinary Document Upload Section -->
-              <div class="form-group form-full-width">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 6px;">
-                  <label data-i18n="lbl_upload_docs" style="font-weight: 700; color: var(--primary-navy); margin-bottom: 0;">
-                    <i class="fa-solid fa-cloud-arrow-up" style="color: var(--saffron-orange);"></i> आवश्यक कागदपत्रे अपलोड (PDF किंवा इमेज):
-                  </label>
-                  <span class="cloud-storage-badge"><i class="fa-solid fa-shield-halved"></i> Cloudinary सुरक्षित क्लाउड स्टोरेज</span>
-                </div>
-                
-                <div class="docs-upload-grid">
-                  <!-- 1. Aadhaar Card -->
-                  <div class="doc-upload-card" id="upload-card-aadhaar">
-                    <div class="doc-upload-top">
-                      <span class="doc-title" data-i18n="lbl_doc_aadhaar"><i class="fa-solid fa-id-card"></i> आधार कार्ड प्रत *</span>
-                      <span class="upload-status-chip" id="status-aadhaar">प्रत निवडा</span>
-                    </div>
-                    <div class="doc-file-action">
-                      <input type="file" id="doc-file-aadhaar" accept="image/jpeg,image/png,image/webp,application/pdf" class="doc-file-input">
-                    </div>
-                    <div class="upload-progress-track" id="progress-track-aadhaar">
-                      <div class="upload-progress-fill" id="progress-fill-aadhaar"></div>
-                    </div>
-                    <div class="doc-preview-link" id="preview-aadhaar"></div>
-                  </div>
-
-                  <!-- 2. Ration Card / Residence Proof -->
-                  <div class="doc-upload-card" id="upload-card-ration">
-                    <div class="doc-upload-top">
-                      <span class="doc-title" data-i18n="lbl_doc_ration"><i class="fa-solid fa-address-book"></i> रेशन कार्ड / LC / रहिवासी पुरावा</span>
-                      <span class="upload-status-chip" id="status-ration">प्रत निवडा</span>
-                    </div>
-                    <div class="doc-file-action">
-                      <input type="file" id="doc-file-ration" accept="image/jpeg,image/png,image/webp,application/pdf" class="doc-file-input">
-                    </div>
-                    <div class="upload-progress-track" id="progress-track-ration">
-                      <div class="upload-progress-fill" id="progress-fill-ration"></div>
-                    </div>
-                    <div class="doc-preview-link" id="preview-ration"></div>
-                  </div>
-
-                  <!-- 3. Income / 7-12 / Other Docs -->
-                  <div class="doc-upload-card" id="upload-card-income">
-                    <div class="doc-upload-top">
-                      <span class="doc-title" data-i18n="lbl_doc_income"><i class="fa-solid fa-file-pdf"></i> उत्पन्न पुरावा / ७-१२ / इतर</span>
-                      <span class="upload-status-chip" id="status-income">प्रत निवडा</span>
-                    </div>
-                    <div class="doc-file-action">
-                      <input type="file" id="doc-file-income" accept="image/jpeg,image/png,image/webp,application/pdf" class="doc-file-input">
-                    </div>
-                    <div class="upload-progress-track" id="progress-track-income">
-                      <div class="upload-progress-fill" id="progress-fill-income"></div>
-                    </div>
-                    <div class="doc-preview-link" id="preview-income"></div>
-                  </div>
-                </div>
-
-                <div class="doc-upload-hint">
-                  <i class="fa-solid fa-circle-info"></i> PDF, JPG किंवा PNG फाईल निवडताच ती Cloudinary क्लाउडवर आपोआप सुरक्षित सेव्ह होईल.
-                </div>
-              </div>
-
-              <div class="form-full-width">
-                <div class="form-check-group">
-                  <input type="checkbox" id="app-declaration" required checked>
-                  <label for="app-declaration" data-i18n="lbl_declaration">
-                    मी याद्वारे जाहीर करतो/करते की वरील सर्व माहिती सत्य व बिनचूक असून कागदपत्रांची जबाबदारी माझी राहील.
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-btn-row">
-              <button type="reset" class="btn-form-reset" data-i18n="btn_reset">माहिती पूर्ववत करा</button>
-              <button type="submit" class="btn-form-submit">
-                <i class="fa-solid fa-paper-plane"></i> <span data-i18n="btn_submit_app">अर्ज सादर करा व पावती मिळवा</span>
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Tab 2: Application Status Tracker -->
-        <div class="app-tab-panel" id="tab-tracker">
-          <div style="text-align: center; margin-bottom: 2rem;">
-            <h3 style="color: var(--primary-navy); font-size: 1.45rem;" data-i18n="track_heading">अर्जाची सद्यस्थिती तपासा (Live Status Tracker)</h3>
-            <p style="color: var(--text-muted); font-size: 0.92rem;" data-i18n="track_sub">आपला अर्ज क्रमांक (Application ID) किंवा नोंदणीकृत मोबाईल नंबर टाकून स्थिती जाणून घ्या.</p>
-          </div>
-
-          <div class="tracker-search-box">
-            <input type="text" id="tracker-search-input" placeholder="उदा. EMU-2026-1001 किंवा 9823456789">
-            <button id="tracker-search-btn">
-              <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="btn_search_status">स्थिती शोधा</span>
-            </button>
-          </div>
-
-          <div id="tracker-result-container" style="display: none;">
-            <!-- Rendered by JS -->
-          </div>
-        </div>
-
-        <!-- Tab 3: Document Checklist & Fees Calculator -->
-        <div class="app-tab-panel" id="tab-docs-fees">
-          <div style="margin-bottom: 1.5rem;">
-            <h3 style="color: var(--primary-navy); font-size: 1.35rem;" data-i18n="docs_heading">कागदपत्रे मार्गदर्शक व अधिकृत शुल्क गणक</h3>
-            <p style="color: var(--text-muted); font-size: 0.92rem;" data-i18n="docs_sub">कोणत्याही दाखल्यासाठी लागणारे आवश्यक पुरावे, पडताळणी निकष व शासनमान्य दर.</p>
-          </div>
-
-          <div style="margin-bottom: 1.5rem;">
-            <label style="font-weight: 700; color: var(--primary-navy); font-size: 0.95rem;" data-i18n="select_service_for_docs">सेवा निवडा:</label>
-            <select id="docs-service-select" class="form-control" style="margin-top: 0.35rem; font-weight: 600;">
-              <!-- Populated by JS -->
-            </select>
-          </div>
-
-          <div class="docs-calculator-grid">
-            <div class="docs-checklist-card">
-              <h4><i class="fa-solid fa-list-check" style="color: var(--saffron-orange);"></i> <span data-i18n="req_docs_title">आवश्यक कागदपत्रे:</span></h4>
-              <div class="doc-items-list" id="docs-items-container">
-                <!-- Populated by JS -->
-              </div>
-            </div>
-
-            <div class="fee-breakdown-card">
-              <h4><i class="fa-solid fa-file-invoice-dollar" style="color: #16a34a;"></i> <span data-i18n="fee_breakdown_title">शुल्क विवरण (Fee Structure)</span></h4>
-              <table class="fee-table-mini">
-                <tbody id="fee-breakdown-tbody">
-                  <!-- Populated by JS -->
-                </tbody>
-              </table>
-              <div style="margin-top: 1.5rem; text-align: center;">
-                <button class="btn-form-submit" style="width: 100%;" onclick="startApplyForService(document.getElementById('docs-service-select').value)">
-                  <i class="fa-solid fa-file-pen"></i> या सेवेसाठी थेट अर्ज करा
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab 4: Token Booking -->
-        <div class="app-tab-panel" id="tab-tokens">
-          <div style="margin-bottom: 1.5rem;">
-            <h3 style="color: var(--primary-navy); font-size: 1.35rem;" data-i18n="token_heading">ऑनलाइन टोकन व अपॉइंटमेंट बुकिंग</h3>
-            <p style="color: var(--text-muted); font-size: 0.92rem;" data-i18n="token_sub">केंद्रावर न थांबता आपल्या सोयीनुसार वेळेचा स्लॉट बुक करा.</p>
-          </div>
-
-          <form id="token-booking-form">
-            <div class="app-form-grid">
-              <div class="form-group">
-                <label for="token-name" data-i18n="lbl_token_name">आपले नाव *</label>
-                <input type="text" id="token-name" class="form-control" placeholder="उदा. प्रवीण कदम" required>
-              </div>
-
-              <div class="form-group">
-                <label for="token-mobile" data-i18n="lbl_token_mobile">मोबाईल नंबर *</label>
-                <input type="tel" id="token-mobile" class="form-control" placeholder="९८XXXXXXXX" maxlength="10" required>
-              </div>
-
-              <div class="form-group form-full-width">
-                <label for="token-service-select" data-i18n="lbl_token_service">केंद्रावर येण्याचे कारण / सेवा *</label>
-                <select id="token-service-select" class="form-control" required>
-                  <!-- Populated by JS -->
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="token-date" data-i18n="lbl_token_date">भेट देण्याची तारीख *</label>
-                <input type="date" id="token-date" class="form-control" required>
-              </div>
-
-              <div class="form-group">
-                <label for="token-slot" data-i18n="lbl_token_slot">वेळेचा स्लॉट निवडा *</label>
-                <select id="token-slot" class="form-control" required>
-                  <option value="09:30 AM - 10:30 AM">सकाळी ०९:३० ते १०:३०</option>
-                  <option value="11:00 AM - 12:00 PM">सकाळी ११:०० ते १२:००</option>
-                  <option value="12:30 PM - 01:30 PM">दुपारी १२:३० ते ०१:३०</option>
-                  <option value="03:00 PM - 04:00 PM">दुपारी ०३:०० ते ०४:००</option>
-                  <option value="04:30 PM - 05:30 PM">संध्याकाळी ०४:३० ते ०५:३०</option>
-                  <option value="06:00 PM - 07:00 PM">संध्याकाळी ०६:०० ते ०७:००</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-btn-row">
-              <button type="submit" class="btn-form-submit">
-                <i class="fa-solid fa-calendar-check"></i> <span data-i18n="btn_book_token">टोकन कन्फर्म करा</span>
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Tab 5: Admin / Operator Dashboard -->
-        <div class="app-tab-panel" id="tab-admin">
           <!-- Admin Sub-Navigation Tabs -->
           <div class="admin-subtabs-nav">
             <button class="admin-subtab-btn active" id="btn-subtab-apps" onclick="switchAdminSubTab('apps')">
@@ -685,9 +291,12 @@
                 <h3 style="color: var(--primary-navy); font-size: 1.25rem;" data-i18n="admin_dash_title">प्राप्त अर्ज नियंत्रण कक्ष (VLE Admin Dashboard)</h3>
                 <p style="color: var(--text-muted); font-size: 0.85rem;">सर्व प्राप्त अर्जांची पडताळणी, स्थिती बदल व अहवाल व्यवस्थापन.</p>
               </div>
-              <div style="display: flex; gap: 8px;">
+              <div style="display: flex; gap: 8px; align-items: center;">
                 <button class="btn-card-apply" id="btn-export-csv" style="padding: 0.5rem 1rem;">
                   <i class="fa-solid fa-file-excel"></i> <span data-i18n="btn_export_csv">CSV एक्सपोर्ट करा</span>
+                </button>
+                <button type="button" class="btn-form-reset" onclick="adminLogout()" style="padding: 0.5rem 1rem; background: #dc2626; color: #ffffff; border: 1px solid #b91c1c; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer;">
+                  <i class="fa-solid fa-right-from-bracket"></i> <span>डॅशबोर्ड बंद / लॉगआउट</span>
                 </button>
               </div>
             </div>
@@ -1411,9 +1020,9 @@
   <!-- Modal 1: Document Checklist Info -->
   <div class="modal-overlay" id="docs-info-modal">
     <div class="modal-card">
-      <div class="modal-header">
-        <h3 id="docs-modal-title">माहिती</h3>
-        <button class="modal-close-btn" onclick="closeModal('docs-info-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-header" style="background: linear-gradient(135deg, #1a0533 0%, #2d1b69 100%) !important; color: #ffffff !important; padding: 1.1rem 1.4rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff9500;">
+        <h3 id="docs-modal-title" style="color: #ffffff !important; font-size: 1.15rem !important; font-weight: 800 !important; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.5);">माहिती</h3>
+        <button class="modal-close-btn" onclick="closeModal('docs-info-modal')" style="background: rgba(255,255,255,0.18) !important; color: #ffffff !important; border: 1px solid rgba(255,255,255,0.25) !important;"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body" id="docs-modal-body">
         <!-- Rendered by JS -->
@@ -1424,9 +1033,9 @@
   <!-- Modal 2: Official Acknowledgment Receipt -->
   <div class="modal-overlay" id="receipt-modal">
     <div class="modal-card" style="max-width: 850px;">
-      <div class="modal-header">
-        <h3><i class="fa-solid fa-receipt"></i> अधिकृत पोच पावती (Acknowledgment Slip)</h3>
-        <button class="modal-close-btn" onclick="closeModal('receipt-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-header" style="background: linear-gradient(135deg, #1a0533 0%, #2d1b69 100%) !important; color: #ffffff !important; padding: 1.1rem 1.4rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00a86b;">
+        <h3 style="color: #ffffff !important; font-size: 1.15rem !important; font-weight: 800 !important; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.5);"><i class="fa-solid fa-receipt" style="color: #00a86b !important;"></i> अधिकृत पोच पावती (Acknowledgment Slip)</h3>
+        <button class="modal-close-btn" onclick="closeModal('receipt-modal')" style="background: rgba(255,255,255,0.18) !important; color: #ffffff !important; border: 1px solid rgba(255,255,255,0.25) !important;"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
         <div id="receipt-modal-content">
@@ -1445,9 +1054,9 @@
   <!-- Modal 3: Officer / VLE Login PIN -->
   <div class="modal-overlay" id="admin-login-modal">
     <div class="modal-card" style="max-width: 420px;">
-      <div class="modal-header">
-        <h3 data-i18n="admin_login_title"><i class="fa-solid fa-user-lock"></i> अधिकारी लॉगिन</h3>
-        <button class="modal-close-btn" onclick="closeModal('admin-login-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-header" style="background: linear-gradient(135deg, #1a0533 0%, #2d1b69 100%) !important; color: #ffffff !important; padding: 1.1rem 1.4rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff9500;">
+        <h3 data-i18n="admin_login_title" style="color: #ffffff !important; font-size: 1.15rem !important; font-weight: 800 !important; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.5);"><i class="fa-solid fa-user-lock" style="color: #ff9500 !important;"></i> अधिकारी लॉगिन</h3>
+        <button class="modal-close-btn" onclick="closeModal('admin-login-modal')" style="background: rgba(255,255,255,0.18) !important; color: #ffffff !important; border: 1px solid rgba(255,255,255,0.25) !important;"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
         <form id="admin-login-form">
@@ -1495,15 +1104,15 @@
   <!-- Modal 5: Useful Official Links Modal Popup (महत्त्वाच्या शासकीय लिंक्स) -->
   <div class="modal-overlay" id="useful-links-modal" role="dialog" aria-modal="true" aria-labelledby="useful-links-title">
     <div class="modal-card useful-links-modal-card">
-      <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <i class="fa-solid fa-layer-group" style="color: var(--saffron-orange); font-size: 1.3rem;"></i>
+      <div class="modal-header" style="background: linear-gradient(135deg, #1a0533 0%, #2d1b69 100%) !important; color: #ffffff !important; padding: 1.1rem 1.4rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff9500;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="fa-solid fa-layer-group" style="color: #ff9500 !important; font-size: 1.4rem;"></i>
           <div>
-            <h3 id="useful-links-title">उपयुक्त शासकीय टूल्स व पेजेस (Useful Tools & Pages)</h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">प्रतिज्ञा पत्र टोकन जनरेटर, संमतीपत्र / शपथपत्र व इतर शासकीय पेजेस</span>
+            <h3 id="useful-links-title" style="color: #ffffff !important; font-size: 1.15rem !important; font-weight: 800 !important; margin: 0; line-height: 1.25; text-shadow: 0 1px 4px rgba(0,0,0,0.5);">उपयुक्त शासकीय टूल्स व पेजेस (Useful Tools & Pages)</h3>
+            <span style="font-size: 0.8rem; color: #e2e8f0 !important; font-weight: 500; display: block; margin-top: 2px;">प्रतिज्ञा पत्र टोकन जनरेटर, संमतीपत्र / शपथपत्र व इतर शासकीय पेजेस</span>
           </div>
         </div>
-        <button class="modal-close-btn" onclick="closeModal('useful-links-modal')" title="बंद करा / Close">
+        <button class="modal-close-btn" onclick="closeModal('useful-links-modal')" title="बंद करा / Close" style="background: rgba(255,255,255,0.18) !important; color: #ffffff !important; border: 1px solid rgba(255,255,255,0.25) !important;">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
@@ -1521,15 +1130,15 @@
   <!-- Modal 6: Useful Softwares & Setup Files Hub (उपयुक्त सॉफ्टवेअर डाउनलोड केंद्र) -->
   <div class="modal-overlay" id="software-modal" role="dialog" aria-modal="true" aria-labelledby="software-modal-title">
     <div class="modal-card software-modal-card">
-      <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <i class="fa-solid fa-box-archive" style="color: #0284c7; font-size: 1.35rem;"></i>
+      <div class="modal-header" style="background: linear-gradient(135deg, #1a0533 0%, #2d1b69 100%) !important; color: #ffffff !important; padding: 1.1rem 1.4rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0284c7;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="fa-solid fa-box-archive" style="color: #38bdf8 !important; font-size: 1.4rem;"></i>
           <div>
-            <h3 id="software-modal-title">उपयुक्त सॉफ्टवेअर्स व ड्रायव्हर सेटअप दालन</h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">CSC, बायोमेट्रिक, DSC, महा-ई-सेवा व शासकीय कामांसाठी अधिकृत सॉफ्टवेअर्स</span>
+            <h3 id="software-modal-title" style="color: #ffffff !important; font-size: 1.15rem !important; font-weight: 800 !important; margin: 0; line-height: 1.25; text-shadow: 0 1px 4px rgba(0,0,0,0.5);">उपयुक्त सॉफ्टवेअर्स व ड्रायव्हर सेटअप दालन</h3>
+            <span style="font-size: 0.8rem; color: #e2e8f0 !important; font-weight: 500; display: block; margin-top: 2px;">CSC, बायोमेट्रिक, DSC, महा-ई-सेवा व शासकीय कामांसाठी अधिकृत सॉफ्टवेअर्स</span>
           </div>
         </div>
-        <button class="modal-close-btn" onclick="closeModal('software-modal')" title="बंद करा / Close">
+        <button class="modal-close-btn" onclick="closeModal('software-modal')" title="बंद करा / Close" style="background: rgba(255,255,255,0.18) !important; color: #ffffff !important; border: 1px solid rgba(255,255,255,0.25) !important;">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>

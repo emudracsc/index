@@ -306,7 +306,6 @@
         .sign-space { flex: 1; }
         .name-text { font-weight: 700; font-size: 0.95rem; padding-top: 25px; color: #000; }
         
-        /* 🟢 फोटो बॉक्स - साइज स्लाइडरने बदलण्यासाठी dynamic class */
         .photo-box { 
             border: 2px solid var(--photo-border); 
             border-radius: 8px; 
@@ -316,8 +315,8 @@
             background: var(--photo-bg); 
             overflow: hidden; 
             flex-shrink: 0; 
-            height: 80%;  /* हे स्लाइडरने बदलेल */
-            aspect-ratio: 3.5/4.5; /* हे स्लाइडरने बदलेल */
+            height: 100%;  /* Default 100% */
+            aspect-ratio: 3.5/4.5;
         }
         .photo-box img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -422,11 +421,11 @@
         <input type="text" id="personName" placeholder="उदा. संजय पाटील">
     </div>
 
-    <!-- 🟢 नवीन: फोटो साइज कंट्रोल स्लाइडर -->
+    <!-- 🟢 फोटो साइज कंट्रोल स्लाइडर (Default 100%) -->
     <div class="size-control-group">
         <label>🖼️ फोटो साइज:</label>
-        <input type="range" id="photoSizeSlider" min="20" max="100" value="80">
-        <span class="size-value" id="sizeDisplay">80%</span>
+        <input type="range" id="photoSizeSlider" min="20" max="100" value="100">
+        <span class="size-value" id="sizeDisplay">100%</span>
     </div>
 
     <div class="action-row">
@@ -486,13 +485,18 @@
     let cropper, finalCroppedImage = null, videoStream = null;
     let currentEditNameDiv = null;
 
-    // 🟢 फोटो साइज स्लाइडर फंक्शन
+    // 🟢 फोटो साइज स्लाइडर फंक्शन (Default 100% व कायमस्वरूपी LocalStorage सेव्ह)
     const slider = document.getElementById('photoSizeSlider');
     const sizeDisplay = document.getElementById('sizeDisplay');
+    
+    const savedPhotoSize = localStorage.getItem('sanmati_photo_size') || '100';
+    slider.value = savedPhotoSize;
+    sizeDisplay.textContent = savedPhotoSize + '%';
     
     slider.addEventListener('input', function() {
         const val = this.value;
         sizeDisplay.textContent = val + '%';
+        localStorage.setItem('sanmati_photo_size', val);
         // सर्व existing फोटो बॉक्सची साइज बदला
         document.querySelectorAll('.photo-box').forEach(box => {
             box.style.height = val + '%';
@@ -572,8 +576,8 @@
         textDiv.appendChild(sign); textDiv.appendChild(nameDiv);
         let photoDiv=document.createElement('div'); photoDiv.className='photo-box';
         
-        // 🟢 स्लाइडरची current value apply करा
-        const currentSize = document.getElementById('photoSizeSlider').value;
+        // 🟢 स्लाइडरची current value किंवा saved value apply करा (Default 100%)
+        const currentSize = slider.value || localStorage.getItem('sanmati_photo_size') || '100';
         photoDiv.style.height = currentSize + '%';
         
         if(finalCroppedImage){ let img=document.createElement('img'); img.src=finalCroppedImage; photoDiv.appendChild(img); }

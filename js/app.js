@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
   try { renderAdminSoftwaresTable(); } catch (e) { console.error("Error in renderAdminSoftwaresTable:", e); }
   try { renderAdminLinksTable(); } catch (e) { console.error("Error in renderAdminLinksTable:", e); }
   try { initWhatsAppDirect(); } catch (e) { console.error("Error in initWhatsAppDirect:", e); }
+  try { initHeroBgSlideshow(); } catch (e) { console.error("Error in initHeroBgSlideshow:", e); }
+  try { renderHeroLinksTicker(); } catch (e) { console.error("Error in renderHeroLinksTicker:", e); }
 
   // Listen for language changes to re-render dynamic content
   window.addEventListener("languageChanged", () => {
@@ -35,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderAdminServicesTable();
       renderAdminSoftwaresTable();
       renderAdminLinksTable();
+      renderHeroLinksTicker();
     } catch (e) {
       console.error("Error on languageChanged:", e);
     }
@@ -333,9 +336,9 @@ function renderServicesCatalog(filterCategory = "all", searchQuery = "") {
         <button class="btn-card-doc" onclick="openDocsModal('${service.id}')">
           <i class="fa-solid fa-list-check"></i> ${t("btn_view_docs")}
         </button>
-        <button class="btn-card-apply" onclick="startApplyForService('${service.id}')">
-          <i class="fa-solid fa-file-pen"></i> ${t("btn_apply_this")}
-        </button>
+        <a href="https://wa.me/919890869793?text=${encodeURIComponent(isMr ? 'नमस्कार, मला ' + title + ' या सेवेबद्दल अधिकृत माहिती हवी आहे.' : 'Hello, I need information regarding ' + title)}" target="_blank" class="btn-card-apply" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
+          <i class="fa-brands fa-whatsapp"></i> ${isMr ? "थेट संपर्क" : "WhatsApp"}
+        </a>
       </div>
     `;
     grid.appendChild(card);
@@ -564,9 +567,9 @@ function openDocsModal(serviceId) {
           <div style="font-size: 0.8rem; color: #64748b;">${isMr ? 'एकूण देय शुल्क (Total Applicable Charges):' : 'Total Charges:'}</div>
           <div style="font-size: 1.35rem; font-weight: 800; color: #15803d; font-family: var(--font-sans);">₹${service.total_fee.toFixed(2)}</div>
         </div>
-        <button class="btn-form-submit" onclick="closeModal('docs-info-modal'); startApplyForService('${service.id}');">
-          <i class="fa-solid fa-file-pen"></i> ${isMr ? 'या सेवेसाठी अर्ज करा' : 'Apply For This Service'}
-        </button>
+        <a href="https://wa.me/919890869793?text=${encodeURIComponent(isMr ? 'नमस्कार, मला ' + (isMr ? service.title_mr : service.title_en) + ' या सेवेसाठी कागदपत्रे व कामाबाबत संपर्क करायचा आहे.' : 'Hello, I want to consult for ' + service.title_en)}" target="_blank" class="btn-form-submit" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">
+          <i class="fa-brands fa-whatsapp"></i> ${isMr ? 'केंद्रावर थेट संपर्क करा' : 'Contact Center'}
+        </a>
       </div>
     `;
   }
@@ -1389,21 +1392,75 @@ function showTokenSlipModal(token) {
 }
 
 /**
+ * Check Admin Authentication State
+ */
+function checkAdminAuthState() {
+  const isAuth = sessionStorage.getItem("emudra_admin_auth") === "true";
+  const webAppSec = document.getElementById("interactive-app");
+  const navBtn = document.getElementById("nav-admin-login-btn");
+  const navBtnText = document.getElementById("nav-admin-btn-text");
+
+  if (isAuth) {
+    if (webAppSec) webAppSec.style.display = "block";
+    if (navBtn) {
+      navBtn.style.background = "linear-gradient(135deg, #dc2626, #991b1b)";
+      navBtn.title = "अधिकारी लॉगआउट करा";
+    }
+    if (navBtnText) {
+      navBtnText.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> लॉगआउट';
+    }
+  } else {
+    if (webAppSec) webAppSec.style.display = "none";
+    if (navBtn) {
+      navBtn.style.background = "linear-gradient(135deg, #1a0533, #2d1b69)";
+      navBtn.title = "अधिकारी लॉगिन";
+    }
+    if (navBtnText) {
+      navBtnText.innerHTML = '<i class="fa-solid fa-user-lock"></i> अधिकारी लॉगिन';
+    }
+  }
+}
+
+function handleNavAdminClick() {
+  const isAuth = sessionStorage.getItem("emudra_admin_auth") === "true";
+  if (isAuth) {
+    adminLogout();
+  } else {
+    openAdminLogin();
+  }
+}
+
+function adminLogout() {
+  sessionStorage.removeItem("emudra_admin_auth");
+  checkAdminAuthState();
+  showToast(CURRENT_LANG === "mr" ? "अधिकारी लॉगआउट झाले. डॅशबोर्ड बंद झाला." : "Logged out successfully.", "info");
+  const home = document.getElementById("home");
+  if (home) home.scrollIntoView({ behavior: "smooth" });
+}
+
+/**
  * VLE / Officer Admin Dashboard
  */
 function initAdminDashboard() {
+  checkAdminAuthState();
   const loginForm = document.getElementById("admin-login-form");
-  const dashSection = document.getElementById("admin-dashboard-panel");
-  const loginModal = document.getElementById("admin-login-modal");
 
   loginForm?.addEventListener("submit", (e) => {
     e.preventDefault();
     const pin = document.getElementById("admin-pin-input").value;
     if (pin === "341992") {
       closeModal("admin-login-modal");
+      sessionStorage.setItem("emudra_admin_auth", "true");
+      checkAdminAuthState();
       renderAdminDashboard();
-      switchTab("tab-admin");
-      showToast(CURRENT_LANG === "mr" ? "अधिकारी लॉगिन यशस्वी!" : "Officer Login Successful!", "success");
+      showToast(CURRENT_LANG === "mr" ? "अधिकारी लॉगिन यशस्वी! डॅशबोर्ड उघडला." : "Officer Login Successful!", "success");
+      setTimeout(() => {
+        const webAppSec = document.getElementById("interactive-app");
+        if (webAppSec) {
+          webAppSec.style.display = "block";
+          webAppSec.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 150);
     } else {
       showToast(CURRENT_LANG === "mr" ? "चुकीचा सुरक्षा पासवर्ड." : "Invalid Security Password.", "error");
     }
@@ -1421,6 +1478,9 @@ function openAdminLogin() {
 }
 
 window.openAdminLogin = openAdminLogin;
+window.handleNavAdminClick = handleNavAdminClick;
+window.adminLogout = adminLogout;
+window.checkAdminAuthState = checkAdminAuthState;
 
 /**
  * Switch Admin Sub-Navigation Tabs
@@ -2067,24 +2127,36 @@ function renderUsefulLinksGrid(searchQuery = "") {
     return;
   }
 
-  container.innerHTML = filtered.map(item => {
+  const colorThemes = [
+    "theme-teal",
+    "theme-amber",
+    "theme-indigo",
+    "theme-emerald",
+    "theme-rose",
+    "theme-blue",
+    "theme-purple",
+    "theme-orange"
+  ];
+
+  container.innerHTML = filtered.map((item, index) => {
     const title = (isMr ? item.title_mr : item.title_en) || item.title_mr || "शासकीय लिंक";
     const desc = (isMr ? item.desc_mr : item.desc_en) || "";
     const url = item.url || "#";
     const icon = item.icon || "fa-solid fa-link";
     const category = item.category || "शासकीय सेवा";
     const actionLabel = item.isInternal 
-      ? (isMr ? 'नवीन टॅबमध्ये उघडा' : 'Open in New Tab')
-      : (isMr ? 'अधिकृत पोर्टल उघडा' : 'Open Portal');
+      ? (isMr ? 'उघडा' : 'Open in New Tab')
+      : (isMr ? 'पोर्टल उघडा' : 'Open Portal');
+    const themeClass = colorThemes[index % colorThemes.length];
       
     return `
-      <a href="${url}" target="_blank" rel="noopener noreferrer" class="useful-link-card" title="${title}">
-        <div>
+      <a href="${url}" target="_blank" rel="noopener noreferrer" class="useful-link-card ${themeClass}" title="${title}">
+        <div class="useful-link-card-main">
           <div class="useful-link-card-top">
             <div class="useful-link-icon-box">
               <i class="${icon}"></i>
             </div>
-            <div>
+            <div class="useful-link-header-info">
               <div class="useful-link-cat">${category}</div>
               <h4 class="useful-link-title">${title}</h4>
             </div>
@@ -2585,6 +2657,7 @@ function renderAdminLinksTable() {
   const tbody = document.getElementById("admin-links-tbody");
   const badge = document.getElementById("admin-links-badge");
   if (badge) badge.textContent = IMPORTANT_LINKS.length;
+  if (typeof renderHeroLinksTicker === 'function') renderHeroLinksTicker();
   if (!tbody) return;
 
   const isMr = CURRENT_LANG === "mr";
@@ -2721,3 +2794,78 @@ window.closeModal = function(modalId) {
 window.switchTab = switchTab;
 window.switchAdminSubTab = switchAdminSubTab;
 window.startApplyForService = startApplyForService;
+window.handleNavAdminClick = handleNavAdminClick;
+window.adminLogout = adminLogout;
+window.checkAdminAuthState = checkAdminAuthState;
+
+/**
+ * 🎬 Cinematic Right-to-Left Hero Background Slideshow Controller
+ * Cycles through Aadhaar, PAN Card, Voter ID, MahaBOCW logos horizontally from right to left
+ */
+let currentHeroBgSlideIndex = 0;
+let heroBgSlideTimer = null;
+
+function initHeroBgSlideshow() {
+  const slides = document.querySelectorAll('.hero-bg-slide');
+  const dots = document.querySelectorAll('.hero-slideshow-indicators .slide-dot');
+  const track = document.getElementById('hero-slider-track');
+  if (!slides.length || !track) return;
+
+  window.setHeroBgSlide = function(index) {
+    if (index < 0 || index >= slides.length) return;
+    currentHeroBgSlideIndex = index;
+    
+    // Smooth horizontal slide from Right to Left: 0%, -25%, -50%, -75%
+    track.style.transform = `translateX(-${currentHeroBgSlideIndex * 25}%)`;
+
+    dots.forEach((dot, i) => {
+      if (i === currentHeroBgSlideIndex) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+  };
+
+  if (heroBgSlideTimer) clearInterval(heroBgSlideTimer);
+  heroBgSlideTimer = setInterval(() => {
+    currentHeroBgSlideIndex = (currentHeroBgSlideIndex + 1) % slides.length;
+    window.setHeroBgSlide(currentHeroBgSlideIndex);
+  }, 4000);
+}
+
+/**
+ * 🔗 Render Live Useful Tools & Links Slideshow Ticker Strip
+ * Populates all links from IMPORTANT_LINKS for continuous horizontal marquee
+ */
+function renderHeroLinksTicker() {
+  const track = document.getElementById('hero-marquee-links-track');
+  if (!track) return;
+
+  let linksArr = [];
+  if (typeof IMPORTANT_LINKS !== "undefined" && Array.isArray(IMPORTANT_LINKS) && IMPORTANT_LINKS.length > 0) {
+    linksArr = IMPORTANT_LINKS;
+  } else if (typeof DEFAULT_IMPORTANT_LINKS !== "undefined" && Array.isArray(DEFAULT_IMPORTANT_LINKS)) {
+    linksArr = DEFAULT_IMPORTANT_LINKS;
+  }
+
+  if (linksArr.length === 0) return;
+
+  const isMr = typeof CURRENT_LANG !== "undefined" && CURRENT_LANG === "mr";
+
+  const renderItems = (list) => {
+    return list.map(link => {
+      const title = isMr ? (link.title_mr || link.title_en) : (link.title_en || link.title_mr);
+      const icon = link.icon || 'fa-solid fa-link';
+      return `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="marquee-link-item" title="${title}"><i class="${icon}"></i> <span>${title}</span></a>`;
+    }).join('');
+  };
+
+  // Duplicate the list once to ensure infinite smooth marquee loop
+  const htmlContent = renderItems(linksArr) + renderItems(linksArr);
+  track.innerHTML = htmlContent;
+}
+
+window.renderHeroLinksTicker = renderHeroLinksTicker;
+
+
