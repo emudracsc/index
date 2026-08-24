@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ई-आधार PVC स्मार्ट कार्ड क्रॉप व प्रिंट स्टुडिओ | 85mm x 55mm e-Aadhaar Print Pro</title>
+  <meta name="description" content="e-Aadhaar PDF किंवा इमेज अपलोड करून 85mm x 55mm अचूक PVC स्मार्ट कार्ड साइजमध्ये Front आणि Back बाजू त्वरित क्रॉप व प्रिंट करा.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Cropper.js CSS & JS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+  <!-- PDF.js for rendering e-Aadhaar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </script>
+
+  <!-- jsPDF for High-Resolution PDF Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #38bdf8;
+      --accent: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.35);
+      --success: #10b981;
+      --danger: #ef4444;
+      --bg-dark: #090e17;
+      --bg-surface: #111827;
+      --bg-card: rgba(17, 24, 39, 0.85);
+      --border-color: rgba(255, 255, 255, 0.12);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --card-radius: 16px;
+      /* CR80 Standard PVC Card Ratio 85.6mm x 53.98mm (~1.585) */
+      --card-ratio: 1.5858;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Mukta', 'Poppins', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(2, 132, 199, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.12) 0%, transparent 40%);
+    }
+
+    /* Top Tricolor Glow Bar */
+    .gov-tricolor-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #ff7700 0%, #ff7700 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%);
+      width: 100%;
+      box-shadow: 0 0 12px rgba(255, 119, 0, 0.6);
+      z-index: 100;
+    }
+
+    /* Header */
+    .app-navbar {
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0284c7 0%, #f59e0b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+    }
+
+    .brand-titles h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .brand-titles p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 0.55rem 1.2rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #0f172a;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    }
+
+    .btn-accent:hover {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-success:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      transform: translateY(-2px);
+    }
+
+    /* Main Grid Layout */
+    .studio-container {
+      max-width: 1440px;
+      width: 100%;
+      margin: 1.5rem auto;
+      padding: 0 1.25rem;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .studio-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Control Sidebar Panel */
+    .control-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      height: fit-content;
+    }
+
+    .panel-section-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Upload Box */
+    .drop-zone {
+      border: 2px dashed rgba(56, 189, 248, 0.4);
+      border-radius: 12px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      background: rgba(2, 132, 199, 0.06);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--primary-light);
+      background: rgba(2, 132, 199, 0.12);
+      transform: scale(1.01);
+    }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .drop-icon {
+      font-size: 2.2rem;
+      color: var(--primary-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .drop-text {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .drop-subtext {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Preset Quick Buttons */
+    .preset-buttons-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .preset-btn {
+      padding: 0.6rem 0.5rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .preset-btn i {
+      font-size: 1rem;
+      color: var(--primary-light);
+    }
+
+    .preset-btn:hover, .preset-btn.active {
+      background: rgba(2, 132, 199, 0.2);
+      border-color: var(--primary-light);
+      color: #ffffff;
+    }
+
+    /* Cropper Modes Selector */
+    .crop-mode-tabs {
+      display: flex;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .crop-tab {
+      flex: 1;
+      text-align: center;
+      padding: 0.45rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .crop-tab.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.5);
+    }
+
+    /* Image Adjustments */
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .slider-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+
+    .slider-item label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+    }
+
+    .slider-item input[type="range"] {
+      width: 55%;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* Print Paper Size & Layout Options */
+    .layout-options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .layout-card {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .layout-card:hover, .layout-card.selected {
+      border-color: var(--accent);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .layout-card .layout-icon {
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+      color: var(--accent);
+    }
+
+    .layout-card .layout-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: block;
+    }
+
+    /* Workspace / Preview Canvas Area */
+    .workspace-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .workspace-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      padding: 1.25rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      position: relative;
+    }
+
+    .workspace-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .workspace-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Main Cropping Viewport */
+    .cropper-stage-wrapper {
+      width: 100%;
+      height: 480px;
+      background: #020617;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-color);
+    }
+
+    .cropper-stage-wrapper img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+
+    .cropper-placeholder {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 2rem;
+    }
+
+    .cropper-placeholder i {
+      font-size: 3.5rem;
+      color: rgba(56, 189, 248, 0.3);
+      margin-bottom: 1rem;
+    }
+
+    .cropper-toolbar {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 6px 12px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border-color);
+      z-index: 10;
+    }
+
+    .tool-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tool-btn:hover {
+      background: var(--primary);
+      transform: scale(1.1);
+    }
+
+    /* Dual Card Output Live Preview (85mm x 55mm CR80) */
+    .dual-cards-preview-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .dual-cards-preview-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card-preview-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      position: relative;
+    }
+
+    .card-preview-tag {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      background: rgba(2, 132, 199, 0.8);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    /* The exact 85mm x 55mm Card Frame */
+    .pvc-card-container {
+      width: 100%;
+      aspect-ratio: var(--card-ratio);
+      background: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1.5rem auto 0.5rem auto;
+      position: relative;
+    }
+
+    .pvc-card-container canvas, .pvc-card-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-dimension-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Modal for Password Input */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-backdrop.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      padding: 1.5rem;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      text-align: center;
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-backdrop.show .modal-box {
+      transform: scale(1);
+    }
+
+    .modal-icon {
+      font-size: 2.5rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-color);
+      color: #ffffff;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      margin: 1rem 0;
+      outline: none;
+    }
+
+    .modal-input:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Print Paper Styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #printable-sheet, #printable-sheet * {
+        visibility: visible;
+      }
+
+      #printable-sheet {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background: #ffffff !important;
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    /* Printable A4 Sheet Styles for Screen & Print */
+    .print-sheet-wrapper {
+      background: #ffffff;
+      color: #000000;
+      padding: 15mm;
+      width: 100%;
+      max-width: 210mm;
+      margin: 0 auto;
+      border-radius: 8px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+
+    .print-sheet-wrapper.active {
+      display: block;
+    }
+
+    .print-cards-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10mm;
+      margin: 10mm 0;
+      flex-wrap: wrap;
+    }
+
+    /* EXACT 85.6mm x 53.98mm PRINT CARD */
+    .print-pvc-card {
+      width: 85.6mm !important;
+      height: 53.98mm !important;
+      border: 0.5px dashed #999999;
+      border-radius: 3.18mm;
+      overflow: hidden;
+      position: relative;
+      background: #ffffff;
+      box-sizing: border-box;
+    }
+
+    .print-pvc-card img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: fill !important;
+      display: block;
+    }
+
+    .print-cutting-guide {
+      font-size: 8pt;
+      color: #666666;
+      text-align: center;
+      margin-top: 2mm;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Tricolor Bar -->
+  <div class="gov-tricolor-bar"></div>
+
+  <!-- Navbar -->
+  <header class="app-navbar no-print">
+    <div class="brand-group">
+      <div class="brand-badge">🆔</div>
+      <div class="brand-titles">
+        <h1>ई-आधार PVC स्मार्ट कार्ड प्रिंट स्टुडिओ</h1>
+        <p>e-Aadhaar 85mm x 55mm (CR80 PVC) Smart Card Direct Print & Cropper Pro</p>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="index.html" class="btn btn-outline">
+        <i class="fa-solid fa-arrow-left"></i> <span>मुख्य पोर्टल</span>
+      </a>
+      <button class="btn btn-accent" onclick="smartAutoCrop()" id="btn-smart-crop">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>⚡ ऑटो क्रॉप (Auto Crop)</span>
+      </button>
+      <button class="btn btn-success" onclick="triggerDirectPrint()" id="btn-print-now">
+        <i class="fa-solid fa-print"></i> <span>🖨️ प्रिंट कार्ड (Print)</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Studio Layout -->
+  <main class="studio-container no-print">
+    <!-- Left Sidebar: Controls -->
+    <aside class="control-panel">
+      <!-- 1. Upload Section -->
+      <div>
+        <div class="panel-section-title">
+          <i class="fa-solid fa-cloud-arrow-up"></i> १. ई-आधार फाइल निवडा
+        </div>
+        <div class="drop-zone" id="drop-zone">
+          <input type="file" id="file-input" accept="application/pdf,image/png,image/jpeg,image/jpg">
+          <i class="fa-solid fa-file-pdf drop-icon"></i>
+          <div class="drop-text">e-Aadhaar PDF किंवा इमेज येथे टाका</div>
+          <div class="drop-subtext">PDF / JPG / PNG (पासवर्ड संरक्षित PDF सपोर्टेड)</div>
+        </div>
+      </div>
+
+      <!-- 2. Side Selector -->
+      <div>
+        <div class="panel-section-title">
+          <i class="fa-solid fa-crop-simple"></i> २. बाजू निवडा व क्रॉप करा
+        </div>
+        <div class="crop-mode-tabs">
+          <div class="crop-tab active" id="tab-front" onclick="switchCropSide('front')">
+            <i class="fa-solid fa-id-card"></i> Front बाजू
+          </div>
+          <div class="crop-tab" id="tab-back" onclick="switchCropSide('back')">
+            <i class="fa-solid fa-barcode"></i> Back बाजू
+          </div>
+        </div>
+
+        <div style="margin-top: 10px; display: flex; gap: 8px;">
+          <button class="btn btn-primary" style="flex: 1; padding: 0.5rem;" onclick="applyCurrentCrop()">
+            <i class="fa-solid fa-check"></i> ही बाजू सेव्ह करा
+          </button>
+          <button class="btn btn-outline" style="padding: 0.5rem 0.8rem;" onclick="resetCropBox()" title="रिसेट क्रॉप">
+            <i class="fa-solid fa-arrows-rotate"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Image Quality & Filters -->
+      <div>
+        <div class="panel-section-title">
+          <i class="fa-solid fa-sliders"></i> ३. कार्ड क्वालिटी सुधारणा
+        </div>
+        <div class="slider-group">
+          <div class="slider-item">
+            <label><i class="fa-solid fa-sun"></i> ब्राईटनेस (Brightness)</label>
+            <input type="range" id="slider-brightness" min="80" max="150" value="100" oninput="updateCardFilters()">
+          </div>
+          <div class="slider-item">
+            <label><i class="fa-solid fa-circle-half-stroke"></i> कॉन्ट्रास्ट (Contrast)</label>
+            <input type="range" id="slider-contrast" min="80" max="160" value="105" oninput="updateCardFilters()">
+          </div>
+          <div class="slider-item">
+            <label><i class="fa-solid fa-palette"></i> सॅच्युरेशन (Color)</label>
+            <input type="range" id="slider-saturation" min="80" max="150" value="105" oninput="updateCardFilters()">
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Print Layouts -->
+      <div>
+        <div class="panel-section-title">
+          <i class="fa-solid fa-layer-group"></i> ४. प्रिंट लेआऊट (85 x 55 mm)
+        </div>
+        <div class="layout-options-grid">
+          <div class="layout-card selected" onclick="setLayout('side-by-side')" id="layout-side">
+            <div class="layout-icon"><i class="fa-solid fa-table-columns"></i></div>
+            <span class="layout-label">Side-by-Side (A4)</span>
+          </div>
+          <div class="layout-card" onclick="setLayout('vertical')" id="layout-vert">
+            <div class="layout-icon"><i class="fa-solid fa-table-cells-large"></i></div>
+            <span class="layout-label">Vertical Stack</span>
+          </div>
+          <div class="layout-card" onclick="setLayout('single-front')" id="layout-sf">
+            <div class="layout-icon"><i class="fa-regular fa-id-card"></i></div>
+            <span class="layout-label">Front Only (PVC)</span>
+          </div>
+          <div class="layout-card" onclick="setLayout('single-back')" id="layout-sb">
+            <div class="layout-icon"><i class="fa-solid fa-barcode"></i></div>
+            <span class="layout-label">Back Only (PVC)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Export Actions -->
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="btn btn-outline" onclick="downloadImages('front')">
+          <i class="fa-solid fa-download"></i> Front HD इमेज डाऊनलोड
+        </button>
+        <button class="btn btn-outline" onclick="downloadImages('back')">
+          <i class="fa-solid fa-download"></i> Back HD इमेज डाऊनलोड
+        </button>
+      </div>
+    </aside>
+
+    <!-- Right Workspace: Crop Stage & Live Card Previews -->
+    <section class="workspace-area">
+      <!-- 1. Interactive Cropper Canvas -->
+      <div class="workspace-card">
+        <div class="workspace-header">
+          <div class="workspace-title">
+            <i class="fa-solid fa-scissors" style="color: var(--primary-light);"></i> 
+            <span id="crop-stage-heading">मूळ आधार दस्तऐवज (Crop Stage)</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-outline btn-sm" onclick="rotateCropper(-90)" title="डावीकडे फिरवा">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="rotateCropper(90)" title="उजवीकडे फिरवा">
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="zoomCropper(0.1)" title="झूम इन">
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="zoomCropper(-0.1)" title="झूम आऊट">
+              <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="cropper-stage-wrapper" id="cropper-wrapper">
+          <div class="cropper-placeholder" id="placeholder-box">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <h3>ई-आधार फाईल अपलोड करा</h3>
+            <p>डाव्या बाजूला PDF किंवा इमेज सिलेक्ट करा. पासवर्ड असल्यास तो टाका.</p>
+          </div>
+          <img id="source-image" style="display: none;" alt="Source e-Aadhaar">
+        </div>
+      </div>
+
+      <!-- 2. Live Dual Card Previews (Exact 85mm x 55mm Ratio) -->
+      <div class="workspace-card">
+        <div class="workspace-header">
+          <div class="workspace-title">
+            <i class="fa-solid fa-id-card-clip" style="color: var(--accent);"></i>
+            <span>लाईव्ह कार्ड प्रिव्ह्यू (CR80 Smart PVC Card Size: 85.60 × 53.98 mm)</span>
+          </div>
+          <span style="font-size: 0.8rem; color: var(--success); font-weight: 700;">
+            <i class="fa-solid fa-circle-check"></i> ३०० DPI प्रिंट रेडी
+          </span>
+        </div>
+
+        <div class="dual-cards-preview-section">
+          <!-- Front Card Preview -->
+          <div class="card-preview-box">
+            <span class="card-preview-tag">FRONT SIDE</span>
+            <div class="pvc-card-container">
+              <canvas id="front-card-canvas"></canvas>
+            </div>
+            <div class="card-dimension-badge">साइज: 85.60 mm × 53.98 mm (Standard PVC)</div>
+          </div>
+
+          <!-- Back Card Preview -->
+          <div class="card-preview-box">
+            <span class="card-preview-tag" style="background: rgba(245, 158, 11, 0.8);">BACK SIDE</span>
+            <div class="pvc-card-container">
+              <canvas id="back-card-canvas"></canvas>
+            </div>
+            <div class="card-dimension-badge">साइज: 85.60 mm × 53.98 mm (Standard PVC)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Printable A4 Sheet Section (Pure 100% Accurate Millimeter Scale for Printing) -->
+  <div id="printable-sheet" class="print-sheet-wrapper">
+    <div style="text-align: center; margin-bottom: 5mm; font-family: Arial, sans-serif; font-size: 9pt; color: #555555;" class="no-print-guide">
+      ★ eMudra CSC & Aaple Sarkar Seva Kendra • Standard CR80 PVC Smart Card Print (85.6mm × 53.98mm) ★
+    </div>
+
+    <!-- Layout Container for Front and Back -->
+    <div id="print-layout-container" class="print-cards-row">
+      <!-- Front Card -->
+      <div class="print-pvc-card" id="print-front-card-box">
+        <img id="print-front-img" src="" alt="Aadhaar Front">
+      </div>
+
+      <!-- Back Card -->
+      <div class="print-pvc-card" id="print-back-card-box">
+        <img id="print-back-img" src="" alt="Aadhaar Back">
+      </div>
+    </div>
+
+    <div class="print-cutting-guide">
+      ✂️ कापण्यासाठी डॅश बॉर्डर गाइड दिलेली आहे. लॅमिनेशन किंवा PVC कार्ड प्रिंटरसाठी अचूक माप.
+    </div>
+  </div>
+
+  <!-- Password Prompt Modal for Encrypted PDFs -->
+  <div class="modal-backdrop" id="password-modal">
+    <div class="modal-box">
+      <i class="fa-solid fa-lock modal-icon"></i>
+      <h3 style="font-size: 1.25rem; font-weight: 800;">e-Aadhaar PDF पासवर्ड टाका</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+        नावची पहिली ४ अक्षरे (CAPITAL) + जन्माचे वर्ष (उदा. SANT1985)
+      </p>
+      <input type="password" id="pdf-password-input" class="modal-input" placeholder="उदा. SANT1985" maxlength="20">
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-primary" style="flex: 1;" onclick="submitPdfPassword()">
+          <i class="fa-solid fa-unlock"></i> अनलॉक करा
+        </button>
+        <button class="btn btn-outline" onclick="closePasswordModal()">
+          रद्द करा
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State Variables
+    let currentPdfDoc = null;
+    let currentPdfBytes = null;
+    let fullPageCanvas = null;
+    let cropperInstance = null;
+    let currentSide = 'front'; // 'front' or 'back'
+    let currentLayout = 'side-by-side';
+    
+    // Stored Cropped Canvas / Data
+    let frontCanvasData = null;
+    let backCanvasData = null;
+
+    const fileInput = document.getElementById('file-input');
+    const dropZone = document.getElementById('drop-zone');
+    const sourceImage = document.getElementById('source-image');
+    const placeholderBox = document.getElementById('placeholder-box');
+    const frontCanvas = document.getElementById('front-card-canvas');
+    const backCanvas = document.getElementById('back-card-canvas');
+
+    // Drag and Drop listeners
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    // File Handler
+    function handleFile(file) {
+      if (!file) return;
+
+      if (file.type === 'application/pdf') {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          currentPdfBytes = new Uint8Array(ev.target.result);
+          loadPdfWithPassword(currentPdfBytes, '');
+        };
+        reader.readAsArrayBuffer(file);
+      } else if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          setupImageOnStage(ev.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Load PDF using PDF.js with password handling
+    function loadPdfWithPassword(pdfData, password) {
+      const loadingTask = pdfjsLib.getDocument({
+        data: pdfData,
+        password: password
+      });
+
+      loadingTask.promise.then(function(pdf) {
+        currentPdfDoc = pdf;
+        closePasswordModal();
+        renderPdfPage(1);
+      }).catch(function(err) {
+        if (err.name === 'PasswordException') {
+          openPasswordModal();
+        } else {
+          alert('PDF लोड करताना अडचण आली: ' + (err.message || 'अवैध पासवर्ड'));
+        }
+      });
+    }
+
+    function openPasswordModal() {
+      document.getElementById('password-modal').classList.add('show');
+      const input = document.getElementById('pdf-password-input');
+      input.value = '';
+      input.focus();
+    }
+
+    function closePasswordModal() {
+      document.getElementById('password-modal').classList.remove('show');
+    }
+
+    function submitPdfPassword() {
+      const pass = document.getElementById('pdf-password-input').value.trim();
+      if (!pass) return;
+      loadPdfWithPassword(currentPdfBytes, pass);
+    }
+
+    // Render PDF page to high-res canvas (300 DPI equivalent scale)
+    function renderPdfPage(pageNumber) {
+      currentPdfDoc.getPage(pageNumber).then(function(page) {
+        // High scale for crisp 300 DPI text & QR codes
+        const scale = 3.0;
+        const viewport = page.getViewport({ scale: scale });
+
+        fullPageCanvas = document.createElement('canvas');
+        fullPageCanvas.width = viewport.width;
+        fullPageCanvas.height = viewport.height;
+        const ctx = fullPageCanvas.getContext('2d');
+
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: viewport
+        };
+
+        page.render(renderContext).promise.then(function() {
+          const imgUrl = fullPageCanvas.toDataURL('image/jpeg', 0.98);
+          setupImageOnStage(imgUrl);
+          // Perform 1-click auto crop by default for convenience
+          setTimeout(smartAutoCrop, 500);
+        });
+      });
+    }
+
+    // Setup Cropper.js on Image
+    function setupImageOnStage(imgSrc) {
+      placeholderBox.style.display = 'none';
+      sourceImage.style.display = 'block';
+      sourceImage.src = imgSrc;
+
+      if (cropperInstance) {
+        cropperInstance.destroy();
+      }
+
+      sourceImage.onload = function() {
+        cropperInstance = new Cropper(sourceImage, {
+          aspectRatio: 85.60 / 53.98, // Standard CR80 ID Card aspect ratio
+          viewMode: 1,
+          autoCropArea: 0.45,
+          responsive: true,
+          restore: false,
+          guides: true,
+          center: true,
+          highlight: false,
+          cropBoxMovable: true,
+          cropBoxResizable: true,
+          ready: function() {
+            setInitialCropBoxPosition(currentSide);
+          }
+        });
+      };
+    }
+
+    // Set Initial Crop Box depending on Front or Back side of standard e-Aadhaar
+    function setInitialCropBoxPosition(side) {
+      if (!cropperInstance) return;
+      const containerData = cropperInstance.getContainerData();
+      const imgData = cropperInstance.getImageData();
+
+      // Standard eAadhaar card is located at the bottom 30% of the page
+      // Left bottom is Front, Right bottom is Back
+      const cardWidth = imgData.width * 0.44;
+      const cardHeight = cardWidth / (85.60 / 53.98);
+      const topPos = imgData.top + (imgData.height * 0.65);
+
+      if (side === 'front') {
+        const leftPos = imgData.left + (imgData.width * 0.05);
+        cropperInstance.setCropBoxData({
+          left: leftPos,
+          top: topPos,
+          width: cardWidth,
+          height: cardHeight
+        });
+      } else {
+        const leftPos = imgData.left + (imgData.width * 0.51);
+        cropperInstance.setCropBoxData({
+          left: leftPos,
+          top: topPos,
+          width: cardWidth,
+          height: cardHeight
+        });
+      }
+    }
+
+    // Switch between Front & Back Crop modes
+    function switchCropSide(side) {
+      currentSide = side;
+      document.getElementById('tab-front').classList.toggle('active', side === 'front');
+      document.getElementById('tab-back').classList.toggle('active', side === 'back');
+      document.getElementById('crop-stage-heading').innerText = side === 'front' 
+        ? 'Front बाजू क्रॉप करा (Name, Photo, Aadhaar No)' 
+        : 'Back बाजू क्रॉप करा (Address, QR Code)';
+
+      setInitialCropBoxPosition(side);
+    }
+
+    // Apply the current crop box to Front or Back card
+    function applyCurrentCrop() {
+      if (!cropperInstance) return;
+
+      const croppedCanvas = cropperInstance.getCroppedCanvas({
+        width: 1011, // 85.6mm at 300 DPI
+        height: 638, // 53.98mm at 300 DPI
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high'
+      });
+
+      if (currentSide === 'front') {
+        frontCanvasData = croppedCanvas;
+        renderToCanvas(croppedCanvas, frontCanvas);
+        document.getElementById('print-front-img').src = croppedCanvas.toDataURL('image/jpeg', 0.98);
+        // Automatically suggest switching to back side if back is not cropped yet
+        if (!backCanvasData) {
+          setTimeout(() => switchCropSide('back'), 300);
+        }
+      } else {
+        backCanvasData = croppedCanvas;
+        renderToCanvas(croppedCanvas, backCanvas);
+        document.getElementById('print-back-img').src = croppedCanvas.toDataURL('image/jpeg', 0.98);
+      }
+    }
+
+    // ⚡ 1-Click Smart Auto Crop
+    function smartAutoCrop() {
+      if (!cropperInstance || !fullPageCanvas) {
+        if (!sourceImage.src || sourceImage.src.includes('none')) {
+          alert('कृपया आधी ई-आधार PDF किंवा इमेज अपलोड करा!');
+          return;
+        }
+      }
+
+      // 1. Crop Front Side (Left bottom)
+      switchCropSide('front');
+      setTimeout(() => {
+        applyCurrentCrop();
+
+        // 2. Crop Back Side (Right bottom)
+        setTimeout(() => {
+          switchCropSide('back');
+          setTimeout(() => {
+            applyCurrentCrop();
+            // Return active tab to front
+            switchCropSide('front');
+          }, 400);
+        }, 400);
+      }, 400);
+    }
+
+    // Draw to target preview canvas with filters
+    function renderToCanvas(srcCanvas, targetCanvas) {
+      targetCanvas.width = srcCanvas.width;
+      targetCanvas.height = srcCanvas.height;
+      const ctx = targetCanvas.getContext('2d');
+
+      const brightness = document.getElementById('slider-brightness').value;
+      const contrast = document.getElementById('slider-contrast').value;
+      const saturation = document.getElementById('slider-saturation').value;
+
+      ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
+      ctx.drawImage(srcCanvas, 0, 0);
+    }
+
+    // Update filters across both preview canvases
+    function updateCardFilters() {
+      if (frontCanvasData) renderToCanvas(frontCanvasData, frontCanvas);
+      if (backCanvasData) renderToCanvas(backCanvasData, backCanvas);
+    }
+
+    // Layout Selector
+    function setLayout(layout) {
+      currentLayout = layout;
+      document.querySelectorAll('.layout-card').forEach(c => c.classList.remove('selected'));
+      
+      const container = document.getElementById('print-layout-container');
+      const frontBox = document.getElementById('print-front-card-box');
+      const backBox = document.getElementById('print-back-card-box');
+
+      frontBox.style.display = 'block';
+      backBox.style.display = 'block';
+
+      if (layout === 'side-by-side') {
+        document.getElementById('layout-side').classList.add('selected');
+        container.style.flexDirection = 'row';
+      } else if (layout === 'vertical') {
+        document.getElementById('layout-vert').classList.add('selected');
+        container.style.flexDirection = 'column';
+      } else if (layout === 'single-front') {
+        document.getElementById('layout-sf').classList.add('selected');
+        backBox.style.display = 'none';
+      } else if (layout === 'single-back') {
+        document.getElementById('layout-sb').classList.add('selected');
+        frontBox.style.display = 'none';
+      }
+    }
+
+    // Cropper Toolbar actions
+    function rotateCropper(degree) {
+      if (cropperInstance) cropperInstance.rotate(degree);
+    }
+
+    function zoomCropper(ratio) {
+      if (cropperInstance) cropperInstance.zoom(ratio);
+    }
+
+    function resetCropBox() {
+      if (cropperInstance) cropperInstance.reset();
+    }
+
+    // Download cropped images
+    function downloadImages(side) {
+      const canvas = side === 'front' ? frontCanvas : backCanvas;
+      if (!canvas || !canvas.width) {
+        alert('आधी ही बाजू क्रॉप करा!');
+        return;
+      }
+
+      const link = document.createElement('a');
+      link.download = `Aadhaar_${side.toUpperCase()}_85x55mm.jpg`;
+      link.href = canvas.toDataURL('image/jpeg', 1.0);
+      link.click();
+    }
+
+    // Direct Print
+    function triggerDirectPrint() {
+      if (!frontCanvasData && !backCanvasData) {
+        alert('कृपया आधी आधार कार्डची Front किंवा Back बाजू क्रॉप करा!');
+        return;
+      }
+
+      // Ensure printable sheet has the latest filter-applied image data
+      if (frontCanvasData) {
+        document.getElementById('print-front-img').src = frontCanvas.toDataURL('image/jpeg', 1.0);
+      }
+      if (backCanvasData) {
+        document.getElementById('print-back-img').src = backCanvas.toDataURL('image/jpeg', 1.0);
+      }
+
+      const printSheet = document.getElementById('printable-sheet');
+      printSheet.classList.add('active');
+
+      setTimeout(() => {
+        window.print();
+        setTimeout(() => printSheet.classList.remove('active'), 1000);
+      }, 300);
+    }
+  </script>
+</body>
+</html>

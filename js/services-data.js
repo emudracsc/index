@@ -1029,6 +1029,18 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
+  // 🆔 Official e-Aadhaar PVC Smart Card Print Studio (85mm x 55mm)
+  {
+    id: "link-eaadhaar-print",
+    category: "विशेष ऑनलाईन टूल्स",
+    icon: "fa-solid fa-id-card-clip",
+    title_mr: "🆔 e-Aadhaar PVC कार्ड प्रिंट (85x55mm)",
+    title_en: "e-Aadhaar PVC Smart Card Studio (85x55mm)",
+    desc_mr: "ई-आधार PDF अपलोड करून 85mm x 55mm अचूक PVC कार्ड Front व Back बाजू डायरेक्ट प्रिंट करा.",
+    desc_en: "Upload e-Aadhaar PDF/Image to auto-crop & print 85mm x 55mm standard PVC ID cards.",
+    url: "eaadhaar-print.html",
+    isInternal: true
+  },
   // 🏛️ Official Digital Dalans & Portals Hub (Final Pages)
   {
     id: "link-logo-wall",
