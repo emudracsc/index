@@ -1017,6 +1017,8 @@ const CENTER_INFO = {
   officerDesignation_en: "Sub-Divisional Magistrate & Setu Suvidha Desk",
   phone: "+91 98908 69793",
   whatsapp: "919890869793",
+  telegram: "mgsutar",
+  telegramUrl: "https://t.me/mgsutar",
   tollFree: "1800 120 8040",
   email: "helpdesk@emudracsc.in",
   address_mr: "घर नं. ४६५, तिवरे, धनाचीवाडी, तालुका - कणकवली, जि. सिंधुदुर्ग, महाराष्ट्र - ४१६६०१",
@@ -1027,6 +1029,17 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
+  {
+    id: "link-telegram",
+    category: "अधिकृत शासकीय टूल्स व दाखले",
+    icon: "fa-brands fa-telegram",
+    title_mr: "✈️ अधिकृत Telegram साहाय्यता (@mgsutar)",
+    title_en: "Official Telegram Support Channel (@mgsutar)",
+    desc_mr: "CSC अपडेट्स, नवीन योजना व थेट साहाय्यासाठी टेलिग्रामवर संपर्क करा.",
+    desc_en: "Contact and get direct assistance on Telegram.",
+    url: "https://t.me/mgsutar",
+    isInternal: false
+  },
   {
     id: "link-pratigya",
     category: "अधिकृत शासकीय टूल्स व दाखले",
