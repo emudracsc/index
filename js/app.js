@@ -2814,9 +2814,9 @@ function initHeroBgSlideshow() {
   window.setHeroBgSlide = function(index) {
     if (index < 0 || index >= slides.length) return;
     currentHeroBgSlideIndex = index;
-    
-    // Smooth horizontal slide from Right to Left: 0%, -25%, -50%, -75%
-    track.style.transform = `translateX(-${currentHeroBgSlideIndex * 25}%)`;
+    // Smooth horizontal slide from Right to Left: dynamically calculated based on slide count
+    const slidePercent = 100 / slides.length;
+    track.style.transform = `translateX(-${currentHeroBgSlideIndex * slidePercent}%)`;
 
     dots.forEach((dot, i) => {
       if (i === currentHeroBgSlideIndex) {
