@@ -180,6 +180,27 @@ function getTodayDateString() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+// Convert YYYY-MM-DD or Date string to DD/MM/YYYY
+function formatDateDDMMYYYY(dateStr) {
+  if (!dateStr) return '-';
+  if (typeof dateStr === 'string' && dateStr.includes('-')) {
+    const parts = dateStr.split('-');
+    if (parts.length === 3 && parts[0].length === 4) {
+      return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
+    }
+  }
+  try {
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+  } catch (e) {}
+  return dateStr;
+}
+
 // =============================================================================
 // 3. CLEAN DATA STORAGE (ZERO DEMO DATA - ABSOLUTE CLEAN SLATE)
 // =============================================================================
@@ -878,7 +899,7 @@ function renderRecentQuickList() {
         <span class="recent-token">${t.tokenNo}</span>
         <div class="recent-info">
           <strong>${escapeHtml(t.customerName)}</strong>
-          <small><i class="far fa-clock"></i> ${t.time} • ${escapeHtml(t.serviceName)}</small>
+          <small><i class="far fa-clock"></i> ${formatDateDDMMYYYY(t.date)} • ${t.time} • ${escapeHtml(t.serviceName)}</small>
         </div>
       </div>
       <div class="recent-right">
@@ -1015,7 +1036,7 @@ function renderRegisterTable(list) {
       <td><strong class="token-text">${t.tokenNo}</strong></td>
       <td>
         <div class="td-datetime">
-          <span>${t.date}</span>
+          <span>${formatDateDDMMYYYY(t.date)}</span>
           <small class="text-muted">${t.time}</small>
         </div>
       </td>
@@ -1140,7 +1161,7 @@ function renderExpensesList() {
 
   tbody.innerHTML = expenses.map(e => `
     <tr>
-      <td>${e.date}</td>
+      <td>${formatDateDDMMYYYY(e.date)}</td>
       <td><strong>${escapeHtml(e.category)}</strong></td>
       <td>${escapeHtml(e.description)}</td>
       <td style="text-align: right;"><strong class="text-crimson font-lg">₹${e.amount}</strong></td>
@@ -1167,7 +1188,7 @@ function generateDailyReport() {
 
   // Headers
   const dateEl = document.getElementById('rep-date-text');
-  if (dateEl) dateEl.textContent = targetDate;
+  if (dateEl) dateEl.textContent = formatDateDDMMYYYY(targetDate);
   const kEl = document.getElementById('rep-kendra-name');
   if (kEl) kEl.textContent = settings.kendraName;
   const opEl = document.getElementById('rep-operator-name');
@@ -1278,7 +1299,7 @@ function openReceiptModal(record) {
   document.getElementById('rec-kendra-address').textContent = settings.centerAddress;
   document.getElementById('rec-kendra-phone').textContent = `संपर्क: ${settings.contactPhone}`;
   document.getElementById('rec-token-no').textContent = record.tokenNo;
-  document.getElementById('rec-datetime').textContent = `${record.date} ${record.time}`;
+  document.getElementById('rec-datetime').textContent = `${formatDateDDMMYYYY(record.date)} ${record.time}`;
   document.getElementById('rec-operator').textContent = settings.operatorName;
   document.getElementById('rec-station').textContent = settings.stationId;
 
@@ -1375,7 +1396,7 @@ function shareReceiptWhatsApp() {
     `🏛️ *अधिकृत आधार सेवा देयक पावती*\n` +
     `--------------------------------\n` +
     `पावती क्र: *${r.tokenNo}*\n` +
-    `दिनांक: ${r.date} ${r.time}\n` +
+    `दिनांक: ${formatDateDDMMYYYY(r.date)} ${r.time}\n` +
     `ग्राहक: *${r.customerName}*\n` +
     `मोबाईल: ${r.mobile}\n` +
     `आधार/EID: ${r.aadhaarEid || '-'}\n` +
@@ -1405,7 +1426,7 @@ function printRegisterTable() {
   playSound('click');
   const preset = document.getElementById('register-date-preset').value;
   const lbl = document.getElementById('print-date-range-label');
-  if (lbl) lbl.textContent = `तारीख फिल्टर: ${preset.toUpperCase()} (${new Date().toLocaleDateString('mr-IN')})`;
+  if (lbl) lbl.textContent = `तारीख फिल्टर: ${preset.toUpperCase()} (${formatDateDDMMYYYY(getTodayDateString())})`;
   window.print();
 }
 
@@ -1904,7 +1925,7 @@ function displayZipPreview(records, fileName) {
     tbody.innerHTML = records.slice(0, 10).map((r, i) => `
       <tr>
         <td>${i + 1}</td>
-        <td>${escapeHtml(r.date)} ${escapeHtml(r.time)}</td>
+        <td>${escapeHtml(formatDateDDMMYYYY(r.date))} ${escapeHtml(r.time)}</td>
         <td><strong>${escapeHtml(r.customerName)}</strong><br/><span class="text-xs text-muted">EID: ${escapeHtml(r.aadhaarEid)}</span></td>
         <td><span class="badge-tag gold text-xs">${escapeHtml(r.serviceName)}</span></td>
         <td style="text-align: right; font-weight: bold; color: #fbbf24;">₹${r.totalAmount}</td>
@@ -2316,8 +2337,8 @@ function displayMainZipPreview(records, sourceFileName) {
 
   const totalAmount = records.reduce((sum, r) => sum + (r.totalAmount || 0), 0);
   const dates = records.map(r => r.date).sort();
-  const minDate = dates[0] || '--';
-  const maxDate = dates[dates.length - 1] || '--';
+  const minDate = dates[0] ? formatDateDDMMYYYY(dates[0]) : '--';
+  const maxDate = dates[dates.length - 1] ? formatDateDDMMYYYY(dates[dates.length - 1]) : '--';
   const dateRangeStr = minDate === maxDate ? minDate : `${minDate} ते ${maxDate}`;
 
   if (countBadge) countBadge.textContent = `${records.length} नोंदी`;
@@ -2329,7 +2350,7 @@ function displayMainZipPreview(records, sourceFileName) {
     tbody.innerHTML = records.slice(0, 10).map((r, i) => `
       <tr>
         <td>${i + 1}</td>
-        <td>${escapeHtml(r.date)} ${escapeHtml(r.time)}</td>
+        <td>${escapeHtml(formatDateDDMMYYYY(r.date))} ${escapeHtml(r.time)}</td>
         <td><strong>${escapeHtml(r.customerName)}</strong><br/><span class="text-xs text-muted">EID: ${escapeHtml(r.aadhaarEid)}</span></td>
         <td><span class="badge-tag gold text-xs">${escapeHtml(r.serviceName)}</span></td>
         <td style="text-align: right; font-weight: bold; color: #fbbf24;">₹${r.totalAmount}</td>
