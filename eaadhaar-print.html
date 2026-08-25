@@ -1220,13 +1220,15 @@
 
       // Automatically calculate perfect crop box dimensions based on standard e-Aadhaar layout
       const imgData = cropperInstance.getImageData();
-      const cardWidth = imgData.width * 0.425; 
+      
+      // Tightened width to exclude outside borders/cut lines (40% of page width instead of 42.5%)
+      const cardWidth = imgData.width * 0.405; 
       const cardHeight = cardWidth / (85.60 / 53.98);
       
-      // Standard e-Aadhaar bottom part coordinates
-      const topPos = imgData.top + (imgData.height * 0.670);
-      const frontLeft = imgData.left + (imgData.width * 0.045);
-      const backLeft = imgData.left + (imgData.width * 0.530);
+      // Adjusted coordinates to cut exactly inside the dashed lines
+      const topPos = imgData.top + (imgData.height * 0.677); 
+      const frontLeft = imgData.left + (imgData.width * 0.055);
+      const backLeft = imgData.left + (imgData.width * 0.540);
 
       // 1. Crop Front Side
       currentSide = 'front';
