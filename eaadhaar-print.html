@@ -1115,13 +1115,21 @@
     function setupImageOnStage(imgSrc) {
       placeholderBox.style.display = 'none';
       sourceImage.style.display = 'block';
-      sourceImage.src = imgSrc;
 
       if (cropperInstance) {
         cropperInstance.destroy();
+        cropperInstance = null;
       }
+      
+      // Remove any existing cropper containers if they got stuck
+      const existingContainers = document.querySelectorAll('.cropper-container');
+      existingContainers.forEach(c => c.remove());
 
+      // Define onload before setting src
       sourceImage.onload = function() {
+        if (cropperInstance) {
+          cropperInstance.destroy();
+        }
         cropperInstance = new Cropper(sourceImage, {
           aspectRatio: 85.60 / 53.98, // Standard CR80 ID Card aspect ratio
           viewMode: 1,
@@ -1138,6 +1146,8 @@
           }
         });
       };
+      
+      sourceImage.src = imgSrc;
     }
 
     // Set Initial Crop Box depending on Front or Back side of standard e-Aadhaar
