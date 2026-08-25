@@ -1221,18 +1221,19 @@
       // Automatically calculate perfect crop box dimensions based on standard e-Aadhaar layout
       const imgData = cropperInstance.getImageData();
       
-      // Tightened width to exclude outside borders/cut lines (40% of page width instead of 42.5%)
-      const cardWidth = imgData.width * 0.405; 
+      // The actual PVC card content spans about 37% of the PDF page width
+      const cardWidth = imgData.width * 0.370; 
       const cardHeight = cardWidth / (85.60 / 53.98);
       
-      // Adjusted coordinates to cut exactly inside the dashed lines
-      const topPos = imgData.top + (imgData.height * 0.677); 
-      const frontLeft = imgData.left + (imgData.width * 0.055);
-      const backLeft = imgData.left + (imgData.width * 0.540);
-
+      // BOTH Front and Back cards are on the LEFT side of the page, stacked vertically!
+      const leftOffset = imgData.left + (imgData.width * 0.042); // 4.2% from left edge
+      
+      const frontTop = imgData.top + (imgData.height * 0.651); // Front starts at ~65.1% down
+      const backTop = frontTop + cardHeight; // Back is exactly below Front
+      
       // 1. Crop Front Side
       currentSide = 'front';
-      cropperInstance.setCropBoxData({ left: frontLeft, top: topPos, width: cardWidth, height: cardHeight });
+      cropperInstance.setCropBoxData({ left: leftOffset, top: frontTop, width: cardWidth, height: cardHeight });
       
       setTimeout(() => {
         applyCurrentCrop();
@@ -1240,7 +1241,7 @@
         // 2. Crop Back Side
         setTimeout(() => {
           currentSide = 'back';
-          cropperInstance.setCropBoxData({ left: backLeft, top: topPos, width: cardWidth, height: cardHeight });
+          cropperInstance.setCropBoxData({ left: leftOffset, top: backTop, width: cardWidth, height: cardHeight });
           
           setTimeout(() => {
             applyCurrentCrop();
