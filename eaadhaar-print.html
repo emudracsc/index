@@ -737,9 +737,15 @@
       <a href="index.html" class="btn btn-outline">
         <i class="fa-solid fa-arrow-left"></i> <span>मुख्य पोर्टल</span>
       </a>
-      <button class="btn btn-accent" onclick="smartAutoCrop()" id="btn-smart-crop">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>⚡ ऑटो क्रॉप (Auto Crop)</span>
-      </button>
+      
+      <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="btn btn-primary" onclick="getCropMeasurements()" style="flex: 1; background: linear-gradient(135deg, #10b981 0%, #059669 100%); font-size: 0.9rem;">
+              <i class="fa-solid fa-ruler-combined"></i> मोजमाप
+            </button>
+            <button class="btn btn-accent" onclick="smartAutoCrop()" style="flex: 1; font-size: 0.9rem;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> ⚡ ऑटो क्रॉप
+            </button>
+          </div>
       <button class="btn btn-success" onclick="triggerDirectPrint()" id="btn-print-now">
         <i class="fa-solid fa-print"></i> <span>🖨️ प्रिंट कार्ड (Print)</span>
       </button>
@@ -1217,6 +1223,21 @@
         renderToCanvas(croppedCanvas, backCanvas);
         document.getElementById('print-back-img').src = croppedCanvas.toDataURL('image/jpeg', 0.98);
       }
+    }
+
+    // Measure current crop box and alert percentages
+    function getCropMeasurements() {
+      if (!cropperInstance) return;
+      const imgData = cropperInstance.getImageData();
+      const cropBox = cropperInstance.getCropBoxData();
+      
+      const widthPercent = (cropBox.width / imgData.width) * 100;
+      const leftPercent = ((cropBox.left - imgData.left) / imgData.width) * 100;
+      const topPercent = ((cropBox.top - imgData.top) / imgData.height) * 100;
+      
+      const result = `मोजमाप (Measurements):\n\nWidth: ${widthPercent.toFixed(2)}%\nLeft Offset: ${leftPercent.toFixed(2)}%\nTop Offset: ${topPercent.toFixed(2)}%\n\nकृपया हे आकडे मला चॅटमध्ये पाठवा!`;
+      alert(result);
+      console.log(result);
     }
 
     // ⚡ 1-Click Smart Auto Crop
