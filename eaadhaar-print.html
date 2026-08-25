@@ -1218,21 +1218,39 @@
         }
       }
 
-      // 1. Crop Front Side (Left bottom)
-      switchCropSide('front');
+      // Automatically calculate perfect crop box dimensions based on standard e-Aadhaar layout
+      const imgData = cropperInstance.getImageData();
+      const cardWidth = imgData.width * 0.425; 
+      const cardHeight = cardWidth / (85.60 / 53.98);
+      
+      // Standard e-Aadhaar bottom part coordinates
+      const topPos = imgData.top + (imgData.height * 0.670);
+      const frontLeft = imgData.left + (imgData.width * 0.045);
+      const backLeft = imgData.left + (imgData.width * 0.530);
+
+      // 1. Crop Front Side
+      currentSide = 'front';
+      cropperInstance.setCropBoxData({ left: frontLeft, top: topPos, width: cardWidth, height: cardHeight });
+      
       setTimeout(() => {
         applyCurrentCrop();
 
-        // 2. Crop Back Side (Right bottom)
+        // 2. Crop Back Side
         setTimeout(() => {
-          switchCropSide('back');
+          currentSide = 'back';
+          cropperInstance.setCropBoxData({ left: backLeft, top: topPos, width: cardWidth, height: cardHeight });
+          
           setTimeout(() => {
             applyCurrentCrop();
-            // Return active tab to front
-            switchCropSide('front');
-          }, 400);
-        }, 400);
-      }, 400);
+            
+            // Return UI active tab to front and update visuals
+            setTimeout(() => {
+              switchCropSide('front');
+              alert("✅ आधार कार्ड अचूक ऑटो-क्रॉप झाले आहे!");
+            }, 200);
+          }, 100);
+        }, 150);
+      }, 100);
     }
 
     // Draw to target preview canvas with filters
