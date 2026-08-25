@@ -22,6 +22,9 @@
     
     <!-- PDF-Lib for flattening -->
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    
+    <!-- Razorpay Checkout -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <style>
         :root {
@@ -741,47 +744,49 @@
             });
         }
 
-        // Handle Download Click
+        // Razorpay Checkout Integration
         function handleDownloadClick() {
             if (isPaymentVerified) {
-                // If already paid, direct download
                 downloadFlattenedPDF();
-            } else {
-                // Open the UPI Payment Gateway Modal
-                openPaymentModal();
+                return;
             }
-        }
 
-        // Verify Payment & Trigger PDF Download
-        async function verifyAndDownload() {
-            const btn = document.getElementById('btn-verify-payment');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> पेमेंट पडताळत आहे...';
+            var options = {
+                "key": "rzp_test_TTK3ioh1Z7z5To", // Enter the Key ID generated from the Dashboard
+                "amount": "1000", // Amount is in currency subunits. Default currency is INR. Hence, 1000 = 10 INR
+                "currency": "INR",
+                "name": "eMudra Aaple Sarkar Kendra",
+                "description": "Aadhaar Certificate Form Download",
+                "image": "https://example.com/your_logo",
+                "handler": function (response){
+                    // Payment Successful
+                    isPaymentVerified = true;
+                    
+                    // Update main button
+                    const mainBtn = document.getElementById('btn-download');
+                    mainBtn.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #4ade80;"></i> <span>Flatten & Download (Paid ✓)</span>';
+                    mainBtn.style.background = 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
 
-            const utrVal = document.getElementById('utr-number-input').value.trim();
-            const txnId = 'CSC-TXN-' + (utrVal || Math.floor(100000 + Math.random() * 900000));
-            document.getElementById('txn-id-display').innerText = txnId;
-
-            // Verification simulation delay
-            setTimeout(async () => {
-                isPaymentVerified = true;
-                
-                // Show celebration/success view
-                document.getElementById('payment-body-default').style.display = 'none';
-                document.getElementById('payment-body-success').style.display = 'flex';
-
-                // Update main button
-                const mainBtn = document.getElementById('btn-download');
-                mainBtn.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #4ade80;"></i> <span>Flatten & Download (Paid ✓)</span>';
-                mainBtn.style.background = 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
-
-                // Automatically trigger PDF flattening and download after 1.2s
-                setTimeout(async () => {
-                    closePaymentModal();
-                    await downloadFlattenedPDF();
-                }, 1400);
-
-            }, 1000);
+                    // Trigger PDF flattening and download
+                    downloadFlattenedPDF();
+                },
+                "prefill": {
+                    "name": "Customer Name",
+                    "email": "customer@example.com",
+                    "contact": "9999999999"
+                },
+                "notes": {
+                    "address": "CSC Center"
+                },
+                "theme": {
+                    "color": "#0284c7"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response){
+                alert("Payment Failed: " + response.error.description);
+            });
+            rzp1.open();
         }
 
         // PDF Viewer Initialization
