@@ -1242,29 +1242,43 @@
 
     // ⚡ 1-Click Smart Auto Crop
     function smartAutoCrop() {
-      if (!cropperInstance || !fullPageCanvas) {
+      if (!cropperInstance) {
         if (!sourceImage.src || sourceImage.src.includes('none')) {
           alert('कृपया आधी ई-आधार PDF किंवा इमेज अपलोड करा!');
           return;
         }
       }
 
-      // Automatically calculate perfect crop box dimensions based on standard e-Aadhaar layout
       const imgData = cropperInstance.getImageData();
+      const pageRatio = imgData.height / imgData.width;
       
-      // The actual PVC card content spans about 37% of the PDF page width
-      const cardWidth = imgData.width * 0.370; 
-      const cardHeight = cardWidth / (85.60 / 53.98);
-      
-      // BOTH Front and Back cards are on the LEFT side of the page, stacked vertically!
-      const leftOffset = imgData.left + (imgData.width * 0.042); // 4.2% from left edge
-      
-      const frontTop = imgData.top + (imgData.height * 0.651); // Front starts at ~65.1% down
-      const backTop = frontTop + cardHeight; // Back is exactly below Front
-      
+      let cardWidth, cardHeight, frontLeft, frontTop, backLeft, backTop;
+
+      // Check if it's an A4 sized PDF (e-Aadhaar) (A4 ratio is ~1.41)
+      if (pageRatio > 1.3 && pageRatio < 1.5) {
+        // Standard A4 e-Aadhaar PDF (Cards are at the bottom left)
+        cardWidth = imgData.width * 0.370; 
+        cardHeight = cardWidth / (85.60 / 53.98);
+        frontLeft = imgData.left + (imgData.width * 0.042);
+        backLeft = frontLeft;
+        frontTop = imgData.top + (imgData.height * 0.651); 
+        backTop = frontTop + cardHeight; 
+      } else {
+        // User uploaded a Photo / WhatsApp image / Custom Cropped file
+        // Use the user's custom measurements!
+        cardWidth = imgData.width * (44.22 / 100); 
+        cardHeight = cardWidth / (85.60 / 53.98);
+        
+        frontLeft = imgData.left + (imgData.width * (1.78 / 100)); 
+        frontTop = imgData.top + (imgData.height * (1.05 / 100)); 
+        
+        backLeft = imgData.left + (imgData.width * (7.38 / 100)); 
+        backTop = imgData.top + (imgData.height * (0.64 / 100)); 
+      }
+
       // 1. Crop Front Side
       currentSide = 'front';
-      cropperInstance.setCropBoxData({ left: leftOffset, top: frontTop, width: cardWidth, height: cardHeight });
+      cropperInstance.setCropBoxData({ left: frontLeft, top: frontTop, width: cardWidth, height: cardHeight });
       
       setTimeout(() => {
         applyCurrentCrop();
@@ -1272,7 +1286,7 @@
         // 2. Crop Back Side
         setTimeout(() => {
           currentSide = 'back';
-          cropperInstance.setCropBoxData({ left: leftOffset, top: backTop, width: cardWidth, height: cardHeight });
+          cropperInstance.setCropBoxData({ left: backLeft, top: backTop, width: cardWidth, height: cardHeight });
           
           setTimeout(() => {
             applyCurrentCrop();
