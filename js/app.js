@@ -45,6 +45,32 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
+ * Universal Date Formatter to DD/MM/YYYY
+ */
+function formatDateDDMMYYYY(dateInput) {
+  if (!dateInput) return "-";
+  try {
+    if (typeof dateInput === "string" && /^\d{2}\/\d{2}\/\d{4}$/.test(dateInput.trim())) {
+      return dateInput.trim();
+    }
+    if (typeof dateInput === "string" && dateInput.includes("-")) {
+      const parts = dateInput.split("T")[0].split("-");
+      if (parts.length === 3 && parts[0].length === 4) {
+        return `${parts[2].padStart(2, "0")}/${parts[1].padStart(2, "0")}/${parts[0]}`;
+      }
+    }
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return String(dateInput);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  } catch (e) {
+    return String(dateInput);
+  }
+}
+
+/**
  * Live Date & Time Clock
  */
 function initClock() {
@@ -53,18 +79,14 @@ function initClock() {
 
   function update() {
     const now = new Date();
-    const options = { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric',
+    const formattedDate = formatDateDDMMYYYY(now);
+    const timeStr = now.toLocaleTimeString(CURRENT_LANG === "mr" ? "mr-IN" : "en-IN", {
       hour: '2-digit', 
       minute: '2-digit', 
       second: '2-digit',
       hour12: true 
-    };
-    const locale = CURRENT_LANG === "mr" ? "mr-IN" : "en-IN";
-    timeElem.innerHTML = `<i class="fa-regular fa-clock"></i> ${now.toLocaleDateString(locale, options)}`;
+    });
+    timeElem.innerHTML = `<i class="fa-regular fa-clock"></i> ${formattedDate} | ${timeStr}`;
   }
   update();
   setInterval(update, 1000);
@@ -1024,7 +1046,7 @@ function showReceiptModal(app) {
         </div>
         <div class="item">
           <strong>अर्ज तारीख (Date of Application):</strong>
-          <span>${app.date}</span>
+          <span>${formatDateDDMMYYYY(app.date)}</span>
         </div>
         <div class="item">
           <strong>अर्जदाराचे नाव (Applicant Name):</strong>
@@ -1210,7 +1232,7 @@ function initTracker() {
           </div>
           <div class="detail-item">
             <div class="lbl">${isMr ? 'अर्ज सादर तारीख:' : 'Applied Date:'}</div>
-            <div class="val">${app.date}</div>
+            <div class="val">${formatDateDDMMYYYY(app.date)}</div>
           </div>
           <div class="detail-item">
             <div class="lbl">${isMr ? 'मोबाईल नंबर:' : 'Mobile Number:'}</div>
@@ -1282,7 +1304,7 @@ function downloadMockCertificate(appId, name, serviceName) {
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 15px;">
           <div style="text-align: left; font-size: 0.8rem; color: #555;">
             <div>प्रमाणपत्र क्र.: MAHA/SDO/2026/89412</div>
-            <div>दिनांक: ${new Date().toLocaleDateString('mr-IN')}</div>
+            <div>दिनांक: ${formatDateDDMMYYYY(new Date())}</div>
             <div>Digitally Signed by SDO Officer</div>
           </div>
           <div style="text-align: center; color: #16a34a; font-weight: 700; font-size: 0.85rem;">
@@ -1369,7 +1391,7 @@ function showTokenSlipModal(token) {
           ${token.tokenNo}
         </div>
         <div style="font-size: 0.9rem; color: #16a34a; font-weight: 700; margin-bottom: 15px;">
-          <i class="fa-solid fa-calendar-check"></i> ${token.date} | ${token.slot}
+          <i class="fa-solid fa-calendar-check"></i> ${formatDateDDMMYYYY(token.date)} | ${token.slot}
         </div>
         <div style="text-align: left; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 0.88rem; display: flex; flex-direction: column; gap: 4px;">
           <div><strong>नाव:</strong> ${token.name}</div>
@@ -1870,7 +1892,7 @@ function renderAdminDashboard() {
       // Support both Supabase format (fullName) and localStorage format (applicantName)
       const name      = app.fullName      || app.applicantName || "-";
       const svcName   = app.serviceName   || (isMr ? app.serviceName_mr : app.serviceName_en) || "-";
-      const date      = app.submittedAt   ? new Date(app.submittedAt).toLocaleDateString("mr-IN") : (app.date || "-");
+      const date      = app.submittedAt   ? formatDateDDMMYYYY(app.submittedAt) : formatDateDDMMYYYY(app.date);
       const mob       = app.mobile        || "-";
       const appId     = app.appId         || app.id || "-";
       const status    = app.status        || "pending";
@@ -2018,7 +2040,7 @@ function exportApplicationsToCsv() {
       `"${a.serviceName_mr}"`,
       a.mobile,
       a.aadhaar || "",
-      a.date,
+      formatDateDDMMYYYY(a.date),
       a.status,
       a.totalFee,
       `"${a.taluka}"`

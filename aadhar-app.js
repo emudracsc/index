@@ -40,15 +40,14 @@ const defaultSettings = {
   }
 };
 
-// User's Configured Firebase Credentials
+// User's Configured Firebase Credentials (setuknk)
 const defaultFirebaseConfig = {
-  apiKey: "AIzaSyCBhMsM4u52M1JyGVq251SKaRHfBgShZN0",
-  authDomain: "e-mudra-aadhar-center.firebaseapp.com",
-  projectId: "e-mudra-aadhar-center",
-  storageBucket: "e-mudra-aadhar-center.firebasestorage.app",
-  messagingSenderId: "406353384933",
-  appId: "1:406353384933:web:9171612d42f815620b8b0c",
-  measurementId: "G-EW41L6H64S"
+  apiKey: "AIzaSyA1OWHOywqX6Hs7GR60PMCBfOrflk4G-Nw",
+  authDomain: "setuknk.firebaseapp.com",
+  projectId: "setuknk",
+  storageBucket: "setuknk.firebasestorage.app",
+  messagingSenderId: "689091171416",
+  appId: "1:689091171416:web:fb56bcbf0d247509b7262d"
 };
 
 // =============================================================================
