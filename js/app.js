@@ -50,24 +50,52 @@ document.addEventListener("DOMContentLoaded", () => {
 function formatDateDDMMYYYY(dateInput) {
   if (!dateInput) return "-";
   try {
-    if (typeof dateInput === "string" && /^\d{2}\/\d{2}\/\d{4}$/.test(dateInput.trim())) {
-      return dateInput.trim();
+    if (dateInput instanceof Date && !isNaN(dateInput.getTime())) {
+      const day = String(dateInput.getDate()).padStart(2, "0");
+      const month = String(dateInput.getMonth() + 1).padStart(2, "0");
+      const year = dateInput.getFullYear();
+      return `${day}/${month}/${year}`;
     }
-    if (typeof dateInput === "string" && dateInput.includes("-")) {
-      const parts = dateInput.split("T")[0].split("-");
-      if (parts.length === 3 && parts[0].length === 4) {
-        return `${parts[2].padStart(2, "0")}/${parts[1].padStart(2, "0")}/${parts[0]}`;
+
+    if (typeof dateInput === "string") {
+      const str = dateInput.trim();
+      if (!str) return "-";
+
+      // If YYYY-MM-DD
+      if (/^\d{4}-\d{1,2}-\d{1,2}/.test(str)) {
+        const parts = str.split('T')[0].split('-');
+        return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
+      }
+
+      // If DD-MM-YYYY
+      if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(str)) {
+        const parts = str.split('-');
+        return `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}`;
+      }
+
+      // If MM/DD/YYYY or DD/MM/YYYY
+      if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(str)) {
+        const parts = str.split('/');
+        const p1 = parseInt(parts[0], 10);
+        const p2 = parseInt(parts[1], 10);
+        const y = parts[2];
+        // If p2 > 12, then p1 is month and p2 is day (MM/DD/YYYY -> DD/MM/YYYY)
+        if (p2 > 12) {
+          return `${String(p2).padStart(2, '0')}/${String(p1).padStart(2, '0')}/${y}`;
+        }
+        return `${String(p1).padStart(2, '0')}/${String(p2).padStart(2, '0')}/${y}`;
+      }
+
+      const d = new Date(str);
+      if (!isNaN(d.getTime())) {
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
       }
     }
-    const d = new Date(dateInput);
-    if (isNaN(d.getTime())) return String(dateInput);
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
-  } catch (e) {
-    return String(dateInput);
-  }
+  } catch (e) {}
+  return String(dateInput);
 }
 
 /**

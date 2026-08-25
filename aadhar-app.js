@@ -139,12 +139,15 @@ function updateAudioButtonUI() {
   }
 }
 
-// Live Clock & Date in Marathi Format
+// Live Clock & Date in Marathi Format (नेहमी DD/MM/YYYY फॉरमॅट)
 function startLiveClock() {
+  const marathiDays = ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'];
   function update() {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    const dateStr = now.toLocaleDateString('mr-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const dayName = marathiDays[now.getDay()];
+    const dateFormatted = formatDateDDMMYYYY(now);
+    const dateStr = `${dayName}, ${dateFormatted}`;
     
     const clockEl = document.getElementById('live-clock-text');
     const dateEl = document.getElementById('live-date-text');
@@ -179,25 +182,56 @@ function getTodayDateString() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-// Convert YYYY-MM-DD or Date string to DD/MM/YYYY
-function formatDateDDMMYYYY(dateStr) {
-  if (!dateStr) return '-';
-  if (typeof dateStr === 'string' && dateStr.includes('-')) {
-    const parts = dateStr.split('-');
-    if (parts.length === 3 && parts[0].length === 4) {
-      return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
-    }
-  }
+// Convert any date to strictly DD/MM/YYYY (Day always first)
+function formatDateDDMMYYYY(dateInput) {
+  if (!dateInput) return '-';
   try {
-    const d = new Date(dateStr);
-    if (!isNaN(d.getTime())) {
-      const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const year = d.getFullYear();
+    if (dateInput instanceof Date && !isNaN(dateInput.getTime())) {
+      const day = String(dateInput.getDate()).padStart(2, '0');
+      const month = String(dateInput.getMonth() + 1).padStart(2, '0');
+      const year = dateInput.getFullYear();
       return `${day}/${month}/${year}`;
     }
+
+    if (typeof dateInput === 'string') {
+      const str = dateInput.trim();
+      if (!str) return '-';
+
+      // If YYYY-MM-DD
+      if (/^\d{4}-\d{1,2}-\d{1,2}/.test(str)) {
+        const parts = str.split('T')[0].split('-');
+        return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
+      }
+
+      // If DD-MM-YYYY
+      if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(str)) {
+        const parts = str.split('-');
+        return `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}`;
+      }
+
+      // If MM/DD/YYYY or DD/MM/YYYY
+      if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(str)) {
+        const parts = str.split('/');
+        const p1 = parseInt(parts[0], 10);
+        const p2 = parseInt(parts[1], 10);
+        const y = parts[2];
+        // If p2 > 12, then p1 is month and p2 is day (MM/DD/YYYY -> DD/MM/YYYY)
+        if (p2 > 12) {
+          return `${String(p2).padStart(2, '0')}/${String(p1).padStart(2, '0')}/${y}`;
+        }
+        return `${String(p1).padStart(2, '0')}/${String(p2).padStart(2, '0')}/${y}`;
+      }
+
+      const d = new Date(str);
+      if (!isNaN(d.getTime())) {
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+      }
+    }
   } catch (e) {}
-  return dateStr;
+  return String(dateInput);
 }
 
 // =============================================================================
