@@ -1245,6 +1245,17 @@ const DEFAULT_IMPORTANT_LINKS = [
     isInternal: true
   },
   {
+    id: "link-gazette-name-change",
+    category: "अधिकृत शासकीय टूल्स व दाखले",
+    icon: "fa-solid fa-file-signature",
+    title_mr: "📢 राजपत्र नाव बदल नमुना (Gazette Notice)",
+    title_en: "Gazette Name Change Notice Form & PDF Generator",
+    desc_mr: "महाराष्ट्र शासन राजपत्र नाव बदल नमुना (English & मराठी) ऑनलाइन भरा व अचूक A4 PDF / प्रिंट करा.",
+    desc_en: "Official Maharashtra Gazette Name Change Notice (English & Marathi) with instant A4 PDF & Print.",
+    url: "gazette-name-change.html",
+    isInternal: true
+  },
+  {
     id: "link-income-certificate",
     category: "अधिकृत शासकीय टूल्स व दाखले",
     icon: "fa-solid fa-file-invoice-dollar",
