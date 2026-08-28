@@ -31,9 +31,11 @@ const defaultSettings = {
   centerAddress: 'ई-मुद्रा डिजिटल सेवा केंद्र परिसर',
   receiptFooter: 'ई-मुद्रा आधार सेवा केंद्रास भेट दिल्याबद्दल धन्यवाद! शासकीय नियमांनुसार सेवा दिली जाईल.',
   rates: {
-    demo: 50,
-    bio: 100,
-    doc: 50,
+    demo: 75,
+    bio: 125,
+    doc: 75,
+    new: 0,
+    mbu: 0,
     print: 50,
     pvc: 50,
     other: 30
@@ -1916,6 +1918,79 @@ function processCsvDirectly(fileBlob) {
   fileReader.readAsText(fileBlob, 'UTF-8');
 }
 
+// Universal Service Classifier per operator's rules:
+// - Type U & Amount 0 => MBU (Mandatory Biometric Update) [Free 0]
+// - Type E / N & Amount 0 => New Enrolment [Free 0]
+// - Biometric => 125 Rs
+// - Update / Demographic => 75 Rs
+function classifyAadhaarService(rawServiceType, extractedAmount) {
+  const typeStr = (rawServiceType || '').trim().toUpperCase();
+  const amt = extractedAmount !== null ? extractedAmount : null;
+
+  // Type checks
+  const isTypeU = typeStr === 'U' || typeStr.startsWith('U_') || typeStr.startsWith('U-') || typeStr.includes('UPDATE') || typeStr.includes('अपडेट');
+  const isTypeEorN = typeStr === 'E' || typeStr === 'N' || typeStr.startsWith('E_') || typeStr.startsWith('E-') || typeStr.startsWith('N_') || typeStr.startsWith('N-') || typeStr.includes('ENROL') || typeStr.includes('NEW') || typeStr.includes('FRESH') || typeStr.includes('नवीन');
+  const isBio = typeStr.includes('BIO') || typeStr.includes('बायो') || typeStr.includes('PHOTO') || typeStr.includes('FINGER') || (amt !== null && amt >= 100);
+
+  // 1. Rule 1: Type 'U' & Amount 0 => MBU (Free)
+  if ((isTypeU || typeStr.includes('MBU') || typeStr.includes('MANDATORY') || typeStr.includes('अनिवार्य')) && (amt === 0 || (amt === null && typeStr.includes('MBU')))) {
+    return {
+      serviceName: 'अनिवार्य बायोमेट्रिक अपडेट (MBU - ५ व १५ वर्षे)',
+      fee: 0,
+      category: 'MBU'
+    };
+  }
+
+  // 2. Rule 2: Type 'E' or 'N' & Amount 0 => New Enrolment (Free)
+  if (isTypeEorN && (amt === 0 || amt === null)) {
+    return {
+      serviceName: 'नवीन आधार नोंदणी (New Enrollment)',
+      fee: 0,
+      category: 'NEW'
+    };
+  }
+
+  // 3. Rule 3: Biometric Update (125 Rs)
+  if (isBio) {
+    return {
+      serviceName: 'बायोमेट्रिक अपडेट (फोटो + फिंगरप्रिंट + डोळे)',
+      fee: amt !== null && amt > 0 ? amt : 125,
+      category: 'BIO'
+    };
+  }
+
+  // 4. Rule 4: Demographic / Document / Normal Update (75 Rs)
+  if (isTypeU || typeStr.includes('DEMO') || typeStr.includes('DOC') || (amt !== null && amt > 0)) {
+    return {
+      serviceName: 'डेमोग्राफिक / डॉक्युमेंट अपडेट',
+      fee: amt !== null && amt > 0 ? amt : 75,
+      category: 'UPDATE'
+    };
+  }
+
+  // Fallback if amt == 0
+  if (amt === 0) {
+    if (isTypeU) {
+      return {
+        serviceName: 'अनिवार्य बायोमेट्रिक अपडेट (MBU - ५ व १५ वर्षे)',
+        fee: 0,
+        category: 'MBU'
+      };
+    }
+    return {
+      serviceName: 'नवीन आधार नोंदणी (New Enrollment)',
+      fee: 0,
+      category: 'NEW'
+    };
+  }
+
+  return {
+    serviceName: 'डेमोग्राफिक अपडेट (नाव/पत्ता/DOB/मोबाईल)',
+    fee: amt !== null ? amt : 75,
+    category: 'UPDATE'
+  };
+}
+
 function parseAndPreviewCSV(csvText, sourceFileName) {
   if (!csvText || !csvText.trim()) {
     showZipStatusAlert('⚠️ निवडलेली CSV फाईल रिकामी आहे.', 'warning');
@@ -1966,7 +2041,7 @@ function parseAndPreviewCSV(csvText, sourceFileName) {
     const eid = getVal('eid', 'enrolmentid', 'enrolment_id', 'enrolmentno', 'enrolment_no', 'aadhaarno', 'uid', 'packetid', 'आधार');
     const rawDate = getVal('date', 'createddate', 'created_date', 'transactiondate', 'txdate', 'दिनांक') || todayStr;
     const time = getVal('time', 'createdtime', 'created_time', 'txtime', 'वेळ') || '10:00';
-    const rawService = getVal('servicetype', 'service_type', 'service', 'updatetype', 'action', 'type', 'प्रकार') || '';
+    const rawService = getVal('type', 'servicetype', 'service_type', 'service', 'updatetype', 'action', 'process_type', 'enrolment_type', 'प्रकार') || '';
     const mobile = getVal('mobile', 'phone', 'contact', 'mobilenumber', 'मोबाईल') || '9876543210';
     const gender = getVal('gender', 'genderage', 'sex') || 'वयस्क (Adult)';
 
@@ -2003,35 +2078,10 @@ function parseAndPreviewCSV(csvText, sourceFileName) {
       }
     }
 
-    // Determine Service Name & Rate
-    let finalService = 'डेमोग्राफिक अपडेट (नाव/पत्ता/DOB/मोबाईल)';
-    let fee = 50;
-    const servLower = (rawService + ' ' + (extractedFee !== null ? extractedFee : '')).toLowerCase();
-
-    if (servLower.includes('bio') || servLower.includes('बायो') || servLower.includes('photo') || servLower.includes('finger')) {
-      finalService = 'बायोमेट्रिक अपडेट (फोटो + फिंगरप्रिंट + डोळे)';
-      fee = 100;
-    } else if (servLower.includes('doc') || servLower.includes('डॉक्युमेंट') || servLower.includes('poi') || servLower.includes('poa')) {
-      finalService = 'डॉक्युमेंट अपडेट (POI / POA पुरावे)';
-      fee = 50;
-    } else if (servLower.includes('new') || servLower.includes('नवीन') || servLower.includes('fresh')) {
-      finalService = 'नवीन आधार नोंदणी (New Enrollment)';
-      fee = 0;
-    } else if (servLower.includes('mbu') || servLower.includes('mandatory') || servLower.includes('अनिवार्य') || (servLower.includes('5') && servLower.includes('15'))) {
-      finalService = 'अनिवार्य बायोमेट्रिक अपडेट (५ व १५ वर्षे)';
-      fee = 0;
-    } else if (servLower.includes('print') || servLower.includes('प्रिंट') || servLower.includes('laminat')) {
-      finalService = 'आधार कलर प्रिंट + लॅमिनेशन';
-      fee = 50;
-    } else if (servLower.includes('pvc') || servLower.includes('पीव्हीसी')) {
-      finalService = 'आधार पीव्हीसी कार्ड (PVC Card)';
-      fee = 50;
-    }
-
-    // If file has an exact amount specified, ALWAYS prioritize the file's amount!
-    if (extractedFee !== null) {
-      fee = extractedFee;
-    }
+    // Apply Service Classification
+    const classified = classifyAadhaarService(rawService, extractedFee);
+    const finalService = classified.serviceName;
+    const fee = classified.fee;
 
     const txId = 'ASK-IMP-' + Date.now() + '-' + (idx + 1);
     const tokenNo = '#' + (200 + idx);
@@ -2418,34 +2468,10 @@ function parseAndPreviewMainCSV(csvText, sourceFileName) {
       }
     }
 
-    let finalService = 'डेमोग्राफिक अपडेट (नाव/पत्ता/DOB/मोबाईल)';
-    let fee = 50;
-    const servLower = (rawService + ' ' + (extractedFee !== null ? extractedFee : '')).toLowerCase();
-
-    if (servLower.includes('bio') || servLower.includes('बायो') || servLower.includes('photo') || servLower.includes('finger')) {
-      finalService = 'बायोमेट्रिक अपडेट (फोटो + फिंगरप्रिंट + डोळे)';
-      fee = 100;
-    } else if (servLower.includes('doc') || servLower.includes('डॉक्युमेंट') || servLower.includes('poi') || servLower.includes('poa')) {
-      finalService = 'डॉक्युमेंट अपडेट (POI / POA पुरावे)';
-      fee = 50;
-    } else if (servLower.includes('new') || servLower.includes('नवीन') || servLower.includes('fresh')) {
-      finalService = 'नवीन आधार नोंदणी (New Enrollment)';
-      fee = 0;
-    } else if (servLower.includes('mbu') || servLower.includes('mandatory') || servLower.includes('अनिवार्य') || (servLower.includes('5') && servLower.includes('15'))) {
-      finalService = 'अनिवार्य बायोमेट्रिक अपडेट (५ व १५ वर्षे)';
-      fee = 0;
-    } else if (servLower.includes('print') || servLower.includes('प्रिंट') || servLower.includes('laminat')) {
-      finalService = 'आधार कलर प्रिंट + लॅमिनेशन';
-      fee = 50;
-    } else if (servLower.includes('pvc') || servLower.includes('पीव्हीसी')) {
-      finalService = 'आधार पीव्हीसी कार्ड (PVC Card)';
-      fee = 50;
-    }
-
-    // Prioritize file's exact amount
-    if (extractedFee !== null) {
-      fee = extractedFee;
-    }
+    // Apply Service Classification
+    const classified = classifyAadhaarService(rawService, extractedFee);
+    const finalService = classified.serviceName;
+    const fee = classified.fee;
 
     const txId = 'ASK-IMP-' + Date.now() + '-' + (idx + 1);
     const tokenNo = '#' + (200 + idx);
