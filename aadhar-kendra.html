@@ -12,8 +12,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <!-- QRCode.js for receipts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- Zip.js for Password-Protected ZIP Extraction & PapaParse for CSV -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/zip.js/2.7.53/zip.min.js"></script>
+  <!-- JSZip & Zip.js (Full with decoders) & PapaParse for CSV -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/zip.js/2.7.53/zip-full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body class="aadhar-standalone-app">
@@ -64,11 +65,14 @@
 
       <!-- App Tabs Navigation -->
       <nav class="app-nav-tabs">
-        <button class="nav-tab-btn active" id="tab-btn-upload" onclick="openTab('upload-tab')">
-          <i class="fas fa-file-zipper"></i> UIDAI दैनिक रिपोर्ट अपलोड
-        </button>
-        <button class="nav-tab-btn" id="tab-btn-register" onclick="openTab('register-tab')">
+        <button class="nav-tab-btn active" id="tab-btn-register" onclick="openTab('register-tab')">
           <i class="fas fa-book"></i> दैनिक नोंदवही (Register)
+        </button>
+        <button class="nav-tab-btn" id="tab-btn-entry" onclick="openTab('entry-tab')">
+          <i class="fas fa-user-plus"></i> नवीन ग्राहक नोंद (Entry)
+        </button>
+        <button class="nav-tab-btn" id="tab-btn-upload" onclick="openTab('upload-tab')">
+          <i class="fas fa-file-zipper"></i> UIDAI दैनिक रिपोर्ट अपलोड
         </button>
         <button class="nav-tab-btn" id="tab-btn-expenses" onclick="openTab('expenses-tab')">
           <i class="fas fa-hand-holding-usd"></i> खर्च व्यवस्थापक
@@ -96,11 +100,14 @@
         </div>
       </div>
       <div class="banner-action-buttons">
+        <button class="app-btn success sm" onclick="openNewEntryTab()">
+          <i class="fas fa-plus"></i> नवीन नोंद
+        </button>
         <button class="app-btn warning sm" onclick="openTab('upload-tab')">
-          <i class="fas fa-cloud-upload-alt"></i> नवीन रिपोर्ट अपलोड
+          <i class="fas fa-cloud-upload-alt"></i> रिपोर्ट अपलोड
         </button>
         <button class="app-btn outline sm" onclick="exportDataToCSV()">
-          <i class="fas fa-file-excel"></i> Excel / CSV Export
+          <i class="fas fa-file-excel"></i> Excel / CSV
         </button>
         <button class="app-btn primary sm" onclick="openTab('reports-tab')">
           <i class="fas fa-print"></i> दिवसाचा ताळेबंद
@@ -178,15 +185,283 @@
         <div class="stat-content">
           <span class="stat-label">एकूण ग्राहक (Customer Count)</span>
           <h3 class="stat-value"><span id="metric-today-customers">0</span></h3>
-          <span class="stat-sub">अपलोड झालेले नागरिक</span>
+          <span class="stat-sub">नोंदणी झालेले नागरिक</span>
         </div>
       </div>
     </section>
 
     <!-- =========================================================================
-         TAB 1: DEDICATED UIDAI REPORT UPLOAD & AUTO-PROCESSING HUB (NO MANUAL ENTRY)
+         TAB 0: MANUAL POS CUSTOMER REGISTRATION & RECEIPT
          ========================================================================= -->
-    <section id="upload-tab" class="app-tab-panel active">
+    <section id="entry-tab" class="app-tab-panel">
+      <div class="two-col-layout">
+        <!-- Left: POS Form -->
+        <div class="glass-card">
+          <div class="card-title-row">
+            <h3><i class="fas fa-user-plus" style="color: #38bdf8;"></i> नवीन आधार ग्राहक नोंदणी (New Entry)</h3>
+            <span class="token-chip"><i class="fas fa-ticket-alt"></i> आजचे टोकन: <strong id="next-token-no">#101</strong></span>
+          </div>
+
+          <form id="aadhaar-entry-form" onsubmit="handleFormSubmit(event)">
+            <input type="hidden" id="entry-edit-id" value="" />
+
+            <!-- Row 1: Token, Date, Time -->
+            <div class="form-grid-3">
+              <div class="form-field">
+                <label for="entry-token"><i class="fas fa-hashtag"></i> टोकन क्र. *</label>
+                <input type="text" id="entry-token" class="input-control font-mono" placeholder="101" required />
+              </div>
+              <div class="form-field">
+                <label for="entry-date"><i class="far fa-calendar-alt"></i> तारीख *</label>
+                <input type="date" id="entry-date" class="input-control" required />
+              </div>
+              <div class="form-field">
+                <label for="entry-time"><i class="far fa-clock"></i> वेळ *</label>
+                <input type="time" id="entry-time" class="input-control" required />
+              </div>
+            </div>
+
+            <!-- Row 2: Customer Details -->
+            <div class="form-grid-3 mt-2">
+              <div class="form-field">
+                <label for="cust-name"><i class="fas fa-user"></i> ग्राहकाचे नाव *</label>
+                <input type="text" id="cust-name" class="input-control" placeholder="उदा. सुरेश रामचंद्र पाटील" required />
+              </div>
+              <div class="form-field">
+                <label for="cust-mobile"><i class="fas fa-phone-alt"></i> मोबाईल नंबर *</label>
+                <input type="tel" id="cust-mobile" class="input-control font-mono" placeholder="98XXXXXXXX" maxlength="10" required />
+              </div>
+              <div class="form-field">
+                <label for="cust-aadhaar-eid"><i class="fas fa-id-card"></i> आधार नंबर / EID क्र.</label>
+                <input type="text" id="cust-aadhaar-eid" class="input-control font-mono" placeholder="12-अंकी आधार किंवा 14/28-अंकी EID" />
+              </div>
+            </div>
+
+            <!-- Gender & Age Group -->
+            <div class="form-grid-1 mt-2">
+              <div class="form-field">
+                <label for="cust-gender-age"><i class="fas fa-venus-mars"></i> लिंग व वयोगट</label>
+                <select id="cust-gender-age" class="select-control">
+                  <option value="वयस्क पुरुष (Adult Male)">वयस्क पुरुष (Adult Male)</option>
+                  <option value="वयस्क महिला (Adult Female)">वयस्क महिला (Adult Female)</option>
+                  <option value="ज्येष्ठ नागरिक पुरुष (Senior Citizen Male)">ज्येष्ठ नागरिक पुरुष (Senior Citizen Male)</option>
+                  <option value="ज्येष्ठ नागरिक महिला (Senior Citizen Female)">ज्येष्ठ नागरिक महिला (Senior Citizen Female)</option>
+                  <option value="बालक ० ते ५ वर्षे (Child 0-5 Yrs)">बालक ० ते ५ वर्षे (Child 0-5 Yrs)</option>
+                  <option value="विद्यार्थी ५ ते १८ वर्षे (Student 5-18 Yrs)">विद्यार्थी ५ ते १८ वर्षे (Student 5-18 Yrs)</option>
+                  <option value="इतर (Other)">इतर (Other)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Service Selection Grid -->
+            <div class="services-section">
+              <span class="section-heading"><i class="fas fa-list-check"></i> शासकीय सेवा प्रकार निवडा:</span>
+              <div class="services-grid-box">
+                
+                <label class="service-radio-label">
+                  <input type="radio" name="aadhaar-service" value="डेमोग्राफिक अपडेट (नाव/पत्ता/जन्मदिनांक/लिंग/मोबाईल)" checked onclick="updateServicePrice(50, this.value)" />
+                  <div class="service-radio-card">
+                    <span class="serv-name">डेमोग्राफिक अपडेट</span>
+                    <span class="serv-desc">नाव, पत्ता, जन्मतारीख, लिंग, मोबाईल, ई-मेल</span>
+                    <span class="serv-rate">₹<span id="rate-demo">50</span></span>
+                  </div>
+                </label>
+
+                <label class="service-radio-label">
+                  <input type="radio" name="aadhaar-service" value="बायोमेट्रिक अपडेट (फोटो/फिंगरप्रिंट/आयरीस)" onclick="updateServicePrice(100, this.value)" />
+                  <div class="service-radio-card">
+                    <span class="serv-name">बायोमेट्रिक अपडेट</span>
+                    <span class="serv-desc">फोटो, १० बोटांचे ठसे, दोन्ही डोळ्यांचे आयरीस</span>
+                    <span class="serv-rate">₹<span id="rate-bio">100</span></span>
+                  </div>
+                </label>
+
+                <label class="service-radio-label">
+                  <input type="radio" name="aadhaar-service" value="डॉक्युमेंट अपडेट (POI / POA कागदपत्रे)" onclick="updateServicePrice(50, this.value)" />
+                  <div class="service-radio-card">
+                    <span class="serv-name">डॉक्युमेंट अपडेट</span>
+                    <span class="serv-desc">ओळख व पत्त्याचा पुरावा (POI & POA)</span>
+                    <span class="serv-rate">₹<span id="rate-doc">50</span></span>
+                  </div>
+                </label>
+
+                <label class="service-radio-label">
+                  <input type="radio" name="aadhaar-service" value="नवीन आधार नोंदणी (० ते १८+ वयोगट)" onclick="updateServicePrice(0, this.value)" />
+                  <div class="service-radio-card">
+                    <span class="serv-name">नवीन आधार नोंदणी</span>
+                    <span class="serv-desc">लहान मुले व नवीन आधार नोंदणी</span>
+                    <span class="serv-rate free">मोफत (₹0)</span>
+                  </div>
+                </label>
+
+                <label class="service-radio-label">
+                  <input type="radio" name="aadhaar-service" value="अनिवार्य बायोमेट्रिक अपडेट (MBU ५ व १५ वर्षे)" onclick="updateServicePrice(0, this.value)" />
+                  <div class="service-radio-card">
+                    <span class="serv-name">अनिवार्य बायोमेट्रिक (MBU)</span>
+                    <span class="serv-desc">५ व १५ वर्षे पूर्ण झालेल्या मुलांचे MBU</span>
+                    <span class="serv-rate free">मोफत (₹0)</span>
+                  </div>
+                </label>
+
+                <label class="service-radio-label">
+                  <input type="radio" name="aadhaar-service" value="कलर आधार प्रिंट + लॅमिनेशन" onclick="updateServicePrice(50, this.value)" />
+                  <div class="service-radio-card">
+                    <span class="serv-name">कलर आधार प्रिंट + लॅमिनेशन</span>
+                    <span class="serv-desc">A4 फोटो पेपर हाय-क्वालिटी प्रिंट व लॅमिनेशन</span>
+                    <span class="serv-rate">₹<span id="rate-print">50</span></span>
+                  </div>
+                </label>
+
+                <label class="service-radio-label">
+                  <input type="radio" name="aadhaar-service" value="पीव्हीसी प्लास्टिक आधार कार्ड" onclick="updateServicePrice(50, this.value)" />
+                  <div class="service-radio-card">
+                    <span class="serv-name">पीव्हीसी (PVC) कार्ड</span>
+                    <span class="serv-desc">ओरिजिनल UIDAI स्मार्ट PVC कार्ड ऑर्डर</span>
+                    <span class="serv-rate">₹<span id="rate-pvc">50</span></span>
+                  </div>
+                </label>
+
+                <label class="service-radio-label">
+                  <input type="radio" name="aadhaar-service" value="इतर सेवा / आधार तपासणी" onclick="updateServicePrice(30, this.value)" />
+                  <div class="service-radio-card">
+                    <span class="serv-name">इतर सेवा</span>
+                    <span class="serv-desc">आधार स्टेटस चेक / डाऊनलोड / इतर</span>
+                    <span class="serv-rate">₹<span id="rate-other">30</span></span>
+                  </div>
+                </label>
+
+              </div>
+            </div>
+
+            <!-- Addon Options Strip -->
+            <div class="addon-strip">
+              <span class="addon-strip-label"><i class="fas fa-plus-circle"></i> अतिरिक्त सेवा (Add-ons):</span>
+              <div class="addon-options">
+                <label class="addon-check">
+                  <input type="checkbox" id="addon-lamination" onchange="calculateTotalAmount()" />
+                  <span>लॅमिनेशन (+₹20)</span>
+                </label>
+                <label class="addon-check">
+                  <input type="checkbox" id="addon-extra-print" onchange="calculateTotalAmount()" />
+                  <span>अतिरिक्त झेरॉक्स (+₹10)</span>
+                </label>
+                <label class="addon-check">
+                  <input type="checkbox" id="addon-form-filling" onchange="calculateTotalAmount()" />
+                  <span>ऑफलाइन फॉर्म भरणे (+₹20)</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Fee Calculation Row -->
+            <div class="form-grid-4 mt-2">
+              <div class="form-field">
+                <label for="entry-base-fee">शासकीय शुल्क (₹)</label>
+                <input type="number" id="entry-base-fee" class="input-control font-mono" value="50" readonly />
+              </div>
+              <div class="form-field">
+                <label for="entry-addon-fee">ॲड-ऑन शुल्क (₹)</label>
+                <input type="number" id="entry-addon-fee" class="input-control font-mono" value="0" readonly />
+              </div>
+              <div class="form-field">
+                <label for="entry-discount">सवलत / Discount (₹)</label>
+                <input type="number" id="entry-discount" class="input-control font-mono" value="0" min="0" oninput="calculateTotalAmount()" />
+              </div>
+              <div class="form-field">
+                <label for="entry-final-amount"><strong style="color: #fbbf24;">एकूण देय रक्कम (₹) *</strong></label>
+                <input type="number" id="entry-final-amount" class="input-control font-mono highlight-gold" value="50" readonly />
+              </div>
+            </div>
+
+            <!-- Payment Mode Selection -->
+            <div class="services-section mt-2">
+              <span class="section-heading"><i class="fas fa-wallet"></i> पेमेंट प्रकार (Payment Mode) *</span>
+              <div class="services-grid-box" style="grid-template-columns: repeat(4, 1fr);">
+                <label class="pay-radio-label">
+                  <input type="radio" name="payment-mode" value="रोख (Cash)" checked />
+                  <div class="pay-pill cash"><i class="fas fa-money-bill-wave"></i> रोख (Cash)</div>
+                </label>
+                <label class="pay-radio-label">
+                  <input type="radio" name="payment-mode" value="युपीआय (UPI)" />
+                  <div class="pay-pill upi"><i class="fas fa-qrcode"></i> युपीआय (UPI)</div>
+                </label>
+                <label class="pay-radio-label">
+                  <input type="radio" name="payment-mode" value="कार्ड (Card)" />
+                  <div class="pay-pill card"><i class="fas fa-credit-card"></i> कार्ड / POS</div>
+                </label>
+                <label class="pay-radio-label">
+                  <input type="radio" name="payment-mode" value="उधारी (Pending)" />
+                  <div class="pay-pill pending"><i class="fas fa-clock"></i> उधारी (Pending)</div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Status & Notes -->
+            <div class="form-grid-2 mt-2">
+              <div class="form-field">
+                <label for="entry-status"><i class="fas fa-tasks"></i> कामाची स्थिती</label>
+                <select id="entry-status" class="select-control">
+                  <option value="पूर्ण (Completed)" selected>पूर्ण (Completed)</option>
+                  <option value="प्रलंबित (Pending)">प्रलंबित (Pending)</option>
+                  <option value="कागदपत्रे अपूर्ण">कागदपत्रे अपूर्ण (Doc Incomplete)</option>
+                  <option value="रद्द (Cancelled)">रद्द (Cancelled)</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="entry-notes"><i class="fas fa-sticky-note"></i> विशेष टीप (Optional)</label>
+                <input type="text" id="entry-notes" class="input-control" placeholder="उदा. मोबाईल नंबर बदलणे, ई-मेल जोडणे..." />
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="actions-btn-row mt-3">
+              <button type="submit" class="app-btn primary lg flex-1" id="btn-save-receipt">
+                <i class="fas fa-receipt"></i> सेव्ह करा व पावती बनवा (Save & Print)
+              </button>
+              <button type="button" class="app-btn success lg" onclick="handleQuickSave()" title="पावती न दाखवता थेट नोंद सेव्ह करा">
+                <i class="fas fa-bolt"></i> जलद सेव्ह (Quick Save)
+              </button>
+              <button type="button" class="app-btn outline" onclick="resetEntryForm()">
+                <i class="fas fa-undo"></i> रीसेट
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Side: Fast Helper Box & Recent List -->
+        <div class="glass-card flex-col">
+          <div class="card-title-row">
+            <h4><i class="fas fa-history" style="color: #a78bfa;"></i> आजच्या शेवटच्या ५ नोंदी</h4>
+            <button class="app-btn sm outline" onclick="openTab('register-tab')">सर्व पहा</button>
+          </div>
+
+          <div class="quick-recent-wrap" id="quick-recent-list">
+            <!-- Dynamic JS injected -->
+          </div>
+
+          <div class="fast-calc-box mt-auto">
+            <h4><i class="fas fa-calculator"></i> आजचा जमा-खर्च ताळेबंद</h4>
+            <div class="fast-calc-line">
+              <span>एकूण जमा (Income):</span>
+              <strong style="color: #34d399;">₹<span id="quick-cash-total">0</span></strong>
+            </div>
+            <div class="fast-calc-line">
+              <span>आजचा एकूण खर्च:</span>
+              <strong style="color: #f87171;">- ₹<span id="quick-expense-total">0</span></strong>
+            </div>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 8px 0;" />
+            <div class="fast-calc-line total">
+              <span>गल्ल्यातील शिल्लक रोख:</span>
+              <strong style="color: #fbbf24;">₹<span id="quick-drawer-cash">0</span></strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         TAB 1: DEDICATED UIDAI REPORT UPLOAD & AUTO-PROCESSING HUB
+         ========================================================================= -->
+    <section id="upload-tab" class="app-tab-panel">
       <div class="two-col-layout">
         <!-- Left: Upload Box -->
         <div class="glass-card">
@@ -295,7 +570,7 @@
             </button>
           </div>
           
-          <div id="quick-recent-list" class="fast-recent-list">
+          <div id="quick-recent-list-upload" class="fast-recent-list">
             <div class="text-muted text-sm py-4 text-center">अद्याप कोणताही रिपोर्ट अपलोड केलेला नाही.</div>
           </div>
 
@@ -303,16 +578,16 @@
             <h4><i class="fas fa-calculator"></i> आजचा जमा-खर्च ताळेबंद</h4>
             <div class="fast-calc-line">
               <span>एकूण जमा (Income):</span>
-              <strong style="color: #34d399;">₹<span id="quick-cash-total">0</span></strong>
+              <strong style="color: #34d399;">₹<span id="quick-cash-total-upload">0</span></strong>
             </div>
             <div class="fast-calc-line">
               <span>आजचा एकूण खर्च:</span>
-              <strong style="color: #f87171;">- ₹<span id="quick-expense-total">0</span></strong>
+              <strong style="color: #f87171;">- ₹<span id="quick-expense-total-upload">0</span></strong>
             </div>
             <hr style="border-color: rgba(255,255,255,0.1); margin: 8px 0;" />
             <div class="fast-calc-line total">
               <span>गल्ल्यातील शिल्लक रोख:</span>
-              <strong style="color: #fbbf24;">₹<span id="quick-drawer-cash">0</span></strong>
+              <strong style="color: #fbbf24;">₹<span id="quick-drawer-cash-upload">0</span></strong>
             </div>
           </div>
 
@@ -332,7 +607,7 @@
     <!-- =========================================================================
          TAB 2: DAILY REGISTER
          ========================================================================= -->
-    <section id="register-tab" class="app-tab-panel">
+    <section id="register-tab" class="app-tab-panel active">
       <div class="glass-card">
         <!-- Controls & Filters -->
         <div class="table-filter-bar">
