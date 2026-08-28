@@ -1245,6 +1245,28 @@ const DEFAULT_IMPORTANT_LINKS = [
     isInternal: true
   },
   {
+    id: "link-varas-ferfar",
+    category: "अधिकृत शासकीय टूल्स व दाखले",
+    icon: "fa-solid fa-file-contract",
+    title_mr: "📑 वारस फेरफार अर्ज व पोलीस पाटील/सरपंच दाखला (कलम १४९)",
+    title_en: "Heir Mutation Form (Sec 149) & Police Patil/Sarpanch Certificate",
+    desc_mr: "महाराष्ट्र जमीन महसूल कलम १४९ अधिकार संपादन फेरफार अर्ज, सत्यप्रतिज्ञालेख व पोलीस पाटील/सरपंच २-इन-१ वारस दाखला जनरेटर.",
+    desc_en: "Section 149 Land Mutation Application, Affidavit & Police Patil / Sarpanch Heir Certificate 2-in-1 Studio.",
+    url: "varas-ferfar.html",
+    isInternal: true
+  },
+  {
+    id: "link-varas-affidavit",
+    category: "अधिकृत शासकीय टूल्स व दाखले",
+    icon: "fa-solid fa-scale-balanced",
+    title_mr: "⚖️ वारस प्रतिज्ञापत्र / शपथपत्र (कार्यकारी दंडाधिकारी)",
+    title_en: "Legal Heir Affidavit Studio (Executive Magistrate Rs. 100 Stamp)",
+    desc_mr: "मे. कार्यकारी दंडाधिकारी समक्ष १०० रु. स्टॅम्प पेपर वारस तपास व नोंद प्रतिज्ञापत्र जनरेटर.",
+    desc_en: "Rs. 100 Stamp Paper Legal Heir Affidavit & Mutation Certificate Generator.",
+    url: "varas-affidavit.html",
+    isInternal: true
+  },
+  {
     id: "link-gazette-name-change",
     category: "अधिकृत शासकीय टूल्स व दाखले",
     icon: "fa-solid fa-file-signature",

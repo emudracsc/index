@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>वारस प्रतिज्ञापत्र / शपथपत्र जनरेटर (मे. कार्यकारी दंडाधिकारी १०० रु. स्टॅम्प)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --secondary: #475569;
+            --accent: #d97706;
+            --success: #059669;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+            background: #475569;
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        /* -------------------------------------------------------------
+           TOP CONTROL BAR & MASTER INPUT PANEL
+        ------------------------------------------------------------- */
+        .controls-wrapper {
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 16px 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .bar-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #6d28d9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-title i {
+            color: #7c3aed;
+            font-size: 1.4rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: #7c3aed; color: #fff; }
+        .btn-primary:hover { background: #6d28d9; transform: translateY(-1px); }
+
+        .btn-success { background: #059669; color: #fff; }
+        .btn-success:hover { background: #047857; transform: translateY(-1px); }
+
+        .btn-sample { background: #0284c7; color: #fff; }
+        .btn-sample:hover { background: #0369a1; }
+
+        .btn-secondary { background: #e2e8f0; color: #334155; }
+        .btn-secondary:hover { background: #cbd5e1; }
+
+        .btn-home { background: #334155; color: #fff; }
+        .btn-home:hover { background: #1e293b; }
+
+        /* Stamp Adjustment Settings Box */
+        .stamp-settings-box {
+            background: #fdf4ff;
+            border: 1.5px dashed #c084fc;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .stamp-settings-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #7e22ce;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stamp-controls-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .slider-group input[type="range"] {
+            width: 140px;
+            cursor: pointer;
+        }
+
+        /* Page Tabs */
+        .page-tabs {
+            display: flex;
+            gap: 6px;
+            background: #f8fafc;
+            padding: 6px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 180px;
+            padding: 8px 14px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn.active {
+            background: #7c3aed;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35);
+        }
+
+        /* Form Grid */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 8px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #7c3aed;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        }
+
+        .section-subhead {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #6d28d9;
+            margin: 14px 0 10px 0;
+            padding-bottom: 4px;
+            border-bottom: 1.5px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Heir Table */
+        .heirs-input-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+
+        .heirs-input-table th, .heirs-input-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 8px;
+            text-align: left;
+            font-size: 0.88rem;
+        }
+
+        .heirs-input-table th {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+        }
+
+        .heirs-input-table input {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.88rem;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT PREVIEW SHEETS (A4 EXACT FORMAT)
+        ------------------------------------------------------------- */
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin: 0 auto;
+        }
+
+        .a4-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 20mm;
+            background: #ffffff;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            border-radius: 4px;
+            position: relative;
+            color: #000000;
+            box-sizing: border-box;
+            line-height: 1.6;
+            font-size: 12.5pt;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        #page1Sheet {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 297mm;
+            height: 297mm;
+            box-sizing: border-box;
+            padding: 10mm 18mm 14mm 18mm;
+        }
+
+        /* Stamp Mock Graphic (When not printing on physical stamp paper) */
+        .stamp-graphic-placeholder {
+            width: 100%;
+            border: 2px dashed #059669;
+            background: #ecfdf5;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #065f46;
+            margin-bottom: 0;
+            box-sizing: border-box;
+            transition: height 0.1s ease;
+            flex-shrink: 0;
+        }
+
+        .stamp-graphic-placeholder.hidden-in-print {
+            border: none;
+            background: transparent;
+        }
+
+        .stamp-space-guide {
+            font-size: 10pt;
+            font-weight: 700;
+            color: #059669;
+        }
+
+        /* Page 1 Format */
+        .p1-affidavit-title {
+            text-align: center;
+            font-size: 15.5pt;
+            font-weight: 800;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .p1-court-name {
+            text-align: center;
+            font-size: 14pt;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .p1-date-row {
+            text-align: right;
+            font-size: 12pt;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .affidavit-paragraph {
+            text-align: justify;
+            font-size: 12.5pt;
+            line-height: 1.65;
+            margin-bottom: 14px;
+            text-indent: 30px;
+        }
+
+        #page1ContentBlock {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            margin-top: auto;
+            padding-top: 4mm;
+        }
+
+        .p1-bottom-page-num {
+            text-align: right;
+            font-weight: 800;
+            font-size: 13pt;
+            margin-top: 8px;
+            padding-top: 4px;
+        }
+
+        /* Page 2 Format */
+        .p2-top-page-num {
+            text-align: center;
+            font-weight: 800;
+            font-size: 13pt;
+            margin-bottom: 12px;
+        }
+
+        .section-lead-title {
+            font-weight: 800;
+            font-size: 12.5pt;
+            margin-bottom: 8px;
+        }
+
+        .heirs-table-print {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 16px 0;
+        }
+
+        .heirs-table-print th, .heirs-table-print td {
+            border: 1.5px solid #000;
+            padding: 5px 8px;
+            font-size: 11.5pt;
+            line-height: 1.35;
+        }
+
+        .heirs-table-print th {
+            font-weight: 800;
+            text-align: center;
+            background: #f8fafc;
+        }
+
+        .heirs-table-print td.col-sr {
+            width: 45px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .heirs-table-print td.col-name {
+            font-weight: 700;
+        }
+
+        .heirs-table-print td.col-age {
+            width: 70px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .heirs-table-print td.col-rel {
+            width: 110px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .p2-sign-block {
+            display: flex;
+            justify-content: flex-end;
+            text-align: center;
+            margin-top: 14px;
+            margin-bottom: 16px;
+        }
+
+        .p2-sign-holder {
+            min-width: 250px;
+            font-size: 12.5pt;
+            line-height: 1.4;
+        }
+
+        .p2-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-size: 12.5pt;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .val-bold {
+            font-weight: 700;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT MEDIA QUERIES (ZERO OVERFLOW A4 PRINT)
+        ------------------------------------------------------------- */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0mm;
+            }
+
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .no-print, .controls-wrapper {
+                display: none !important;
+            }
+
+            .preview-container {
+                gap: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important;
+            }
+
+            .a4-sheet {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                min-height: 297mm !important;
+                max-height: 297mm !important;
+                padding: 12mm 18mm !important;
+                margin: 0 !important;
+                page-break-after: always;
+                break-after: page;
+                box-sizing: border-box;
+            }
+
+            .a4-sheet:last-child {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+
+            .stamp-graphic-placeholder {
+                border: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                outline: none !important;
+            }
+
+            .stamp-graphic-placeholder * {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+            }
+
+            #page1Sheet {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-end !important;
+                height: 297mm !important;
+                max-height: 297mm !important;
+                padding: 10mm 18mm 14mm 18mm !important;
+                box-sizing: border-box !important;
+            }
+
+            #page1ContentBlock {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-end !important;
+                margin-top: auto !important;
+                padding-top: 4mm !important;
+            }
+
+            #page2Sheet {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                padding: 12mm 18mm !important;
+            }
+
+            .print-page-1-only #page2Sheet {
+                display: none !important;
+            }
+
+            .print-page-2-only #page1Sheet {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP CONTROL BAR -->
+    <div class="controls-wrapper no-print">
+        <div class="bar-header">
+            <div class="bar-title">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <div>
+                    <div>वारस प्रतिज्ञापत्र / शपथपत्र जनरेटर</div>
+                    <div style="font-size: 0.8rem; font-weight: 500; color: #64748b;">
+                        मे. कार्यकारी दंडाधिकारी समक्ष १०० रु. स्टॅम्प पेपर वारस तपास व नोंद प्रतिज्ञापत्र
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-sample" onclick="loadSampleData()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना डेटा भरा
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetAllData()">
+                    <i class="fa-solid fa-rotate-left"></i> रीसेट
+                </button>
+                <button type="button" class="btn btn-primary" onclick="printDocument('all')">
+                    <i class="fa-solid fa-print"></i> दोन्ही पाने प्रिंट / PDF
+                </button>
+                <button type="button" class="btn btn-success" onclick="printDocument('p1')">
+                    <i class="fa-solid fa-stamp"></i> फक्त पान १ (स्टॅम्प)
+                </button>
+                <button type="button" class="btn btn-success" onclick="printDocument('p2')">
+                    <i class="fa-solid fa-file-lines"></i> फक्त पान २
+                </button>
+                <a href="index.html" class="btn btn-home">
+                    <i class="fa-solid fa-house"></i> मुख्य पोर्टल
+                </a>
+            </div>
+        </div>
+
+        <!-- STAMP PAPER MARGIN ADJUSTMENT SETTINGS -->
+        <div class="stamp-settings-box">
+            <div class="stamp-settings-title">
+                <i class="fa-solid fa-sliders"></i> १०० रु. स्टॅम्प पेपर मार्जिन सेटिंग (Page 1):
+            </div>
+            <div class="stamp-controls-row">
+                <div class="slider-group">
+                    <label>स्टॅम्प मोकळी जागा (वरती):</label>
+                    <input type="range" id="stampHeightSlider" min="100" max="200" value="165" oninput="updateStampHeight(this.value)">
+                    <span id="stampHeightLabel" style="font-weight: 800; color: #7e22ce;">165 mm</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <input type="checkbox" id="chkShowStampGraphic" checked onchange="toggleStampGraphic(this.checked)">
+                    <label for="chkShowStampGraphic" style="font-size: 0.85rem; font-weight: 700; color: #475569; cursor: pointer;">
+                        स्क्रीनवर स्टॅम्प बॉक्स दाखवा
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS TO TOGGLE INPUT SECTIONS -->
+        <div class="page-tabs">
+            <button class="tab-btn active" onclick="switchInputTab('tab-applicant', this)">
+                <i class="fa-solid fa-user-pen"></i> १. अर्जदार व दंडाधिकारी न्यायालय
+            </button>
+            <button class="tab-btn" onclick="switchInputTab('tab-property', this)">
+                <i class="fa-solid fa-house-chimney"></i> २. मिळकत वर्णन व मयत पालक
+            </button>
+            <button class="tab-btn" onclick="switchInputTab('tab-heirs', this)">
+                <i class="fa-solid fa-users"></i> ३. वारसदारांची यादी (तक्ता)
+            </button>
+        </div>
+
+        <!-- TAB 1: APPLICANT & COURT -->
+        <div id="tab-applicant" class="tab-content-panel">
+            <div class="section-subhead"><i class="fa-solid fa-user"></i> अर्जदाराची माहिती (प्रतिज्ञापत्र करणारा)</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>अर्जदाराचे संपूर्ण नाव (श्री./श्रीमती)</label>
+                    <input type="text" id="inp_app_name" placeholder="उदा. नामदेव शंकर गुरव" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>वय (वर्षे)</label>
+                    <input type="text" id="inp_app_age" placeholder="उदा. ५२" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>धंदा / व्यवसाय</label>
+                    <input type="text" id="inp_app_occ" placeholder="उदा. शेती / व्यवसाय / नोकरी" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>मूळ गाव (रा.)</label>
+                    <input type="text" id="inp_app_native_village" placeholder="उदा. तिवरे" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>तालुका</label>
+                    <input type="text" id="inp_app_taluka" placeholder="उदा. कणकवली" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>जिल्हा</label>
+                    <input type="text" id="inp_app_district" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>प्रतिज्ञापत्र दिनांक</label>
+                    <input type="text" id="inp_affidavit_date" placeholder="उदा. २६/१०/२०२० किंवा आजची तारीख" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>दंडाधिकारी न्यायालय शीर्षक</label>
+                    <input type="text" id="inp_court_title" value="मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समक्ष" placeholder="उदा. मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समक्ष" oninput="syncAll()">
+                </div>
+                <div class="form-group full-width">
+                    <label>आधारकार्डप्रमाणे सविस्तर पत्ता (Aadhaar Card Address)</label>
+                    <textarea id="inp_app_aadhaar_address" rows="2" placeholder="उदा. १५ ए, सायली नागरी निवारा को.ऑप.हौ.सो. रूम नं. १, प्लॉट नं. ५, जनरल ए.के. वैद्य मार्ग, गोरेगाव (पूर्व) मुंबई-४०००६५" oninput="syncAll()"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: PROPERTY & PARENTS -->
+        <div id="tab-property" class="tab-content-panel" style="display: none;">
+            <div class="section-subhead"><i class="fa-solid fa-map-location-dot"></i> मिळकतीचे वर्णन व अधिकार क्षेत्र</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>जिल्हा व रजिस्टार तुकडी</label>
+                    <input type="text" id="inp_prop_district" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>पोट तुकडी सब रजिस्टार</label>
+                    <input type="text" id="inp_prop_sub_registrar" placeholder="उदा. कणकवली" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>तालुका व पंचायत समिती</label>
+                    <input type="text" id="inp_prop_taluka" placeholder="उदा. कणकवली" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>ग्रामपंचायत</label>
+                    <input type="text" id="inp_prop_gp" placeholder="उदा. तिवरे" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>गाव मौजे</label>
+                    <input type="text" id="inp_prop_village" placeholder="उदा. तिवरे" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>मिळकत खाते नं. (८-अ)</label>
+                    <input type="text" id="inp_prop_khate" placeholder="उदा. ६७०" oninput="syncAll()">
+                </div>
+            </div>
+
+            <div class="section-subhead"><i class="fa-solid fa-person-breastfeeding"></i> मयत वडील व आई यांची माहिती</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>वडील कै. यांचे नाव</label>
+                    <input type="text" id="inp_father_name" placeholder="उदा. शंकर अनंत गुरव" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>वडिलांचे मयत दिनांक</label>
+                    <input type="text" id="inp_father_death_date" placeholder="उदा. ०१/०७/२०१९" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>वडिलांचे मयत ठिकाण</label>
+                    <input type="text" id="inp_father_death_place" placeholder="उदा. मुंबई" oninput="syncAll()">
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; padding: 12px 14px; border-radius: 8px; border: 1.5px solid #cbd5e1; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <input type="checkbox" id="chk_mother_deceased" checked onchange="toggleMotherFields(this.checked); syncAll();" style="width: 18px; height: 18px; cursor: pointer;">
+                    <label for="chk_mother_deceased" style="font-weight: 700; color: #0f172a; cursor: pointer; font-size: 0.92rem;">
+                        आई सुद्धा मयत आहे का? (होय असल्यास टिक करा, हयात असल्यास अनटिक करा)
+                    </label>
+                </div>
+                <div id="mother_fields_wrap" class="input-grid" style="margin-bottom: 0;">
+                    <div class="form-group">
+                        <label>आई कै. यांचे नाव</label>
+                        <input type="text" id="inp_mother_name" placeholder="उदा. पार्वती शंकर गुरव" oninput="syncAll()">
+                    </div>
+                    <div class="form-group">
+                        <label>आईची स्थिती</label>
+                        <input type="text" id="inp_mother_status" value="सुद्धा मयत आहे" placeholder="उदा. सुद्धा मयत आहे" oninput="syncAll()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: HEIRS LIST -->
+        <div id="tab-heirs" class="tab-content-panel" style="display: none;">
+            <div class="section-subhead" style="justify-content: space-between;">
+                <span><i class="fa-solid fa-users"></i> कायदेशीर वारसदारांची माहिती (तक्ता)</span>
+                <button type="button" class="btn btn-sample" style="padding: 4px 10px; font-size: 0.8rem;" onclick="fillSampleHeirs()">
+                    <i class="fa-solid fa-plus"></i> ४ नमुना वारस भरा
+                </button>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table class="heirs-input-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 45px; text-align: center;">अ.क्र.</th>
+                            <th>वारसदाराचे नाव (विवाहित मुलींचे विवाहापूर्वीचे नाव ब्रॅकेटमध्ये टाकू शकता)</th>
+                            <th style="width: 90px; text-align: center;">वय (वर्षे)</th>
+                            <th style="width: 140px; text-align: center;">मयताशी नाते</th>
+                        </tr>
+                    </thead>
+                    <tbody id="heirsInputBody">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- -------------------------------------------------------------
+         PRINT PREVIEW SHEETS (A4 SIZE)
+    ------------------------------------------------------------- -->
+    <div class="preview-container" id="printableContentArea">
+
+        <!-- =========================================================
+             PAGE 1: स्टॅम्प पेपर प्रतिज्ञापत्र भाग १
+        ========================================================= -->
+        <div class="a4-sheet" id="page1Sheet">
+            
+            <!-- STAMP TOP SPACE / GRAPHIC (Adjustable Height) -->
+            <div class="stamp-graphic-placeholder" id="stampPlaceholderBox" style="height: 165mm;">
+                <i class="fa-solid fa-stamp" style="font-size: 2.2rem; margin-bottom: 6px; color: #059669;"></i>
+                <div class="stamp-space-guide">
+                    <strong>₹ १०० चे नॉन-ज्युडिशियल स्टॅम्प पेपर (१०० Rs. Stamp Paper Area)</strong><br>
+                    <span style="font-size: 9pt; font-weight: 500; color: #065f46;">प्रत्यक्ष स्टॅम्प पेपर प्रिंटरमध्ये टाकल्यास या जागेत आपोआप स्टॅम्प येईल आणि खाली मजकूर प्रिंट होईल.</span>
+                </div>
+            </div>
+
+            <!-- Page 1 Body Content -->
+            <div id="page1ContentBlock">
+                <div>
+                    <div class="p1-affidavit-title">प्रतिज्ञापत्र</div>
+                    <div class="p1-court-name" id="view_p1_court_name">मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समक्ष</div>
+                    
+                    <div class="p1-date-row">
+                        दिनांक :- <span class="val-bold" id="view_p1_date">२६/१०/२०२०</span>
+                    </div>
+
+                    <div class="affidavit-paragraph">
+                        मी श्री. <span class="val-bold" id="view_p1_app_name">नामदेव शंकर गुरव</span> वय वर्षे-<span class="val-bold" id="view_p1_app_age">५२</span>, धंदा-व्यवसाय <span class="val-bold" id="view_p1_app_occ">शेती</span>, रा. <span class="val-bold" id="view_p1_app_native">तिवरे</span>, ता.<span class="val-bold" id="view_p1_app_taluka">कणकवली</span>, जि.<span class="val-bold" id="view_p1_app_district">सिंधुदुर्ग</span>, आधारकार्डप्रमाणे पत्ता- <span class="val-bold" id="view_p1_aadhaar_address">१५ ए, सायली नागरी निवारा को.ऑप.हौ.सो. रूम नं. १, प्लॉट नं. ५, जनरल ए.के. वैद्य मार्ग, गोरेगाव (पूर्व) मुंबई-४०००६५</span> आज रोजी मे. कार्यकारी दंडाधिकारी कणकवली यांचे समोर शपथपूर्वक असे लिहून देतो की,
+                    </div>
+                </div>
+
+                <div class="p1-bottom-page-num">..२/-</div>
+            </div>
+        </div>
+
+
+        <!-- =========================================================
+             PAGE 2: सविस्तर मिळकत वर्णन, वारस तक्ता व सही
+        ========================================================= -->
+        <div class="a4-sheet" id="page2Sheet">
+            <div>
+                <div class="p2-top-page-num">..२..</div>
+
+                <!-- Property Description -->
+                <div class="affidavit-paragraph" style="text-indent: 0;">
+                    <strong>मिळकतीचे वर्णन :-</strong> जिल्हा व रजिस्टार तुकडी आणि जिल्हा परिषद <span class="val-bold" id="view_p2_prop_district">सिंधुदुर्ग</span> पैकी पोट तुकडी सब रजिस्टार <span class="val-bold" id="view_p2_prop_sub_reg">कणकवली</span> तालुका व पंचायत समिती <span class="val-bold" id="view_p2_prop_taluka">कणकवली</span> या हद्दीतील ग्रामपंचायत, <span class="val-bold" id="view_p2_prop_gp">तिवरे</span> व गाव मौजे <span class="val-bold" id="view_p2_prop_village">तिवरे</span> येथील मिळकत खाते नं. <span class="val-bold" id="view_p2_prop_khate">६७०</span>
+                </div>
+
+                <div class="affidavit-paragraph" style="text-indent: 30px;">
+                    हि मिळकत आमचे वडीलोपार्जित सामाईक मालकी हक्काची असून माझे वडील कै. <span class="val-bold" id="view_p2_father_name">शंकर अनंत गुरव</span> यांचे नाव दाखल आहे. ते दिनांक <span class="val-bold" id="view_p2_father_date">०१/०७/२०१९</span> रोजी <span class="val-bold" id="view_p2_father_place">मुंबई</span> येथे मयत झाले आहेत. <span id="view_p2_mother_clause">तसेच माझी आई कै. <span class="val-bold" id="view_p2_mother_name">पार्वती शंकर गुरव</span> ही <span class="val-bold" id="view_p2_mother_status">सुद्धा मयत आहे</span>.</span> ही बाब सत्य आहे. तरी आता त्यांच्या पश्चात त्यांना पुढीलप्रमाणे कायदेशीर वारस आहेत.
+                </div>
+
+                <!-- Heirs Table -->
+                <table class="heirs-table-print">
+                    <thead>
+                        <tr>
+                            <th style="width: 45px;">अ.क्र</th>
+                            <th>नांव</th>
+                            <th style="width: 80px;">वय वर्षे</th>
+                            <th style="width: 120px;">मयताशी नाते</th>
+                        </tr>
+                    </thead>
+                    <tbody id="view_p2_heirs_table_body">
+                        <!-- Dynamic Heirs -->
+                    </tbody>
+                </table>
+
+                <div class="affidavit-paragraph" style="text-indent: 30px; margin-top: 10px;">
+                    वरीलप्रमाणे मयतास अनु.क्र. १ ते <span class="val-bold" id="view_p2_heirs_count">४</span> वारस असून याव्यतिरिक्त अन्य कोणीही वारस नाहीत. ही बाब सत्य आहे.
+                </div>
+
+                <div class="affidavit-paragraph" style="text-indent: 30px;">
+                    तरी मयताचा वारस तपास होऊन त्यांच्या नावे असलेल्या मिळकतीस त्यांचे नाव कमी होवून आमची नावे वारस म्हणून दाखल होणेकामी मी हे प्रतिज्ञापत्र करीत आहे.
+                </div>
+
+                <div class="affidavit-paragraph" style="text-indent: 30px;">
+                    सदर माहिती मी शपथपूर्वक व खरी देत आहे. सदर प्रतिज्ञापत्रामधील मजकूर खरा आहे खोटा ठरल्यास भा. दं. सं. कलम १९३(२), १९९,२०० नुसार होणाऱ्या दंडास व शिक्षेस मी पात्र राहीन म्हणून मी हे प्रतिज्ञापत्र करुन देत आहे.
+                </div>
+
+                <!-- Signature Block -->
+                <div class="p2-sign-block">
+                    <div class="p2-sign-holder">
+                        <strong>सही/-</strong><br><br>
+                        <strong>(श्री. <span id="view_p2_sign_name">नामदेव शंकर गुरव</span>)</strong>
+                    </div>
+                </div>
+
+                <!-- Footer / Date & Identifier -->
+                <div class="p2-footer-row">
+                    <div>दिनांक :- <span class="val-bold" id="view_p2_bottom_date">२६/१०/२०२०</span></div>
+                    <div><strong>ओळख</strong></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- -------------------------------------------------------------
+         JAVASCRIPT LOGIC
+    ------------------------------------------------------------- -->
+    <script>
+        // State for Heirs
+        const heirsList = [
+            { sr: 1, name: "श्री. नामदेव शंकर गुरव", age: "५२", relation: "मुलगा" },
+            { sr: 2, name: "श्री. एकनाथ शंकर गुरव", age: "२३", relation: "मुलगा" },
+            { sr: 3, name: "सौ. श्रुतिका संजीव गुरव (विवाहापूर्वीची-शकुंतला शंकर गुरव)", age: "५०", relation: "मुलगी" },
+            { sr: 4, name: "सौ. सुवर्णा सुधाकर गुरव (विवाहापूर्वीची-जनाबाई शंकर गुरव)", age: "५४", relation: "मुलगी" },
+            { sr: 5, name: "", age: "", relation: "" },
+            { sr: 6, name: "", age: "", relation: "" },
+            { sr: 7, name: "", age: "", relation: "" },
+            { sr: 8, name: "", age: "", relation: "" }
+        ];
+
+        function initHeirsInput() {
+            const tbody = document.getElementById("heirsInputBody");
+            tbody.innerHTML = "";
+            for (let i = 0; i < heirsList.length; i++) {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td style="text-align: center; font-weight: 700;">${toMarathiNum(i + 1)}.</td>
+                    <td>
+                        <input type="text" id="heir_name_${i}" placeholder="वारसाचे नाव" value="${heirsList[i].name}" oninput="updateHeir(${i}, 'name', this.value)">
+                    </td>
+                    <td>
+                        <input type="text" id="heir_age_${i}" style="text-align: center;" placeholder="वय" value="${heirsList[i].age}" oninput="updateHeir(${i}, 'age', this.value)">
+                    </td>
+                    <td>
+                        <input type="text" id="heir_rel_${i}" style="text-align: center;" placeholder="उदा. मुलगा/मुलगी" value="${heirsList[i].relation}" oninput="updateHeir(${i}, 'relation', this.value)">
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+
+        function updateHeir(index, key, val) {
+            heirsList[index][key] = val;
+            renderPreviewHeirs();
+        }
+
+        function switchInputTab(tabId, btn) {
+            document.querySelectorAll(".tab-content-panel").forEach(p => p.style.display = "none");
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            
+            const target = document.getElementById(tabId);
+            if (target) target.style.display = "block";
+            if (btn) btn.classList.add("active");
+        }
+
+        function toMarathiNum(num) {
+            const marathiDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+            return String(num).split('').map(d => marathiDigits[parseInt(d)] || d).join('');
+        }
+
+        // Stamp Slider & Graphic Toggles
+        function updateStampHeight(val) {
+            document.getElementById("stampHeightLabel").innerText = val + " mm";
+            document.getElementById("stampPlaceholderBox").style.height = val + "mm";
+        }
+
+        function toggleStampGraphic(show) {
+            const box = document.getElementById("stampPlaceholderBox");
+            if (show) {
+                box.classList.remove("hidden-in-print");
+                box.querySelector(".stamp-space-guide").style.display = "block";
+                box.querySelector("i").style.display = "block";
+            } else {
+                box.classList.add("hidden-in-print");
+                box.querySelector(".stamp-space-guide").style.display = "none";
+                box.querySelector("i").style.display = "none";
+            }
+        }
+
+        function toggleMotherFields(isDeceased) {
+            const wrap = document.getElementById("mother_fields_wrap");
+            if (wrap) wrap.style.display = isDeceased ? "grid" : "none";
+        }
+
+        // Sync inputs with live preview
+        function syncAll() {
+            const appName = document.getElementById("inp_app_name").value || "नामदेव शंकर गुरव";
+            const appAge = document.getElementById("inp_app_age").value || "५२";
+            const appOcc = document.getElementById("inp_app_occ").value || "शेती";
+            const appNative = document.getElementById("inp_app_native_village").value || "तिवरे";
+            const appTaluka = document.getElementById("inp_app_taluka").value || "कणकवली";
+            const appDistrict = document.getElementById("inp_app_district").value || "सिंधुदुर्ग";
+            const affDate = document.getElementById("inp_affidavit_date").value || "२६/१०/२०२०";
+            const courtTitle = document.getElementById("inp_court_title").value || "मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समक्ष";
+            const aadhaarAddress = document.getElementById("inp_app_aadhaar_address").value || "१५ ए, सायली नागरी निवारा को.ऑप.हौ.सो. रूम नं. १, प्लॉट नं. ५, जनरल ए.के. वैद्य मार्ग, गोरेगाव (पूर्व) मुंबई-४०००६५";
+
+            const propDistrict = document.getElementById("inp_prop_district").value || "सिंधुदुर्ग";
+            const propSubReg = document.getElementById("inp_prop_sub_registrar").value || "कणकवली";
+            const propTaluka = document.getElementById("inp_prop_taluka").value || "कणकवली";
+            const propGp = document.getElementById("inp_prop_gp").value || "तिवरे";
+            const propVillage = document.getElementById("inp_prop_village").value || "तिवरे";
+            const propKhate = document.getElementById("inp_prop_khate").value || "६७०";
+
+            const fatherName = document.getElementById("inp_father_name").value || "शंकर अनंत गुरव";
+            const fatherDate = document.getElementById("inp_father_death_date").value || "०१/०७/२०१९";
+            const fatherPlace = document.getElementById("inp_father_death_place").value || "मुंबई";
+
+            const isMotherDeceased = document.getElementById("chk_mother_deceased").checked;
+            const motherName = document.getElementById("inp_mother_name").value.trim();
+            const motherStatus = document.getElementById("inp_mother_status").value.trim() || "सुद्धा मयत आहे";
+
+            // Page 1 View
+            document.getElementById("view_p1_court_name").innerText = courtTitle;
+            document.getElementById("view_p1_date").innerText = affDate;
+            document.getElementById("view_p1_app_name").innerText = appName;
+            document.getElementById("view_p1_app_age").innerText = toMarathiNum(appAge);
+            document.getElementById("view_p1_app_occ").innerText = appOcc;
+            document.getElementById("view_p1_app_native").innerText = appNative;
+            document.getElementById("view_p1_app_taluka").innerText = appTaluka;
+            document.getElementById("view_p1_app_district").innerText = appDistrict;
+            document.getElementById("view_p1_aadhaar_address").innerText = aadhaarAddress;
+
+            // Page 2 View
+            document.getElementById("view_p2_prop_district").innerText = propDistrict;
+            document.getElementById("view_p2_prop_sub_reg").innerText = propSubReg;
+            document.getElementById("view_p2_prop_taluka").innerText = propTaluka;
+            document.getElementById("view_p2_prop_gp").innerText = propGp;
+            document.getElementById("view_p2_prop_village").innerText = propVillage;
+            document.getElementById("view_p2_prop_khate").innerText = toMarathiNum(propKhate);
+
+            document.getElementById("view_p2_father_name").innerText = fatherName;
+            document.getElementById("view_p2_father_date").innerText = fatherDate;
+            document.getElementById("view_p2_father_place").innerText = fatherPlace;
+
+            // Optional Mother Deceased Clause
+            const motherClause = document.getElementById("view_p2_mother_clause");
+            if (isMotherDeceased && motherName) {
+                motherClause.innerHTML = `तसेच माझी आई कै. <span class="val-bold">${motherName}</span> ही <span class="val-bold">${motherStatus}</span>.`;
+                motherClause.style.display = "inline";
+            } else {
+                motherClause.innerHTML = "";
+                motherClause.style.display = "none";
+            }
+
+            document.getElementById("view_p2_sign_name").innerText = appName;
+            document.getElementById("view_p2_bottom_date").innerText = affDate;
+
+            renderPreviewHeirs();
+        }
+
+        function renderPreviewHeirs() {
+            const tbody = document.getElementById("view_p2_heirs_table_body");
+            tbody.innerHTML = "";
+
+            let count = 0;
+            for (let i = 0; i < heirsList.length; i++) {
+                const h = heirsList[i];
+                if (!h.name.trim()) continue;
+                count++;
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td class="col-sr">${toMarathiNum(count)}.</td>
+                    <td class="col-name">${h.name}</td>
+                    <td class="col-age">${toMarathiNum(h.age)}</td>
+                    <td class="col-rel">${h.relation}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            document.getElementById("view_p2_heirs_count").innerText = toMarathiNum(count || 4);
+        }
+
+        // Load Sample Data (Exact from user image)
+        function loadSampleData() {
+            document.getElementById("inp_app_name").value = "नामदेव शंकर गुरव";
+            document.getElementById("inp_app_age").value = "५२";
+            document.getElementById("inp_app_occ").value = "धंदा-व्यवसाय";
+            document.getElementById("inp_app_native_village").value = "तिवरे";
+            document.getElementById("inp_app_taluka").value = "कणकवली";
+            document.getElementById("inp_app_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_affidavit_date").value = "२६/१०/२०२०";
+            document.getElementById("inp_court_title").value = "मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समक्ष";
+            document.getElementById("inp_app_aadhaar_address").value = "१५ ए, सायली नागरी निवारा को.ऑप.हौ.सो. रूम नं. १, प्लॉट नं. ५, जनरल ए.के. वैद्य मार्ग, गोरेगाव (पूर्व) मुंबई-४०००६५";
+
+            document.getElementById("inp_prop_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_prop_sub_registrar").value = "कणकवली";
+            document.getElementById("inp_prop_taluka").value = "कणकवली";
+            document.getElementById("inp_prop_gp").value = "तिवरे";
+            document.getElementById("inp_prop_village").value = "तिवरे";
+            document.getElementById("inp_prop_khate").value = "६७०";
+
+            document.getElementById("inp_father_name").value = "शंकर अनंत गुरव";
+            document.getElementById("inp_father_death_date").value = "०१/०७/२०१९";
+            document.getElementById("inp_father_death_place").value = "मुंबई";
+
+            document.getElementById("chk_mother_deceased").checked = true;
+            toggleMotherFields(true);
+            document.getElementById("inp_mother_name").value = "पार्वती शंकर गुरव";
+            document.getElementById("inp_mother_status").value = "सुद्धा मयत आहे";
+
+            fillSampleHeirs();
+            syncAll();
+        }
+
+        function fillSampleHeirs() {
+            heirsList[0] = { sr: 1, name: "श्री. नामदेव शंकर गुरव", age: "५२", relation: "मुलगा" };
+            heirsList[1] = { sr: 2, name: "श्री. एकनाथ शंकर गुरव", age: "२३", relation: "मुलगा" };
+            heirsList[2] = { sr: 3, name: "सौ. श्रुतिका संजीव गुरव (विवाहापूर्वीची-शकुंतला शंकर गुरव)", age: "५०", relation: "मुलगी" };
+            heirsList[3] = { sr: 4, name: "सौ. सुवर्णा सुधाकर गुरव (विवाहापूर्वीची-जनाबाई शंकर गुरव)", age: "५४", relation: "मुलगी" };
+            for (let i = 4; i < heirsList.length; i++) {
+                heirsList[i] = { sr: i + 1, name: "", age: "", relation: "" };
+            }
+
+            initHeirsInput();
+            renderPreviewHeirs();
+        }
+
+        function resetAllData() {
+            if (!confirm("सर्व माहिती रीसेट करायची आहे का?")) return;
+            document.querySelectorAll(".controls-wrapper input").forEach(inp => {
+                if (inp.type !== "button" && inp.type !== "range" && inp.type !== "checkbox") inp.value = "";
+            });
+            document.getElementById("inp_app_aadhaar_address").value = "";
+            document.getElementById("chk_mother_deceased").checked = false;
+            toggleMotherFields(false);
+
+            for (let i = 0; i < heirsList.length; i++) {
+                heirsList[i] = { sr: i + 1, name: "", age: "", relation: "" };
+            }
+            initHeirsInput();
+            syncAll();
+        }
+
+        function printDocument(mode) {
+            document.body.classList.remove("print-page-1-only", "print-page-2-only");
+            if (mode === 'p1') {
+                document.body.classList.add("print-page-1-only");
+            } else if (mode === 'p2') {
+                document.body.classList.add("print-page-2-only");
+            }
+            window.print();
+        }
+
+        window.onload = function() {
+            initHeirsInput();
+            loadSampleData();
+        };
+    </script>
+</body>
+</html>
