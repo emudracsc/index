@@ -1991,6 +1991,36 @@ function classifyAadhaarService(rawServiceType, extractedAmount) {
   };
 }
 
+// Exact TOTAL_AMOUNT Extractor: Strictly prioritizes 'TOTAL_AMOUNT' column from CSV
+function extractTotalAmountFromRow(row) {
+  // Step 1: Highest Priority - exact TOTAL_AMOUNT column (ignoring case, spaces, underscores)
+  for (let key in row) {
+    const cleanKey = key.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (cleanKey === 'totalamount') {
+      const rawVal = String(row[key] || '').replace(/[^0-9.-]/g, '').trim();
+      if (rawVal !== '' && !isNaN(parseFloat(rawVal))) {
+        return parseFloat(rawVal);
+      }
+    }
+  }
+
+  // Step 2: Specific Fee columns if TOTAL_AMOUNT is not named
+  const priorityCols = ['applicablefee', 'feecharged', 'totalfee', 'collectedamount', 'govtfee', 'fee', 'amount'];
+  for (let p of priorityCols) {
+    for (let key in row) {
+      const cleanKey = key.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (cleanKey === p) {
+        const rawVal = String(row[key] || '').replace(/[^0-9.-]/g, '').trim();
+        if (rawVal !== '' && !isNaN(parseFloat(rawVal))) {
+          return parseFloat(rawVal);
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
 function parseAndPreviewCSV(csvText, sourceFileName) {
   if (!csvText || !csvText.trim()) {
     showZipStatusAlert('⚠️ निवडलेली CSV फाईल रिकामी आहे.', 'warning');
@@ -2045,27 +2075,8 @@ function parseAndPreviewCSV(csvText, sourceFileName) {
     const mobile = getVal('mobile', 'phone', 'contact', 'mobilenumber', 'मोबाईल') || '9876543210';
     const gender = getVal('gender', 'genderage', 'sex') || 'वयस्क (Adult)';
 
-    // 1. EXTRACT EXACT AMOUNT / FEE FROM CSV ROW
-    let extractedFee = null;
-    for (let rowKey in row) {
-      const cleanKey = rowKey.toLowerCase().replace(/[^a-z0-9]/g, '');
-      const isFeeCol = (
-        cleanKey === 'fee' || cleanKey === 'fees' || cleanKey === 'amount' || cleanKey === 'amt' ||
-        cleanKey === 'feecharged' || cleanKey === 'charges' || cleanKey === 'charge' ||
-        cleanKey === 'totalfee' || cleanKey === 'totalamount' || cleanKey === 'applicablefee' ||
-        cleanKey === 'govtfee' || cleanKey === 'residentfee' || cleanKey === 'collectedamount' ||
-        cleanKey === 'rate' || cleanKey === 'total' || cleanKey === 'price' || cleanKey === 'cost' ||
-        cleanKey.includes('fee') || cleanKey.includes('amount') || cleanKey.includes('charge') || cleanKey.includes('amt') ||
-        rowKey.includes('रक्कम') || rowKey.includes('शुल्क') || rowKey.includes('फी') || rowKey.includes('दर')
-      );
-      if (isFeeCol) {
-        const rawVal = String(row[rowKey] || '').replace(/[^0-9.-]/g, '').trim();
-        if (rawVal !== '' && !isNaN(parseFloat(rawVal))) {
-          extractedFee = parseFloat(rawVal);
-          break;
-        }
-      }
-    }
+    // 1. EXTRACT EXACT AMOUNT FROM 'TOTAL_AMOUNT' COLUMN
+    const extractedFee = extractTotalAmountFromRow(row);
 
     // Normalize Date to YYYY-MM-DD
     let normalizedDate = todayStr;
@@ -2436,27 +2447,8 @@ function parseAndPreviewMainCSV(csvText, sourceFileName) {
     const mobile = getVal('mobile', 'phone', 'contact', 'mobilenumber', 'मोबाईल') || '9876543210';
     const gender = getVal('gender', 'genderage', 'sex') || 'वयस्क (Adult)';
 
-    // 1. EXTRACT EXACT AMOUNT / FEE FROM CSV ROW
-    let extractedFee = null;
-    for (let rowKey in row) {
-      const cleanKey = rowKey.toLowerCase().replace(/[^a-z0-9]/g, '');
-      const isFeeCol = (
-        cleanKey === 'fee' || cleanKey === 'fees' || cleanKey === 'amount' || cleanKey === 'amt' ||
-        cleanKey === 'feecharged' || cleanKey === 'charges' || cleanKey === 'charge' ||
-        cleanKey === 'totalfee' || cleanKey === 'totalamount' || cleanKey === 'applicablefee' ||
-        cleanKey === 'govtfee' || cleanKey === 'residentfee' || cleanKey === 'collectedamount' ||
-        cleanKey === 'rate' || cleanKey === 'total' || cleanKey === 'price' || cleanKey === 'cost' ||
-        cleanKey.includes('fee') || cleanKey.includes('amount') || cleanKey.includes('charge') || cleanKey.includes('amt') ||
-        rowKey.includes('रक्कम') || rowKey.includes('शुल्क') || rowKey.includes('फी') || rowKey.includes('दर')
-      );
-      if (isFeeCol) {
-        const rawVal = String(row[rowKey] || '').replace(/[^0-9.-]/g, '').trim();
-        if (rawVal !== '' && !isNaN(parseFloat(rawVal))) {
-          extractedFee = parseFloat(rawVal);
-          break;
-        }
-      }
-    }
+    // 1. EXTRACT EXACT AMOUNT FROM 'TOTAL_AMOUNT' COLUMN
+    const extractedFee = extractTotalAmountFromRow(row);
 
     let normalizedDate = todayStr;
     if (rawDate) {
