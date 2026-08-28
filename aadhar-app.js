@@ -40,12 +40,12 @@ const defaultSettings = {
   }
 };
 
-// User's Configured Firebase Credentials (emudraaadhar)
+// User's Configured Firebase Credentials (e-mudra-aadhar-center)
 const defaultFirebaseConfig = {
   apiKey: "AIzaSyA1OWHOywqX6Hs7GR60PMCBfOrflk4G-Nw",
-  authDomain: "emudraaadhar.firebaseapp.com",
-  projectId: "emudraaadhar",
-  storageBucket: "emudraaadhar.firebasestorage.app",
+  authDomain: "e-mudra-aadhar-center.firebaseapp.com",
+  projectId: "e-mudra-aadhar-center",
+  storageBucket: "e-mudra-aadhar-center.firebasestorage.app",
   messagingSenderId: "689091171416",
   appId: "1:689091171416:web:fb56bcbf0d247509b7262d"
 };
