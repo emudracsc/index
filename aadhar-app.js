@@ -40,12 +40,12 @@ const defaultSettings = {
   }
 };
 
-// User's Configured Firebase Credentials (setuknk)
+// User's Configured Firebase Credentials (emudraaadhar)
 const defaultFirebaseConfig = {
   apiKey: "AIzaSyA1OWHOywqX6Hs7GR60PMCBfOrflk4G-Nw",
-  authDomain: "setuknk.firebaseapp.com",
-  projectId: "setuknk",
-  storageBucket: "setuknk.firebasestorage.app",
+  authDomain: "emudraaadhar.firebaseapp.com",
+  projectId: "emudraaadhar",
+  storageBucket: "emudraaadhar.firebasestorage.app",
   messagingSenderId: "689091171416",
   appId: "1:689091171416:web:fb56bcbf0d247509b7262d"
 };
