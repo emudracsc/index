@@ -1993,10 +1993,12 @@ function classifyAadhaarService(rawServiceType, extractedAmount) {
 
 // Exact TOTAL_AMOUNT Extractor: Strictly prioritizes 'TOTAL_AMOUNT' column from CSV
 function extractTotalAmountFromRow(row) {
-  // Step 1: Highest Priority - exact TOTAL_AMOUNT column (ignoring case, spaces, underscores)
+  // Step 1: Exact matches for Total Amount columns
+  const exactMatches = ['totalamountcharged', 'totalamount', 'totalamountrs', 'amountcollected', 'collectedamount', 'totalfee', 'totalfeecharged'];
+  
   for (let key in row) {
     const cleanKey = key.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (cleanKey === 'totalamount') {
+    if (exactMatches.includes(cleanKey)) {
       const rawVal = String(row[key] || '').replace(/[^0-9.-]/g, '').trim();
       if (rawVal !== '' && !isNaN(parseFloat(rawVal))) {
         return parseFloat(rawVal);
@@ -2004,8 +2006,19 @@ function extractTotalAmountFromRow(row) {
     }
   }
 
-  // Step 2: Specific Fee columns if TOTAL_AMOUNT is not named
-  const priorityCols = ['applicablefee', 'feecharged', 'totalfee', 'collectedamount', 'govtfee', 'fee', 'amount'];
+  // Step 2: Fallback matches for partial "total" + "amount"
+  for (let key in row) {
+    const cleanKey = key.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (cleanKey.includes('total') && cleanKey.includes('amount')) {
+      const rawVal = String(row[key] || '').replace(/[^0-9.-]/g, '').trim();
+      if (rawVal !== '' && !isNaN(parseFloat(rawVal))) {
+        return parseFloat(rawVal);
+      }
+    }
+  }
+
+  // Step 3: Priority fee columns
+  const priorityCols = ['feecharged', 'govtfee', 'fee'];
   for (let p of priorityCols) {
     for (let key in row) {
       const cleanKey = key.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
