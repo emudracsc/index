@@ -1803,41 +1803,13 @@ async function ensureZipLibrariesLoaded() {
   });
 }
 
-// Master Universal ZIP Extraction Pipeline (fflate -> zip.js -> JSZip)
+// Master Universal ZIP Extraction Pipeline (zip.js Full -> fflate -> JSZip)
 async function extractUniversalZip(fileBlob, password) {
   await ensureZipLibrariesLoaded();
   const arrayBuffer = await fileBlob.arrayBuffer();
   let lastError = null;
 
-  // 1. Engine 1: fflate (Lightning-fast, zero workers, perfect for password-protected ZipCrypto)
-  if (typeof fflate !== 'undefined') {
-    try {
-      const res = await new Promise((resolve, reject) => {
-        const uint8 = new Uint8Array(arrayBuffer);
-        const opts = {};
-        if (password) {
-          opts.password = (filename) => password;
-        }
-        fflate.unzip(uint8, opts, (err, unzipped) => {
-          if (err) return reject(err);
-          const fileKeys = Object.keys(unzipped);
-          if (!fileKeys || fileKeys.length === 0) {
-            return reject(new Error('ZIP फाईल रिकामी आहे.'));
-          }
-          const csvKey = fileKeys.find(k => k.toLowerCase().endsWith('.csv') || k.toLowerCase().endsWith('.txt')) || fileKeys[0];
-          if (!csvKey) return reject(new Error('कोणतीही CSV फाईल सापडली नाही.'));
-          const text = new TextDecoder('utf-8', { fatal: false }).decode(unzipped[csvKey]);
-          resolve({ csvContent: text, fileName: csvKey });
-        });
-      });
-      if (res && res.csvContent) return res;
-    } catch (ffErr) {
-      console.warn('fflate extraction note:', ffErr);
-      lastError = ffErr;
-    }
-  }
-
-  // 2. Engine 2: zip.js (Supports WinZip AES-128/256 and ZipCrypto)
+  // 1. Engine 1: zip.js (Full AES-256 + ZipCrypto decryptor)
   if (typeof zip !== 'undefined') {
     let reader = null;
     try {
@@ -1865,12 +1837,40 @@ async function extractUniversalZip(fileBlob, password) {
       if (reader) await reader.close();
     } catch (zipErr) {
       if (reader) { try { await reader.close(); } catch(e){} }
-      console.warn('zip.js extraction note:', zipErr);
+      console.warn('zip.js extraction error:', zipErr);
       lastError = zipErr;
     }
   }
 
-  // 3. Engine 3: JSZip (Standard unencrypted ZIP)
+  // 2. Engine 2: fflate (Pure JS synchronous/async ZipCrypto engine)
+  if (typeof fflate !== 'undefined') {
+    try {
+      const res = await new Promise((resolve, reject) => {
+        const uint8 = new Uint8Array(arrayBuffer);
+        const opts = {};
+        if (password) {
+          opts.password = (filename) => password;
+        }
+        fflate.unzip(uint8, opts, (err, unzipped) => {
+          if (err) return reject(err);
+          const fileKeys = Object.keys(unzipped);
+          if (!fileKeys || fileKeys.length === 0) {
+            return reject(new Error('ZIP फाईल रिकामी आहे.'));
+          }
+          const csvKey = fileKeys.find(k => k.toLowerCase().endsWith('.csv') || k.toLowerCase().endsWith('.txt')) || fileKeys[0];
+          if (!csvKey) return reject(new Error('कोणतीही CSV फाईल सापडली नाही.'));
+          const text = new TextDecoder('utf-8', { fatal: false }).decode(unzipped[csvKey]);
+          resolve({ csvContent: text, fileName: csvKey });
+        });
+      });
+      if (res && res.csvContent) return res;
+    } catch (ffErr) {
+      console.warn('fflate extraction note:', ffErr);
+      if (!lastError) lastError = ffErr;
+    }
+  }
+
+  // 3. Engine 3: JSZip (Standard unencrypted fallback)
   if (typeof JSZip !== 'undefined') {
     try {
       const zipInstance = new JSZip();
@@ -1890,13 +1890,12 @@ async function extractUniversalZip(fileBlob, password) {
   if (lastError && lastError.message && (
     lastError.message.toLowerCase().includes('password') ||
     lastError.message.toLowerCase().includes('encrypted') ||
-    lastError.message.toLowerCase().includes('bad signature') ||
-    lastError.message.toLowerCase().includes('invalid')
+    lastError.message.toLowerCase().includes('signature')
   )) {
     throw new Error('चुकीचा पासवर्ड! कृपया योग्य पासवर्ड प्रविष्ट करा.');
   }
 
-  throw lastError || new Error('ZIP फाईल उघडता आली नाही. कृपया पासवर्ड तपासा किंवा थेट CSV फाईल अपलोड करा.');
+  throw lastError || new Error('ZIP फाईल उघडता आली नाही.');
 }
 
 async function processZipFile(zipBlob, password) {
