@@ -1758,16 +1758,16 @@ async function processSelectedZipOrCsv() {
   }
 }
 
-// Ensure Zip & CSV Libraries are ready (dual engine)
+// Ensure Zip & CSV Libraries are ready (Multi-Engine: fflate + zip.js + JSZip)
 async function ensureZipLibrariesLoaded() {
-  if (typeof zip !== 'undefined' || typeof JSZip !== 'undefined') {
+  if (typeof fflate !== 'undefined' || typeof zip !== 'undefined' || typeof JSZip !== 'undefined') {
     if (typeof zip !== 'undefined') {
       try { zip.configure({ useWebWorkers: false }); } catch (e) {}
     }
     return true;
   }
 
-  // Fallback: Dynamically load zip-full and JSZip if CDN is blocked or slow
+  // Fallback: Dynamically load fflate or zip-full if CDN is blocked or slow
   return new Promise((resolve) => {
     let loaded = false;
     const finish = () => {
@@ -1776,18 +1776,24 @@ async function ensureZipLibrariesLoaded() {
         if (typeof zip !== 'undefined') {
           try { zip.configure({ useWebWorkers: false }); } catch (e) {}
         }
-        resolve(typeof zip !== 'undefined' || typeof JSZip !== 'undefined');
+        resolve(typeof fflate !== 'undefined' || typeof zip !== 'undefined' || typeof JSZip !== 'undefined');
       }
     };
 
     const s1 = document.createElement('script');
-    s1.src = 'https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.53/dist/zip-full.min.js';
+    s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/fflate/0.8.2/fflate.min.js';
     s1.onload = finish;
     s1.onerror = () => {
       const s2 = document.createElement('script');
-      s2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+      s2.src = 'https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.53/dist/zip-full.min.js';
       s2.onload = finish;
-      s2.onerror = () => finish();
+      s2.onerror = () => {
+        const s3 = document.createElement('script');
+        s3.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+        s3.onload = finish;
+        s3.onerror = () => finish();
+        document.head.appendChild(s3);
+      };
       document.head.appendChild(s2);
     };
     document.head.appendChild(s1);
@@ -1797,84 +1803,106 @@ async function ensureZipLibrariesLoaded() {
   });
 }
 
-async function processZipFile(zipBlob, password) {
+// Master Universal ZIP Extraction Pipeline (fflate -> zip.js -> JSZip)
+async function extractUniversalZip(fileBlob, password) {
   await ensureZipLibrariesLoaded();
+  const arrayBuffer = await fileBlob.arrayBuffer();
+  let lastError = null;
 
-  let csvContent = '';
-  let fileName = '';
+  // 1. Engine 1: fflate (Lightning-fast, zero workers, perfect for password-protected ZipCrypto)
+  if (typeof fflate !== 'undefined') {
+    try {
+      const res = await new Promise((resolve, reject) => {
+        const uint8 = new Uint8Array(arrayBuffer);
+        const opts = {};
+        if (password) {
+          opts.password = (filename) => password;
+        }
+        fflate.unzip(uint8, opts, (err, unzipped) => {
+          if (err) return reject(err);
+          const fileKeys = Object.keys(unzipped);
+          if (!fileKeys || fileKeys.length === 0) {
+            return reject(new Error('ZIP फाईल रिकामी आहे.'));
+          }
+          const csvKey = fileKeys.find(k => k.toLowerCase().endsWith('.csv') || k.toLowerCase().endsWith('.txt')) || fileKeys[0];
+          if (!csvKey) return reject(new Error('कोणतीही CSV फाईल सापडली नाही.'));
+          const text = new TextDecoder('utf-8', { fatal: false }).decode(unzipped[csvKey]);
+          resolve({ csvContent: text, fileName: csvKey });
+        });
+      });
+      if (res && res.csvContent) return res;
+    } catch (ffErr) {
+      console.warn('fflate extraction note:', ffErr);
+      lastError = ffErr;
+    }
+  }
 
-  // 1. Try zip.js (Supports password decryption & AES/ZipCrypto)
+  // 2. Engine 2: zip.js (Supports WinZip AES-128/256 and ZipCrypto)
   if (typeof zip !== 'undefined') {
     let reader = null;
     try {
-      reader = new zip.ZipReader(new zip.BlobReader(zipBlob), {
-        password: password || undefined,
-        checkSignature: false
-      });
-
+      try { zip.configure({ useWebWorkers: false }); } catch (e) {}
+      const uint8 = new Uint8Array(arrayBuffer);
+      reader = new zip.ZipReader(new zip.Uint8ArrayReader(uint8));
       const entries = await reader.getEntries();
       if (entries && entries.length > 0) {
         let targetEntry = entries.find(e => !e.directory && (e.filename.toLowerCase().endsWith('.csv') || e.filename.toLowerCase().endsWith('.txt')));
         if (!targetEntry) targetEntry = entries.find(e => !e.directory);
-
         if (targetEntry) {
-          fileName = targetEntry.filename;
-          showZipStatusAlert(`📂 सापडलेली फाईल: <strong>${escapeHtml(fileName)}</strong>. डेटा वाचत आहे...`, 'info');
-
+          const passOpts = { checkSignature: false };
+          if (password) passOpts.password = password;
+          let csvContent = '';
           try {
-            csvContent = await targetEntry.getData(new zip.TextWriter('utf-8'), {
-              password: password || undefined,
-              checkSignature: false
-            });
-          } catch (textErr) {
-            // Try Uint8Array fallback
-            const rawBytes = await targetEntry.getData(new zip.Uint8ArrayWriter(), {
-              password: password || undefined,
-              checkSignature: false
-            });
+            csvContent = await targetEntry.getData(new zip.TextWriter('utf-8'), passOpts);
+          } catch (tErr) {
+            const rawBytes = await targetEntry.getData(new zip.Uint8ArrayWriter(), passOpts);
             csvContent = new TextDecoder('utf-8', { fatal: false }).decode(rawBytes);
           }
-
           await reader.close();
-          parseAndPreviewCSV(csvContent, fileName);
-          return;
+          if (csvContent) return { csvContent, fileName: targetEntry.filename };
         }
       }
       if (reader) await reader.close();
     } catch (zipErr) {
       if (reader) { try { await reader.close(); } catch(e){} }
-      console.warn('zip.js extraction error:', zipErr);
-      const isPwdError = zipErr.message && (
-        zipErr.message.toLowerCase().includes('password') ||
-        zipErr.message.toLowerCase().includes('encrypted') ||
-        zipErr.message.toLowerCase().includes('signature')
-      );
-      if (isPwdError) {
-        throw new Error('चुकीचा पासवर्ड! कृपया योग्य पासवर्ड प्रविष्ट करा.');
-      }
+      console.warn('zip.js extraction note:', zipErr);
+      lastError = zipErr;
     }
   }
 
-  // 2. JSZip Fallback Engine (for unencrypted or standard zips)
+  // 3. Engine 3: JSZip (Standard unencrypted ZIP)
   if (typeof JSZip !== 'undefined') {
     try {
       const zipInstance = new JSZip();
-      const zipData = await zipInstance.loadAsync(zipBlob);
+      const zipData = await zipInstance.loadAsync(arrayBuffer);
       const fileNames = Object.keys(zipData.files);
       const targetFileName = fileNames.find(n => !zipData.files[n].dir && (n.toLowerCase().endsWith('.csv') || n.toLowerCase().endsWith('.txt'))) || fileNames.find(n => !zipData.files[n].dir);
-
       if (targetFileName) {
-        showZipStatusAlert(`📂 सापडलेली फाईल: <strong>${escapeHtml(targetFileName)}</strong>. डेटा वाचत आहे...`, 'info');
-        csvContent = await zipData.files[targetFileName].async('string');
-        parseAndPreviewCSV(csvContent, targetFileName);
-        return;
+        const csvContent = await zipData.files[targetFileName].async('string');
+        if (csvContent) return { csvContent, fileName: targetFileName };
       }
     } catch (jszipErr) {
-      console.warn('JSZip fallback error:', jszipErr);
+      console.warn('JSZip extraction note:', jszipErr);
+      if (!lastError) lastError = jszipErr;
     }
   }
 
-  showZipStatusAlert('❌ ZIP फाईल उघडता आली नाही. कृपया पासवर्ड तपासा किंवा थेट CSV फाईल अपलोड करा.', 'error');
+  if (lastError && lastError.message && (
+    lastError.message.toLowerCase().includes('password') ||
+    lastError.message.toLowerCase().includes('encrypted') ||
+    lastError.message.toLowerCase().includes('bad signature') ||
+    lastError.message.toLowerCase().includes('invalid')
+  )) {
+    throw new Error('चुकीचा पासवर्ड! कृपया योग्य पासवर्ड प्रविष्ट करा.');
+  }
+
+  throw lastError || new Error('ZIP फाईल उघडता आली नाही. कृपया पासवर्ड तपासा किंवा थेट CSV फाईल अपलोड करा.');
+}
+
+async function processZipFile(zipBlob, password) {
+  const result = await extractUniversalZip(zipBlob, password);
+  showZipStatusAlert(`📂 सापडलेली फाईल: <strong>${escapeHtml(result.fileName)}</strong>. डेटा वाचत आहे...`, 'info');
+  parseAndPreviewCSV(result.csvContent, result.fileName);
 }
 
 function processCsvDirectly(fileBlob) {
@@ -2268,83 +2296,9 @@ async function processMainReportFile() {
 }
 
 async function processMainZipFile(zipBlob, password) {
-  await ensureZipLibrariesLoaded();
-
-  let csvContent = '';
-  let fileName = '';
-
-  // 1. Try zip.js (Supports password decryption & AES/ZipCrypto)
-  if (typeof zip !== 'undefined') {
-    let reader = null;
-    try {
-      reader = new zip.ZipReader(new zip.BlobReader(zipBlob), {
-        password: password || undefined,
-        checkSignature: false
-      });
-
-      const entries = await reader.getEntries();
-      if (entries && entries.length > 0) {
-        let targetEntry = entries.find(e => !e.directory && (e.filename.toLowerCase().endsWith('.csv') || e.filename.toLowerCase().endsWith('.txt')));
-        if (!targetEntry) targetEntry = entries.find(e => !e.directory);
-
-        if (targetEntry) {
-          fileName = targetEntry.filename;
-          showMainZipAlert(`📂 सापडलेली फाईल: <strong>${escapeHtml(fileName)}</strong>. डेटा वाचत आहे...`, 'info');
-
-          try {
-            csvContent = await targetEntry.getData(new zip.TextWriter('utf-8'), {
-              password: password || undefined,
-              checkSignature: false
-            });
-          } catch (textErr) {
-            // Try Uint8Array fallback
-            const rawBytes = await targetEntry.getData(new zip.Uint8ArrayWriter(), {
-              password: password || undefined,
-              checkSignature: false
-            });
-            csvContent = new TextDecoder('utf-8', { fatal: false }).decode(rawBytes);
-          }
-
-          await reader.close();
-          parseAndPreviewMainCSV(csvContent, fileName);
-          return;
-        }
-      }
-      if (reader) await reader.close();
-    } catch (zipErr) {
-      if (reader) { try { await reader.close(); } catch(e){} }
-      console.warn('zip.js main extraction error:', zipErr);
-      const isPwdError = zipErr.message && (
-        zipErr.message.toLowerCase().includes('password') ||
-        zipErr.message.toLowerCase().includes('encrypted') ||
-        zipErr.message.toLowerCase().includes('signature')
-      );
-      if (isPwdError) {
-        throw new Error('चुकीचा पासवर्ड! कृपया योग्य पासवर्ड प्रविष्ट करा.');
-      }
-    }
-  }
-
-  // 2. JSZip Fallback Engine (for unencrypted or standard zips)
-  if (typeof JSZip !== 'undefined') {
-    try {
-      const zipInstance = new JSZip();
-      const zipData = await zipInstance.loadAsync(zipBlob);
-      const fileNames = Object.keys(zipData.files);
-      const targetFileName = fileNames.find(n => !zipData.files[n].dir && (n.toLowerCase().endsWith('.csv') || n.toLowerCase().endsWith('.txt'))) || fileNames.find(n => !zipData.files[n].dir);
-
-      if (targetFileName) {
-        showMainZipAlert(`📂 सापडलेली फाईल: <strong>${escapeHtml(targetFileName)}</strong>. डेटा वाचत आहे...`, 'info');
-        csvContent = await zipData.files[targetFileName].async('string');
-        parseAndPreviewMainCSV(csvContent, targetFileName);
-        return;
-      }
-    } catch (jszipErr) {
-      console.warn('JSZip main fallback error:', jszipErr);
-    }
-  }
-
-  showMainZipAlert('❌ ZIP फाईल उघडता आली नाही. कृपया पासवर्ड तपासा किंवा थेट CSV फाईल अपलोड करा.', 'error');
+  const result = await extractUniversalZip(zipBlob, password);
+  showMainZipAlert(`📂 सापडलेली फाईल: <strong>${escapeHtml(result.fileName)}</strong>. डेटा वाचत आहे...`, 'info');
+  parseAndPreviewMainCSV(result.csvContent, result.fileName);
 }
 
 function processMainCsvFile(fileBlob) {
