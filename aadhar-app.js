@@ -53,9 +53,199 @@ const defaultFirebaseConfig = {
 };
 
 // =============================================================================
-// 2. INITIALIZATION
+// 2. INITIALIZATION & AUTHENTICATION
 // =============================================================================
+let currentUser = null; // { role: 'admin' | 'operator', center: '...', name: '...' }
+
+function initRoleAuth() {
+  const savedUser = localStorage.getItem('ask_current_user');
+  if (savedUser) {
+    try {
+      currentUser = JSON.parse(savedUser);
+    } catch(e) {}
+  }
+  applyRoleUI();
+}
+
+function selectLoginRole(role) {
+  const btnOp = document.getElementById('btn-role-operator');
+  const btnAd = document.getElementById('btn-role-admin');
+  if(btnOp) {
+    btnOp.style.background = role === 'operator' ? '#38bdf8' : 'transparent';
+    btnOp.style.color = role === 'operator' ? '#fff' : '#38bdf8';
+  }
+  if(btnAd) {
+    btnAd.style.background = role === 'admin' ? '#fbbf24' : 'transparent';
+    btnAd.style.color = role === 'admin' ? '#fbbf24' : '#fbbf24'; // text-gold
+  }
+
+  const opForm = document.getElementById('operator-login-form');
+  const adForm = document.getElementById('admin-login-form');
+  if(opForm) opForm.style.display = role === 'operator' ? 'block' : 'none';
+  if(adForm) adForm.style.display = role === 'admin' ? 'block' : 'none';
+  
+  const err = document.getElementById('login-error-msg');
+  if(err) err.style.display = 'none';
+}
+
+function updateOperatorNameUI() {
+  const center = document.getElementById('login-center-select').value;
+  const nameInput = document.getElementById('login-operator-name');
+  if (center === 'DIT (Maha IT)') {
+    nameInput.value = 'Gauravi Gawade';
+  } else if (center === 'WCD') {
+    nameInput.value = 'Sakshi Sawant';
+  } else {
+    nameInput.value = '';
+  }
+}
+
+function handleOperatorLogin(e) {
+  e.preventDefault();
+  const center = document.getElementById('login-center-select').value;
+  const name = document.getElementById('login-operator-name').value.trim();
+  const pwd = document.getElementById('login-operator-password').value.trim();
+  
+  if(!center || !name || !pwd) return;
+
+  let isValid = false;
+  if (center === 'DIT (Maha IT)' && pwd === '40068') {
+    isValid = true;
+  } else if (center === 'WCD' && pwd === '73016') {
+    isValid = true;
+  }
+
+  if (!isValid) {
+    const err = document.getElementById('login-error-msg');
+    if (err) {
+      err.textContent = 'चुकीचा पासवर्ड (स्टेशन आयडी)!';
+      err.style.display = 'block';
+    }
+    playSound('delete');
+    return;
+  }
+
+  currentUser = { role: 'operator', center: center, name: name, stationId: pwd };
+  localStorage.setItem('ask_current_user', JSON.stringify(currentUser));
+  applyRoleUI();
+  playSound('success');
+}
+
+function handleAdminLogin(e) {
+  e.preventDefault();
+  const pin = document.getElementById('login-admin-pin').value;
+  const expectedPin = localStorage.getItem(STORAGE_KEYS.ADMIN_PIN) || '1234';
+  if(pin === expectedPin) {
+    currentUser = { role: 'admin', center: 'Full Access', name: 'Admin' };
+    localStorage.setItem('ask_current_user', JSON.stringify(currentUser));
+    applyRoleUI();
+    playSound('success');
+  } else {
+    const err = document.getElementById('login-error-msg');
+    if(err) {
+      err.textContent = 'चुकीचा पिन! (Invalid PIN)';
+      err.style.display = 'block';
+    }
+    playSound('delete');
+  }
+}
+
+function handleLogout() {
+  if (confirm('तुम्हाला नक्की लॉगआउट करायचे आहे का?')) {
+    localStorage.removeItem('ask_current_user');
+    currentUser = null;
+    location.reload();
+  }
+}
+
+function applyRoleUI() {
+  const overlay = document.getElementById('app-login-overlay');
+  const userDisp = document.getElementById('current-user-display');
+  const userNameEl = document.getElementById('current-user-name');
+  const userCenterEl = document.getElementById('current-user-center');
+  const navTabs = document.querySelectorAll('.nav-tab-btn');
+
+  if (!currentUser) {
+    if(overlay) overlay.style.display = 'flex';
+    if(userDisp) userDisp.style.display = 'none';
+    return;
+  }
+  
+  if(overlay) overlay.style.display = 'none';
+  if(userDisp) userDisp.style.display = 'inline-block';
+  if(userNameEl) userNameEl.textContent = currentUser.name;
+  if(userCenterEl) userCenterEl.textContent = currentUser.center;
+  
+  // Hide settings button for operator in top right
+  const dispKendra = document.getElementById('display-kendra-name');
+  const dispOp = document.getElementById('display-operator-name');
+  const dispStn = document.getElementById('display-station-id');
+  const mainCenterField = document.getElementById('main-upload-center-field');
+
+  if (currentUser.role === 'admin') {
+    if (dispOp) dispOp.textContent = 'Admin (सर्व ऑपरेटर)';
+    if (dispStn) dispStn.textContent = '40068 / 73016';
+    if (dispKendra) dispKendra.textContent = 'ई-मुद्रा आधार सेवा केंद्र (सर्व केंद्रे)';
+    if (mainCenterField) mainCenterField.style.display = 'block';
+
+    navTabs.forEach(btn => btn.style.display = 'inline-block');
+    if(topSettingsBtn) topSettingsBtn.style.display = 'inline-block';
+    
+    const datePreset = document.getElementById('register-date-preset');
+    if(datePreset) datePreset.style.display = 'inline-block';
+
+    const regCenterFilter = document.getElementById('register-center-filter');
+    if(regCenterFilter) regCenterFilter.style.display = 'inline-block';
+
+    const repCenterSelect = document.getElementById('report-center-select');
+    if(repCenterSelect) repCenterSelect.style.display = 'inline-block';
+
+    const repScopeSelect = document.getElementById('report-scope-select');
+    if(repScopeSelect) repScopeSelect.style.display = 'inline-block';
+
+    const dashFilterGroup = document.getElementById('admin-dashboard-filter-group');
+    if(dashFilterGroup) dashFilterGroup.style.display = 'flex';
+  } else if (currentUser.role === 'operator') {
+    const opName = currentUser.name || (currentUser.center === 'WCD' ? 'Sakshi Sawant' : 'Gauravi Gawade');
+    const stnId = currentUser.stationId || (currentUser.center === 'WCD' ? '73016' : '40068');
+    if (dispOp) dispOp.textContent = opName;
+    if (dispStn) dispStn.textContent = stnId;
+    if (dispKendra) dispKendra.textContent = `ई-मुद्रा आधार सेवा केंद्र (${currentUser.center})`;
+    if (mainCenterField) mainCenterField.style.display = 'none';
+
+    navTabs.forEach(btn => {
+      // Operator can only see Upload Tab
+      if (btn.id === 'tab-btn-upload') {
+        btn.style.display = 'inline-block';
+      } else {
+        btn.style.display = 'none';
+      }
+    });
+    if(topSettingsBtn) topSettingsBtn.style.display = 'none';
+    
+    // Hide date filter in register tab for operator
+    const datePreset = document.getElementById('register-date-preset');
+    if(datePreset) datePreset.style.display = 'none';
+
+    const regCenterFilter = document.getElementById('register-center-filter');
+    if(regCenterFilter) regCenterFilter.style.display = 'none';
+
+    const repCenterSelect = document.getElementById('report-center-select');
+    if(repCenterSelect) repCenterSelect.style.display = 'none';
+
+    const delDayBtn = document.getElementById('btn-delete-day-data');
+    if(delDayBtn) delDayBtn.style.display = 'none';
+
+    const dashFilterGroup = document.getElementById('admin-dashboard-filter-group');
+    if(dashFilterGroup) dashFilterGroup.style.display = 'none';
+
+    // Force open upload tab
+    openTab('upload-tab');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  initRoleAuth();
   initAudioSetting();
   loadKendraSettings();
   initDateTimeInputs();
@@ -170,11 +360,24 @@ function initDateTimeInputs() {
   const entryTime = document.getElementById('entry-time');
   const expDate = document.getElementById('exp-date');
   const repDate = document.getElementById('report-date-select');
+  const mainRepDate = document.getElementById('main-report-date');
+  const opRepDate = document.getElementById('operator-report-date');
+  const dashSingleDate = document.getElementById('dash-single-date');
+  const dashDateFrom = document.getElementById('dash-date-from');
+  const dashDateTo = document.getElementById('dash-date-to');
 
   if (entryDate && !entryDate.value) entryDate.value = todayStr;
   if (entryTime && !entryTime.value) entryTime.value = timeStr;
   if (expDate && !expDate.value) expDate.value = todayStr;
   if (repDate && !repDate.value) repDate.value = todayStr;
+  if (mainRepDate && !mainRepDate.value) mainRepDate.value = todayStr;
+  if (opRepDate && !opRepDate.value) opRepDate.value = todayStr;
+  if (dashSingleDate && !dashSingleDate.value) dashSingleDate.value = todayStr;
+  if (dashDateTo && !dashDateTo.value) dashDateTo.value = todayStr;
+  if (dashDateFrom && !dashDateFrom.value) {
+    const firstDay = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+    dashDateFrom.value = firstDay;
+  }
 
   calculateNextTokenNo();
 }
@@ -477,7 +680,17 @@ function testFirebaseConnection() {
 function getStoredTransactions() {
   try {
     const data = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
-    return data ? JSON.parse(data) : [];
+    if (!data) return [];
+    const list = JSON.parse(data);
+    list.forEach(t => {
+      if (!t.operatorName || t.operatorName === 'Admin') {
+        t.operatorName = t.center === 'WCD' ? 'Sakshi Sawant' : 'Gauravi Gawade';
+      }
+      if (!t.center) {
+        t.center = 'DIT (Maha IT)';
+      }
+    });
+    return list;
   } catch (e) {
     return [];
   }
@@ -500,17 +713,48 @@ function saveStoredExpenses(list) {
   localStorage.setItem(STORAGE_KEYS.EXPENSES, JSON.stringify(list));
 }
 
-function getKendraSettings() {
+function getKendraSettings(centerName) {
+  if (!centerName) {
+    if (currentUser && currentUser.center && currentUser.center !== 'Full Access') {
+      centerName = currentUser.center;
+    } else {
+      centerName = 'DIT (Maha IT)'; 
+    }
+  }
+  const key = centerName === 'WCD' ? 'ask_kendra_settings_wcd' : 'ask_kendra_settings';
+  
+  const centerDefaults = centerName === 'WCD' ? {
+    kendraName: 'ई-मुद्रा आधार सेवा केंद्र (WCD)',
+    operatorName: 'Sakshi Sawant',
+    stationId: '73016',
+    contactPhone: '02367-232014',
+    centerAddress: 'WCD आधार केंद्र परिसर',
+    receiptFooter: 'ई-मुद्रा आधार सेवा केंद्र (WCD) भेट दिल्याबद्दल धन्यवाद!',
+    rates: { demo: 75, bio: 125, doc: 75, new: 0, mbu: 0, print: 50, pvc: 50, other: 30 }
+  } : {
+    kendraName: 'ई-मुद्रा आधार सेवा केंद्र (DIT Maha IT)',
+    operatorName: 'Gauravi Gawade',
+    stationId: '40068',
+    contactPhone: '02367-232014',
+    centerAddress: 'DIT महा-IT आधार केंद्र परिसर',
+    receiptFooter: 'ई-मुद्रा आधार सेवा केंद्र (DIT) भेट दिल्याबद्दल धन्यवाद!',
+    rates: { demo: 75, bio: 125, doc: 75, new: 0, mbu: 0, print: 50, pvc: 50, other: 30 }
+  };
+
   try {
-    const data = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-    return data ? Object.assign({}, defaultSettings, JSON.parse(data)) : defaultSettings;
+    const data = localStorage.getItem(key);
+    return data ? Object.assign({}, centerDefaults, JSON.parse(data)) : centerDefaults;
   } catch (e) {
-    return defaultSettings;
+    return centerDefaults;
   }
 }
 
 function saveKendraSettings(event) {
   if (event) event.preventDefault();
+  const centerSelect = document.getElementById('setting-center-select');
+  const centerName = centerSelect ? centerSelect.value : 'DIT (Maha IT)';
+  const key = centerName === 'WCD' ? 'ask_kendra_settings_wcd' : 'ask_kendra_settings';
+
   const settings = {
     kendraName: document.getElementById('setting-kendra-name').value.trim(),
     operatorName: document.getElementById('setting-operator-name').value.trim(),
@@ -528,10 +772,9 @@ function saveKendraSettings(event) {
     }
   };
 
-  localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+  localStorage.setItem(key, JSON.stringify(settings));
   loadKendraSettings();
-  playSound('success');
-  alert('✅ केंद्राची माहिती व सेवा दर यशस्वीरित्या जतन केले!');
+  showSuccessModal(`<strong>${centerName}</strong> केंद्राची माहिती व सेवा दर यशस्वीरित्या जतन केले आहेत!`, '✅ सेटिंग्ज सेव्ह झाल्या');
 }
 
 function loadKendraSettings() {
@@ -564,6 +807,25 @@ function loadKendraSettings() {
   const rateOther = document.getElementById('rate-other');
   if (rateOther) rateOther.textContent = settings.rates.other;
 
+  // Populate form fields for whichever center is currently selected in the dropdown
+  loadKendraSettingsForSelected();
+
+  // Populate Firebase form fields if saved
+  const fbConfig = getFirebaseConfig();
+  if (fbConfig) {
+    if (document.getElementById('fb-apiKey')) document.getElementById('fb-apiKey').value = fbConfig.apiKey || '';
+    if (document.getElementById('fb-projectId')) document.getElementById('fb-projectId').value = fbConfig.projectId || '';
+    if (document.getElementById('fb-authDomain')) document.getElementById('fb-authDomain').value = fbConfig.authDomain || '';
+    if (document.getElementById('fb-storageBucket')) document.getElementById('fb-storageBucket').value = fbConfig.storageBucket || '';
+    if (document.getElementById('fb-appId')) document.getElementById('fb-appId').value = fbConfig.appId || '';
+  }
+}
+
+function loadKendraSettingsForSelected() {
+  const centerSelect = document.getElementById('setting-center-select');
+  const centerName = centerSelect ? centerSelect.value : 'DIT (Maha IT)';
+  const settings = getKendraSettings(centerName);
+
   // Form values in Settings Tab
   const setKendra = document.getElementById('setting-kendra-name');
   if (setKendra) setKendra.value = settings.kendraName;
@@ -590,16 +852,6 @@ function loadKendraSettings() {
   if (rateInPvc) rateInPvc.value = settings.rates.pvc;
   const rateInOther = document.getElementById('rate-input-other');
   if (rateInOther) rateInOther.value = settings.rates.other;
-
-  // Populate Firebase form fields if saved
-  const fbConfig = getFirebaseConfig();
-  if (fbConfig) {
-    if (document.getElementById('fb-apiKey')) document.getElementById('fb-apiKey').value = fbConfig.apiKey || '';
-    if (document.getElementById('fb-projectId')) document.getElementById('fb-projectId').value = fbConfig.projectId || '';
-    if (document.getElementById('fb-authDomain')) document.getElementById('fb-authDomain').value = fbConfig.authDomain || '';
-    if (document.getElementById('fb-storageBucket')) document.getElementById('fb-storageBucket').value = fbConfig.storageBucket || '';
-    if (document.getElementById('fb-appId')) document.getElementById('fb-appId').value = fbConfig.appId || '';
-  }
 }
 
 // =============================================================================
@@ -816,10 +1068,14 @@ function handleExpenseSubmit(event) {
   document.getElementById('aadhaar-expense-form').reset();
   initDateTimeInputs();
   refreshAllDataViews();
-  alert('✅ दैनिक खर्च नोंद यशस्वीपणे सेव्ह झाली!');
+  showSuccessModal('दैनिक खर्च नोंद यशस्वीपणे सेव्ह झाली आहे व ताळेबंद अपडेट झाला आहे!', '✅ खर्च नोंद सेव्ह झाली');
 }
 
 function deleteExpense(expId) {
+  if (!currentUser || currentUser.role !== 'admin') {
+    alert('⚠️ ऑपरेटरला खर्च हटवण्याची (Delete) परवानगी नाही! फक्त ॲडमीनच खर्च हटवू शकतात.');
+    return;
+  }
   if (!confirm('तुम्हाला ही खर्च नोंद खरंच हटवायची आहे का?')) return;
   playSound('delete');
   let expenses = getStoredExpenses();
@@ -843,13 +1099,110 @@ function refreshAllDataViews() {
   generateDailyReport();
 }
 
+function handleDashPeriodChange() {
+  const period = document.getElementById('dash-period-select')?.value || 'today';
+  const singleDateInput = document.getElementById('dash-single-date');
+  const customRangeWrap = document.getElementById('dash-custom-range-wrap');
+
+  if (singleDateInput) {
+    singleDateInput.style.display = period === 'single-date' ? 'inline-block' : 'none';
+  }
+  if (customRangeWrap) {
+    customRangeWrap.style.display = period === 'multi-month' ? 'flex' : 'none';
+  }
+
+  updateMetricsDashboard();
+}
+
 function updateMetricsDashboard() {
   const transactions = getStoredTransactions();
   const expenses = getStoredExpenses();
   const today = getTodayDateString();
+  const now = new Date();
 
-  const todayTx = transactions.filter(t => t.date === today);
-  const todayExp = expenses.filter(e => e.date === today);
+  const period = document.getElementById('dash-period-select')?.value || 'today';
+  const centerSelect = document.getElementById('dash-center-select')?.value || 'all';
+  const singleDate = document.getElementById('dash-single-date')?.value || today;
+  const dateFrom = document.getElementById('dash-date-from')?.value;
+  const dateTo = document.getElementById('dash-date-to')?.value;
+
+  let filteredTx = transactions;
+  let filteredExp = expenses;
+
+  // Center filter
+  if (currentUser && currentUser.role === 'operator') {
+    filteredTx = filteredTx.filter(t => t.center === currentUser.center);
+    filteredExp = filteredExp.filter(e => e.center === currentUser.center);
+  } else if (centerSelect !== 'all') {
+    filteredTx = filteredTx.filter(t => t.center === centerSelect);
+    filteredExp = filteredExp.filter(e => e.center === centerSelect);
+  }
+
+  let periodLabel = 'आज';
+
+  // Period Filter
+  if (currentUser && currentUser.role === 'operator') {
+    // Operator is always restricted to today
+    filteredTx = filteredTx.filter(t => t.date === today);
+    filteredExp = filteredExp.filter(e => e.date === today);
+    periodLabel = 'आज';
+  } else {
+    if (period === 'today') {
+      filteredTx = filteredTx.filter(t => t.date === today);
+      filteredExp = filteredExp.filter(e => e.date === today);
+      periodLabel = 'आज';
+    } else if (period === 'yesterday') {
+      const yest = new Date(now);
+      yest.setDate(yest.getDate() - 1);
+      const yestStr = `${yest.getFullYear()}-${String(yest.getMonth() + 1).padStart(2, '0')}-${String(yest.getDate()).padStart(2, '0')}`;
+      filteredTx = filteredTx.filter(t => t.date === yestStr);
+      filteredExp = filteredExp.filter(e => e.date === yestStr);
+      periodLabel = 'काल (' + formatDateDDMMYYYY(yestStr) + ')';
+    } else if (period === 'single-date') {
+      filteredTx = filteredTx.filter(t => t.date === singleDate);
+      filteredExp = filteredExp.filter(e => e.date === singleDate);
+      periodLabel = formatDateDDMMYYYY(singleDate);
+    } else if (period === 'weekly') {
+      const past7 = new Date(now);
+      past7.setDate(past7.getDate() - 7);
+      const past7Str = `${past7.getFullYear()}-${String(past7.getMonth() + 1).padStart(2, '0')}-${String(past7.getDate()).padStart(2, '0')}`;
+      filteredTx = filteredTx.filter(t => t.date >= past7Str && t.date <= today);
+      filteredExp = filteredExp.filter(e => e.date >= past7Str && e.date <= today);
+      periodLabel = 'साप्ताहिक (मागील ७ दिवस)';
+    } else if (period === 'fortnightly') {
+      const past15 = new Date(now);
+      past15.setDate(past15.getDate() - 15);
+      const past15Str = `${past15.getFullYear()}-${String(past15.getMonth() + 1).padStart(2, '0')}-${String(past15.getDate()).padStart(2, '0')}`;
+      filteredTx = filteredTx.filter(t => t.date >= past15Str && t.date <= today);
+      filteredExp = filteredExp.filter(e => e.date >= past15Str && e.date <= today);
+      periodLabel = 'पंधरवडा (१५ दिवस)';
+    } else if (period === 'monthly') {
+      const currentMonthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      filteredTx = filteredTx.filter(t => (t.date || '').startsWith(currentMonthPrefix));
+      filteredExp = filteredExp.filter(e => (e.date || '').startsWith(currentMonthPrefix));
+      const marathiMonths = ['जानेवारी', 'फेब्रुवारी', 'मार्च', 'एप्रिल', 'मे', 'जून', 'जुलै', 'ऑगस्ट', 'सप्टेंबर', 'ऑक्टोबर', 'नोव्हेंबर', 'डिसेंबर'];
+      periodLabel = `चालू महिना (${marathiMonths[now.getMonth()]})`;
+    } else if (period === 'last-month') {
+      const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastMonthPrefix = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, '0')}`;
+      filteredTx = filteredTx.filter(t => (t.date || '').startsWith(lastMonthPrefix));
+      filteredExp = filteredExp.filter(e => (e.date || '').startsWith(lastMonthPrefix));
+      const marathiMonths = ['जानेवारी', 'फेब्रुवारी', 'मार्च', 'एप्रिल', 'मे', 'जून', 'जुलै', 'ऑगस्ट', 'सप्टेंबर', 'ऑक्टोबर', 'नोव्हेंबर', 'डिसेंबर'];
+      periodLabel = `मागील महिना (${marathiMonths[lastMonthDate.getMonth()]})`;
+    } else if (period === 'multi-month') {
+      if (dateFrom) {
+        filteredTx = filteredTx.filter(t => t.date >= dateFrom);
+        filteredExp = filteredExp.filter(e => e.date >= dateFrom);
+      }
+      if (dateTo) {
+        filteredTx = filteredTx.filter(t => t.date <= dateTo);
+        filteredExp = filteredExp.filter(e => e.date <= dateTo);
+      }
+      periodLabel = `${dateFrom ? formatDateDDMMYYYY(dateFrom) : ''} ते ${dateTo ? formatDateDDMMYYYY(dateTo) : ''}`;
+    } else if (period === 'all-time') {
+      periodLabel = 'एकूण सर्व कालावधी (All Time)';
+    }
+  }
 
   let totalIncome = 0;
   let cashIncome = 0;
@@ -857,19 +1210,20 @@ function updateMetricsDashboard() {
   let cashCount = 0;
   let upiCount = 0;
 
-  todayTx.forEach(t => {
+  filteredTx.forEach(t => {
     totalIncome += Number(t.totalAmount || 0);
-    if (t.paymentMode.includes('रोख') || t.paymentMode.includes('Cash')) {
+    const pMode = (t.paymentMode || '');
+    if (pMode.includes('रोख') || pMode.includes('Cash')) {
       cashIncome += Number(t.totalAmount || 0);
       cashCount++;
-    } else if (t.paymentMode.includes('युपीआय') || t.paymentMode.includes('UPI')) {
+    } else if (pMode.includes('युपीआय') || pMode.includes('UPI')) {
       upiIncome += Number(t.totalAmount || 0);
       upiCount++;
     }
   });
 
   let totalExpenses = 0;
-  todayExp.forEach(e => {
+  filteredExp.forEach(e => {
     totalExpenses += Number(e.amount || 0);
   });
 
@@ -877,11 +1231,11 @@ function updateMetricsDashboard() {
   let netBalance = (cashIncome + upiIncome) - totalExpenses;
   let drawerCash = Math.max(0, cashIncome - totalExpenses);
 
-  // Top Metrics
+  // Top Metrics Elements
   const elTotal = document.getElementById('metric-today-total');
   if (elTotal) elTotal.textContent = totalIncome.toLocaleString('en-IN');
   const elTotalLabel = document.getElementById('metric-today-count-label');
-  if (elTotalLabel) elTotalLabel.textContent = `${todayTx.length} व्यवहार आज`;
+  if (elTotalLabel) elTotalLabel.textContent = `${filteredTx.length} व्यवहार • ${periodLabel}`;
 
   const elCash = document.getElementById('metric-today-cash');
   if (elCash) elCash.textContent = cashIncome.toLocaleString('en-IN');
@@ -896,13 +1250,13 @@ function updateMetricsDashboard() {
   const elExp = document.getElementById('metric-today-expense');
   if (elExp) elExp.textContent = totalExpenses.toLocaleString('en-IN');
   const elExpCount = document.getElementById('metric-today-expense-count');
-  if (elExpCount) elExpCount.textContent = `${todayExp.length} खर्च नोंदी`;
+  if (elExpCount) elExpCount.textContent = `${filteredExp.length} खर्च नोंदी`;
 
   const elBal = document.getElementById('metric-today-balance');
   if (elBal) elBal.textContent = netBalance.toLocaleString('en-IN');
 
   const elCust = document.getElementById('metric-today-customers');
-  if (elCust) elCust.textContent = todayTx.length;
+  if (elCust) elCust.textContent = filteredTx.length;
 
   // Quick Card in Tab 1
   const qCash = document.getElementById('quick-cash-total');
@@ -921,7 +1275,12 @@ function renderRecentQuickList() {
 
   const transactions = getStoredTransactions();
   const today = getTodayDateString();
-  const todayTx = transactions.filter(t => t.date === today).slice(0, 5);
+  
+  let todayTx = transactions.filter(t => t.date === today);
+  if (currentUser && currentUser.role === 'operator') {
+    todayTx = todayTx.filter(t => t.center === currentUser.center);
+  }
+  todayTx = todayTx.slice(0, 5);
 
   if (todayTx.length === 0) {
     container.innerHTML = `<div class="empty-state-text">अद्याप आज कोणतीही नोंद झालेली नाही.</div>`;
@@ -967,8 +1326,17 @@ function filterRegisterRecords() {
 
   const today = getTodayDateString();
   const now = new Date();
+  const centerFilter = document.getElementById('register-center-filter')?.value || 'all';
 
   const filtered = transactions.filter(t => {
+    // Role-based security check for operator
+    if (currentUser && currentUser.role === 'operator') {
+      if (t.date !== today) return false;
+      if (t.center !== currentUser.center) return false;
+    } else if (currentUser && currentUser.role === 'admin') {
+      if (centerFilter !== 'all' && t.center !== centerFilter) return false;
+    }
+
     // 1. Search Query
     if (query) {
       const matchName = (t.customerName || '').toLowerCase().includes(query);
@@ -1080,6 +1448,10 @@ function renderRegisterTable(list) {
         <small class="text-muted d-block">${escapeHtml(t.genderAge || '')}</small>
       </td>
       <td>
+        <strong style="color: #67e8f9;">${escapeHtml(t.operatorName || (t.center === 'WCD' ? 'Sakshi Sawant' : 'Gauravi Gawade'))}</strong>
+        <small class="badge-tag cyan d-block text-xs" style="margin-top: 3px; font-size: 0.72rem;">${escapeHtml(t.center || 'DIT (Maha IT)')}</small>
+      </td>
+      <td>
         <a href="tel:${t.mobile}" class="tel-link"><i class="fas fa-phone-alt"></i> ${t.mobile}</a>
       </td>
       <td><code>${escapeHtml(t.aadhaarEid || '-')}</code></td>
@@ -1098,12 +1470,13 @@ function renderRegisterTable(list) {
           <button class="btn-icon whatsapp" title="WhatsApp वर पाठवा" onclick="shareRecordWhatsAppDirect('${t.id}')">
             <i class="fab fa-whatsapp"></i>
           </button>
+          ${currentUser && currentUser.role === 'admin' ? `
           <button class="btn-icon edit" title="संपादित करा" onclick="editTransactionRecord('${t.id}')">
             <i class="fas fa-edit"></i>
           </button>
           <button class="btn-icon delete" title="हटवा (Admin PIN Required)" onclick="requestDeleteTransaction('${t.id}')">
             <i class="fas fa-trash"></i>
-          </button>
+          </button>` : ''}
         </div>
       </td>
     </tr>
@@ -1163,6 +1536,10 @@ function editTransactionRecord(id) {
 }
 
 function deleteTransactionRecord(id) {
+  if (!currentUser || currentUser.role !== 'admin') {
+    alert('⚠️ ऑपरेटरला डेटा हटवण्याची (Delete) परवानगी नाही! फक्त ॲडमीनच डेटा हटवू शकतात.');
+    return;
+  }
   if (!confirm('तुम्हाला ही नोंद कायमची हटवायची आहे का?')) return;
   playSound('delete');
   let transactions = getStoredTransactions();
@@ -1202,9 +1579,10 @@ function renderExpensesList() {
       <td style="text-align: right;"><strong class="text-crimson font-lg">₹${e.amount}</strong></td>
       <td><span class="badge badge-secondary">${escapeHtml(e.paymentMode)}</span></td>
       <td style="text-align: center;">
+        ${currentUser && currentUser.role === 'admin' ? `
         <button class="btn-icon delete" title="हटवा (Admin PIN Required)" onclick="requestDeleteExpense('${e.id}')">
           <i class="fas fa-trash"></i>
-        </button>
+        </button>` : '<span class="text-muted text-xs">-</span>'}
       </td>
     </tr>
   `).join('');
@@ -1213,23 +1591,143 @@ function renderExpensesList() {
 // =============================================================================
 // 11. DAY-END REPORT & TALEBAND (ताळेबंद)
 // =============================================================================
+async function deleteDayData() {
+  if (!currentUser || currentUser.role !== 'admin') {
+    alert("⚠️ ऑपरेटरला डेटा हटवण्याची (Delete) परवानगी नाही! फक्त अधिकृत ॲडमीनच डेटा हटवू शकतात.");
+    return;
+  }
+  const dateInput = document.getElementById('report-date-select');
+  if (!dateInput || !dateInput.value) {
+    alert("कृपया दिनांक निवडा!");
+    return;
+  }
+  const selectedDate = dateInput.value;
+  if (!confirm(`तुम्हाला खात्री आहे का? तुम्ही ${formatDateDDMMYYYY(selectedDate)} या दिवसाचा सर्व डेटा (नोंदी आणि खर्च) कायमचा हटवू इच्छिता?`)) {
+    return;
+  }
+  
+  // 1. Transactions
+  let txs = getStoredTransactions();
+  const txsToDelete = txs.filter(t => t.date === selectedDate);
+  txs = txs.filter(t => t.date !== selectedDate);
+  saveStoredTransactions(txs);
+  
+  // 2. Expenses
+  let exp = getStoredExpenses();
+  const expToDelete = exp.filter(e => e.date === selectedDate);
+  exp = exp.filter(e => e.date !== selectedDate);
+  saveStoredExpenses(exp);
+  
+  // 3. Summaries
+  let summaries = [];
+  try {
+    summaries = JSON.parse(localStorage.getItem('ask_daily_summaries') || '[]');
+  } catch(e){}
+  const sumToDelete = summaries.filter(s => s.date === selectedDate);
+  summaries = summaries.filter(s => s.date !== selectedDate);
+  localStorage.setItem('ask_daily_summaries', JSON.stringify(summaries));
+  
+  // 4. Firebase Deletion (if connected)
+  if (isFirebaseConnected && db) {
+    try {
+      const batch = db.batch();
+      txsToDelete.forEach(t => {
+        const ref = db.collection('aadhaar_transactions').doc(t.id);
+        batch.delete(ref);
+      });
+      expToDelete.forEach(e => {
+        const ref = db.collection('aadhaar_expenses').doc(e.id);
+        batch.delete(ref);
+      });
+      sumToDelete.forEach(s => {
+        const ref = db.collection('aadhaar_daily_summaries').doc(s.id);
+        batch.delete(ref);
+      });
+      await batch.commit();
+    } catch (e) {
+      console.error("Error deleting from Firebase:", e);
+    }
+  }
+  
+  playSound('delete');
+  alert("✅ या दिवसाचा सर्व डेटा यशस्वीरित्या हटवण्यात आला आहे.");
+  refreshAllDataViews();
+}
+
+function handleReportScopeChange() {
+  const scope = document.getElementById('report-scope-select')?.value || 'date';
+  const dateWrap = document.getElementById('report-date-wrap');
+  const delBtn = document.getElementById('btn-delete-day-data');
+  if (dateWrap) {
+    dateWrap.style.display = scope === 'date' ? 'flex' : 'none';
+  }
+  if (delBtn) {
+    delBtn.style.display = scope === 'date' ? 'inline-block' : 'none';
+  }
+  generateDailyReport();
+}
+
 function generateDailyReport() {
   const repDateInput = document.getElementById('report-date-select');
   const targetDate = repDateInput?.value || getTodayDateString();
+  const scope = document.getElementById('report-scope-select')?.value || 'date';
+  const centerSelect = document.getElementById('report-center-select')?.value || 'all';
 
-  const settings = getKendraSettings();
-  const transactions = getStoredTransactions().filter(t => t.date === targetDate);
-  const expenses = getStoredExpenses().filter(e => e.date === targetDate);
+  let allTx = getStoredTransactions();
+  let allExp = getStoredExpenses();
+
+  // Filter by center
+  if (currentUser && currentUser.role === 'operator') {
+    allTx = allTx.filter(t => t.center === currentUser.center);
+    allExp = allExp.filter(e => e.center === currentUser.center);
+  } else if (centerSelect !== 'all') {
+    allTx = allTx.filter(t => t.center === centerSelect);
+    allExp = allExp.filter(e => e.center === centerSelect);
+  }
+
+  let transactions = [];
+  let expenses = [];
+  let dateDisplayStr = '--';
+
+  const now = new Date();
+
+  if (scope === 'all') {
+    transactions = allTx;
+    expenses = allExp;
+    dateDisplayStr = 'एकूण सर्व अहवाल (All Time Total)';
+  } else if (scope === 'month') {
+    const monthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    transactions = allTx.filter(t => (t.date || '').startsWith(monthPrefix));
+    expenses = allExp.filter(e => (e.date || '').startsWith(monthPrefix));
+    const marathiMonths = ['जानेवारी', 'फेब्रुवारी', 'मार्च', 'एप्रिल', 'मे', 'जून', 'जुलै', 'ऑगस्ट', 'सप्टेंबर', 'ऑक्टोबर', 'नोव्हेंबर', 'डिसेंबर'];
+    const monthName = marathiMonths[now.getMonth()] + ' ' + now.getFullYear();
+    dateDisplayStr = `चालू महिना (${monthName})`;
+  } else {
+    transactions = allTx.filter(t => t.date === targetDate);
+    expenses = allExp.filter(e => e.date === targetDate);
+    dateDisplayStr = formatDateDDMMYYYY(targetDate);
+  }
+
+  const settings = getKendraSettings(centerSelect !== 'all' ? centerSelect : undefined);
 
   // Headers
   const dateEl = document.getElementById('rep-date-text');
-  if (dateEl) dateEl.textContent = formatDateDDMMYYYY(targetDate);
+  if (dateEl) dateEl.textContent = dateDisplayStr;
+
   const kEl = document.getElementById('rep-kendra-name');
-  if (kEl) kEl.textContent = settings.kendraName;
+  if (kEl) {
+    kEl.textContent = centerSelect === 'all' ? 'सर्व आधार केंद्रे (DIT + WCD Combined)' : settings.kendraName;
+  }
+
   const opEl = document.getElementById('rep-operator-name');
-  if (opEl) opEl.textContent = settings.operatorName;
+  if (opEl) {
+    opEl.textContent = centerSelect === 'all' ? 'Admin (सर्व ऑपरेटर)' : settings.operatorName;
+  }
+
   const stnEl = document.getElementById('rep-station-id');
-  if (stnEl) stnEl.textContent = settings.stationId;
+  if (stnEl) {
+    stnEl.textContent = centerSelect === 'all' ? 'All Stations (40068 / 73016)' : settings.stationId;
+  }
 
   // Services aggregation
   const serviceCounts = {};
@@ -1245,9 +1743,9 @@ function generateDailyReport() {
     serviceCounts[sName].revenue += Number(t.totalAmount || 0);
 
     grossIncome += Number(t.totalAmount || 0);
-    if (t.paymentMode.includes('रोख') || t.paymentMode.includes('Cash')) cashTotal += Number(t.totalAmount || 0);
-    else if (t.paymentMode.includes('युपीआय') || t.paymentMode.includes('UPI')) upiTotal += Number(t.totalAmount || 0);
-    else if (t.paymentMode.includes('उधारी') || t.paymentMode.includes('Pending')) pendingTotal += Number(t.totalAmount || 0);
+    if ((t.paymentMode || '').includes('रोख') || (t.paymentMode || '').includes('Cash')) cashTotal += Number(t.totalAmount || 0);
+    else if ((t.paymentMode || '').includes('युपीआय') || (t.paymentMode || '').includes('UPI')) upiTotal += Number(t.totalAmount || 0);
+    else if ((t.paymentMode || '').includes('उधारी') || (t.paymentMode || '').includes('Pending')) pendingTotal += Number(t.totalAmount || 0);
   });
 
   // Render Service Breakdown
@@ -1255,7 +1753,7 @@ function generateDailyReport() {
   if (servTbody) {
     const keys = Object.keys(serviceCounts);
     if (keys.length === 0) {
-      servTbody.innerHTML = `<tr><td colspan="3" class="text-center py-2 text-muted">या तारखेला कोणतीही जमा नाही.</td></tr>`;
+      servTbody.innerHTML = `<tr><td colspan="3" class="text-center py-2 text-muted">कोणतीही जमा नोंद सापडली नाही.</td></tr>`;
     } else {
       servTbody.innerHTML = keys.map(k => `
         <tr>
@@ -1283,14 +1781,14 @@ function generateDailyReport() {
   const expTbody = document.getElementById('rep-expenses-breakdown-tbody');
   if (expTbody) {
     if (expenses.length === 0) {
-      expTbody.innerHTML = `<tr><td colspan="3" class="text-center py-2 text-muted">या तारखेला कोणताही खर्च नोंदवलेला नाही.</td></tr>`;
+      expTbody.innerHTML = `<tr><td colspan="3" class="text-center py-2 text-muted">कोणताही खर्च नोंदवलेला नाही.</td></tr>`;
     } else {
       expTbody.innerHTML = expenses.map(e => {
         totalExpense += Number(e.amount || 0);
         return `
           <tr>
-            <td>${escapeHtml(e.category)}</td>
-            <td>${escapeHtml(e.description)}</td>
+            <td>${escapeHtml(e.category || 'खर्च')}</td>
+            <td>${escapeHtml(e.note || e.description || '-')}</td>
             <td class="text-right text-crimson">₹${Number(e.amount).toLocaleString('en-IN')}</td>
           </tr>
         `;
@@ -1613,6 +2111,18 @@ function closeModal(id) {
   playSound('click');
   const m = document.getElementById(id);
   if (m) m.classList.remove('active');
+}
+
+function showSuccessModal(message, title = '🎉 अभिनंदन! डेटा सेव्ह झाला') {
+  const modal = document.getElementById('app-success-modal');
+  const titleEl = document.getElementById('app-success-title');
+  const msgEl = document.getElementById('app-success-message');
+
+  if (titleEl) titleEl.innerHTML = title;
+  if (msgEl) msgEl.innerHTML = message;
+
+  playSound('success');
+  openModal('app-success-modal');
 }
 
 function handleModalBackdropClick(event, id) {
@@ -2150,10 +2660,19 @@ function displayZipPreview(records, fileName) {
   const maxDate = dates[dates.length - 1] || '--';
   const dateRangeStr = minDate === maxDate ? minDate : `${minDate} ते ${maxDate}`;
 
+  const isOperator = currentUser && currentUser.role === 'operator';
+
   if (countBadge) countBadge.textContent = `${records.length} नोंदी`;
   if (statCount) statCount.textContent = records.length;
-  if (statAmount) statAmount.textContent = `₹${totalAmount}`;
+  
+  const amtContainer = document.getElementById('preview-stat-amount-container');
+  if (amtContainer) amtContainer.style.display = isOperator ? 'none' : 'block';
+  if (statAmount) statAmount.textContent = isOperator ? '₹--' : `₹${totalAmount}`;
+  
   if (statDates) statDates.textContent = dateRangeStr;
+
+  const feeCol = document.getElementById('preview-fee-col');
+  if (feeCol) feeCol.style.display = isOperator ? 'none' : 'table-cell';
 
   if (tbody) {
     tbody.innerHTML = records.slice(0, 10).map((r, i) => `
@@ -2162,14 +2681,14 @@ function displayZipPreview(records, fileName) {
         <td>${escapeHtml(formatDateDDMMYYYY(r.date))} ${escapeHtml(r.time)}</td>
         <td><strong>${escapeHtml(r.customerName)}</strong><br/><span class="text-xs text-muted">EID: ${escapeHtml(r.aadhaarEid)}</span></td>
         <td><span class="badge-tag gold text-xs">${escapeHtml(r.serviceName)}</span></td>
-        <td style="text-align: right; font-weight: bold; color: #fbbf24;">₹${r.totalAmount}</td>
+        ${isOperator ? '' : `<td style="text-align: right; font-weight: bold; color: #fbbf24;">₹${r.totalAmount}</td>`}
       </tr>
     `).join('');
 
     if (records.length > 10) {
       tbody.innerHTML += `
         <tr>
-          <td colspan="5" class="text-center text-muted text-xs py-2">
+          <td colspan="${isOperator ? '4' : '5'}" class="text-center text-muted text-xs py-2">
             ... आणि आणखी ${records.length - 10} नोंदी समाविष्ट आहेत.
           </td>
         </tr>
@@ -2177,7 +2696,11 @@ function displayZipPreview(records, fileName) {
     }
   }
 
-  showZipStatusAlert(`✅ <strong>${records.length} नोंदी</strong> यशस्वीरित्या वाचल्या आहेत (एकूण शुल्क: ₹${totalAmount}). कृपया खालील तपशील तपासून "सर्व नोंदी जोडा" बटण दाबा.`, 'success');
+  if (isOperator) {
+    showZipStatusAlert(`✅ <strong>${records.length} नोंदी</strong> यशस्वीरित्या वाचल्या आहेत. कृपया खालील तपशील भरून "सर्व नोंदी जोडा" बटण दाबा.`, 'success');
+  } else {
+    showZipStatusAlert(`✅ <strong>${records.length} नोंदी</strong> यशस्वीरित्या वाचल्या आहेत (एकूण शुल्क: ₹${totalAmount}). कृपया खालील तपशील तपासून "सर्व नोंदी जोडा" बटण दाबा.`, 'success');
+  }
 
   if (previewCard) previewCard.style.display = 'block';
   playSound('success');
@@ -2189,11 +2712,41 @@ async function confirmAndImportParsedRecords() {
     return;
   }
 
+  const dateInput = document.getElementById('operator-report-date');
+  const cashInput = document.getElementById('operator-cash-collection');
+  const onlineInput = document.getElementById('operator-online-collection');
+  const expInput = document.getElementById('operator-expenses');
+  const expNoteInput = document.getElementById('operator-expense-note');
+
+  let cashAmt = 0;
+  let onlineAmt = 0;
+  let expAmt = 0;
+  let reportDate = getTodayDateString();
+
+  if (currentUser && currentUser.role === 'operator') {
+    if (!dateInput.value || !cashInput.value || !onlineInput.value) {
+      alert('कृपया रिपोर्टची तारीख, रोख रक्कम आणि ऑनलाईन कलेक्शन भरणे अनिवार्य आहे!');
+      return;
+    }
+    reportDate = dateInput.value;
+    cashAmt = parseFloat(cashInput.value) || 0;
+    onlineAmt = parseFloat(onlineInput.value) || 0;
+    expAmt = parseFloat(expInput.value) || 0;
+  }
+
   const btnConfirm = event ? event.target : null;
-  if (btnConfirm) {
+  if (btnConfirm && btnConfirm.tagName === 'BUTTON') {
     btnConfirm.disabled = true;
     btnConfirm.innerHTML = '<i class="fas fa-spinner fa-spin"></i> सेव्ह व सिंक होत आहे...';
   }
+
+  parsedReportTransactions.forEach(tx => {
+    tx.operatorName = currentUser ? currentUser.name : 'Admin';
+    tx.center = currentUser ? currentUser.center : 'HQ';
+    if (currentUser && currentUser.role === 'operator' && reportDate) {
+      tx.date = reportDate;
+    }
+  });
 
   const currentList = getStoredTransactions();
   const combined = [...parsedReportTransactions, ...currentList];
@@ -2201,6 +2754,45 @@ async function confirmAndImportParsedRecords() {
   // Sort descending by timestamp
   combined.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
   saveStoredTransactions(combined);
+
+  // Save Operator Inputs
+  if (currentUser && currentUser.role === 'operator') {
+    if (expAmt > 0) {
+      const expenses = getStoredExpenses();
+      const newExp = {
+        id: 'EXP-' + Date.now(),
+        date: reportDate,
+        amount: expAmt,
+        category: 'इतर (Other)',
+        note: (expNoteInput && expNoteInput.value) ? expNoteInput.value : 'Operator Entry',
+        center: currentUser.center,
+        operator: currentUser.name,
+        timestamp: Date.now()
+      };
+      expenses.push(newExp);
+      saveStoredExpenses(expenses);
+      if (isFirebaseConnected && db) {
+        db.collection('aadhaar_expenses').doc(newExp.id).set(newExp).catch(console.error);
+      }
+    }
+
+    const summaries = JSON.parse(localStorage.getItem('ask_daily_summaries') || '[]');
+    const summary = {
+      id: 'SUM-' + Date.now(),
+      date: reportDate,
+      center: currentUser.center,
+      operator: currentUser.name,
+      cashReported: cashAmt,
+      onlineReported: onlineAmt,
+      expenseReported: expAmt,
+      timestamp: Date.now()
+    };
+    summaries.push(summary);
+    localStorage.setItem('ask_daily_summaries', JSON.stringify(summaries));
+    if (isFirebaseConnected && db) {
+      db.collection('daily_summaries').doc(summary.id).set(summary).catch(console.error);
+    }
+  }
 
   // Sync to Firebase Cloud Firestore
   if (isFirebaseConnected && db) {
@@ -2215,12 +2807,21 @@ async function confirmAndImportParsedRecords() {
     saveStoredTransactions(combined);
   }
 
+  const savedCount = parsedReportTransactions.length;
+  
+  // Close modal and reset
+  closeModal('zip-import-modal');
+  const modalZip = document.getElementById('zip-import-modal');
+  if (modalZip) modalZip.classList.remove('active');
+  resetZipImportModal();
+
   refreshAllDataViews();
   playSound('success');
-  alert(`🎉 अभिनंदन! UIDAI रिपोर्टमधील ${parsedReportTransactions.length} नोंदी दैनिक नोंदवहीत व Firebase वर यशस्वीरित्या सेव्ह झाल्या आहेत!`);
+  showSuccessModal(`UIDAI रिपोर्टमधील <strong>${savedCount} नोंदी</strong> दैनिक नोंदवहीत व Firebase वर यशस्वीरित्या सेव्ह झाल्या आहेत!`, '🎉 अभिनंदन! रिपोर्ट सेव्ह झाला');
 
-  closeModal('zip-import-modal');
-  openTab('register-tab');
+  if (currentUser && currentUser.role === 'admin') {
+    openTab('register-tab');
+  }
 }
 
 function showZipStatusAlert(msg, type = 'info') {
@@ -2342,6 +2943,20 @@ function resetMainUploadForm() {
   const previewCard = document.getElementById('main-zip-preview');
   if (previewCard) previewCard.style.display = 'none';
 
+  closeModal('main-upload-preview-modal');
+
+  const opDetails = document.getElementById('main-operator-additional-details');
+  if (opDetails) opDetails.style.display = 'none';
+
+  const cashInput = document.getElementById('main-operator-cash-collection');
+  if (cashInput) cashInput.value = '';
+  const onlineInput = document.getElementById('main-operator-online-collection');
+  if (onlineInput) onlineInput.value = '';
+  const expInput = document.getElementById('main-operator-expenses');
+  if (expInput) expInput.value = '';
+  const expNoteInput = document.getElementById('main-operator-expense-note');
+  if (expNoteInput) expNoteInput.value = '';
+
   const btnExtract = document.getElementById('main-btn-extract');
   if (btnExtract) {
     btnExtract.disabled = false;
@@ -2436,6 +3051,7 @@ function parseAndPreviewMainCSV(csvText, sourceFileName) {
 
   const mappedRecords = [];
   const todayStr = getTodayDateString();
+  const userSelectedDate = document.getElementById('main-report-date') ? document.getElementById('main-report-date').value : '';
 
   rows.forEach((row, idx) => {
     const getVal = (...keys) => {
@@ -2463,8 +3079,8 @@ function parseAndPreviewMainCSV(csvText, sourceFileName) {
     // 1. EXTRACT EXACT AMOUNT FROM 'TOTAL_AMOUNT' COLUMN
     const extractedFee = extractTotalAmountFromRow(row);
 
-    let normalizedDate = todayStr;
-    if (rawDate) {
+    let normalizedDate = userSelectedDate || todayStr;
+    if (!userSelectedDate && rawDate) {
       if (/^\d{4}-\d{2}-\d{2}$/.test(rawDate)) {
         normalizedDate = rawDate;
       } else if (/^\d{2}[-\/]\d{2}[-\/]\d{4}$/.test(rawDate)) {
@@ -2480,6 +3096,14 @@ function parseAndPreviewMainCSV(csvText, sourceFileName) {
 
     const txId = 'ASK-IMP-' + Date.now() + '-' + (idx + 1);
     const tokenNo = '#' + (200 + idx);
+
+    const chosenCenter = (currentUser && currentUser.role === 'operator')
+      ? currentUser.center
+      : (document.getElementById('main-upload-center-select')?.value || 'DIT (Maha IT)');
+    
+    const chosenOperator = (currentUser && currentUser.role === 'operator')
+      ? currentUser.name
+      : (chosenCenter === 'WCD' ? 'Sakshi Sawant' : 'Gauravi Gawade');
 
     mappedRecords.push({
       id: txId,
@@ -2498,6 +3122,8 @@ function parseAndPreviewMainCSV(csvText, sourceFileName) {
       paymentMode: 'रोख (Cash)',
       status: 'पूर्ण झाले (Completed)',
       notes: `UIDAI रिपोर्ट इंपोर्ट (${sourceFileName})`,
+      operatorName: chosenOperator,
+      center: chosenCenter,
       timestamp: Date.now() - (rows.length - idx) * 60000,
       syncedToFirebase: false
     });
@@ -2521,10 +3147,22 @@ function displayMainZipPreview(records, sourceFileName) {
   const maxDate = dates[dates.length - 1] ? formatDateDDMMYYYY(dates[dates.length - 1]) : '--';
   const dateRangeStr = minDate === maxDate ? minDate : `${minDate} ते ${maxDate}`;
 
+  const isOperator = currentUser && currentUser.role === 'operator';
+
   if (countBadge) countBadge.textContent = `${records.length} नोंदी`;
   if (statCount) statCount.textContent = records.length;
-  if (statAmount) statAmount.textContent = `₹${totalAmount}`;
+  
+  const amtContainer = document.getElementById('main-stat-amount-container');
+  if (amtContainer) amtContainer.style.display = isOperator ? 'none' : 'block';
+  if (statAmount) statAmount.textContent = isOperator ? '₹--' : `₹${totalAmount}`;
+  
   if (statDates) statDates.textContent = dateRangeStr;
+
+  const feeCol = document.getElementById('main-preview-fee-col');
+  if (feeCol) feeCol.style.display = isOperator ? 'none' : 'table-cell';
+
+  const opDetails = document.getElementById('main-operator-additional-details');
+  if (opDetails) opDetails.style.display = isOperator ? 'block' : 'none';
 
   if (tbody) {
     tbody.innerHTML = records.slice(0, 10).map((r, i) => `
@@ -2532,15 +3170,16 @@ function displayMainZipPreview(records, sourceFileName) {
         <td>${i + 1}</td>
         <td>${escapeHtml(formatDateDDMMYYYY(r.date))} ${escapeHtml(r.time)}</td>
         <td><strong>${escapeHtml(r.customerName)}</strong><br/><span class="text-xs text-muted">EID: ${escapeHtml(r.aadhaarEid)}</span></td>
+        <td><strong style="color: #67e8f9;">${escapeHtml(r.operatorName)}</strong><br/><small class="badge-tag cyan text-xs" style="font-size: 0.72rem;">${escapeHtml(r.center)}</small></td>
         <td><span class="badge-tag gold text-xs">${escapeHtml(r.serviceName)}</span></td>
-        <td style="text-align: right; font-weight: bold; color: #fbbf24;">₹${r.totalAmount}</td>
+        ${isOperator ? '' : `<td style="text-align: right; font-weight: bold; color: #fbbf24;">₹${r.totalAmount}</td>`}
       </tr>
     `).join('');
 
     if (records.length > 10) {
       tbody.innerHTML += `
         <tr>
-          <td colspan="5" class="text-center text-muted text-xs py-2">
+          <td colspan="${isOperator ? '5' : '6'}" class="text-center text-muted text-xs py-2">
             ... आणि आणखी ${records.length - 10} नोंदी समाविष्ट आहेत.
           </td>
         </tr>
@@ -2548,10 +3187,24 @@ function displayMainZipPreview(records, sourceFileName) {
     }
   }
 
-  showMainZipAlert(`✅ <strong>${records.length} नोंदी</strong> यशस्वीरित्या वाचल्या आहेत (एकूण शुल्क: ₹${totalAmount}). खालील हिरवे बटण दाबून सेव्ह करा.`, 'success');
+  if (isOperator) {
+    showMainZipAlert(`✅ <strong>${records.length} नोंदी</strong> वाचल्या आहेत (दिनांक: ${dateRangeStr}). कृपया खालील रोख/ऑनलाईन हिशोब भरून सेव्ह करा.`, 'success');
+  } else {
+    showMainZipAlert(`✅ <strong>${records.length} नोंदी</strong> यशस्वीरित्या वाचल्या आहेत (दिनांक: ${dateRangeStr}, एकूण शुल्क: ₹${totalAmount}). खालील हिरवे बटण दाबून सेव्ह करा.`, 'success');
+  }
 
-  if (previewCard) previewCard.style.display = 'block';
+  // Open in Popup Modal Window
+  openModal('main-upload-preview-modal');
   playSound('success');
+}
+
+function reuploadMainReport() {
+  closeModal('main-upload-preview-modal');
+  resetMainUploadForm();
+  const fileInput = document.getElementById('main-zip-file-input');
+  if (fileInput) {
+    fileInput.click();
+  }
 }
 
 async function confirmMainImportedRecords() {
@@ -2560,16 +3213,93 @@ async function confirmMainImportedRecords() {
     return;
   }
 
+  const userSelectedDate = document.getElementById('main-report-date') ? document.getElementById('main-report-date').value : '';
+  const effectiveDate = userSelectedDate || getTodayDateString();
+
+  const cashInput = document.getElementById('main-operator-cash-collection');
+  const onlineInput = document.getElementById('main-operator-online-collection');
+  const expInput = document.getElementById('main-operator-expenses');
+  const expNoteInput = document.getElementById('main-operator-expense-note');
+
+  let cashAmt = 0;
+  let onlineAmt = 0;
+  let expAmt = 0;
+
+  if (currentUser && currentUser.role === 'operator') {
+    if (!cashInput.value || !onlineInput.value) {
+      alert('कृपया रोख रक्कम (Cash) आणि ऑनलाईन (UPI) कलेक्शन भरणे अनिवार्य आहे!');
+      return;
+    }
+    cashAmt = parseFloat(cashInput.value) || 0;
+    onlineAmt = parseFloat(onlineInput.value) || 0;
+    expAmt = parseFloat(expInput.value) || 0;
+  }
+
   const btnConfirm = document.getElementById('main-btn-save-cloud');
   if (btnConfirm) {
     btnConfirm.disabled = true;
     btnConfirm.innerHTML = '<i class="fas fa-spinner fa-spin"></i> सेव्ह व सिंक होत आहे...';
   }
 
+  const chosenCenter = (currentUser && currentUser.role === 'operator')
+    ? currentUser.center
+    : (document.getElementById('main-upload-center-select')?.value || 'DIT (Maha IT)');
+  
+  const chosenOperator = (currentUser && currentUser.role === 'operator')
+    ? currentUser.name
+    : (chosenCenter === 'WCD' ? 'Sakshi Sawant' : 'Gauravi Gawade');
+
+  mainParsedReportTransactions.forEach(tx => {
+    tx.operatorName = chosenOperator;
+    tx.center = chosenCenter;
+    if (effectiveDate) {
+      tx.date = effectiveDate;
+    }
+  });
+
   const currentList = getStoredTransactions();
   const combined = [...mainParsedReportTransactions, ...currentList];
   combined.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
   saveStoredTransactions(combined);
+
+  // Save Operator Inputs if operator
+  if (currentUser && currentUser.role === 'operator') {
+    if (expAmt > 0) {
+      const expenses = getStoredExpenses();
+      const newExp = {
+        id: 'EXP-' + Date.now(),
+        date: effectiveDate,
+        amount: expAmt,
+        category: 'इतर (Other)',
+        note: (expNoteInput && expNoteInput.value) ? expNoteInput.value : 'Operator Entry',
+        center: currentUser.center,
+        operator: currentUser.name,
+        timestamp: Date.now()
+      };
+      expenses.push(newExp);
+      saveStoredExpenses(expenses);
+      if (isFirebaseConnected && db) {
+        db.collection('aadhaar_expenses').doc(newExp.id).set(newExp).catch(console.error);
+      }
+    }
+
+    const summaries = JSON.parse(localStorage.getItem('ask_daily_summaries') || '[]');
+    const summary = {
+      id: 'SUM-' + Date.now(),
+      date: effectiveDate,
+      center: currentUser.center,
+      operator: currentUser.name,
+      cashReported: cashAmt,
+      onlineReported: onlineAmt,
+      expenseReported: expAmt,
+      timestamp: Date.now()
+    };
+    summaries.push(summary);
+    localStorage.setItem('ask_daily_summaries', JSON.stringify(summaries));
+    if (isFirebaseConnected && db) {
+      db.collection('daily_summaries').doc(summary.id).set(summary).catch(console.error);
+    }
+  }
 
   // Sync to Firebase Cloud Firestore
   if (isFirebaseConnected && db) {
@@ -2581,41 +3311,53 @@ async function confirmMainImportedRecords() {
         console.error('Error syncing imported record to Firebase:', e);
       }
     }
-    saveStoredTransactions(combined);
-  }
+  const savedCount = mainParsedReportTransactions.length;
 
+  // 1. Immediately Close the Preview Modal
+  closeModal('main-upload-preview-modal');
+  const modalEl = document.getElementById('main-upload-preview-modal');
+  if (modalEl) modalEl.classList.remove('active');
+
+  // 2. Reset form
+  resetMainUploadForm();
+
+  // 3. Refresh views and show green modal
   refreshAllDataViews();
   playSound('success');
-  alert(`🎉 अभिनंदन! UIDAI रिपोर्टमधील ${mainParsedReportTransactions.length} नोंदी दैनिक नोंदवहीत व Firebase वर यशस्वीरित्या सेव्ह झाल्या आहेत!`);
+  showSuccessModal(`UIDAI रिपोर्टमधील <strong>${savedCount} नोंदी</strong> (${formatDateDDMMYYYY(effectiveDate)}) दैनिक नोंदवहीत व Firebase वर यशस्वीरित्या सेव्ह झाल्या आहेत!`, '🎉 अभिनंदन! रिपोर्ट सेव्ह झाला');
 
-  resetMainUploadForm();
-  openTab('register-tab');
+  if (currentUser && currentUser.role === 'admin') {
+    openTab('register-tab');
+  }
 }
 
 function showMainZipAlert(msg, type = 'info') {
   const box = document.getElementById('main-zip-alert');
-  if (!box) return;
+  const modalAlert = document.getElementById('main-modal-alert');
+  
+  [box, modalAlert].forEach(el => {
+    if (!el) return;
+    el.style.display = 'block';
+    el.innerHTML = msg;
 
-  box.style.display = 'block';
-  box.innerHTML = msg;
-
-  if (type === 'error') {
-    box.style.background = 'rgba(239, 68, 68, 0.2)';
-    box.style.color = '#fca5a5';
-    box.style.border = '1px solid rgba(239, 68, 68, 0.4)';
-  } else if (type === 'success') {
-    box.style.background = 'rgba(16, 185, 129, 0.2)';
-    box.style.color = '#6ee7b7';
-    box.style.border = '1px solid rgba(16, 185, 129, 0.4)';
-  } else if (type === 'warning') {
-    box.style.background = 'rgba(245, 158, 11, 0.2)';
-    box.style.color = '#fcd34d';
-    box.style.border = '1px solid rgba(245, 158, 11, 0.4)';
-  } else {
-    box.style.background = 'rgba(59, 130, 246, 0.2)';
-    box.style.color = '#93c5fd';
-    box.style.border = '1px solid rgba(59, 130, 246, 0.4)';
-  }
+    if (type === 'error') {
+      el.style.background = 'rgba(239, 68, 68, 0.2)';
+      el.style.color = '#fca5a5';
+      el.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+    } else if (type === 'success') {
+      el.style.background = 'rgba(16, 185, 129, 0.2)';
+      el.style.color = '#6ee7b7';
+      el.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+    } else if (type === 'warning') {
+      el.style.background = 'rgba(245, 158, 11, 0.2)';
+      el.style.color = '#fcd34d';
+      el.style.border = '1px solid rgba(245, 158, 11, 0.4)';
+    } else {
+      el.style.background = 'rgba(59, 130, 246, 0.2)';
+      el.style.color = '#93c5fd';
+      el.style.border = '1px solid rgba(59, 130, 246, 0.4)';
+    }
+  });
 }
 
 // =============================================================================
@@ -2657,6 +3399,10 @@ function saveAdminPinChange(event) {
 }
 
 function requestDeleteTransaction(txId) {
+  if (!currentUser || currentUser.role !== 'admin') {
+    alert("⚠️ ऑपरेटरला डेटा हटवण्याची परवानगी नाही! फक्त ॲडमीनच डेटा हटवू शकतात.");
+    return;
+  }
   const transactions = getStoredTransactions();
   const target = transactions.find(t => t.id === txId);
   if (!target) return;
@@ -2671,6 +3417,10 @@ function requestDeleteTransaction(txId) {
 }
 
 function requestDeleteExpense(expId) {
+  if (!currentUser || currentUser.role !== 'admin') {
+    alert("⚠️ ऑपरेटरला खर्च हटवण्याची परवानगी नाही! फक्त ॲडमीनच खर्च हटवू शकतात.");
+    return;
+  }
   const expenses = getStoredExpenses();
   const target = expenses.find(e => e.id === expId);
   if (!target) return;
@@ -2685,6 +3435,10 @@ function requestDeleteExpense(expId) {
 }
 
 function requestClearAllData() {
+  if (!currentUser || currentUser.role !== 'admin') {
+    alert("⚠️ ऑपरेटरला डेटा हटवण्याची परवानगी नाही! फक्त ॲडमीनच डेटा हटवू शकतात.");
+    return;
+  }
   pendingAdminAction = {
     type: 'clear_all',
     targetId: 'all',

@@ -1527,3 +1527,29 @@ body.aadhar-standalone-app {
   align-items: flex-end;
   gap: 2px;
 }
+
+/* Aadhaar Logo Background Animation for Login */
+.login-bg-logo-anim {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background-image: url('https://upload.wikimedia.org/wikipedia/en/c/cf/Aadhaar_Logo.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.15;
+  z-index: 1;
+  animation: floatAadhaarLogo 8s ease-in-out infinite, pulseAadhaarLogo 4s ease-in-out infinite alternate;
+}
+
+@keyframes floatAadhaarLogo {
+  0% { transform: translateY(0) rotate(0deg) scale(1); }
+  33% { transform: translateY(-20px) rotate(2deg) scale(1.02); }
+  66% { transform: translateY(15px) rotate(-2deg) scale(0.98); }
+  100% { transform: translateY(0) rotate(0deg) scale(1); }
+}
+
+@keyframes pulseAadhaarLogo {
+  0% { filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.2)); }
+  100% { filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.6)); }
+}
