@@ -1947,26 +1947,50 @@ function parseAndPreviewCSV(csvText, sourceFileName) {
   const todayStr = getTodayDateString();
 
   rows.forEach((row, idx) => {
-    // Find keys ignoring case & special chars
+    // Robust Value Extractor
     const getVal = (...keys) => {
       for (let k of keys) {
         for (let rowKey in row) {
-          if (rowKey.toLowerCase().replace(/[^a-z0-9]/g, '') === k.toLowerCase().replace(/[^a-z0-9]/g, '')) {
-            return String(row[rowKey] || '').trim();
+          const cleanRowKey = rowKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+          const cleanK = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (cleanRowKey === cleanK || cleanRowKey.includes(cleanK) || rowKey.includes(k)) {
+            const val = String(row[rowKey] || '').trim();
+            if (val) return val;
           }
         }
       }
       return '';
     };
 
-    const name = getVal('residentname', 'name', 'customername', 'citizenname', 'resident', 'नाव') || `नागरिक #${idx + 1}`;
-    const eid = getVal('eid', 'enrolmentid', 'enrolmentno', 'aadhaarno', 'uid', 'packetid', 'आधार');
-    const rawDate = getVal('date', 'createddate', 'transactiondate', 'txdate', 'दिनांक') || todayStr;
-    const time = getVal('time', 'createdtime', 'txtime', 'वेळ') || '10:00';
-    const rawService = getVal('servicetype', 'service', 'updatetype', 'action', 'type', 'प्रकार') || '';
-    const rawFee = getVal('fee', 'amount', 'feecharged', 'charge', 'totalfee', 'रक्कम');
+    const name = getVal('residentname', 'resident_name', 'name', 'customername', 'citizenname', 'resident', 'नाव') || `नागरिक #${idx + 1}`;
+    const eid = getVal('eid', 'enrolmentid', 'enrolment_id', 'enrolmentno', 'enrolment_no', 'aadhaarno', 'uid', 'packetid', 'आधार');
+    const rawDate = getVal('date', 'createddate', 'created_date', 'transactiondate', 'txdate', 'दिनांक') || todayStr;
+    const time = getVal('time', 'createdtime', 'created_time', 'txtime', 'वेळ') || '10:00';
+    const rawService = getVal('servicetype', 'service_type', 'service', 'updatetype', 'action', 'type', 'प्रकार') || '';
     const mobile = getVal('mobile', 'phone', 'contact', 'mobilenumber', 'मोबाईल') || '9876543210';
     const gender = getVal('gender', 'genderage', 'sex') || 'वयस्क (Adult)';
+
+    // 1. EXTRACT EXACT AMOUNT / FEE FROM CSV ROW
+    let extractedFee = null;
+    for (let rowKey in row) {
+      const cleanKey = rowKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const isFeeCol = (
+        cleanKey === 'fee' || cleanKey === 'fees' || cleanKey === 'amount' || cleanKey === 'amt' ||
+        cleanKey === 'feecharged' || cleanKey === 'charges' || cleanKey === 'charge' ||
+        cleanKey === 'totalfee' || cleanKey === 'totalamount' || cleanKey === 'applicablefee' ||
+        cleanKey === 'govtfee' || cleanKey === 'residentfee' || cleanKey === 'collectedamount' ||
+        cleanKey === 'rate' || cleanKey === 'total' || cleanKey === 'price' || cleanKey === 'cost' ||
+        cleanKey.includes('fee') || cleanKey.includes('amount') || cleanKey.includes('charge') || cleanKey.includes('amt') ||
+        rowKey.includes('रक्कम') || rowKey.includes('शुल्क') || rowKey.includes('फी') || rowKey.includes('दर')
+      );
+      if (isFeeCol) {
+        const rawVal = String(row[rowKey] || '').replace(/[^0-9.-]/g, '').trim();
+        if (rawVal !== '' && !isNaN(parseFloat(rawVal))) {
+          extractedFee = parseFloat(rawVal);
+          break;
+        }
+      }
+    }
 
     // Normalize Date to YYYY-MM-DD
     let normalizedDate = todayStr;
@@ -1979,10 +2003,10 @@ function parseAndPreviewCSV(csvText, sourceFileName) {
       }
     }
 
-    // Determine Service Name & Standard UIDAI Rate
+    // Determine Service Name & Rate
     let finalService = 'डेमोग्राफिक अपडेट (नाव/पत्ता/DOB/मोबाईल)';
     let fee = 50;
-    const servLower = (rawService + ' ' + rawFee).toLowerCase();
+    const servLower = (rawService + ' ' + (extractedFee !== null ? extractedFee : '')).toLowerCase();
 
     if (servLower.includes('bio') || servLower.includes('बायो') || servLower.includes('photo') || servLower.includes('finger')) {
       finalService = 'बायोमेट्रिक अपडेट (फोटो + फिंगरप्रिंट + डोळे)';
@@ -1993,7 +2017,7 @@ function parseAndPreviewCSV(csvText, sourceFileName) {
     } else if (servLower.includes('new') || servLower.includes('नवीन') || servLower.includes('fresh')) {
       finalService = 'नवीन आधार नोंदणी (New Enrollment)';
       fee = 0;
-    } else if (servLower.includes('mbu') || servLower.includes('mandatory') || servLower.includes('अनिवार्य') || servLower.includes('5') && servLower.includes('15')) {
+    } else if (servLower.includes('mbu') || servLower.includes('mandatory') || servLower.includes('अनिवार्य') || (servLower.includes('5') && servLower.includes('15'))) {
       finalService = 'अनिवार्य बायोमेट्रिक अपडेट (५ व १५ वर्षे)';
       fee = 0;
     } else if (servLower.includes('print') || servLower.includes('प्रिंट') || servLower.includes('laminat')) {
@@ -2004,8 +2028,9 @@ function parseAndPreviewCSV(csvText, sourceFileName) {
       fee = 50;
     }
 
-    if (rawFee && !isNaN(parseFloat(rawFee))) {
-      fee = parseFloat(rawFee);
+    // If file has an exact amount specified, ALWAYS prioritize the file's amount!
+    if (extractedFee !== null) {
+      fee = extractedFee;
     }
 
     const txId = 'ASK-IMP-' + Date.now() + '-' + (idx + 1);
@@ -2342,22 +2367,46 @@ function parseAndPreviewMainCSV(csvText, sourceFileName) {
     const getVal = (...keys) => {
       for (let k of keys) {
         for (let rowKey in row) {
-          if (rowKey.toLowerCase().replace(/[^a-z0-9]/g, '') === k.toLowerCase().replace(/[^a-z0-9]/g, '')) {
-            return String(row[rowKey] || '').trim();
+          const cleanRowKey = rowKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+          const cleanK = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (cleanRowKey === cleanK || cleanRowKey.includes(cleanK) || rowKey.includes(k)) {
+            const val = String(row[rowKey] || '').trim();
+            if (val) return val;
           }
         }
       }
       return '';
     };
 
-    const name = getVal('residentname', 'name', 'customername', 'citizenname', 'resident', 'नाव') || `नागरिक #${idx + 1}`;
-    const eid = getVal('eid', 'enrolmentid', 'enrolmentno', 'aadhaarno', 'uid', 'packetid', 'आधार');
-    const rawDate = getVal('date', 'createddate', 'transactiondate', 'txdate', 'दिनांक') || todayStr;
-    const time = getVal('time', 'createdtime', 'txtime', 'वेळ') || '10:00';
-    const rawService = getVal('servicetype', 'service', 'updatetype', 'action', 'type', 'प्रकार') || '';
-    const rawFee = getVal('fee', 'amount', 'feecharged', 'charge', 'totalfee', 'रक्कम');
+    const name = getVal('residentname', 'resident_name', 'name', 'customername', 'citizenname', 'resident', 'नाव') || `नागरिक #${idx + 1}`;
+    const eid = getVal('eid', 'enrolmentid', 'enrolment_id', 'enrolmentno', 'enrolment_no', 'aadhaarno', 'uid', 'packetid', 'आधार');
+    const rawDate = getVal('date', 'createddate', 'created_date', 'transactiondate', 'txdate', 'दिनांक') || todayStr;
+    const time = getVal('time', 'createdtime', 'created_time', 'txtime', 'वेळ') || '10:00';
+    const rawService = getVal('servicetype', 'service_type', 'service', 'updatetype', 'action', 'type', 'प्रकार') || '';
     const mobile = getVal('mobile', 'phone', 'contact', 'mobilenumber', 'मोबाईल') || '9876543210';
     const gender = getVal('gender', 'genderage', 'sex') || 'वयस्क (Adult)';
+
+    // 1. EXTRACT EXACT AMOUNT / FEE FROM CSV ROW
+    let extractedFee = null;
+    for (let rowKey in row) {
+      const cleanKey = rowKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const isFeeCol = (
+        cleanKey === 'fee' || cleanKey === 'fees' || cleanKey === 'amount' || cleanKey === 'amt' ||
+        cleanKey === 'feecharged' || cleanKey === 'charges' || cleanKey === 'charge' ||
+        cleanKey === 'totalfee' || cleanKey === 'totalamount' || cleanKey === 'applicablefee' ||
+        cleanKey === 'govtfee' || cleanKey === 'residentfee' || cleanKey === 'collectedamount' ||
+        cleanKey === 'rate' || cleanKey === 'total' || cleanKey === 'price' || cleanKey === 'cost' ||
+        cleanKey.includes('fee') || cleanKey.includes('amount') || cleanKey.includes('charge') || cleanKey.includes('amt') ||
+        rowKey.includes('रक्कम') || rowKey.includes('शुल्क') || rowKey.includes('फी') || rowKey.includes('दर')
+      );
+      if (isFeeCol) {
+        const rawVal = String(row[rowKey] || '').replace(/[^0-9.-]/g, '').trim();
+        if (rawVal !== '' && !isNaN(parseFloat(rawVal))) {
+          extractedFee = parseFloat(rawVal);
+          break;
+        }
+      }
+    }
 
     let normalizedDate = todayStr;
     if (rawDate) {
@@ -2371,7 +2420,7 @@ function parseAndPreviewMainCSV(csvText, sourceFileName) {
 
     let finalService = 'डेमोग्राफिक अपडेट (नाव/पत्ता/DOB/मोबाईल)';
     let fee = 50;
-    const servLower = (rawService + ' ' + rawFee).toLowerCase();
+    const servLower = (rawService + ' ' + (extractedFee !== null ? extractedFee : '')).toLowerCase();
 
     if (servLower.includes('bio') || servLower.includes('बायो') || servLower.includes('photo') || servLower.includes('finger')) {
       finalService = 'बायोमेट्रिक अपडेट (फोटो + फिंगरप्रिंट + डोळे)';
@@ -2382,7 +2431,7 @@ function parseAndPreviewMainCSV(csvText, sourceFileName) {
     } else if (servLower.includes('new') || servLower.includes('नवीन') || servLower.includes('fresh')) {
       finalService = 'नवीन आधार नोंदणी (New Enrollment)';
       fee = 0;
-    } else if (servLower.includes('mbu') || servLower.includes('mandatory') || servLower.includes('अनिवार्य') || servLower.includes('5') && servLower.includes('15')) {
+    } else if (servLower.includes('mbu') || servLower.includes('mandatory') || servLower.includes('अनिवार्य') || (servLower.includes('5') && servLower.includes('15'))) {
       finalService = 'अनिवार्य बायोमेट्रिक अपडेट (५ व १५ वर्षे)';
       fee = 0;
     } else if (servLower.includes('print') || servLower.includes('प्रिंट') || servLower.includes('laminat')) {
@@ -2393,8 +2442,9 @@ function parseAndPreviewMainCSV(csvText, sourceFileName) {
       fee = 50;
     }
 
-    if (rawFee && !isNaN(parseFloat(rawFee))) {
-      fee = parseFloat(rawFee);
+    // Prioritize file's exact amount
+    if (extractedFee !== null) {
+      fee = extractedFee;
     }
 
     const txId = 'ASK-IMP-' + Date.now() + '-' + (idx + 1);
