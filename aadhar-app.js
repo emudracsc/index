@@ -300,6 +300,7 @@ function applyRoleUI() {
     const regCenterFilter = document.getElementById('register-center-filter');
     const regDatePreset = document.getElementById('register-date-preset');
     const customDateWrap = document.getElementById('custom-date-wrap');
+    const cloudSyncStatus = document.getElementById('cloud-sync-status');
 
     if (currentUser.role === 'admin') {
       if (dispOp) dispOp.textContent = 'Admin (सर्व ऑपरेटर)';
@@ -311,6 +312,7 @@ function applyRoleUI() {
       if (delBtn) delBtn.style.display = 'inline-block';
       if (regCenterFilter) regCenterFilter.style.display = 'inline-block';
       if (regDatePreset) regDatePreset.style.display = 'inline-block';
+      if (cloudSyncStatus) cloudSyncStatus.style.display = 'inline-flex';
 
       navTabs.forEach(btn => btn.style.display = 'inline-block');
       if (topSettingsBtn) topSettingsBtn.style.display = 'inline-block';
@@ -323,6 +325,7 @@ function applyRoleUI() {
       if (adminFilterGroup) adminFilterGroup.style.display = 'none'; // Operator cannot change date / center filters on dashboard
       if (delBtn) delBtn.style.display = 'none'; // Operator cannot delete day data
       if (regCenterFilter) regCenterFilter.style.display = 'none'; // Operator cannot choose other centers
+      if (cloudSyncStatus) cloudSyncStatus.style.display = 'none'; // Hide Firebase status from operator
       if (regDatePreset) {
         regDatePreset.value = 'today';
         regDatePreset.style.display = 'none'; // Operator is locked to today
@@ -620,6 +623,9 @@ function setupFirebaseConnection() {
       if (statusText) statusText.textContent = `Firebase कनेक्टेड (${config.projectId})`;
       statusBadge.title = `e-Mudra क्लाउड सर्व्हर डेटाबेस सक्रिय (${config.projectId})`;
       statusBadge.onclick = openFirebaseModal;
+      if (currentUser && currentUser.role === 'operator') {
+        statusBadge.style.display = 'none';
+      }
     }
     if (cardBadge) {
       cardBadge.className = 'badge-tag emerald';
@@ -637,6 +643,9 @@ function setupFirebaseConnection() {
     if (statusBadge) {
       statusBadge.className = 'cloud-badge offline';
       if (statusText) statusText.textContent = 'स्थानिक मोड (Offline Local)';
+      if (currentUser && currentUser.role === 'operator') {
+        statusBadge.style.display = 'none';
+      }
     }
   }
 }
