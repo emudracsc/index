@@ -237,6 +237,37 @@ function handleLogout() {
   }
 }
 
+function isRecordForCurrentUser(rec) {
+  if (!rec) return false;
+  if (!currentUser) return true;
+  if (currentUser.role === 'admin') return true;
+
+  if (currentUser.role === 'operator') {
+    const userCenter = (currentUser.center || '').toLowerCase().trim();
+    const userName = (currentUser.name || '').toLowerCase().trim();
+    const userStn = (currentUser.stationId || '').trim();
+
+    const recCenter = (rec.center || '').toLowerCase().trim();
+    const recOp = (rec.operatorName || rec.operator || '').toLowerCase().trim();
+    const recStn = (rec.stationId || '').trim();
+
+    // If logged-in operator is WCD (Sakshi Sawant)
+    if (userCenter.includes('wcd') || userName.includes('sakshi') || userStn === '73016') {
+      return recCenter.includes('wcd') || recOp.includes('sakshi') || recOp.includes('sawant') || recStn === '73016';
+    }
+
+    // If logged-in operator is DIT (Gauravi Gawade)
+    if (userCenter.includes('dit') || userCenter.includes('maha') || userName.includes('gauravi') || userStn === '40068') {
+      const isWcd = recCenter.includes('wcd') || recOp.includes('sakshi') || recOp.includes('sawant') || recStn === '73016';
+      if (isWcd) return false;
+      return recCenter.includes('dit') || recCenter.includes('maha') || recOp.includes('gauravi') || recOp.includes('gawade') || recStn === '40068' || !recCenter;
+    }
+
+    return recCenter === userCenter || recOp === userName;
+  }
+  return true;
+}
+
 function applyRoleUI() {
   try {
     const overlay = document.getElementById('app-login-overlay');
@@ -266,6 +297,9 @@ function applyRoleUI() {
     const delBtn = document.getElementById('btn-delete-day-data');
     const reportControlsPanel = document.querySelector('.report-controls-panel');
     const reportFilterToolbar = reportControlsPanel ? reportControlsPanel.querySelector('div:last-child') : null;
+    const regCenterFilter = document.getElementById('register-center-filter');
+    const regDatePreset = document.getElementById('register-date-preset');
+    const customDateWrap = document.getElementById('custom-date-wrap');
 
     if (currentUser.role === 'admin') {
       if (dispOp) dispOp.textContent = 'Admin (सर्व ऑपरेटर)';
@@ -275,6 +309,8 @@ function applyRoleUI() {
       if (adminFilterGroup) adminFilterGroup.style.display = 'flex';
       if (reportFilterToolbar) reportFilterToolbar.style.display = 'block';
       if (delBtn) delBtn.style.display = 'inline-block';
+      if (regCenterFilter) regCenterFilter.style.display = 'inline-block';
+      if (regDatePreset) regDatePreset.style.display = 'inline-block';
 
       navTabs.forEach(btn => btn.style.display = 'inline-block');
       if (topSettingsBtn) topSettingsBtn.style.display = 'inline-block';
@@ -286,6 +322,12 @@ function applyRoleUI() {
       if (mainCenterField) mainCenterField.style.display = 'none';
       if (adminFilterGroup) adminFilterGroup.style.display = 'none'; // Operator cannot change date / center filters on dashboard
       if (delBtn) delBtn.style.display = 'none'; // Operator cannot delete day data
+      if (regCenterFilter) regCenterFilter.style.display = 'none'; // Operator cannot choose other centers
+      if (regDatePreset) {
+        regDatePreset.value = 'today';
+        regDatePreset.style.display = 'none'; // Operator is locked to today
+      }
+      if (customDateWrap) customDateWrap.style.display = 'none';
 
       // Lock day report for operator to today only - hide past date pickers
       if (reportFilterToolbar) reportFilterToolbar.style.display = 'none';
@@ -1162,7 +1204,8 @@ function renderExpensesList() {
   const expenses = getStoredExpenses();
   let filtered = expenses;
   if (currentUser && currentUser.role === 'operator') {
-    filtered = filtered.filter(e => e.center === currentUser.center || !e.center || e.center.includes('सामायिक'));
+    const today = getTodayDateString();
+    filtered = filtered.filter(e => isRecordForCurrentUser(e) && normalizeDateToISO(e.date) === today);
   }
 
   let totalAmt = 0;
@@ -1308,10 +1351,10 @@ function updateMetricsDashboard() {
   let filteredTx = transactions;
   let filteredExp = expenses;
 
-  // Center filter
+  // Role and Center filter
   if (currentUser && currentUser.role === 'operator') {
-    filteredTx = filteredTx.filter(t => t.center === currentUser.center);
-    filteredExp = filteredExp.filter(e => e.center === currentUser.center || !e.center || e.center.includes('सामायिक'));
+    filteredTx = filteredTx.filter(t => isRecordForCurrentUser(t) && normalizeDateToISO(t.date) === today);
+    filteredExp = filteredExp.filter(e => isRecordForCurrentUser(e) && normalizeDateToISO(e.date) === today);
   } else if (centerSelect !== 'all') {
     filteredTx = filteredTx.filter(t => t.center === centerSelect);
     filteredExp = filteredExp.filter(e => e.center === centerSelect || !e.center || e.center.includes('सामायिक'));
@@ -1322,9 +1365,7 @@ function updateMetricsDashboard() {
 
   // Period Filter
   if (currentUser && currentUser.role === 'operator') {
-    // Operator is always restricted to today
-    filteredTx = filteredTx.filter(t => t.date === today);
-    filteredExp = filteredExp.filter(e => e.date === today);
+    // Operator is always strictly restricted to today
     periodLabel = 'आज (' + formatDateDDMMYYYY(today) + ')';
   } else {
     if (period === 'today') {
@@ -1474,10 +1515,7 @@ function renderRecentQuickList() {
   const transactions = getStoredTransactions();
   const today = getTodayDateString();
   
-  let todayTx = transactions.filter(t => t.date === today);
-  if (currentUser && currentUser.role === 'operator') {
-    todayTx = todayTx.filter(t => t.center === currentUser.center);
-  }
+  let todayTx = transactions.filter(t => normalizeDateToISO(t.date) === today && isRecordForCurrentUser(t));
   todayTx = todayTx.slice(0, 5);
 
   if (todayTx.length === 0) {
@@ -1529,11 +1567,13 @@ function filterRegisterRecords() {
   const filtered = transactions.filter(t => {
     // Role-based security check for operator
     if (currentUser && currentUser.role === 'operator') {
-      if (t.date !== today) return false;
-      if (t.center !== currentUser.center) return false;
+      if (!isRecordForCurrentUser(t)) return false;
+      if (normalizeDateToISO(t.date) !== today) return false;
     } else if (currentUser && currentUser.role === 'admin') {
       if (centerFilter !== 'all' && t.center !== centerFilter) return false;
     }
+
+    const recDate = normalizeDateToISO(t.date);
 
     // 1. Search Query
     if (query) {
@@ -1545,26 +1585,30 @@ function filterRegisterRecords() {
     }
 
     // 2. Date Filter
-    if (datePreset === 'today') {
-      if (t.date !== today) return false;
-    } else if (datePreset === 'yesterday') {
-      const yest = new Date(now);
-      yest.setDate(yest.getDate() - 1);
-      const yestStr = `${yest.getFullYear()}-${String(yest.getMonth() + 1).padStart(2, '0')}-${String(yest.getDate()).padStart(2, '0')}`;
-      if (t.date !== yestStr) return false;
-    } else if (datePreset === 'this-week') {
-      const txDate = new Date(t.date);
-      const diffTime = Math.abs(now - txDate);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if (diffDays > 7) return false;
-    } else if (datePreset === 'this-month') {
-      const currentMonthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      if (!t.date.startsWith(currentMonthPrefix)) return false;
-    } else if (datePreset === 'custom') {
-      const from = document.getElementById('custom-date-from')?.value;
-      const to = document.getElementById('custom-date-to')?.value;
-      if (from && t.date < from) return false;
-      if (to && t.date > to) return false;
+    if (currentUser && currentUser.role === 'operator') {
+      if (recDate !== today) return false;
+    } else {
+      if (datePreset === 'today') {
+        if (recDate !== today) return false;
+      } else if (datePreset === 'yesterday') {
+        const yest = new Date(now);
+        yest.setDate(yest.getDate() - 1);
+        const yestStr = `${yest.getFullYear()}-${String(yest.getMonth() + 1).padStart(2, '0')}-${String(yest.getDate()).padStart(2, '0')}`;
+        if (recDate !== yestStr) return false;
+      } else if (datePreset === 'this-week') {
+        const txDate = new Date(recDate);
+        const diffTime = Math.abs(now - txDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays > 7) return false;
+      } else if (datePreset === 'this-month') {
+        const currentMonthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        if (!recDate.startsWith(currentMonthPrefix)) return false;
+      } else if (datePreset === 'custom') {
+        const from = document.getElementById('custom-date-from')?.value;
+        const to = document.getElementById('custom-date-to')?.value;
+        if (from && recDate < from) return false;
+        if (to && recDate > to) return false;
+      }
     }
 
     // 3. Service Filter
@@ -1975,8 +2019,8 @@ function generateDailyReport() {
     // 1. Force TODAY ONLY (No past reports for operators)
     scope = 'today';
     // 2. Strict Center & Operator Data Isolation (No other operator data visible)
-    allTx = allTx.filter(t => t.center === currentUser.center);
-    allExp = allExp.filter(e => e.center === currentUser.center);
+    allTx = allTx.filter(t => isRecordForCurrentUser(t));
+    allExp = allExp.filter(e => isRecordForCurrentUser(e));
   } else if (centerSelect !== 'all') {
     allTx = allTx.filter(t => t.center === centerSelect);
     allExp = allExp.filter(e => e.center === centerSelect);
