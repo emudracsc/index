@@ -301,30 +301,57 @@ body.aadhar-standalone-app {
 }
 
 /* Metrics Cards Grid */
+/* Single-Line Compact Metrics Bar */
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+  width: 100%;
+}
+
+@media (max-width: 1280px) {
+  .metrics-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(56, 189, 248, 0.4) transparent;
+  }
+  .metrics-grid::-webkit-scrollbar {
+    height: 4px;
+  }
+  .metrics-grid::-webkit-scrollbar-thumb {
+    background: rgba(56, 189, 248, 0.4);
+    border-radius: 4px;
+  }
+  .stat-box {
+    min-width: 150px;
+    flex: 1 0 auto;
+  }
 }
 
 .stat-box {
   background: rgba(15, 23, 42, 0.85);
   border: 1px solid var(--panel-border);
   backdrop-filter: blur(12px);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
+  border-radius: 10px;
+  padding: 8px 10px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 8px;
   position: relative;
   overflow: hidden;
   transition: var(--transition-spring);
+  min-width: 0;
 }
 
 .stat-box:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .stat-box::before {
@@ -332,7 +359,7 @@ body.aadhar-standalone-app {
   position: absolute;
   top: 0;
   left: 0;
-  width: 4px;
+  width: 3px;
   height: 100%;
 }
 
@@ -346,13 +373,14 @@ body.aadhar-standalone-app {
 .stat-box.teal::before { background: #14b8a6; }
 
 .stat-icon-wrap {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 0.95rem;
+  flex-shrink: 0;
 }
 
 .stat-box.gold .stat-icon-wrap { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
@@ -364,23 +392,42 @@ body.aadhar-standalone-app {
 .stat-box.amber .stat-icon-wrap { background: rgba(245, 158, 11, 0.18); color: #fbbf24; }
 .stat-box.teal .stat-icon-wrap { background: rgba(20, 184, 166, 0.18); color: #2dd4bf; }
 
-.stat-content .stat-label {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  display: block;
+.stat-content {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
-.stat-content .stat-value {
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin: 2px 0;
+.stat-content .stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
   line-height: 1.15;
 }
 
+.stat-content .stat-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 1px 0;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .stat-content .stat-sub {
-  font-size: 0.75rem;
-  color: #64748b;
+  font-size: 0.65rem;
+  color: #94a3b8;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.1;
 }
 
 /* Tab Panels */
