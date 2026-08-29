@@ -707,6 +707,23 @@ function listenToCloudFirestore() {
       }, (error) => {
         console.warn('Firestore expense snapshot listener note:', error);
       });
+
+    // 3. Live daily_summaries listener
+    db.collection('daily_summaries')
+      .onSnapshot((snapshot) => {
+        if (!snapshot.empty) {
+          const sumList = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            data.id = doc.id;
+            sumList.push(data);
+          });
+          saveStoredDailySummaries(sumList);
+          refreshAllDataViews();
+        }
+      }, (error) => {
+        console.warn('Firestore summaries snapshot listener note:', error);
+      });
   } catch (e) {
     console.error('Error attaching listeners:', e);
   }
@@ -843,6 +860,19 @@ function getStoredExpenses() {
 
 function saveStoredExpenses(list) {
   localStorage.setItem(STORAGE_KEYS.EXPENSES, JSON.stringify(list));
+}
+
+function getStoredDailySummaries() {
+  try {
+    const data = localStorage.getItem('ask_daily_summaries');
+    return data ? JSON.parse(data) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveStoredDailySummaries(list) {
+  localStorage.setItem('ask_daily_summaries', JSON.stringify(list));
 }
 
 function getKendraSettings(centerName) {
@@ -1347,6 +1377,7 @@ function handleDashPeriodChange() {
 function updateMetricsDashboard() {
   const transactions = getStoredTransactions();
   const expenses = getStoredExpenses();
+  const summaries = getStoredDailySummaries();
   const today = getTodayDateString();
   const now = new Date();
 
@@ -1359,14 +1390,17 @@ function updateMetricsDashboard() {
 
   let filteredTx = transactions;
   let filteredExp = expenses;
+  let filteredSum = summaries;
 
   // Role and Center filter
   if (currentUser && currentUser.role === 'operator') {
     filteredTx = filteredTx.filter(t => isRecordForCurrentUser(t) && normalizeDateToISO(t.date) === today);
     filteredExp = filteredExp.filter(e => isRecordForCurrentUser(e) && normalizeDateToISO(e.date) === today);
+    filteredSum = filteredSum.filter(s => isRecordForCurrentUser(s) && normalizeDateToISO(s.date) === today);
   } else if (centerSelect !== 'all') {
     filteredTx = filteredTx.filter(t => t.center === centerSelect);
     filteredExp = filteredExp.filter(e => e.center === centerSelect || !e.center || e.center.includes('सामायिक'));
+    filteredSum = filteredSum.filter(s => s.center === centerSelect);
   }
 
   let periodLabel = 'आज';
@@ -1378,46 +1412,53 @@ function updateMetricsDashboard() {
     periodLabel = 'आज (' + formatDateDDMMYYYY(today) + ')';
   } else {
     if (period === 'today') {
-      filteredTx = filteredTx.filter(t => t.date === today);
-      filteredExp = filteredExp.filter(e => e.date === today);
+      filteredTx = filteredTx.filter(t => normalizeDateToISO(t.date) === today);
+      filteredExp = filteredExp.filter(e => normalizeDateToISO(e.date) === today);
+      filteredSum = filteredSum.filter(s => normalizeDateToISO(s.date) === today);
       periodLabel = 'आज (' + formatDateDDMMYYYY(today) + ')';
     } else if (period === 'yesterday') {
       const yest = new Date(now);
       yest.setDate(yest.getDate() - 1);
       const yestStr = `${yest.getFullYear()}-${String(yest.getMonth() + 1).padStart(2, '0')}-${String(yest.getDate()).padStart(2, '0')}`;
-      filteredTx = filteredTx.filter(t => t.date === yestStr);
-      filteredExp = filteredExp.filter(e => e.date === yestStr);
+      filteredTx = filteredTx.filter(t => normalizeDateToISO(t.date) === yestStr);
+      filteredExp = filteredExp.filter(e => normalizeDateToISO(e.date) === yestStr);
+      filteredSum = filteredSum.filter(s => normalizeDateToISO(s.date) === yestStr);
       periodLabel = 'काल (' + formatDateDDMMYYYY(yestStr) + ')';
     } else if (period === 'single-date') {
-      filteredTx = filteredTx.filter(t => t.date === singleDate);
-      filteredExp = filteredExp.filter(e => e.date === singleDate);
+      filteredTx = filteredTx.filter(t => normalizeDateToISO(t.date) === singleDate);
+      filteredExp = filteredExp.filter(e => normalizeDateToISO(e.date) === singleDate);
+      filteredSum = filteredSum.filter(s => normalizeDateToISO(s.date) === singleDate);
       periodLabel = formatDateDDMMYYYY(singleDate);
     } else if (period === 'monthly') {
       const currentMonthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      filteredTx = filteredTx.filter(t => (t.date || '').startsWith(currentMonthPrefix));
-      filteredExp = filteredExp.filter(e => (e.date || '').startsWith(currentMonthPrefix));
+      filteredTx = filteredTx.filter(t => (normalizeDateToISO(t.date) || '').startsWith(currentMonthPrefix));
+      filteredExp = filteredExp.filter(e => (normalizeDateToISO(e.date) || '').startsWith(currentMonthPrefix));
+      filteredSum = filteredSum.filter(s => (normalizeDateToISO(s.date) || '').startsWith(currentMonthPrefix));
       periodLabel = `चालू महिना (${marathiMonths[now.getMonth()]})`;
     } else if (period === 'last-month') {
       const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
       const lastMonthPrefix = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, '0')}`;
-      filteredTx = filteredTx.filter(t => (t.date || '').startsWith(lastMonthPrefix));
-      filteredExp = filteredExp.filter(e => (e.date || '').startsWith(lastMonthPrefix));
+      filteredTx = filteredTx.filter(t => (normalizeDateToISO(t.date) || '').startsWith(lastMonthPrefix));
+      filteredExp = filteredExp.filter(e => (normalizeDateToISO(e.date) || '').startsWith(lastMonthPrefix));
+      filteredSum = filteredSum.filter(s => (normalizeDateToISO(s.date) || '').startsWith(lastMonthPrefix));
       periodLabel = `मागील महिना (${marathiMonths[lastMonthDate.getMonth()]})`;
     } else if (period === 'custom-month') {
       if (monthSelectVal) {
         const [y, m] = monthSelectVal.split('-');
         const mIdx = parseInt(m, 10) - 1;
         const mName = (mIdx >= 0 && mIdx < 12) ? marathiMonths[mIdx] : m;
-        filteredTx = filteredTx.filter(t => (t.date || '').startsWith(monthSelectVal));
-        filteredExp = filteredExp.filter(e => (e.date || '').startsWith(monthSelectVal));
+        filteredTx = filteredTx.filter(t => (normalizeDateToISO(t.date) || '').startsWith(monthSelectVal));
+        filteredExp = filteredExp.filter(e => (normalizeDateToISO(e.date) || '').startsWith(monthSelectVal));
+        filteredSum = filteredSum.filter(s => (normalizeDateToISO(s.date) || '').startsWith(monthSelectVal));
         periodLabel = `माहे ${mName} ${y}`;
       } else {
         periodLabel = 'मासिक अहवाल';
       }
     } else if (period === 'multi-month') {
       if (dateFrom && dateTo) {
-        filteredTx = filteredTx.filter(t => t.date >= dateFrom && t.date <= dateTo);
-        filteredExp = filteredExp.filter(e => e.date >= dateFrom && e.date <= dateTo);
+        filteredTx = filteredTx.filter(t => normalizeDateToISO(t.date) >= dateFrom && normalizeDateToISO(t.date) <= dateTo);
+        filteredExp = filteredExp.filter(e => normalizeDateToISO(e.date) >= dateFrom && normalizeDateToISO(e.date) <= dateTo);
+        filteredSum = filteredSum.filter(s => normalizeDateToISO(s.date) >= dateFrom && normalizeDateToISO(s.date) <= dateTo);
         periodLabel = `${formatDateDDMMYYYY(dateFrom)} ते ${formatDateDDMMYYYY(dateTo)}`;
       } else {
         periodLabel = 'कालावधी अहवाल';
@@ -1428,9 +1469,9 @@ function updateMetricsDashboard() {
   }
 
   let govtFeeTotal = 0;
-  let totalIncome = 0;
-  let cashIncome = 0;
-  let upiIncome = 0;
+  let txIncome = 0;
+  let txCash = 0;
+  let txUpi = 0;
   let cashCount = 0;
   let upiCount = 0;
 
@@ -1438,37 +1479,55 @@ function updateMetricsDashboard() {
     const collAmt = Number(t.totalAmount || 0);
     const gFee = getGovtFeeForTransaction(t);
     govtFeeTotal += gFee;
-    totalIncome += collAmt;
+    txIncome += collAmt;
 
     const pMode = (t.paymentMode || '').toLowerCase();
     if (pMode.includes('रोख') || pMode.includes('cash')) {
-      cashIncome += collAmt;
+      txCash += collAmt;
       cashCount++;
     } else if (pMode.includes('युपीआय') || pMode.includes('upi') || pMode.includes('online')) {
-      upiIncome += collAmt;
+      txUpi += collAmt;
       upiCount++;
     } else {
-      cashIncome += collAmt;
+      txCash += collAmt;
       cashCount++;
     }
   });
 
+  // Calculate sum of reported cash & online in daily summaries
+  let sumReportedCash = 0;
+  let sumReportedOnline = 0;
+  filteredSum.forEach(s => {
+    sumReportedCash += Number(s.cashReported || 0);
+    sumReportedOnline += Number(s.onlineReported || 0);
+  });
+
+  const finalCashIncome = Math.max(txCash, sumReportedCash);
+  const finalUpiIncome = Math.max(txUpi, sumReportedOnline);
+  const totalIncome = finalCashIncome + finalUpiIncome;
+
   const extraMargin = Math.max(0, totalIncome - govtFeeTotal);
 
   let totalExpenses = 0;
+  let pigmyTotal = 0;
   filteredExp.forEach(e => {
-    totalExpenses += Number(e.amount || 0);
+    const amt = Number(e.amount || 0);
+    const isPig = (e.category || '').includes('पिग्मी') || (e.category || '').includes('बचत');
+    if (isPig) {
+      pigmyTotal += amt;
+    } else {
+      totalExpenses += amt;
+    }
   });
 
-  // Net Cash in Drawer = Cash Income - Expenses
-  let netBalance = totalIncome - totalExpenses;
-  let drawerCash = Math.max(0, cashIncome - totalExpenses);
+  // Net Cash in Drawer = Cash Income - (Total Cash Outflow: General Expenses + Pigmy Deposits)
+  let drawerCash = Math.max(0, finalCashIncome - (totalExpenses + pigmyTotal));
 
   // 1. Govt Report Total
   const elGovt = document.getElementById('metric-govt-report-total');
   if (elGovt) elGovt.textContent = govtFeeTotal.toLocaleString('en-IN');
   const elGovtSub = document.getElementById('metric-govt-report-sub');
-  if (elGovtSub) elGovtSub.textContent = `शासकीय देयक • ${periodLabel}`;
+  if (elGovtSub) elGovtSub.textContent = `अधिकृत देयक • ${periodLabel}`;
 
   // 2. Operator Collected Total
   const elTotal = document.getElementById('metric-today-total');
@@ -1482,13 +1541,13 @@ function updateMetricsDashboard() {
 
   // 4. Cash Collection
   const elCash = document.getElementById('metric-today-cash');
-  if (elCash) elCash.textContent = cashIncome.toLocaleString('en-IN');
+  if (elCash) elCash.textContent = finalCashIncome.toLocaleString('en-IN');
   const elCashCount = document.getElementById('metric-today-cash-count');
   if (elCashCount) elCashCount.textContent = `${cashCount} रोख नोंदी`;
 
   // 5. UPI Collection
   const elUpi = document.getElementById('metric-today-upi');
-  if (elUpi) elUpi.textContent = upiIncome.toLocaleString('en-IN');
+  if (elUpi) elUpi.textContent = finalUpiIncome.toLocaleString('en-IN');
   const elUpiCount = document.getElementById('metric-today-upi-count');
   if (elUpiCount) elUpiCount.textContent = `${upiCount} UPI नोंदी`;
 
@@ -1496,7 +1555,7 @@ function updateMetricsDashboard() {
   const elExp = document.getElementById('metric-today-expense');
   if (elExp) elExp.textContent = totalExpenses.toLocaleString('en-IN');
   const elExpCount = document.getElementById('metric-today-expense-count');
-  if (elExpCount) elExpCount.textContent = `${filteredExp.length} खर्च नोंदी`;
+  if (elExpCount) elExpCount.textContent = `${filteredExp.filter(e => !(e.category||'').includes('पिग्मी')).length} खर्च नोंदी`;
 
   // 7. Net Cash in Drawer
   const elBal = document.getElementById('metric-today-balance');
@@ -1508,9 +1567,9 @@ function updateMetricsDashboard() {
 
   // Quick Card in Tab 1
   const qCash = document.getElementById('quick-cash-total');
-  if (qCash) qCash.textContent = cashIncome.toLocaleString('en-IN');
+  if (qCash) qCash.textContent = finalCashIncome.toLocaleString('en-IN');
   const qUpi = document.getElementById('quick-upi-total');
-  if (qUpi) qUpi.textContent = upiIncome.toLocaleString('en-IN');
+  if (qUpi) qUpi.textContent = finalUpiIncome.toLocaleString('en-IN');
   const qExp = document.getElementById('quick-expense-total');
   if (qExp) qExp.textContent = totalExpenses.toLocaleString('en-IN');
   const qDrawer = document.getElementById('quick-drawer-cash');
@@ -2186,9 +2245,9 @@ function generateDailyReport() {
   // Services aggregation
   const serviceCounts = {};
   let govtFeeTotal = 0;
-  let grossIncome = 0;
-  let cashTotal = 0;
-  let upiTotal = 0;
+  let txGrossIncome = 0;
+  let txCashTotal = 0;
+  let txUpiTotal = 0;
   let pendingTotal = 0;
 
   transactions.forEach(t => {
@@ -2200,16 +2259,67 @@ function generateDailyReport() {
     const collAmt = Number(t.totalAmount || 0);
     const gFee = getGovtFeeForTransaction(t);
     govtFeeTotal += gFee;
-    grossIncome += collAmt;
+    txGrossIncome += collAmt;
 
     const pMode = (t.paymentMode || '').toLowerCase();
-    if (pMode.includes('रोख') || pMode.includes('cash')) cashTotal += collAmt;
-    else if (pMode.includes('युपीआय') || pMode.includes('upi') || pMode.includes('online')) upiTotal += collAmt;
+    if (pMode.includes('रोख') || pMode.includes('cash')) txCashTotal += collAmt;
+    else if (pMode.includes('युपीआय') || pMode.includes('upi') || pMode.includes('online')) txUpiTotal += collAmt;
     else if (pMode.includes('उधारी') || pMode.includes('pending')) pendingTotal += collAmt;
-    else cashTotal += collAmt;
+    else txCashTotal += collAmt;
   });
 
-  const extraMargin = Math.max(0, grossIncome - govtFeeTotal);
+  // Calculate sum of reported cash & online from daily summaries
+  const allSummaries = getStoredDailySummaries();
+  let filteredSum = allSummaries;
+  if (currentUser && currentUser.role === 'operator') {
+    filteredSum = filteredSum.filter(s => isRecordForCurrentUser(s) && normalizeDateToISO(s.date) === todayStr);
+  } else if (centerSelect !== 'all') {
+    filteredSum = filteredSum.filter(s => s.center === centerSelect);
+  }
+
+  if (scope === 'today') {
+    filteredSum = filteredSum.filter(s => normalizeDateToISO(s.date) === todayStr);
+  } else if (scope === 'yesterday') {
+    const yDate = new Date();
+    yDate.setDate(yDate.getDate() - 1);
+    const yStr = `${yDate.getFullYear()}-${String(yDate.getMonth() + 1).padStart(2, '0')}-${String(yDate.getDate()).padStart(2, '0')}`;
+    filteredSum = filteredSum.filter(s => normalizeDateToISO(s.date) === yStr);
+  } else if (scope === 'single-date') {
+    const targetDate = singleDateVal || dateFrom || todayStr;
+    filteredSum = filteredSum.filter(s => normalizeDateToISO(s.date) === targetDate);
+  } else if (scope === 'this-month') {
+    const monthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    filteredSum = filteredSum.filter(s => (normalizeDateToISO(s.date) || '').startsWith(monthPrefix));
+  } else if (scope === 'last-month') {
+    const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthPrefix = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, '0')}`;
+    filteredSum = filteredSum.filter(s => (normalizeDateToISO(s.date) || '').startsWith(lastMonthPrefix));
+  } else if (scope === 'custom-month') {
+    if (monthVal) {
+      filteredSum = filteredSum.filter(s => (normalizeDateToISO(s.date) || '').startsWith(monthVal));
+    }
+  } else if (scope === 'custom-range') {
+    const fromD = dateFrom || dateTo || todayStr;
+    const toD = dateTo || dateFrom || todayStr;
+    const actualFrom = fromD <= toD ? fromD : toD;
+    const actualTo = fromD <= toD ? toD : fromD;
+    filteredSum = filteredSum.filter(s => {
+      const d = normalizeDateToISO(s.date);
+      return d && d >= actualFrom && d <= actualTo;
+    });
+  }
+
+  let sumReportedCash = 0;
+  let sumReportedOnline = 0;
+  filteredSum.forEach(s => {
+    sumReportedCash += Number(s.cashReported || 0);
+    sumReportedOnline += Number(s.onlineReported || 0);
+  });
+
+  const finalCashTotal = Math.max(txCashTotal, sumReportedCash);
+  const finalUpiTotal = Math.max(txUpiTotal, sumReportedOnline);
+  const finalGrossIncome = finalCashTotal + finalUpiTotal + pendingTotal;
+  const extraMargin = Math.max(0, finalGrossIncome - govtFeeTotal);
 
   // Render Service Breakdown
   const servTbody = document.getElementById('rep-services-breakdown-tbody');
@@ -2231,11 +2341,11 @@ function generateDailyReport() {
   const elRepCount = document.getElementById('rep-total-count');
   if (elRepCount) elRepCount.textContent = transactions.length;
   const elRepGross = document.getElementById('rep-gross-income');
-  if (elRepGross) elRepGross.textContent = grossIncome.toLocaleString('en-IN');
+  if (elRepGross) elRepGross.textContent = finalGrossIncome.toLocaleString('en-IN');
   const elRepCash = document.getElementById('rep-cash-total');
-  if (elRepCash) elRepCash.textContent = cashTotal.toLocaleString('en-IN');
+  if (elRepCash) elRepCash.textContent = finalCashTotal.toLocaleString('en-IN');
   const elRepUpi = document.getElementById('rep-upi-total');
-  if (elRepUpi) elRepUpi.textContent = upiTotal.toLocaleString('en-IN');
+  if (elRepUpi) elRepUpi.textContent = finalUpiTotal.toLocaleString('en-IN');
   const elRepPend = document.getElementById('rep-pending-total');
   if (elRepPend) elRepPend.textContent = pendingTotal.toLocaleString('en-IN');
 
@@ -2276,9 +2386,9 @@ function generateDailyReport() {
 
   // Net Balance Calculations
   // Net Profit = Gross Income - General Operational Expenses
-  const netProfit = grossIncome - generalExpense;
+  const netProfit = finalGrossIncome - generalExpense;
   // Drawer Cash = Cash Income - Total Cash Outflow (Expenses + Pigmy Deposit)
-  const drawerCash = Math.max(0, cashTotal - totalExpense);
+  const drawerCash = Math.max(0, finalCashTotal - totalExpense);
 
   const elFinalGovt = document.getElementById('rep-final-govt');
   if (elFinalGovt) elFinalGovt.textContent = govtFeeTotal.toLocaleString('en-IN');
@@ -2286,7 +2396,7 @@ function generateDailyReport() {
   if (elFinalMargin) elFinalMargin.textContent = extraMargin.toLocaleString('en-IN');
 
   const elFinalGross = document.getElementById('rep-final-gross');
-  if (elFinalGross) elFinalGross.textContent = grossIncome.toLocaleString('en-IN');
+  if (elFinalGross) elFinalGross.textContent = finalGrossIncome.toLocaleString('en-IN');
   const elFinalExp = document.getElementById('rep-final-expense');
   if (elFinalExp) elFinalExp.textContent = generalExpense.toLocaleString('en-IN');
   const elFinalPigmy = document.getElementById('rep-final-pigmy');
@@ -3824,23 +3934,36 @@ async function confirmMainImportedRecords() {
 
   // 3. Save Daily summary for Collections & Pigmy
   if (cashAmt > 0 || onlineAmt > 0 || pigmyAmt > 0 || expAmt > 0) {
-    const summaries = JSON.parse(localStorage.getItem('ask_daily_summaries') || '[]');
-    const summary = {
-      id: 'SUM-' + Date.now(),
-      date: effectiveDate,
-      center: chosenCenter,
-      operator: chosenOperator,
-      cashReported: cashAmt,
-      onlineReported: onlineAmt,
-      pigmyReported: pigmyAmt,
-      expenseReported: expAmt,
-      timestamp: Date.now()
-    };
-    summaries.push(summary);
-    localStorage.setItem('ask_daily_summaries', JSON.stringify(summaries));
-    if (isFirebaseConnected && db) {
-      db.collection('daily_summaries').doc(summary.id).set(summary).catch(console.error);
+    const summaries = getStoredDailySummaries();
+    const existingIndex = summaries.findIndex(s => normalizeDateToISO(s.date) === normalizeDateToISO(effectiveDate) && s.center === chosenCenter);
+    if (existingIndex >= 0) {
+      if (cashAmt > 0) summaries[existingIndex].cashReported = cashAmt;
+      if (onlineAmt > 0) summaries[existingIndex].onlineReported = onlineAmt;
+      if (pigmyAmt > 0) summaries[existingIndex].pigmyReported = (summaries[existingIndex].pigmyReported || 0) + pigmyAmt;
+      if (expAmt > 0) summaries[existingIndex].expenseReported = (summaries[existingIndex].expenseReported || 0) + expAmt;
+      summaries[existingIndex].operator = chosenOperator;
+      summaries[existingIndex].timestamp = Date.now();
+      if (isFirebaseConnected && db) {
+        db.collection('daily_summaries').doc(summaries[existingIndex].id).set(summaries[existingIndex]).catch(console.error);
+      }
+    } else {
+      const summary = {
+        id: 'SUM-' + Date.now(),
+        date: effectiveDate,
+        center: chosenCenter,
+        operator: chosenOperator,
+        cashReported: cashAmt,
+        onlineReported: onlineAmt,
+        pigmyReported: pigmyAmt,
+        expenseReported: expAmt,
+        timestamp: Date.now()
+      };
+      summaries.push(summary);
+      if (isFirebaseConnected && db) {
+        db.collection('daily_summaries').doc(summary.id).set(summary).catch(console.error);
+      }
     }
+    saveStoredDailySummaries(summaries);
   }
 
   // 4. Sync to Firebase Cloud Firestore
