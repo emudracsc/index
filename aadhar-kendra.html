@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="mr">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>आधार सेवा केंद्र दैनिक हिशोब व नोंदवही प्रणाली | UIDAI Kendra Ledger</title>
-  <meta name="description" content="आधार सेवा केंद्रासाठी दैनंदिन ग्राहक नोंदणी, शासकीय सेवा शुल्क हिशोब, खर्च नोंद, पावती निर्मिती आणि Firebase क्लाउड संकलन प्रणाली." />
+  <meta name="description"
+    content="आधार सेवा केंद्रासाठी दैनंदिन ग्राहक नोंदणी, शासकीय सेवा शुल्क हिशोब, खर्च नोंद, पावती निर्मिती आणि Firebase क्लाउड संकलन प्रणाली." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="aadhar-styles.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
   <!-- Firebase SDKs -->
@@ -20,9 +25,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
+
 <body class="aadhar-standalone-app">
   <!-- Role-Based Login Overlay -->
-  <div id="app-login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; overflow: hidden;">
+  <div id="app-login-overlay"
+    style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; overflow: hidden;">
     <!-- Animated Aadhaar Background Logo -->
     <style>
       /* Animated Background Orbs */
@@ -33,13 +40,42 @@
         z-index: 0;
         animation: floatOrb 15s infinite alternate ease-in-out;
       }
-      .orb-1 { width: 350px; height: 350px; background: rgba(56, 189, 248, 0.35); top: 5%; left: 10%; animation-delay: 0s; }
-      .orb-2 { width: 450px; height: 450px; background: rgba(251, 191, 36, 0.25); bottom: 5%; right: 5%; animation-delay: -5s; }
-      .orb-3 { width: 300px; height: 300px; background: rgba(16, 185, 129, 0.25); top: 50%; left: 70%; animation-delay: -10s; }
+
+      .orb-1 {
+        width: 350px;
+        height: 350px;
+        background: rgba(56, 189, 248, 0.35);
+        top: 5%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .orb-2 {
+        width: 450px;
+        height: 450px;
+        background: rgba(251, 191, 36, 0.25);
+        bottom: 5%;
+        right: 5%;
+        animation-delay: -5s;
+      }
+
+      .orb-3 {
+        width: 300px;
+        height: 300px;
+        background: rgba(16, 185, 129, 0.25);
+        top: 50%;
+        left: 70%;
+        animation-delay: -10s;
+      }
 
       @keyframes floatOrb {
-        0% { transform: translate(0, 0) scale(1); }
-        100% { transform: translate(120px, 150px) scale(1.3); }
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+
+        100% {
+          transform: translate(120px, 150px) scale(1.3);
+        }
       }
 
       /* Enhanced Glassmorphism Box */
@@ -59,9 +95,12 @@
         opacity: 0;
         transform: translateY(30px);
       }
-      
+
       @keyframes boxEntrance {
-        to { opacity: 1; transform: translateY(0); }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       /* Input focus glow */
@@ -77,32 +116,36 @@
         background-size: 200% auto;
         border: none;
       }
+
       .glass-login-box .app-btn.primary {
         background-image: linear-gradient(to right, #0284c7 0%, #38bdf8 51%, #0284c7 100%);
         color: white;
       }
+
       .glass-login-box .app-btn.primary:hover {
         background-position: right center;
         box-shadow: 0 10px 20px rgba(56, 189, 248, 0.5);
         transform: translateY(-3px);
       }
-      
+
       .glass-login-box .app-btn.warning {
         background-image: linear-gradient(to right, #d97706 0%, #fbbf24 51%, #d97706 100%);
         color: white;
       }
+
       .glass-login-box .app-btn.warning:hover {
         background-position: right center;
         box-shadow: 0 10px 20px rgba(251, 191, 36, 0.5);
         transform: translateY(-3px);
       }
-      
+
       /* Glowing Role Selector Buttons */
       .role-btn {
         transition: all 0.3s ease;
       }
+
       .role-btn:hover {
-        box-shadow: 0 0 15px rgba(255,255,255,0.2);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         transform: translateY(-2px);
       }
 
@@ -120,18 +163,36 @@
         z-index: 1;
         animation: floatAadhaarLogo 12s ease-in-out infinite, pulseAadhaarLogo 4s ease-in-out infinite alternate;
       }
+
       @keyframes floatAadhaarLogo {
-        0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-        33% { transform: translate(-50%, calc(-50% - 20px)) rotate(2deg) scale(1.02); }
-        66% { transform: translate(-50%, calc(-50% + 15px)) rotate(-2deg) scale(0.98); }
-        100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+        0% {
+          transform: translate(-50%, -50%) rotate(0deg) scale(1);
+        }
+
+        33% {
+          transform: translate(-50%, calc(-50% - 20px)) rotate(2deg) scale(1.02);
+        }
+
+        66% {
+          transform: translate(-50%, calc(-50% + 15px)) rotate(-2deg) scale(0.98);
+        }
+
+        100% {
+          transform: translate(-50%, -50%) rotate(0deg) scale(1);
+        }
       }
+
       @keyframes pulseAadhaarLogo {
-        0% { filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.2)); }
-        100% { filter: drop-shadow(0 0 40px rgba(251, 191, 36, 0.6)); }
+        0% {
+          filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.2));
+        }
+
+        100% {
+          filter: drop-shadow(0 0 40px rgba(251, 191, 36, 0.6));
+        }
       }
     </style>
-    
+
     <!-- Background Orbs -->
     <div class="login-orb orb-1"></div>
     <div class="login-orb orb-2"></div>
@@ -140,43 +201,73 @@
     <div class="login-bg-logo-anim"></div>
 
     <div class="glass-login-box">
-      <h2 style="color: #38bdf8; margin-bottom: 25px; font-size: 1.8rem; text-shadow: 0 2px 10px rgba(56, 189, 248, 0.5);"><i class="fas fa-fingerprint"></i> सिस्टीम लॉगिन</h2>
-      
+      <h2
+        style="color: #38bdf8; margin-bottom: 25px; font-size: 1.8rem; text-shadow: 0 2px 10px rgba(56, 189, 248, 0.5);">
+        <i class="fas fa-fingerprint"></i> सिस्टीम लॉगिन
+      </h2>
+
       <div id="login-role-selector" style="display: flex; gap: 12px; margin-bottom: 25px;">
-        <button class="app-btn outline flex-1 role-btn" id="btn-role-operator" onclick="selectLoginRole('operator')" style="background: #38bdf8; color: #fff; border-color: #38bdf8;">ऑपरेटर</button>
-        <button class="app-btn outline flex-1 role-btn" id="btn-role-admin" onclick="selectLoginRole('admin')" style="color: #cbd5e1; border-color: rgba(255,255,255,0.2);">ॲडमीन</button>
+        <button type="button" class="app-btn flex-1 role-btn" id="btn-role-operator"
+          onclick="selectLoginRole('operator')"
+          style="background: #38bdf8; color: #0f172a; border: 2px solid #38bdf8; font-weight: 700; cursor: pointer; border-radius: 10px; padding: 10px;">
+          <i class="fas fa-user-shield"></i> ऑपरेटर
+        </button>
+        <button type="button" class="app-btn flex-1 role-btn" id="btn-role-admin" onclick="selectLoginRole('admin')"
+          style="background: rgba(255,255,255,0.05); color: #cbd5e1; border: 2px solid rgba(255,255,255,0.2); font-weight: 700; cursor: pointer; border-radius: 10px; padding: 10px;">
+          <i class="fas fa-user-lock"></i> ॲडमीन
+        </button>
       </div>
 
       <!-- Operator Login Form -->
       <form id="operator-login-form" onsubmit="handleOperatorLogin(event)">
         <div class="form-field text-left" style="text-align: left; margin-bottom: 15px;">
-          <label style="color: #e2e8f0; font-size: 0.95rem; margin-bottom: 8px; display: block; font-weight: 500;">आधार केंद्र निवडा (Center) *</label>
-          <select id="login-center-select" class="input-control" style="background: rgba(30, 41, 59, 0.7);" required onchange="updateOperatorNameUI()">
-            <option value="">-- निवडा --</option>
-            <option value="DIT (Maha IT)">DIT (Maha IT)</option>
+          <label style="color: #e2e8f0; font-size: 0.95rem; margin-bottom: 8px; display: block; font-weight: 500;">आधार
+            केंद्र निवडा (Center) *</label>
+          <select id="login-center-select" class="input-control"
+            style="background: rgba(30, 41, 59, 0.7); font-size: 1rem; font-weight: 600; color: #38bdf8;" required
+            onchange="updateOperatorNameUI()">
+            <option value="DIT (Maha IT)" selected>DIT (Maha IT)</option>
             <option value="WCD">WCD</option>
           </select>
         </div>
         <div class="form-field text-left" style="text-align: left; margin-bottom: 15px;">
-          <label style="color: #e2e8f0; font-size: 0.95rem; margin-bottom: 8px; display: block; font-weight: 500;">ऑपरेटरचे नाव (Operator Name)</label>
-          <input type="text" id="login-operator-name" class="input-control" style="background: rgba(30, 41, 59, 0.7);" readonly placeholder="केंद्र निवडल्यावर नाव आपोआप येईल" required />
+          <label
+            style="color: #e2e8f0; font-size: 0.95rem; margin-bottom: 8px; display: block; font-weight: 500;">ऑपरेटरचे
+            नाव (Operator Name) *</label>
+          <input type="text" id="login-operator-name" value="Gauravi Gawade" class="input-control"
+            style="background: rgba(30, 41, 59, 0.7); font-weight: 600; color: #fff;" readonly required />
         </div>
         <div class="form-field text-left" style="text-align: left; margin-bottom: 25px;">
-          <label style="color: #e2e8f0; font-size: 0.95rem; margin-bottom: 8px; display: block; font-weight: 500;">पासवर्ड / स्टेशन आयडी (Station ID) *</label>
-          <input type="password" id="login-operator-password" class="input-control font-mono" style="background: rgba(30, 41, 59, 0.7); letter-spacing: 2px;" placeholder="स्टेशन आयडी टाका (उदा. 40068)" required />
+          <label
+            style="color: #e2e8f0; font-size: 0.95rem; margin-bottom: 8px; display: block; font-weight: 500;">स्टेशन
+            आयडी / पासवर्ड (Station ID) *</label>
+          <input type="password" id="login-operator-password" class="input-control font-mono"
+            style="background: rgba(30, 41, 59, 0.7); letter-spacing: 2px;" placeholder="स्टेशन आयडी टाका (40068)"
+            required />
         </div>
-        <button type="submit" class="app-btn primary lg" style="width: 100%; border-radius: 12px; font-weight: 600;">लॉगिन करा</button>
+        <button type="submit" class="app-btn primary lg" onclick="handleOperatorLogin(event)"
+          style="width: 100%; border-radius: 12px; font-weight: 600; cursor: pointer;">
+          <i class="fas fa-sign-in-alt"></i> ऑपरेटर लॉगिन करा
+        </button>
       </form>
 
       <!-- Admin Login Form -->
       <form id="admin-login-form" onsubmit="handleAdminLogin(event)" style="display: none;">
         <div class="form-field text-left" style="text-align: left; margin-bottom: 25px;">
-          <label style="color: #e2e8f0; font-size: 0.95rem; margin-bottom: 8px; display: block; font-weight: 500;">ॲडमीन पिन (Admin PIN) *</label>
-          <input type="password" id="login-admin-pin" class="input-control font-mono" style="font-size: 1.5rem; letter-spacing: 12px; text-align: center; background: rgba(30, 41, 59, 0.7); padding: 15px;" placeholder="••••" required />
+          <label style="color: #e2e8f0; font-size: 0.95rem; margin-bottom: 8px; display: block; font-weight: 500;">ॲडमीन
+            पिन (Admin PIN) *</label>
+          <input type="password" id="login-admin-pin" class="input-control font-mono"
+            style="font-size: 1.5rem; letter-spacing: 12px; text-align: center; background: rgba(30, 41, 59, 0.7); padding: 15px;"
+            placeholder="••••" required />
         </div>
-        <button type="submit" class="app-btn warning lg" style="width: 100%; border-radius: 12px; font-weight: 600;">ॲडमीन लॉगिन</button>
+        <button type="submit" class="app-btn warning lg" onclick="handleAdminLogin(event)"
+          style="width: 100%; border-radius: 12px; font-weight: 600; cursor: pointer;">
+          <i class="fas fa-lock-open"></i> ॲडमीन लॉगिन करा
+        </button>
       </form>
-      <div id="login-error-msg" style="color: #ef4444; margin-top: 15px; font-size: 0.95rem; font-weight: 500; display: none; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);"></div>
+      <div id="login-error-msg"
+        style="color: #ef4444; margin-top: 15px; font-size: 0.95rem; font-weight: 500; display: none; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);">
+      </div>
     </div>
   </div>
 
@@ -201,7 +292,8 @@
       </div>
       <div class="top-strip-right">
         <span id="current-user-display" style="color: #cbd5e1; margin-right: 15px; font-size: 0.9rem; display: none;">
-          <i class="fas fa-user-circle text-gold"></i> <span id="current-user-name"></span> (<span id="current-user-center"></span>)
+          <i class="fas fa-user-circle text-gold"></i> <span id="current-user-name"></span> (<span
+            id="current-user-center"></span>)
         </span>
         <!-- Firebase Status -->
         <span id="cloud-sync-status" class="cloud-badge offline" title="Firebase स्थिती तपासण्यासाठी क्लिक करा">
@@ -261,38 +353,55 @@
           <i class="fas fa-store-alt"></i> <span id="display-kendra-name">ई-मुद्रा आधार सेवा केंद्र</span>
         </div>
         <div class="operator-info">
-          <i class="fas fa-user-shield"></i> ऑपरेटर: <strong id="display-operator-name">प्रशांत सावंत</strong> | <i class="fas fa-desktop"></i> मशीन/स्टेशन: <span id="display-station-id">STN-786</span>
+          <i class="fas fa-user-shield"></i> ऑपरेटर: <strong id="display-operator-name">Gauravi Gawade / Sakshi Sawant</strong>
         </div>
       </div>
       <div class="banner-action-buttons" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
         <!-- Admin Dashboard Period / Date Filter Controls -->
-        <div id="admin-dashboard-filter-group" style="display: flex; gap: 6px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 4px 8px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.25);">
-          <select id="dash-center-select" class="select-control sm" style="background: rgba(56, 189, 248, 0.15); border-color: #38bdf8; color: #fff; padding: 4px 8px; font-size: 0.85rem;" onchange="updateMetricsDashboard()">
-            <option value="all">🏢 सर्व केंद्रे</option>
-            <option value="DIT (Maha IT)">DIT (Maha IT)</option>
-            <option value="WCD">WCD</option>
+        <div id="admin-dashboard-filter-group"
+          style="display: flex; gap: 6px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 4px 8px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.25);">
+          <!-- Center Filter -->
+          <select id="dash-center-select" class="select-control sm"
+            style="background: rgba(56, 189, 248, 0.15); border-color: #38bdf8; color: #fff; padding: 4px 8px; font-size: 0.85rem; font-weight: 600;"
+            onchange="updateMetricsDashboard()">
+            <option value="all">🏢 सर्व केंद्रे (All Centers)</option>
+            <option value="DIT (Maha IT)">🏢 DIT (Maha IT) - Gauravi</option>
+            <option value="WCD">🏢 WCD - Sakshi</option>
           </select>
 
-          <select id="dash-period-select" class="select-control sm" style="background: rgba(245, 158, 11, 0.15); border-color: #fbbf24; color: #fff; padding: 4px 8px; font-size: 0.85rem;" onchange="handleDashPeriodChange()">
+          <!-- Period Filter: Day-wise, Month-wise, Custom Range -->
+          <select id="dash-period-select" class="select-control sm"
+            style="background: rgba(245, 158, 11, 0.15); border-color: #fbbf24; color: #fff; padding: 4px 8px; font-size: 0.85rem; font-weight: 600;"
+            onchange="handleDashPeriodChange()">
             <option value="today" selected>📅 आज (Today)</option>
             <option value="yesterday">📅 काल (Yesterday)</option>
             <option value="single-date">📅 विशिष्ट तारीख (Single Date)</option>
-            <option value="weekly">📅 साप्ताहिक (Last 7 Days)</option>
-            <option value="fortnightly">📅 पंधरवडा (15 Days)</option>
             <option value="monthly">📅 चालू महिना (This Month)</option>
             <option value="last-month">📅 मागील महिना (Last Month)</option>
-            <option value="multi-month">📅 महिने / कस्टम व्याप्ती (Custom Range)</option>
+            <option value="custom-month">🗓️ विशिष्ट महिना (Select Month)</option>
+            <option value="multi-month">📆 पासून - पर्यंत तारीख (From - To Range)</option>
             <option value="all-time">📊 एकूण सर्व कालावधी (All Time)</option>
           </select>
 
           <!-- Single Date Input -->
-          <input type="date" id="dash-single-date" class="input-control sm" style="display: none; width: auto; padding: 4px 6px; font-size: 0.85rem; background: rgba(30, 41, 59, 0.9); border-color: #fbbf24; color: #fff;" onchange="updateMetricsDashboard()" />
+          <input type="date" id="dash-single-date" class="input-control sm"
+            style="display: none; width: auto; padding: 4px 6px; font-size: 0.85rem; background: rgba(30, 41, 59, 0.9); border-color: #fbbf24; color: #fff;"
+            onchange="updateMetricsDashboard()" />
 
-          <!-- Custom Date Range Inputs -->
+          <!-- Custom Month Input -->
+          <input type="month" id="dash-month-select" class="input-control sm"
+            style="display: none; width: auto; padding: 4px 6px; font-size: 0.85rem; background: rgba(30, 41, 59, 0.9); border-color: #fbbf24; color: #fff;"
+            onchange="updateMetricsDashboard()" />
+
+          <!-- Custom Date Range Inputs (पासून - पर्यंत) -->
           <div id="dash-custom-range-wrap" style="display: none; gap: 4px; align-items: center;">
-            <input type="date" id="dash-date-from" class="input-control sm" style="width: auto; padding: 4px 6px; font-size: 0.85rem; background: rgba(30, 41, 59, 0.9); border-color: #fbbf24; color: #fff;" title="पासून (From)" onchange="updateMetricsDashboard()" />
-            <span style="color: #94a3b8; font-size: 0.8rem;">ते</span>
-            <input type="date" id="dash-date-to" class="input-control sm" style="width: auto; padding: 4px 6px; font-size: 0.85rem; background: rgba(30, 41, 59, 0.9); border-color: #fbbf24; color: #fff;" title="पर्यंत (To)" onchange="updateMetricsDashboard()" />
+            <input type="date" id="dash-date-from" class="input-control sm"
+              style="width: auto; padding: 4px 6px; font-size: 0.85rem; background: rgba(30, 41, 59, 0.9); border-color: #38bdf8; color: #fff;"
+              title="पासून (From Date)" onchange="updateMetricsDashboard()" />
+            <span style="color: #94a3b8; font-size: 0.8rem; font-weight: 600;">ते</span>
+            <input type="date" id="dash-date-to" class="input-control sm"
+              style="width: auto; padding: 4px 6px; font-size: 0.85rem; background: rgba(30, 41, 59, 0.9); border-color: #38bdf8; color: #fff;"
+              title="पर्यंत (To Date)" onchange="updateMetricsDashboard()" />
           </div>
         </div>
 
@@ -310,19 +419,43 @@
 
     <!-- Live Financial Metrics Grid -->
     <section class="metrics-grid">
-      <!-- 1. Total Daily Income -->
-      <div class="stat-box gold">
+      <!-- 1. Govt Fee from Upload File Report -->
+      <div class="stat-box amber">
         <div class="stat-icon-wrap">
-          <i class="fas fa-rupee-sign"></i>
+          <i class="fas fa-file-invoice-dollar"></i>
         </div>
         <div class="stat-content">
-          <span class="stat-label">आजचे एकूण संकलन (Total Income)</span>
-          <h3 class="stat-value">₹<span id="metric-today-total">0</span></h3>
-          <span class="stat-sub" id="metric-today-count-label">० व्यवहार आज</span>
+          <span class="stat-label">UIDAI रिपोर्ट शासकीय शुल्क (Govt Fee)</span>
+          <h3 class="stat-value" style="color: #fbbf24;">₹<span id="metric-govt-report-total">0</span></h3>
+          <span class="stat-sub" id="metric-govt-report-sub">अपलोड फाईलनुसार अधिकृत देयक</span>
         </div>
       </div>
 
-      <!-- 2. Cash Collection -->
+      <!-- 2. Actual Operator Collected Total Income -->
+      <div class="stat-box gold">
+        <div class="stat-icon-wrap">
+          <i class="fas fa-hand-holding-usd"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">ऑपरेटर प्रत्यक्ष संकलन (Total Collected)</span>
+          <h3 class="stat-value" style="color: #fcd34d;">₹<span id="metric-today-total">0</span></h3>
+          <span class="stat-sub" id="metric-today-count-label">० नागरिक व्यवहार</span>
+        </div>
+      </div>
+
+      <!-- 3. Extra Margin / Service Difference Profit -->
+      <div class="stat-box teal">
+        <div class="stat-icon-wrap">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">अतिरिक्त सेवा नफा (Extra Margin)</span>
+          <h3 class="stat-value" style="color: #2dd4bf;">₹<span id="metric-extra-margin">0</span></h3>
+          <span class="stat-sub">प्रत्यक्ष जमा - शासकीय शुल्क</span>
+        </div>
+      </div>
+
+      <!-- 4. Cash Collection -->
       <div class="stat-box emerald">
         <div class="stat-icon-wrap">
           <i class="fas fa-money-bill-wave"></i>
@@ -334,7 +467,7 @@
         </div>
       </div>
 
-      <!-- 3. UPI / Online -->
+      <!-- 5. UPI / Online -->
       <div class="stat-box blue">
         <div class="stat-icon-wrap">
           <i class="fas fa-qrcode"></i>
@@ -346,37 +479,37 @@
         </div>
       </div>
 
-      <!-- 4. Today's Expenses -->
+      <!-- 6. Total Expenses -->
       <div class="stat-box crimson">
         <div class="stat-icon-wrap">
           <i class="fas fa-receipt"></i>
         </div>
         <div class="stat-content">
-          <span class="stat-label">आजचा खर्च (Today's Expenses)</span>
+          <span class="stat-label">एकूण खर्च (Total Expenses)</span>
           <h3 class="stat-value">₹<span id="metric-today-expense">0</span></h3>
           <span class="stat-sub" id="metric-today-expense-count">० खर्च नोंदी</span>
         </div>
       </div>
 
-      <!-- 5. Net Cash in Drawer -->
+      <!-- 7. Net Cash in Drawer -->
       <div class="stat-box purple">
         <div class="stat-icon-wrap">
           <i class="fas fa-wallet"></i>
         </div>
         <div class="stat-content">
-          <span class="stat-label">निव्वळ शिल्लक रोकड (Net Cash)</span>
+          <span class="stat-label">गल्ल्यातील शिल्लक रोख (Drawer Cash)</span>
           <h3 class="stat-value">₹<span id="metric-today-balance">0</span></h3>
           <span class="stat-sub">रोख संकलन - खर्च</span>
         </div>
       </div>
 
-      <!-- 6. Footfall Count -->
+      <!-- 8. Customer Count -->
       <div class="stat-box cyan">
         <div class="stat-icon-wrap">
           <i class="fas fa-users"></i>
         </div>
         <div class="stat-content">
-          <span class="stat-label">एकूण ग्राहक (Customer Count)</span>
+          <span class="stat-label">एकूण नागरिक / ग्राहक (Customers)</span>
           <h3 class="stat-value"><span id="metric-today-customers">0</span></h3>
           <span class="stat-sub">नोंदणी झालेले नागरिक</span>
         </div>
@@ -391,36 +524,44 @@
         <!-- Left: Upload Box -->
         <div class="glass-card">
           <div class="card-title-row">
-            <h3><i class="fas fa-cloud-upload-alt" style="color: #f59e0b;"></i> UIDAI / ECMP दैनिक रिपोर्ट फाईल अपलोड</h3>
+            <h3><i class="fas fa-cloud-upload-alt" style="color: #f59e0b;"></i> UIDAI / ECMP दैनिक रिपोर्ट फाईल अपलोड
+            </h3>
             <span class="token-chip"><i class="fas fa-shield-alt"></i> Password-Protected ZIP & CSV</span>
           </div>
 
-          <div style="background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 12px; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 16px;">
-            <p><i class="fas fa-info-circle" style="color: #60a5fa;"></i> <strong>स्वयंचलित हिशोब सिस्टीम:</strong> मॅन्युअल एक-एक एन्ट्री करण्याची गरज नाही! ECMP / आधार नोंदणी सॉफ्टवेअरमधून मिळालेली <strong>पासवर्ड .ZIP किंवा .CSV फाईल</strong> येथे अपलोड करा. सिस्टीम सर्व ग्राहकांच्या नोंदी, सेवा प्रकार, शासकीय शुल्क आणि एकूण हिशोब थेट नोंदवहीत जोडून Firebase वर सिंक करेल!</p>
+          <div
+            style="background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 12px; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 16px;">
           </div>
 
           <!-- Main Interactive Dropzone -->
-          <div id="main-zip-dropzone" class="file-dropzone-box" onclick="document.getElementById('main-zip-file-input').click()">
-            <input type="file" id="main-zip-file-input" accept=".zip,.csv,.txt" style="display: none;" onchange="handleMainZipFileSelected(event)" />
+          <div id="main-zip-dropzone" class="file-dropzone-box"
+            onclick="document.getElementById('main-zip-file-input').click()">
+            <input type="file" id="main-zip-file-input" accept=".zip,.csv,.txt" style="display: none;"
+              onchange="handleMainZipFileSelected(event)" />
             <div class="dropzone-icon"><i class="fas fa-file-zipper"></i></div>
             <div class="dropzone-text" id="main-dropzone-prompt">
               <strong>UIDAI रिपोर्ट फाईल येथे ओढा (Drag & Drop)</strong> किंवा निवडा (.ZIP किंवा .CSV)
             </div>
-            <div class="dropzone-sub" id="main-dropzone-sub">समर्थित: Password Protected ZIP (AES / ZipCrypto) व CSV फाईल्स</div>
+            <div class="dropzone-sub" id="main-dropzone-sub">समर्थित: Password Protected ZIP (AES / ZipCrypto) व CSV
+              फाईल्स</div>
           </div>
 
           <!-- Date, Center & Password Grid -->
           <div class="form-grid-2 mt-3">
             <div class="form-field">
-              <label for="main-report-date" style="color: #38bdf8; font-weight: 600;"><i class="fas fa-calendar-alt"></i> रिपोर्ट दिनांक (Report Date) *</label>
-              <input type="date" id="main-report-date" class="input-control" style="background: rgba(30, 41, 59, 0.8); border-color: #38bdf8; color: #fff;" required />
+              <label for="main-report-date" style="color: #38bdf8; font-weight: 600;"><i
+                  class="fas fa-calendar-alt"></i> रिपोर्ट दिनांक (Report Date) *</label>
+              <input type="date" id="main-report-date" class="input-control"
+                style="background: rgba(30, 41, 59, 0.8); border-color: #38bdf8; color: #fff;" required />
               <span class="text-xs text-muted">टीप: मागच्या दिवसाचा रिपोर्ट अपलोड करताना ती तारीख येथे निवडा.</span>
             </div>
 
             <!-- Center & Operator Selection (Customizable by Admin, auto-locked for Operator) -->
             <div class="form-field" id="main-upload-center-field">
-              <label for="main-upload-center-select" style="color: #fbbf24; font-weight: 600;"><i class="fas fa-store-alt"></i> केंद्र व ऑपरेटर (Center & Operator) *</label>
-              <select id="main-upload-center-select" class="select-control" style="background: rgba(30, 41, 59, 0.8); border-color: #fbbf24; color: #fff;">
+              <label for="main-upload-center-select" style="color: #fbbf24; font-weight: 600;"><i
+                  class="fas fa-store-alt"></i> केंद्र व ऑपरेटर (Center & Operator) *</label>
+              <select id="main-upload-center-select" class="select-control"
+                style="background: rgba(30, 41, 59, 0.8); border-color: #fbbf24; color: #fff;">
                 <option value="DIT (Maha IT)">🏢 DIT (Maha IT) - Gauravi Gawade (40068)</option>
                 <option value="WCD">🏢 WCD - Sakshi Sawant (73016)</option>
               </select>
@@ -430,8 +571,10 @@
             <div class="form-field">
               <label for="main-zip-password"><i class="fas fa-key"></i> ZIP फाईल पासवर्ड (Password):</label>
               <div style="position: relative;">
-                <input type="password" id="main-zip-password" class="input-control" placeholder="पासवर्ड टाका (उदा. स्टेशन आयडी)..." />
-                <button type="button" class="password-toggle-btn" onclick="toggleMainZipPassword()" title="पासवर्ड पहा/लपवा">
+                <input type="password" id="main-zip-password" class="input-control"
+                  placeholder="पासवर्ड टाका (उदा. स्टेशन आयडी)..." />
+                <button type="button" class="password-toggle-btn" onclick="toggleMainZipPassword()"
+                  title="पासवर्ड पहा/लपवा">
                   <i class="far fa-eye" id="main-zip-eye"></i>
                 </button>
               </div>
@@ -439,14 +582,16 @@
             </div>
           </div>
 
-          <div style="margin-top: 14px;">
-            <button type="button" class="app-btn warning lg" id="main-btn-extract" style="width: 100%;" onclick="processMainReportFile()">
+          <div style="margin-top: 16px;">
+            <button type="button" class="app-btn warning lg" id="main-btn-extract" style="width: 100%;"
+              onclick="processMainReportFile()">
               <i class="fas fa-bolt"></i> फाईल वाचा व हिशोब अपडेट करा
             </button>
           </div>
 
           <!-- Status Alert -->
-          <div id="main-zip-alert" style="display: none; padding: 12px 14px; border-radius: 8px; margin-top: 14px; font-size: 0.9rem;"></div>
+          <div id="main-zip-alert"
+            style="display: none; padding: 12px 14px; border-radius: 8px; margin-top: 14px; font-size: 0.9rem;"></div>
         </div>
 
         <!-- Right: Recent Uploaded Summary & Quick Totals -->
@@ -457,7 +602,7 @@
               नोंदवही पहा <i class="fas fa-arrow-right"></i>
             </button>
           </div>
-          
+
           <div id="quick-recent-list-upload" class="fast-recent-list">
             <div class="text-muted text-sm py-4 text-center">अद्याप कोणताही रिपोर्ट अपलोड केलेला नाही.</div>
           </div>
@@ -480,11 +625,12 @@
           </div>
 
           <!-- Instructions Card -->
-          <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 10px; padding: 12px; font-size: 0.82rem; color: #cbd5e1; margin-top: 16px;">
+          <div
+            style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 10px; padding: 12px; font-size: 0.82rem; color: #cbd5e1; margin-top: 16px;">
             <p><strong><i class="fas fa-lightbulb" style="color: #fbbf24;"></i> ऑपरेटर सूचना:</strong></p>
             <ul style="margin-left: 16px; margin-top: 4px; line-height: 1.45;">
               <li>दररोज संध्याकाळी ECMP मधून निघालेली ZIP/CSV फाईल येथे अपलोड करा.</li>
-              <li>शासकीय सेवा शुल्क (बायो ₹१००, डेमो ₹५०, डॉक ₹५०, नवीन ₹०) आपोआप मोजले जाते.</li>
+              <li>शासकीय सेवा शुल्क (बायो ₹125, डेमो ₹75, डॉक ₹75, नवीन ₹0) आपोआप अचूक मोजले जाते.</li>
               <li>सर्व नोंदी थेट क्लाउड सर्व्हरवर सेव्ह होतात.</li>
             </ul>
           </div>
@@ -501,18 +647,22 @@
         <div class="table-filter-bar">
           <div class="search-field-wrap">
             <i class="fas fa-search"></i>
-            <input type="text" id="register-search-input" class="search-input-box" placeholder="ग्राहक नाव, मोबाईल क्र., आधार/EID ने शोधा..." oninput="filterRegisterRecords()" />
+            <input type="text" id="register-search-input" class="search-input-box"
+              placeholder="ग्राहक नाव, मोबाईल क्र., आधार/EID ने शोधा..." oninput="filterRegisterRecords()" />
             <button class="search-clear-btn" onclick="clearRegisterSearch()"><i class="fas fa-times"></i></button>
           </div>
 
           <div class="filter-selects-group">
-            <select id="register-center-filter" class="select-control" style="width: auto; background: rgba(56, 189, 248, 0.15); border-color: #38bdf8; color: #fff;" onchange="filterRegisterRecords()">
+            <select id="register-center-filter" class="select-control"
+              style="width: auto; background: rgba(56, 189, 248, 0.15); border-color: #38bdf8; color: #fff;"
+              onchange="filterRegisterRecords()">
               <option value="all">🏢 सर्व केंद्रे (All Centers)</option>
               <option value="DIT (Maha IT)">DIT (Maha IT)</option>
               <option value="WCD">WCD</option>
             </select>
 
-            <select id="register-date-preset" class="select-control" style="width: auto;" onchange="handleDatePresetChange()">
+            <select id="register-date-preset" class="select-control" style="width: auto;"
+              onchange="handleDatePresetChange()">
               <option value="today" selected>📅 आज (Today)</option>
               <option value="yesterday">📅 काल (Yesterday)</option>
               <option value="this-week">📅 चालू आठवडा (This Week)</option>
@@ -522,12 +672,15 @@
             </select>
 
             <div id="custom-date-wrap" style="display: none; gap: 4px; align-items: center;">
-              <input type="date" id="custom-date-from" class="input-control" style="width: auto; padding: 6px 8px;" onchange="filterRegisterRecords()" />
+              <input type="date" id="custom-date-from" class="input-control" style="width: auto; padding: 6px 8px;"
+                onchange="filterRegisterRecords()" />
               <span>ते</span>
-              <input type="date" id="custom-date-to" class="input-control" style="width: auto; padding: 6px 8px;" onchange="filterRegisterRecords()" />
+              <input type="date" id="custom-date-to" class="input-control" style="width: auto; padding: 6px 8px;"
+                onchange="filterRegisterRecords()" />
             </div>
 
-            <select id="register-service-filter" class="select-control" style="width: auto;" onchange="filterRegisterRecords()">
+            <select id="register-service-filter" class="select-control" style="width: auto;"
+              onchange="filterRegisterRecords()">
               <option value="all">सर्व सेवा प्रकार</option>
               <option value="डेमोग्राफिक">डेमोग्राफिक अपडेट</option>
               <option value="बायोमेट्रिक">बायोमेट्रिक अपडेट</option>
@@ -539,7 +692,8 @@
               <option value="इतर">इतर सेवा</option>
             </select>
 
-            <select id="register-payment-filter" class="select-control" style="width: auto;" onchange="filterRegisterRecords()">
+            <select id="register-payment-filter" class="select-control" style="width: auto;"
+              onchange="filterRegisterRecords()">
               <option value="all">सर्व पेमेंट प्रकार</option>
               <option value="रोख">रोख (Cash)</option>
               <option value="युपीआय">युपीआय (UPI)</option>
@@ -616,41 +770,60 @@
                 <input type="date" id="exp-date" class="input-control" required />
               </div>
               <div class="form-field">
-                <label for="exp-category"><i class="fas fa-tags"></i> खर्चाचा प्रकार *</label>
-                <select id="exp-category" class="select-control" required>
-                  <option value="स्टेशनरी व A4 पेपर">📄 स्टेशनरी व A4 पेपर</option>
-                  <option value="लॅमिनेशन पाऊच व शीट्स">🛡️ लॅमिनेशन पाऊच व शीट्स</option>
-                  <option value="पीव्हीसी कार्ड्स व रिबन">💳 पीव्हीसी कार्ड्स व प्रिंटर रिबन</option>
-                  <option value="प्रिंटर टोनर / शाई">🖨️ प्रिंटर टोनर / शाई</option>
-                  <option value="इंटरनेट व ब्रॉडबँड बिल">🌐 इंटरनेट व ब्रॉडबँड बिल</option>
-                  <option value="विद्युत बिल (Electricity)">⚡ विद्युत बिल (Electricity)</option>
-                  <option value="चहा, पाणी व नाश्ता">☕ चहा, पाणी व नाश्ता</option>
-                  <option value="दुरुस्ती व देखभाल">🔧 मशिन दुरुस्ती व देखभाल</option>
-                  <option value="ऑफिस भाडे व मेंटेनन्स">🏢 ऑफिस भाडे व मेंटेनन्स</option>
-                  <option value="ऑपरेटर / स्टाफ मानधन">💼 ऑपरेटर / स्टाफ मानधन</option>
-                  <option value="इतर किरकोळ खर्च">📦 इतर किरकोळ खर्च</option>
+                <label for="exp-center"><i class="fas fa-store"></i> आधार केंद्र (Center) *</label>
+                <select id="exp-center" class="select-control" required>
+                  <option value="DIT (Maha IT)">🏢 DIT (Maha IT) - Gauravi Gawade</option>
+                  <option value="WCD">🏢 WCD - Sakshi Sawant</option>
+                  <option value="सर्व केंद्रे (सामायिक)">🏢 सर्व केंद्रे (सामायिक खर्च)</option>
                 </select>
               </div>
             </div>
 
             <div class="form-grid-2">
               <div class="form-field">
-                <label for="exp-amount"><i class="fas fa-rupee-sign"></i> खर्च रक्कम (Amount ₹) *</label>
-                <input type="number" id="exp-amount" class="input-control" placeholder="उदा. 350" min="1" required />
+                <label for="exp-category"><i class="fas fa-tags"></i> खर्चाचा प्रकार (Category) *</label>
+                <select id="exp-category" class="select-control" required>
+                  <option value="दैनिक पिग्मी / बँक बचत ठेव">🏦 दैनिक पिग्मी / बँक बचत ठेव (Daily Pigmy / Savings)
+                  </option>
+                  <option value="ऑपरेटर पेमेंट / मानधन / कमिशन">💼 ऑपरेटर पेमेंट / मानधन / कमिशन (Operator Payment)
+                  </option>
+                  <option value="इंटरनेट व ब्रॉडबँड नेट बिल">🌐 इंटरनेट व ब्रॉडबँड नेट बिल (Net Bill / Wi-Fi)</option>
+                  <option value="विद्युत बिल / लाईट बिल">⚡ विद्युत बिल / लाईट बिल (Electricity Bill)</option>
+                  <option value="स्टेशनरी व A4 झेरॉक्स पेपर">📄 स्टेशनरी व A4 झेरॉक्स पेपर (Paper & Stationery)</option>
+                  <option value="लॅमिनेशन पाऊच व शीट्स">🛡️ लॅमिनेशन पाऊच व शीट्स (Lamination)</option>
+                  <option value="पीव्हीसी कार्ड्स व प्रिंटर रिबन">💳 पीव्हीसी कार्ड्स व प्रिंटर रिबन (PVC Cards)
+                  </option>
+                  <option value="प्रिंटर टोनर, शाई व कार्ट्रिज">🖨️ प्रिंटर टोनर, शाई व कार्ट्रिज (Toner / Ink)</option>
+                  <option value="ऑफिस / केंद्र भाडे व मेंटेनन्स">🏢 ऑफिस / केंद्र भाडे व मेंटेनन्स (Office Rent)
+                  </option>
+                  <option value="मशिन, GPS व डिव्हाईस दुरुस्ती">🔧 मशिन, GPS व डिव्हाईस दुरुस्ती (Device Repair)
+                  </option>
+                  <option value="चहा, पाणी व नाश्ता">☕ चहा, पाणी व नाश्ता (Refreshments)</option>
+                  <option value="इतर आकस्मिक / किरकोळ खर्च">📦 इतर आकस्मिक / किरकोळ खर्च (Miscellaneous)</option>
+                </select>
               </div>
               <div class="form-field">
-                <label for="exp-payment-mode"><i class="fas fa-credit-card"></i> देयक पद्धत</label>
-                <select id="exp-payment-mode" class="select-control">
-                  <option value="रोख (Cash)">💵 गल्ल्यातील रोख (Cash)</option>
-                  <option value="युपीआय (UPI/Online)">📱 बँक UPI / GPay</option>
-                  <option value="इतर">इतर</option>
-                </select>
+                <label for="exp-amount"><i class="fas fa-rupee-sign"></i> खर्च रक्कम (Amount ₹) *</label>
+                <input type="number" id="exp-amount" class="input-control" placeholder="उदा. 350 किंवा 5000" min="1"
+                  required />
               </div>
             </div>
 
-            <div class="form-field">
-              <label for="exp-description"><i class="fas fa-pen"></i> खर्चाचा तपशील / दुकानदार नाव *</label>
-              <input type="text" id="exp-description" class="input-control" placeholder="उदा. ५ रिम जेके कॉपियर पेपर खरेदी" required />
+            <div class="form-grid-2">
+              <div class="form-field">
+                <label for="exp-payment-mode"><i class="fas fa-credit-card"></i> देयक पद्धत (Payment Mode)</label>
+                <select id="exp-payment-mode" class="select-control">
+                  <option value="रोख (Cash)">💵 गल्ल्यातील रोख (Cash)</option>
+                  <option value="युपीआय (UPI/Online)">📱 बँक UPI / GPay / PhonePe</option>
+                  <option value="बँक ट्रान्सफर / RTGS">🏦 बँक ट्रान्सफर / RTGS / Cheque</option>
+                  <option value="इतर">इतर</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="exp-description"><i class="fas fa-pen"></i> खर्चाचा सविस्तर तपशील *</label>
+                <input type="text" id="exp-description" class="input-control"
+                  placeholder="उदा. गौरव गवळी मासिक मानधन / BSNL नेट बिल" required />
+              </div>
             </div>
 
             <div class="actions-btn-row">
@@ -676,6 +849,7 @@
               <thead>
                 <tr>
                   <th>तारीख</th>
+                  <th>केंद्र</th>
                   <th>प्रकार</th>
                   <th>तपशील</th>
                   <th style="text-align: right;">रक्कम (₹)</th>
@@ -685,7 +859,7 @@
               </thead>
               <tbody id="expenses-table-tbody">
                 <tr>
-                  <td colspan="6" class="text-center py-4 text-muted">कोणताही खर्च नोंदवलेला नाही.</td>
+                  <td colspan="7" class="text-center py-4 text-muted">कोणताही खर्च नोंदवलेला नाही.</td>
                 </tr>
               </tbody>
             </table>
@@ -699,34 +873,106 @@
          ========================================================================= -->
     <section id="reports-tab" class="app-tab-panel">
       <div class="glass-card">
-        <div class="table-filter-bar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-          <div>
-            <h3><i class="fas fa-balance-scale"></i> आधार केंद्र ताळेबंद व अहवाल (Reports & Taleband)</h3>
-            <p class="text-muted text-sm">केंद्राच्या आर्थिक कामगिरीचे सविस्तर विवरण व प्रिंट-सुलभ पत्रक.</p>
+        <!-- Control Toolbar: Visible on Screen, Hidden in Print -->
+        <div class="report-controls-panel no-print">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 14px; margin-bottom: 16px;">
+            <div>
+              <h3 style="font-size: 1.25rem; color: #38bdf8;"><i class="fas fa-balance-scale"></i> आधार केंद्र ताळेबंद व
+                नफा-तोटा अहवाल (Reports & Taleband)</h3>
+              <p class="text-muted text-sm">दिवसनिहाय, महिनानिहाय किंवा <strong>पाहिजे त्या तारखेपासून पाहिजे त्या
+                  तारखेपर्यंत (Custom Date Range)</strong> ताळेबंद तयार करा व प्रिंट करा.</p>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="app-btn primary lg" onclick="printDayReport()">
+                <i class="fas fa-print"></i> ताळेबंद पत्रक प्रिंट करा (Print Sheet)
+              </button>
+              <button class="app-btn crimson sm" id="btn-delete-day-data" onclick="deleteDayData()"
+                style="display: none;">
+                <i class="fas fa-trash"></i> दिवस डेटा हटवा
+              </button>
+            </div>
           </div>
-          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <select id="report-center-select" class="select-control" style="width: auto; padding: 6px 10px; background: rgba(56, 189, 248, 0.15); border-color: #38bdf8; color: #fff;" onchange="generateDailyReport()">
-              <option value="all">🏢 सर्व केंद्रे (All Centers)</option>
-              <option value="DIT (Maha IT)">DIT (Maha IT)</option>
-              <option value="WCD">WCD</option>
-            </select>
 
-            <select id="report-scope-select" class="select-control" style="width: auto; padding: 6px 10px; background: rgba(245, 158, 11, 0.15); border-color: #fbbf24; color: #fff;" onchange="handleReportScopeChange()">
-              <option value="date" selected>📅 विशिष्ट तारीख (Single Date)</option>
-              <option value="all">📊 एकूण सर्व अहवाल (Total / All Time)</option>
-              <option value="month">📅 चालू महिना (This Month)</option>
-            </select>
-
-            <div id="report-date-wrap" style="display: flex; gap: 6px; align-items: center;">
-              <input type="date" id="report-date-select" class="input-control" style="width: auto; padding: 6px 10px;" onchange="generateDailyReport()" />
+          <!-- Comprehensive Custom Date Range & Filter Bar -->
+          <div
+            style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px;">
+            <!-- Quick Preset Buttons -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
+              <span style="font-size: 0.88rem; font-weight: 700; color: #94a3b8;"><i class="fas fa-filter"></i> कालावधी
+                निवडा:</span>
+              <button type="button" class="app-btn outline sm report-preset-btn active" id="btn-preset-today"
+                onclick="setReportQuickPreset('today')">📅 आज (Today)</button>
+              <button type="button" class="app-btn outline sm report-preset-btn" id="btn-preset-yesterday"
+                onclick="setReportQuickPreset('yesterday')">📅 काल (Yesterday)</button>
+              <button type="button" class="app-btn outline sm report-preset-btn" id="btn-preset-this-month"
+                onclick="setReportQuickPreset('this-month')">🗓️ चालू महिना (This Month)</button>
+              <button type="button" class="app-btn outline sm report-preset-btn" id="btn-preset-last-month"
+                onclick="setReportQuickPreset('last-month')">🗓️ मागील महिना (Last Month)</button>
+              <button type="button" class="app-btn outline sm report-preset-btn" id="btn-preset-custom-range"
+                onclick="setReportQuickPreset('custom-range')">📆 कस्टम तारीख (पासून - पर्यंत)</button>
+              <button type="button" class="app-btn outline sm report-preset-btn" id="btn-preset-all"
+                onclick="setReportQuickPreset('all')">📊 सर्व कालावधी (All Time)</button>
             </div>
 
-            <button class="app-btn primary sm" onclick="printDayReport()">
-              <i class="fas fa-print"></i> ताळेबंद पत्रक प्रिंट करा
-            </button>
-            <button class="app-btn crimson sm" id="btn-delete-day-data" onclick="deleteDayData()">
-              <i class="fas fa-trash"></i> डेटा हटवा
-            </button>
+            <!-- Date & Center Detailed Controls -->
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
+              <!-- Center Filter -->
+              <div class="form-field" style="margin-bottom: 0; min-width: 220px;">
+                <label for="report-center-select" style="color: #38bdf8; font-weight: 600; font-size: 0.82rem;"><i
+                    class="fas fa-store-alt"></i> आधार केंद्र (Center):</label>
+                <select id="report-center-select" class="select-control"
+                  style="background: rgba(30, 41, 59, 0.9); border-color: #38bdf8; color: #fff; font-weight: 600;"
+                  onchange="generateDailyReport()">
+                  <option value="all">🏢 सर्व केंद्रे (All Centers - DIT + WCD)</option>
+                  <option value="DIT (Maha IT)">🏢 DIT (Maha IT) - Gauravi Gawade</option>
+                  <option value="WCD">🏢 WCD - Sakshi Sawant</option>
+                </select>
+              </div>
+
+              <!-- Scope Hidden/Synced Selector -->
+              <input type="hidden" id="report-scope-select" value="today" />
+
+              <!-- Single Date Wrap -->
+              <div id="report-single-date-wrap" class="form-field" style="margin-bottom: 0; display: none;">
+                <label for="report-date-select" style="color: #fbbf24; font-weight: 600; font-size: 0.82rem;"><i
+                    class="fas fa-calendar-day"></i> विशिष्ट तारीख (Date):</label>
+                <input type="date" id="report-date-select" class="input-control"
+                  style="background: rgba(30, 41, 59, 0.9); border-color: #fbbf24; color: #fff;"
+                  onchange="generateDailyReport()" />
+              </div>
+
+              <!-- Custom Month Wrap -->
+              <div id="report-month-wrap" class="form-field" style="margin-bottom: 0; display: none;">
+                <label for="report-month-select" style="color: #fbbf24; font-weight: 600; font-size: 0.82rem;"><i
+                    class="fas fa-calendar-alt"></i> विशिष्ट महिना (Month):</label>
+                <input type="month" id="report-month-select" class="input-control"
+                  style="background: rgba(30, 41, 59, 0.9); border-color: #fbbf24; color: #fff;"
+                  onchange="generateDailyReport()" />
+              </div>
+
+              <!-- Custom Date Range (From - To) Wrap -->
+              <div id="report-range-wrap" style="display: flex; gap: 8px; align-items: flex-end;">
+                <div class="form-field" style="margin-bottom: 0;">
+                  <label for="report-date-from" style="color: #34d399; font-weight: 600; font-size: 0.82rem;"><i
+                      class="fas fa-calendar-plus"></i> तारखेपासून (From Date):</label>
+                  <input type="date" id="report-date-from" class="input-control"
+                    style="background: rgba(30, 41, 59, 0.9); border-color: #34d399; color: #fff;"
+                    onchange="onReportCustomDateChanged()" />
+                </div>
+                <div class="form-field" style="margin-bottom: 0;">
+                  <label for="report-date-to" style="color: #34d399; font-weight: 600; font-size: 0.82rem;"><i
+                      class="fas fa-calendar-check"></i> तारखेपर्यंत (To Date):</label>
+                  <input type="date" id="report-date-to" class="input-control"
+                    style="background: rgba(30, 41, 59, 0.9); border-color: #34d399; color: #fff;"
+                    onchange="onReportCustomDateChanged()" />
+                </div>
+              </div>
+
+              <button type="button" class="app-btn success" style="padding: 9px 18px;" onclick="generateDailyReport()">
+                <i class="fas fa-sync-alt"></i> ताळेबंद तयार करा (Generate)
+              </button>
+            </div>
           </div>
         </div>
 
@@ -746,7 +992,8 @@
           <div class="sheet-cols-grid">
             <!-- Left: Income -->
             <div>
-              <h4 style="font-weight: 700; color: #047857; margin-bottom: 8px;"><i class="fas fa-arrow-circle-down"></i> १. एकूण महसूल / जमा (Income Breakdown)</h4>
+              <h4 style="font-weight: 700; color: #047857; margin-bottom: 8px;"><i class="fas fa-arrow-circle-down"></i>
+                १. एकूण महसूल / जमा (Income Breakdown)</h4>
               <table class="sheet-table">
                 <thead>
                   <tr>
@@ -766,15 +1013,20 @@
               </table>
 
               <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 10px; font-size: 0.84rem;">
-                <div style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 6px;">💵 रोख जमा (Cash): <strong>₹<span id="rep-cash-total">0</span></strong></div>
-                <div style="background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 6px;">📱 UPI जमा (Online): <strong>₹<span id="rep-upi-total">0</span></strong></div>
-                <div style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 6px;">⏳ उधारी / बाकी: <strong>₹<span id="rep-pending-total">0</span></strong></div>
+                <div style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 6px;">💵 रोख जमा
+                  (Cash): <strong>₹<span id="rep-cash-total">0</span></strong></div>
+                <div style="background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 6px;">📱 UPI जमा
+                  (Online): <strong>₹<span id="rep-upi-total">0</span></strong></div>
+                <div style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 6px;">⏳ उधारी / बाकी:
+                  <strong>₹<span id="rep-pending-total">0</span></strong>
+                </div>
               </div>
             </div>
 
             <!-- Right: Expenses & Final -->
             <div>
-              <h4 style="font-weight: 700; color: #b91c1c; margin-bottom: 8px;"><i class="fas fa-arrow-circle-up"></i> २. दैनिक खर्च (Expenses)</h4>
+              <h4 style="font-weight: 700; color: #b91c1c; margin-bottom: 8px;"><i class="fas fa-arrow-circle-up"></i>
+                २. दैनिक खर्च (Expenses)</h4>
               <table class="sheet-table">
                 <thead>
                   <tr>
@@ -785,29 +1037,46 @@
                 </thead>
                 <tbody id="rep-expenses-breakdown-tbody"></tbody>
                 <tfoot>
-                  <tr style="font-weight: bold; background: #f1f5f9;">
-                    <td colspan="2">एकूण खर्च (Expenses):</td>
+                  <tr style="font-weight: bold; background: #f8fafc;">
+                    <td colspan="2">इतर खर्च (Expenses):</td>
                     <td style="text-align: right; color: #b91c1c;">₹<span id="rep-total-expense">0</span></td>
+                  </tr>
+                  <tr style="font-weight: bold; background: #ecfdf5; color: #065f46;">
+                    <td colspan="2">🏦 पिग्मी बचत ठेव (Pigmy Saving):</td>
+                    <td style="text-align: right; color: #047857;">₹<span id="rep-total-pigmy">0</span></td>
                   </tr>
                 </tfoot>
               </table>
 
               <div class="final-net-card">
-                <h4 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-bottom: 6px;"><i class="fas fa-coins"></i> अंतिम ताळेबंद हिशोब</h4>
+                <h4 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-bottom: 6px;"><i
+                    class="fas fa-coins"></i> अंतिम ताळेबंद व नफा-तोटा हिशोब</h4>
                 <div class="final-net-row">
-                  <span>एकूण जमा रक्कम (Gross):</span>
-                  <strong>+ ₹<span id="rep-final-gross">0</span></strong>
+                  <span>१. अधिकृत शासकीय शुल्क (UIDAI Fee):</span>
+                  <strong style="color: #d97706;">₹<span id="rep-final-govt">0</span></strong>
                 </div>
                 <div class="final-net-row">
-                  <span>एकूण वजा खर्च (Expenses):</span>
+                  <span>२. ऑपरेटर प्रत्यक्ष संकलन (Gross Collection):</span>
+                  <strong style="color: #047857;">+ ₹<span id="rep-final-gross">0</span></strong>
+                </div>
+                <div class="final-net-row">
+                  <span>३. अतिरिक्त सेवा नफा / मार्जिन (Margin):</span>
+                  <strong style="color: #0284c7;">+ ₹<span id="rep-final-margin">0</span></strong>
+                </div>
+                <div class="final-net-row">
+                  <span>४. एकूण इतर खर्च (Expenses):</span>
                   <strong style="color: #b91c1c;">- ₹<span id="rep-final-expense">0</span></strong>
                 </div>
+                <div class="final-net-row">
+                  <span>५. पिग्मी / बँक बचत ठेव (Pigmy Deposit):</span>
+                  <strong style="color: #059669;">₹<span id="rep-final-pigmy">0</span></strong>
+                </div>
                 <div class="final-net-row net-total">
-                  <span>निव्वळ शिल्लक नफा:</span>
+                  <span>६. निव्वळ शिल्लक नफा (Net Profit):</span>
                   <strong>₹<span id="rep-final-net">0</span></strong>
                 </div>
                 <div class="final-net-row drawer-total">
-                  <span>गल्ल्यातील प्रत्यक्ष शिल्लक रोख (Drawer Cash):</span>
+                  <span>७. गल्ल्यातील प्रत्यक्ष शिल्लक रोख (Drawer Cash):</span>
                   <strong>₹<span id="rep-final-drawer-cash">0</span></strong>
                 </div>
               </div>
@@ -841,8 +1110,10 @@
 
           <form id="kendra-settings-form" onsubmit="saveKendraSettings(event)">
             <div class="form-field" style="margin-bottom: 15px;">
-              <label for="setting-center-select" style="color: #0ea5e9;"><i class="fas fa-building"></i> केंद्र निवडा (Select Center to Update)</label>
-              <select id="setting-center-select" class="select-control" style="background-color: #f0f9ff; border-color: #38bdf8;" onchange="loadKendraSettingsForSelected()">
+              <label for="setting-center-select" style="color: #0ea5e9;"><i class="fas fa-building"></i> केंद्र निवडा
+                (Select Center to Update)</label>
+              <select id="setting-center-select" class="select-control"
+                style="background-color: #f0f9ff; border-color: #38bdf8;" onchange="loadKendraSettingsForSelected()">
                 <option value="DIT (Maha IT)">DIT (Maha IT)</option>
                 <option value="WCD">WCD (Women & Child Development)</option>
               </select>
@@ -872,15 +1143,18 @@
 
             <div class="form-field">
               <label for="setting-center-address">केंद्राचा पत्ता (Center Address)</label>
-              <input type="text" id="setting-center-address" class="input-control" value="मुख्य बाजारपेठ, आधार केंद्र" />
+              <input type="text" id="setting-center-address" class="input-control"
+                value="मुख्य बाजारपेठ, आधार केंद्र" />
             </div>
 
             <div class="form-field">
               <label for="setting-receipt-footer">पावतीवरील तळटीप संदेश (Receipt Footer)</label>
-              <input type="text" id="setting-receipt-footer" class="input-control" value="आधार सेवा केंद्रास भेट दिल्याबद्दल धन्यवाद! तक्रारीसाठी १९४७ वर संपर्क साधावा." />
+              <input type="text" id="setting-receipt-footer" class="input-control"
+                value="आधार सेवा केंद्रास भेट दिल्याबद्दल धन्यवाद! तक्रारीसाठी १९४७ वर संपर्क साधावा." />
             </div>
 
-            <h4 class="mt-3 mb-2" style="color: #fbbf24; font-size: 0.95rem;"><i class="fas fa-tags"></i> डीफॉल्ट सेवा दर (Default Rates ₹)</h4>
+            <h4 class="mt-3 mb-2" style="color: #fbbf24; font-size: 0.95rem;"><i class="fas fa-tags"></i> डीफॉल्ट सेवा
+              दर (Default Rates ₹)</h4>
             <div class="form-grid-3">
               <div class="form-field">
                 <label for="rate-input-demo">डेमोग्राफिक (₹)</label>
@@ -926,8 +1200,11 @@
             <span id="firebase-card-badge" class="badge-tag gold">स्थानिक मोड</span>
           </div>
 
-          <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 12px; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 14px;">
-            <p><i class="fas fa-info-circle" style="color: #60a5fa;"></i> <strong>Firebase क्लाउड स्टोरेज:</strong> तुमचा सर्व दैनंदिन हिशोब, ग्राहक नोंदी आणि खर्चाचा डेटा गुगलच्या सुरक्षित <strong>Firebase Firestore Database</strong> मध्ये सेव्ह होतो. संगणक खराब झाला तरी डेटा कायम सुरक्षित राहतो!</p>
+          <div
+            style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 12px; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 14px;">
+            <p><i class="fas fa-info-circle" style="color: #60a5fa;"></i> <strong>Firebase क्लाउड स्टोरेज:</strong>
+              तुमचा सर्व दैनंदिन हिशोब, ग्राहक नोंदी आणि खर्चाचा डेटा गुगलच्या सुरक्षित <strong>Firebase Firestore
+                Database</strong> मध्ये सेव्ह होतो. संगणक खराब झाला तरी डेटा कायम सुरक्षित राहतो!</p>
           </div>
 
           <form id="firebase-config-form" onsubmit="saveFirebaseConfig(event)">
@@ -943,14 +1220,16 @@
               </div>
               <div class="form-field">
                 <label for="fb-authDomain">Auth Domain</label>
-                <input type="text" id="fb-authDomain" class="input-control font-mono" placeholder="my-aadhar-center.firebaseapp.com" />
+                <input type="text" id="fb-authDomain" class="input-control font-mono"
+                  placeholder="my-aadhar-center.firebaseapp.com" />
               </div>
             </div>
 
             <div class="form-grid-2">
               <div class="form-field">
                 <label for="fb-storageBucket">Storage Bucket</label>
-                <input type="text" id="fb-storageBucket" class="input-control font-mono" placeholder="my-aadhar-center.appspot.com" />
+                <input type="text" id="fb-storageBucket" class="input-control font-mono"
+                  placeholder="my-aadhar-center.appspot.com" />
               </div>
               <div class="form-field">
                 <label for="fb-appId">App ID</label>
@@ -970,21 +1249,26 @@
 
           <!-- Admin PIN Management -->
           <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px;">
-            <h4 style="font-size: 0.95rem; color: #fca5a5; margin-bottom: 8px;"><i class="fas fa-user-lock"></i> 🔐 ॲडमीन सुरक्षा पिन व्यवस्थापक (Admin PIN Security)</h4>
-            <p class="text-muted text-xs mb-3">नोंद डिलीट करण्यासाठी किंवा डेटा साफ करण्यासाठी अधिकृत ॲडमीन पिन आवश्यक आहे. (डीफॉल्ट पिन: <strong>1234</strong>)</p>
+            <h4 style="font-size: 0.95rem; color: #fca5a5; margin-bottom: 8px;"><i class="fas fa-user-lock"></i> 🔐
+              ॲडमीन सुरक्षा पिन व्यवस्थापक (Admin PIN Security)</h4>
+            <p class="text-muted text-xs mb-3">नोंद डिलीट करण्यासाठी किंवा डेटा साफ करण्यासाठी अधिकृत ॲडमीन पिन आवश्यक
+              आहे. (डीफॉल्ट पिन: <strong>1234</strong>)</p>
             <form id="admin-pin-change-form" onsubmit="saveAdminPinChange(event)">
               <div class="form-grid-3">
                 <div class="form-field">
                   <label for="admin-current-pin">सध्याचा पिन (Current PIN) *</label>
-                  <input type="password" id="admin-current-pin" class="input-control" placeholder="उदा. 1234" maxlength="6" required />
+                  <input type="password" id="admin-current-pin" class="input-control" placeholder="उदा. 1234"
+                    maxlength="6" required />
                 </div>
                 <div class="form-field">
                   <label for="admin-new-pin">नवीन पिन (New PIN) *</label>
-                  <input type="password" id="admin-new-pin" class="input-control" placeholder="उदा. 5678" maxlength="6" required />
+                  <input type="password" id="admin-new-pin" class="input-control" placeholder="उदा. 5678" maxlength="6"
+                    required />
                 </div>
                 <div class="form-field">
                   <label for="admin-confirm-pin">नवीन पिन पुन्हा टाका *</label>
-                  <input type="password" id="admin-confirm-pin" class="input-control" placeholder="उदा. 5678" maxlength="6" required />
+                  <input type="password" id="admin-confirm-pin" class="input-control" placeholder="उदा. 5678"
+                    maxlength="6" required />
                 </div>
               </div>
               <div class="actions-btn-row">
@@ -997,14 +1281,16 @@
 
           <!-- Local Backup & Restore -->
           <div style="margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px;">
-            <h4 style="font-size: 0.95rem; color: #fed7aa; margin-bottom: 6px;"><i class="fas fa-file-archive"></i> स्थानिक डेटा बॅकअप व रिस्टोअर (JSON Backup)</h4>
+            <h4 style="font-size: 0.95rem; color: #fed7aa; margin-bottom: 6px;"><i class="fas fa-file-archive"></i>
+              स्थानिक डेटा बॅकअप व रिस्टोअर (JSON Backup)</h4>
             <div class="actions-btn-row">
               <button class="app-btn outline sm" onclick="exportJSONBackup()">
                 <i class="fas fa-download"></i> संपूर्ण बॅकअप डाऊनलोड (JSON)
               </button>
               <label class="app-btn outline sm" style="cursor: pointer;">
                 <i class="fas fa-upload"></i> बॅकअप फाईल रिस्टोअर करा
-                <input type="file" id="import-json-input" accept=".json" onchange="importJSONBackup(event)" style="display: none;" />
+                <input type="file" id="import-json-input" accept=".json" onchange="importJSONBackup(event)"
+                  style="display: none;" />
               </label>
               <button class="app-btn crimson sm" onclick="requestClearAllData()">
                 <i class="fas fa-trash-alt"></i> सर्व डेटा साफ करा
@@ -1131,28 +1417,35 @@
         <button class="modal-close-x" onclick="closeModal('firebase-modal')">&times;</button>
       </div>
       <div class="modal-inner-body">
-        <div style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 8px; padding: 10px; font-size: 0.82rem; color: #fed7aa; margin-bottom: 14px;">
+        <div
+          style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 8px; padding: 10px; font-size: 0.82rem; color: #fed7aa; margin-bottom: 14px;">
           <p><strong><i class="fas fa-lightbulb"></i> २ मिनिटांत Firebase कसे जोडावे?</strong></p>
           <ol style="margin-left: 18px; margin-top: 4px;">
-            <li><a href="https://console.firebase.google.com" target="_blank" style="color: #fbbf24; text-decoration: underline;">console.firebase.google.com</a> वर मोफत प्रोजेक्ट तयार करा.</li>
+            <li><a href="https://console.firebase.google.com" target="_blank"
+                style="color: #fbbf24; text-decoration: underline;">console.firebase.google.com</a> वर मोफत प्रोजेक्ट
+              तयार करा.</li>
             <li><strong>Firestore Database</strong> सक्रिय करा (Test Mode).</li>
-            <li>प्रोजेक्ट सेटिंग्जमधून Web App चे <strong>API Key</strong> व <strong>Project ID</strong> कॉपी करून येथे पेस्ट करा.</li>
+            <li>प्रोजेक्ट सेटिंग्जमधून Web App चे <strong>API Key</strong> व <strong>Project ID</strong> कॉपी करून येथे
+              पेस्ट करा.</li>
           </ol>
         </div>
 
         <form id="modal-fb-form" onsubmit="saveFirebaseConfigFromModal(event)">
           <div class="form-field">
             <label>API Key (apiKey) *</label>
-            <input type="password" id="modal-fb-apiKey" class="input-control font-mono" placeholder="AIzaSy..." required />
+            <input type="password" id="modal-fb-apiKey" class="input-control font-mono" placeholder="AIzaSy..."
+              required />
           </div>
           <div class="form-grid-2">
             <div class="form-field">
               <label>Project ID *</label>
-              <input type="text" id="modal-fb-projectId" class="input-control font-mono" placeholder="my-aadhar-center" required />
+              <input type="text" id="modal-fb-projectId" class="input-control font-mono" placeholder="my-aadhar-center"
+                required />
             </div>
             <div class="form-field">
               <label>Auth Domain</label>
-              <input type="text" id="modal-fb-authDomain" class="input-control font-mono" placeholder="my-aadhar-center.firebaseapp.com" />
+              <input type="text" id="modal-fb-authDomain" class="input-control font-mono"
+                placeholder="my-aadhar-center.firebaseapp.com" />
             </div>
           </div>
           <div class="actions-btn-row">
@@ -1174,22 +1467,29 @@
   <div id="zip-import-modal" class="modal-overlay" onclick="handleModalBackdropClick(event, 'zip-import-modal')">
     <div class="modal-content-box" style="max-width: 780px;">
       <div class="modal-header-bar">
-        <h3><i class="fas fa-file-zipper" style="color: #f59e0b;"></i> UIDAI / ECMP दैनिक रिपोर्ट इंपोर्ट (Password ZIP / CSV)</h3>
+        <h3><i class="fas fa-file-zipper" style="color: #f59e0b;"></i> UIDAI / ECMP दैनिक रिपोर्ट इंपोर्ट (Password ZIP
+          / CSV)</h3>
         <button class="modal-close-x" onclick="closeModal('zip-import-modal')">&times;</button>
       </div>
       <div class="modal-inner-body">
-        <div style="background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 12px; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 16px;">
-          <p><i class="fas fa-info-circle" style="color: #60a5fa;"></i> <strong>UIDAI क्लायंट रिपोर्ट स्वयंचलित वाचन:</strong> तुमच्या ECMP / आधार नोंदणी सॉफ्टवेअरमधून मिळालेली <strong>पासवर्ड-प्रोटेक्टेड .ZIP फाईल किंवा .CSV फाईल</strong> येथे अपलोड करा. सिस्टीम फाईल आपोआप अनलॉक करून सर्व ग्राहकांच्या नोंदी, सेवा प्रकार आणि हिशोब थेट नोंदवहीत व Firebase वर सिंक करेल!</p>
+        <div
+          style="background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 12px; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 16px;">
+          <p><i class="fas fa-info-circle" style="color: #60a5fa;"></i> <strong>UIDAI क्लायंट रिपोर्ट स्वयंचलित
+              वाचन:</strong> तुमच्या ECMP / आधार नोंदणी सॉफ्टवेअरमधून मिळालेली <strong>पासवर्ड-प्रोटेक्टेड .ZIP फाईल
+              किंवा .CSV फाईल</strong> येथे अपलोड करा. सिस्टीम फाईल आपोआप अनलॉक करून सर्व ग्राहकांच्या नोंदी, सेवा
+            प्रकार आणि हिशोब थेट नोंदवहीत व Firebase वर सिंक करेल!</p>
         </div>
 
         <!-- File Upload Dropzone -->
         <div id="zip-dropzone" class="file-dropzone-box" onclick="document.getElementById('zip-file-input').click()">
-          <input type="file" id="zip-file-input" accept=".zip,.csv,.txt" style="display: none;" onchange="handleZipFileSelected(event)" />
+          <input type="file" id="zip-file-input" accept=".zip,.csv,.txt" style="display: none;"
+            onchange="handleZipFileSelected(event)" />
           <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
           <div class="dropzone-text" id="dropzone-prompt-text">
             <strong>UIDAI रिपोर्ट फाईल येथे ओढा (Drag & Drop)</strong> किंवा निवडा (.ZIP किंवा .CSV)
           </div>
-          <div class="dropzone-sub" id="dropzone-file-name">समर्थित: Password Protected ZIP (AES / ZipCrypto) व CSV फाईल्स</div>
+          <div class="dropzone-sub" id="dropzone-file-name">समर्थित: Password Protected ZIP (AES / ZipCrypto) व CSV
+            फाईल्स</div>
         </div>
 
         <!-- Password Field for ZIP -->
@@ -1197,27 +1497,33 @@
           <div class="form-field">
             <label for="zip-password-input"><i class="fas fa-key"></i> ZIP फाईल पासवर्ड (Password):</label>
             <div style="position: relative;">
-              <input type="password" id="zip-password-input" class="input-control" placeholder="पासवर्ड टाका (उदा. ऑपरेटर ID / स्टेशन कोड)..." />
-              <button type="button" class="password-toggle-btn" onclick="toggleZipPasswordVisibility()" title="पासवर्ड पहा/लपवा">
+              <input type="password" id="zip-password-input" class="input-control"
+                placeholder="पासवर्ड टाका (उदा. ऑपरेटर ID / स्टेशन कोड)..." />
+              <button type="button" class="password-toggle-btn" onclick="toggleZipPasswordVisibility()"
+                title="पासवर्ड पहा/लपवा">
                 <i class="far fa-eye" id="zip-eye-icon"></i>
               </button>
             </div>
             <span class="text-xs text-muted">टीप: जर फाईलला पासवर्ड नसेल तर हे रिकामे ठेवा.</span>
           </div>
           <div class="form-field" style="display: flex; flex-direction: column; justify-content: flex-end;">
-            <button type="button" class="app-btn warning" id="btn-extract-zip" onclick="processSelectedZipOrCsv()" style="height: 42px;">
+            <button type="button" class="app-btn warning" id="btn-extract-zip" onclick="processSelectedZipOrCsv()"
+              style="height: 42px;">
               <i class="fas fa-unlock-alt"></i> फाईल उघडा व विश्लेषण करा
             </button>
           </div>
         </div>
 
         <!-- Extraction Progress / Status Message -->
-        <div id="zip-status-alert" style="display: none; padding: 10px 14px; border-radius: 8px; margin-top: 12px; font-size: 0.88rem;"></div>
+        <div id="zip-status-alert"
+          style="display: none; padding: 10px 14px; border-radius: 8px; margin-top: 12px; font-size: 0.88rem;"></div>
 
         <!-- Extracted Preview Card (Initially Hidden) -->
-        <div id="zip-preview-card" style="display: none; margin-top: 18px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+        <div id="zip-preview-card"
+          style="display: none; margin-top: 18px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
           <div class="card-title-row" style="margin-bottom: 10px;">
-            <h4 style="font-size: 1rem; color: #34d399;"><i class="fas fa-check-circle"></i> रिपोर्ट यशस्वीरित्या वाचला! (Report Summary)</h4>
+            <h4 style="font-size: 1rem; color: #34d399;"><i class="fas fa-check-circle"></i> रिपोर्ट यशस्वीरित्या वाचला!
+              (Report Summary)</h4>
             <span class="badge-tag gold" id="preview-total-records">० नोंदी</span>
           </div>
 
@@ -1238,7 +1544,8 @@
             <div class="stat-box blue" style="padding: 10px 12px;">
               <div class="stat-content">
                 <span class="stat-label">दिनांक व्याप्ती (Date Range)</span>
-                <span class="stat-value" id="preview-stat-dates" style="font-size: 0.85rem; font-weight: 600; color: #93c5fd;">--</span>
+                <span class="stat-value" id="preview-stat-dates"
+                  style="font-size: 0.85rem; font-weight: 600; color: #93c5fd;">--</span>
               </div>
             </div>
           </div>
@@ -1260,31 +1567,42 @@
           </div>
 
           <!-- Operator Additional Details Form -->
-          <div id="operator-additional-details" style="background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px;">
-            <h5 style="color: #60a5fa; margin-bottom: 12px; font-size: 0.95rem;"><i class="fas fa-money-bill-wave"></i> ऑपरेटर हिशोब नोंद (आजचे कलेक्शन व खर्च)</h5>
-            <div class="form-grid-2" style="margin-bottom: 12px;">
+          <div id="operator-additional-details"
+            style="background: rgba(30, 41, 59, 0.7); padding: 15px; border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.3); margin-bottom: 15px;">
+            <h5 style="color: #34d399; margin-bottom: 12px; font-size: 0.95rem; font-weight: bold;"><i
+                class="fas fa-piggy-bank"></i> ऑपरेटर संकलन, पिग्मी बचत व खर्च नोंद</h5>
+            <div class="form-grid-3" style="margin-bottom: 12px;">
               <div class="form-field">
-                <label for="operator-report-date">रिपोर्टची तारीख (Date) *</label>
+                <label for="operator-report-date">रिपोर्ट तारीख (Date) *</label>
                 <input type="date" id="operator-report-date" class="input-control" required />
               </div>
               <div class="form-field">
-                <label for="operator-cash-collection">रोख रक्कम (Cash ₹) *</label>
-                <input type="number" id="operator-cash-collection" class="input-control" placeholder="उदा. 500" required />
-              </div>
-            </div>
-            <div class="form-grid-2">
-              <div class="form-field">
-                <label for="operator-online-collection">ऑनलाईन/UPI (₹) *</label>
-                <input type="number" id="operator-online-collection" class="input-control" placeholder="उदा. 200" required />
+                <label for="operator-pigmy" style="color: #34d399; font-weight: bold;"><i class="fas fa-university"></i>
+                  🏦 पिग्मी बचत (Pigmy ₹)</label>
+                <input type="number" id="operator-pigmy" class="input-control" placeholder="उदा. 500" min="0"
+                  style="border-color: #34d399; background: rgba(16, 185, 129, 0.1); color: #34d399; font-weight: bold;" />
               </div>
               <div class="form-field">
-                <label for="operator-expenses">आजचा खर्च (Expense ₹)</label>
-                <input type="number" id="operator-expenses" class="input-control" placeholder="उदा. 50" />
+                <label for="operator-expenses" style="color: #f87171;">आजचा खर्च (Expense ₹)</label>
+                <input type="number" id="operator-expenses" class="input-control" placeholder="उदा. 50" min="0" />
               </div>
             </div>
-            <div class="form-field mt-2">
-              <label for="operator-expense-note">खर्चाचा तपशील (Expense Note)</label>
-              <input type="text" id="operator-expense-note" class="input-control" placeholder="खर्च कशासाठी झाला ते लिहा (उदा. चहा/पाणी, स्टेशनरी)" />
+            <div class="form-grid-3">
+              <div class="form-field">
+                <label for="operator-cash-collection">रोख रक्कम (Cash ₹)</label>
+                <input type="number" id="operator-cash-collection" class="input-control" placeholder="उदा. 500"
+                  min="0" />
+              </div>
+              <div class="form-field">
+                <label for="operator-online-collection">ऑनलाईन/UPI (₹)</label>
+                <input type="number" id="operator-online-collection" class="input-control" placeholder="उदा. 200"
+                  min="0" />
+              </div>
+              <div class="form-field">
+                <label for="operator-expense-note">खर्च/पिग्मी तपशील (Note)</label>
+                <input type="text" id="operator-expense-note" class="input-control"
+                  placeholder="उदा. पिग्मी / चहा, स्टेशनरी" />
+              </div>
             </div>
           </div>
 
@@ -1304,15 +1622,17 @@
   <!-- =========================================================================
        MODAL: MAIN REPORT ANALYSIS & PREVIEW POPUP MODAL
        ========================================================================= -->
-  <div id="main-upload-preview-modal" class="modal-overlay" onclick="handleModalBackdropClick(event, 'main-upload-preview-modal')">
+  <div id="main-upload-preview-modal" class="modal-overlay"
+    onclick="handleModalBackdropClick(event, 'main-upload-preview-modal')">
     <div class="modal-content-box" style="max-width: 850px;">
       <div class="modal-header-bar" style="border-bottom-color: rgba(56, 189, 248, 0.3);">
         <h3 style="color: #38bdf8;"><i class="fas fa-chart-pie"></i> 📊 UIDAI दैनिक रिपोर्ट विश्लेषण व तपासणी</h3>
         <button class="modal-close-x" onclick="closeModal('main-upload-preview-modal')">&times;</button>
       </div>
-      
+
       <div class="modal-inner-body">
-        <div id="main-modal-alert" style="display: none; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 0.9rem;"></div>
+        <div id="main-modal-alert"
+          style="display: none; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 0.9rem;"></div>
 
         <div class="metrics-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 14px;">
           <div class="stat-box emerald" style="padding: 10px 12px;">
@@ -1330,7 +1650,8 @@
           <div class="stat-box blue" style="padding: 10px 12px;">
             <div class="stat-content">
               <span class="stat-label">दिनांक व्याप्ती (Date Range)</span>
-              <span class="stat-value" id="main-stat-dates" style="font-size: 0.85rem; font-weight: 600; color: #93c5fd;">--</span>
+              <span class="stat-value" id="main-stat-dates"
+                style="font-size: 0.85rem; font-weight: 600; color: #93c5fd;">--</span>
             </div>
           </div>
         </div>
@@ -1351,33 +1672,50 @@
           </table>
         </div>
 
-        <!-- Operator Additional Details Form in Modal -->
-        <div id="main-operator-additional-details" style="display: none; background: rgba(30, 41, 59, 0.7); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 16px;">
-          <h5 style="color: #60a5fa; margin-bottom: 12px; font-size: 0.95rem;"><i class="fas fa-money-bill-wave"></i> ऑपरेटर हिशोब नोंद (कलेक्शन व खर्च)</h5>
-          <div class="form-grid-2" style="margin-bottom: 12px;">
+        <!-- Operator & Admin Additional Details Form in Modal -->
+        <div id="main-operator-additional-details"
+          style="display: block; background: rgba(30, 41, 59, 0.85); padding: 15px; border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.3); margin-bottom: 16px;">
+          <h5 style="color: #34d399; margin-bottom: 12px; font-size: 0.98rem; font-weight: 700;">
+            <i class="fas fa-piggy-bank"></i> दैनिक संकलन, पिग्मी बचत व खर्च नोंद (Collection, Pigmy & Expense)
+          </h5>
+          <div class="form-grid-3" style="margin-bottom: 12px;">
             <div class="form-field">
-              <label for="main-operator-cash-collection">रोख रक्कम (Cash ₹) *</label>
-              <input type="number" id="main-operator-cash-collection" class="input-control" placeholder="उदा. 500" />
+              <label for="main-operator-pigmy" style="color: #34d399; font-weight: 700;"><i
+                  class="fas fa-university"></i> 🏦 पिग्मी बचत रक्कम (Pigmy ₹)</label>
+              <input type="number" id="main-operator-pigmy" class="input-control" placeholder="उदा. 500 किंवा 1000"
+                min="0"
+                style="border-color: #34d399; background: rgba(16, 185, 129, 0.12); font-weight: 700; color: #34d399;" />
             </div>
             <div class="form-field">
-              <label for="main-operator-online-collection">ऑनलाईन/UPI (₹) *</label>
-              <input type="number" id="main-operator-online-collection" class="input-control" placeholder="उदा. 200" />
+              <label for="main-operator-expenses" style="color: #f87171; font-weight: 600;"><i
+                  class="fas fa-receipt"></i> इतर खर्च रक्कम (Expense ₹)</label>
+              <input type="number" id="main-operator-expenses" class="input-control" placeholder="उदा. 50" min="0" />
+            </div>
+            <div class="form-field">
+              <label for="main-operator-expense-note"><i class="fas fa-pen"></i> खर्च तपशील (Note)</label>
+              <input type="text" id="main-operator-expense-note" class="input-control"
+                placeholder="उदा. दैनिक पिग्मी / चहा, स्टेशनरी" />
             </div>
           </div>
           <div class="form-grid-2">
             <div class="form-field">
-              <label for="main-operator-expenses">खर्च (Expense ₹)</label>
-              <input type="number" id="main-operator-expenses" class="input-control" placeholder="उदा. 50" />
+              <label for="main-operator-cash-collection"><i class="fas fa-money-bill-wave"></i> रोख संकलन (Cash
+                ₹)</label>
+              <input type="number" id="main-operator-cash-collection" class="input-control" placeholder="उदा. 500"
+                min="0" />
             </div>
             <div class="form-field">
-              <label for="main-operator-expense-note">खर्चाचा तपशील (Expense Note)</label>
-              <input type="text" id="main-operator-expense-note" class="input-control" placeholder="उदा. चहा/पाणी, स्टेशनरी" />
+              <label for="main-operator-online-collection"><i class="fas fa-mobile-alt"></i> ऑनलाईन / UPI संकलन
+                (₹)</label>
+              <input type="number" id="main-operator-online-collection" class="input-control" placeholder="उदा. 200"
+                min="0" />
             </div>
           </div>
         </div>
 
         <div class="actions-btn-row" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-          <button type="button" class="app-btn success lg flex-1" id="main-btn-save-cloud" onclick="confirmMainImportedRecords()">
+          <button type="button" class="app-btn success lg flex-1" id="main-btn-save-cloud"
+            onclick="confirmMainImportedRecords()">
             <i class="fas fa-cloud-upload-alt"></i> सेव्ह करा (Save)
           </button>
           <button type="button" class="app-btn warning lg" onclick="reuploadMainReport()">
@@ -1401,11 +1739,14 @@
         <button class="modal-close-x" onclick="closeModal('admin-pin-modal')">&times;</button>
       </div>
       <div class="modal-inner-body">
-        <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 12px; font-size: 0.85rem; color: #fecaca; margin-bottom: 16px;">
-          <p><i class="fas fa-exclamation-triangle"></i> <strong>सुरक्षा इशारा:</strong> ही नोंद डिलीट करण्यासाठी किंवा महत्त्वाचा बदल करण्यासाठी अधिकृत ॲडमीन पिन प्रविष्ट करा.</p>
+        <div
+          style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 12px; font-size: 0.85rem; color: #fecaca; margin-bottom: 16px;">
+          <p><i class="fas fa-exclamation-triangle"></i> <strong>सुरक्षा इशारा:</strong> ही नोंद डिलीट करण्यासाठी किंवा
+            महत्त्वाचा बदल करण्यासाठी अधिकृत ॲडमीन पिन प्रविष्ट करा.</p>
         </div>
 
-        <div id="admin-target-preview" style="background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 14px;">
+        <div id="admin-target-preview"
+          style="background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 14px;">
           <span id="admin-target-description">नोंद हटवली जाईल...</span>
         </div>
 
@@ -1413,15 +1754,20 @@
           <div class="form-field">
             <label for="admin-pin-input"><i class="fas fa-key"></i> ४-अंकी ॲडमीन पिन (Admin PIN) *</label>
             <div style="position: relative;">
-              <input type="password" id="admin-pin-input" class="input-control font-mono" style="font-size: 1.3rem; letter-spacing: 6px; text-align: center;" maxlength="6" placeholder="••••" required autofocus />
-              <button type="button" class="password-toggle-btn" onclick="toggleAdminPinInputVisibility()" title="पिन पहा/लपवा">
+              <input type="password" id="admin-pin-input" class="input-control font-mono"
+                style="font-size: 1.3rem; letter-spacing: 6px; text-align: center;" maxlength="6" placeholder="••••"
+                required autofocus />
+              <button type="button" class="password-toggle-btn" onclick="toggleAdminPinInputVisibility()"
+                title="पिन पहा/लपवा">
                 <i class="far fa-eye" id="admin-pin-eye-icon"></i>
               </button>
             </div>
             <span class="text-xs text-muted">डीफॉल्ट ॲडमीन पिन: <strong>1234</strong> (सेटिंग्जमधून बदलू शकता)</span>
           </div>
 
-          <div id="admin-pin-error" style="display: none; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin-top: 10px;"></div>
+          <div id="admin-pin-error"
+            style="display: none; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin-top: 10px;">
+          </div>
 
           <div class="actions-btn-row mt-3">
             <button type="submit" class="app-btn crimson lg flex-1">
@@ -1440,10 +1786,12 @@
        CUSTOM GREEN SUCCESS MODAL POPUP (अभिवादन / यश संदेश)
        ========================================================================= -->
   <div id="app-success-modal" class="modal-overlay" onclick="handleModalBackdropClick(event, 'app-success-modal')">
-    <div class="modal-content-box" style="max-width: 480px; text-align: center; border: 2px solid #10b981; box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 35px rgba(16, 185, 129, 0.35); background: linear-gradient(145deg, #0f172a 0%, #064e3b 100%); border-radius: 16px;">
+    <div class="modal-content-box"
+      style="max-width: 480px; text-align: center; border: 2px solid #10b981; box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 35px rgba(16, 185, 129, 0.35); background: linear-gradient(145deg, #0f172a 0%, #064e3b 100%); border-radius: 16px;">
       <div style="padding: 28px 24px;">
         <!-- Animated Green Checkmark Icon -->
-        <div style="width: 80px; height: 80px; margin: 0 auto 18px; background: rgba(16, 185, 129, 0.2); border: 2px solid #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);">
+        <div
+          style="width: 80px; height: 80px; margin: 0 auto 18px; background: rgba(16, 185, 129, 0.2); border: 2px solid #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);">
           <i class="fas fa-check" style="font-size: 42px; color: #34d399;"></i>
         </div>
 
@@ -1451,11 +1799,14 @@
           🎉 अभिनंदन! डेटा सेव्ह झाला
         </h3>
 
-        <div id="app-success-message" style="color: #f1f5f9; font-size: 1rem; line-height: 1.6; margin-bottom: 24px; background: rgba(0, 0, 0, 0.35); padding: 14px 16px; border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.3);">
+        <div id="app-success-message"
+          style="color: #f1f5f9; font-size: 1rem; line-height: 1.6; margin-bottom: 24px; background: rgba(0, 0, 0, 0.35); padding: 14px 16px; border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.3);">
           नोंदी यशस्वीरित्या दैनिक नोंदवहीत व Firebase वर सुरक्षित सेव्ह झाल्या आहेत!
         </div>
 
-        <button type="button" class="app-btn success lg" style="width: 100%; padding: 12px 24px; font-size: 1.1rem; font-weight: 700; border-radius: 10px; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.45); cursor: pointer;" onclick="closeModal('app-success-modal')">
+        <button type="button" class="app-btn success lg"
+          style="width: 100%; padding: 12px 24px; font-size: 1.1rem; font-weight: 700; border-radius: 10px; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.45); cursor: pointer;"
+          onclick="closeModal('app-success-modal')">
           <i class="fas fa-check-circle"></i> ठीक आहे (OK)
         </button>
       </div>
@@ -1469,4 +1820,5 @@
 
   <script src="aadhar-app.js"></script>
 </body>
+
 </html>
