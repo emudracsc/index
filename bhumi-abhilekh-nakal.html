@@ -592,9 +592,6 @@
             <button type="button" class="tab-btn" onclick="switchTab('tab-records', this)">
                 <i class="fa-solid fa-table"></i> २. मागणी केलेल्या नकला व जमिनीचा तपशील
             </button>
-            <button type="button" class="tab-btn" onclick="switchTab('tab-office', this)">
-                <i class="fa-solid fa-building-columns"></i> ३. कार्यालयीन नोंद व फी तपशील (पान २)
-            </button>
         </div>
 
         <!-- TAB 1: APPLICANT & OFFICE DETAILS -->
@@ -681,45 +678,6 @@
                         <!-- Dynamic Input Rows -->
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-        <!-- TAB 3: OFFICE USE DETAILS (PAGE 2) -->
-        <div id="tab-office" class="tab-content-panel" style="display: none;">
-            <div class="section-subhead"><i class="fa-solid fa-receipt"></i> कार्यालयीन पावती व फी तपशील (पान २ साठी)</div>
-            <div class="input-grid">
-                <div class="form-group">
-                    <label>१) अनामत रक्कम (रुपये)</label>
-                    <input type="text" id="inp_anamat_amount" value="१००/-" placeholder="उदा. १००/-" oninput="syncAll()">
-                </div>
-                <div class="form-group">
-                    <label>२) पावती क्रमांक</label>
-                    <input type="text" id="inp_receipt_no" value="४५८२" placeholder="उदा. ४५८२" oninput="syncAll()">
-                </div>
-                <div class="form-group">
-                    <label>पावती दिनांक</label>
-                    <input type="text" id="inp_receipt_date" placeholder="उदा. 30/08/2026" oninput="syncAll()">
-                </div>
-                <div class="form-group">
-                    <label>३) पुरवणी पावती क्रमांक</label>
-                    <input type="text" id="inp_extra_receipt_no" placeholder="उदा. -" oninput="syncAll()">
-                </div>
-                <div class="form-group">
-                    <label>अर्ज प्राप्त दिनांक</label>
-                    <input type="text" id="inp_receive_date" placeholder="उदा. 30/08/2026" oninput="syncAll()">
-                </div>
-                <div class="form-group">
-                    <label>नक्कल तयार केल्याचा दिनांक</label>
-                    <input type="text" id="inp_ready_date" placeholder="उदा. 04/09/2026" oninput="syncAll()">
-                </div>
-                <div class="form-group">
-                    <label>नक्कल दिल्याचा दिनांक</label>
-                    <input type="text" id="inp_delivery_date" placeholder="उदा. 06/09/2026" oninput="syncAll()">
-                </div>
-                <div class="form-group">
-                    <label>परताव्याची रक्कम (रुपये)</label>
-                    <input type="text" id="inp_refund_amount" placeholder="उदा. २०/-" oninput="syncAll()">
-                </div>
             </div>
         </div>
     </div>
@@ -841,22 +799,22 @@
 
 
         <!-- =========================================================
-             PAGE 2: कार्यालयीन नोंद व नक्कल फी चा तपशिल (मागील बाजू)
+             PAGE 2: कार्यालयीन नोंद व नक्कल फी चा तपशिल (मागील बाजू - Office Use Only)
         ========================================================= -->
         <div class="a4-sheet" id="page2Sheet">
             <div>
                 <!-- Top Receipt Info Grid -->
                 <div class="p2-top-grid">
                     <div class="p2-top-left">
-                        <div>१) अनामत रक्कम रुपये - <strong id="view_p2_anamat">१००/-</strong></div>
-                        <div>२) पावती क्रमांक - <strong id="view_p2_receipt_no">४५८२</strong> &nbsp;&nbsp;&nbsp;&nbsp; दिनांक - <strong id="view_p2_receipt_date">30/08/2026</strong></div>
-                        <div>३) पुरवणी पावती क्रमांक - <strong id="view_p2_extra_receipt_no">........</strong> &nbsp;&nbsp;&nbsp;&nbsp; दिनांक - <strong id="view_p2_extra_date">........</strong></div>
+                        <div style="margin-bottom: 8px;">१) &nbsp;&nbsp; अनामत रक्कम रुपये - &nbsp; .....................................................</div>
+                        <div style="margin-bottom: 8px;">२) &nbsp;&nbsp; पावती क्रमांक - &nbsp; .................................... &nbsp;&nbsp;&nbsp;&nbsp; दिनांक - &nbsp; ....................................</div>
+                        <div style="margin-bottom: 8px;">३) &nbsp;&nbsp; पुरवणी पावती क्रमांक - &nbsp; .................................... &nbsp;&nbsp;&nbsp;&nbsp; दिनांक - &nbsp; ....................................</div>
                     </div>
 
                     <div class="p2-top-right">
-                        <div>अर्ज प्राप्त दिनांक - <strong id="view_p2_receive_date">30/08/2026</strong></div>
-                        <div>नक्कल तयार केल्याचा दिनांक - <strong id="view_p2_ready_date">04/09/2026</strong></div>
-                        <div>नक्कल दिल्याचा दिनांक - <strong id="view_p2_delivery_date">06/09/2026</strong></div>
+                        <div style="margin-bottom: 8px;">अर्ज प्राप्त दिनांक - &nbsp; ....................................</div>
+                        <div style="margin-bottom: 8px;">नक्कल तयार केल्याचा दिनांक - &nbsp; ....................................</div>
+                        <div style="margin-bottom: 8px;">नक्कल दिल्याचा दिनांक - &nbsp; ....................................</div>
                     </div>
                 </div>
 
@@ -878,38 +836,40 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>१)</td><td class="col-item">गटबुक</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>२)</td><td class="col-item">प्रतीबुक</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>३)</td><td class="col-item">मोजणी नकाशा</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>४)</td><td class="col-item">आकारफोड</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>५)</td><td class="col-item">गुणकारक बुक हि. फा. नं.</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>६)</td><td class="col-item">गटस्किम उतारा</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>७)</td><td class="col-item">क. जा. पत्रक</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td style="height: 32px;">१)</td><td class="col-item">गटबुक</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td style="height: 32px;">२)</td><td class="col-item">प्रतीबुक</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td style="height: 32px;">३)</td><td class="col-item">मोजणी नकाशा</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td style="height: 32px;">४)</td><td class="col-item">आकारफोड</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td style="height: 32px;">५)</td><td class="col-item">गुणकारक बुक हि. फा. नं.</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td style="height: 32px;">६)</td><td class="col-item">गटस्किम उतारा</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td style="height: 32px;">७)</td><td class="col-item">क. जा. पत्रक</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                     </tbody>
                 </table>
 
                 <!-- Official Signatures & Verification Grid -->
                 <div class="p2-verif-grid">
                     <div class="p2-verif-left">
-                        <div style="margin-bottom: 25px;">
-                            <strong>नक्कल तयार करणाऱ्याची स्वाक्षरी</strong>
+                        <div style="margin-bottom: 30px;">
+                            <strong>नक्कल तयार</strong><br>
+                            करणाऱ्याची स्वाक्षरी
                         </div>
                         
-                        <div style="margin-bottom: 30px;">
-                            <strong>तपासणीदाराची स्वाक्षरी व पदनाम</strong>
+                        <div style="margin-bottom: 35px;">
+                            <strong>तपासणीदाराची</strong><br>
+                            स्वाक्षरी व पदनाम
                         </div>
 
                         <div style="line-height: 1.8;">
                             नक्कल मिळाली तसेच<br>
-                            परताव्याची रक्कम रुपये <strong id="view_p2_refund">..........</strong><br>
+                            परताव्याची रक्कम रुपये ........................<br>
                             परत मिळाले.<br><br><br>
                             <strong>अर्जदाराची सही / अंगठा</strong>
                         </div>
                     </div>
 
                     <div class="p2-verif-right">
-                        <div style="margin-bottom: 20px;">
-                            अनामत रक्कम रुपये <strong id="view_p2_anamat2">१००/-</strong>
+                        <div style="margin-bottom: 25px;">
+                            अनामत रक्कम रुपये ........................
                         </div>
 
                         <div style="margin-bottom: 35px;">
@@ -923,7 +883,7 @@
                         </div>
 
                         <div style="line-height: 1.5; margin-bottom: 30px;">
-                            निकाली दिनांक : <span id="view_p2_final_date">..................</span>
+                            निकाली दिनांक : ........................
                         </div>
 
                         <div style="line-height: 1.5;">
