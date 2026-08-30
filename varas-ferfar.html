@@ -479,7 +479,7 @@
         }
 
         /* -------------------------------------------------------------
-           PAGE 2: पोलीस पाटील व सरपंच २-इन-१ वारस दाखला
+           PAGE 2: पोलीस पाटील व सरपंच २-इन-१ वारस दाखला (DYNAMIC SCALING)
         ------------------------------------------------------------- */
         .p2-half-cert {
             height: 48.5%;
@@ -488,6 +488,7 @@
             justify-content: space-between;
             position: relative;
             padding: 4px 0;
+            box-sizing: border-box;
         }
 
         .p2-separator {
@@ -539,8 +540,8 @@
 
         .heir-print-table th, .heir-print-table td {
             border: 1px solid #000;
-            padding: 2.5px 6px;
-            font-size: 9.8pt;
+            padding: 3.5px 6px;
+            font-size: 10pt;
             line-height: 1.25;
             vertical-align: middle;
         }
@@ -582,6 +583,29 @@
             margin-top: 2px;
         }
 
+        /* --- Dynamic Density Classes for Page 2 based on Heir Count --- */
+        /* 1 to 3 Heirs: Generous spacing & larger font */
+        .heirs-density-low .p2-cert-title { font-size: 14.5pt; margin-bottom: 4px; }
+        .heirs-density-low .p2-authority-line { font-size: 12pt; margin-bottom: 6px; }
+        .heirs-density-low .p2-cert-body { font-size: 11pt; line-height: 1.55; margin-bottom: 8px; }
+        .heirs-density-low .heir-print-table th, .heirs-density-low .heir-print-table td { padding: 6px 8px; font-size: 10.8pt; }
+        .heirs-density-low .p2-sign-row { font-size: 11pt; margin-top: 10px; }
+
+        /* 4 to 5 Heirs: Balanced spacing */
+        .heirs-density-med .p2-cert-title { font-size: 13.5pt; margin-bottom: 2px; }
+        .heirs-density-med .p2-authority-line { font-size: 11.2pt; margin-bottom: 3px; }
+        .heirs-density-med .p2-cert-body { font-size: 10.2pt; line-height: 1.4; margin-bottom: 4px; }
+        .heirs-density-med .heir-print-table th, .heirs-density-med .heir-print-table td { padding: 3px 6px; font-size: 9.8pt; }
+        .heirs-density-med .p2-sign-row { font-size: 10.2pt; margin-top: 4px; }
+
+        /* 6+ Heirs: Ultra compact spacing to ensure zero page overflow */
+        .heirs-density-high .p2-cert-title { font-size: 12.5pt; margin-bottom: 1px; }
+        .heirs-density-high .p2-authority-line { font-size: 10.5pt; margin-bottom: 2px; }
+        .heirs-density-high .p2-cert-body { font-size: 9.5pt; line-height: 1.3; margin-bottom: 3px; }
+        .heirs-density-high .heir-print-table { margin: 2px 0 4px 0; }
+        .heirs-density-high .heir-print-table th, .heirs-density-high .heir-print-table td { padding: 1.5px 5px; font-size: 9pt; line-height: 1.15; }
+        .heirs-density-high .p2-sign-row { font-size: 9.5pt; line-height: 1.25; margin-top: 2px; }
+
         /* -------------------------------------------------------------
            MODAL CROPPER
         ------------------------------------------------------------- */
@@ -620,7 +644,7 @@
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 8mm 10mm;
+                margin: 6mm 10mm;
             }
 
             body {
@@ -648,17 +672,38 @@
                 border-radius: 0 !important;
                 width: 100% !important;
                 max-width: 100% !important;
-                min-height: 275mm !important;
-                height: 275mm !important;
+                min-height: 284mm !important;
+                height: 284mm !important;
+                max-height: 284mm !important;
                 padding: 4mm 6mm !important;
                 margin: 0 !important;
                 page-break-after: always;
                 break-after: page;
+                page-break-inside: avoid;
+                break-inside: avoid;
+                overflow: hidden !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
             }
 
             .a4-sheet:last-child {
                 page-break-after: avoid;
                 break-after: avoid;
+            }
+
+            .p2-half-cert {
+                height: 48.8% !important;
+                max-height: 48.8% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                overflow: hidden !important;
+                padding: 2px 0 !important;
+            }
+
+            .p2-separator {
+                margin: 2px 0 !important;
             }
 
             .print-page-1-only #page2Sheet {
@@ -687,6 +732,9 @@
             </div>
 
             <div class="btn-group">
+                <a href="index.html" class="btn btn-home">
+                    <i class="fa-solid fa-arrow-left"></i> मुख्य पान
+                </a>
                 <button type="button" class="btn btn-sample" onclick="loadSampleData()">
                     <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना डेमो डेटा भरा
                 </button>
@@ -702,39 +750,36 @@
                 <button type="button" class="btn btn-success" onclick="printDocument('p2')">
                     <i class="fa-solid fa-certificate"></i> फक्त वारस दाखला (P2)
                 </button>
-                <a href="index.html" class="btn btn-home">
-                    <i class="fa-solid fa-house"></i> मुख्य पोर्टल
-                </a>
             </div>
         </div>
 
-        <!-- TABS TO TOGGLE INPUT SECTIONS -->
+        <!-- TABS -->
         <div class="page-tabs">
-            <button class="tab-btn active" onclick="switchInputTab('tab-general', this)">
-                <i class="fa-solid fa-user-pen"></i> १. अर्जदार, मयत व्यक्ती व जमीन माहिती
+            <button type="button" class="tab-btn active" onclick="switchInputTab('tab-general', this)">
+                <i class="fa-solid fa-pen-to-square"></i> १. अर्जदार, मयत व जमीन तपशील
             </button>
-            <button class="tab-btn" onclick="switchInputTab('tab-heirs', this)">
-                <i class="fa-solid fa-users"></i> २. वारसदारांची यादी (१० वारस)
+            <button type="button" class="tab-btn" onclick="switchInputTab('tab-heirs', this)">
+                <i class="fa-solid fa-users"></i> २. कायदेशीर वारसदारांची नावे
             </button>
-            <button class="tab-btn" onclick="switchInputTab('tab-officials', this)">
-                <i class="fa-solid fa-landmark"></i> ३. तलाठी, पोलीस पाटील व सरपंच
+            <button type="button" class="tab-btn" onclick="switchInputTab('tab-officials', this)">
+                <i class="fa-solid fa-stamp"></i> ३. तलाठी, पोलीस पाटील व सरपंच
             </button>
         </div>
 
-        <!-- TAB 1: GENERAL INFO -->
+        <!-- TAB 1: GENERAL INPUTS -->
         <div id="tab-general" class="tab-content-panel">
-            <div class="section-subhead"><i class="fa-solid fa-user"></i> अर्जदाराची माहिती (Applicant Details)</div>
+            <div class="section-subhead"><i class="fa-solid fa-user"></i> अर्जदाराची माहिती</div>
             <div class="input-grid">
                 <div class="form-group">
                     <label>अर्जदाराचे संपूर्ण नाव (श्री./श्रीमती)</label>
                     <input type="text" id="inp_applicant_name" placeholder="उदा. नामदेव शंकर गुरव" oninput="syncAll()">
                 </div>
                 <div class="form-group">
-                    <label>पत्ता / वाडी (रा.)</label>
+                    <label>अर्जदाराचा पत्ता / वाडी</label>
                     <input type="text" id="inp_applicant_address" placeholder="उदा. तिवरे (खालचीवाडी)" oninput="syncAll()">
                 </div>
                 <div class="form-group">
-                    <label>गाव (मौजे)</label>
+                    <label>गाव / मौजे</label>
                     <input type="text" id="inp_village" placeholder="उदा. तिवरे" oninput="syncAll()">
                 </div>
                 <div class="form-group">
@@ -746,7 +791,7 @@
                     <input type="text" id="inp_district" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
                 </div>
                 <div class="form-group">
-                    <label>मोबाईल क्रमांक (१० अंकी)</label>
+                    <label>मोबाईल नंबर (१० अंकी)</label>
                     <input type="text" id="inp_mobile" maxlength="10" placeholder="उदा. 8882512655" oninput="syncAll()">
                 </div>
                 <div class="form-group">
@@ -796,13 +841,18 @@
             </div>
         </div>
 
-        <!-- TAB 2: HEIRS LIST (10 HEIRS) -->
+        <!-- TAB 2: HEIRS LIST (DYNAMIC ROWS) -->
         <div id="tab-heirs" class="tab-content-panel" style="display: none;">
-            <div class="section-subhead" style="justify-content: space-between;">
-                <span><i class="fa-solid fa-users"></i> कायदेशीर वारसदारांची माहिती (१० वारस)</span>
-                <button type="button" class="btn btn-sample" style="padding: 4px 10px; font-size: 0.8rem;" onclick="fillSampleHeirs()">
-                    <i class="fa-solid fa-plus"></i> ४ नमुना वारस भरा
-                </button>
+            <div class="section-subhead" style="justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                <span><i class="fa-solid fa-users"></i> कायदेशीर वारसदारांची माहिती (जेवढी नावे असतील तेवढ्याच ओळी तक्त्यात येतील)</span>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-sample" style="padding: 4px 10px; font-size: 0.8rem;" onclick="fillSampleHeirs()">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> ४ नमुना वारस भरा
+                    </button>
+                    <button type="button" class="btn btn-primary" style="padding: 4px 10px; font-size: 0.8rem;" onclick="addHeirRow()">
+                        <i class="fa-solid fa-plus"></i> + वारस जोडा
+                    </button>
+                </div>
             </div>
             
             <div style="overflow-x: auto;">
@@ -813,10 +863,11 @@
                             <th>वारसदाराचे नाव</th>
                             <th style="width: 100px; text-align: center;">वय (वर्षे)</th>
                             <th style="width: 160px; text-align: center;">मयताशी नातेसंबंध</th>
+                            <th style="width: 60px; text-align: center;">क्रिया</th>
                         </tr>
                     </thead>
                     <tbody id="heirsInputBody">
-                        <!-- Dynamic 10 Rows -->
+                        <!-- Dynamic Rows -->
                     </tbody>
                 </table>
             </div>
@@ -934,7 +985,7 @@
 
                 <!-- Attached Heirs / Docs 1 to 8 -->
                 <div class="docs-grid" id="view_p1_docs_grid">
-                    <!-- Dynamic Grid 1-8 -->
+                    <!-- Dynamic Grid -->
                 </div>
 
                 <!-- Signature 1 -->
@@ -1009,7 +1060,7 @@
                             </tr>
                         </thead>
                         <tbody id="view_p2_pp_table_body">
-                            <!-- 10 Heirs Rows -->
+                            <!-- Dynamic Active Heirs Rows -->
                         </tbody>
                     </table>
                 </div>
@@ -1050,7 +1101,7 @@
                             </tr>
                         </thead>
                         <tbody id="view_p2_sp_table_body">
-                            <!-- 10 Heirs Rows -->
+                            <!-- Dynamic Active Heirs Rows -->
                         </tbody>
                     </table>
                 </div>
@@ -1093,13 +1144,13 @@
          JAVASCRIPT LOGIC
     ------------------------------------------------------------- -->
     <script>
-        // State for 10 Heirs
-        const heirsData = Array.from({ length: 10 }, (_, i) => ({
-            sr: i + 1,
-            name: "",
-            age: "",
-            relation: ""
-        }));
+        // State for Dynamic Heirs
+        let heirsData = [
+            { name: "नामदेव शंकर गुरव", age: "52", relation: "मुलगा" },
+            { name: "सुवर्णा सुधाकर गुरव", age: "54", relation: "मुलगी" },
+            { name: "श्रुतिका संजीव गुरव", age: "50", relation: "मुलगी" },
+            { name: "एकनाथ शंकर गुरव", age: "48", relation: "मुलगा" }
+        ];
 
         let cropper = null;
 
@@ -1107,27 +1158,51 @@
         function initHeirsTable() {
             const tbody = document.getElementById("heirsInputBody");
             tbody.innerHTML = "";
-            for (let i = 0; i < 10; i++) {
+
+            heirsData.forEach((h, i) => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
                     <td style="text-align: center; font-weight: 700;">${i + 1})</td>
                     <td>
-                        <input type="text" id="heir_name_${i}" placeholder="वारसाचे नाव" value="${heirsData[i].name}" oninput="updateHeir(${i}, 'name', this.value)">
+                        <input type="text" id="heir_name_${i}" placeholder="वारसाचे नाव" value="${h.name || ''}" oninput="updateHeir(${i}, 'name', this.value)">
                     </td>
                     <td>
-                        <input type="text" id="heir_age_${i}" style="text-align: center;" placeholder="वय" value="${heirsData[i].age}" oninput="updateHeir(${i}, 'age', this.value)">
+                        <input type="text" id="heir_age_${i}" style="text-align: center;" placeholder="वय" value="${h.age || ''}" oninput="updateHeir(${i}, 'age', this.value)">
                     </td>
                     <td>
-                        <input type="text" id="heir_rel_${i}" style="text-align: center;" placeholder="उदा. मुलगा/मुलगी/पत्नी" value="${heirsData[i].relation}" oninput="updateHeir(${i}, 'relation', this.value)">
+                        <input type="text" id="heir_rel_${i}" style="text-align: center;" placeholder="उदा. मुलगा/मुलगी/पत्नी" value="${h.relation || ''}" oninput="updateHeir(${i}, 'relation', this.value)">
+                    </td>
+                    <td style="text-align: center;">
+                        <button type="button" style="background: #ef4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer;" onclick="removeHeirRow(${i})" title="वारस काढा">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
+            });
+        }
+
+        function addHeirRow() {
+            heirsData.push({ name: "", age: "", relation: "" });
+            initHeirsTable();
+            renderPreviewHeirs();
+        }
+
+        function removeHeirRow(index) {
+            if (heirsData.length <= 1) {
+                heirsData[0] = { name: "", age: "", relation: "" };
+            } else {
+                heirsData.splice(index, 1);
             }
+            initHeirsTable();
+            renderPreviewHeirs();
         }
 
         function updateHeir(index, key, val) {
-            heirsData[index][key] = val;
-            renderPreviewHeirs();
+            if (heirsData[index]) {
+                heirsData[index][key] = val;
+                renderPreviewHeirs();
+            }
         }
 
         function switchInputTab(tabId, btn) {
@@ -1166,7 +1241,7 @@
 
             const talathiSaza = document.getElementById("inp_talathi_saza").value || village;
             const policePatilName = document.getElementById("inp_police_patil_name").value || "श्री. मोहन बाबू गोसावी";
-            const sarpanchName = document.getElementById("inp_sarpanch_name").value || "सरपंच ग्रामपंचायत " + village;
+            const sarpanchName = document.getElementById("inp_sarpanch_name").value || "सरपंच, ग्रामपंचायत " + village;
 
             // Page 1 View Sync
             document.getElementById("view_p1_app_name").innerText = appName;
@@ -1238,17 +1313,35 @@
             renderPreviewHeirs();
         }
 
-        // Render Heirs in Page 1 (Docs list 1-8) and Page 2 (10-row tables)
+        // Render EXACT Heirs with NO Extra Empty Rows & Automatic Page Fit Scaling
         function renderPreviewHeirs() {
-            // Page 1 Attached Docs Grid (1 to 8)
+            // 1. Filter only active heirs who have names filled in
+            const activeHeirs = heirsData.filter(h => h.name && h.name.trim() !== "");
+            const count = activeHeirs.length > 0 ? activeHeirs.length : 1;
+
+            // 2. Adjust Page 2 Density Class dynamically for Automatic Fitting
+            const p2Sheet = document.getElementById("page2Sheet");
+            p2Sheet.classList.remove("heirs-density-low", "heirs-density-med", "heirs-density-high");
+
+            if (count <= 3) {
+                p2Sheet.classList.add("heirs-density-low");
+            } else if (count <= 5) {
+                p2Sheet.classList.add("heirs-density-med");
+            } else {
+                p2Sheet.classList.add("heirs-density-high");
+            }
+
+            // 3. Render Page 1 Attached Docs Grid (Exact items or active names)
             const p1DocsGrid = document.getElementById("view_p1_docs_grid");
             p1DocsGrid.innerHTML = "";
 
-            // Fill left column (1 to 4) and right column (5 to 8)
-            for (let i = 0; i < 8; i++) {
+            const displayList = activeHeirs.length > 0 ? activeHeirs : [{ name: "" }];
+            const maxDocs = Math.max(displayList.length, 4);
+
+            for (let i = 0; i < Math.min(maxDocs, 8); i++) {
                 const item = document.createElement("div");
                 item.className = "doc-item";
-                const heirName = heirsData[i] && heirsData[i].name ? heirsData[i].name : "";
+                const heirName = displayList[i] ? displayList[i].name : "";
                 item.innerHTML = `
                     <span class="num">${toMarathiNum(i + 1)}.</span>
                     <span class="line">${heirName}</span>
@@ -1256,29 +1349,42 @@
                 p1DocsGrid.appendChild(item);
             }
 
-            // Page 2 Tables (Police Patil & Sarpanch)
+            // 4. Render Page 2 Tables: ONLY Active Rows (No extra rows!)
             const ppTbody = document.getElementById("view_p2_pp_table_body");
             const spTbody = document.getElementById("view_p2_sp_table_body");
             ppTbody.innerHTML = "";
             spTbody.innerHTML = "";
 
-            for (let i = 0; i < 10; i++) {
-                const h = heirsData[i];
-                const srText = toMarathiNum(i + 1) + ")";
-                const nameText = h.name || "";
-                const ageText = h.age ? toMarathiNum(h.age) : "";
-                const relText = h.relation || "";
-
+            if (activeHeirs.length === 0) {
+                // Render one clean placeholder row if user hasn't typed anything yet
                 const rowHtml = `
                     <tr>
-                        <td class="col-sr">${srText}</td>
-                        <td class="col-name">${nameText}</td>
-                        <td class="col-age">${ageText}</td>
-                        <td class="col-rel">${relText}</td>
+                        <td class="col-sr">१)</td>
+                        <td class="col-name">&nbsp;</td>
+                        <td class="col-age">&nbsp;</td>
+                        <td class="col-rel">&nbsp;</td>
                     </tr>
                 `;
                 ppTbody.insertAdjacentHTML("beforeend", rowHtml);
                 spTbody.insertAdjacentHTML("beforeend", rowHtml);
+            } else {
+                activeHeirs.forEach((h, idx) => {
+                    const srText = toMarathiNum(idx + 1) + ")";
+                    const nameText = h.name || "";
+                    const ageText = h.age ? toMarathiNum(h.age) : "";
+                    const relText = h.relation || "";
+
+                    const rowHtml = `
+                        <tr>
+                            <td class="col-sr">${srText}</td>
+                            <td class="col-name">${nameText}</td>
+                            <td class="col-age">${ageText}</td>
+                            <td class="col-rel">${relText}</td>
+                        </tr>
+                    `;
+                    ppTbody.insertAdjacentHTML("beforeend", rowHtml);
+                    spTbody.insertAdjacentHTML("beforeend", rowHtml);
+                });
             }
         }
 
@@ -1333,7 +1439,7 @@
             closeCropper();
         }
 
-        // Load Sample Data (Exact data from user's uploaded images)
+        // Load Sample Data
         function loadSampleData() {
             document.getElementById("inp_applicant_name").value = "नामदेव शंकर गुरव";
             document.getElementById("inp_applicant_address").value = "तिवरे (खालचीवाडी)";
@@ -1361,24 +1467,12 @@
         }
 
         function fillSampleHeirs() {
-            const sampleList = [
+            heirsData = [
                 { name: "नामदेव शंकर गुरव", age: "52", relation: "मुलगा" },
                 { name: "सुवर्णा सुधाकर गुरव", age: "54", relation: "मुलगी" },
                 { name: "श्रुतिका संजीव गुरव", age: "50", relation: "मुलगी" },
                 { name: "एकनाथ शंकर गुरव", age: "48", relation: "मुलगा" }
             ];
-
-            for (let i = 0; i < 10; i++) {
-                if (sampleList[i]) {
-                    heirsData[i].name = sampleList[i].name;
-                    heirsData[i].age = sampleList[i].age;
-                    heirsData[i].relation = sampleList[i].relation;
-                } else {
-                    heirsData[i].name = "";
-                    heirsData[i].age = "";
-                    heirsData[i].relation = "";
-                }
-            }
 
             initHeirsTable();
             renderPreviewHeirs();
@@ -1389,9 +1483,9 @@
             document.querySelectorAll(".controls-wrapper input").forEach(inp => {
                 if (inp.type !== "button" && inp.type !== "file") inp.value = "";
             });
-            for (let i = 0; i < 10; i++) {
-                heirsData[i] = { sr: i + 1, name: "", age: "", relation: "" };
-            }
+            heirsData = [
+                { name: "", age: "", relation: "" }
+            ];
             document.getElementById("view_p1_photo_img").style.display = "none";
             document.getElementById("view_p1_photo_placeholder").style.display = "block";
 
