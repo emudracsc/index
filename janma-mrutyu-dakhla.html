@@ -148,45 +148,75 @@
             color: #0f172a;
             font-weight: 600;
             outline: none;
-            transition: border-color 0.2s;
             background: #f8fafc;
+            transition: all 0.2s;
         }
 
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             border-color: #0284c7;
             background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+            box-shadow: 0 0 0 3px rgba(2,132,199,0.15);
         }
 
-        .section-subhead {
-            font-size: 0.95rem;
+        .section-tag {
+            font-size: 0.85rem;
             font-weight: 800;
             color: #0369a1;
-            margin: 14px 0 8px 0;
-            padding-bottom: 4px;
-            border-bottom: 1.5px dashed #cbd5e1;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            background: #e0f2fe;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: inline-block;
         }
 
         /* -------------------------------------------------------------
-           PRINT PREVIEW SHEETS (PAGE 1 PORTRAIT & PAGE 2 LANDSCAPE)
+           PREVIEW CONTAINER & A4 SHEETS
         ------------------------------------------------------------- */
         .preview-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 30px;
-            margin: 0 auto;
+            margin-bottom: 50px;
         }
 
+        .sheet-label {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 14px;
+            border-radius: 6px;
+        }
+
+        .sheet-label .btn-mini {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            color: #fff;
+            background: #0284c7;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .sheet-label .btn-mini:hover {
+            background: #0369a1;
+        }
+
+        /* Common Sheet Style */
         .a4-sheet {
+            background: #ffffff;
             width: 210mm;
             min-height: 297mm;
-            padding: 16mm 20mm 16mm 20mm;
-            background: #ffffff;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+            padding: 18mm 20mm 16mm 20mm;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             border-radius: 4px;
             position: relative;
             color: #000000;
@@ -195,16 +225,18 @@
             font-size: 12pt;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
         /* Landscape orientation for Page 2 */
         .a4-sheet-landscape {
             width: 297mm;
             min-height: 210mm;
-            padding: 12mm 15mm;
+            padding: 10mm 14mm;
             font-size: 10pt;
-            line-height: 1.4;
+            line-height: 1.35;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
         /* Top Stamp Box */
@@ -292,7 +324,7 @@
             text-align: justify;
             line-height: 2.2;
             text-indent: 35px;
-            margin-bottom: 24px;
+            margin-bottom: 0;
         }
 
         .val-bold {
@@ -301,87 +333,87 @@
             padding: 0 4px;
         }
 
-        /* Footer Row */
-        .footer-row {
+        /* 5 Lines Space after paragraph */
+        .five-line-gap {
+            height: 110px; /* Space equivalent to 5 lines */
+        }
+
+        /* Footer Row Page 1 */
+        .p1-footer-section {
+            width: 100%;
+        }
+
+        .p1-date-kalave-row {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: baseline;
             font-size: 12pt;
-            margin-top: 20px;
-        }
-
-        .footer-left {
             font-weight: 700;
-        }
-
-        .footer-center {
-            text-align: center;
-            font-weight: 700;
-            font-size: 12pt;
-            margin-bottom: 12px;
-            margin-left: 40px;
+            margin-bottom: 25px;
         }
 
         .footer-right {
             text-align: center;
             min-width: 250px;
             line-height: 1.8;
+            float: right;
         }
 
         .footer-sign-label {
             font-weight: 700;
-            margin-bottom: 35px;
+            margin-bottom: 45px;
         }
 
         .footer-sign-name {
             font-weight: 700;
-            border-top: 1px dotted #000;
-            padding-top: 2px;
-            display: inline-block;
-            min-width: 220px;
+            font-size: 12pt;
+            white-space: nowrap;
         }
 
         /* -------------------------------------------------------------
-           PAGE 2: गाव नमुना नं. १४ जन्म-मृत्यू रजिस्टर (15 COLUMNS BLANK)
+           PAGE 2: गाव नमुना नं. १४ जन्म-मृत्यू रजिस्टर (16 COLUMNS BLANK)
         ------------------------------------------------------------- */
         .p2-header-grid {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            font-size: 11pt;
+            font-size: 10.5pt;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
 
         .p2-center-title {
             text-align: center;
-            line-height: 1.3;
+            line-height: 1.25;
         }
 
         .p2-center-title .form-no {
-            font-size: 13pt;
+            font-size: 12.5pt;
             font-weight: 800;
         }
 
         .p2-center-title .form-name {
-            font-size: 12pt;
+            font-size: 11.5pt;
             font-weight: 800;
         }
 
-        /* 15-Column Register Table */
+        /* 16-Column Register Table (Half Page Height) */
         .p2-register-table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
-            font-size: 9pt;
-            line-height: 1.25;
-            margin-bottom: 12px;
+            font-size: 8.5pt;
+            line-height: 1.2;
+            margin-bottom: 5px; /* Exact 5px gap before footer text */
         }
 
         .p2-register-table th, .p2-register-table td {
             border: 1px solid #000;
-            padding: 4px 3px;
+            padding: 3px 2px;
             text-align: center;
             vertical-align: middle;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .p2-register-table th {
@@ -389,13 +421,41 @@
             background: #fff;
         }
 
-        .p2-register-table td {
-            height: 38px;
+        /* Half-page height row for manual handwriting */
+        .p2-large-row td {
+            height: 155px; /* Half page height table */
+            vertical-align: top;
+            padding-top: 10px;
+            background: #fff;
+        }
+
+        .p2-footer-block {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 10pt;
+            margin-top: 5px; /* Exactly 5px space below table */
+            line-height: 1.5;
         }
 
         /* -------------------------------------------------------------
-           PRINT STYLES
+           PRINT STYLES & AUTO ORIENTATION RULES
         ------------------------------------------------------------- */
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        @page portraitPage {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        @page landscapePage {
+            size: A4 landscape;
+            margin: 0;
+        }
+
         @media print {
             body {
                 background: #ffffff !important;
@@ -403,7 +463,7 @@
                 margin: 0 !important;
             }
 
-            .no-print, .controls-wrapper {
+            .no-print, .controls-wrapper, .sheet-label {
                 display: none !important;
             }
 
@@ -411,6 +471,19 @@
                 margin: 0 !important;
                 padding: 0 !important;
                 gap: 0 !important;
+                display: block !important;
+            }
+
+            #page1Wrap {
+                page: portraitPage;
+                break-after: page;
+                page-break-after: always;
+            }
+
+            #page2Wrap {
+                page: landscapePage;
+                break-before: page;
+                page-break-before: always;
             }
 
             .a4-sheet {
@@ -421,8 +494,7 @@
                 max-height: 297mm !important;
                 padding: 16mm 20mm !important;
                 margin: 0 !important;
-                page-break-after: always !important;
-                break-after: page !important;
+                box-sizing: border-box !important;
                 overflow: hidden !important;
             }
 
@@ -430,13 +502,17 @@
                 width: 297mm !important;
                 height: 210mm !important;
                 max-height: 210mm !important;
-                padding: 12mm 15mm !important;
+                padding: 10mm 12mm !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
                 page-break-after: avoid !important;
                 break-after: avoid !important;
             }
 
-            .print-p1 #page2Sheet { display: none !important; }
-            .print-p2 #page1Sheet { display: none !important; }
+            /* Single Page Mode Visibility */
+            body.print-p1 #page2Wrap { display: none !important; }
+            body.print-p2 #page1Wrap { display: none !important; }
+            body.print-p2 #page2Wrap { break-before: auto !important; page-break-before: auto !important; }
         }
     </style>
 </head>
@@ -446,123 +522,115 @@
     <div class="controls-wrapper no-print">
         <div class="bar-header">
             <div class="bar-title">
-                <i class="fa-solid fa-baby"></i>
+                <i class="fa-solid fa-file-signature"></i>
                 <div>
                     <div>जन्म / मृत्यू नोंद उतारा मागणी अर्ज जनरेटर</div>
-                    <div style="font-size: 0.82rem; font-weight: 500; color: #64748b;">
-                        मे. तहसिलदार साहेब यांजकडे जन्मनोंद / मृत्यूनोंद उतारा मिळणेबाबत अर्ज व गाव नमुना १४
-                    </div>
+                    <div style="font-size: 0.8rem; font-weight: 500; color: #64748b;">(गाव नमुना नं. १४ - तहसिलदार कार्यालय अर्ज व रजिस्टर उतारा)</div>
                 </div>
             </div>
-
             <div class="btn-group">
+                <button type="button" class="btn btn-primary" onclick="printDoc('all')">
+                    <i class="fa-solid fa-print"></i> दोन्ही पेजेस प्रिंट करा
+                </button>
+                <button type="button" class="btn btn-success" onclick="printDoc('p1')">
+                    <i class="fa-solid fa-file"></i> Page 1 (अर्ज - Portrait)
+                </button>
+                <button type="button" class="btn btn-success" onclick="printDoc('p2')">
+                    <i class="fa-solid fa-table"></i> Page 2 (रजिस्टर - Landscape)
+                </button>
+                <button type="button" class="btn btn-sample" onclick="loadSampleData()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना माहिती
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetAllData()">
+                    <i class="fa-solid fa-rotate-left"></i> रिसेट
+                </button>
                 <a href="index.html" class="btn btn-home">
                     <i class="fa-solid fa-arrow-left"></i> मुख्य पान
                 </a>
-                <button type="button" class="btn btn-sample" onclick="loadSampleData()">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना डेटा भरा
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="resetAllData()">
-                    <i class="fa-solid fa-rotate-left"></i> रीसेट
-                </button>
-                <button type="button" class="btn btn-success" onclick="printDoc('p1')">
-                    <i class="fa-solid fa-file"></i> पान १ प्रिंट (अर्ज)
-                </button>
-                <button type="button" class="btn btn-success" onclick="printDoc('p2')">
-                    <i class="fa-solid fa-table"></i> पान २ (गाव नमुना १४ कोरा)
-                </button>
-                <button type="button" class="btn btn-primary" onclick="printDoc('all')">
-                    <i class="fa-solid fa-print"></i> दोन्ही पाने प्रिंट / PDF
-                </button>
             </div>
         </div>
 
         <!-- FORM INPUTS -->
-        <div class="section-subhead"><i class="fa-solid fa-landmark"></i> कार्यालय व अर्जदार तपशील</div>
+        <div class="section-tag"><i class="fa-solid fa-user-pen"></i> अर्जदार व कार्यालयाची माहिती (Page 1)</div>
         <div class="input-grid">
             <div class="form-group">
-                <label>तहसिलदार तालुका</label>
-                <input type="text" id="inp_taluka" value="कणकवली" placeholder="उदा. कणकवली" oninput="syncAll()">
+                <label>तालुका (कार्यालय व अर्जदार):</label>
+                <input type="text" id="inp_taluka" value="कणकवली" oninput="syncAll()">
             </div>
             <div class="form-group">
-                <label>जिल्हा</label>
-                <input type="text" id="inp_district" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
+                <label>जिल्हा:</label>
+                <input type="text" id="inp_district" value="सिंधुदुर्ग" oninput="syncAll()">
             </div>
             <div class="form-group">
-                <label>अर्जाचा दिनांक</label>
+                <label>अर्जाची दिनांक:</label>
                 <input type="text" id="inp_app_date" placeholder="उदा. 30/08/2026" oninput="syncAll()">
             </div>
             <div class="form-group">
-                <label>अर्जदाराचे संपूर्ण नाव (श्री/श्रीमती)</label>
-                <input type="text" id="inp_app_name" value="श्री. चंदन अर्जुन कांबळे" placeholder="उदा. श्री. चंदन अर्जुन कांबळे" oninput="syncAll()">
+                <label>अर्जदाराचे संपूर्ण नांव:</label>
+                <input type="text" id="inp_app_name" value="श्री. चंदन अर्जुन कांबळे" oninput="syncAll()">
             </div>
             <div class="form-group full-width">
-                <label>अर्जदाराचे राहण्याचे गाव / पत्ता</label>
-                <input type="text" id="inp_app_address" value="मु.पो. नेहरूनगर, भिरवंडे" placeholder="उदा. मु.पो. नेहरूनगर, भिरवंडे" oninput="syncAll()">
+                <label>अर्जदाराचा पत्ता (रा.):</label>
+                <input type="text" id="inp_app_address" value="मु.पो. नेहरूनगर, भिरवंदे" oninput="syncAll()">
             </div>
         </div>
 
-        <div class="section-subhead"><i class="fa-solid fa-file-waveform"></i> जन्म / मृत्यू नोंद तपशील</div>
+        <div class="section-tag"><i class="fa-solid fa-scroll"></i> नोंद तपशील (जन्म किंवा मृत्यू माहिती)</div>
         <div class="input-grid">
             <div class="form-group">
-                <label>उतारा प्रकार (विषय)</label>
+                <label>अर्जाचा विषय:</label>
                 <select id="inp_subject_type" onchange="syncAll()">
-                    <option value="जन्म नोंद / मृत्यू नोंद उतारा मिळणेबाबत." selected>जन्म नोंद / मृत्यू नोंद उतारा मिळणेबाबत.</option>
                     <option value="जन्म नोंद उतारा मिळणेबाबत.">जन्म नोंद उतारा मिळणेबाबत.</option>
-                    <option value="मृत्यू नोंद उतारा मिळणेबाबत.">मृत्यू नोंद उतारा मिळणेबाबत.</option>
+                    <option value="मृत्यू नोंद उतारा मिळणेबाबत." selected>मृत्यू नोंद उतारा मिळणेबाबत.</option>
+                    <option value="जन्म नोंद / मृत्यू नोंद उतारा मिळणेबाबत.">जन्म नोंद / मृत्यू नोंद उतारा मिळणेबाबत.</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>अर्जदाराशी नाते (मी / माझे / माझा / माझी)</label>
-                <select id="inp_relation_prefix" onchange="syncAll()">
-                    <option value="माझे वडील" selected>माझे वडील</option>
-                    <option value="माझी आई">माझी आई</option>
-                    <option value="माझा मुलगा">माझा मुलगा</option>
-                    <option value="माझी मुलगी">माझी मुलगी</option>
-                    <option value="माझे पती">माझे पती</option>
-                    <option value="माझी पत्नी">माझी पत्नी</option>
-                    <option value="मी">मी स्वतः</option>
-                    <option value="माझे नातेवाईक">माझे नातेवाईक</option>
-                </select>
+                <label>नाते संबंध (माझे वडील/आई/मी इ.):</label>
+                <input type="text" id="inp_relation_prefix" value="माझे वडील" oninput="syncAll()">
             </div>
             <div class="form-group">
-                <label>व्यक्तीचे संपूर्ण नाव (श्री/श्रीमती/कै.)</label>
-                <input type="text" id="inp_target_person" value="कै. अर्जुन यशवंत कांबळे" placeholder="उदा. कै. अर्जुन यशवंत कांबळे" oninput="syncAll()">
+                <label>व्यक्तीचे नांव (कै./श्री/श्रीमती सह):</label>
+                <input type="text" id="inp_target_person" value="कै. अर्जुन यशवंत कांबळे" oninput="syncAll()">
             </div>
             <div class="form-group">
-                <label>नोंदीचा प्रकार (जन्म / मृत्यू)</label>
+                <label>घटनेचा प्रकार (जन्म / मृत्यू):</label>
                 <select id="inp_event_type" onchange="syncAll()">
                     <option value="मृत्यू" selected>मृत्यू</option>
                     <option value="जन्म">जन्म</option>
-                    <option value="जन्म / मृत्यू">जन्म / मृत्यू</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>जन्म / मृत्यू दिनांक</label>
-                <input type="text" id="inp_event_date" value="13/06/2024" placeholder="उदा. 13/06/2024" oninput="syncAll()">
+                <label>घटनेची दिनांक (तारीख):</label>
+                <input type="text" id="inp_event_date" value="13/06/2024" oninput="syncAll()">
             </div>
             <div class="form-group">
-                <label>जन्म / मृत्यू गाव</label>
-                <input type="text" id="inp_event_village" value="नेहरूनगर" placeholder="उदा. नेहरूनगर" oninput="syncAll()">
+                <label>घटनेचे गांव:</label>
+                <input type="text" id="inp_event_village" value="नेहरूनगर" oninput="syncAll()">
             </div>
             <div class="form-group">
-                <label>सन / वर्ष (पान २ रजिस्टरसाठी)</label>
-                <input type="text" id="inp_register_year" value="२०२४" placeholder="उदा. १९९५ / २०२४" oninput="syncAll()">
+                <label>रजिस्टर सालाचे वर्ष (Page 2 Header):</label>
+                <input type="text" id="inp_register_year" value="२०२४" oninput="syncAll()">
             </div>
         </div>
     </div>
 
 
-    <!-- -------------------------------------------------------------
-         LIVE A4 PRINTABLE CANVAS (PAGE 1 PORTRAIT & PAGE 2 LANDSCAPE)
-    ------------------------------------------------------------- -->
+    <!-- =============================================================
+         DOCUMENT PREVIEW AREA
+    ============================================================= -->
     <div class="preview-container">
-        
+
         <!-- =========================================================
-             PAGE 1: जन्म नोंद / मृत्यू नोंद उतारा मिळणेबाबत अर्ज
+             PAGE 1: तहसिलदार साहेबांकडे करावयाचा अर्ज
         ========================================================= -->
-        <div class="a4-sheet" id="page1Sheet">
-            <div>
+        <div id="page1Wrap" style="display: flex; flex-direction: column; align-items: center;">
+            <div class="sheet-label no-print">
+                <span><i class="fa-solid fa-file-lines"></i> <strong>Page 1:</strong> तहसिलदार मागणी अर्ज (A4 Portrait)</span>
+                <button type="button" class="btn-mini" onclick="printDoc('p1')"><i class="fa-solid fa-print"></i> प्रिंट</button>
+            </div>
+            
+            <div class="a4-sheet" id="page1Sheet">
                 <!-- Top Right Court Fee Stamp Box -->
                 <div class="top-stamp-row">
                     <div class="court-stamp-box">
@@ -601,7 +669,7 @@
 
                 <!-- Subject -->
                 <div class="subject-row">
-                    विषय - <span id="view_subject_text">जन्म नोंद / मृत्यू नोंद उतारा मिळणेबाबत.</span>
+                    विषय - <span id="view_subject_text">मृत्यू नोंद उतारा मिळणेबाबत.</span>
                 </div>
 
                 <!-- Salutation & Body Paragraph -->
@@ -609,23 +677,27 @@
                 <div class="body-paragraph">
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;मी / माझे / माझा / माझी <strong class="val-bold" id="view_relation_text">माझे वडील</strong> श्री/श्रीमती <strong class="val-bold" id="view_target_person">कै. अर्जुन यशवंत कांबळे</strong> यांचा / हिचा <strong id="view_event_type">मृत्यू</strong> दिनांक <strong class="val-bold" id="view_event_date">13 / 06 / 2024</strong> रोजी <strong class="val-bold" id="view_event_village">नेहरूनगर</strong> या गांवी झाला आहे. तरी आपलेकडील रजिस्टरवरुन तसा दाखला मिळावा ही विनंती.
                 </div>
-            </div>
 
-            <!-- Footer Section -->
-            <div>
-                <div class="footer-row">
-                    <div class="footer-left">
-                        दिनांक - <span id="view_bottom_date">30 / 08 / 2026</span>
+                <!-- 5 Blank Lines Spacer after paragraph as requested -->
+                <div class="five-line-gap"></div>
+
+                <!-- Footer Section: Date, Kalave & Signature -->
+                <div class="p1-footer-section">
+                    <div class="p1-date-kalave-row">
+                        <div>
+                            दिनांक - <span id="view_bottom_date">30 / 08 / 2026</span>
+                        </div>
+                        <div style="margin-right: 170px; font-size: 12.5pt;">
+                            कळावे
+                        </div>
                     </div>
 
-                    <div class="footer-center">
-                        कळावे
-                    </div>
-
-                    <div class="footer-right">
-                        <div class="footer-sign-label">अर्जदाराची सही</div>
-                        <div class="footer-sign-name">
-                            ( <span id="view_sign_name">श्री. चंदन अर्जुन कांबळे</span> )
+                    <div style="display: flex; justify-content: flex-end;">
+                        <div class="footer-right">
+                            <div class="footer-sign-label">अर्जदाराची सही</div>
+                            <div class="footer-sign-name">
+                                ( <span id="view_sign_name">श्री. चंदन अर्जुन कांबळे</span> )
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -634,100 +706,120 @@
 
 
         <!-- =========================================================
-             PAGE 2: गाव नमुना नं. १४ (जन्म-मृत्यूचे रजिस्टर) - BLANK FORMAT
+             PAGE 2: गाव नमुना नं. १४ (जन्म-मृत्यूचे रजिस्टर) - HALF PAGE TABLE + 5PX GAP
         ========================================================= -->
-        <div class="a4-sheet a4-sheet-landscape" id="page2Sheet">
-            <div>
-                <!-- Top Header Row -->
-                <div class="p2-header-grid">
-                    <div>
-                        जन्म - मृत्यूचे रजिस्टर गांव : <strong id="view_p2_village">नेहरूनगर</strong>
-                    </div>
-
-                    <div class="p2-center-title">
-                        <div class="form-no">गाव नमुना नं. १४</div>
-                        <div style="font-size: 11pt;">महाल <strong id="view_p2_taluka">कणकवली</strong></div>
-                        <div class="form-name">जन्मनोंद / मृत्यूनोंद</div>
-                    </div>
-
-                    <div>
-                        सन <strong id="view_p2_year">२०२४</strong> सालावरून खालील नोंदीपूर्ता उतारा
-                    </div>
-                </div>
-
-                <!-- 15-Column Master Table (100% Blank for Official Use) -->
-                <table class="p2-register-table">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" style="width: 32px;">अ.<br>क्र.</th>
-                            <th rowspan="2" style="width: 75px;">तारीख</th>
-                            <th colspan="5">जन्म</th>
-                            <th colspan="8">मृत्यू</th>
-                        </tr>
-                        <tr>
-                            <!-- जन्म Sub-columns -->
-                            <th colspan="2" style="width: 90px; font-size: 8.5pt;">पुरुष किंवा स्त्री<br>
-                                <span style="display:flex; justify-content:space-around; margin-top:2px; font-weight:700;">
-                                    <span>मुलगा</span><span>|</span><span>मुलगी</span>
-                                </span>
-                            </th>
-                            <th style="width: 95px;">नांव</th>
-                            <th style="width: 120px;">बापाचे नांव व<br>आज्जाचे नांव</th>
-                            <th style="width: 60px;">जात</th>
-                            <th style="width: 55px;">शेरा</th>
-
-                            <!-- मृत्यू Sub-columns -->
-                            <th style="width: 45px;">नंबर</th>
-                            <th style="width: 75px;">तारीख</th>
-                            <th style="width: 140px;">बापाचे नांव<br>(किंवा लग्न झालेली स्त्री असल्यास नवऱ्याचे नांव)</th>
-                            <th style="width: 60px;">जात</th>
-                            <th style="width: 45px;">वय</th>
-                            <th colspan="2" style="width: 90px; font-size: 8.5pt;">पुरुष किंवा स्त्री<br>
-                                <span style="display:flex; justify-content:space-around; margin-top:2px; font-weight:700;">
-                                    <span>मुलगा</span><span>|</span><span>मुलगी</span>
-                                </span>
-                            </th>
-                            <th style="width: 95px;">मरणाचे कारण व<br>शेरा</th>
-                        </tr>
-                        <tr style="background: #f8fafc; font-size: 8.5pt;">
-                            <th>१</th>
-                            <th>२</th>
-                            <th>३</th>
-                            <th>४</th>
-                            <th>५ अ</th>
-                            <th>५ ब</th>
-                            <th>६</th>
-                            <th>७</th>
-                            <th>८</th>
-                            <th>९</th>
-                            <th>१०</th>
-                            <th>११</th>
-                            <th>१२</th>
-                            <th>१३</th>
-                            <th>१४</th>
-                            <th>१५</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- 8 Blank Rows for Official Handwritten Fill -->
-                        <tr><td>१</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                        <tr><td>२</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                        <tr><td>३</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                        <tr><td>४</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                        <tr><td>५</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                        <tr><td>६</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                    </tbody>
-                </table>
+        <div id="page2Wrap" style="display: flex; flex-direction: column; align-items: center;">
+            <div class="sheet-label no-print">
+                <span><i class="fa-solid fa-table-cells"></i> <strong>Page 2:</strong> गाव नमुना नं. १४ रजिस्टर (A4 Auto Landscape)</span>
+                <button type="button" class="btn-mini" onclick="printDoc('p2')"><i class="fa-solid fa-print"></i> प्रिंट (Landscape)</button>
             </div>
 
-            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 10pt; margin-top: 15px;">
+            <div class="a4-sheet a4-sheet-landscape" id="page2Sheet">
                 <div>
-                    ठिकाण : <span id="view_p2_sign_taluka">कणकवली</span><br>
-                    दिनांक : ....................................
-                </div>
-                <div style="text-align: center; line-height: 1.6;">
-                    तलाठी सजा / ग्रामसेवक / निबंधक (जन्म-मृत्यू)<br>
-                    ....................................................................
+                    <!-- Top Header Row -->
+                    <div class="p2-header-grid">
+                        <div>
+                            जन्म - मृत्यूचे रजिस्टर गांव : <strong id="view_p2_village">नेहरूनगर</strong>
+                        </div>
+
+                        <div class="p2-center-title">
+                            <div class="form-no">गाव नमुना नं. १४</div>
+                            <div style="font-size: 10.5pt;">महाल <strong id="view_p2_taluka">कणकवली</strong></div>
+                            <div class="form-name">जन्मनोंद / मृत्यूनोंद</div>
+                        </div>
+
+                        <div>
+                            सन <strong id="view_p2_year">२०२४</strong> सालावरून खालील नोंदीपूर्ता उतारा
+                        </div>
+                    </div>
+
+                    <!-- 16-Column Master Table (Half-Page Height) -->
+                    <table class="p2-register-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="width: 3.2%;">अ.<br>क्र.</th>
+                                <th rowspan="2" style="width: 5.5%;">तारीख</th>
+                                <th colspan="6">जन्म</th>
+                                <th colspan="8">मृत्यू</th>
+                            </tr>
+                            <tr>
+                                <!-- जन्म Sub-columns (6) -->
+                                <th colspan="2" style="width: 8.5%; font-size: 8pt;">पुरुष किंवा स्त्री<br>
+                                    <span style="display:flex; justify-content:space-around; margin-top:2px; font-weight:700;">
+                                        <span>मुलगा</span><span>|</span><span>मुलगी</span>
+                                    </span>
+                                </th>
+                                <th style="width: 8%;">नांव</th>
+                                <th style="width: 12%;">बापाचे नांव व<br>आज्जाचे नांव</th>
+                                <th style="width: 5%;">जात</th>
+                                <th style="width: 4.8%;">शेरा</th>
+
+                                <!-- मृत्यू Sub-columns (8) -->
+                                <th style="width: 3.5%;">नंबर</th>
+                                <th style="width: 5.5%;">तारीख</th>
+                                <th style="width: 14%;">बापाचे नांव<br><span style="font-size: 7.5pt;">(किंवा लग्न झालेली स्त्री असल्यास नवऱ्याचे नांव)</span></th>
+                                <th style="width: 5%;">जात</th>
+                                <th style="width: 4%;">वय</th>
+                                <th colspan="2" style="width: 8.5%; font-size: 8pt;">पुरुष किंवा स्त्री<br>
+                                    <span style="display:flex; justify-content:space-around; margin-top:2px; font-weight:700;">
+                                        <span>मुलगा</span><span>|</span><span>मुलगी</span>
+                                    </span>
+                                </th>
+                                <th style="width: 12.5%;">मरणाचे कारण व<br>शेरा</th>
+                            </tr>
+                            <tr style="background: #f8fafc; font-size: 8.5pt;">
+                                <th>१</th>
+                                <th>२</th>
+                                <th>३</th>
+                                <th>४</th>
+                                <th>५</th>
+                                <th>६</th>
+                                <th>७</th>
+                                <th>८</th>
+                                <th>९</th>
+                                <th>१०</th>
+                                <th>११</th>
+                                <th>१२</th>
+                                <th>१३</th>
+                                <th>१४</th>
+                                <th>१५</th>
+                                <th>१६</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Single Blank Row for Manual Handwriting (Half Page Proportion) -->
+                            <tr class="p2-large-row">
+                                <td style="font-weight: 700;">१</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Page 2 Footer (Exactly 5px below the table) -->
+                    <div class="p2-footer-block">
+                        <div>
+                            ठिकाण : <span id="view_p2_sign_taluka">कणकवली</span><br>
+                            दिनांक : ....................................
+                        </div>
+                        <div style="text-align: center; line-height: 1.6;">
+                            तलाठी सजा / ग्रामसेवक / निबंधक (जन्म-मृत्यू)<br>
+                            ....................................................................
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -833,16 +925,35 @@
         }
 
         function printDoc(mode) {
-            document.body.classList.remove('print-p1', 'print-p2');
-            if (mode === 'p1' || mode === 'p2') {
-                document.body.classList.add('print-' + mode);
+            document.body.classList.remove('print-p1', 'print-p2', 'print-all');
+            
+            let dynamicStyle = document.getElementById('dynamicPrintSize');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamicPrintSize';
+                document.head.appendChild(dynamicStyle);
             }
+
+            if (mode === 'p1') {
+                document.body.classList.add('print-p1');
+                dynamicStyle.innerHTML = '@page { size: A4 portrait; margin: 0; }';
+            } else if (mode === 'p2') {
+                document.body.classList.add('print-p2');
+                dynamicStyle.innerHTML = '@page { size: A4 landscape; margin: 0; }';
+            } else {
+                document.body.classList.add('print-all');
+                dynamicStyle.innerHTML = `
+                    @page portraitPage { size: A4 portrait; margin: 0; }
+                    @page landscapePage { size: A4 landscape; margin: 0; }
+                `;
+            }
+
             setTimeout(() => {
                 window.print();
                 setTimeout(() => {
-                    document.body.classList.remove('print-p1', 'print-p2');
+                    document.body.classList.remove('print-p1', 'print-p2', 'print-all');
                 }, 500);
-            }, 100);
+            }, 120);
         }
 
         window.addEventListener("DOMContentLoaded", () => {

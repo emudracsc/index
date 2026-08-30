@@ -1334,6 +1334,17 @@ const DEFAULT_IMPORTANT_LINKS = [
     isInternal: true
   },
   {
+    id: "link-janma-mrutyu-dakhla",
+    category: "अधिकृत शासकीय टूल्स व दाखले",
+    icon: "fa-solid fa-file-signature",
+    title_mr: "👶 जन्म / मृत्यू नोंद उतारा मागणी अर्ज व गाव नमुना १४ रजिस्टर जनरेटर",
+    title_en: "Birth / Death Certificate Extract Request & Form No. 14 Register Generator",
+    desc_mr: "तहसिलदार कार्यालयासाठी जन्म / मृत्यू नोंद मागणी अर्ज व गाव नमुना नं. १४ रजिस्टर २-इन-१ जनरेटर.",
+    desc_en: "Tahsildar office application and Village Form No. 14 birth & death register generator with auto-print.",
+    url: "janma-mrutyu-dakhla.html",
+    isInternal: true
+  },
+  {
     id: "link-varas-ferfar",
     category: "अधिकृत शासकीय टूल्स व दाखले",
     icon: "fa-solid fa-file-contract",
