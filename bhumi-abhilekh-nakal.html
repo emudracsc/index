@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>भूमी अभिलेख नकला व उतारे अर्ज जनरेटर (परिशिष्ट - १) | TILR Office</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --secondary: #475569;
+            --accent: #d97706;
+            --success: #059669;
+            --bg-color: #0f172a;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+            background-color: var(--bg-color);
+            color: #334155;
+            min-height: 100vh;
+            padding: 20px 10px;
+        }
+
+        /* -------------------------------------------------------------
+           TOP CONTROL BAR & FORM INPUTS
+        ------------------------------------------------------------- */
+        .controls-wrapper {
+            max-width: 1100px;
+            margin: 0 auto 24px auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            padding: 18px 22px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .bar-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-title i {
+            color: #0284c7;
+            font-size: 1.5rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 0.86rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 7px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: #0284c7; color: #ffffff !important; font-weight: 700; }
+        .btn-primary:hover { background: #0369a1; transform: translateY(-1px); }
+
+        .btn-success { background: #059669; color: #ffffff !important; font-weight: 700; }
+        .btn-success:hover { background: #047857; transform: translateY(-1px); }
+
+        .btn-warning { background: #d97706; color: #ffffff !important; font-weight: 700; }
+        .btn-warning:hover { background: #b45309; color: #ffffff !important; transform: translateY(-1px); }
+
+        .btn-sample { background: #7c3aed; color: #ffffff !important; font-weight: 700; }
+        .btn-sample:hover { background: #6d28d9; }
+
+        .btn-secondary { background: #e2e8f0; color: #0f172a !important; font-weight: 700; }
+        .btn-secondary:hover { background: #cbd5e1; }
+
+        .btn-home { background: #0f172a; color: #ffffff !important; font-weight: 700; }
+        .btn-home:hover { background: #334155; }
+
+        /* Tabs to switch inputs */
+        .page-tabs {
+            display: flex;
+            gap: 6px;
+            background: #f8fafc;
+            padding: 6px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 160px;
+            padding: 8px 12px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            border: none;
+            background: #e2e8f0;
+            color: #1e293b;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn.active {
+            background: #0284c7;
+            color: #ffffff !important;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+        }
+
+        /* Form Inputs Sections */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 12px 16px;
+            margin-bottom: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 8px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: #0f172a;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #0284c7;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .section-subhead {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0369a1;
+            margin: 12px 0 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 1.5px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Table Inputs */
+        .input-table-wrap {
+            overflow-x: auto;
+            margin-bottom: 12px;
+        }
+
+        .custom-input-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86rem;
+        }
+
+        .custom-input-table th, .custom-input-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 8px;
+            text-align: center;
+        }
+
+        .custom-input-table th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .custom-input-table input {
+            width: 100%;
+            padding: 5px 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.86rem;
+            font-weight: 600;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT PREVIEW SHEETS (2 EXACT A4 PAGES)
+        ------------------------------------------------------------- */
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin: 0 auto;
+        }
+
+        .a4-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 14mm 16mm 14mm 16mm;
+            background: #ffffff;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+            border-radius: 4px;
+            position: relative;
+            color: #000000;
+            box-sizing: border-box;
+            line-height: 1.6;
+            font-size: 11pt;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Page 1 Header */
+        .p1-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .p1-anamat-no {
+            font-size: 11pt;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .p1-stamp-box {
+            width: 110px;
+            height: 48px;
+            border: 1.5px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 700;
+            font-size: 10.5pt;
+            line-height: 1.2;
+            background: #fff;
+        }
+
+        .p1-parishishta-title {
+            text-align: center;
+            font-size: 11pt;
+            font-weight: 700;
+            margin-top: -10px;
+            margin-bottom: 2px;
+        }
+
+        .p1-main-title {
+            text-align: center;
+            font-size: 15pt;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Applicant info block */
+        .p1-applicant-block {
+            margin-left: auto;
+            width: 75%;
+            margin-bottom: 16px;
+            font-size: 11pt;
+            line-height: 1.8;
+        }
+
+        .p1-app-row {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            margin-bottom: 2px;
+        }
+
+        .p1-app-row .label {
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .p1-app-row .line {
+            border-bottom: 1px dotted #000;
+            flex: 1;
+            font-weight: 700;
+            padding-left: 6px;
+        }
+
+        .p1-date-row {
+            text-align: right;
+            font-weight: 700;
+            font-size: 11pt;
+            margin-top: 6px;
+            margin-bottom: 14px;
+        }
+
+        /* To Section */
+        .p1-to-block {
+            font-size: 11pt;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .p1-to-block .to-label {
+            font-weight: 700;
+        }
+
+        .p1-subject-row {
+            text-align: center;
+            font-size: 11.5pt;
+            font-weight: 800;
+            margin: 10px 0 12px 0;
+        }
+
+        /* Body Paragraph */
+        .p1-body-p {
+            font-size: 11pt;
+            text-align: justify;
+            line-height: 1.8;
+            text-indent: 30px;
+            margin-bottom: 14px;
+        }
+
+        .val-bold {
+            font-weight: 700;
+            border-bottom: 1px dotted #000;
+            padding: 0 4px;
+        }
+
+        /* 11-Column Official Table */
+        .p1-records-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+            line-height: 1.25;
+            margin-bottom: 14px;
+        }
+
+        .p1-records-table th, .p1-records-table td {
+            border: 1px solid #000;
+            padding: 4px 3px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .p1-records-table th {
+            font-weight: 700;
+            background: #fff;
+        }
+
+        .p1-records-table td {
+            font-weight: 600;
+            height: 38px;
+        }
+
+        /* Footer Condition Note */
+        .p1-bottom-note {
+            font-size: 10.2pt;
+            text-align: justify;
+            line-height: 1.65;
+            margin-bottom: 16px;
+        }
+
+        .p1-sign-block {
+            display: flex;
+            justify-content: flex-end;
+            text-align: center;
+            font-size: 11pt;
+            line-height: 1.5;
+        }
+
+        /* -------------------------------------------------------------
+           PAGE 2: कार्यालयीन नोंद व नक्कल फी चा तपशिल
+        ------------------------------------------------------------- */
+        .p2-top-grid {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11pt;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .p2-top-left {
+            flex: 1;
+        }
+
+        .p2-top-right {
+            flex: 1;
+            padding-left: 20px;
+        }
+
+        .p2-fee-title {
+            text-align: center;
+            font-size: 13.5pt;
+            font-weight: 800;
+            margin: 12px 0 10px 0;
+            text-decoration: underline;
+        }
+
+        .p2-fee-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+            line-height: 1.35;
+            margin-bottom: 24px;
+        }
+
+        .p2-fee-table th, .p2-fee-table td {
+            border: 1px solid #000;
+            padding: 5px 6px;
+            text-align: center;
+        }
+
+        .p2-fee-table th {
+            font-weight: 700;
+            background: #fff;
+        }
+
+        .p2-fee-table td.col-item {
+            text-align: left;
+            padding-left: 8px;
+            font-weight: 600;
+        }
+
+        /* Page 2 Verification Grid */
+        .p2-verif-grid {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10.5pt;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .p2-verif-left {
+            flex: 1;
+        }
+
+        .p2-verif-right {
+            flex: 1;
+            text-align: center;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT & DUPLEX STYLES
+        ------------------------------------------------------------- */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .no-print, .controls-wrapper {
+                display: none !important;
+            }
+
+            .preview-container {
+                margin: 0 !important;
+                padding: 0 !important;
+                gap: 0 !important;
+            }
+
+            .a4-sheet {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                max-height: 297mm !important;
+                padding: 14mm 16mm 14mm 16mm !important;
+                margin: 0 !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                overflow: hidden !important;
+            }
+
+            .a4-sheet:last-child {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+
+            .print-p1 #page2Sheet { display: none !important; }
+            .print-p2 #page1Sheet { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP CONTROL BAR -->
+    <div class="controls-wrapper no-print">
+        <div class="bar-header">
+            <div class="bar-title">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <div>
+                    <div>भूमी अभिलेख नकला व उतारे अर्ज जनरेटर</div>
+                    <div style="font-size: 0.82rem; font-weight: 500; color: #64748b;">
+                        परिशिष्ट - १ : तालुका निरीक्षक भुमि अभिलेख (TILR) कार्यालयाकडे नकला मागणी अर्ज
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <a href="index.html" class="btn btn-home">
+                    <i class="fa-solid fa-arrow-left"></i> मुख्य पान
+                </a>
+                <button type="button" class="btn btn-sample" onclick="loadSampleData()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना डेटा भरा
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetAllData()">
+                    <i class="fa-solid fa-rotate-left"></i> रीसेट
+                </button>
+                <button type="button" class="btn btn-success" onclick="printDoc('p1')">
+                    <i class="fa-solid fa-file"></i> पान १ प्रिंट
+                </button>
+                <button type="button" class="btn btn-success" onclick="printDoc('p2')">
+                    <i class="fa-solid fa-file-invoice"></i> पान २ (कार्यालयीन)
+                </button>
+                <button type="button" class="btn btn-primary" onclick="printDoc('all')">
+                    <i class="fa-solid fa-print"></i> दोन्ही पाने प्रिंट / PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="page-tabs">
+            <button type="button" class="tab-btn active" onclick="switchTab('tab-applicant', this)">
+                <i class="fa-solid fa-user"></i> १. अर्जदार व कार्यालय तपशील
+            </button>
+            <button type="button" class="tab-btn" onclick="switchTab('tab-records', this)">
+                <i class="fa-solid fa-table"></i> २. मागणी केलेल्या नकला व जमिनीचा तपशील
+            </button>
+            <button type="button" class="tab-btn" onclick="switchTab('tab-office', this)">
+                <i class="fa-solid fa-building-columns"></i> ३. कार्यालयीन नोंद व फी तपशील (पान २)
+            </button>
+        </div>
+
+        <!-- TAB 1: APPLICANT & OFFICE DETAILS -->
+        <div id="tab-applicant" class="tab-content-panel">
+            <div class="section-subhead"><i class="fa-solid fa-landmark"></i> कार्यालय व अधिकारी माहिती</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>प्रति अधिकारी नाव</label>
+                    <input type="text" id="inp_office_title" value="मा. तालुका निरीक्षक भुमि अभिलेख" placeholder="उदा. मा. तालुका निरीक्षक भुमि अभिलेख" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>तालुका</label>
+                    <input type="text" id="inp_taluka" value="कणकवली" placeholder="उदा. कणकवली" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>जिल्हा</label>
+                    <input type="text" id="inp_district" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>अनामत अर्ज क्र. (असल्यास)</label>
+                    <input type="text" id="inp_anamat_no" placeholder="उदा. १२४/२०२६" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>अर्जाचा दिनांक</label>
+                    <input type="text" id="inp_app_date" placeholder="उदा. 30/08/2026" oninput="syncAll()">
+                </div>
+            </div>
+
+            <div class="section-subhead"><i class="fa-solid fa-user"></i> अर्जदाराची माहिती</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>अर्जदाराचे संपूर्ण नांव</label>
+                    <input type="text" id="inp_app_name" value="श्री. चंदन अर्जुन कांबळे" placeholder="उदा. श्री. चंदन अर्जुन कांबळे" oninput="syncAll()">
+                </div>
+                <div class="form-group full-width">
+                    <label>पत्ता (राहण्याचे ठिकाण)</label>
+                    <input type="text" id="inp_app_address" value="मु.पो. नेहरूनगर, ता. कणकवली, जि. सिंधुदुर्ग" placeholder="उदा. मु.पो. नेहरूनगर, ता. कणकवली, जि. सिंधुदुर्ग" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>मोबाईल नंबर (ऐच्छिक)</label>
+                    <input type="text" id="inp_app_mobile" placeholder="उदा. 9324101420" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>कामाचे प्रयोजन (कामासाठी)</label>
+                    <input type="text" id="inp_purpose" value="वारस नोंद व मालकी हक्क तपासणी" placeholder="उदा. कोर्ट कामासाठी / खाजगी कामी / खरेदी-विक्री कामी" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>मागणी केलेल्या प्रतींची संख्या</label>
+                    <input type="text" id="inp_copy_count" value="०१" placeholder="उदा. ०१ / ०२" oninput="syncAll()">
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: RECORDS TABLE ROWS -->
+        <div id="tab-records" class="tab-content-panel" style="display: none;">
+            <div class="section-subhead" style="justify-content: space-between; flex-wrap: wrap;">
+                <span><i class="fa-solid fa-table-list"></i> जमिनीचा तपशील व मागणी केलेल्या नकला (११ कॉलम तक्ता)</span>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-primary" style="padding: 5px 12px; font-size: 0.82rem;" onclick="addRecordRow()">
+                        <i class="fa-solid fa-plus"></i> + नवीन नोंद जोडा
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-table-wrap">
+                <table class="custom-input-table" id="inputRecordsTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">अ.क्र.</th>
+                            <th style="width: 120px;">गांवाचे नांव</th>
+                            <th style="width: 90px;">स.नं./गट नं.</th>
+                            <th style="width: 70px;">हि.नं.</th>
+                            <th>हिश्याचे अभिलेख फाळणी बुक</th>
+                            <th>गांव नकाशा गट बुकावरून</th>
+                            <th>आकार फोड नक्कल</th>
+                            <th>मोजणी नकाशा</th>
+                            <th>न.भू. आलेख क्र.</th>
+                            <th>नोंद वही उतारा</th>
+                            <th>नकाशा</th>
+                            <th style="width: 50px;">काढा</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recordsInputBody">
+                        <!-- Dynamic Input Rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: OFFICE USE DETAILS (PAGE 2) -->
+        <div id="tab-office" class="tab-content-panel" style="display: none;">
+            <div class="section-subhead"><i class="fa-solid fa-receipt"></i> कार्यालयीन पावती व फी तपशील (पान २ साठी)</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>१) अनामत रक्कम (रुपये)</label>
+                    <input type="text" id="inp_anamat_amount" value="१००/-" placeholder="उदा. १००/-" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>२) पावती क्रमांक</label>
+                    <input type="text" id="inp_receipt_no" value="४५८२" placeholder="उदा. ४५८२" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>पावती दिनांक</label>
+                    <input type="text" id="inp_receipt_date" placeholder="उदा. 30/08/2026" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>३) पुरवणी पावती क्रमांक</label>
+                    <input type="text" id="inp_extra_receipt_no" placeholder="उदा. -" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>अर्ज प्राप्त दिनांक</label>
+                    <input type="text" id="inp_receive_date" placeholder="उदा. 30/08/2026" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>नक्कल तयार केल्याचा दिनांक</label>
+                    <input type="text" id="inp_ready_date" placeholder="उदा. 04/09/2026" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>नक्कल दिल्याचा दिनांक</label>
+                    <input type="text" id="inp_delivery_date" placeholder="उदा. 06/09/2026" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>परताव्याची रक्कम (रुपये)</label>
+                    <input type="text" id="inp_refund_amount" placeholder="उदा. २०/-" oninput="syncAll()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- -------------------------------------------------------------
+         LIVE A4 PRINTABLE CANVAS (PAGE 1 & PAGE 2)
+    ------------------------------------------------------------- -->
+    <div class="preview-container">
+        
+        <!-- =========================================================
+             PAGE 1: नक्कलेचा अर्ज (परिशिष्ट - १)
+        ========================================================= -->
+        <div class="a4-sheet" id="page1Sheet">
+            <div>
+                <!-- Top Row: Anamat No & Stamp -->
+                <div class="p1-top-row">
+                    <div class="p1-anamat-no">
+                        अनामत अर्ज क्र. - <span id="view_anamat_no">..................</span>
+                    </div>
+                    <div class="p1-stamp-box">
+                        ५/- कोर्ट फी<br>स्टँम्प
+                    </div>
+                </div>
+
+                <!-- Titles -->
+                <div class="p1-parishishta-title">परिशिष्ट - १</div>
+                <div class="p1-main-title">नक्कलेचा अर्ज</div>
+
+                <!-- Applicant block (Right side) -->
+                <div class="p1-applicant-block">
+                    <div class="p1-app-row">
+                        <span class="label">अर्जदाराचे नांव -</span>
+                        <span class="line" id="view_p1_app_name">श्री. चंदन अर्जुन कांबळे</span>
+                    </div>
+                    <div class="p1-app-row">
+                        <span class="label">पत्ता -</span>
+                        <span class="line" id="view_p1_app_address">मु.पो. नेहरूनगर, ता. कणकवली, जि. सिंधुदुर्ग</span>
+                    </div>
+                    <div class="p1-date-row">
+                        दिनांक - <span id="view_p1_top_date">30 / 08 / 2026</span>
+                    </div>
+                </div>
+
+                <!-- To Section -->
+                <div class="p1-to-block">
+                    <div class="to-label">प्रति,</div>
+                    <div style="margin-left: 30px;">
+                        <strong><span id="view_p1_office_title">मा. तालुका निरीक्षक भुमि अभिलेख</span>,</strong><br>
+                        ता. <span id="view_p1_taluka">कणकवली</span>.
+                    </div>
+                </div>
+
+                <!-- Subject -->
+                <div class="p1-subject-row">
+                    विषय - भुमि अभिलेखाच्या नकला मिळणेबाबत.
+                </div>
+
+                <!-- Salutation & Body -->
+                <div style="font-weight: 700; margin-bottom: 4px;">महोदय,</div>
+                <div class="p1-body-p">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;मला नमुद केलेल्या अभिलेखांच्या नकलांची <strong class="val-bold" id="view_p1_purpose">वारस नोंद व मालकी हक्क तपासणी</strong> कामासाठी असल्यामुळे त्या पुरविणेत याव्यात ही विनंती. मी अर्जासोबत अनामत रक्कम भरीत असून वजा जाता होणारी शासकीय फी भरणेस मी तयार आहे.
+                </div>
+
+                <!-- 11-Column Records Table -->
+                <table class="p1-records-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="width: 28px;">अ.<br>क्र.</th>
+                            <th rowspan="2" style="width: 85px;">गांवाचे नांव</th>
+                            <th rowspan="2" style="width: 55px;">स. नं.<br>/ गट<br>नं.</th>
+                            <th rowspan="2" style="width: 45px;">हि.<br>नं.</th>
+                            <th colspan="4">भुमापन विभाग</th>
+                            <th colspan="3">न. भू. विभाग</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 65px; font-size: 8pt;">हिश्याचे<br>अभिलेख<br>फाळणी<br>बुक उतारा<br>फेअर स्केच<br>उतारा</th>
+                            <th style="width: 60px; font-size: 8pt;">गांव<br>नकाशा<br>गट<br>बुकावरून<br>नक्कल</th>
+                            <th style="width: 55px; font-size: 8pt;">आकार<br>फोड<br>क्र. आ.<br>पं.<br>नक्कल</th>
+                            <th style="font-size: 8pt;">मोजणी<br>नकाशा<br>नक्कल (मी.<br>र. नं. दिनांक<br>नमुद करावा)</th>
+                            <th style="width: 55px; font-size: 8pt;">न. भू.<br>आलेख<br>क्र. /<br>चा क्र.<br>व नं.<br>भु. क्र.</th>
+                            <th style="width: 50px; font-size: 8pt;">नोंद<br>वही<br>उतारा</th>
+                            <th style="width: 50px; font-size: 8pt;">नकाशा</th>
+                        </tr>
+                        <tr style="background: #f8fafc; font-size: 8.5pt;">
+                            <th>१</th>
+                            <th>२</th>
+                            <th>३</th>
+                            <th>४</th>
+                            <th>५</th>
+                            <th>६</th>
+                            <th>७</th>
+                            <th>८</th>
+                            <th>९</th>
+                            <th>१०</th>
+                            <th>११</th>
+                        </tr>
+                    </thead>
+                    <tbody id="view_records_table_body">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+
+                <!-- Bottom Condition Notes -->
+                <div class="p1-bottom-note">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;क्रमता वरीलप्रमाणे नक्कल <strong class="val-bold" id="view_p1_copy_count">०१</strong> प्रतीत मिळणेस विनंती आहे. सदरची नक्कल सात दिवसांत घेऊन जावी. मुदतीत नक्कल न नेल्यास जमा रक्कम शासकीय कोषागारात भरणा करणेत येईल. तसेच नक्कल मागणीसाठी नव्याने अर्ज द्यावा लागेल. याची समज घेतली.
+                </div>
+            </div>
+
+            <!-- Footer Sign -->
+            <div class="p1-sign-block">
+                <div>
+                    आपला विश्वासू,<br><br><br>
+                    <strong>(अर्जदाराची स्वाक्षरी)</strong><br>
+                    <span id="view_p1_sign_name" style="font-weight: 700;">श्री. चंदन अर्जुन कांबळे</span>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- =========================================================
+             PAGE 2: कार्यालयीन नोंद व नक्कल फी चा तपशिल (मागील बाजू)
+        ========================================================= -->
+        <div class="a4-sheet" id="page2Sheet">
+            <div>
+                <!-- Top Receipt Info Grid -->
+                <div class="p2-top-grid">
+                    <div class="p2-top-left">
+                        <div>१) अनामत रक्कम रुपये - <strong id="view_p2_anamat">१००/-</strong></div>
+                        <div>२) पावती क्रमांक - <strong id="view_p2_receipt_no">४५८२</strong> &nbsp;&nbsp;&nbsp;&nbsp; दिनांक - <strong id="view_p2_receipt_date">30/08/2026</strong></div>
+                        <div>३) पुरवणी पावती क्रमांक - <strong id="view_p2_extra_receipt_no">........</strong> &nbsp;&nbsp;&nbsp;&nbsp; दिनांक - <strong id="view_p2_extra_date">........</strong></div>
+                    </div>
+
+                    <div class="p2-top-right">
+                        <div>अर्ज प्राप्त दिनांक - <strong id="view_p2_receive_date">30/08/2026</strong></div>
+                        <div>नक्कल तयार केल्याचा दिनांक - <strong id="view_p2_ready_date">04/09/2026</strong></div>
+                        <div>नक्कल दिल्याचा दिनांक - <strong id="view_p2_delivery_date">06/09/2026</strong></div>
+                    </div>
+                </div>
+
+                <!-- Fee Table -->
+                <div class="p2-fee-title">नक्कल फी चा तपशिल</div>
+
+                <table class="p2-fee-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 45px;">अ. नं.</th>
+                            <th>नकलेचा तपशिल</th>
+                            <th style="width: 60px;">संख्या</th>
+                            <th style="width: 60px;">दर</th>
+                            <th style="width: 60px;">शोध</th>
+                            <th style="width: 70px;">निरिक्षण</th>
+                            <th style="width: 70px;">कागद फी</th>
+                            <th style="width: 80px;">नक्कल फी</th>
+                            <th style="width: 80px;">एकूण</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>१)</td><td class="col-item">गटबुक</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td>२)</td><td class="col-item">प्रतीबुक</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td>३)</td><td class="col-item">मोजणी नकाशा</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td>४)</td><td class="col-item">आकारफोड</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td>५)</td><td class="col-item">गुणकारक बुक हि. फा. नं.</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td>६)</td><td class="col-item">गटस्किम उतारा</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td>७)</td><td class="col-item">क. जा. पत्रक</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    </tbody>
+                </table>
+
+                <!-- Official Signatures & Verification Grid -->
+                <div class="p2-verif-grid">
+                    <div class="p2-verif-left">
+                        <div style="margin-bottom: 25px;">
+                            <strong>नक्कल तयार करणाऱ्याची स्वाक्षरी</strong>
+                        </div>
+                        
+                        <div style="margin-bottom: 30px;">
+                            <strong>तपासणीदाराची स्वाक्षरी व पदनाम</strong>
+                        </div>
+
+                        <div style="line-height: 1.8;">
+                            नक्कल मिळाली तसेच<br>
+                            परताव्याची रक्कम रुपये <strong id="view_p2_refund">..........</strong><br>
+                            परत मिळाले.<br><br><br>
+                            <strong>अर्जदाराची सही / अंगठा</strong>
+                        </div>
+                    </div>
+
+                    <div class="p2-verif-right">
+                        <div style="margin-bottom: 20px;">
+                            अनामत रक्कम रुपये <strong id="view_p2_anamat2">१००/-</strong>
+                        </div>
+
+                        <div style="margin-bottom: 35px;">
+                            परत पावती<br>
+                            अर्जदारास परत
+                        </div>
+
+                        <div style="line-height: 1.5; margin-bottom: 35px;">
+                            <strong>मुख्यालय सहाय्यक</strong><br>
+                            उप-अधिक्षक भुमी अभिलेख, <span id="view_p2_sub_taluka">कणकवली</span>
+                        </div>
+
+                        <div style="line-height: 1.5; margin-bottom: 30px;">
+                            निकाली दिनांक : <span id="view_p2_final_date">..................</span>
+                        </div>
+
+                        <div style="line-height: 1.5;">
+                            <strong>उपअधिक्षक</strong><br>
+                            भुमी अभिलेख <span id="view_p2_taluka2">कणकवली</span> जि. <span id="view_p2_district2">सिंधुदुर्ग</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- -------------------------------------------------------------
+         JAVASCRIPT LOGIC
+    ------------------------------------------------------------- -->
+    <script>
+        // State for Dynamic Record Rows
+        let recordsData = [
+            {
+                village: "नेहरूनगर",
+                gutNo: "१०२",
+                hissaNo: "१/अ",
+                c5: "✓",
+                c6: "✓",
+                c7: "",
+                c8: "मोजणी क्र. ४५२/२३",
+                c9: "",
+                c10: "",
+                c11: ""
+            },
+            {
+                village: "नेहरूनगर",
+                gutNo: "१८६",
+                hissaNo: "२",
+                c5: "✓",
+                c6: "",
+                c7: "✓",
+                c8: "",
+                c9: "",
+                c10: "",
+                c11: ""
+            }
+        ];
+
+        function getTodayFormatted() {
+            const d = new Date();
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function formatDisplayDate(dateStr) {
+            if (!dateStr) return "/ &nbsp;&nbsp;&nbsp; / २०२६";
+            const parts = dateStr.split(/[\/\-\.]/);
+            if (parts.length === 3) {
+                return `${parts[0]} / ${parts[1]} / ${parts[2]}`;
+            }
+            return dateStr;
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll(".tab-content-panel").forEach(p => p.style.display = "none");
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            
+            const target = document.getElementById(tabId);
+            if (target) target.style.display = "block";
+            if (btn) btn.classList.add("active");
+        }
+
+        function initRecordsTable() {
+            const tbody = document.getElementById("recordsInputBody");
+            tbody.innerHTML = "";
+
+            recordsData.forEach((r, idx) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td style="font-weight: 700;">${idx + 1}</td>
+                    <td><input type="text" value="${r.village || ''}" placeholder="गाव" oninput="updateRecord(${idx}, 'village', this.value)"></td>
+                    <td><input type="text" value="${r.gutNo || ''}" placeholder="गट क्र." oninput="updateRecord(${idx}, 'gutNo', this.value)"></td>
+                    <td><input type="text" value="${r.hissaNo || ''}" placeholder="हिस्सा" oninput="updateRecord(${idx}, 'hissaNo', this.value)"></td>
+                    <td><input type="text" value="${r.c5 || ''}" placeholder="✓ / तपशील" oninput="updateRecord(${idx}, 'c5', this.value)"></td>
+                    <td><input type="text" value="${r.c6 || ''}" placeholder="✓ / तपशील" oninput="updateRecord(${idx}, 'c6', this.value)"></td>
+                    <td><input type="text" value="${r.c7 || ''}" placeholder="✓ / तपशील" oninput="updateRecord(${idx}, 'c7', this.value)"></td>
+                    <td><input type="text" value="${r.c8 || ''}" placeholder="मोजणी क्र." oninput="updateRecord(${idx}, 'c8', this.value)"></td>
+                    <td><input type="text" value="${r.c9 || ''}" placeholder="न.भू. आलेख" oninput="updateRecord(${idx}, 'c9', this.value)"></td>
+                    <td><input type="text" value="${r.c10 || ''}" placeholder="नोंदवही" oninput="updateRecord(${idx}, 'c10', this.value)"></td>
+                    <td><input type="text" value="${r.c11 || ''}" placeholder="नकाशा" oninput="updateRecord(${idx}, 'c11', this.value)"></td>
+                    <td>
+                        <button type="button" style="background:#ef4444; color:#fff; border:none; border-radius:4px; padding:4px 8px; cursor:pointer;" onclick="removeRecordRow(${idx})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addRecordRow() {
+            const vName = document.getElementById("inp_taluka").value || "नेहरूनगर";
+            recordsData.push({
+                village: vName,
+                gutNo: "",
+                hissaNo: "",
+                c5: "",
+                c6: "",
+                c7: "",
+                c8: "",
+                c9: "",
+                c10: "",
+                c11: ""
+            });
+            initRecordsTable();
+            renderPreviewRecords();
+        }
+
+        function removeRecordRow(idx) {
+            if (recordsData.length <= 1) {
+                recordsData[0] = { village: "", gutNo: "", hissaNo: "", c5: "", c6: "", c7: "", c8: "", c9: "", c10: "", c11: "" };
+            } else {
+                recordsData.splice(idx, 1);
+            }
+            initRecordsTable();
+            renderPreviewRecords();
+        }
+
+        function updateRecord(idx, key, val) {
+            if (recordsData[idx]) {
+                recordsData[idx][key] = val;
+                renderPreviewRecords();
+            }
+        }
+
+        function renderPreviewRecords() {
+            const tbody = document.getElementById("view_records_table_body");
+            tbody.innerHTML = "";
+
+            const active = recordsData.filter(r => (r.village && r.village.trim() !== "") || (r.gutNo && r.gutNo.trim() !== ""));
+            const rowsToRender = active.length > 0 ? active : recordsData;
+
+            rowsToRender.forEach((r, idx) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td style="font-weight: 700;">${idx + 1}</td>
+                    <td>${r.village || '&nbsp;'}</td>
+                    <td>${r.gutNo || '&nbsp;'}</td>
+                    <td>${r.hissaNo || '&nbsp;'}</td>
+                    <td>${r.c5 || '&nbsp;'}</td>
+                    <td>${r.c6 || '&nbsp;'}</td>
+                    <td>${r.c7 || '&nbsp;'}</td>
+                    <td>${r.c8 || '&nbsp;'}</td>
+                    <td>${r.c9 || '&nbsp;'}</td>
+                    <td>${r.c10 || '&nbsp;'}</td>
+                    <td>${r.c11 || '&nbsp;'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // If rows are few, add empty formatted rows up to 4 rows for clean full page layout
+            const currentCount = rowsToRender.length;
+            for (let i = currentCount; i < 4; i++) {
+                const emptyTr = document.createElement("tr");
+                emptyTr.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                `;
+                tbody.appendChild(emptyTr);
+            }
+        }
+
+        function syncAll() {
+            const officeTitle = document.getElementById("inp_office_title").value || "मा. तालुका निरीक्षक भुमि अभिलेख";
+            const taluka = document.getElementById("inp_taluka").value || "कणकवली";
+            const district = document.getElementById("inp_district").value || "सिंधुदुर्ग";
+            const anamatNo = document.getElementById("inp_anamat_no").value || "..................";
+            const rawDate = document.getElementById("inp_app_date").value || getTodayFormatted();
+            
+            const appName = document.getElementById("inp_app_name").value || "श्री/श्रीमती";
+            const appAddress = document.getElementById("inp_app_address").value || "___________________________________________";
+            const purpose = document.getElementById("inp_purpose").value || "______________________";
+            const copyCount = document.getElementById("inp_copy_count").value || "०१";
+
+            // Page 1 Sync
+            document.getElementById("view_anamat_no").innerText = anamatNo;
+            document.getElementById("view_p1_app_name").innerText = appName;
+            document.getElementById("view_p1_app_address").innerText = appAddress;
+            document.getElementById("view_p1_top_date").innerHTML = formatDisplayDate(rawDate);
+            document.getElementById("view_p1_office_title").innerText = officeTitle;
+            document.getElementById("view_p1_taluka").innerText = taluka;
+            document.getElementById("view_p1_purpose").innerText = purpose;
+            document.getElementById("view_p1_copy_count").innerText = copyCount;
+            document.getElementById("view_p1_sign_name").innerText = appName;
+
+            // Page 2 Sync
+            const anamatAmt = document.getElementById("inp_anamat_amount").value || "१००/-";
+            const receiptNo = document.getElementById("inp_receipt_no").value || "४५८२";
+            const receiptDate = document.getElementById("inp_receipt_date").value || rawDate;
+            const extraReceipt = document.getElementById("inp_extra_receipt_no").value || "........";
+            const receiveDate = document.getElementById("inp_receive_date").value || rawDate;
+            const readyDate = document.getElementById("inp_ready_date").value || "..................";
+            const deliveryDate = document.getElementById("inp_delivery_date").value || "..................";
+            const refundAmt = document.getElementById("inp_refund_amount").value || "..........";
+
+            document.getElementById("view_p2_anamat").innerText = anamatAmt;
+            document.getElementById("view_p2_anamat2").innerText = anamatAmt;
+            document.getElementById("view_p2_receipt_no").innerText = receiptNo;
+            document.getElementById("view_p2_receipt_date").innerText = receiptDate;
+            document.getElementById("view_p2_extra_receipt_no").innerText = extraReceipt;
+            document.getElementById("view_p2_receive_date").innerText = receiveDate;
+            document.getElementById("view_p2_ready_date").innerText = readyDate;
+            document.getElementById("view_p2_delivery_date").innerText = deliveryDate;
+            document.getElementById("view_p2_refund").innerText = refundAmt;
+            document.getElementById("view_p2_sub_taluka").innerText = taluka;
+            document.getElementById("view_p2_taluka2").innerText = taluka;
+            document.getElementById("view_p2_district2").innerText = district;
+
+            renderPreviewRecords();
+        }
+
+        function loadSampleData() {
+            document.getElementById("inp_office_title").value = "मा. तालुका निरीक्षक भुमि अभिलेख";
+            document.getElementById("inp_taluka").value = "कणकवली";
+            document.getElementById("inp_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_anamat_no").value = "२४५/२०२६";
+            document.getElementById("inp_app_date").value = getTodayFormatted();
+
+            document.getElementById("inp_app_name").value = "श्री. चंदन अर्जुन कांबळे";
+            document.getElementById("inp_app_address").value = "मु.पो. नेहरूनगर, ता. कणकवली, जि. सिंधुदुर्ग";
+            document.getElementById("inp_app_mobile").value = "9324101420";
+            document.getElementById("inp_purpose").value = "वारस फेरफार नोंद व मिळकत मोजणी";
+            document.getElementById("inp_copy_count").value = "०२";
+
+            document.getElementById("inp_anamat_amount").value = "१५०/-";
+            document.getElementById("inp_receipt_no").value = "७८९२";
+            document.getElementById("inp_receipt_date").value = getTodayFormatted();
+            document.getElementById("inp_receive_date").value = getTodayFormatted();
+            document.getElementById("inp_ready_date").value = "05/09/2026";
+            document.getElementById("inp_delivery_date").value = "07/09/2026";
+            document.getElementById("inp_refund_amount").value = "३०/-";
+
+            recordsData = [
+                {
+                    village: "नेहरूनगर",
+                    gutNo: "१०२",
+                    hissaNo: "१/अ",
+                    c5: "✓",
+                    c6: "✓",
+                    c7: "✓",
+                    c8: "मोजणी क्र. ४५२/२३",
+                    c9: "",
+                    c10: "",
+                    c11: ""
+                },
+                {
+                    village: "नेहरूनगर",
+                    gutNo: "१८६",
+                    hissaNo: "२",
+                    c5: "✓",
+                    c6: "✓",
+                    c7: "",
+                    c8: "",
+                    c9: "",
+                    c10: "",
+                    c11: ""
+                }
+            ];
+
+            initRecordsTable();
+            syncAll();
+        }
+
+        function resetAllData() {
+            document.getElementById("inp_office_title").value = "मा. तालुका निरीक्षक भुमि अभिलेख";
+            document.getElementById("inp_taluka").value = "कणकवली";
+            document.getElementById("inp_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_anamat_no").value = "";
+            document.getElementById("inp_app_date").value = getTodayFormatted();
+
+            document.getElementById("inp_app_name").value = "";
+            document.getElementById("inp_app_address").value = "";
+            document.getElementById("inp_app_mobile").value = "";
+            document.getElementById("inp_purpose").value = "";
+            document.getElementById("inp_copy_count").value = "०१";
+
+            recordsData = [
+                { village: "", gutNo: "", hissaNo: "", c5: "", c6: "", c7: "", c8: "", c9: "", c10: "", c11: "" }
+            ];
+
+            initRecordsTable();
+            syncAll();
+        }
+
+        function printDoc(mode) {
+            document.body.classList.remove('print-p1', 'print-p2');
+            if (mode === 'p1' || mode === 'p2') {
+                document.body.classList.add('print-' + mode);
+            }
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    document.body.classList.remove('print-p1', 'print-p2');
+                }, 500);
+            }, 100);
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("inp_app_date").value = getTodayFormatted();
+            document.getElementById("inp_receipt_date").value = getTodayFormatted();
+            document.getElementById("inp_receive_date").value = getTodayFormatted();
+            initRecordsTable();
+            loadSampleData();
+        });
+    </script>
+</body>
+</html>
