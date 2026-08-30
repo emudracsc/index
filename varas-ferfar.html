@@ -306,6 +306,19 @@
             justify-content: space-between;
         }
 
+        .blank-duplex-sheet {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            color: #94a3b8 !important;
+            font-size: 13pt;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+
         .val-inline {
             font-weight: 700;
             border-bottom: 1px dotted #000;
@@ -633,11 +646,30 @@
             }
 
             body.duplex-print-active .blank-duplex-sheet {
-                         /* Single Page Selective Print Controls */
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                min-height: 284mm !important;
+                height: 284mm !important;
+                max-height: 284mm !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                background: #ffffff !important;
+                color: #cbd5e1 !important;
+            }
+
+            body.duplex-print-active .blank-duplex-sheet * {
+                color: #cbd5e1 !important;
+                font-size: 10pt !important;
+                opacity: 0.4 !important;
+            }
+
+            /* Single Page Selective Print Controls */
             .print-p1 #page2Sheet, .print-p1 #page3Sheet, .print-p1 #page4Sheet, .print-p1 #page5Sheet, .print-p1 #page6Sheet, .print-p1 #page7Sheet, .print-p1 #page8Sheet, .print-p1 .blank-duplex-sheet { display: none !important; }
             .print-p2 #page1Sheet, .print-p2 #page3Sheet, .print-p2 #page4Sheet, .print-p2 #page5Sheet, .print-p2 #page6Sheet, .print-p2 #page7Sheet, .print-p2 #page8Sheet, .print-p2 .blank-duplex-sheet { display: none !important; }
             .print-p3 #page1Sheet, .print-p3 #page2Sheet, .print-p3 #page4Sheet, .print-p3 #page5Sheet, .print-p3 #page6Sheet, .print-p3 #page7Sheet, .print-p3 #page8Sheet, .print-p3 .blank-duplex-sheet { display: none !important; }
-            .print-p4 #page1Sheet, .print-p4 #page2Sheet, .print-p4 #page3Sheet, .print-p4 #page5Sheet, .print-p4 #page6Sheet, .print-p4 #page7Sheet, .print-p4 #page8Sheet, .print-p4 .blank-duplex-sheet { display: none !important; }
+            .print-p4 #page1Sheet, .print-p4 #page2Sheet, .print-p4 #page3Sheet, .print-p4 #page5Sheet, .print-p4 #page6Sheet, .print-p4 #page7Sheet, .print-p8 #page8Sheet, .print-p4 .blank-duplex-sheet { display: none !important; }
             .print-p5 #page1Sheet, .print-p5 #page2Sheet, .print-p5 #page3Sheet, .print-p5 #page4Sheet, .print-p5 #page6Sheet, .print-p5 #page7Sheet, .print-p5 #page8Sheet, .print-p5 .blank-duplex-sheet { display: none !important; }
             .print-p6 #page1Sheet, .print-p6 #page2Sheet, .print-p6 #page3Sheet, .print-p6 #page4Sheet, .print-p6 #page5Sheet, .print-p6 #page7Sheet, .print-p6 #page8Sheet, .print-p6 .blank-duplex-sheet { display: none !important; }
             .print-p7 #page1Sheet, .print-p7 #page2Sheet, .print-p7 #page3Sheet, .print-p7 #page4Sheet, .print-p7 #page5Sheet, .print-p7 #page6Sheet, .print-p7 #page8Sheet, .print-p7 .blank-duplex-sheet { display: none !important; }
@@ -848,17 +880,23 @@
                 </div>
             </div>
 
-            <div class="section-subhead"><i class="fa-solid fa-gavel"></i> दंडाधिकारी न्यायालय व शपथपत्र माहिती (Page 7 व 8)</div>
+            <div class="section-subhead"><i class="fa-solid fa-gavel"></i> दंडाधिकारी न्यायालय व शपथपत्र माहिती (Page 7)</div>
             <div class="input-grid">
                 <div class="form-group full-width">
                     <label>दंडाधिकारी न्यायालय शीर्षक</label>
                     <input type="text" id="inp_court_title" value="मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समक्ष" placeholder="उदा. मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समक्ष" oninput="syncAll()">
                 </div>
-                <div class="form-group">
+                <div class="form-group full-width" style="background: #f1f5f9; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #cbd5e1; display: flex; flex-direction: row; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="inp_mother_include" style="width: 20px; height: 20px; cursor: pointer; accent-color: #0284c7;" onchange="toggleMotherInputs(); syncAll();" checked>
+                    <label for="inp_mother_include" style="font-weight: 700; font-size: 0.92rem; cursor: pointer; color: #0f172a; margin: 0;">
+                        प्रतिज्ञापत्रात आईच्या मयत/हयात स्थितीचा उल्लेख समाविष्ट करा (Optional Checkbox)
+                    </label>
+                </div>
+                <div class="form-group" id="motherNameGroup">
                     <label>आई कै. यांचे नाव (असल्यास)</label>
                     <input type="text" id="inp_mother_name" placeholder="उदा. सौ. यशोदा अर्जुन कांबळे" oninput="syncAll()">
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="motherStatusGroup">
                     <label>आईची स्थिती</label>
                     <input type="text" id="inp_mother_status" value="सुद्धा मयत आहे" placeholder="उदा. सुद्धा मयत आहे / हयात आहे" oninput="syncAll()">
                 </div>
@@ -1530,6 +1568,18 @@
             document.getElementById("stampPlaceholderBox").style.height = val + "mm";
         }
 
+        function toggleMotherInputs() {
+            const isInc = document.getElementById("inp_mother_include") ? document.getElementById("inp_mother_include").checked : true;
+            const nameGrp = document.getElementById("motherNameGroup");
+            const statusGrp = document.getElementById("motherStatusGroup");
+            if (nameGrp) nameGrp.style.opacity = isInc ? "1" : "0.4";
+            if (statusGrp) statusGrp.style.opacity = isInc ? "1" : "0.4";
+            const nameInp = document.getElementById("inp_mother_name");
+            const statusInp = document.getElementById("inp_mother_status");
+            if (nameInp) nameInp.disabled = !isInc;
+            if (statusInp) statusInp.disabled = !isInc;
+        }
+
         // Sync all input fields to all 9 live preview sheets
         function syncAll() {
             const appName = document.getElementById("inp_applicant_name").value || "श्री. चंदन अर्जुन कांबळे";
@@ -1694,8 +1744,19 @@
             document.getElementById("view_p7_father_name").innerText = deceasedName;
             document.getElementById("view_p7_father_date").innerText = deathDate;
             document.getElementById("view_p7_father_place").innerText = deathPlace;
-            document.getElementById("view_p7_mother_name").innerText = motherName;
-            document.getElementById("view_p7_mother_status").innerText = motherStatus;
+
+            const includeMother = document.getElementById("inp_mother_include") ? document.getElementById("inp_mother_include").checked : true;
+            const motherClauseElem = document.getElementById("view_p7_mother_clause");
+            if (motherClauseElem) {
+                if (includeMother) {
+                    motherClauseElem.style.display = "inline";
+                    document.getElementById("view_p7_mother_name").innerText = motherName;
+                    document.getElementById("view_p7_mother_status").innerText = motherStatus;
+                } else {
+                    motherClauseElem.style.display = "none";
+                }
+            }
+
             document.getElementById("view_p7_sign_name").innerText = cleanAppName;
 
             // --- PAGE 8 SYNC (LIST OF HEIRS WITH ADDRESSES) ---
