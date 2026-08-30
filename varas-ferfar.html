@@ -417,15 +417,19 @@
         .receipt-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 6px; }
 
         /* -------------------------------------------------------------
-           PAGE 3: अनुसूची सूची
+           PAGE 3: अनुसूची सूची (२.०० लाइन स्पेसिंग - Double Spacing)
         ------------------------------------------------------------- */
-        .p3-title { text-align: center; font-size: 11.2pt; font-weight: 800; margin-bottom: 8px; line-height: 1.35; }
-        .schedule-table { width: 100%; border-collapse: collapse; font-size: 8.8pt; line-height: 1.25; margin-bottom: 8px; }
-        .schedule-table th, .schedule-table td { border: 1px solid #000; padding: 3px 5px; vertical-align: top; }
-        .schedule-table th { font-weight: 800; text-align: center; background: #f8fafc; }
-        .schedule-table td.col-sr { width: 32px; text-align: center; font-weight: 700; }
-        .schedule-table td.col-type { width: 130px; font-weight: 700; }
-        .p3-residence-box { font-size: 8.4pt; line-height: 1.32; text-align: justify; border-top: 1px solid #000; padding-top: 5px; }
+        #page3Sheet {
+            line-height: 2.0 !important;
+            font-size: 9.8pt;
+        }
+        #page3Sheet .p3-title { text-align: center; font-size: 11.2pt; font-weight: 800; margin-bottom: 8px; line-height: 1.8; }
+        #page3Sheet .schedule-table { width: 100%; border-collapse: collapse; font-size: 8.8pt; line-height: 1.85 !important; margin-bottom: 8px; }
+        #page3Sheet .schedule-table th, #page3Sheet .schedule-table td { border: 1px solid #000; padding: 3px 5px; vertical-align: top; line-height: 1.85 !important; }
+        #page3Sheet .schedule-table th { font-weight: 800; text-align: center; background: #f8fafc; line-height: 1.5; }
+        #page3Sheet .schedule-table td.col-sr { width: 32px; text-align: center; font-weight: 700; }
+        #page3Sheet .schedule-table td.col-type { width: 130px; font-weight: 700; }
+        #page3Sheet .p3-residence-box { font-size: 8.6pt; line-height: 1.9 !important; text-align: justify; border-top: 1px solid #000; padding-top: 5px; }
 
         /* -------------------------------------------------------------
            PAGE 4: २-इन-१ वारस दाखला (पोलीस पाटील व सरपंच)
@@ -609,19 +613,41 @@
                 justify-content: space-between !important;
                 height: 284mm !important;
                 max-height: 284mm !important;
-                padding: 6mm 10mm 8mm 10mm !important;
+                padding: 6mm 10mm 6mm 10mm !important;
+            }
+
+            /* Duplex Print Mode (Blank Pages Inserted) */
+            .blank-duplex-sheet {
+                display: none !important;
+            }
+
+            body.duplex-print-active .blank-duplex-sheet {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                min-height: 284mm !important;
+                height: 284mm !important;
+                max-height: 284mm !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                background: #ffffff !important;
+            }
+
+            body.duplex-print-active .blank-duplex-sheet * {
+                display: none !important;
             }
 
             /* Single Page Selective Print Controls */
-            .print-p1 #page2Sheet, .print-p1 #page3Sheet, .print-p1 #page4Sheet, .print-p1 #page5Sheet, .print-p1 #page6Sheet, .print-p1 #page7Sheet, .print-p1 #page8Sheet, .print-p1 #page9Sheet { display: none !important; }
-            .print-p2 #page1Sheet, .print-p2 #page3Sheet, .print-p2 #page4Sheet, .print-p2 #page5Sheet, .print-p2 #page6Sheet, .print-p2 #page7Sheet, .print-p2 #page8Sheet, .print-p2 #page9Sheet { display: none !important; }
-            .print-p3 #page1Sheet, .print-p3 #page2Sheet, .print-p3 #page4Sheet, .print-p3 #page5Sheet, .print-p3 #page6Sheet, .print-p3 #page7Sheet, .print-p3 #page8Sheet, .print-p3 #page9Sheet { display: none !important; }
-            .print-p4 #page1Sheet, .print-p4 #page2Sheet, .print-p3 #page3Sheet, .print-p4 #page5Sheet, .print-p4 #page6Sheet, .print-p4 #page7Sheet, .print-p4 #page8Sheet, .print-p4 #page9Sheet { display: none !important; }
-            .print-p5 #page1Sheet, .print-p5 #page2Sheet, .print-p5 #page3Sheet, .print-p5 #page4Sheet, .print-p5 #page6Sheet, .print-p5 #page7Sheet, .print-p5 #page8Sheet, .print-p5 #page9Sheet { display: none !important; }
-            .print-p6 #page1Sheet, .print-p6 #page2Sheet, .print-p6 #page3Sheet, .print-p6 #page4Sheet, .print-p6 #page5Sheet, .print-p6 #page7Sheet, .print-p6 #page8Sheet, .print-p6 #page9Sheet { display: none !important; }
-            .print-p7 #page1Sheet, .print-p7 #page2Sheet, .print-p7 #page3Sheet, .print-p7 #page4Sheet, .print-p7 #page5Sheet, .print-p7 #page6Sheet, .print-p7 #page8Sheet, .print-p7 #page9Sheet { display: none !important; }
-            .print-p8 #page1Sheet, .print-p8 #page2Sheet, .print-p8 #page3Sheet, .print-p8 #page4Sheet, .print-p8 #page5Sheet, .print-p8 #page6Sheet, .print-p8 #page7Sheet, .print-p8 #page9Sheet { display: none !important; }
-            .print-p9 #page1Sheet, .print-p9 #page2Sheet, .print-p9 #page3Sheet, .print-p9 #page4Sheet, .print-p9 #page5Sheet, .print-p9 #page6Sheet, .print-p9 #page7Sheet, .print-p9 #page8Sheet { display: none !important; }
+            .print-p1 #page2Sheet, .print-p1 #page3Sheet, .print-p1 #page4Sheet, .print-p1 #page5Sheet, .print-p1 #page6Sheet, .print-p1 #page7Sheet, .print-p1 #page8Sheet, .print-p1 #page9Sheet, .print-p1 .blank-duplex-sheet { display: none !important; }
+            .print-p2 #page1Sheet, .print-p2 #page3Sheet, .print-p2 #page4Sheet, .print-p2 #page5Sheet, .print-p2 #page6Sheet, .print-p2 #page7Sheet, .print-p2 #page8Sheet, .print-p2 #page9Sheet, .print-p2 .blank-duplex-sheet { display: none !important; }
+            .print-p3 #page1Sheet, .print-p3 #page2Sheet, .print-p3 #page4Sheet, .print-p3 #page5Sheet, .print-p3 #page6Sheet, .print-p3 #page7Sheet, .print-p3 #page8Sheet, .print-p3 #page9Sheet, .print-p3 .blank-duplex-sheet { display: none !important; }
+            .print-p4 #page1Sheet, .print-p4 #page2Sheet, .print-p4 #page3Sheet, .print-p4 #page5Sheet, .print-p4 #page6Sheet, .print-p4 #page7Sheet, .print-p4 #page8Sheet, .print-p4 #page9Sheet, .print-p4 .blank-duplex-sheet { display: none !important; }
+            .print-p5 #page1Sheet, .print-p5 #page2Sheet, .print-p5 #page3Sheet, .print-p5 #page4Sheet, .print-p5 #page6Sheet, .print-p5 #page7Sheet, .print-p5 #page8Sheet, .print-p5 #page9Sheet, .print-p5 .blank-duplex-sheet { display: none !important; }
+            .print-p6 #page1Sheet, .print-p6 #page2Sheet, .print-p6 #page3Sheet, .print-p6 #page4Sheet, .print-p6 #page5Sheet, .print-p6 #page7Sheet, .print-p6 #page8Sheet, .print-p6 #page9Sheet, .print-p6 .blank-duplex-sheet { display: none !important; }
+            .print-p7 #page1Sheet, .print-p7 #page2Sheet, .print-p7 #page3Sheet, .print-p7 #page4Sheet, .print-p7 #page5Sheet, .print-p7 #page6Sheet, .print-p7 #page8Sheet, .print-p7 #page9Sheet, .print-p7 .blank-duplex-sheet { display: none !important; }
+            .print-p8 #page1Sheet, .print-p8 #page2Sheet, .print-p8 #page3Sheet, .print-p8 #page4Sheet, .print-p8 #page5Sheet, .print-p8 #page6Sheet, .print-p8 #page7Sheet, .print-p8 #page9Sheet, .print-p8 .blank-duplex-sheet { display: none !important; }
+            .print-p9 #page1Sheet, .print-p9 #page2Sheet, .print-p9 #page3Sheet, .print-p9 #page4Sheet, .print-p9 #page5Sheet, .print-p9 #page6Sheet, .print-p9 #page7Sheet, .print-p9 #page8Sheet, .print-p9 .blank-duplex-sheet { display: none !important; }
         }
     </style>
 </head>
@@ -650,6 +676,9 @@
                 <button type="button" class="btn btn-secondary" onclick="resetAllData()">
                     <i class="fa-solid fa-rotate-left"></i> रीसेट
                 </button>
+                <button type="button" class="btn btn-warning" onclick="printDoc('duplex')">
+                    <i class="fa-solid fa-clone"></i> ड्युप्लेक्स प्रिंट (Duplex 2-Side Print)
+                </button>
                 <button type="button" class="btn btn-primary" onclick="printDoc('all')">
                     <i class="fa-solid fa-print"></i> सर्व ९ पाने प्रिंट / PDF
                 </button>
@@ -660,7 +689,7 @@
         <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px;">
             <button type="button" class="btn btn-success" onclick="printDoc('p1')">P1. वारस तपास (2.0 Spacing)</button>
             <button type="button" class="btn btn-success" onclick="printDoc('p2')">P2. कलम १४९</button>
-            <button type="button" class="btn btn-success" onclick="printDoc('p3')">P3. अनुसूची</button>
+            <button type="button" class="btn btn-success" onclick="printDoc('p3')">P3. अनुसूची (2.0 Spacing)</button>
             <button type="button" class="btn btn-success" onclick="printDoc('p4')">P4. २-इन-१ दाखला</button>
             <button type="button" class="btn btn-success" onclick="printDoc('p5')">P5. पंचयादी</button>
             <button type="button" class="btn btn-success" onclick="printDoc('p6')">P6. जबाब</button>
@@ -759,11 +788,6 @@
                 </div>
             </div>
 
-            <div class="section-subhead"><i class="fa-solid fa-paperclip"></i> अतिरिक्त कागदपत्रे जोडणे (PDF / Images)</div>
-            <div class="form-group" style="margin-bottom: 16px;">
-                <label style="color: #64748b; font-weight: 500; margin-bottom: 8px;">तुम्ही येथे जुनी पाने किंवा इतर PDF फाईल्स जोडू शकता. ती या फॉर्मसोबत लिंक होतील व तुम्ही खालील लिंकवर क्लिक करून ती स्वतंत्रपणे प्रिंट करू शकता.</label>
-                <input type="file" id="inp_extra_docs" accept=".pdf, image/*" multiple onchange="handleExtraDocs(event)" style="max-width: 400px;">
-                <div id="extra_docs_list" style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;"></div>
             </div>
         </div>
 
@@ -889,22 +913,22 @@
                 <div class="p-varas-to">
                     प्रति,<br>
                     <strong>मा. ग्राम महसुल अधिकारी <span id="view_p1_to_village">नेहरूनगर</span></strong><br>
-                    ता. <span id="view_p1_to_taluka">कणकवली</span>, जि. <span id="view_p1_to_district">सिंधुदुर्ग</span>
+                    सजा- <span id="view_p1_to_saza">नेहरूनगर</span>, ता. <span id="view_p1_to_taluka">कणकवली</span>, जि. <span id="view_p1_to_district">सिंधुदुर्ग</span>.
                 </div>
 
                 <div class="p-varas-applicant-box">
-                    <strong>अर्जदार - <span id="view_p1_app_name">श्री. चंदन अर्जुन कांबळे</span></strong><br>
-                    <span id="view_p1_app_address">आर.के. स्टुडीओ मागे, हिराबाग कामावाडी, सायन ट्रोम्बे रोड, पांजरापोळ, चेंबूर</span><br>
-                    <span id="view_p1_app_city">मुंबई, 400088</span>
+                    <strong>अर्जदार-</strong><br>
+                    <span id="view_p1_app_name">श्री. चंदन अर्जुन कांबळे</span><br>
+                    राहणार- <span id="view_p1_app_address">आर.के. स्टुडीओ मागे, हिराबाग कामावाडी, सायन ट्रोम्बे रोड, पांजरापोळ, चेंबूर, मुंबई, 400088</span><br>
+                    मोबाईल नं.- <span id="view_p1_app_mob">9324101420</span>
                 </div>
 
                 <div class="p-varas-subj">
-                    विषय - वारस तपास नोंद होणेबाबत.
+                    विषय- वारस तपास नोंद होणेबाबत.
                 </div>
 
                 <div class="p-varas-body">
-                    <strong>महाशय,</strong><br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;वरील विषयान्वये गाव मौजे <strong id="view_p1_village">नेहरूनगर</strong>, ता. <strong id="view_p1_taluka">कणकवली</strong>, जि. <strong id="view_p1_district">सिंधुदुर्ग</strong> येथील खाते क्र. <strong id="view_p1_khate">186 व 10221</strong> चे खातेदार <strong>कै. <span id="view_p1_deceased">अर्जुन यशवंत कांबळे</span></strong> हे दि. <strong id="view_p1_death_date">13/06/2024</strong> रोजी मयत झाले आहेत. त्यांच्या पश्चात आम्ही खालीलप्रमाणे वारस आहोत.
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;मी उपरोक्त अर्जदार लिहून देतो की, मौजे <span class="val-bold" id="view_p1_village">नेहरूनगर</span>, ता. <span class="val-bold" id="view_p1_taluka">कणकवली</span>, जि. <span class="val-bold" id="view_p1_district">सिंधुदुर्ग</span> येथील गाव नमुना ८-अ चे खाते नंबर <span class="val-bold" id="view_p1_khate">186 व 10221</span> मधील मिळकत ही आमचे सामाईक मालकी वहिवाटीची असून सदर खात्यावर आमचे वडील कै. <span class="val-bold" id="view_p1_deceased">अर्जुन यशवंत कांबळे</span> यांचे नाव दाखल आहे. ते दिनांक- <span class="val-bold" id="view_p1_death_date">13/06/2024</span> रोजी मयत झाले आहेत. त्यांच्या पश्चात खालीलप्रमाणे कायदेशीर वारस आहेत.
                 </div>
 
                 <!-- Heir Table -->
@@ -912,7 +936,7 @@
                     <thead>
                         <tr>
                             <th style="width: 50px;">अ.क्र.</th>
-                            <th>नाव</th>
+                            <th>वारसाचे नाव</th>
                             <th style="width: 65px;">वय</th>
                             <th style="width: 120px;">मयताशी नाते</th>
                         </tr>
@@ -923,120 +947,95 @@
                 </table>
 
                 <div class="p-varas-note">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;वरील प्रमाणे अनुक्रमे 1 ते <span id="view_p1_heir_count">03</span> वारस असून अन्य कोणीही वारस नाहीत. तरी मयत खातेदार यांचे नांव कमी करून वरील वारसांची नावे दाखल करण्यात यावीत हि नम्र विनंती. लिहून दिलेली माहिती खोटी अगर चुकीची आढळून आल्यास होणाऱ्या या कायदेशीर कारवाईस मी स्वतः जबाबदार राहीन.
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;तरी वरीलप्रमाणे मयतास एकूण <span class="val-bold" id="view_p1_heir_count">03</span> वारस असून अन्य कोणीही वारसदार नाहीत. तरी सदर मिळकतीस मयत व्यक्तीचे नाव कमी करून आमची नावे वारस हक्काने अधिकार अभिलेखात दाखल होणेस विनंती आहे.
                 </div>
 
                 <div class="p-varas-sign">
                     आपला विश्वासू,<br><br>
-                    <strong><span id="view_p1_sign_name">श्री. चंदन अर्जुन कांबळे</span></strong>
+                    <strong>(श्री./श्रीमती <span id="view_p1_sign_name">श्री. चंदन अर्जुन कांबळे</span>)</strong>
                 </div>
 
                 <div class="p-varas-sobat">
-                    <strong>सोबत -</strong>
+                    <strong>सोबत जोडलेली कागदपत्रे :</strong>
                     <ol>
-                        <li>मृत्यूचा दाखला</li>
-                        <li>आठ अ</li>
-                        <li>सरपंच दाखला</li>
-                        <li>पोलिस पाटील दाखला</li>
-                        <li>प्रतिज्ञापत्र</li>
-                        <li>फोटोसह नमुन्यातील अर्ज</li>
-                        <li>सर्व वारसांचे पत्ते व संपर्क क्र.</li>
+                        <li>मृत्यू दाखला मूळ प्रत</li>
+                        <li>गाव नमुना ८-अ खाते उतारा</li>
+                        <li>प्रतिज्ञापत्र (Affidavit)</li>
+                        <li>पोलीस पाटील / सरपंच दाखला</li>
+                        <li>सर्व वारसांची यादी व पत्ते</li>
                     </ol>
                 </div>
             </div>
         </div>
 
+        <!-- DUPLEX BLANK AFTER P1 -->
+        <div class="a4-sheet blank-duplex-sheet" id="blankAfterP1">
+            <div>[ दुहेरी प्रिंटसाठी कोरे पान - Blank Page ]</div>
+        </div>
+
 
         <!-- =========================================================
-             PAGE 2: कलम १४९ फेरफार अर्ज व सत्यप्रतिज्ञालेख
+             PAGE 2: महाराष्ट्र जमीन महसूल अधिनियम १९६६ कलम १४९
         ========================================================= -->
         <div class="a4-sheet" id="page2Sheet">
             <div>
                 <div class="p2-header-title">
-                    महाराष्ट्र जमीन महसूल अधिनियम १९६६ चे कलम १४९ नुसार अधिकार संपादन करावयाच्या अर्जाचा नमुना व सत्यप्रतिज्ञालेख
+                    महाराष्ट्र जमीन महसूल अधिनियम १९६६ चे कलम १४९ अन्वये अधिकार संपादन केल्याबाबतची सूचना
                 </div>
                 <div class="p2-subtitle">
-                    (महानगरपालिका, नगरपालिका, मुंबई महानगर प्रदेश विकास प्राधिकरण, सिडको प्राधिकरण, कॅन्टोन्मेंट क्षेत्रासाठी स्वतंत्र सत्यप्रतिज्ञालेख सादर करणे आवश्यक राहील.)
+                    (गाव नमुना ६ क मधील नोंदीसाठी - नियम २३, २४ आणि २४ पहा)
                 </div>
 
                 <div class="p2-main-flex">
                     <div class="p2-court-stamp-box">
-                        ५ रु. कोर्ट फी स्टॅम्प
+                        रु. ५/- चे कोर्ट फी स्टॅम्प
                     </div>
 
                     <div class="p2-content-area">
                         <div class="p2-top-row">
                             <div class="p2-applicant-info">
-                                <div class="field-line">
-                                    <span style="font-weight: 700;">श्री./श्रीमती</span>
-                                    <span class="val" id="view_p2_app_name">चंदन अर्जुन कांबळे</span>
-                                </div>
-                                <div class="field-line">
-                                    <span style="font-weight: 700;">रा.</span>
-                                    <span class="val" id="view_p2_app_address">आर.के. स्टुडीओ मागे, हिराबाग कामावाडी, सायन ट्रोम्बे रोड, पांजरापोळ, चेंबूर</span>
-                                </div>
-                                <div class="field-line">
-                                    <span style="font-weight: 700;">शहर / गाव</span>
-                                    <span class="val" id="view_p2_app_city">मुंबई, 400088</span>
-                                </div>
-                                <div class="field-line" style="margin-top: 3px;">
-                                    <span style="font-weight: 700;">दिनांक :</span>
-                                    <span class="val" id="view_p2_app_date" style="max-width: 140px;">14/08/2026</span>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-                                    <span style="font-weight: 700;">मोबाईल नं. :</span>
-                                    <div class="mobile-boxes-wrap" id="view_p2_mobile_boxes">
-                                        <!-- Mobile Boxes -->
-                                    </div>
+                                <div><strong>अर्जदाराचे नाव:</strong> <span class="val" id="view_p2_top_name">चंदन अर्जुन कांबळे</span></div>
+                                <div><strong>पत्ता:</strong> <span class="val" id="view_p2_top_addr">आर.के. स्टुडीओ मागे, हिराबाग कामावाडी, सायन ट्रोम्बे रोड, पांजरापोळ, चेंबूर, मुंबई, 400088</span></div>
+                                <div class="mobile-boxes-wrap">
+                                    <strong>भ्रमणध्वनी:</strong>&nbsp;
+                                    <div id="view_p2_mob_boxes" style="display: inline-flex; gap: 2px;"></div>
                                 </div>
                             </div>
 
-                            <div class="photo-box-wrap" onclick="document.getElementById('inp_photo_file').click()" title="फोटो बदलण्यासाठी क्लिक करा">
-                                <img id="view_p2_photo_img" style="display: none;">
-                                <span id="view_p2_photo_placeholder" style="font-size: 8.5pt; font-weight: 700; color: #475569;">
-                                    <i class="fa-solid fa-user" style="font-size: 1.5rem; margin-bottom: 3px; display: block; color: #94a3b8;"></i>
-                                    फोटो
-                                </span>
+                            <div class="photo-box-wrap" onclick="triggerPhotoInput()" title="फोटो बदलण्यासाठी क्लिक करा">
+                                <img id="view_p2_photo_img" src="" alt="Photo" style="display: none;">
+                                <div id="view_p2_photo_placeholder" style="color: #64748b; font-size: 8.5pt;">
+                                    <i class="fa-solid fa-camera" style="font-size: 1.4rem; margin-bottom: 3px; color: #0284c7;"></i><br>
+                                    अर्जदाराचा<br>पासपोर्ट फोटो
+                                </div>
                             </div>
                         </div>
 
                         <div class="p2-to-section">
-                            <div><strong>प्रति,</strong></div>
-                            <div style="margin-left: 20px;">
-                                ग्राम महसूल अधिकारी / तलाठी सजा : <span class="val-inline" id="view_p2_talathi_saza">नेहरूनगर</span><br>
-                                ता. <span class="val-inline" id="view_p2_to_taluka">कणकवली</span>, जि. <span class="val-inline" id="view_p2_to_district">सिंधुदुर्ग</span>
-                            </div>
+                            <strong>प्रति,</strong><br>
+                            मा. <strong>तलाठी सजा <span class="val-inline" id="view_p2_to_saza">नेहरूनगर</span></strong>, 
+                            ता. <span class="val-inline" id="view_p2_to_taluka">कणकवली</span>, 
+                            जि. <span class="val-inline" id="view_p2_to_district">सिंधुदुर्ग</span>
                         </div>
 
                         <div class="p2-subject-box">
-                            <div><strong>विषय :- अधिकार-अभिलेखात नांव दाखल करण्याबाबत.</strong></div>
-                            <div style="font-weight: 500; font-size: 10pt; margin-top: 2px;">
-                                मौजे <span class="val-inline" id="view_p2_subj_village">नेहरूनगर</span>, 
-                                ता. <span class="val-inline" id="view_p2_subj_taluka">कणकवली</span>, 
-                                जि. <span class="val-inline" id="view_p2_subj_district">सिंधुदुर्ग</span> येथील 
-                                खाते क्र. <span class="val-inline" id="view_p2_subj_khate">186 व 10221</span> 
-                                क्षेत्र <span class="val-inline" id="view_p2_subj_area">0.16.60 व 0.07.80 हे.आर.</span>
-                            </div>
+                            विषय:- गाव मौजे <span class="val-inline" id="view_p2_subj_village">नेहरूनगर</span>, ता. <span class="val-inline" id="view_p2_subj_taluka">कणकवली</span>, जि. <span class="val-inline" id="view_p2_subj_district">सिंधुदुर्ग</span> मधील मिळकत खाते क्र. <span class="val-inline" id="view_p2_subj_khate">186 व 10221</span>, क्षेत्र <span class="val-inline" id="view_p2_subj_area">0.16.60 व 0.07.80 हे.आर.</span> मधील अधिकार संपादनाची नोंद अधिकार अभिलेखात (गाव नमुना ६) घेणेबाबत.
                         </div>
 
                         <div class="p2-body-text">
                             <strong>महोदय,</strong><br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;मी श्री./श्रीमती <span class="val-inline" id="view_p2_body_name">चंदन अर्जुन कांबळे</span> राह. मु.पो. <span class="val-inline" id="view_p2_body_village">नेहरूनगर, भिरवंडे</span>, ता. <span class="val-inline" id="view_p2_body_taluka">कणकवली</span>, जि. <span class="val-inline" id="view_p2_body_district">सिंधुदुर्ग</span> विनंतीपूर्वक अर्ज सादर करतो की, मी विषयांकित जमिनीबाबत <span class="val-inline" id="view_p2_body_right">वारसा हक्काने</span> (मागील अनुसूचित दर्शविलेल्या अनुक्रमांक १ ते १३ पैकी) या अधिकारान्वये जमीन संपादन केलेली आहे.
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;मी श्री./श्रीमती <span class="val-inline" id="view_p2_body_name">चंदन अर्जुन कांबळे</span> राह. मु.पो. <span class="val-inline" id="view_p2_body_village">नेहरूनगर, भिरवंडे</span>, ता. <span class="val-inline" id="view_p2_body_taluka">कणकवली</span>, जि. <span class="val-inline" id="view_p2_body_district">सिंधुदुर्ग</span> विनंतीपूर्वक अर्ज सादर करतो की, मी विषयांकित जमिनीबाबत <span class="val-inline" id="view_p2_body_right">वारसा हक्काने</span> या अधिकारान्वये जमीन संपादन केलेली आहे.
                             <br><br>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;तरी खाली नमूद केलेल्या पुराव्यांच्या आधारे माझे प्रस्तुत जमिनीत निर्माण झालेल्या अधिकारांबाबत योग्य ती फेरफार नोंद करून माझे नांव अधिकार अभिलेखात दाखल करावे हि विनंती.
-                            <br><br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;जमीन ज्या अधिकारान्वये धारण केलेली आहे त्या अधिकारान्वये जमीन नांवे होण्याच्या अनुषंगाने मागील अनुसूचित दर्शविल्याप्रमाणे खालील कागदपत्रे सोबत जोडली आहेत.
                         </div>
 
                         <div class="docs-grid">
                             <div class="doc-item"><span class="num">१.</span><span class="line">मृत्यूचा दाखला</span></div>
                             <div class="doc-item"><span class="num">५.</span><span class="line">पोलिस पाटील दाखला</span></div>
-                            <div class="doc-item"><span class="num">२.</span><span class="line">आठ अ</span></div>
+                            <div class="doc-item"><span class="num">२.</span><span class="line">आठ अ उतारा</span></div>
                             <div class="doc-item"><span class="num">६.</span><span class="line">सरपंच दाखला</span></div>
                             <div class="doc-item"><span class="num">३.</span><span class="line">प्रतिज्ञापत्र</span></div>
-                            <div class="doc-item"><span class="num">७.</span><span class="line">सर्व वारसांचे पत्ते व संपर्क क्र.</span></div>
-                            <div class="doc-item"><span class="num">४.</span><span class="line">अर्ज</span></div>
-                            <div class="doc-item"><span class="num">८.</span><span class="line">........................................</span></div>
+                            <div class="doc-item"><span class="num">७.</span><span class="line">वारस यादी</span></div>
                         </div>
 
                         <div class="signature-block">
@@ -1051,7 +1050,7 @@
                 <div class="affidavit-box">
                     <div class="affidavit-title">सत्यप्रतिज्ञालेख</div>
                     <div class="affidavit-text">
-                        वर नमूद केलेली सर्व माहिती खरी असून त्याचे सत्यतेबाबत मी खात्री केली असून त्यामध्ये काहीही खोटे आढळून आल्यास मी भारतीय न्याय संहितेचे कलम २२९ व २३६ व २३७ मधील तरतुदीनुसार होणाऱ्या दंड शिक्षेस मी पात्र राहीन याची मला जाणीव आहे.
+                        वर नमूद केलेली सर्व माहिती खरी असून त्याचे सत्यतेबाबत मी खात्री केली असून त्यामध्ये काहीही खोटे आढळून आल्यास मी भारतीय न्याय संहितेनुसार होणाऱ्या दंड शिक्षेस मी पात्र राहीन याची मला जाणीव आहे.
                     </div>
                     <div class="signature-block" style="margin-bottom: 1px;">
                         <div class="sign-holder">
@@ -1059,15 +1058,12 @@
                             <strong>(श्री./श्रीमती <span id="view_p2_sign_name2">चंदन अर्जुन कांबळे</span>)</strong>
                         </div>
                     </div>
-                    <div class="affidavit-note">
-                        *सूचना:- मागील अनुसूचित दर्शविलेल्या आवश्यक कागदपत्रांची पूर्तता केलेली नसल्यास अर्जाची दखल घेतली जाणार नाही.
-                    </div>
                 </div>
 
                 <div class="receipt-box">
                     <div class="receipt-title">तलाठी कार्यालयाची पोहोच</div>
                     <div>
-                        श्री./श्रीमती <span class="val-inline" id="view_p2_rec_name" style="min-width: 180px;">चंदन अर्जुन कांबळे</span> यांचेकडून फेरफार नोंदीबाबत अर्ज प्राप्त झाल्याची दि. <span class="val-inline" id="view_p2_rec_date" style="min-width: 80px;">14/08/2026</span> अर्जदार यांनी मागील अनुसूचित दर्शविल्याप्रमाणे वर नमूद केलेले अ.क्र. १ ते <span class="val-inline" id="view_p2_rec_count" style="min-width: 25px;">7</span> कागदपत्रांच्या छायाप्रती सादर केल्या आहेत. त्या मूळ प्रतीशी तपासलेल्या असून त्या बरोबर असल्याची खात्री केली आहे. / विहित कागदपत्र सादर केली नसल्यामुळे अर्ज निकाली ठेवण्यात येत आहे.
+                        श्री./श्रीमती <span class="val-inline" id="view_p2_rec_name" style="min-width: 180px;">चंदन अर्जुन कांबळे</span> यांचेकडून फेरफार नोंदीबाबत अर्ज प्राप्त झालेला आहे. कागदपत्रांची मूळ प्रतीशी तपासणी केलेली आहे.
                     </div>
                     <div class="receipt-footer">
                         <div>
@@ -1123,6 +1119,11 @@
                     <strong>रहिवास बाबत पुरावा :-</strong> 1) पारपत्र (पासपोर्ट) 2) वाहन चालविण्याचा परवाना (ड्रायव्हींग लायसन्स) 3) आयकर विभागाकडील कायम खाते क्रमांक असलेबाबत ओळखपत्र (पॅनकार्ड) 4) केंद्र/राज्य शासकीय/निमशासकीय/स्थानिक स्वराज्य संस्था / पब्लीक लिमिटेड कंपनीने दिलेले ओळखपत्र (आयडेंटीटी कार्ड) 5) राष्ट्रीयकृत बँकेकडील पासबूक/पोस्टाकडील पासबूक 6) मान्यताप्राप्त शाळेने दिलेले ओळखपत्र (आयडेंटीटी कार्ड) 7) मिळकतीची दस्ताऐवज उदा. नोंदणीकृत लेखे 8) सेवा निवृत्तीबाबत माजी सैनिकांनी दिलेले ओळखपत्र (आयडेंटीटी कार्ड) 9) स्वातंत्र्य सैनिकांना दिलेले ओळखपत्र (आयडेंटीटी कार्ड) 10) शस्त्र परवाना, (आर्म्स लायनन्स) 11) सक्षम प्राधिकाऱ्याने व्यक्तीस दिलेले प्रमाणपत्र (हँडीकॅप सर्टिफिकेट) 12) ग्रामपंचायत/नगरपालिका/महानगरपालिकेकडील मिळकतीचे विवरण दर्शविणारे पत्रक (असेसमेंट उतारा) 13) दुरध्वनी देयक (टेलिफोन बील), 14) विजेचे देयक (इलेक्ट्रीसिटी बील) <strong>(वरीलपैकी किमान एक)</strong>
                 </div>
             </div>
+        </div>
+
+        <!-- DUPLEX BLANK AFTER P3 -->
+        <div class="a4-sheet blank-duplex-sheet" id="blankAfterP3">
+            <div>[ दुहेरी प्रिंटसाठी कोरे पान - Blank Page ]</div>
         </div>
 
 
@@ -1200,6 +1201,11 @@
                 </div>
             </div>
 
+        </div>
+
+        <!-- DUPLEX BLANK AFTER P4 -->
+        <div class="a4-sheet blank-duplex-sheet" id="blankAfterP4">
+            <div>[ दुहेरी प्रिंटसाठी कोरे पान - Blank Page ]</div>
         </div>
 
 
@@ -1688,7 +1694,7 @@
             document.getElementById("view_p6_date").innerText = appDate;
             document.getElementById("view_p6_sign_name").innerText = fullNameWithPrefix;
 
-            // --- PAGE 7 & 8 SYNC (AFFIDAVIT) ---
+            // --- PAGE 7 & 8 SYNC (AFFIDAVIT ON GREEN LEDGER) ---
             document.getElementById("view_p7_court_name").innerText = courtTitle;
             document.getElementById("view_p7_date").innerText = appDate;
             document.getElementById("view_p7_app_name").innerText = fullNameWithPrefix;
@@ -1699,17 +1705,18 @@
             document.getElementById("view_p7_app_district").innerText = district;
             document.getElementById("view_p7_aadhaar_address").innerText = appAddress;
 
-            document.getElementById("view_p8_prop_district").innerText = district;
-            document.getElementById("view_p8_prop_sub_reg").innerText = taluka;
-            document.getElementById("view_p8_prop_taluka").innerText = taluka;
-            document.getElementById("view_p8_prop_gp").innerText = village;
-            document.getElementById("view_p8_prop_village").innerText = village;
-            document.getElementById("view_p8_prop_khate").innerText = khateNo;
-            document.getElementById("view_p8_father_name").innerText = deceasedName;
-            document.getElementById("view_p8_father_date").innerText = deathDate;
-            document.getElementById("view_p8_father_place").innerText = deathPlace;
-            document.getElementById("view_p8_mother_name").innerText = motherName;
-            document.getElementById("view_p8_mother_status").innerText = motherStatus;
+            document.getElementById("view_p7_prop_district").innerText = district;
+            document.getElementById("view_p7_prop_sub_reg").innerText = taluka;
+            document.getElementById("view_p7_prop_taluka").innerText = taluka;
+            document.getElementById("view_p7_prop_gp").innerText = village;
+            document.getElementById("view_p7_prop_village").innerText = village;
+            document.getElementById("view_p7_prop_khate").innerText = khateNo;
+            document.getElementById("view_p7_father_name").innerText = deceasedName;
+            document.getElementById("view_p7_father_date").innerText = deathDate;
+            document.getElementById("view_p7_father_place").innerText = deathPlace;
+            document.getElementById("view_p7_mother_name").innerText = motherName;
+            document.getElementById("view_p7_mother_status").innerText = motherStatus;
+
             document.getElementById("view_p8_sign_name").innerText = cleanAppName;
             document.getElementById("view_p8_bottom_date").innerText = appDate;
 
@@ -1726,7 +1733,7 @@
             renderPreviewHeirs();
         }
 
-        // Render EXACT Heirs Across ALL 9 Sheets
+        // Render EXACT Heirs Across ALL Sheets
         function renderPreviewHeirs() {
             const activeHeirs = heirsData.filter(h => h.name && h.name.trim() !== "");
             const count = activeHeirs.length > 0 ? activeHeirs.length : 1;
@@ -1738,7 +1745,7 @@
             document.getElementById("view_p5_heir_count").innerText = countFormatted;
             document.getElementById("view_p6_heir_count").innerText = countFormatted;
             document.getElementById("view_p6_heir_count2").innerText = countFormatted;
-            document.getElementById("view_p8_heirs_count").innerText = countFormatted;
+            document.getElementById("view_p7_heirs_count").innerText = countFormatted;
 
             // Tables references
             const p1Tbody = document.getElementById("view_p1_heirs_table");
@@ -1746,7 +1753,7 @@
             const spTbody = document.getElementById("view_p4_sp_table_body");
             const p5Tbody = document.getElementById("view_p5_heirs_table");
             const p6Tbody = document.getElementById("view_p6_heirs_table");
-            const p8Tbody = document.getElementById("view_p8_heirs_table");
+            const p7Tbody = document.getElementById("view_p7_heirs_table");
             const p9Tbody = document.getElementById("view_p9_heirs_table");
 
             p1Tbody.innerHTML = "";
@@ -1754,7 +1761,7 @@
             spTbody.innerHTML = "";
             p5Tbody.innerHTML = "";
             p6Tbody.innerHTML = "";
-            p8Tbody.innerHTML = "";
+            p7Tbody.innerHTML = "";
             p9Tbody.innerHTML = "";
 
             if (activeHeirs.length === 0) {
@@ -1771,7 +1778,7 @@
                 spTbody.insertAdjacentHTML("beforeend", emptyRow);
                 p5Tbody.insertAdjacentHTML("beforeend", emptyRow);
                 p6Tbody.insertAdjacentHTML("beforeend", emptyRow);
-                p8Tbody.insertAdjacentHTML("beforeend", emptyRow);
+                p7Tbody.insertAdjacentHTML("beforeend", emptyRow);
                 
                 p9Tbody.insertAdjacentHTML("beforeend", `
                     <tr>
@@ -1804,7 +1811,7 @@
                     spTbody.insertAdjacentHTML("beforeend", standardRow);
                     p5Tbody.insertAdjacentHTML("beforeend", standardRow);
                     p6Tbody.insertAdjacentHTML("beforeend", standardRow);
-                    p8Tbody.insertAdjacentHTML("beforeend", standardRow);
+                    p7Tbody.insertAdjacentHTML("beforeend", standardRow);
 
                     // Page 9 Full Address Row
                     const p9Row = `
@@ -1859,33 +1866,6 @@
             document.getElementById("view_p2_photo_placeholder").style.display = "none";
 
             closeCropper();
-        }
-
-        // Extra Docs PDF Handling
-        function handleExtraDocs(e) {
-            const files = e.target.files;
-            const list = document.getElementById("extra_docs_list");
-            list.innerHTML = "";
-            
-            extraDocsUrls.forEach(url => URL.revokeObjectURL(url));
-            extraDocsUrls = [];
-
-            if (files.length === 0) return;
-
-            Array.from(files).forEach((file) => {
-                const url = URL.createObjectURL(file);
-                extraDocsUrls.push(url);
-                
-                const link = document.createElement("a");
-                link.href = url;
-                link.target = "_blank";
-                link.className = "btn btn-secondary";
-                link.style.display = "inline-flex";
-                link.style.width = "fit-content";
-                link.style.textDecoration = "none";
-                link.innerHTML = `<i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i> ${file.name} (येथे क्लिक करून उघडा / प्रिंट करा)`;
-                list.appendChild(link);
-            });
         }
 
         // Load Sample Data
@@ -1949,20 +1929,30 @@
             syncAll();
         }
 
-        // Print Function for 9 Pages
+        // Print Function for 9 Pages (Single, Selective, or Duplex)
         function printDoc(mode) {
-            const printClasses = ['print-p1', 'print-p2', 'print-p3', 'print-p4', 'print-p5', 'print-p6', 'print-p7', 'print-p8', 'print-p9'];
+            const printClasses = ['print-p1', 'print-p2', 'print-p3', 'print-p4', 'print-p5', 'print-p6', 'print-p7', 'print-p8', 'print-p9', 'duplex-print-active'];
             document.body.classList.remove(...printClasses);
 
-            if (mode !== 'all') {
+            if (mode === 'all') {
+                window.print();
+            } else if (mode === 'duplex') {
+                document.body.classList.add('duplex-print-active');
+                setTimeout(() => {
+                    window.print();
+                    setTimeout(() => {
+                        document.body.classList.remove('duplex-print-active');
+                    }, 500);
+                }, 100);
+            } else {
                 document.body.classList.add('print-' + mode);
+                setTimeout(() => {
+                    window.print();
+                    setTimeout(() => {
+                        document.body.classList.remove('print-' + mode);
+                    }, 500);
+                }, 100);
             }
-
-            window.print();
-
-            setTimeout(() => {
-                document.body.classList.remove(...printClasses);
-            }, 1000);
         }
 
         // Init on load
