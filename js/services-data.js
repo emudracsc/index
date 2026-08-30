@@ -1086,6 +1086,17 @@ const DEFAULT_IMPORTANT_LINKS = [
     isInternal: true
   },
   {
+    id: "link-janma-mrutyu-dakhla",
+    category: "विशेष शासकीय फॉर्म्स",
+    icon: "fa-solid fa-baby",
+    title_mr: "👶 जन्म / मृत्यू नोंद उतारा मागणी अर्ज जनरेटर",
+    title_en: "Birth / Death Extract Application & Village Form 14",
+    desc_mr: "तहसिलदार जन्म / मृत्यू नोंद उतारा मागणी अर्ज व गाव नमुना १४ रजिस्टर २-पानी जनरेटर.",
+    desc_en: "Application form for birth/death extract and Village Form 14 register copy.",
+    url: "janma-mrutyu-dakhla.html",
+    isInternal: true
+  },
+  {
     id: "link-income-certificate",
     category: "विशेष शासकीय फॉर्म्स",
     icon: "fa-solid fa-money-bill-wave",
