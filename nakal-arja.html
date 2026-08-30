@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>तहसिलदार / उपविभागीय अधिकारी नकला व उतारे मिळणेबाबत अर्ज जनरेटर</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --secondary: #475569;
+            --accent: #d97706;
+            --success: #059669;
+            --bg-color: #0f172a;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+            background-color: var(--bg-color);
+            color: #334155;
+            min-height: 100vh;
+            padding: 20px 10px;
+        }
+
+        /* -------------------------------------------------------------
+           TOP CONTROL BAR & FORM INPUTS
+        ------------------------------------------------------------- */
+        .controls-wrapper {
+            max-width: 1100px;
+            margin: 0 auto 24px auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            padding: 18px 22px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .bar-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-title i {
+            color: #0284c7;
+            font-size: 1.5rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 7px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: #0284c7; color: #ffffff !important; font-weight: 700; }
+        .btn-primary:hover { background: #0369a1; transform: translateY(-1px); }
+
+        .btn-success { background: #059669; color: #ffffff !important; font-weight: 700; }
+        .btn-success:hover { background: #047857; transform: translateY(-1px); }
+
+        .btn-sample { background: #7c3aed; color: #ffffff !important; font-weight: 700; }
+        .btn-sample:hover { background: #6d28d9; }
+
+        .btn-secondary { background: #e2e8f0; color: #0f172a !important; font-weight: 700; }
+        .btn-secondary:hover { background: #cbd5e1; }
+
+        .btn-home { background: #0f172a; color: #ffffff !important; font-weight: 700; }
+        .btn-home:hover { background: #334155; }
+
+        /* Form Inputs Sections */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 12px 16px;
+            margin-bottom: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 8px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: #0f172a;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #0284c7;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .section-subhead {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0369a1;
+            margin: 12px 0 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 1.5px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT PREVIEW SHEET (EXACT A4 PAGE)
+        ------------------------------------------------------------- */
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .a4-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 16mm 20mm 16mm 20mm;
+            background: #ffffff;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+            border-radius: 4px;
+            position: relative;
+            color: #000000;
+            box-sizing: border-box;
+            line-height: 1.95;
+            font-size: 12pt;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Top Stamp Box */
+        .top-stamp-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .court-stamp-box {
+            width: 110px;
+            height: 48px;
+            border: 1.5px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 700;
+            font-size: 11pt;
+            line-height: 1.2;
+            background: #fff;
+        }
+
+        /* Header / Authority */
+        .to-authority-block {
+            text-align: center;
+            font-weight: 700;
+            font-size: 13.5pt;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        /* Date Row */
+        .date-row-right {
+            text-align: right;
+            font-weight: 700;
+            font-size: 12pt;
+            margin-bottom: 18px;
+        }
+
+        /* Applicant Info */
+        .applicant-section {
+            margin-bottom: 20px;
+            font-size: 12.5pt;
+            line-height: 2.1;
+        }
+
+        .app-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .app-row .label {
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .app-row .value {
+            font-weight: 700;
+            border-bottom: 1px dotted #000;
+            flex: 1;
+            padding-left: 6px;
+        }
+
+        /* Salutation & Body */
+        .salutation {
+            font-weight: 700;
+            font-size: 13pt;
+            margin-bottom: 8px;
+        }
+
+        .body-paragraph {
+            text-align: justify;
+            font-size: 12pt;
+            line-height: 2.1;
+            text-indent: 35px;
+            margin-bottom: 18px;
+        }
+
+        .val-bold {
+            font-weight: 700;
+            border-bottom: 1px dotted #000;
+            padding: 0 4px;
+        }
+
+        /* Property / Case Description Box */
+        .desc-header {
+            font-weight: 700;
+            font-size: 12.5pt;
+            margin-bottom: 8px;
+        }
+
+        .desc-content-box {
+            border: 1px solid #000;
+            border-radius: 4px;
+            padding: 12px 16px;
+            min-height: 140px;
+            font-size: 11.8pt;
+            line-height: 1.9;
+            text-align: justify;
+            margin-bottom: 25px;
+            background: #fff;
+        }
+
+        .desc-lines-list {
+            margin-left: 20px;
+        }
+
+        .desc-lines-list li {
+            margin-bottom: 4px;
+        }
+
+        /* Footer Row */
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-size: 12pt;
+            margin-top: 20px;
+            padding-bottom: 10px;
+        }
+
+        .footer-left {
+            font-weight: 700;
+            line-height: 1.8;
+        }
+
+        .footer-right {
+            text-align: center;
+            min-width: 250px;
+            line-height: 1.8;
+        }
+
+        .footer-sign-label {
+            font-weight: 700;
+            margin-bottom: 35px;
+        }
+
+        .footer-sign-name {
+            font-weight: 700;
+            border-top: 1px solid #000;
+            padding-top: 4px;
+            display: inline-block;
+            min-width: 220px;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT STYLES
+        ------------------------------------------------------------- */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .no-print, .controls-wrapper {
+                display: none !important;
+            }
+
+            .preview-container {
+                margin: 0 !important;
+                padding: 0 !important;
+                gap: 0 !important;
+            }
+
+            .a4-sheet {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                max-height: 297mm !important;
+                padding: 16mm 20mm !important;
+                margin: 0 !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                overflow: hidden !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP CONTROL BAR -->
+    <div class="controls-wrapper no-print">
+        <div class="bar-header">
+            <div class="bar-title">
+                <i class="fa-solid fa-file-invoice"></i>
+                <div>
+                    <div>उतारे / नकला मिळणेबाबत अर्ज जनरेटर</div>
+                    <div style="font-size: 0.82rem; font-weight: 500; color: #64748b;">
+                        मे. तहसिलदार साहेब / मा. उपविभागीय अधिकारी यांजकडे नकला व उतारे मागणी अर्ज
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <a href="index.html" class="btn btn-home">
+                    <i class="fa-solid fa-arrow-left"></i> मुख्य पान
+                </a>
+                <button type="button" class="btn btn-sample" onclick="loadSampleData()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना डेमो डेटा भरा
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetAllData()">
+                    <i class="fa-solid fa-rotate-left"></i> रीसेट
+                </button>
+                <button type="button" class="btn btn-primary" onclick="window.print()">
+                    <i class="fa-solid fa-print"></i> अर्ज प्रिंट / PDF सेव्ह करा
+                </button>
+            </div>
+        </div>
+
+        <!-- INPUT FIELDS -->
+        <div class="section-subhead"><i class="fa-solid fa-landmark"></i> कार्यालय व अधिकारी तपशील</div>
+        <div class="input-grid">
+            <div class="form-group">
+                <label>कार्यालय / अधिकारी</label>
+                <select id="inp_officer_title" onchange="syncAll()">
+                    <option value="मे. तहसिलदार साहेब / मा. उपविभागीय अधिकारी">मे. तहसिलदार साहेब / मा. उपविभागीय अधिकारी</option>
+                    <option value="मे. तहसिलदार साहेब">मे. तहसिलदार साहेब</option>
+                    <option value="मा. उपविभागीय अधिकारी साहेब">मा. उपविभागीय अधिकारी साहेब</option>
+                    <option value="मा. मंडळ अधिकारी साहेब">मा. मंडळ अधिकारी साहेब</option>
+                    <option value="मा. तलाठी सजा">मा. तलाठी सजा</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>तालुका / ठिकाण</label>
+                <input type="text" id="inp_taluka" value="कणकवली" placeholder="उदा. कणकवली" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>जिल्हा</label>
+                <input type="text" id="inp_district" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>अर्जाचा दिनांक</label>
+                <input type="text" id="inp_date" placeholder="उदा. 30/08/2026" oninput="syncAll()">
+            </div>
+        </div>
+
+        <div class="section-subhead"><i class="fa-solid fa-user"></i> अर्जदाराची माहिती</div>
+        <div class="input-grid">
+            <div class="form-group">
+                <label>अर्जदाराचे संपूर्ण नाव</label>
+                <input type="text" id="inp_applicant_name" value="श्री. चंदन अर्जुन कांबळे" placeholder="उदा. श्री. चंदन अर्जुन कांबळे" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>राहणार (पत्ता / गाव)</label>
+                <input type="text" id="inp_applicant_address" value="मु.पो. नेहरूनगर, भिरवंडे" placeholder="उदा. मु.पो. नेहरूनगर, भिरवंडे" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>मोबाईल नंबर (ऐच्छिक)</label>
+                <input type="text" id="inp_applicant_mob" placeholder="उदा. 9324101420" oninput="syncAll()">
+            </div>
+        </div>
+
+        <div class="section-subhead"><i class="fa-solid fa-scroll"></i> नकला व उतारे मागणी तपशील</div>
+        <div class="input-grid">
+            <div class="form-group">
+                <label>मागणी केलेले उतारे / नकला प्रकार</label>
+                <input type="text" id="inp_extract_type" value="फेरफार उतारा व गाव नमुना ७/१२ उतारा" placeholder="उदा. फेरफार उतारा / ७/१२ उतारा / आदेश प्रत" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>मागणी पद्धत (अर्जंट / नियमाप्रमाणे)</label>
+                <select id="inp_urgency_type" onchange="syncAll()">
+                    <option value="अर्जंट / नियमाप्रमाणे">अर्जंट / नियमाप्रमाणे</option>
+                    <option value="अर्जंट (तातडीने)">अर्जंट (तातडीने)</option>
+                    <option value="नियमाप्रमाणे (साधारण)">नियमाप्रमाणे (साधारण)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>कामाचे प्रयोजन (वापरण्याचे कारण)</label>
+                <select id="inp_purpose_type" onchange="syncAll()">
+                    <option value="खाजगी / कोर्टाचे कामी">खाजगी / कोर्टाचे कामी</option>
+                    <option value="कोर्टाचे कामी">कोर्टाचे कामी</option>
+                    <option value="खाजगी कामी">खाजगी कामी</option>
+                    <option value="शासकीय कामी / बँकेच्या कामासाठी">शासकीय कामी / बँकेच्या कामासाठी</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>कोर्ट फी स्टॅम्प मजकूर</label>
+                <input type="text" id="inp_stamp_text" value="५/- कोर्ट फी स्टँम्प" placeholder="उदा. ५/- कोर्ट फी स्टँम्प" oninput="syncAll()">
+            </div>
+            <div class="form-group full-width">
+                <label>मिळकतीचे / केसचे सविस्तर वर्णन (Description)</label>
+                <textarea id="inp_case_desc" rows="4" placeholder="उदा. मौजे नेहरूनगर, ता. कणकवली मधील खाते क्र. १८६, गट क्र. १०२ मधील फेरफार क्र. ४५२ व फेरफार क्र. ६१२ चे उतारे." oninput="syncAll()"></textarea>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- -------------------------------------------------------------
+         LIVE A4 PRINTABLE CANVAS
+    ------------------------------------------------------------- -->
+    <div class="preview-container">
+        <div class="a4-sheet" id="printableSheet">
+            <div>
+                <!-- Top Stamp Box -->
+                <div class="top-stamp-row">
+                    <div class="court-stamp-box" id="view_stamp_box">
+                        ५/- कोर्ट फी<br>स्टँम्प
+                    </div>
+                </div>
+
+                <!-- Header / To Authority -->
+                <div class="to-authority-block">
+                    <div id="view_officer_title">मे. तहसिलदार साहेब / मा. उपविभागीय अधिकारी</div>
+                    <div><span id="view_taluka_header">कणकवली</span> यांजकडे</div>
+                </div>
+
+                <!-- Date Row -->
+                <div class="date-row-right">
+                    दिनांक - <span id="view_top_date">30 / 08 / 2026</span>
+                </div>
+
+                <!-- Applicant Section -->
+                <div class="applicant-section">
+                    <div class="app-row">
+                        <span class="label">अर्जदार -</span>
+                        <span class="value" id="view_applicant_name">श्री. चंदन अर्जुन कांबळे</span>
+                    </div>
+                    <div class="app-row">
+                        <span class="label">राहणार -</span>
+                        <span class="value" id="view_applicant_address">मु.पो. नेहरूनगर, भिरवंडे</span>
+                    </div>
+                    <div class="app-row" style="margin-left: 55px;">
+                        <span>ता. <strong id="view_app_taluka">कणकवली</strong>, जि. <strong id="view_app_district">सिंधुदुर्ग</strong>.</span>
+                    </div>
+                </div>
+
+                <!-- Salutation & Body -->
+                <div class="salutation">महोदय,</div>
+                
+                <div class="body-paragraph">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;खालील वर्णनांच्या मिळकती / केस संदर्भात मला <strong class="val-bold" id="view_extract_type">फेरफार उतारा व गाव नमुना ७/१२ उतारा</strong> चे उतारे / च्या नकला <strong id="view_urgency_text">अर्जंट / नियमाप्रमाणे</strong> सहीसूद मिळणेस विनंती आहे. सदर नकला मला <strong id="view_purpose_text">खाजगी / कोर्टाचे</strong> कामी वापरणेसाठी आवश्यक आहेत. त्याची होणारी फी <strong id="view_urgency_fee_text">अर्जंट / नियमाप्रमाणे</strong> भरणेस मी तयार आहे.
+                </div>
+
+                <!-- Property / Case Description Section -->
+                <div class="desc-header">मिळकतीचे / केसचे वर्णन :-</div>
+                
+                <div class="desc-content-box" id="view_case_desc_box">
+                    <!-- Dynamic Description Lines -->
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="footer-row">
+                <div class="footer-left">
+                    दिनांक - <span id="view_bottom_date">30 / 08 / 2026</span>
+                </div>
+
+                <div class="footer-right">
+                    <div class="footer-sign-label">अर्जदाराची सही</div>
+                    <div class="footer-sign-name" id="view_bottom_sign_name">
+                        श्री. चंदन अर्जुन कांबळे
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- -------------------------------------------------------------
+         JAVASCRIPT LOGIC
+    ------------------------------------------------------------- -->
+    <script>
+        function getTodayFormatted() {
+            const d = new Date();
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function formatDisplayDate(dateStr) {
+            if (!dateStr) return "/ &nbsp;&nbsp;&nbsp; / २०२४";
+            const parts = dateStr.split(/[\/\-\.]/);
+            if (parts.length === 3) {
+                return `${parts[0]} / ${parts[1]} / ${parts[2]}`;
+            }
+            return dateStr;
+        }
+
+        function syncAll() {
+            const officerTitle = document.getElementById("inp_officer_title").value || "मे. तहसिलदार साहेब / मा. उपविभागीय अधिकारी";
+            const taluka = document.getElementById("inp_taluka").value || "कणकवली";
+            const district = document.getElementById("inp_district").value || "सिंधुदुर्ग";
+            const rawDate = document.getElementById("inp_date").value || getTodayFormatted();
+            
+            const appName = document.getElementById("inp_applicant_name").value || "श्री/श्रीमती";
+            const appAddress = document.getElementById("inp_applicant_address").value || "___________________________________________";
+            
+            const extractType = document.getElementById("inp_extract_type").value || "___________________________";
+            const urgency = document.getElementById("inp_urgency_type").value;
+            const purpose = document.getElementById("inp_purpose_type").value;
+            const stampText = document.getElementById("inp_stamp_text").value || "५/- कोर्ट फी स्टँम्प";
+            const caseDesc = document.getElementById("inp_case_desc").value;
+
+            // Sync Header
+            document.getElementById("view_officer_title").innerText = officerTitle;
+            document.getElementById("view_taluka_header").innerText = taluka;
+            
+            const formattedDate = formatDisplayDate(rawDate);
+            document.getElementById("view_top_date").innerHTML = formattedDate;
+            document.getElementById("view_bottom_date").innerHTML = formattedDate;
+
+            // Sync Stamp
+            document.getElementById("view_stamp_box").innerHTML = stampText.replace(/\s+/g, "<br>");
+
+            // Sync Applicant
+            document.getElementById("view_applicant_name").innerText = appName;
+            document.getElementById("view_applicant_address").innerText = appAddress;
+            document.getElementById("view_app_taluka").innerText = taluka;
+            document.getElementById("view_app_district").innerText = district;
+
+            // Sync Body
+            document.getElementById("view_extract_type").innerText = extractType;
+            document.getElementById("view_urgency_text").innerText = urgency;
+            document.getElementById("view_purpose_text").innerText = purpose;
+            document.getElementById("view_urgency_fee_text").innerText = urgency;
+
+            // Sync Case Description
+            const descBox = document.getElementById("view_case_desc_box");
+            if (caseDesc && caseDesc.trim() !== "") {
+                const lines = caseDesc.split("\n").filter(l => l.trim() !== "");
+                if (lines.length === 1) {
+                    descBox.innerHTML = `<div>${lines[0]}</div>`;
+                } else {
+                    let listHtml = "<ol class='desc-lines-list'>";
+                    lines.forEach(l => {
+                        listHtml += `<li>${l}</li>`;
+                    });
+                    listHtml += "</ol>";
+                    descBox.innerHTML = listHtml;
+                }
+            } else {
+                descBox.innerHTML = `
+                    <div style="color: #64748b; line-height: 2.2;">
+                        १) गाव मौजे ......................., ता. ......................., जि. .......................<br>
+                        २) मिळकत खाते क्र. ......................., गट / सर्व्हे नंबर .......................<br>
+                        ३) फेरफार नोंद नंबर ....................... / केस नंबर ......................., वर्ष .......................
+                    </div>
+                `;
+            }
+
+            // Sync Footer Sign
+            document.getElementById("view_bottom_sign_name").innerText = appName;
+        }
+
+        function loadSampleData() {
+            document.getElementById("inp_officer_title").value = "मे. तहसिलदार साहेब / मा. उपविभागीय अधिकारी";
+            document.getElementById("inp_taluka").value = "कणकवली";
+            document.getElementById("inp_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_date").value = getTodayFormatted();
+            document.getElementById("inp_applicant_name").value = "श्री. चंदन अर्जुन कांबळे";
+            document.getElementById("inp_applicant_address").value = "मु.पो. नेहरूनगर, भिरवंडे";
+            document.getElementById("inp_applicant_mob").value = "9324101420";
+            document.getElementById("inp_extract_type").value = "गाव नमुना ६-ड फेरफार उतारा क्र. ४५२, ६१२ व चालू ७/१२ उतारा";
+            document.getElementById("inp_urgency_type").value = "अर्जंट / नियमाप्रमाणे";
+            document.getElementById("inp_purpose_type").value = "खाजगी / कोर्टाचे कामी";
+            document.getElementById("inp_stamp_text").value = "५/- कोर्ट फी स्टँम्प";
+            document.getElementById("inp_case_desc").value = "१) गाव मौजे नेहरूनगर, ता. कणकवली, जि. सिंधुदुर्ग येथील मिळकत खाते नं. १८६ व १०२२१.\n२) गट नंबर १०२ पैकी क्षेत्र ०.१६.६० हे.आर. चे चालू ७/१२ उतारे व ८-अ खाते उतारा.\n३) मयत खातेदार कै. अर्जुन यशवंत कांबळे यांच्या नावाचा वारस फेरफार नोंद उतारा क्र. ४५२ व ६१२ च्या साक्षांकित नकला.";
+            
+            syncAll();
+        }
+
+        function resetAllData() {
+            document.getElementById("inp_officer_title").value = "मे. तहसिलदार साहेब / मा. उपविभागीय अधिकारी";
+            document.getElementById("inp_taluka").value = "कणकवली";
+            document.getElementById("inp_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_date").value = getTodayFormatted();
+            document.getElementById("inp_applicant_name").value = "";
+            document.getElementById("inp_applicant_address").value = "";
+            document.getElementById("inp_applicant_mob").value = "";
+            document.getElementById("inp_extract_type").value = "";
+            document.getElementById("inp_urgency_type").value = "अर्जंट / नियमाप्रमाणे";
+            document.getElementById("inp_purpose_type").value = "खाजगी / कोर्टाचे कामी";
+            document.getElementById("inp_stamp_text").value = "५/- कोर्ट फी स्टँम्प";
+            document.getElementById("inp_case_desc").value = "";
+            
+            syncAll();
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("inp_date").value = getTodayFormatted();
+            loadSampleData();
+        });
+    </script>
+</body>
+</html>
