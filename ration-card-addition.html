@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>नमूना आठ - कौटुंबिक शिधापत्रिकेमध्ये नाव वाढविण्याकरिता अर्ज जनरेटर | Ration Card Form 8</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --secondary: #475569;
+            --accent: #d97706;
+            --success: #059669;
+            --bg-color: #0f172a;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+            background-color: var(--bg-color);
+            color: #334155;
+            min-height: 100vh;
+            padding: 20px 10px;
+        }
+
+        /* -------------------------------------------------------------
+           TOP CONTROL BAR & FORM INPUTS
+        ------------------------------------------------------------- */
+        .controls-wrapper {
+            max-width: 1100px;
+            margin: 0 auto 24px auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            padding: 18px 22px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .bar-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-title i {
+            color: #0284c7;
+            font-size: 1.5rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 0.86rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 7px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: #0284c7; color: #ffffff !important; font-weight: 700; }
+        .btn-primary:hover { background: #0369a1; transform: translateY(-1px); }
+
+        .btn-success { background: #059669; color: #ffffff !important; font-weight: 700; }
+        .btn-success:hover { background: #047857; transform: translateY(-1px); }
+
+        .btn-sample { background: #7c3aed; color: #ffffff !important; font-weight: 700; }
+        .btn-sample:hover { background: #6d28d9; }
+
+        .btn-secondary { background: #e2e8f0; color: #0f172a !important; font-weight: 700; }
+        .btn-secondary:hover { background: #cbd5e1; }
+
+        .btn-home { background: #0f172a; color: #ffffff !important; font-weight: 700; }
+        .btn-home:hover { background: #334155; }
+
+        /* Tabs to switch inputs */
+        .page-tabs {
+            display: flex;
+            gap: 6px;
+            background: #f8fafc;
+            padding: 6px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 160px;
+            padding: 8px 12px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            border: none;
+            background: #e2e8f0;
+            color: #1e293b;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn.active {
+            background: #0284c7;
+            color: #ffffff !important;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+        }
+
+        /* Form Inputs Sections */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 12px 16px;
+            margin-bottom: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 8px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: #0f172a;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #0284c7;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .section-subhead {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0369a1;
+            margin: 12px 0 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 1.5px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Table Inputs */
+        .input-table-wrap {
+            overflow-x: auto;
+            margin-bottom: 12px;
+        }
+
+        .custom-input-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86rem;
+        }
+
+        .custom-input-table th, .custom-input-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 8px;
+            text-align: center;
+        }
+
+        .custom-input-table th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .custom-input-table input {
+            width: 100%;
+            padding: 5px 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.86rem;
+            font-weight: 600;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT PREVIEW SHEETS (2 EXACT A4 PAGES)
+        ------------------------------------------------------------- */
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin: 0 auto;
+        }
+
+        .a4-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 12mm 15mm 12mm 15mm;
+            background: #ffffff;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+            border-radius: 4px;
+            position: relative;
+            color: #000000;
+            box-sizing: border-box;
+            line-height: 1.55;
+            font-size: 10.5pt;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Top Header */
+        .p1-header-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            font-size: 10pt;
+            margin-bottom: 8px;
+        }
+
+        .p1-title-center {
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .p1-title-center .main-name {
+            font-size: 12pt;
+            font-weight: 800;
+        }
+
+        .p1-title-center .sub-name {
+            font-size: 10.5pt;
+            font-weight: 700;
+        }
+
+        /* Photo Box */
+        .p1-photo-box {
+            border: 1px solid #000;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 10pt;
+            margin: 6px 0 10px 0;
+            background: #fff;
+            color: #222;
+        }
+
+        /* Region / Office Details Row */
+        .p1-meta-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10.2pt;
+            line-height: 1.6;
+            margin-bottom: 4px;
+        }
+
+        .dotted-val {
+            font-weight: 700;
+            border-bottom: 1px dotted #000;
+            padding: 0 4px;
+        }
+
+        /* Warning Box */
+        .p1-warning-box {
+            font-weight: 700;
+            font-size: 10pt;
+            margin: 6px 0;
+            line-height: 1.4;
+        }
+
+        /* Applicant Paragraph */
+        .p1-app-para {
+            font-size: 10.2pt;
+            line-height: 1.7;
+            margin-bottom: 6px;
+        }
+
+        /* Digit Boxes for Ration Card */
+        .ration-digits-wrap {
+            display: inline-flex;
+            gap: 2px;
+            vertical-align: middle;
+            margin: 0 4px;
+        }
+
+        .digit-box {
+            width: 17px;
+            height: 20px;
+            border: 1px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9.5pt;
+            font-weight: 800;
+            text-align: center;
+            background: #fff;
+        }
+
+        /* Members Table */
+        .p1-members-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9.2pt;
+            line-height: 1.25;
+            margin: 8px 0;
+        }
+
+        .p1-members-table th, .p1-members-table td {
+            border: 1px solid #000;
+            padding: 4px 3px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .p1-members-table th {
+            font-weight: 700;
+            background: #fff;
+        }
+
+        .p1-members-table td {
+            font-weight: 600;
+            height: 28px;
+        }
+
+        /* Clause Bullet Points */
+        .clause-item {
+            font-size: 9.6pt;
+            line-height: 1.45;
+            margin-bottom: 4px;
+            text-align: justify;
+        }
+
+        /* Footer Row */
+        .p1-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-size: 10.5pt;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        /* -------------------------------------------------------------
+           PAGE 2 STYLES
+        ------------------------------------------------------------- */
+        .p2-report-block {
+            font-size: 10.5pt;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        .p2-report-title {
+            font-weight: 700;
+            font-size: 11pt;
+            margin-bottom: 8px;
+        }
+
+        .p2-sign-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-weight: 700;
+            margin-top: 25px;
+            margin-bottom: 30px;
+        }
+
+        .p2-cut-divider {
+            border-top: 1.5px solid #000;
+            margin: 20px 0 25px 0;
+            position: relative;
+        }
+
+        .p2-receipt-title {
+            text-align: center;
+            font-weight: 800;
+            font-size: 11.5pt;
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+
+        .p2-receipt-title .sub-note {
+            font-size: 9.5pt;
+            font-weight: 600;
+        }
+
+        .p2-receipt-body {
+            font-size: 10.5pt;
+            line-height: 2.2;
+            margin-bottom: 25px;
+        }
+
+        .p2-receipt-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-weight: 700;
+            font-size: 10.5pt;
+            margin-top: 20px;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT & DUPLEX STYLES
+        ------------------------------------------------------------- */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .no-print, .controls-wrapper {
+                display: none !important;
+            }
+
+            .preview-container {
+                margin: 0 !important;
+                padding: 0 !important;
+                gap: 0 !important;
+            }
+
+            .a4-sheet {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                max-height: 297mm !important;
+                padding: 12mm 15mm 12mm 15mm !important;
+                margin: 0 !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                overflow: hidden !important;
+            }
+
+            .a4-sheet:last-child {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+
+            .print-p1 #page2Sheet { display: none !important; }
+            .print-p2 #page1Sheet { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP CONTROL BAR -->
+    <div class="controls-wrapper no-print">
+        <div class="bar-header">
+            <div class="bar-title">
+                <i class="fa-solid fa-address-card"></i>
+                <div>
+                    <div>नमूना आठ - शिधापत्रिकेत नाव वाढविणे अर्ज जनरेटर</div>
+                    <div style="font-size: 0.82rem; font-weight: 500; color: #64748b;">
+                        अन्न, नागरी पुरवठा व ग्राहक संरक्षण विभाग : कौटुंबिक शिधापत्रिकेत नवीन नाव समाविष्ट अर्ज
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <a href="index.html" class="btn btn-home">
+                    <i class="fa-solid fa-arrow-left"></i> मुख्य पान
+                </a>
+                <button type="button" class="btn btn-sample" onclick="loadSampleData()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना डेटा भरा
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetAllData()">
+                    <i class="fa-solid fa-rotate-left"></i> रीसेट
+                </button>
+                <button type="button" class="btn btn-success" onclick="printDoc('p1')">
+                    <i class="fa-solid fa-file"></i> पान १ प्रिंट
+                </button>
+                <button type="button" class="btn btn-success" onclick="printDoc('p2')">
+                    <i class="fa-solid fa-receipt"></i> पान २ (स्थळ प्रत)
+                </button>
+                <button type="button" class="btn btn-primary" onclick="printDoc('all')">
+                    <i class="fa-solid fa-print"></i> दोन्ही पाने प्रिंट / PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="page-tabs">
+            <button type="button" class="tab-btn active" onclick="switchTab('tab-main', this)">
+                <i class="fa-solid fa-user-check"></i> १. शिधापत्रिका व अर्जदार माहिती
+            </button>
+            <button type="button" class="tab-btn" onclick="switchTab('tab-members', this)">
+                <i class="fa-solid fa-users"></i> २. समाविष्ट करावयाच्या सदस्यांची माहिती
+            </button>
+            <button type="button" class="tab-btn" onclick="switchTab('tab-other', this)">
+                <i class="fa-solid fa-wheelchair"></i> ३. दिव्यांग / आजार व इतर तपशील
+            </button>
+        </div>
+
+        <!-- TAB 1: RATION & APPLICANT DETAILS -->
+        <div id="tab-main" class="tab-content-panel">
+            <div class="section-subhead"><i class="fa-solid fa-shop"></i> शिधावाटप कार्यालय व शिधापत्रिका तपशील</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>शिधावाटप क्षेत्र / गाव</label>
+                    <input type="text" id="inp_village" value="नेहरूनगर, भिरवंडे" placeholder="उदा. नेहरूनगर, भिरवंडे" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>विभाग / तालुका</label>
+                    <input type="text" id="inp_taluka" value="कणकवली" placeholder="उदा. कणकवली" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>परिमंडळ / जिल्हा</label>
+                    <input type="text" id="inp_district" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>कोड क्रमांक</label>
+                    <input type="text" id="inp_code_no" placeholder="उदा. 45/B" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>अनुक्रमांक</label>
+                    <input type="text" id="inp_sr_no" placeholder="उदा. 128" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>नोंदणी क्रमांक</label>
+                    <input type="text" id="inp_reg_no" placeholder="उदा. 7842" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>दुकान क्रमांक (FP Shop No)</label>
+                    <input type="text" id="inp_shop_no" value="12" placeholder="उदा. 12" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>संदर्भ क्रमांक</label>
+                    <input type="text" id="inp_ref_no" value="2026/04" placeholder="उदा. 2026/04" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>शिधापत्रिका क्रमांक (१२ अंकी)</label>
+                    <input type="text" id="inp_ration_no" maxlength="12" value="272458963214" placeholder="उदा. 272458963214" oninput="syncAll()">
+                </div>
+            </div>
+
+            <div class="section-subhead"><i class="fa-solid fa-user"></i> अर्जदाराची माहिती (शिधापत्रिका प्रमुख)</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>अर्जदाराचे संपूर्ण नाव (प्रथम आडनाव)</label>
+                    <input type="text" id="inp_applicant_name" value="कांबळे चंदन अर्जुन" placeholder="उदा. कांबळे चंदन अर्जुन" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>वय (वर्षे)</label>
+                    <input type="text" id="inp_applicant_age" value="50" placeholder="उदा. 50" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>लिंग</label>
+                    <select id="inp_gender" onchange="syncAll()">
+                        <option value="पुरुष">पुरुष</option>
+                        <option value="स्त्री">स्त्री</option>
+                        <option value="इतर">इतर</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>नागरिकत्व</label>
+                    <input type="text" id="inp_citizenship" value="भारतीय" placeholder="उदा. भारतीय" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>जातीचा प्रवर्ग</label>
+                    <select id="inp_caste_cat" onchange="syncAll()">
+                        <option value="SC">SC</option>
+                        <option value="ST">ST</option>
+                        <option value="OBC">OBC</option>
+                        <option value="GENERAL" selected>GENERAL</option>
+                        <option value="OTHERS">OTHERS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>अर्ज दिनांक</label>
+                    <input type="text" id="inp_date" placeholder="उदा. 30/08/2026" oninput="syncAll()">
+                </div>
+                <div class="form-group full-width">
+                    <label>पूर्ण निवासी पत्ता</label>
+                    <input type="text" id="inp_address" value="मु.पो. नेहरूनगर, भिरवंडे, ता. कणकवली, जि. सिंधुदुर्ग - ४१६६०२" placeholder="उदा. मु.पो. नेहरूनगर, भिरवंडे, ता. कणकवली, जि. सिंधुदुर्ग" oninput="syncAll()">
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: NEW MEMBERS TABLE -->
+        <div id="tab-members" class="tab-content-panel" style="display: none;">
+            <div class="section-subhead" style="justify-content: space-between; flex-wrap: wrap;">
+                <span><i class="fa-solid fa-user-plus"></i> शिधापत्रिकेत समाविष्ट करावयाच्या नवीन सदस्यांची यादी</span>
+                <button type="button" class="btn btn-primary" style="padding: 5px 12px; font-size: 0.82rem;" onclick="addMemberRow()">
+                    <i class="fa-solid fa-plus"></i> + नवीन सदस्य जोडा
+                </button>
+            </div>
+
+            <div class="input-table-wrap">
+                <table class="custom-input-table" id="inputMembersTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 35px;">अ.क्र.</th>
+                            <th style="width: 170px;">सदस्याचे संपूर्ण नाव</th>
+                            <th style="width: 100px;">अर्जदाराशी नाते</th>
+                            <th style="width: 95px;">जन्म दिनांक</th>
+                            <th style="width: 90px;">व्यवसाय</th>
+                            <th style="width: 105px;">मोबाईल नं.</th>
+                            <th style="width: 95px;">आगमनाची तारीख</th>
+                            <th style="width: 120px;">आधारकार्ड क्रमांक</th>
+                            <th style="width: 120px;">बँकखाते क्रमांक</th>
+                            <th style="width: 45px;">काढा</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersInputBody">
+                        <!-- Dynamic rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: OTHER DETAILS -->
+        <div id="tab-other" class="tab-content-panel" style="display: none;">
+            <div class="section-subhead"><i class="fa-solid fa-circle-info"></i> दिव्यांग / गंभीर आजार माहिती (ऐच्छिक)</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>कुटुंबातील सदस्य दिव्यांग आहे काय?</label>
+                    <select id="inp_is_disabled" onchange="syncAll()">
+                        <option value="नाही" selected>नाही</option>
+                        <option value="होय">होय</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>दिव्यांग असल्यास प्रमाणपत्र क्र. व तपशील</label>
+                    <input type="text" id="inp_disabled_cert" placeholder="उदा. MH123456 (40% अस्थिव्यंग)" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>कुटुंबातील सदस्य गंभीर आजाराने ग्रस्त आहे काय?</label>
+                    <select id="inp_is_ill" onchange="syncAll()">
+                        <option value="नाही" selected>नाही</option>
+                        <option value="होय">होय</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>गंभीर आजार असल्यास माहिती</label>
+                    <input type="text" id="inp_ill_details" placeholder="उदा. -" oninput="syncAll()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- -------------------------------------------------------------
+         LIVE A4 PRINTABLE CANVAS (PAGE 1 & PAGE 2)
+    ------------------------------------------------------------- -->
+    <div class="preview-container">
+        
+        <!-- =========================================================
+             PAGE 1: नमूना आठ (कौटुंबिक शिधापत्रिकेत नाव वाढविण्याकरिता अर्ज)
+        ========================================================= -->
+        <div class="a4-sheet" id="page1Sheet">
+            <div>
+                <!-- Top Header -->
+                <div class="p1-header-grid">
+                    <div style="font-weight: 700;">शिधावाटप क्षेत्र</div>
+                    <div class="p1-title-center">
+                        <div class="main-name">नमूना आठ</div>
+                        <div class="sub-name">(कौटुंबिक शिधापत्रिकेमध्ये नाव वाढविण्याकरिता अर्ज)</div>
+                    </div>
+                    <div style="font-size: 9.5pt;">(अर्जाची किंमत :दोन रुपये)</div>
+                </div>
+
+                <!-- Photo Box -->
+                <div class="p1-photo-box">
+                    (शिधापत्रिकेमध्ये समाविष्ट करावयाच्या सर्व सदस्याचे पासपोर्ट साईज फोटो चिकटवणे)
+                </div>
+
+                <!-- Office / Region Meta Rows -->
+                <div class="p1-meta-row">
+                    <div>शिधावाटप क्षेत्र/गाव : <span class="dotted-val" id="view_village">नेहरूनगर, भिरवंडे</span></div>
+                    <div>विभाग/तालुका : <span class="dotted-val" id="view_taluka">कणकवली</span></div>
+                    <div>परिमंडळ/जिल्हा : <span class="dotted-val" id="view_district">सिंधुदुर्ग</span></div>
+                </div>
+
+                <div class="p1-meta-row" style="margin-bottom: 8px;">
+                    <div>कोड क्रमांक : <span class="dotted-val" id="view_code_no">..................</span></div>
+                    <div>अनुक्रमांक : <span class="dotted-val" id="view_sr_no">..................</span></div>
+                    <div>नोंदणी क्रमांक : <span class="dotted-val" id="view_reg_no">..................</span></div>
+                </div>
+
+                <!-- Warning Notice -->
+                <div class="p1-warning-box">
+                    ताकीद :- या अर्जात कोणतेही खोटे निवेदन केल्यास आणि ते खोटे आढळून आल्यास त्याबद्दल शिक्षा होईल
+                </div>
+
+                <!-- Applicant Details Paragraph -->
+                <div class="p1-app-para">
+                    मी <span class="dotted-val" id="view_app_name" style="min-width: 320px; display: inline-block;">कांबळे चंदन अर्जुन</span> वय <span class="dotted-val" id="view_app_age">50</span> वर्षे<br>
+                    <span style="font-size: 8.8pt; color: #555;">(प्रथम आडनाव)</span><br>
+                    लिंग :- <span class="dotted-val" id="view_gender">पुरुष</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    नागरिकत्व :- <span class="dotted-val" id="view_citizenship">भारतीय</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    शिधापत्रिका अर्जदाराचा जातीचा प्रवर्ग :- <span class="dotted-val" id="view_caste_cat">GENERAL</span> (प्रमाणपत्र आवश्यक नाही)<br>
+                    पूर्ण निवासी पत्ता :- <span class="dotted-val" id="view_address">मु.पो. नेहरूनगर, भिरवंडे, ता. कणकवली, जि. सिंधुदुर्ग - ४१६६०२</span>
+                </div>
+
+                <!-- Clause 1: Ration Card & Shop Details -->
+                <div class="clause-item">
+                    <strong>(एक)</strong> दुकान क्रमांक <span class="dotted-val" id="view_shop_no">12</span> संदर्भ क्रमांक <span class="dotted-val" id="view_ref_no">2026/04</span> येथे नोंदविण्यात आलेली माझी शिधापत्रिका क्रमांक :
+                    <span class="ration-digits-wrap" id="view_ration_digit_boxes">
+                        <!-- 12 Boxes -->
+                    </span>
+                    यामध्ये पुढील (व्यक्तींच्या) नावांचा समावेश करण्यात यावा.
+                </div>
+
+                <!-- 8-Column Members Table -->
+                <table class="p1-members-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 155px;">नाव</th>
+                            <th style="width: 90px;">अर्जदाराशी<br>नाते</th>
+                            <th style="width: 80px;">जन्म दिनांक</th>
+                            <th style="width: 75px;">व्यवसाय</th>
+                            <th style="width: 95px;">मोबाईल<br>क्रमांक</th>
+                            <th style="width: 85px;">आगमनाची<br>तारीख</th>
+                            <th style="width: 105px;">आधारकार्ड क्रमांक</th>
+                            <th>बँकखाते क्रमांक</th>
+                        </tr>
+                    </thead>
+                    <tbody id="view_members_table_body">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+
+                <!-- Notes -->
+                <div style="font-size: 8.8pt; line-height: 1.35; margin-bottom: 6px;">
+                    ❖ कुटुंबातील नवीन सदस्यांचे पासपोर्ट साईज फोटो सोबत जोडावे.<br>
+                    ❖ नाव वाढविण्यासाठी इतर शिधापत्रिकेमध्ये नाव (असल्यास) ते कमी केल्याचा दाखला किंवा शिधापत्रिका जमा पावती असणे आवश्यक आहे.
+                </div>
+
+                <!-- Clauses (दोन), (तीन), (चार), (पाच), (सात) -->
+                <div class="clause-item">
+                    <strong>(दोन)</strong> उपरोक्त नमूद परि.क्र.१ व २ मधील कुटुंबातील सदस्य दिव्यांग आहे काय? <strong><span id="view_is_disabled">होय/नाही</span></strong> &nbsp;&nbsp; असल्यास त्याबाबतचे प्रमाणपत्र : <span class="dotted-val" id="view_disabled_cert">....................................</span>
+                </div>
+
+                <div class="clause-item">
+                    <strong>(तीन)</strong> उपरोक्त नमूद परि.क्र.१ व २ मधील कुटुंबातील सदस्य गंभीर आजाराने ग्रस्त आहे काय? <strong><span id="view_is_ill">होय/नाही</span></strong> &nbsp;&nbsp; असल्यास त्याबाबतची माहिती : <span class="dotted-val" id="view_ill_details">....................................</span>
+                </div>
+
+                <div class="clause-item">
+                    <strong>(चार)</strong> नाव समाविष्ट करण्यासाठी ओळखीचा पुरावा म्हणून खालीलपैकी आवश्यक कागदपत्रांची पूर्तता करावी.<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;१) आधार कार्ड &nbsp;&nbsp;&nbsp;&nbsp; २) पॅन कार्ड &nbsp;&nbsp;&nbsp;&nbsp; ३) ड्रायव्हिंग लायसन्स &nbsp;&nbsp;&nbsp;&nbsp; ४) शासकीय दाखला / ओळखपत्र (कार्यालयीन / इतर)
+                </div>
+
+                <div class="clause-item">
+                    <strong>(पाच)</strong> वर उल्लेख करण्यात आलेल्या कोणत्याही इसमाचा समावेश कौटुंबिक शिधापत्रिकेसाठी केलेल्या कोणत्याही अर्जात किंवा कोणत्याही कौटुंबिक शिधापत्रिकेमध्ये किंवा आस्थापनेच्या शिधापत्रिकेसाठी केलेल्या कोणत्याही अर्जात किंवा कोणत्याही आस्थापनेच्या शिधापत्रिकेमध्ये करण्यात आलेला नाही. मात्र वरील परिच्छेद दोन मध्ये निर्दिष्ट करण्यात आलेल्या मुलाचा/मुलांचा माझ्या शिधापत्रिकेत समावेश करण्यात आलेला आहे.
+                </div>
+
+                <div class="clause-item">
+                    <strong>(सात)</strong> मी असे जाहीर करतो की, वरील सर्व निवेदन माझ्या माहितीप्रमाणे बरोबर आहे.
+                </div>
+            </div>
+
+            <!-- Footer Sign -->
+            <div class="p1-footer-row">
+                <div>
+                    दिनांक : <span class="dotted-val" id="view_p1_date">30/08/2026</span>
+                </div>
+                <div style="text-align: center;">
+                    <br><br>
+                    <strong>अर्जदारांची सही किंवा अंगठ्याचा ठसा</strong>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- =========================================================
+             PAGE 2: शिधावाटप निरीक्षकाचे प्रतिवृत्त व नमूना आठ (स्थळ प्रत)
+        ========================================================= -->
+        <div class="a4-sheet" id="page2Sheet">
+            <div>
+                <!-- Top Section: Inspector Report (Blank for Official Use) -->
+                <div class="p2-report-block">
+                    <div class="p2-report-title">शिधावाटप निरीक्षकाचे प्रतिवृत्त :-</div>
+                    
+                    <div>
+                        १. &nbsp;&nbsp; दिनांक .............................. रोजी .................................................................................................................. येथील जागांना भेट दिली.
+                    </div>
+
+                    <div>
+                        २. &nbsp;&nbsp; अर्जामधील माहिती बरोबर आहे किंवा अन्य प्रकारची असल्यास त्याबाबत माहिती ........................................................................................
+                    </div>
+
+                    <div>
+                        ३. &nbsp;&nbsp; सहाय्यक शिधावाटप अधिकारी/शिधावाटप अधिकारी यांचे आदेश :-<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.................................................. प्रौढ आणि .................................................. मुले यांचा समावेश करण्यास परवानगी देण्यात येत आहे
+                    </div>
+                </div>
+
+                <!-- Sign Row -->
+                <div class="p2-sign-row">
+                    <div>
+                        दिनांक : ..............................
+                    </div>
+                    <div>
+                        अर्जदाराची सही/अंगठ्याचा ठसा
+                    </div>
+                </div>
+
+                <!-- Cut Divider -->
+                <div class="p2-cut-divider"></div>
+
+                <!-- Bottom Section: Receipt Slip (स्थळ प्रत) -->
+                <div class="p2-receipt-title">
+                    नमूना आठ<br>
+                    (स्थळ प्रत)<br>
+                    <span class="sub-note">(ही स्थळप्रत काळजीपूर्वक जपून ठेवावी हरवल्यास विलंब लागेल)</span>
+                </div>
+
+                <div class="p2-receipt-body">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>शिधावाटप क्षेत्र/गाव : <strong id="view_p2_village">नेहरूनगर, भिरवंडे</strong></div>
+                        <div>अनुक्रमांक : ....................................</div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>ही स्थळप्रत .................................... रोजी सादर करावी.</div>
+                        <div>शिधापत्रिका क्रमांक : <strong id="view_p2_ration_no">272458963214</strong> मिळाली</div>
+                    </div>
+                </div>
+
+                <!-- Receipt Footer -->
+                <div class="p2-receipt-footer">
+                    <div>
+                        दिनांक : <span id="view_p2_date">30/08/2026</span>
+                    </div>
+
+                    <div style="text-align: right; line-height: 1.6;">
+                        शिधावाटप अधिकारी/ नियंत्रक ........................................<br>
+                        शिधावाटप क्षेत्र यांच्याकरीता
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- -------------------------------------------------------------
+         JAVASCRIPT LOGIC
+    ------------------------------------------------------------- -->
+    <script>
+        // State for Dynamic Members
+        let membersData = [
+            {
+                name: "कांबळे राहुल चंदन",
+                relation: "मुलगा",
+                dob: "15/04/2002",
+                occ: "नोकरी",
+                mobile: "9324101420",
+                arrival: "जन्मसिद्ध",
+                aadhaar: "8524 9632 1478",
+                bank: "SBI 3025412589"
+            },
+            {
+                name: "कांबळे स्नेहा चंदन",
+                relation: "सून",
+                dob: "20/08/2004",
+                occ: "गृहिणी",
+                mobile: "9876543210",
+                arrival: "विवाह 2025",
+                aadhaar: "7412 5896 3214",
+                bank: "BOI 4589632145"
+            }
+        ];
+
+        function getTodayFormatted() {
+            const d = new Date();
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll(".tab-content-panel").forEach(p => p.style.display = "none");
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            
+            const target = document.getElementById(tabId);
+            if (target) target.style.display = "block";
+            if (btn) btn.classList.add("active");
+        }
+
+        function initMembersTable() {
+            const tbody = document.getElementById("membersInputBody");
+            tbody.innerHTML = "";
+
+            membersData.forEach((m, idx) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td style="font-weight: 700;">${idx + 1}</td>
+                    <td><input type="text" value="${m.name || ''}" placeholder="पूर्ण नाव" oninput="updateMember(${idx}, 'name', this.value)"></td>
+                    <td><input type="text" value="${m.relation || ''}" placeholder="नाते" oninput="updateMember(${idx}, 'relation', this.value)"></td>
+                    <td><input type="text" value="${m.dob || ''}" placeholder="जन्म दिनांक" oninput="updateMember(${idx}, 'dob', this.value)"></td>
+                    <td><input type="text" value="${m.occ || ''}" placeholder="व्यवसाय" oninput="updateMember(${idx}, 'occ', this.value)"></td>
+                    <td><input type="text" value="${m.mobile || ''}" placeholder="मोबाईल" oninput="updateMember(${idx}, 'mobile', this.value)"></td>
+                    <td><input type="text" value="${m.arrival || ''}" placeholder="आगमनाची तारीख" oninput="updateMember(${idx}, 'arrival', this.value)"></td>
+                    <td><input type="text" value="${m.aadhaar || ''}" placeholder="आधार क्र." oninput="updateMember(${idx}, 'aadhaar', this.value)"></td>
+                    <td><input type="text" value="${m.bank || ''}" placeholder="बँक खाते क्र." oninput="updateMember(${idx}, 'bank', this.value)"></td>
+                    <td>
+                        <button type="button" style="background:#ef4444; color:#fff; border:none; border-radius:4px; padding:4px 8px; cursor:pointer;" onclick="removeMemberRow(${idx})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addMemberRow() {
+            membersData.push({
+                name: "",
+                relation: "",
+                dob: "",
+                occ: "",
+                mobile: "",
+                arrival: "",
+                aadhaar: "",
+                bank: ""
+            });
+            initMembersTable();
+            renderPreviewMembers();
+        }
+
+        function removeMemberRow(idx) {
+            if (membersData.length <= 1) {
+                membersData[0] = { name: "", relation: "", dob: "", occ: "", mobile: "", arrival: "", aadhaar: "", bank: "" };
+            } else {
+                membersData.splice(idx, 1);
+            }
+            initMembersTable();
+            renderPreviewMembers();
+        }
+
+        function updateMember(idx, key, val) {
+            if (membersData[idx]) {
+                membersData[idx][key] = val;
+                renderPreviewMembers();
+            }
+        }
+
+        function renderPreviewMembers() {
+            const tbody = document.getElementById("view_members_table_body");
+            tbody.innerHTML = "";
+
+            const active = membersData.filter(m => m.name && m.name.trim() !== "");
+            const rowsToRender = active.length > 0 ? active : membersData;
+
+            rowsToRender.forEach((m, idx) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td style="text-align: left; padding-left: 6px; font-weight: 700;">${idx + 1}) ${m.name || '&nbsp;'}</td>
+                    <td>${m.relation || '&nbsp;'}</td>
+                    <td>${m.dob || '&nbsp;'}</td>
+                    <td>${m.occ || '&nbsp;'}</td>
+                    <td>${m.mobile || '&nbsp;'}</td>
+                    <td>${m.arrival || '&nbsp;'}</td>
+                    <td>${m.aadhaar || '&nbsp;'}</td>
+                    <td>${m.bank || '&nbsp;'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // If rows are less than 4, render empty rows up to 4 for clean full table print layout
+            const currentCount = rowsToRender.length;
+            for (let i = currentCount; i < 4; i++) {
+                const emptyTr = document.createElement("tr");
+                emptyTr.innerHTML = `
+                    <td style="text-align: left; padding-left: 6px;">${i + 1}) &nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                `;
+                tbody.appendChild(emptyTr);
+            }
+        }
+
+        function renderRationDigits(rationStr) {
+            const wrap = document.getElementById("view_ration_digit_boxes");
+            wrap.innerHTML = "";
+            const clean = (rationStr || "").replace(/\s+/g, "");
+            
+            for (let i = 0; i < 12; i++) {
+                const box = document.createElement("span");
+                box.className = "digit-box";
+                box.innerText = clean[i] || "";
+                wrap.appendChild(box);
+            }
+        }
+
+        function syncAll() {
+            const village = document.getElementById("inp_village").value || "नेहरूनगर, भिरवंडे";
+            const taluka = document.getElementById("inp_taluka").value || "कणकवली";
+            const district = document.getElementById("inp_district").value || "सिंधुदुर्ग";
+            const codeNo = document.getElementById("inp_code_no").value || "..................";
+            const srNo = document.getElementById("inp_sr_no").value || "..................";
+            const regNo = document.getElementById("inp_reg_no").value || "..................";
+            const shopNo = document.getElementById("inp_shop_no").value || "......";
+            const refNo = document.getElementById("inp_ref_no").value || "......";
+            const rationNo = document.getElementById("inp_ration_no").value || "272458963214";
+
+            const appName = document.getElementById("inp_applicant_name").value || "कांबळे चंदन अर्जुन";
+            const appAge = document.getElementById("inp_applicant_age").value || "50";
+            const gender = document.getElementById("inp_gender").value || "पुरुष";
+            const citizenship = document.getElementById("inp_citizenship").value || "भारतीय";
+            const casteCat = document.getElementById("inp_caste_cat").value || "GENERAL";
+            const address = document.getElementById("inp_address").value || "मु.पो. नेहरूनगर, भिरवंडे, ता. कणकवली, जि. सिंधुदुर्ग";
+            const rawDate = document.getElementById("inp_date").value || getTodayFormatted();
+
+            const isDisabled = document.getElementById("inp_is_disabled").value;
+            const disabledCert = document.getElementById("inp_disabled_cert").value || "....................................";
+            const isIll = document.getElementById("inp_is_ill").value;
+            const illDetails = document.getElementById("inp_ill_details").value || "....................................";
+
+            // Page 1 Sync
+            document.getElementById("view_village").innerText = village;
+            document.getElementById("view_taluka").innerText = taluka;
+            document.getElementById("view_district").innerText = district;
+            document.getElementById("view_code_no").innerText = codeNo;
+            document.getElementById("view_sr_no").innerText = srNo;
+            document.getElementById("view_reg_no").innerText = regNo;
+
+            document.getElementById("view_app_name").innerText = appName;
+            document.getElementById("view_app_age").innerText = appAge;
+            document.getElementById("view_gender").innerText = gender;
+            document.getElementById("view_citizenship").innerText = citizenship;
+            document.getElementById("view_caste_cat").innerText = casteCat;
+            document.getElementById("view_address").innerText = address;
+
+            document.getElementById("view_shop_no").innerText = shopNo;
+            document.getElementById("view_ref_no").innerText = refNo;
+            renderRationDigits(rationNo);
+
+            document.getElementById("view_is_disabled").innerText = isDisabled === "होय" ? "होय" : "नाही";
+            document.getElementById("view_disabled_cert").innerText = isDisabled === "होय" ? disabledCert : "लागू नाही";
+            document.getElementById("view_is_ill").innerText = isIll === "होय" ? "होय" : "नाही";
+            document.getElementById("view_ill_details").innerText = isIll === "होय" ? illDetails : "लागू नाही";
+
+            document.getElementById("view_p1_date").innerText = rawDate;
+
+            // Page 2 Sync
+            document.getElementById("view_p2_village").innerText = village;
+            document.getElementById("view_p2_ration_no").innerText = rationNo;
+            document.getElementById("view_p2_date").innerText = rawDate;
+
+            renderPreviewMembers();
+        }
+
+        function loadSampleData() {
+            document.getElementById("inp_village").value = "नेहरूनगर, भिरवंडे";
+            document.getElementById("inp_taluka").value = "कणकवली";
+            document.getElementById("inp_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_code_no").value = "४५/अ";
+            document.getElementById("inp_sr_no").value = "१२८";
+            document.getElementById("inp_reg_no").value = "७८४२";
+            document.getElementById("inp_shop_no").value = "१२";
+            document.getElementById("inp_ref_no").value = "२०२६/०४";
+            document.getElementById("inp_ration_no").value = "272458963214";
+
+            document.getElementById("inp_applicant_name").value = "कांबळे चंदन अर्जुन";
+            document.getElementById("inp_applicant_age").value = "50";
+            document.getElementById("inp_gender").value = "पुरुष";
+            document.getElementById("inp_citizenship").value = "भारतीय";
+            document.getElementById("inp_caste_cat").value = "GENERAL";
+            document.getElementById("inp_address").value = "मु.पो. नेहरूनगर, भिरवंडे, ता. कणकवली, जि. सिंधुदुर्ग - ४१६६०२";
+            document.getElementById("inp_date").value = getTodayFormatted();
+
+            document.getElementById("inp_is_disabled").value = "नाही";
+            document.getElementById("inp_disabled_cert").value = "";
+            document.getElementById("inp_is_ill").value = "नाही";
+            document.getElementById("inp_ill_details").value = "";
+
+            membersData = [
+                {
+                    name: "कांबळे राहुल चंदन",
+                    relation: "मुलगा",
+                    dob: "15/04/2002",
+                    occ: "नोकरी",
+                    mobile: "9324101420",
+                    arrival: "जन्मसिद्ध",
+                    aadhaar: "8524 9632 1478",
+                    bank: "SBI 3025412589"
+                },
+                {
+                    name: "कांबळे स्नेहा राहुल",
+                    relation: "सून",
+                    dob: "20/08/2004",
+                    occ: "गृहिणी",
+                    mobile: "9876543210",
+                    arrival: "विवाह 2025",
+                    aadhaar: "7412 5896 3214",
+                    bank: "BOI 4589632145"
+                }
+            ];
+
+            initMembersTable();
+            syncAll();
+        }
+
+        function resetAllData() {
+            document.getElementById("inp_village").value = "";
+            document.getElementById("inp_taluka").value = "कणकवली";
+            document.getElementById("inp_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_code_no").value = "";
+            document.getElementById("inp_sr_no").value = "";
+            document.getElementById("inp_reg_no").value = "";
+            document.getElementById("inp_shop_no").value = "";
+            document.getElementById("inp_ref_no").value = "";
+            document.getElementById("inp_ration_no").value = "";
+
+            document.getElementById("inp_applicant_name").value = "";
+            document.getElementById("inp_applicant_age").value = "";
+            document.getElementById("inp_gender").value = "पुरुष";
+            document.getElementById("inp_citizenship").value = "भारतीय";
+            document.getElementById("inp_caste_cat").value = "GENERAL";
+            document.getElementById("inp_address").value = "";
+            document.getElementById("inp_date").value = getTodayFormatted();
+
+            document.getElementById("inp_is_disabled").value = "नाही";
+            document.getElementById("inp_disabled_cert").value = "";
+            document.getElementById("inp_is_ill").value = "नाही";
+            document.getElementById("inp_ill_details").value = "";
+
+            membersData = [
+                { name: "", relation: "", dob: "", occ: "", mobile: "", arrival: "", aadhaar: "", bank: "" }
+            ];
+
+            initMembersTable();
+            syncAll();
+        }
+
+        function printDoc(mode) {
+            document.body.classList.remove('print-p1', 'print-p2');
+            if (mode === 'p1' || mode === 'p2') {
+                document.body.classList.add('print-' + mode);
+            }
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    document.body.classList.remove('print-p1', 'print-p2');
+                }, 500);
+            }, 100);
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("inp_date").value = getTodayFormatted();
+            initMembersTable();
+            loadSampleData();
+        });
+    </script>
+</body>
+</html>
