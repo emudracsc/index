@@ -1548,24 +1548,15 @@ const LINKS_STORAGE_KEY = "emudra_csc_custom_links";
 
 function loadCombinedLinks() {
   try {
-    const raw = localStorage.getItem(LINKS_STORAGE_KEY);
-    if (!raw) return [...DEFAULT_IMPORTANT_LINKS];
-    const customList = JSON.parse(raw);
-    if (!Array.isArray(customList)) return [...DEFAULT_IMPORTANT_LINKS];
-
     const defaults = [...DEFAULT_IMPORTANT_LINKS];
-    const merged = [...defaults];
+    const raw = localStorage.getItem(LINKS_STORAGE_KEY);
+    if (!raw) return defaults;
+    const customList = JSON.parse(raw);
+    if (!Array.isArray(customList)) return defaults;
 
-    customList.forEach(custom => {
-      const idx = merged.findIndex(l => l.id === custom.id);
-      if (idx >= 0) {
-        merged[idx] = custom;
-      } else {
-        merged.push(custom);
-      }
-    });
-
-    return merged;
+    // Filter only user-added custom links and append after defaults
+    const onlyCustom = customList.filter(custom => custom && custom.isCustom && !defaults.some(d => d.id === custom.id));
+    return [...defaults, ...onlyCustom];
   } catch (err) {
     console.error("Error loading links from storage:", err);
     return [...DEFAULT_IMPORTANT_LINKS];
