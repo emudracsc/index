@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>रेशनकार्डात नाव कमी करणे अर्ज जनरेटर | Ration Card Name Deletion</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --secondary: #475569;
+            --accent: #d97706;
+            --success: #059669;
+            --bg-color: #0f172a;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+            background-color: var(--bg-color);
+            color: #334155;
+            min-height: 100vh;
+            padding: 20px 10px;
+        }
+
+        /* -------------------------------------------------------------
+           TOP CONTROL BAR & FORM INPUTS
+        ------------------------------------------------------------- */
+        .controls-wrapper {
+            max-width: 1100px;
+            margin: 0 auto 24px auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            padding: 18px 22px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .bar-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-title i {
+            color: #0284c7;
+            font-size: 1.5rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 0.86rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 7px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: #0284c7; color: #ffffff !important; font-weight: 700; }
+        .btn-primary:hover { background: #0369a1; transform: translateY(-1px); }
+
+        .btn-success { background: #059669; color: #ffffff !important; font-weight: 700; }
+        .btn-success:hover { background: #047857; transform: translateY(-1px); }
+
+        .btn-sample { background: #7c3aed; color: #ffffff !important; font-weight: 700; }
+        .btn-sample:hover { background: #6d28d9; }
+
+        .btn-secondary { background: #e2e8f0; color: #0f172a !important; font-weight: 700; }
+        .btn-secondary:hover { background: #cbd5e1; }
+
+        .btn-home { background: #0f172a; color: #ffffff !important; font-weight: 700; }
+        .btn-home:hover { background: #334155; }
+
+        /* Form Inputs Sections */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 12px 16px;
+            margin-bottom: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 8px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: #0f172a;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #0284c7;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .section-subhead {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0369a1;
+            margin: 14px 0 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 1.5px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Table Inputs */
+        .custom-input-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            margin-bottom: 12px;
+        }
+
+        .custom-input-table th, .custom-input-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 8px;
+            text-align: center;
+        }
+
+        .custom-input-table th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .custom-input-table input {
+            width: 100%;
+            padding: 5px 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT PREVIEW SHEET (EXACT A4 PAGE)
+        ------------------------------------------------------------- */
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .a4-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 16mm 20mm 16mm 20mm;
+            background: #ffffff;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+            border-radius: 4px;
+            position: relative;
+            color: #000000;
+            box-sizing: border-box;
+            line-height: 1.95;
+            font-size: 12pt;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Title */
+        .doc-main-title {
+            text-align: center;
+            font-size: 16pt;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-decoration: underline;
+        }
+
+        .date-row-top {
+            text-align: right;
+            font-weight: 700;
+            font-size: 12pt;
+            margin-bottom: 14px;
+        }
+
+        /* To Authority */
+        .to-block {
+            font-size: 12.5pt;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+
+        .to-block .to-label {
+            font-weight: 700;
+        }
+
+        /* Applicant info */
+        .applicant-block {
+            margin-left: 20%;
+            font-size: 12pt;
+            line-height: 2.1;
+            margin-bottom: 16px;
+        }
+
+        .app-row {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .app-row .label {
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .app-row .line {
+            font-weight: 700;
+            border-bottom: 1px dotted #000;
+            flex: 1;
+            padding-left: 6px;
+        }
+
+        /* Subject */
+        .subject-row {
+            text-align: center;
+            font-size: 13pt;
+            font-weight: 800;
+            margin: 12px 0 14px 0;
+        }
+
+        /* Salutation & Body */
+        .salutation {
+            font-weight: 700;
+            font-size: 12.5pt;
+            margin-bottom: 4px;
+        }
+
+        .body-p {
+            font-size: 12pt;
+            text-align: justify;
+            line-height: 2.1;
+            text-indent: 35px;
+            margin-bottom: 16px;
+        }
+
+        .dotted-bold {
+            font-weight: 700;
+            border-bottom: 1px dotted #000;
+            padding: 0 4px;
+        }
+
+        /* 5-Column Delete Members Table */
+        .deletion-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11.2pt;
+            line-height: 1.4;
+            margin-bottom: 18px;
+        }
+
+        .deletion-table th, .deletion-table td {
+            border: 1px solid #000;
+            padding: 6px 6px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .deletion-table th {
+            font-weight: 700;
+            background: #fff;
+        }
+
+        .deletion-table td.col-name {
+            text-align: left;
+            padding-left: 8px;
+            font-weight: 700;
+        }
+
+        .deletion-table td.col-target-addr {
+            text-align: left;
+            padding: 8px 10px;
+            line-height: 1.8;
+            font-size: 10.8pt;
+            vertical-align: top;
+        }
+
+        /* Reason Clause */
+        .reason-clause {
+            font-size: 12pt;
+            line-height: 2.1;
+            text-align: justify;
+            margin-bottom: 25px;
+        }
+
+        /* Footer Sign */
+        .footer-sign-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-size: 12pt;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .footer-sign-block .sign-label {
+            font-weight: 700;
+            margin-bottom: 35px;
+            margin-right: 35px;
+        }
+
+        .footer-sign-block .sign-name {
+            font-weight: 700;
+            border-bottom: 1px dotted #000;
+            padding: 0 8px;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT STYLES
+        ------------------------------------------------------------- */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .no-print, .controls-wrapper {
+                display: none !important;
+            }
+
+            .preview-container {
+                margin: 0 !important;
+                padding: 0 !important;
+                gap: 0 !important;
+            }
+
+            .a4-sheet {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                max-height: 297mm !important;
+                padding: 16mm 20mm 16mm 20mm !important;
+                margin: 0 !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                overflow: hidden !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP CONTROL BAR -->
+    <div class="controls-wrapper no-print">
+        <div class="bar-header">
+            <div class="bar-title">
+                <i class="fa-solid fa-user-minus"></i>
+                <div>
+                    <div>रेशनकार्डात नाव कमी करणे अर्ज जनरेटर</div>
+                    <div style="font-size: 0.82rem; font-weight: 500; color: #64748b;">
+                        मे. तहसिलदार साहेब यांजकडे रेशनकार्डातून नाव कमी करणे व दाखला मिळणेबाबत अर्ज
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <a href="index.html" class="btn btn-home">
+                    <i class="fa-solid fa-arrow-left"></i> मुख्य पान
+                </a>
+                <button type="button" class="btn btn-sample" onclick="loadSampleData()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना डेटा भरा
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetAllData()">
+                    <i class="fa-solid fa-rotate-left"></i> रीसेट
+                </button>
+                <button type="button" class="btn btn-primary" onclick="window.print()">
+                    <i class="fa-solid fa-print"></i> अर्ज प्रिंट / PDF सेव्ह करा
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM INPUTS -->
+        <div class="section-subhead"><i class="fa-solid fa-landmark"></i> कार्यालय व अर्जदार तपशील</div>
+        <div class="input-grid">
+            <div class="form-group">
+                <label>कार्यालय / तहसिलदार तालुका</label>
+                <input type="text" id="inp_taluka" value="कणकवली" placeholder="उदा. कणकवली" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>जिल्हा</label>
+                <input type="text" id="inp_district" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>अर्जाचा दिनांक</label>
+                <input type="text" id="inp_app_date" placeholder="उदा. 30/08/2026" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>अर्जदाराचे संपूर्ण नाव (श्री/श्रीमती)</label>
+                <input type="text" id="inp_app_name" value="श्री. चंदन अर्जुन कांबळे" placeholder="उदा. श्री. चंदन अर्जुन कांबळे" oninput="syncAll()">
+            </div>
+            <div class="form-group full-width">
+                <label>अर्जदाराचे राहण्याचे ठिकाण (पत्ता)</label>
+                <input type="text" id="inp_app_address" value="मु.पो. नेहरूनगर, भिरवंडे" placeholder="उदा. मु.पो. नेहरूनगर, भिरवंडे" oninput="syncAll()">
+            </div>
+        </div>
+
+        <div class="section-subhead"><i class="fa-solid fa-address-card"></i> विद्यमान रेशनकार्ड माहिती</div>
+        <div class="input-grid">
+            <div class="form-group">
+                <label>गाव मौजे</label>
+                <input type="text" id="inp_village" value="नेहरूनगर" placeholder="उदा. नेहरूनगर" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>रेशनकार्ड नंबर</label>
+                <input type="text" id="inp_ration_no" value="272458963214" placeholder="उदा. 272458963214" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>रेशनकार्ड धारकाचे नाव (ज्यांच्या नावे दाखल आहे)</label>
+                <input type="text" id="inp_holder_name" value="कै. अर्जुन यशवंत कांबळे" placeholder="उदा. कै. अर्जुन यशवंत कांबळे" oninput="syncAll()">
+            </div>
+            <div class="form-group full-width">
+                <label>नाव कमी करण्याचे कारण (Reason)</label>
+                <input type="text" id="inp_reason" value="विवाह झाल्यामुळे / नवीन स्वतंत्र रेशनकार्ड काढणेकामी" placeholder="उदा. विवाह झाल्यामुळे / नोकरीनिमित्त स्थलांतर झाल्यामुळे" oninput="syncAll()">
+            </div>
+        </div>
+
+        <div class="section-subhead"><i class="fa-solid fa-map-pin"></i> ज्या ठिकाणी दाखल्याचा वापर करणार ते ठिकाण (नवीन पत्ता)</div>
+        <div class="input-grid">
+            <div class="form-group">
+                <label>रा. (नवीन गाव / पत्ता)</label>
+                <input type="text" id="inp_target_village" value="मु.पो. वरवडे, ता. कणकवली" placeholder="उदा. मु.पो. वरवडे" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>ता. (तालुका)</label>
+                <input type="text" id="inp_target_taluka" value="कणकवली" placeholder="उदा. कणकवली" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>जि. (जिल्हा)</label>
+                <input type="text" id="inp_target_district" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+                <label>राज्य</label>
+                <input type="text" id="inp_target_state" value="महाराष्ट्र" placeholder="उदा. महाराष्ट्र" oninput="syncAll()">
+            </div>
+        </div>
+
+        <div class="section-subhead" style="justify-content: space-between; flex-wrap: wrap;">
+            <span><i class="fa-solid fa-users-slash"></i> ज्या व्यक्तींची नावे कमी करायची आहेत त्यांची यादी</span>
+            <button type="button" class="btn btn-primary" style="padding: 5px 12px; font-size: 0.82rem;" onclick="addDeleteRow()">
+                <i class="fa-solid fa-plus"></i> + व्यक्ती जोडा
+            </button>
+        </div>
+
+        <table class="custom-input-table">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">अ.क्र.</th>
+                    <th>कमी करावयाचे पूर्ण नाव</th>
+                    <th style="width: 140px;">कार्ड धारकाशी नाते</th>
+                    <th style="width: 80px;">वय</th>
+                    <th style="width: 50px;">काढा</th>
+                </tr>
+            </thead>
+            <tbody id="deleteInputBody">
+                <!-- Dynamic rows -->
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- -------------------------------------------------------------
+         LIVE A4 PRINTABLE CANVAS
+    ------------------------------------------------------------- -->
+    <div class="preview-container">
+        <div class="a4-sheet" id="printableSheet">
+            <div>
+                <!-- Title -->
+                <div class="doc-main-title">नांव कमी</div>
+
+                <!-- Date -->
+                <div class="date-row-top">
+                    दि. &nbsp;<span id="view_top_date">30 / 08 / 2026</span>
+                </div>
+
+                <!-- To Section -->
+                <div class="to-block">
+                    <div class="to-label">प्रति,</div>
+                    <div style="margin-left: 30px;">
+                        <strong>मे. तहसिलदार साहेब</strong><br>
+                        <span id="view_taluka_head">कणकवली</span>
+                    </div>
+                </div>
+
+                <!-- Applicant block -->
+                <div class="applicant-block">
+                    <div class="app-row">
+                        <span class="label">अर्जदार :-</span>
+                        <span class="line" id="view_app_name">श्री. चंदन अर्जुन कांबळे</span>
+                    </div>
+                    <div class="app-row">
+                        <span class="label">रा.</span>
+                        <span class="line" id="view_app_address">मु.पो. नेहरूनगर, भिरवंडे</span>
+                    </div>
+                    <div class="app-row" style="margin-left: 28px;">
+                        <span>ता. <strong id="view_app_taluka">कणकवली</strong>. जि. <strong id="view_app_district">सिंधुदुर्ग</strong>.</span>
+                    </div>
+                </div>
+
+                <!-- Subject -->
+                <div class="subject-row">
+                    विषय :- रेशनकार्डात नाव कमी करून मिळणेबाबत
+                </div>
+
+                <!-- Salutation & Body -->
+                <div class="salutation">महोदय,</div>
+                <div class="body-p">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;गाव मौजे <strong class="dotted-bold" id="view_village">नेहरूनगर</strong> येथील रेशनकार्ड नं <strong class="dotted-bold" id="view_ration_no">272458963214</strong> आहे. सदर कार्ड <strong class="dotted-bold" id="view_holder_name">कै. अर्जुन यशवंत कांबळे</strong> यांच्या नावे दाखल आहे. तरी सदर कार्डामध्ये खालील व्यक्तींची नांवे कमी करून मिळावीत, हि विनंती.
+                </div>
+
+                <!-- 5-Column Table -->
+                <table class="deletion-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 45px;">अ.<br>क्र.</th>
+                            <th style="width: 210px;">ज्या व्यक्तीचे नांव कमी करायचे त्याचे<br>पूर्ण नांव</th>
+                            <th style="width: 100px;">कार्ड<br>धारकाशी<br>नाते</th>
+                            <th style="width: 60px;">वय</th>
+                            <th>ज्या ठिकाणी दाखल्याचा वापर<br>करणार ते ठिकाण</th>
+                        </tr>
+                    </thead>
+                    <tbody id="view_deletion_table_body">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+
+                <!-- Reason Clause -->
+                <div class="reason-clause">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;वरील माणसे <strong class="dotted-bold" id="view_reason">विवाह झाल्यामुळे / नवीन स्वतंत्र रेशनकार्ड काढणेकामी</strong> या कारणासाठी येथे राहत आहेत. तरी नावे कमी करून दाखला मिळावा हि विनंती.
+                </div>
+            </div>
+
+            <!-- Footer Sign -->
+            <div class="footer-sign-block">
+                <div class="sign-label">अर्जदाराची सही</div>
+                <div style="font-weight: 700;">
+                    ( <span id="view_sign_name">श्री. चंदन अर्जुन कांबळे</span> )
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- -------------------------------------------------------------
+         JAVASCRIPT LOGIC
+    ------------------------------------------------------------- -->
+    <script>
+        let deleteMembers = [
+            { name: "कांबळे स्नेहा राहुल", relation: "मुलगी", age: "22" },
+            { name: "कांबळे प्रणाली राहुल", relation: "मुलगी", age: "19" }
+        ];
+
+        function getTodayFormatted() {
+            const d = new Date();
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function formatDisplayDate(dateStr) {
+            if (!dateStr) return "/ &nbsp;&nbsp; / २० &nbsp;";
+            const parts = dateStr.split(/[\/\-\.]/);
+            if (parts.length === 3) {
+                return `${parts[0]} / ${parts[1]} / ${parts[2]}`;
+            }
+            return dateStr;
+        }
+
+        function initDeleteTable() {
+            const tbody = document.getElementById("deleteInputBody");
+            tbody.innerHTML = "";
+
+            deleteMembers.forEach((m, idx) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td style="font-weight: 700;">${idx + 1}</td>
+                    <td><input type="text" value="${m.name || ''}" placeholder="कमी करावयाचे नाव" oninput="updateDeleteMember(${idx}, 'name', this.value)"></td>
+                    <td><input type="text" value="${m.relation || ''}" placeholder="नाते" oninput="updateDeleteMember(${idx}, 'relation', this.value)"></td>
+                    <td><input type="text" value="${m.age || ''}" placeholder="वय" oninput="updateDeleteMember(${idx}, 'age', this.value)"></td>
+                    <td>
+                        <button type="button" style="background:#ef4444; color:#fff; border:none; border-radius:4px; padding:4px 8px; cursor:pointer;" onclick="removeDeleteRow(${idx})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addDeleteRow() {
+            deleteMembers.push({ name: "", relation: "", age: "" });
+            initDeleteTable();
+            renderPreviewTable();
+        }
+
+        function removeDeleteRow(idx) {
+            if (deleteMembers.length <= 1) {
+                deleteMembers[0] = { name: "", relation: "", age: "" };
+            } else {
+                deleteMembers.splice(idx, 1);
+            }
+            initDeleteTable();
+            renderPreviewTable();
+        }
+
+        function updateDeleteMember(idx, key, val) {
+            if (deleteMembers[idx]) {
+                deleteMembers[idx][key] = val;
+                renderPreviewTable();
+            }
+        }
+
+        function renderPreviewTable() {
+            const tbody = document.getElementById("view_deletion_table_body");
+            tbody.innerHTML = "";
+
+            const targetVillage = document.getElementById("inp_target_village").value || "..................";
+            const targetTaluka = document.getElementById("inp_target_taluka").value || "..................";
+            const targetDistrict = document.getElementById("inp_target_district").value || "..................";
+            const targetState = document.getElementById("inp_target_state").value || "महाराष्ट्र";
+
+            const active = deleteMembers.filter(m => m.name && m.name.trim() !== "");
+            const rowsToRender = active.length > 0 ? active : deleteMembers;
+            const totalRows = Math.max(rowsToRender.length, 5);
+
+            for (let i = 0; i < totalRows; i++) {
+                const tr = document.createElement("tr");
+                const m = rowsToRender[i] || { name: "", relation: "", age: "" };
+                const srText = `${i + 1})`;
+
+                let tdHtml = `
+                    <td style="font-weight: 700;">${srText}</td>
+                    <td class="col-name">${m.name || '&nbsp;'}</td>
+                    <td>${m.relation || '&nbsp;'}</td>
+                    <td>${m.age ? m.age + ' वर्षे' : '&nbsp;'}</td>
+                `;
+
+                // Add the rowspan target address cell only on the first row
+                if (i === 0) {
+                    tdHtml += `
+                        <td class="col-target-addr" rowspan="${totalRows}">
+                            <strong>रा.</strong> <span id="view_td_target_village">${targetVillage}</span><br><br>
+                            <strong>ता.</strong> <span id="view_td_target_taluka">${targetTaluka}</span><br><br>
+                            <strong>जि.</strong> <span id="view_td_target_district">${targetDistrict}</span><br><br>
+                            <strong>राज्य.</strong> <span id="view_td_target_state">${targetState}</span>
+                        </td>
+                    `;
+                }
+
+                tr.innerHTML = tdHtml;
+                tbody.appendChild(tr);
+            }
+        }
+
+        function syncAll() {
+            const taluka = document.getElementById("inp_taluka").value || "कणकवली";
+            const district = document.getElementById("inp_district").value || "सिंधुदुर्ग";
+            const rawDate = document.getElementById("inp_app_date").value || getTodayFormatted();
+
+            const appName = document.getElementById("inp_app_name").value || "श्री/श्रीमती";
+            const appAddress = document.getElementById("inp_app_address").value || "....................................................";
+            const village = document.getElementById("inp_village").value || "..................";
+            const rationNo = document.getElementById("inp_ration_no").value || "..................";
+            const holderName = document.getElementById("inp_holder_name").value || "..................";
+            const reason = document.getElementById("inp_reason").value || "....................................................";
+
+            document.getElementById("view_top_date").innerHTML = formatDisplayDate(rawDate);
+            document.getElementById("view_taluka_head").innerText = taluka;
+            document.getElementById("view_app_name").innerText = appName;
+            document.getElementById("view_app_address").innerText = appAddress;
+            document.getElementById("view_app_taluka").innerText = taluka;
+            document.getElementById("view_app_district").innerText = district;
+
+            document.getElementById("view_village").innerText = village;
+            document.getElementById("view_ration_no").innerText = rationNo;
+            document.getElementById("view_holder_name").innerText = holderName;
+            document.getElementById("view_reason").innerText = reason;
+            document.getElementById("view_sign_name").innerText = appName;
+
+            renderPreviewTable();
+        }
+
+        function loadSampleData() {
+            document.getElementById("inp_taluka").value = "कणकवली";
+            document.getElementById("inp_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_app_date").value = getTodayFormatted();
+            document.getElementById("inp_app_name").value = "श्री. चंदन अर्जुन कांबळे";
+            document.getElementById("inp_app_address").value = "मु.पो. नेहरूनगर, भिरवंडे";
+            
+            document.getElementById("inp_village").value = "नेहरूनगर";
+            document.getElementById("inp_ration_no").value = "272458963214";
+            document.getElementById("inp_holder_name").value = "कै. अर्जुन यशवंत कांबळे";
+            document.getElementById("inp_reason").value = "विवाह झाल्यामुळे / नवीन स्वतंत्र रेशनकार्ड काढणेकामी";
+
+            document.getElementById("inp_target_village").value = "मु.पो. वरवडे, ता. कणकवली";
+            document.getElementById("inp_target_taluka").value = "कणकवली";
+            document.getElementById("inp_target_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_target_state").value = "महाराष्ट्र";
+
+            deleteMembers = [
+                { name: "कांबळे स्नेहा राहुल", relation: "मुलगी", age: "22" },
+                { name: "कांबळे प्रणाली राहुल", relation: "मुलगी", age: "19" }
+            ];
+
+            initDeleteTable();
+            syncAll();
+        }
+
+        function resetAllData() {
+            document.getElementById("inp_taluka").value = "कणकवली";
+            document.getElementById("inp_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_app_date").value = getTodayFormatted();
+            document.getElementById("inp_app_name").value = "";
+            document.getElementById("inp_app_address").value = "";
+            
+            document.getElementById("inp_village").value = "";
+            document.getElementById("inp_ration_no").value = "";
+            document.getElementById("inp_holder_name").value = "";
+            document.getElementById("inp_reason").value = "";
+
+            document.getElementById("inp_target_village").value = "";
+            document.getElementById("inp_target_taluka").value = "कणकवली";
+            document.getElementById("inp_target_district").value = "सिंधुदुर्ग";
+            document.getElementById("inp_target_state").value = "महाराष्ट्र";
+
+            deleteMembers = [
+                { name: "", relation: "", age: "" }
+            ];
+
+            initDeleteTable();
+            syncAll();
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("inp_app_date").value = getTodayFormatted();
+            initDeleteTable();
+            loadSampleData();
+        });
+    </script>
+</body>
+</html>
