@@ -1029,6 +1029,84 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
+  // 📋 नवीन विशेष शासकीय फॉर्म्स व अर्ज जनरेटर (New Government Form Generators)
+  {
+    id: "link-varas-ferfar",
+    category: "विशेष शासकीय फॉर्म्स",
+    icon: "fa-solid fa-file-signature",
+    title_mr: "📋 वारस फेरफार संपूर्ण ८-पानी मास्टर संच",
+    title_en: "Heirship Mutation 8-Page Master Application Form",
+    desc_mr: "कलम १४९, वारस तपास, पंचयादी, जबाब, प्रतिज्ञापत्र (लेजर) व २-इन-१ वारस दाखला २-बाजू ड्युप्लेक्स प्रिंट.",
+    desc_en: "8-Page Heirship Mutation application, affidavit & certificates with duplex print.",
+    url: "varas-ferfar.html",
+    isInternal: true
+  },
+  {
+    id: "link-nakal-arja",
+    category: "विशेष शासकीय फॉर्म्स",
+    icon: "fa-solid fa-file-invoice",
+    title_mr: "📄 तहसिलदार / SDO नकला व उतारे मागणी अर्ज",
+    title_en: "Tehsildar & SDO Extract / Certified Copy Application",
+    desc_mr: "७/१२, ८-अ, फेरफार उतारे व कोर्ट आदेश प्रती मिळण्यासाठी तहसिलदार / SDO कार्यालयाकडे अर्ज.",
+    desc_en: "Application form for certified copies of 7/12, 8A, mutation entries & court orders.",
+    url: "nakal-arja.html",
+    isInternal: true
+  },
+  {
+    id: "link-bhumi-abhilekh-nakal",
+    category: "विशेष शासकीय फॉर्म्स",
+    icon: "fa-solid fa-map-location-dot",
+    title_mr: "📐 भूमी अभिलेख (TILR) नकला अर्ज (परिशिष्ट - १)",
+    title_en: "Land Records TILR Certified Copy Application (Form 1)",
+    desc_mr: "भूमी अभिलेख, मोजणी नकाशे, गटबुक, आकारफोड व फाळणी बुक नकला मागणी २-पानी अधिकृत अर्ज.",
+    desc_en: "TILR Land records, survey map, gut book & measurement certified copy form.",
+    url: "bhumi-abhilekh-nakal.html",
+    isInternal: true
+  },
+  {
+    id: "link-ration-card-addition",
+    category: "विशेष शासकीय फॉर्म्स",
+    icon: "fa-solid fa-address-card",
+    title_mr: "🍚 नमूना आठ - शिधापत्रिकेत नाव वाढविणे अर्ज",
+    title_en: "Ration Card Name Addition Application Form 8",
+    desc_mr: "कौटुंबिक शिधापत्रिकेत नवीन सदस्य समाविष्ट करणे, १२-अंकी रेशनकार्ड व स्थळ प्रत पोचपावती जनरेटर.",
+    desc_en: "Official Form 8 for adding new family members to existing Ration Card.",
+    url: "ration-card-addition.html",
+    isInternal: true
+  },
+  {
+    id: "link-ration-card-deletion",
+    category: "विशेष शासकीय फॉर्म्स",
+    icon: "fa-solid fa-user-minus",
+    title_mr: "✂️ रेशनकार्डात नाव कमी करणे अर्ज",
+    title_en: "Ration Card Name Deletion Application Form",
+    desc_mr: "विवाह किंवा स्थलांतरामुळे रेशनकार्डातून नाव कमी करणे व दाखला मिळणेबाबत तहसिलदार अर्ज.",
+    desc_en: "Application form for deletion of members from ration card & certificate.",
+    url: "ration-card-deletion.html",
+    isInternal: true
+  },
+  {
+    id: "link-income-certificate",
+    category: "विशेष शासकीय फॉर्म्स",
+    icon: "fa-solid fa-money-bill-wave",
+    title_mr: "💰 उत्पन्न दाखला स्वयंघोषणापत्र व अर्ज",
+    title_en: "Income Certificate Self-Declaration & Application",
+    desc_mr: "तहसिलदार उत्पन्न दाखल्यासाठी स्वयंघोषणापत्र, तलाठी अहवाल व अर्ज जनरेटर.",
+    desc_en: "Income certificate self declaration, report and application generator.",
+    url: "income-certificate.html",
+    isInternal: true
+  },
+  {
+    id: "link-varas-affidavit",
+    category: "विशेष शासकीय फॉर्म्स",
+    icon: "fa-solid fa-stamp",
+    title_mr: "📜 वारस प्रतिज्ञापत्र जनरेटर (Green Ledger)",
+    title_en: "Heirship Affidavit Generator (Green Ledger Paper)",
+    desc_mr: "कार्यकारी दंडाधिकारी समक्ष सादर करावयाचे अधिकृत वारस प्रतिज्ञापत्र.",
+    desc_en: "Official heirship affidavit generator on green ledger paper.",
+    url: "varas-affidavit.html",
+    isInternal: true
+  },
   // 🆔 Official e-Aadhaar PVC Smart Card Print Studio (85mm x 55mm)
   {
     id: "link-eaadhaar-print",
