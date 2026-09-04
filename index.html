@@ -726,6 +726,9 @@
             <button class="admin-subtab-btn" id="btn-subtab-manage-links" onclick="switchAdminSubTab('manage-links')">
               <i class="fa-solid fa-link"></i> <span>🔗 लिंक्स व टूल्स व्यवस्थापन (<span id="admin-links-badge">०</span>)</span>
             </button>
+            <button class="admin-subtab-btn" id="btn-subtab-form-history" onclick="switchAdminSubTab('form-history')" style="border-left: 3px solid #059669; font-weight: 800;">
+              <i class="fa-solid fa-print" style="color: #10b981;"></i> <span>📑 भरलेले अर्ज व प्रिंट इतिहास (<span id="admin-forms-history-badge">०</span>)</span>
+            </button>
           </div>
 
           <!-- Admin Sub-Panel 1: Applications Management -->
@@ -735,7 +738,10 @@
                 <h3 style="color: var(--primary-navy); font-size: 1.25rem;" data-i18n="admin_dash_title">प्राप्त अर्ज नियंत्रण कक्ष (VLE Admin Dashboard)</h3>
                 <p style="color: var(--text-muted); font-size: 0.85rem;">सर्व प्राप्त अर्जांची पडताळणी, स्थिती बदल व अहवाल व्यवस्थापन.</p>
               </div>
-              <div style="display: flex; gap: 8px; align-items: center;">
+              <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <button type="button" class="btn-card-apply" onclick="switchAdminSubTab('form-history')" style="padding: 0.5rem 1rem; background: #059669; border: 1px solid #047857; color: #ffffff;">
+                  <i class="fa-solid fa-print"></i> <span>📑 भरलेले अर्ज इतिहास (<span id="admin-subtab-form-count">०</span>)</span>
+                </button>
                 <button class="btn-card-apply" id="btn-export-csv" style="padding: 0.5rem 1rem;">
                   <i class="fa-solid fa-file-excel"></i> <span data-i18n="btn_export_csv">CSV एक्सपोर्ट करा</span>
                 </button>
@@ -1202,6 +1208,79 @@
             </div>
           </div>
 
+          <!-- Admin Sub-Panel 6: Filled Forms & Print History (भरलेले अर्ज व प्रिंट इतिहास) -->
+          <div class="admin-subtab-content" id="admin-subtab-form-history">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h3 style="color: var(--primary-navy); font-size: 1.25rem;">
+                  <i class="fa-solid fa-print" style="color: #059669;"></i> भरलेले फॉर्म्स, अर्ज व प्रिंट इतिहास
+                </h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">
+                  पोर्टलवरून भरलेले सर्व आधार, उत्पन्न दाखला, वारस फेरफार इत्यादी अर्जांची संपूर्ण माहिती. येथून थेट पुन्हा प्रिंट किंवा एडिट करा.
+                </p>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <input type="text" id="admin-form-history-search" oninput="filterAdminFormHistory()" placeholder="नाव / मोबाईल / अर्ज क्र. शोधा..." class="form-control" style="width: 230px; font-size: 0.85rem; padding: 0.45rem 0.8rem;">
+                <select id="admin-form-history-filter" onchange="filterAdminFormHistory()" class="form-control" style="width: 200px; font-size: 0.85rem; padding: 0.45rem 0.8rem;">
+                  <option value="all">सर्व फॉर्म्स (All Forms)</option>
+                  <option value="aadhaar">आधार फॉर्म्स (Aadhaar)</option>
+                  <option value="income">उत्पन्न दाखला (Income)</option>
+                  <option value="varas">वारस फेरफार व शपथपत्र</option>
+                  <option value="ration">रेशन कार्ड (नाव वाढ / कमी)</option>
+                  <option value="janma">जन्म / मृत्यू नोंद उतारा</option>
+                  <option value="nakal">नकला व भूमी अभिलेख (TILR)</option>
+                  <option value="gazette">राजपत्र नाव बदल (Gazette)</option>
+                  <option value="bocw">बांधकाम कामगार (BOCW)</option>
+                  <option value="pikpera">ई-पीक पाहणी / पिकपेरा</option>
+                  <option value="other">इतर फॉर्म्स व प्रतिज्ञापत्र</option>
+                </select>
+                <button type="button" class="btn-card-apply" onclick="renderAdminFormHistoryTable()" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+                  <i class="fa-solid fa-rotate"></i> रिफ्रेश
+                </button>
+              </div>
+            </div>
+
+            <!-- Form History Stats Grid -->
+            <div class="admin-stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 1.25rem;">
+              <div class="admin-stat-card">
+                <div class="count" id="stat-forms-total" style="color: #059669;">०</div>
+                <div class="lbl">एकूण भरलेले अर्ज</div>
+              </div>
+              <div class="admin-stat-card">
+                <div class="count" id="stat-forms-today" style="color: #0284c7;">०</div>
+                <div class="lbl">आजचे अर्ज (Today)</div>
+              </div>
+              <div class="admin-stat-card">
+                <div class="count" id="stat-forms-aadhaar" style="color: #d97706;">०</div>
+                <div class="lbl">आधार फॉर्म्स</div>
+              </div>
+              <div class="admin-stat-card">
+                <div class="count" id="stat-forms-income" style="color: #7c3aed;">०</div>
+                <div class="lbl">उत्पन्न दाखले</div>
+              </div>
+            </div>
+
+            <!-- Form History Table -->
+            <div class="admin-table-wrapper">
+              <table class="admin-data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 120px;">अर्ज क्र. (App ID)</th>
+                    <th>फॉर्म प्रकार</th>
+                    <th>अर्जदाराचे नाव</th>
+                    <th>मोबाईल</th>
+                    <th>दिनांक व वेळ</th>
+                    <th>स्थिती</th>
+                    <th style="text-align: center; width: 190px;">कृती (Action)</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-form-history-tbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -1546,17 +1625,17 @@
   </div>
 
   <!-- Modal 3: Officer / VLE Login PIN -->
-  <div class="modal-overlay" id="admin-login-modal">
-    <div class="modal-card" style="max-width: 420px;">
+  <div class="modal-overlay" id="admin-login-modal" role="dialog" aria-modal="true" aria-labelledby="admin-login-title">
+    <div class="modal-card" style="max-width: 420px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
       <div class="modal-header" style="background: linear-gradient(135deg, #1a0533 0%, #2d1b69 100%) !important; color: #ffffff !important; padding: 1.1rem 1.4rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff9500;">
-        <h3 data-i18n="admin_login_title" style="color: #ffffff !important; font-size: 1.15rem !important; font-weight: 800 !important; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.5);"><i class="fa-solid fa-user-lock" style="color: #ff9500 !important;"></i> अधिकारी लॉगिन</h3>
+        <h3 id="admin-login-title" data-i18n="admin_login_title" style="color: #ffffff !important; font-size: 1.15rem !important; font-weight: 800 !important; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.5);"><i class="fa-solid fa-user-lock" style="color: #ff9500 !important;"></i> अधिकारी लॉगिन (Admin Login)</h3>
         <button class="modal-close-btn" onclick="closeModal('admin-login-modal')" style="background: rgba(255,255,255,0.18) !important; color: #ffffff !important; border: 1px solid rgba(255,255,255,0.25) !important;"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" style="padding: 1.5rem;">
         <form id="admin-login-form">
           <div class="form-group" style="margin-bottom: 1.25rem;">
-            <label for="admin-pin-input" data-i18n="admin_pin_label">सुरक्षा पासवर्ड प्रविष्ट करा:</label>
-            <input type="password" id="admin-pin-input" class="form-control" placeholder="••••••••" maxlength="30" required style="font-size: 1.2rem; letter-spacing: 2px; text-align: center;">
+            <label for="admin-pin-input" data-i18n="admin_pin_label" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-main);">सुरक्षा पासवर्ड प्रविष्ट करा (PIN: 341992):</label>
+            <input type="password" id="admin-pin-input" class="form-control font-mono" placeholder="••••••" maxlength="10" required style="font-size: 1.4rem; letter-spacing: 6px; text-align: center; width: 100%; padding: 10px; border-radius: 8px;">
           </div>
           <button type="submit" class="btn-form-submit" style="width: 100%;">
             <i class="fa-solid fa-arrow-right-to-bracket"></i> <span data-i18n="btn_admin_login">डॅशबोर्ड उघडा</span>
@@ -1591,31 +1670,6 @@
       </div>
       <div class="modal-body doc-viewer-body" id="doc-viewer-body">
         <!-- Rendered dynamically: High-res image or responsive embedded PDF viewer -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal 3: Officer / VLE Login PIN -->
-  <div class="modal-overlay" id="admin-login-modal" role="dialog" aria-modal="true" aria-labelledby="admin-login-title">
-    <div class="modal-card" style="max-width: 420px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
-      <div class="modal-header" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff; padding: 1.1rem 1.4rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #38bdf8;">
-        <h3 id="admin-login-title" data-i18n="admin_login_title" style="margin: 0; color: #38bdf8; font-size: 1.2rem; font-weight: 700;">
-          <i class="fa-solid fa-user-lock"></i> अधिकारी लॉगिन (Admin Login)
-        </h3>
-        <button class="modal-close-btn" onclick="closeModal('admin-login-modal')" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2);">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div class="modal-body" style="padding: 1.5rem;">
-        <form id="admin-login-form">
-          <div class="form-group" style="margin-bottom: 1.25rem;">
-            <label for="admin-pin-input" data-i18n="admin_pin_label" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-main);">सुरक्षा पिन प्रविष्ट करा (PIN: 1234 किंवा 341992):</label>
-            <input type="password" id="admin-pin-input" class="form-control font-mono" placeholder="••••" maxlength="8" required style="font-size: 1.4rem; letter-spacing: 6px; text-align: center; width: 100%; padding: 10px; border-radius: 8px;" />
-          </div>
-          <button type="submit" class="btn-form-submit" style="width: 100%; padding: 12px; font-size: 1rem; font-weight: 700; border-radius: 8px; background: #0284c7; color: #fff; border: none; cursor: pointer;">
-            <i class="fa-solid fa-arrow-right-to-bracket"></i> <span data-i18n="btn_admin_login">डॅशबोर्ड उघडा</span>
-          </button>
-        </form>
       </div>
     </div>
   </div>

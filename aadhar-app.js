@@ -203,9 +203,9 @@ function handleAdminLogin(e) {
   }
   const pinInput = document.getElementById('login-admin-pin');
   const pin = pinInput ? pinInput.value.trim() : '';
-  const expectedPin = localStorage.getItem(STORAGE_KEYS.ADMIN_PIN) || '1234';
+  const expectedPin = localStorage.getItem(STORAGE_KEYS.ADMIN_PIN) || '341992';
   
-  if (pin === expectedPin || pin === '1234' || pin === '341992' || pin === 'admin' || pin === '40068' || pin === '73016') {
+  if (pin === expectedPin || pin === '341992' || pin === '1234' || pin === 'admin' || pin === '40068' || pin === '73016') {
     currentUser = { role: 'admin', center: 'Full Access', name: 'Admin (सर्व ऑपरेटर)' };
     localStorage.setItem('ask_current_user', JSON.stringify(currentUser));
     
@@ -221,7 +221,7 @@ function handleAdminLogin(e) {
   } else {
     const err = document.getElementById('login-error-msg');
     if(err) {
-      err.textContent = 'चुकीचा पिन! (Admin PIN: 1234)';
+      err.textContent = 'चुकीचा पिन! (Admin PIN: 341992)';
       err.style.display = 'block';
     }
     playSound('delete');
@@ -4033,7 +4033,7 @@ function showMainZipAlert(msg, type = 'info') {
 let pendingAdminAction = null; // { type: 'delete_tx' | 'delete_exp' | 'clear_all', targetId: '...', description: '...' }
 
 function getAdminPin() {
-  return localStorage.getItem(STORAGE_KEYS.ADMIN_PIN) || '1234';
+  return localStorage.getItem(STORAGE_KEYS.ADMIN_PIN) || '341992';
 }
 
 function saveAdminPinChange(event) {

@@ -1498,11 +1498,14 @@ function initAdminDashboard() {
   loginForm?.addEventListener("submit", (e) => {
     e.preventDefault();
     const pin = (document.getElementById("admin-pin-input")?.value || "").trim();
-    if (pin === "1234" || pin === "341992" || pin === "40068" || pin === "73016" || pin === "admin") {
+    if (pin === "341992" || pin === "1234" || pin === "40068" || pin === "73016" || pin === "admin") {
       closeModal("admin-login-modal");
       sessionStorage.setItem("emudra_admin_auth", "true");
       checkAdminAuthState();
       renderAdminDashboard();
+      if (typeof renderAdminFormHistoryTable === "function") {
+        renderAdminFormHistoryTable();
+      }
       showToast(CURRENT_LANG === "mr" ? "अधिकारी लॉगिन यशस्वी! डॅशबोर्ड उघडला." : "Officer Login Successful!", "success");
       setTimeout(() => {
         const webAppSec = document.getElementById("interactive-app");
@@ -1512,7 +1515,7 @@ function initAdminDashboard() {
         }
       }, 150);
     } else {
-      showToast(CURRENT_LANG === "mr" ? "चुकीचा सुरक्षा पासवर्ड (PIN: 1234)." : "Invalid Security Password (PIN: 1234).", "error");
+      showToast(CURRENT_LANG === "mr" ? "चुकीचा सुरक्षा पासवर्ड (PIN: 341992)." : "Invalid Security Password (PIN: 341992).", "error");
     }
   });
 
@@ -1556,6 +1559,8 @@ function switchAdminSubTab(subTabId) {
     renderAdminSoftwaresTable();
   } else if (subTabId === "manage-links") {
     renderAdminLinksTable();
+  } else if (subTabId === "form-history") {
+    renderAdminFormHistoryTable();
   }
 }
 
@@ -1893,7 +1898,7 @@ function renderAdminDashboard() {
     const total      = apps.length;
     const pending    = apps.filter(a => a.status === "pending" || a.status === "submitted" || a.status === "verified").length;
     const processing = apps.filter(a => a.status === "processing").length;
-    const completed  = apps.filter(a => a.status === "completed").length;
+    const completed  = apps.filter(a => a.status === "completed" || a.status === "printed").length;
 
     const totalElem = document.getElementById("stat-total-apps");
     const pendElem  = document.getElementById("stat-pending-apps");
@@ -1908,6 +1913,11 @@ function renderAdminDashboard() {
     if (compElem)  compElem.textContent  = completed;
     if (appsBadge) appsBadge.textContent = total;
     if (srvBadge)  srvBadge.textContent  = SERVICES_DATA.length;
+    const formHistBadge = document.getElementById("admin-forms-history-badge");
+    const subtabFormCount = document.getElementById("admin-subtab-form-count");
+    const localHist = JSON.parse(localStorage.getItem("emudra_form_history") || "[]");
+    if (formHistBadge) formHistBadge.textContent = localHist.length;
+    if (subtabFormCount) subtabFormCount.textContent = localHist.length;
 
     if (!tbody) return;
 
@@ -1920,11 +1930,29 @@ function renderAdminDashboard() {
       // Support both Supabase format (fullName) and localStorage format (applicantName)
       const name      = app.fullName      || app.applicantName || "-";
       const svcName   = app.serviceName   || (isMr ? app.serviceName_mr : app.serviceName_en) || "-";
-      const date      = app.submittedAt   ? formatDateDDMMYYYY(app.submittedAt) : formatDateDDMMYYYY(app.date);
+      const date      = app.submittedAt   ? formatDateDDMMYYYY(app.submittedAt) : (app.date ? formatDateDDMMYYYY(app.date) : "-");
       const mob       = app.mobile        || "-";
       const appId     = app.appId         || app.id || "-";
       const status    = app.status        || "pending";
-      const statusLabel = { pending:"प्रलंबित", submitted:"सादर केला", verified:"पडताळणी", processing:"प्रक्रिया", completed:"पूर्ण", rejected:"नाकारलेला" };
+      const isFormApp = app.isFormHistory || (app.serviceId && !String(app.serviceId).startsWith('srv_') && app.serviceId !== 'default') || (appId && !String(appId).startsWith('EMU-'));
+      const statusLabel = { pending:"प्रलंबित", submitted:"सादर केला", verified:"पडताळणी", processing:"प्रक्रिया", completed:"पूर्ण", rejected:"नाकारलेला", printed:"प्रिंट / सेव्ह" };
+
+      let actionButtons = `
+        <button class="admin-action-btn" onclick="updateAppStatusFromAdmin('${appId}')" title="${isMr ? 'स्थिती बदला' : 'Update Status'}">
+          <i class="fa-solid fa-pen-to-square"></i> ${isMr ? 'स्थिती' : 'Status'}
+        </button>
+      `;
+
+      if (isFormApp) {
+        actionButtons += `
+          <button class="admin-action-btn" onclick="editFormApplication('${appId}')" style="background:#0284c7;color:#ffffff;border:none;margin-left:3px;" title="अर्ज संपादन">
+            <i class="fa-solid fa-pen"></i> एडिट
+          </button>
+          <button class="admin-action-btn" onclick="printFormApplication('${appId}')" style="background:#059669;color:#ffffff;border:none;margin-left:3px;" title="पुन्हा प्रिंट करा">
+            <i class="fa-solid fa-print"></i> प्रिंट
+          </button>
+        `;
+      }
 
       return `
         <tr>
@@ -1934,10 +1962,8 @@ function renderAdminDashboard() {
           <td style="font-family:var(--font-sans);">${date}</td>
           <td style="font-family:var(--font-sans);">${mob}</td>
           <td><span class="status-badge-chip status-${status}">${isMr ? (statusLabel[status] || status) : status}</span></td>
-          <td>
-            <button class="admin-action-btn" onclick="updateAppStatusFromAdmin('${appId}')" title="${isMr ? 'स्थिती बदला' : 'Update Status'}">
-              <i class="fa-solid fa-pen-to-square"></i> ${isMr ? 'स्थिती' : 'Status'}
-            </button>
+          <td style="white-space:nowrap;">
+            ${actionButtons}
           </td>
         </tr>
       `;
@@ -1949,7 +1975,20 @@ function renderAdminDashboard() {
       loadAndRender(apps);
     }).catch(err => {
       console.warn("Supabase load failed, using localStorage:", err);
-      loadAndRender(getAllApplications());
+      const localCsc = JSON.parse(localStorage.getItem("emudra_csc_applications") || "[]");
+      const localForm = JSON.parse(localStorage.getItem("emudra_form_history") || "[]");
+      const merged = [...localCsc];
+      localForm.forEach(f => {
+        if (!merged.some(m => (m.appId || m.id) === f.appId)) {
+          merged.push({
+            appId: f.appId, id: f.appId, serviceId: f.formType, serviceName: f.formTitle,
+            fullName: f.applicantName, mobile: f.mobile, aadhaar: f.aadhaar,
+            submittedAt: f.timestamp, date: f.timestamp ? f.timestamp.split('T')[0] : '',
+            status: f.status || 'printed', isFormHistory: true
+          });
+        }
+      });
+      loadAndRender(merged);
     });
   } else {
     loadAndRender(getAllApplications());
@@ -2779,6 +2818,305 @@ function handleDeleteLink(linkId) {
     showToast(isMr ? `"${name}" लिंक काढण्यात आली.` : `Link removed.`, "success");
   }
 }
+
+/**
+ * 📑 Form Applications & Print History Controller
+ */
+function escapeHtml(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+window.escapeHtml = escapeHtml;
+
+let ALL_ADMIN_FORM_HISTORY = [];
+
+async function renderAdminFormHistoryTable() {
+  const tbody = document.getElementById("admin-form-history-tbody");
+  if (tbody) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> फॉर्म्स इतिहास लोड होत आहे...</td></tr>`;
+  }
+
+  try {
+    let list = [];
+    if (typeof DB !== "undefined" && typeof DB.getFormHistory === "function") {
+      list = await DB.getFormHistory();
+    } else {
+      list = JSON.parse(localStorage.getItem("emudra_form_history") || "[]");
+    }
+
+    ALL_ADMIN_FORM_HISTORY = Array.isArray(list) ? list : [];
+
+    // Calculate Stats
+    const total = ALL_ADMIN_FORM_HISTORY.length;
+    const todayStr = new Date().toDateString();
+    const todayCount = ALL_ADMIN_FORM_HISTORY.filter(f => {
+      if (!f.timestamp) return false;
+      return new Date(f.timestamp).toDateString() === todayStr;
+    }).length;
+    const aadhaarCount = ALL_ADMIN_FORM_HISTORY.filter(f => (f.formType || "").toLowerCase().includes("aadhaar")).length;
+    const incomeCount = ALL_ADMIN_FORM_HISTORY.filter(f => (f.formType || "").toLowerCase().includes("income")).length;
+
+    // Update stat elements
+    const totalElem = document.getElementById("stat-forms-total");
+    const todayElem = document.getElementById("stat-forms-today");
+    const aadhElem  = document.getElementById("stat-forms-aadhaar");
+    const incElem   = document.getElementById("stat-forms-income");
+    const badgeElem = document.getElementById("admin-forms-history-badge");
+
+    if (totalElem) totalElem.textContent = total;
+    if (todayElem) todayElem.textContent = todayCount;
+    if (aadhElem)  aadhElem.textContent  = aadhaarCount;
+    if (incElem)   incElem.textContent   = incomeCount;
+    if (badgeElem) badgeElem.textContent = total;
+
+    filterAdminFormHistory();
+  } catch (err) {
+    console.error("Error loading form history:", err);
+    if (tbody) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:#ef4444;"><i class="fa-solid fa-circle-exclamation"></i> इतिहास लोड करताना अडचण आली: ${err.message}</td></tr>`;
+    }
+  }
+}
+
+function filterAdminFormHistory() {
+  const tbody = document.getElementById("admin-form-history-tbody");
+  if (!tbody) return;
+
+  const search = (document.getElementById("admin-form-history-search")?.value || "").toLowerCase().trim();
+  const filter = document.getElementById("admin-form-history-filter")?.value || "all";
+
+  let filtered = ALL_ADMIN_FORM_HISTORY.filter(item => {
+    // Category match
+    if (filter !== "all") {
+      const type = (item.formType || "").toLowerCase();
+      if (filter === "aadhaar" && !(type.includes("aadhaar") || type.includes("aadhar") || type.includes("eaadhaar"))) return false;
+      if (filter === "income" && !type.includes("income")) return false;
+      if (filter === "varas" && !type.includes("varas")) return false;
+      if (filter === "ration" && !type.includes("ration")) return false;
+      if (filter === "janma" && !(type.includes("janma") || type.includes("mrutyu"))) return false;
+      if (filter === "nakal" && !(type.includes("nakal") || type.includes("bhumi"))) return false;
+      if (filter === "gazette" && !type.includes("gazette")) return false;
+      if (filter === "bocw" && !(type.includes("bocw") || type.includes("gramsevak"))) return false;
+      if (filter === "pikpera" && !type.includes("pikpera")) return false;
+      if (filter === "other") {
+        const known = ["aadhaar", "aadhar", "income", "varas", "ration", "janma", "mrutyu", "nakal", "bhumi", "gazette", "bocw", "gramsevak", "pikpera"];
+        if (known.some(k => type.includes(k))) return false;
+      }
+    }
+
+    // Search query match
+    if (search) {
+      const name = (item.applicantName || "").toLowerCase();
+      const mob = (item.mobile || "").toLowerCase();
+      const id = (item.appId || "").toLowerCase();
+      const title = (item.formTitle || "").toLowerCase();
+      return name.includes(search) || mob.includes(search) || id.includes(search) || title.includes(search);
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2.5rem;color:#94a3b8;"><i class="fa-solid fa-folder-open" style="font-size:2rem;margin-bottom:8px;"></i><br>कोणतेही भरलेले अर्ज किंवा रेकॉर्ड्स आढळले नाहीत.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(app => {
+    const typeLabel = getFormTypeBadge(app.formType, app.formTitle);
+    const dateStr = app.dateFormatted || (app.timestamp ? new Date(app.timestamp).toLocaleString("mr-IN") : "-");
+    const statusChip = `<span class="badge" style="background:#dcfce7;color:#15803d;padding:3px 8px;border-radius:6px;font-size:0.75rem;font-weight:700;"><i class="fa-solid fa-check"></i> सेव्ह / प्रिंट</span>`;
+
+    return `
+      <tr>
+        <td style="font-weight:800;font-family:var(--font-sans);color:var(--primary-navy);">${escapeHtml(app.appId)}</td>
+        <td>${typeLabel}</td>
+        <td><strong>${escapeHtml(app.applicantName || "नागरिक")}</strong></td>
+        <td style="font-family:var(--font-sans);">${escapeHtml(app.mobile || "-")}</td>
+        <td style="font-size:0.82rem;font-family:var(--font-sans);">${escapeHtml(dateStr)}</td>
+        <td>${statusChip}</td>
+        <td style="text-align:center;">
+          <div style="display:inline-flex;gap:5px;align-items:center;">
+            <button class="admin-action-btn" onclick="printFormApplication('${escapeHtml(app.appId)}')" title="प्रिंट / पूर्वावलोकन (Print/Preview)" style="color:#0284c7;">
+              <i class="fa-solid fa-print"></i> प्रिंट
+            </button>
+            <button class="admin-action-btn" onclick="editFormApplication('${escapeHtml(app.appId)}')" title="संपादित करा (Edit Form)" style="color:#059669;">
+              <i class="fa-solid fa-pen-to-square"></i> एडिट
+            </button>
+            <button class="admin-action-btn" onclick="deleteFormApplication('${escapeHtml(app.appId)}')" title="हटवा (Delete)" style="color:#ef4444;">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function getFormTypeBadge(formType, formTitle) {
+  const type = (formType || "").toLowerCase();
+  if (type.includes("income")) {
+    return `<span style="background:#f3e8ff;color:#7c3aed;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-file-invoice-dollar"></i> उत्पन्नाचा दाखला</span>`;
+  } else if (type.includes("aadhaar") || type.includes("aadhar")) {
+    return `<span style="background:#e0f2fe;color:#0284c7;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-id-card"></i> आधार सेवा फॉर्म</span>`;
+  } else if (type.includes("varas-ferfar")) {
+    return `<span style="background:#f0fdf4;color:#15803d;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-file-contract"></i> वारस फेरफार (८-पानी)</span>`;
+  } else if (type.includes("varas-affidavit") || type.includes("affidavit")) {
+    return `<span style="background:#fef3c7;color:#b45309;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-stamp"></i> वारस / प्रतिज्ञापत्र</span>`;
+  } else if (type.includes("ration")) {
+    return `<span style="background:#fee2e2;color:#b91c1c;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-address-card"></i> रेशन कार्ड अर्ज</span>`;
+  } else if (type.includes("janma") || type.includes("mrutyu")) {
+    return `<span style="background:#ecfeff;color:#0e7490;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-baby"></i> जन्म / मृत्यू नोंद</span>`;
+  } else if (type.includes("nakal") || type.includes("bhumi")) {
+    return `<span style="background:#fef9c3;color:#854d0e;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-map-location-dot"></i> नकला / भूमी अभिलेख</span>`;
+  } else if (type.includes("gazette")) {
+    return `<span style="background:#f0f9ff;color:#0369a1;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-file-signature"></i> राजपत्र नाव बदल</span>`;
+  } else if (type.includes("bocw") || type.includes("gramsevak")) {
+    return `<span style="background:#e0e7ff;color:#4338ca;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-helmet-safety"></i> बांधकाम कामगार ९० दिवस</span>`;
+  } else if (type.includes("pikpera")) {
+    return `<span style="background:#ecfdf5;color:#047857;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-wheat-awn"></i> पीकपेरा स्वयंघोषणा</span>`;
+  } else {
+    return `<span style="background:#f1f5f9;color:#475569;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-file-lines"></i> ${escapeHtml(formTitle || "सरकारी फॉर्म")}</span>`;
+  }
+}
+
+// Map formType slug to actual HTML filename
+function getFormTargetPage(formType) {
+  const raw = (formType || "").toLowerCase().trim();
+  const normalized = raw.replace(/_/g, "-");
+
+  // Aadhaar specific variants
+  if (normalized.includes("eaadhaar") || normalized.includes("e-aadhaar") || normalized.includes("eaadhar")) {
+    return "eaadhaar-print.html";
+  }
+  if (normalized.includes("aadhar-kendra") || normalized.includes("aadhaar-kendra")) {
+    return "aadhar-kendra.html";
+  }
+  if (normalized.includes("aadhaar") || normalized.includes("aadhar")) {
+    return "aadhaar-certificate.html";
+  }
+
+  // Other form specific variants
+  if (normalized.includes("varas-ferfar") || normalized.includes("ferfar")) {
+    return "varas-ferfar.html";
+  }
+  if (normalized.includes("varas-affidavit") || normalized.includes("varas-shapath")) {
+    return "varas-affidavit.html";
+  }
+  if (normalized.includes("income") || normalized.includes("utpanna")) {
+    return "income-certificate.html";
+  }
+  if (normalized.includes("janma") || normalized.includes("mrutyu")) {
+    return "janma-mrutyu-dakhla.html";
+  }
+  if (normalized.includes("ration-card-addition") || (normalized.includes("ration") && normalized.includes("add"))) {
+    return "ration-card-addition.html";
+  }
+  if (normalized.includes("ration-card-deletion") || (normalized.includes("ration") && (normalized.includes("del") || normalized.includes("kami")))) {
+    return "ration-card-deletion.html";
+  }
+  if (normalized.includes("bhumi") || normalized.includes("tilr")) {
+    return "bhumi-abhilekh-nakal.html";
+  }
+  if (normalized.includes("nakal")) {
+    return "nakal-arja.html";
+  }
+  if (normalized.includes("gazette") || normalized.includes("rajpatra")) {
+    return "gazette-name-change.html";
+  }
+  if (normalized.includes("pratigya")) {
+    return "pratigya-patra.html";
+  }
+  if (normalized.includes("affidavit")) {
+    return "affidavit-print.html";
+  }
+  if (normalized.includes("mahabocwgramsevak") || (normalized.includes("gramsevak") && normalized.includes("bocw"))) {
+    return "mahabocwgramsevak.html";
+  }
+  if (normalized.includes("gramsevak90") || normalized.includes("gramsevak")) {
+    return "gramsevak90.html";
+  }
+  if (normalized.includes("mahabocw") || normalized.includes("bocw")) {
+    return "mahabocw.html";
+  }
+  if (normalized.includes("pikpera")) {
+    return "Pikpera.html";
+  }
+  if (normalized.includes("aero")) {
+    return "aero.html";
+  }
+
+  const validPages = [
+    'income-certificate', 'aadhaar-certificate', 'varas-ferfar',
+    'janma-mrutyu-dakhla', 'ration-card-addition', 'ration-card-deletion',
+    'varas-affidavit', 'bhumi-abhilekh-nakal', 'nakal-arja',
+    'gazette-name-change', 'affidavit-print', 'pratigya-patra',
+    'mahabocw', 'mahabocwgramsevak', 'gramsevak90', 'pikpera',
+    'eaadhaar-print', 'aadhar-kendra', 'aero'
+  ];
+
+  for (let p of validPages) {
+    if (normalized.includes(p) || normalized === p) {
+      return (p === 'pikpera' ? 'Pikpera.html' : p + '.html');
+    }
+  }
+
+  if (raw.endsWith('.html')) return raw;
+  return 'income-certificate.html';
+}
+
+// Redirect to edit application
+function editFormApplication(appId) {
+  const app = ALL_ADMIN_FORM_HISTORY.find(a => a.appId === appId);
+  if (!app) {
+    showToast("अर्ज सापडला नाही.", "error");
+    return;
+  }
+
+  const page = getFormTargetPage(app.formType);
+  const targetUrl = `${page}?edit_app_id=${encodeURIComponent(appId)}`;
+  window.open(targetUrl, "_blank");
+}
+
+// Direct Print Application
+function printFormApplication(appId) {
+  const app = ALL_ADMIN_FORM_HISTORY.find(a => a.appId === appId);
+  if (!app) {
+    showToast("अर्ज सापडला नाही.", "error");
+    return;
+  }
+
+  const page = getFormTargetPage(app.formType);
+  const targetUrl = `${page}?edit_app_id=${encodeURIComponent(appId)}&autoprint=1`;
+  window.open(targetUrl, "_blank");
+}
+
+// Delete Application from history
+async function deleteFormApplication(appId) {
+  if (!confirm(`तुम्हाला अर्ज क्रमांक "${appId}" कायमचा हटवायचा आहे का?`)) {
+    return;
+  }
+
+  if (typeof DB !== "undefined" && typeof DB.deleteFormRecord === "function") {
+    await DB.deleteFormRecord(appId);
+  } else {
+    let localList = JSON.parse(localStorage.getItem("emudra_form_history") || "[]");
+    localList = localList.filter(item => item.appId !== appId);
+    localStorage.setItem("emudra_form_history", JSON.stringify(localList));
+  }
+
+  showToast(`अर्ज "${appId}" हटवण्यात आला.`, "success");
+  renderAdminFormHistoryTable();
+}
+
+window.renderAdminFormHistoryTable = renderAdminFormHistoryTable;
+window.filterAdminFormHistory = filterAdminFormHistory;
+window.editFormApplication = editFormApplication;
+window.printFormApplication = printFormApplication;
+window.deleteFormApplication = deleteFormApplication;
 
 /* ============================================================
    GLOBAL WINDOW EXPORTS - Script-level for onclick compatibility
