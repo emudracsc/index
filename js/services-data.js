@@ -1031,6 +1031,17 @@ const CENTER_INFO = {
 const DEFAULT_IMPORTANT_LINKS = [
   // 📋 नवीन विशेष शासकीय फॉर्म्स व अर्ज जनरेटर (New Government Form Generators)
   {
+    id: "link-idsign-apply-dsc",
+    category: "विशेष शासकीय फॉर्म्स",
+    icon: "fa-solid fa-file-signature",
+    title_mr: "✍️ ID Sign DSC ऑनलाइन अर्ज (ID Sign Application)",
+    title_en: "ID Sign DSC Online Application Portal",
+    desc_mr: "ई-निविदा (e-Tendering), ICEGATE, MCA, GST व Income Tax साठी Class 3 डिजिटल सिग्नेचर थेट ऑनलाइन अर्ज.",
+    desc_en: "Direct online application for Class 3 Digital Signature Certificate (DSC) & Crypto USB Token.",
+    url: "https://applydsc.idsign.app/index.php/95WUWRW2",
+    isInternal: false
+  },
+  {
     id: "link-varas-ferfar",
     category: "विशेष शासकीय फॉर्म्स",
     icon: "fa-solid fa-file-signature",
