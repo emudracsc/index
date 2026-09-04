@@ -19,6 +19,44 @@
     <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.js"></script>
+    <script>
+        // PDF.js v3.11 bugfix: AnnotationEditorLayerBuilder.cancel() crashes with
+        // "Cannot read properties of null (reading 'destroy')" when cancelling rendering.
+        if (window.pdfjsViewer && window.pdfjsViewer.PDFPageView) {
+            const origCancelRendering = pdfjsViewer.PDFPageView.prototype.cancelRendering;
+            pdfjsViewer.PDFPageView.prototype.cancelRendering = function(options) {
+                try {
+                    if (this.annotationEditorLayer) {
+                        if (!this.annotationEditorLayer.annotationEditorLayer || typeof this.annotationEditorLayer.annotationEditorLayer.destroy !== 'function') {
+                            this.annotationEditorLayer.annotationEditorLayer = { destroy: function() {} };
+                        }
+                        const proto = Object.getPrototypeOf(this.annotationEditorLayer);
+                        if (proto && !proto.__safeDestroyPatched) {
+                            proto.__safeDestroyPatched = true;
+                            proto.cancel = function() {
+                                this._cancelled = true;
+                                if (!this.div) return;
+                                this.pageDiv = null;
+                                if (this.annotationEditorLayer && typeof this.annotationEditorLayer.destroy === 'function') {
+                                    try { this.annotationEditorLayer.destroy(); } catch (e) {}
+                                }
+                                if (this.div && typeof this.div.remove === 'function') {
+                                    try { this.div.remove(); } catch (e) {}
+                                }
+                            };
+                        }
+                    }
+                } catch (patchErr) {
+                    console.warn("Patch error:", patchErr);
+                }
+                try {
+                    return origCancelRendering.call(this, options);
+                } catch (renderErr) {
+                    console.warn("Handled cancelRendering error:", renderErr);
+                }
+            };
+        }
+    </script>
     
     <!-- PDF-Lib for flattening -->
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
@@ -481,6 +519,33 @@
             return bytes;
         }
 
+        // Cleanly initialize/render PDF in viewer container without dirty state collisions
+        function renderDocumentInViewer(pdfDoc) {
+            const container = document.getElementById('viewerContainer');
+            // Cleanly reset viewer DOM
+            container.scrollTop = 0;
+            container.innerHTML = '<div id="viewer" class="pdfViewer"></div>';
+
+            eventBus = new pdfjsViewer.EventBus();
+            linkService = new pdfjsViewer.PDFLinkService({ eventBus: eventBus });
+
+            pdfViewer = new pdfjsViewer.PDFViewer({
+                container: container,
+                eventBus: eventBus,
+                linkService: linkService,
+                renderInteractiveForms: true
+            });
+
+            linkService.setViewer(pdfViewer);
+
+            eventBus.on('pagesinit', function () {
+                pdfViewer.currentScaleValue = 'page-width';
+            });
+
+            pdfViewer.setDocument(pdfDoc);
+            linkService.setDocument(pdfDoc, null);
+        }
+
         // Manual PDF file selection fallback handler
         function handleManualPdfUpload(input) {
             const file = input.files && input.files[0];
@@ -491,10 +556,7 @@
                     const typedarray = new Uint8Array(e.target.result);
                     const loadingTask = pdfjsLib.getDocument({ data: typedarray });
                     currentPdfDocument = await loadingTask.promise;
-                    if (pdfViewer) {
-                        pdfViewer.setDocument(currentPdfDocument);
-                        if (linkService) linkService.setDocument(currentPdfDocument, null);
-                    }
+                    renderDocumentInViewer(currentPdfDocument);
                     const loadingOverlay = document.getElementById('loading-overlay');
                     if (loadingOverlay) loadingOverlay.style.display = 'none';
                 } catch (err) {
@@ -553,12 +615,8 @@
                     currentPdfDocument = await loadingTask.promise;
                 }
 
-                if (pdfViewer) {
-                    pdfViewer.setDocument(currentPdfDocument);
-                    if (linkService) {
-                        linkService.setDocument(currentPdfDocument, null);
-                    }
-                }
+                // Render PDF cleanly in viewer
+                renderDocumentInViewer(currentPdfDocument);
 
                 if (loadingOverlay) loadingOverlay.style.display = 'none';
             } catch (error) {
@@ -587,28 +645,10 @@
         // PDF Viewer Initialization
         async function initViewer() {
             try {
-                const container = document.getElementById('viewerContainer');
-                eventBus = new pdfjsViewer.EventBus();
-                linkService = new pdfjsViewer.PDFLinkService({ eventBus: eventBus });
-
-                pdfViewer = new pdfjsViewer.PDFViewer({
-                    container: container,
-                    eventBus: eventBus,
-                    linkService: linkService,
-                    renderInteractiveForms: true
-                });
-
-                linkService.setViewer(pdfViewer);
-
-                eventBus.on('pagesinit', function () {
-                    pdfViewer.currentScaleValue = 'page-width';
-                });
-
                 // Load initial form from URL hash if provided (#destitute or #childcare), else standard
                 const hash = window.location.hash ? window.location.hash.replace('#', '').toLowerCase() : '';
                 const initialForm = AADHAAR_FORMS[hash] ? hash : 'standard';
                 await selectForm(initialForm);
-
             } catch (error) {
                 console.error("Error initializing viewer:", error);
             }
@@ -632,8 +672,12 @@
                 const pdfDoc = await PDFLib.PDFDocument.load(filledPdfData);
                 
                 // 3. Flatten form fields (locks input into static document)
-                const form = pdfDoc.getForm();
-                form.flatten();
+                try {
+                    const form = pdfDoc.getForm();
+                    form.flatten();
+                } catch (flattenErr) {
+                    console.warn("No form fields to flatten or already flattened:", flattenErr);
+                }
                 
                 // 4. Save and trigger clean download
                 const flattenedBytes = await pdfDoc.save();
