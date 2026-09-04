@@ -23,6 +23,9 @@
     <!-- PDF-Lib for flattening -->
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
+    <!-- Embedded Offline/Local PDF Data for file:/// and instant loading -->
+    <script src="js/aadhaar-pdf-data.js"></script>
+
     <style>
         :root {
             --primary-navy: #0d1b2a;
@@ -323,6 +326,39 @@
         // Set pdf.js worker path
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
+        // Helper: Convert Base64 string to Uint8Array for offline/local file:/// loading
+        function base64ToUint8Array(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes;
+        }
+
+        // Manual PDF file selection fallback handler
+        function handleManualPdfUpload(input) {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const typedarray = new Uint8Array(e.target.result);
+                    const loadingTask = pdfjsLib.getDocument({ data: typedarray });
+                    currentPdfDocument = await loadingTask.promise;
+                    if (pdfViewer) {
+                        pdfViewer.setDocument(currentPdfDocument);
+                    }
+                    const loadingOverlay = document.getElementById('loading-overlay');
+                    if (loadingOverlay) loadingOverlay.style.display = 'none';
+                } catch (err) {
+                    alert("निवडलेली PDF लोड करता आली नाही: " + err.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
         // PDF Viewer Initialization
         async function initViewer() {
             try {
@@ -343,17 +379,53 @@
                     pdfViewer.currentScaleValue = 'page-width';
                 });
 
-                const pdfUrl = 'aadhaar_original.pdf?v=' + new Date().getTime();
-                const loadingTask = pdfjsLib.getDocument(pdfUrl);
-                currentPdfDocument = await loadingTask.promise;
+                let loadingTask = null;
+
+                // 1. First priority: Use embedded Base64 PDF data if available (instant & works under file:/// without CORS)
+                if (window.AADHAAR_ORIGINAL_PDF_BASE64) {
+                    try {
+                        const pdfData = base64ToUint8Array(window.AADHAAR_ORIGINAL_PDF_BASE64);
+                        loadingTask = pdfjsLib.getDocument({ data: pdfData });
+                        currentPdfDocument = await loadingTask.promise;
+                    } catch (b64Err) {
+                        console.warn("Base64 PDF load failed, trying URL fetch fallback:", b64Err);
+                    }
+                }
+
+                // 2. Fallback to direct file/network URL if base64 was missing or failed
+                if (!currentPdfDocument) {
+                    const isFileProtocol = window.location.protocol === 'file:';
+                    const pdfUrl = isFileProtocol ? 'aadhaar_original.pdf' : ('aadhaar_original.pdf?v=' + Date.now());
+                    loadingTask = pdfjsLib.getDocument(pdfUrl);
+                    currentPdfDocument = await loadingTask.promise;
+                }
                 
                 pdfViewer.setDocument(currentPdfDocument);
                 linkService.setDocument(currentPdfDocument, null);
                 
-                document.getElementById('loading-overlay').style.display = 'none';
+                const loadingOverlay = document.getElementById('loading-overlay');
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
             } catch (error) {
                 console.error("Error loading PDF Viewer:", error);
-                alert("PDF लोड करताना एरर आली: " + error.message);
+                const loadingOverlay = document.getElementById('loading-overlay');
+                if (loadingOverlay) {
+                    loadingOverlay.innerHTML = `
+                        <div style="text-align: center; color: #fca5a5; max-width: 520px; padding: 2rem; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.5rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                            <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #fff;">PDF लोड करताना एरर आली</h3>
+                            <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1.2rem; word-break: break-all;">${error.message || 'फाइल उघडता आली नाही.'}</p>
+                            <div style="display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap;">
+                                <button onclick="location.reload()" style="background: #3b82f6; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.9rem;">
+                                    <i class="fa-solid fa-rotate-right"></i> पुन्हा प्रयत्न करा (Retry)
+                                </button>
+                                <label style="display: inline-flex; align-items: center; gap: 0.4rem; background: #16a34a; color: white; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.9rem;">
+                                    <i class="fa-solid fa-folder-open"></i> मॅन्युअली PDF निवडा
+                                    <input type="file" accept="application/pdf" style="display:none;" onchange="handleManualPdfUpload(this)">
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                }
             }
         }
 
