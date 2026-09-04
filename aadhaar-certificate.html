@@ -282,6 +282,98 @@
         .btn-download-glamour:active {
             transform: translateY(0) scale(0.98);
         }
+
+        /* 🎛️ Form Switcher Bar Styles */
+        .form-switcher-bar {
+            background: linear-gradient(180deg, rgba(13, 27, 42, 0.98) 0%, rgba(9, 19, 34, 0.98) 100%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.55rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        .form-switcher-container {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .switcher-title {
+            color: #94a3b8;
+            font-size: 0.88rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            white-space: nowrap;
+        }
+
+        .switcher-title i {
+            color: #fbbf24;
+            font-size: 1rem;
+        }
+
+        .switcher-buttons {
+            display: inline-flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .form-select-btn {
+            background: rgba(255, 255, 255, 0.06);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            padding: 0.45rem 1.05rem;
+            border-radius: 8px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .form-select-btn:hover {
+            background: rgba(59, 130, 246, 0.22);
+            color: #ffffff;
+            border-color: rgba(96, 165, 250, 0.6);
+            transform: translateY(-1.5px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .form-select-btn.active {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            color: #ffffff;
+            border-color: #93c5fd;
+            box-shadow: 0 0 16px rgba(37, 99, 235, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+
+        .form-select-btn.active i {
+            color: #fef08a;
+            filter: drop-shadow(0 0 6px rgba(254, 240, 138, 0.8));
+        }
+
+        @media (max-width: 768px) {
+            .form-switcher-bar {
+                padding: 0.5rem 0.75rem;
+            }
+            .form-select-btn {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.75rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -297,7 +389,7 @@
         <div class="brand-heading">
             <i class="fa-solid fa-file-pdf"></i>
             <span>आधार फॉर्म फिलर</span>
-            <span class="page-badge">ऑनलाइन भरणे (Live Form)</span>
+            <span class="page-badge" id="active-form-badge">Standard Form</span>
         </div>
 
         <div class="action-group">
@@ -307,6 +399,27 @@
             </button>
         </div>
     </nav>
+
+    <!-- 🎛️ MULTI-FORM SELECTOR STRIP -->
+    <div class="form-switcher-bar">
+        <div class="form-switcher-container">
+            <span class="switcher-title"><i class="fa-solid fa-layer-group"></i> फॉर्म निवडा:</span>
+            <div class="switcher-buttons">
+                <button type="button" class="form-select-btn active" id="btn-form-standard" onclick="selectForm('standard')">
+                    <i class="fa-solid fa-file-shield"></i>
+                    <span>१. सामान्य आधार प्रमाणपत्र (Standard)</span>
+                </button>
+                <button type="button" class="form-select-btn" id="btn-form-destitute" onclick="selectForm('destitute')">
+                    <i class="fa-solid fa-wheelchair"></i>
+                    <span>२. निराधार/दिव्यांग व्यक्ती (१८+ वर्षे)</span>
+                </button>
+                <button type="button" class="form-select-btn" id="btn-form-childcare" onclick="selectForm('childcare')">
+                    <i class="fa-solid fa-child-reaching"></i>
+                    <span>३. बालगृह बालके (DCPO Form)</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div class="pdf-wrapper">
         <div id="loading-overlay">
@@ -319,9 +432,40 @@
     </div>
 
     <script>
+        // Forms Configuration for all 3 Aadhaar Enrolment Forms
+        const AADHAAR_FORMS = {
+            standard: {
+                id: 'standard',
+                name: '१. सामान्य आधार प्रमाणपत्र (Standard)',
+                badge: 'General Enrolment / Update',
+                fileName: 'aadhaar_original.pdf',
+                base64Key: 'AADHAAR_ORIGINAL_PDF_BASE64',
+                downloadName: 'Aadhaar_Standard_Enrolment_Certificate_Filled.pdf'
+            },
+            destitute: {
+                id: 'destitute',
+                name: '२. निराधार/दिव्यांग व्यक्ती (१८+ वर्षे)',
+                badge: 'Destitute with Disability (18+)',
+                fileName: 'aadhaar_destitute.pdf',
+                base64Key: 'AADHAAR_DESTITUTE_PDF_BASE64',
+                downloadName: 'Aadhaar_Certificate_Destitute_Disability_Filled.pdf'
+            },
+            childcare: {
+                id: 'childcare',
+                name: '३. बालगृह बालके (DCPO Form)',
+                badge: 'Children in CCI (DCPO)',
+                fileName: 'aadhaar_child_care.pdf',
+                base64Key: 'AADHAAR_CHILD_CARE_PDF_BASE64',
+                downloadName: 'Aadhaar_Certificate_Child_Care_DCPO_Filled.pdf'
+            }
+        };
+
         // State Tracking
+        let currentFormKey = 'standard';
         let currentPdfDocument = null;
         let pdfViewer = null;
+        let linkService = null;
+        let eventBus = null;
 
         // Set pdf.js worker path
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -349,6 +493,7 @@
                     currentPdfDocument = await loadingTask.promise;
                     if (pdfViewer) {
                         pdfViewer.setDocument(currentPdfDocument);
+                        if (linkService) linkService.setDocument(currentPdfDocument, null);
                     }
                     const loadingOverlay = document.getElementById('loading-overlay');
                     if (loadingOverlay) loadingOverlay.style.display = 'none';
@@ -359,12 +504,92 @@
             reader.readAsArrayBuffer(file);
         }
 
+        // Select & Switch Aadhaar Form dynamically
+        async function selectForm(formKey) {
+            if (!AADHAAR_FORMS[formKey]) return;
+            currentFormKey = formKey;
+            const config = AADHAAR_FORMS[formKey];
+
+            // 1. Update button active states
+            document.querySelectorAll('.form-select-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById('btn-form-' + formKey);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            // 2. Update page badge
+            const badge = document.getElementById('active-form-badge');
+            if (badge) badge.textContent = config.badge;
+
+            // 3. Show loading overlay
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.innerHTML = `
+                    <div class="glamour-spinner"></div>
+                    <span>${config.name} लोड होत आहे... कृपया थांबा.</span>
+                `;
+            }
+
+            try {
+                let loadingTask = null;
+                currentPdfDocument = null;
+
+                // Priority 1: Use embedded Base64 PDF data (avoids file:/// CORS & offline 404s)
+                const base64Data = window[config.base64Key];
+                if (base64Data) {
+                    try {
+                        const pdfData = base64ToUint8Array(base64Data);
+                        loadingTask = pdfjsLib.getDocument({ data: pdfData });
+                        currentPdfDocument = await loadingTask.promise;
+                    } catch (b64Err) {
+                        console.warn("Base64 load failed for " + formKey + ", attempting file URL fallback:", b64Err);
+                    }
+                }
+
+                // Priority 2: Fallback to local/web URL if base64 was missing
+                if (!currentPdfDocument) {
+                    const isFileProtocol = window.location.protocol === 'file:';
+                    const pdfUrl = isFileProtocol ? config.fileName : (config.fileName + '?v=' + Date.now());
+                    loadingTask = pdfjsLib.getDocument(pdfUrl);
+                    currentPdfDocument = await loadingTask.promise;
+                }
+
+                if (pdfViewer) {
+                    pdfViewer.setDocument(currentPdfDocument);
+                    if (linkService) {
+                        linkService.setDocument(currentPdfDocument, null);
+                    }
+                }
+
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+            } catch (error) {
+                console.error("Error loading PDF for " + formKey + ":", error);
+                if (loadingOverlay) {
+                    loadingOverlay.innerHTML = `
+                        <div style="text-align: center; color: #fca5a5; max-width: 520px; padding: 2rem; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.5rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                            <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #fff;">फॉर्म लोड करताना एरर आली</h3>
+                            <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1.2rem; word-break: break-all;">${error.message || 'फाइल उघडता आली नाही.'}</p>
+                            <div style="display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap;">
+                                <button onclick="selectForm('${formKey}')" style="background: #3b82f6; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.9rem;">
+                                    <i class="fa-solid fa-rotate-right"></i> पुन्हा प्रयत्न करा (Retry)
+                                </button>
+                                <label style="display: inline-flex; align-items: center; gap: 0.4rem; background: #16a34a; color: white; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.9rem;">
+                                    <i class="fa-solid fa-folder-open"></i> मॅन्युअली PDF निवडा
+                                    <input type="file" accept="application/pdf" style="display:none;" onchange="handleManualPdfUpload(this)">
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+
         // PDF Viewer Initialization
         async function initViewer() {
             try {
                 const container = document.getElementById('viewerContainer');
-                const eventBus = new pdfjsViewer.EventBus();
-                const linkService = new pdfjsViewer.PDFLinkService({ eventBus: eventBus });
+                eventBus = new pdfjsViewer.EventBus();
+                linkService = new pdfjsViewer.PDFLinkService({ eventBus: eventBus });
 
                 pdfViewer = new pdfjsViewer.PDFViewer({
                     container: container,
@@ -379,53 +604,13 @@
                     pdfViewer.currentScaleValue = 'page-width';
                 });
 
-                let loadingTask = null;
+                // Load initial form from URL hash if provided (#destitute or #childcare), else standard
+                const hash = window.location.hash ? window.location.hash.replace('#', '').toLowerCase() : '';
+                const initialForm = AADHAAR_FORMS[hash] ? hash : 'standard';
+                await selectForm(initialForm);
 
-                // 1. First priority: Use embedded Base64 PDF data if available (instant & works under file:/// without CORS)
-                if (window.AADHAAR_ORIGINAL_PDF_BASE64) {
-                    try {
-                        const pdfData = base64ToUint8Array(window.AADHAAR_ORIGINAL_PDF_BASE64);
-                        loadingTask = pdfjsLib.getDocument({ data: pdfData });
-                        currentPdfDocument = await loadingTask.promise;
-                    } catch (b64Err) {
-                        console.warn("Base64 PDF load failed, trying URL fetch fallback:", b64Err);
-                    }
-                }
-
-                // 2. Fallback to direct file/network URL if base64 was missing or failed
-                if (!currentPdfDocument) {
-                    const isFileProtocol = window.location.protocol === 'file:';
-                    const pdfUrl = isFileProtocol ? 'aadhaar_original.pdf' : ('aadhaar_original.pdf?v=' + Date.now());
-                    loadingTask = pdfjsLib.getDocument(pdfUrl);
-                    currentPdfDocument = await loadingTask.promise;
-                }
-                
-                pdfViewer.setDocument(currentPdfDocument);
-                linkService.setDocument(currentPdfDocument, null);
-                
-                const loadingOverlay = document.getElementById('loading-overlay');
-                if (loadingOverlay) loadingOverlay.style.display = 'none';
             } catch (error) {
-                console.error("Error loading PDF Viewer:", error);
-                const loadingOverlay = document.getElementById('loading-overlay');
-                if (loadingOverlay) {
-                    loadingOverlay.innerHTML = `
-                        <div style="text-align: center; color: #fca5a5; max-width: 520px; padding: 2rem; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                            <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.5rem; color: #ef4444; margin-bottom: 1rem;"></i>
-                            <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #fff;">PDF लोड करताना एरर आली</h3>
-                            <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1.2rem; word-break: break-all;">${error.message || 'फाइल उघडता आली नाही.'}</p>
-                            <div style="display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap;">
-                                <button onclick="location.reload()" style="background: #3b82f6; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.9rem;">
-                                    <i class="fa-solid fa-rotate-right"></i> पुन्हा प्रयत्न करा (Retry)
-                                </button>
-                                <label style="display: inline-flex; align-items: center; gap: 0.4rem; background: #16a34a; color: white; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.9rem;">
-                                    <i class="fa-solid fa-folder-open"></i> मॅन्युअली PDF निवडा
-                                    <input type="file" accept="application/pdf" style="display:none;" onchange="handleManualPdfUpload(this)">
-                                </label>
-                            </div>
-                        </div>
-                    `;
-                }
+                console.error("Error initializing viewer:", error);
             }
         }
 
@@ -438,6 +623,7 @@
 
             try {
                 if (!currentPdfDocument) throw new Error("PDF लोड झालेली नाही.");
+                const config = AADHAAR_FORMS[currentFormKey] || AADHAAR_FORMS.standard;
 
                 // 1. Extract filled values from pdf.js annotation storage
                 const filledPdfData = await currentPdfDocument.saveDocument();
@@ -456,7 +642,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'Aadhaar_Certificate_Form_Flattened.pdf';
+                a.download = config.downloadName;
                 document.body.appendChild(a);
                 a.click();
                 
