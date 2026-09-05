@@ -46,7 +46,7 @@ const I18N_DATA = {
     ticker_text: "📌 लाडकी बहीण योजना eKYC व बँक लिंकिंग चालू आहे • ई-पीक पाहणी खरीप हंगाम नोंदणी सुरू • eMudra Class 3 डिजिटल सिग्नेचर (DSC) तात्काळ उपलब्ध • ७/१२ डिजिटल स्वाक्षरी उतारा १० मिनिटांत मिळेल • PM किसान १८ वा हप्ता eKYC अनिवार्य.",
 
     // Hero Section
-    hero_badge: "अधिकृत महसूल व डिजिटल स्वाक्षरी साहाय्यता कक्ष",
+    hero_badge: "",
     hero_h1: "सर्व शासकीय व ई-मुद्रा सेवा एकाच छताखाली!",
     hero_p: "उत्पन्न दाखला, अधिवास, जात प्रमाणपत्र, ७/१२, ई-मुद्रा क्लास ३ DSC, पॅन कार्ड, पीक विमा आणि सर्व शासकीय योजनांचे तत्पर व खात्रीशीर ऑनलाइन काम.",
     btn_apply_now: "नवीन अर्ज सादर करा",
@@ -240,7 +240,7 @@ const I18N_DATA = {
     ticker_text: "📌 Ladki Bahin Yojana eKYC & Bank Linking Active • E-Pik Pahani Kharif Season Open • eMudra Class 3 Digital Signature (DSC) Available Instantly • Digitally Signed 7/12 in 10 mins • PM Kisan 18th Installment eKYC Mandatory.",
 
     // Hero Section
-    hero_badge: "Authorized Revenue & Digital Signature Assistance Desk",
+    hero_badge: "",
     hero_h1: "All Government & eMudra Services Under One Roof!",
     hero_p: "Income Certificate, Domicile, Caste Certificate, 7/12 Extract, eMudra Class 3 DSC, PAN Card, Crop Insurance, and all government welfare schemes with prompt service.",
     btn_apply_now: "Apply Online Now",

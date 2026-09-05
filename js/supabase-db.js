@@ -102,9 +102,17 @@ var DB = {
           });
         }
       });
-      return cscApps;
+      return cscApps.filter(function(c) {
+        var id = c.appId || c.id || "";
+        var svc = c.serviceId || c.formType || "";
+        return svc !== "aadhar-kendra" && !id.startsWith("AAK-");
+      });
     }
-    return rows.map(function(r) {
+    return rows.filter(function(r) {
+      var id = r.app_id || "";
+      var svc = r.service_id || "";
+      return svc !== "aadhar-kendra" && !id.startsWith("AAK-");
+    }).map(function(r) {
       return {
         appId:       r.app_id,
         id:          r.app_id,
@@ -269,6 +277,9 @@ var DB = {
 
   // 📑 Save Form Applications History (Aadhaar, Income, Varas Ferfar, etc.)
   saveFormHistory: async function(formRecord) {
+    if (!formRecord || formRecord.formType === "aadhar-kendra" || (formRecord.appId && formRecord.appId.startsWith("AAK-"))) {
+      return null;
+    }
     if (!formRecord.appId) {
       formRecord.appId = (formRecord.prefix || "APP") + "-" + Date.now().toString().slice(-6);
     }

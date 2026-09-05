@@ -1894,7 +1894,12 @@ function renderAdminDashboard() {
   if (tbody) tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> ${isMr ? 'डेटा लोड होत आहे...' : 'Loading from Supabase...'}</td></tr>`;
 
   // Try Supabase first, fallback to localStorage
-  const loadAndRender = async (apps) => {
+  const loadAndRender = async (rawApps) => {
+    const apps = (rawApps || []).filter(a => {
+      const id = a.appId || a.id || '';
+      const svc = a.serviceId || a.formType || '';
+      return svc !== 'aadhar-kendra' && !id.startsWith('AAK-');
+    });
     const total      = apps.length;
     const pending    = apps.filter(a => a.status === "pending" || a.status === "submitted" || a.status === "verified").length;
     const processing = apps.filter(a => a.status === "processing").length;

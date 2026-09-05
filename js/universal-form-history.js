@@ -18,6 +18,11 @@
     return filename.replace(/\.html$/i, '').toLowerCase() || 'index';
   }
 
+  // Check if page should be excluded from citizen form application tracking
+  function isExcludedSlug(slug) {
+    return slug === 'index' || slug === 'aadhar-kendra' || slug === 'digital-dalan' || slug === 'digital-wall' || slug === 'book-wall' || slug === 'logo-wall' || slug === 'news_paper';
+  }
+
   // Generate prefix according to form type
   function getFormPrefix(slug) {
     var map = {
@@ -38,7 +43,6 @@
       'gramsevak90': 'GSV',
       'pikpera': 'PIK',
       'eaadhaar-print': 'EAD',
-      'aadhar-kendra': 'AAK',
       'aero': 'AER'
     };
     return map[slug] || 'FRM';
@@ -64,7 +68,6 @@
       'gramsevak90': 'ग्रामसेवक ९० दिवस प्रमाणपत्र',
       'pikpera': 'ई-पीक पाहणी / पीकपेरा स्वयंघोषणापत्र',
       'eaadhaar-print': 'e-Aadhaar PVC कार्ड प्रिंट',
-      'aadhar-kendra': 'आधार केंद्र नोंदणी व्यवस्थापक',
       'aero': 'Aero ई-सेवा अहवाल'
     };
     if (map[slug]) return map[slug];
@@ -248,7 +251,7 @@
   function injectFloatingActionBar() {
     if (document.getElementById('emudra-form-floating-bar')) return;
     var slug = getPageSlug();
-    if (slug === 'index' || slug === 'digital-dalan' || slug === 'digital-wall' || slug === 'book-wall' || slug === 'logo-wall' || slug === 'news_paper') return;
+    if (isExcludedSlug(slug)) return;
 
     var bar = document.createElement('div');
     bar.id = 'emudra-form-floating-bar';
@@ -279,6 +282,8 @@
 
   // Inject Save Button into Existing Header Button Groups
   function injectHeaderSaveButton() {
+    var slug = getPageSlug();
+    if (isExcludedSlug(slug)) return;
     var btnGroup = document.querySelector('.btn-group, .actions-row, .header-actions, .top-bar-buttons, .controls-header-actions');
     if (!btnGroup || document.getElementById('emudra-header-save-btn')) return;
 
@@ -304,7 +309,7 @@
     if (isSavingInProgress) return null;
 
     var slug = getPageSlug();
-    if (slug === 'index' || slug === 'digital-dalan' || slug === 'digital-wall' || slug === 'book-wall' || slug === 'logo-wall' || slug === 'news_paper') {
+    if (isExcludedSlug(slug)) {
       return null;
     }
 
@@ -451,10 +456,12 @@
   // Intercept window.print (NON-BLOCKING: triggers background save without delaying browser print prompt)
   var originalPrint = window.print;
   window.print = function () {
-    try {
-      saveCurrentFormApplication(false);
-    } catch (e) {
-      console.warn('Save on print warning:', e);
+    if (!isExcludedSlug(getPageSlug())) {
+      try {
+        saveCurrentFormApplication(false);
+      } catch (e) {
+        console.warn('Save on print warning:', e);
+      }
     }
     originalPrint.apply(window, arguments);
   };
@@ -463,13 +470,16 @@
   if (typeof window.downloadGazettePDF === 'function') {
     var origDownloadGazette = window.downloadGazettePDF;
     window.downloadGazettePDF = function () {
-      try { saveCurrentFormApplication(false); } catch (e) {}
+      if (!isExcludedSlug(getPageSlug())) {
+        try { saveCurrentFormApplication(false); } catch (e) {}
+      }
       origDownloadGazette.apply(this, arguments);
     };
   }
 
   // Global click delegate for any print or PDF buttons
   document.addEventListener('click', function (e) {
+    if (isExcludedSlug(getPageSlug())) return;
     var target = e.target.closest('button, a');
     if (!target) return;
 
@@ -492,7 +502,7 @@
   // Global form submit delegate
   document.addEventListener('submit', function (e) {
     var slug = getPageSlug();
-    if (slug !== 'index') {
+    if (!isExcludedSlug(slug)) {
       saveCurrentFormApplication(false);
     }
   }, true);
@@ -500,6 +510,7 @@
   // Debounced Auto-Save on any form input change
   var autoSaveTimer = null;
   document.addEventListener('input', function (e) {
+    if (isExcludedSlug(getPageSlug())) return;
     var t = e.target;
     if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA')) {
       if (autoSaveTimer) clearTimeout(autoSaveTimer);
@@ -511,6 +522,30 @@
 
   // On DOM Ready: Check Edit Mode, Autoprint, & Inject UI Elements
   window.addEventListener('DOMContentLoaded', function () {
+    // Purge any accidental legacy 'aadhar-kendra' / 'AAK-' applications from storage
+    try {
+      var cscList = JSON.parse(localStorage.getItem('emudra_csc_applications') || '[]');
+      var cleanedCsc = cscList.filter(function (item) {
+        var id = item.appId || item.id || '';
+        var service = item.serviceId || item.formType || '';
+        return service !== 'aadhar-kendra' && !id.startsWith('AAK-');
+      });
+      if (cleanedCsc.length !== cscList.length) {
+        localStorage.setItem('emudra_csc_applications', JSON.stringify(cleanedCsc));
+      }
+      var formHistory = JSON.parse(localStorage.getItem('emudra_form_history') || '[]');
+      var cleanedHist = formHistory.filter(function (item) {
+        var id = item.appId || '';
+        var service = item.formType || '';
+        return service !== 'aadhar-kendra' && !id.startsWith('AAK-');
+      });
+      if (cleanedHist.length !== formHistory.length) {
+        localStorage.setItem('emudra_form_history', JSON.stringify(cleanedHist));
+      }
+    } catch (err) {}
+
+    if (isExcludedSlug(getPageSlug())) return;
+
     injectFloatingActionBar();
     setTimeout(injectHeaderSaveButton, 300);
 
