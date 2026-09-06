@@ -43,7 +43,14 @@
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
+      height: 100vh;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* No page scrollbars - Single Screen Fit */
+      display: flex;
+      flex-direction: column;
       background: var(--bg-dark-base);
       background-image:
         radial-gradient(circle at 10% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
@@ -51,12 +58,7 @@
         radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 60%);
       color: #f8fafc;
       font-family: 'Mukta', 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
+      box-sizing: border-box;
     }
 
     /* Government Tricolor Top Ribbon */
@@ -64,64 +66,62 @@
       height: 3px;
       background: linear-gradient(90deg, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%);
       width: 100%;
-      position: sticky;
-      top: 0;
+      flex-shrink: 0;
       z-index: 1000;
     }
 
     /* Top Navigation Bar */
     .top-navbar {
-      background: rgba(10, 15, 29, 0.92);
+      background: rgba(10, 15, 29, 0.95);
       border-bottom: 1px solid rgba(56, 189, 248, 0.15);
       backdrop-filter: blur(12px);
-      padding: 8px 16px;
-      position: sticky;
-      top: 3px;
+      padding: 5px 14px;
+      flex-shrink: 0;
       z-index: 999;
     }
 
     .navbar-content {
-      max-width: 1400px;
+      max-width: 100%;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+      gap: 10px;
+      flex-wrap: nowrap;
     }
 
     .brand-group {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       text-decoration: none;
     }
 
     .brand-icon {
-      width: 38px;
-      height: 38px;
+      width: 32px;
+      height: 32px;
       background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%);
-      border-radius: 10px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #ffffff;
-      font-size: 1.25rem;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+      font-size: 1.05rem;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.4);
     }
 
     .brand-text-title {
       color: #ffffff;
       font-weight: 800;
-      font-size: 1.05rem;
-      line-height: 1.2;
+      font-size: 0.95rem;
+      line-height: 1.15;
     }
 
     .brand-text-sub {
       color: var(--accent-cyan);
-      font-size: 0.74rem;
+      font-size: 0.68rem;
       font-weight: 600;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
 
     /* Live Bridge Status Indicator Pill */
@@ -221,73 +221,80 @@
 
     /* Main Container */
     .studio-container {
-      max-width: 1400px;
+      max-width: 100%;
       width: 100%;
       margin: 0 auto;
-      padding: 16px 16px 36px 16px;
+      padding: 6px 12px 8px 12px;
       flex: 1;
+      min-height: 0;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 6px;
+      overflow: hidden;
+      box-sizing: border-box;
     }
 
     /* Top Hardware Control Bar */
     .control-deck {
       background: var(--bg-surface);
       border: 1px solid var(--border-glass);
-      border-radius: 14px;
-      padding: 14px 20px;
+      border-radius: 10px;
+      padding: 5px 12px;
       backdrop-filter: blur(12px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 14px;
+      flex-wrap: nowrap;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
     .deck-group {
       display: flex;
       align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
+      gap: 10px;
+      flex-wrap: nowrap;
     }
 
     .control-item {
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
     }
 
     .control-label {
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 700;
       color: #94a3b8;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
+      white-space: nowrap;
     }
 
     .control-select {
       background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(56, 189, 248, 0.3);
       color: #ffffff;
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-size: 0.88rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
       font-weight: 600;
       font-family: inherit;
       outline: none;
       transition: all 0.2s ease;
       cursor: pointer;
-      min-width: 150px;
+      min-width: 110px;
+      height: 30px;
     }
 
     .control-select:focus {
       border-color: var(--accent-cyan);
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
     }
 
     /* Big Scan Button */
@@ -296,23 +303,25 @@
       border: 1px solid rgba(110, 231, 183, 0.4);
       color: #ffffff;
       font-weight: 800;
-      font-size: 1.08rem;
-      padding: 10px 24px;
-      border-radius: 10px;
+      font-size: 0.92rem;
+      padding: 6px 16px;
+      border-radius: 8px;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       cursor: pointer;
       box-shadow: var(--glow-emerald);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
       position: relative;
       overflow: hidden;
+      white-space: nowrap;
+      height: 32px;
     }
 
     .btn-scan-main:hover {
       background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+      transform: translateY(-1px);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
     }
 
     .btn-scan-main:active {
@@ -331,14 +340,16 @@
       border: 1px dashed rgba(56, 189, 248, 0.5);
       color: #7dd3fc;
       font-weight: 700;
-      font-size: 0.88rem;
-      padding: 9px 16px;
-      border-radius: 9px;
+      font-size: 0.8rem;
+      padding: 5px 12px;
+      border-radius: 7px;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       cursor: pointer;
       transition: all 0.2s ease;
+      white-space: nowrap;
+      height: 32px;
     }
     .btn-test-scan:hover {
       background: rgba(56, 189, 248, 0.25);
@@ -349,27 +360,33 @@
     /* Workspace Studio Grid */
     .studio-workspace {
       display: grid;
-      grid-template-columns: 270px 1fr 310px;
-      gap: 16px;
-      min-height: 640px;
+      grid-template-columns: 215px 1fr 285px;
+      gap: 8px;
       flex: 1;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
     }
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1100px) {
       .studio-workspace {
-        grid-template-columns: 240px 1fr;
-      }
-      .panel-export {
-        grid-column: span 2;
+        grid-template-columns: 190px 1fr 260px;
       }
     }
 
     @media (max-width: 860px) {
+      html, body {
+        overflow: auto;
+      }
       .studio-workspace {
         grid-template-columns: 1fr;
+        overflow-y: auto;
       }
-      .panel-export {
-        grid-column: span 1;
+      .control-deck, .navbar-content {
+        flex-wrap: wrap;
+      }
+      .deck-group {
+        flex-wrap: wrap;
       }
     }
 
@@ -377,39 +394,44 @@
     .studio-panel {
       background: var(--bg-surface);
       border: 1px solid var(--border-glass);
-      border-radius: 14px;
-      padding: 16px;
+      border-radius: 10px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 6px;
       backdrop-filter: blur(10px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      box-sizing: border-box;
     }
 
     .panel-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 10px;
+      padding-bottom: 6px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
     }
 
     .panel-title {
-      font-size: 0.96rem;
+      font-size: 0.9rem;
       font-weight: 800;
       color: #ffffff;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .panel-badge {
       background: rgba(56, 189, 248, 0.15);
       color: var(--accent-cyan);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 12px;
+      padding: 2px 7px;
+      border-radius: 10px;
       border: 1px solid rgba(56, 189, 248, 0.3);
     }
 
@@ -417,28 +439,30 @@
     .thumbs-container {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
       overflow-y: auto;
-      max-height: 570px;
-      padding-right: 4px;
+      overflow-x: hidden;
+      flex: 1;
+      min-height: 0;
+      padding-right: 2px;
     }
 
     .thumbs-container::-webkit-scrollbar {
-      width: 6px;
+      width: 4px;
     }
     .thumbs-container::-webkit-scrollbar-thumb {
       background: rgba(56, 189, 248, 0.3);
-      border-radius: 4px;
+      border-radius: 3px;
     }
 
     .thumb-card {
       background: var(--bg-surface-card);
       border: 2px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 8px;
+      border-radius: 8px;
+      padding: 6px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       cursor: pointer;
       transition: all 0.2s ease;
       position: relative;
@@ -447,20 +471,20 @@
     .thumb-card:hover {
       border-color: rgba(56, 189, 248, 0.4);
       background: rgba(30, 41, 59, 0.85);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
 
     .thumb-card.active {
       border-color: var(--accent-cyan);
       background: rgba(14, 116, 144, 0.25);
-      box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
     }
 
     .thumb-img-wrap {
       width: 100%;
-      height: 125px;
+      height: 80px;
       background: #0b1120;
-      border-radius: 6px;
+      border-radius: 5px;
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -478,26 +502,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       color: #94a3b8;
     }
 
     .thumb-actions {
       display: flex;
-      gap: 4px;
+      gap: 3px;
     }
 
     .btn-thumb-action {
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #cbd5e1;
-      width: 24px;
-      height: 24px;
-      border-radius: 5px;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       cursor: pointer;
       transition: all 0.15s ease;
     }
@@ -519,38 +543,42 @@
       position: relative;
       display: flex;
       flex-direction: column;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
     }
 
     .viewer-toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
+      flex-wrap: nowrap;
+      gap: 6px;
       background: rgba(10, 15, 30, 0.6);
-      padding: 6px 12px;
-      border-radius: 8px;
+      padding: 3px 8px;
+      border-radius: 6px;
       border: 1px solid rgba(255, 255, 255, 0.06);
+      flex-shrink: 0;
     }
 
     .viewer-tools-group {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .btn-tool {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.12);
       color: #e2e8f0;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.76rem;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       transition: all 0.18s ease;
     }
 
@@ -570,18 +598,19 @@
     /* Viewer Stage Area */
     .viewer-stage {
       flex: 1;
-      min-height: 480px;
+      min-height: 0;
+      height: 100%;
       background: #070b16;
       border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 10px;
+      border-radius: 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       position: relative;
-      overflow: auto;
-      padding: 20px 16px 36px 16px;
-      scroll-behavior: smooth;
+      overflow: hidden;
+      padding: 4px;
+      box-sizing: border-box;
     }
 
     /* Interactive Canvas Crop Container */
@@ -589,18 +618,19 @@
       position: relative;
       display: inline-block;
       line-height: 0;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
       border-radius: 4px;
       user-select: none;
       transition: transform 0.2s ease;
       margin: auto;
       max-width: 100%;
-      transform-origin: center top;
+      max-height: 100%;
+      transform-origin: center center;
     }
 
     #mainCanvas {
       max-width: 100%;
-      max-height: min(510px, calc(100vh - 270px));
+      max-height: calc(100vh - 165px);
       width: auto;
       height: auto;
       object-fit: contain;
@@ -742,29 +772,31 @@
     .crop-mode-banner {
       background: rgba(15, 23, 42, 0.95);
       border: 1px solid var(--accent-cyan);
-      border-radius: 10px;
-      padding: 8px 16px;
+      border-radius: 8px;
+      padding: 4px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-      margin-bottom: 2px;
-      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      margin-bottom: 3px;
+      flex-shrink: 0;
+      flex-wrap: nowrap;
     }
 
     /* Empty State View */
     .empty-viewer {
       text-align: center;
       color: #64748b;
-      max-width: 400px;
-      padding: 24px;
+      max-width: 360px;
+      padding: 16px;
+      margin: auto;
     }
 
     .empty-icon {
-      font-size: 3.5rem;
+      font-size: 2.8rem;
       color: rgba(56, 189, 248, 0.25);
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       animation: floatIcon 3s ease-in-out infinite;
     }
 
@@ -821,40 +853,53 @@
     .panel-export {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 6px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-height: 0;
+      height: 100%;
+      padding: 6px 8px;
+    }
+
+    .panel-export::-webkit-scrollbar {
+      width: 4px;
+    }
+    .panel-export::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.25);
+      border-radius: 4px;
     }
 
     .section-title {
-      font-size: 0.8rem;
+      font-size: 0.74rem;
       font-weight: 700;
       color: #94a3b8;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     /* Filters Pill Buttons */
     .filters-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 5px;
     }
 
     .btn-filter {
       background: var(--bg-surface-card);
       border: 1px solid rgba(255, 255, 255, 0.08);
       color: #cbd5e1;
-      padding: 8px 10px;
-      border-radius: 8px;
-      font-size: 0.8rem;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 0.76rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       transition: all 0.2s ease;
     }
 
@@ -868,18 +913,18 @@
       background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(2, 132, 199, 0.35));
       border-color: var(--accent-cyan);
       color: #ffffff;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
     }
 
     /* Government Export Action Cards */
     .gov-export-card {
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0.8) 100%);
       border: 1px solid rgba(16, 185, 129, 0.35);
-      border-radius: 10px;
-      padding: 12px;
+      border-radius: 8px;
+      padding: 6px 10px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 2px;
       transition: all 0.2s ease;
     }
 
@@ -889,8 +934,8 @@
     }
 
     .gov-export-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
     }
 
     .gov-card-head {
@@ -900,16 +945,16 @@
     }
 
     .gov-card-title {
-      font-size: 0.92rem;
+      font-size: 0.84rem;
       font-weight: 800;
       color: #ffffff;
     }
 
     .gov-badge {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 12px;
+      padding: 1px 6px;
+      border-radius: 10px;
       background: rgba(16, 185, 129, 0.2);
       color: #34d399;
       border: 1px solid rgba(16, 185, 129, 0.4);
@@ -922,9 +967,10 @@
     }
 
     .gov-desc {
-      font-size: 0.76rem;
+      font-size: 0.7rem;
       color: #94a3b8;
-      line-height: 1.4;
+      line-height: 1.25;
+      margin: 0;
     }
 
     .btn-gov-download {
@@ -932,16 +978,16 @@
       border: none;
       color: #ffffff;
       font-weight: 800;
-      font-size: 0.84rem;
-      padding: 8px 14px;
-      border-radius: 7px;
+      font-size: 0.78rem;
+      padding: 5px 10px;
+      border-radius: 6px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      margin-top: 4px;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+      gap: 5px;
+      margin-top: 2px;
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35);
       transition: all 0.2s;
     }
 
@@ -1122,30 +1168,30 @@
 
         <!-- DPI Selector -->
         <div class="control-item">
-          <span class="control-label"><i class="fa-solid fa-sliders"></i> रिझोल्युशन (DPI)</span>
-          <select id="dpiSelect" class="control-select" style="min-width: 140px;">
-            <option value="100">100 DPI (ड्राफ्ट / लहान)</option>
-            <option value="150">150 DPI (मध्यम)</option>
-            <option value="200" selected>200 DPI (शासकीय स्टँडर्ड)</option>
-            <option value="300">300 DPI (हाय-डेफिनिशन)</option>
+          <span class="control-label"><i class="fa-solid fa-sliders"></i> DPI</span>
+          <select id="dpiSelect" class="control-select" style="min-width: 110px;">
+            <option value="100">100 DPI</option>
+            <option value="150">150 DPI</option>
+            <option value="200" selected>200 DPI (शासकीय)</option>
+            <option value="300">300 DPI</option>
           </select>
         </div>
 
         <!-- Color Mode -->
         <div class="control-item">
-          <span class="control-label"><i class="fa-solid fa-palette"></i> कलर मोड</span>
-          <select id="colorModeSelect" class="control-select" style="min-width: 130px;">
-            <option value="color" selected>Color (रंगीत)</option>
-            <option value="grayscale">Grayscale (राखाडी)</option>
-            <option value="bw">B&W (काळा-पांढरा)</option>
+          <span class="control-label"><i class="fa-solid fa-palette"></i> कलर</span>
+          <select id="colorModeSelect" class="control-select" style="min-width: 95px;">
+            <option value="color" selected>Color</option>
+            <option value="grayscale">Grayscale</option>
+            <option value="bw">B&W</option>
           </select>
         </div>
 
         <!-- Windows Native Dialog Checkbox -->
-        <div class="control-item" style="justify-content: flex-end;">
-          <label style="font-size: 0.8rem; font-weight: 600; color: #cbd5e1; display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 8px 0;">
-            <input type="checkbox" id="nativeDialogCheck" style="accent-color: var(--accent-cyan); width: 16px; height: 16px;">
-            <span>विंडोज स्कॅनर डायलॉग दाखवा</span>
+        <div class="control-item">
+          <label style="font-size: 0.74rem; font-weight: 600; color: #cbd5e1; display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap; margin: 0;">
+            <input type="checkbox" id="nativeDialogCheck" style="accent-color: var(--accent-cyan); width: 15px; height: 15px;">
+            <span>विंडोज डायलॉग</span>
           </label>
         </div>
       </div>
@@ -2412,14 +2458,19 @@
       if (stage) {
         stage.scrollTop = 0;
         stage.scrollLeft = 0;
+        stage.style.overflow = 'hidden';
       }
     }
 
     function applyStageZoom() {
+      const stage = document.getElementById('viewerStage');
+      if (stage) {
+        stage.style.overflow = (state.zoomLevel > 1.0) ? 'auto' : 'hidden';
+      }
       const target = canvasCropContainer || mainCanvas;
       if (target) {
         target.style.transform = `scale(${state.zoomLevel})`;
-        target.style.transformOrigin = 'center top';
+        target.style.transformOrigin = (state.zoomLevel > 1.0) ? 'center top' : 'center center';
       }
     }
 
