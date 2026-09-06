@@ -430,6 +430,121 @@
             width: auto;
         }
 
+        /* Quick Font Size Controls (Increase / Decrease) */
+        .quick-size-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 3px 8px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+        }
+
+        .size-btn-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-size-step {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            color: #38bdf8;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-size-step:hover {
+            background: #38bdf8;
+            color: #0b2545;
+            transform: translateY(-1px);
+        }
+
+        .btn-size-reset {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #cbd5e1;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-size-reset:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .size-badge-display {
+            background: rgba(0, 0, 0, 0.4);
+            color: #38bdf8;
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            min-width: 46px;
+            text-align: center;
+            display: inline-block;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+
+        body.light-theme .size-badge-display {
+            background: #e2e8f0;
+            color: #0284c7;
+            border-color: #cbd5e1;
+        }
+
+        body.light-theme .quick-size-bar {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        body.light-theme .font-size-stepper-row .btn-step,
+        body.light-theme .btn-size-step {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+            color: #0284c7;
+        }
+
+        body.light-theme .font-size-stepper-row .btn-step:hover,
+        body.light-theme .btn-size-step:hover {
+            background: #0284c7;
+            color: #ffffff;
+        }
+
+        .font-size-stepper-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .font-size-stepper-row select {
+            flex: 1;
+        }
+
+        .font-size-stepper-row .btn-step {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            color: #38bdf8;
+            padding: 7px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .font-size-stepper-row .btn-step:hover {
+            background: #38bdf8;
+            color: #0b2545;
+        }
+
         /* =============================================================
            TYPOGRAPHY & DEVANAGARI FONT CLASSES
         ============================================================= */
@@ -447,9 +562,12 @@
         .font-serif { font-family: 'Times New Roman', 'Martel', serif !important; }
 
         /* Font Zoom / Scaling */
-        .zoom-compact { font-size: 94% !important; }
-        .zoom-normal { font-size: 100% !important; }
-        .zoom-large { font-size: 106% !important; }
+        :root {
+            --doc-scale: 1;
+        }
+        .zoom-compact { --doc-scale: 0.94; font-size: 94% !important; }
+        .zoom-normal { --doc-scale: 1.00; font-size: 100% !important; }
+        .zoom-large { --doc-scale: 1.06; font-size: 106% !important; }
 
         /* Font Weight */
         .weight-normal * { font-weight: normal; }
@@ -464,13 +582,14 @@
         .margin-05 { padding: 0.5cm !important; }
 
         /* Line Height / Line Spacing Classes */
+        .lh-20 { line-height: 2.0 !important; }
         .lh-15 { line-height: 1.5 !important; }
         .lh-14 { line-height: 1.4 !important; }
         .lh-16 { line-height: 1.6 !important; }
         .lh-13 { line-height: 1.3 !important; }
 
         /* -------------------------------------------------------------
-           OFFICIAL A4 GOVERNMENT GAZETTE DOCUMENT STYLES (0.7 CM MARGIN | 1.5 LINE SPACING)
+           OFFICIAL A4 GOVERNMENT GAZETTE DOCUMENT STYLES (0.7 CM MARGIN | 2.0 LINE SPACING)
         ------------------------------------------------------------- */
         .a4-page-sheet {
             width: 210mm;
@@ -485,12 +604,12 @@
             display: flex;
             flex-direction: column;
             font-family: 'Poppins', 'Inter', 'Noto Sans Devanagari', sans-serif;
-            line-height: 1.5; /* Default 1.5 Line Spacing */
+            line-height: 2.0; /* Default 2.0 Line Spacing */
         }
 
         .a4-page-sheet.marathi-mode {
             font-family: 'Noto Sans Devanagari', 'Mukta', sans-serif;
-            line-height: 1.5; /* Default 1.5 Line Spacing */
+            line-height: 2.0; /* Default 2.0 Line Spacing */
         }
 
         .doc-border-frame {
@@ -530,45 +649,49 @@
         }
 
         .doc-header-text h2 {
-            font-size: 12.5pt;
+            font-size: calc(12.5pt * var(--doc-scale, 1));
             font-weight: 700;
             letter-spacing: 0.5px;
             text-transform: uppercase;
             margin-bottom: 2px;
+            line-height: 1.25 !important;
             color: #000;
         }
 
         .doc-header-text h3 {
-            font-size: 9.5pt;
+            font-size: calc(9.5pt * var(--doc-scale, 1));
             font-weight: 600;
             letter-spacing: 0.3px;
             text-transform: uppercase;
             margin-bottom: 2px;
+            line-height: 1.25 !important;
             color: #111;
         }
 
         .doc-header-text .doc-title-bold {
-            font-size: 10.5pt;
+            font-size: calc(10.5pt * var(--doc-scale, 1));
             font-weight: 700;
             letter-spacing: 0.5px;
             text-transform: uppercase;
             margin-top: 3px;
+            line-height: 1.25 !important;
         }
 
         .doc-header-text .doc-subtitle-notice {
-            font-size: 10.5pt;
+            font-size: calc(10.5pt * var(--doc-scale, 1));
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
             margin-top: 1px;
+            line-height: 1.25 !important;
         }
 
-        /* NB / Instructions */
+        /* NB / Instructions - 2.0 Line Spacing */
         .doc-nb-box {
-            font-size: 9.3pt;
+            font-size: calc(9.3pt * var(--doc-scale, 1));
             margin-top: 12px;
             margin-bottom: 14px;
-            line-height: 1.65;
+            line-height: 2.0;
             color: #000;
             display: flex;
             align-items: flex-start;
@@ -579,29 +702,32 @@
             font-weight: 700;
             white-space: nowrap;
             flex-shrink: 0;
+            line-height: 2.0;
         }
 
         .doc-nb-text {
             text-align: justify;
-            line-height: 1.65;
+            line-height: 2.0;
             letter-spacing: 0.25px;
             word-spacing: 0.8px;
         }
 
-        /* Statement Intro */
+        /* Statement Intro - 2.0 Line Spacing */
         .doc-statement {
-            font-size: 9.5pt;
+            font-size: calc(9.5pt * var(--doc-scale, 1));
             font-weight: 600;
             margin-bottom: 6px;
+            line-height: 2.0;
             color: #000;
         }
 
-        /* Table Box for Old & New Name */
+        /* Table Box for Old & New Name (KEPT COMPACT - Excluded from 2.0 Line Spacing) */
         .doc-name-table {
             width: 100%;
             border-collapse: collapse;
             margin: 4px 0 8px 0;
-            font-size: 9pt;
+            font-size: calc(9pt * var(--doc-scale, 1));
+            line-height: 1.25 !important;
         }
 
         .doc-name-table th, .doc-name-table td {
@@ -611,13 +737,15 @@
             font-weight: 600;
             color: #000;
             min-height: 26px;
+            line-height: 1.25 !important;
         }
 
         .doc-name-table .label-col {
             width: 22%;
-            text-align: left;
+            text-align: center;
             font-weight: 700;
             background: #ffffff;
+            line-height: 1.25 !important;
         }
 
         .doc-name-table .name-col {
@@ -626,21 +754,38 @@
             font-weight: 700;
             letter-spacing: 0.4px;
             word-break: break-word;
+            line-height: 1.25 !important;
+        }
+
+        .doc-name-table tr.table-sub-header-row td,
+        .doc-name-table td.sub-header-cell {
+            border-left: hidden !important;
+            border-right: hidden !important;
+            border-top: 1px solid #000000 !important;
+            border-bottom: 1px solid #000000 !important;
+            font-size: calc(8.5pt * var(--doc-scale, 1));
+            font-weight: 600;
+            text-align: center;
+            padding: 14px 4px !important; /* 1 blank line space above and below */
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.25 !important;
         }
 
         .doc-table-connector {
-            font-size: 9pt;
+            font-size: calc(9pt * var(--doc-scale, 1));
             font-weight: 700;
             margin: 2px 0 2px 4px;
+            line-height: 1.6;
         }
 
-        /* Disclaimer Note */
+        /* Disclaimer Note - 2.0 Line Spacing + 2 Lines Space After Paragraph */
         .doc-disclaimer {
-            font-size: 8.5pt;
-            line-height: 1.28;
+            font-size: calc(8.5pt * var(--doc-scale, 1));
+            line-height: 2.0;
             text-align: justify;
             margin-top: 6px;
-            margin-bottom: 14px;
+            margin-bottom: 34px; /* 2 line space added after this paragraph */
             color: #111;
         }
 
@@ -651,18 +796,20 @@
             align-items: flex-start;
             margin-top: 8px;
             margin-bottom: 16px;
-            font-size: 8.5pt;
+            font-size: calc(8.5pt * var(--doc-scale, 1));
+            line-height: 1.6;
         }
 
         .doc-guardian-sign {
             width: 45%;
             text-align: center;
+            line-height: 1.6;
         }
 
         .doc-old-name-sign {
             width: 48%;
             text-align: center;
-            line-height: 1.25;
+            line-height: 1.6;
         }
 
         .sign-line {
@@ -673,27 +820,30 @@
             margin-right: auto;
         }
 
-        /* Official Addressee */
+        /* Official Addressee - 2.0 Line Spacing + 2 Lines Space After Paragraph */
         .doc-director-address {
-            font-size: 9pt;
-            line-height: 1.32;
-            margin-bottom: 10px;
+            font-size: calc(9pt * var(--doc-scale, 1));
+            line-height: 2.0;
+            margin-bottom: 32px; /* 2 line space added after this paragraph */
         }
 
         .doc-director-address .to-label {
             font-weight: 700;
+            line-height: 2.0;
         }
 
         .doc-director-address .director-title {
             padding-left: 24px;
+            line-height: 2.0;
         }
 
-        /* Reason Row */
+        /* Reason Row - 2.0 Line Spacing */
         .doc-reason-box {
-            font-size: 9.5pt;
+            font-size: calc(9.5pt * var(--doc-scale, 1));
             font-weight: 700;
             margin-top: 12px;
             margin-bottom: 16px;
+            line-height: 2.0;
         }
 
         .doc-reason-val {
@@ -701,6 +851,7 @@
             text-transform: uppercase;
             text-decoration: underline;
             margin-left: 4px;
+            line-height: 2.0;
         }
 
         /* New Name Signature */
@@ -710,31 +861,37 @@
             align-items: flex-end;
             margin-bottom: 16px;
             text-align: center;
-            font-size: 8.5pt;
+            font-size: calc(8.5pt * var(--doc-scale, 1));
             padding-right: 45px; /* Shifted inwards to the left */
+            line-height: 1.8;
         }
 
         .doc-new-name-sign-block .sign-box {
             width: 240px;
-            line-height: 1.35;
+            line-height: 1.8;
             text-align: center;
         }
 
-        /* Corresponding Address Block */
+        /* Corresponding Address Block (KEPT COMPACT - Excluded from 2.0 Line Spacing) */
         .doc-corresponding-address {
-            font-size: 9pt;
-            line-height: 1.4;
+            font-size: calc(9pt * var(--doc-scale, 1));
+            line-height: 1.35 !important;
             margin-top: auto;
             border-top: 1px dotted #aaa;
             padding-top: 8px;
+        }
+
+        .doc-corresponding-address * {
+            line-height: 1.35 !important;
         }
 
         .doc-corresponding-address .addr-header {
             font-weight: 700;
             text-transform: uppercase;
             margin-bottom: 4px;
-            font-size: 9pt;
+            font-size: calc(9pt * var(--doc-scale, 1));
             letter-spacing: 0.5px;
+            line-height: 1.35 !important;
         }
 
         .addr-grid {
@@ -812,7 +969,7 @@
                 border-radius: 0 !important;
                 page-break-after: always !important;
                 break-after: page !important;
-                line-height: 1.5 !important;
+                line-height: 2.0 !important;
             }
 
             .a4-page-sheet:last-child {
@@ -823,6 +980,34 @@
             .doc-border-frame {
                 border: 1.2px solid #000 !important;
                 padding: 12px 16px !important;
+            }
+
+            .doc-name-table,
+            .doc-name-table th,
+            .doc-name-table td {
+                line-height: 1.25 !important;
+            }
+
+            .doc-name-table tr.table-sub-header-row td,
+            .doc-name-table td.sub-header-cell {
+                border-left: hidden !important;
+                border-right: hidden !important;
+                border-top: 1px solid #000000 !important;
+                border-bottom: 1px solid #000000 !important;
+                padding: 14px 4px !important; /* 1 blank line space above and below */
+                line-height: 1.25 !important;
+            }
+
+            .doc-corresponding-address,
+            .doc-corresponding-address * {
+                line-height: 1.35 !important;
+            }
+
+            .doc-header-text h2,
+            .doc-header-text h3,
+            .doc-header-text .doc-title-bold,
+            .doc-header-text .doc-subtitle-notice {
+                line-height: 1.25 !important;
             }
         }
     </style>
@@ -913,10 +1098,11 @@
                 <div class="form-group">
                     <label><i class="fa-solid fa-arrows-up-down"></i> लाईन स्पेसिंग (Line Spacing)</label>
                     <select id="sel_line_height" onchange="applyFontChange()">
-                        <option value="lh-15" selected>1.5 (Standard - योग्य)</option>
-                        <option value="lh-14">1.4 (Compact)</option>
-                        <option value="lh-16">1.6 (Relaxed)</option>
-                        <option value="lh-13">1.3 (Tight)</option>
+                        <option value="lh-20" selected>2.0 (Standard 2.0 - २.० स्पेसिंग)</option>
+                        <option value="lh-15">1.5 (Compact 1.5 - १.५)</option>
+                        <option value="lh-14">1.4 (Tight 1.4 - १.४)</option>
+                        <option value="lh-16">1.6 (Relaxed 1.6 - १.६)</option>
+                        <option value="lh-13">1.3 (Minimal 1.3 - १.३)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -931,12 +1117,23 @@
             </div>
             <div class="form-row-2">
                 <div class="form-group">
-                    <label><i class="fa-solid fa-text-height"></i> फॉन्ट साईझ (Size)</label>
-                    <select id="sel_font_zoom" onchange="applyFontChange()">
-                        <option value="zoom-normal" selected>सामान्य (100%)</option>
-                        <option value="zoom-compact">लहान (94%)</option>
-                        <option value="zoom-large">मोठा (106%)</option>
-                    </select>
+                    <label><i class="fa-solid fa-text-height"></i> फॉन्ट आकार (Font Size)</label>
+                    <div class="font-size-stepper-row">
+                        <button type="button" class="btn-step" onclick="stepFontSize(-1)" title="फॉन्ट लहान करा (A-)"><i class="fa-solid fa-minus"></i> A-</button>
+                        <select id="sel_font_zoom" onchange="setDocFontSize(this.value)">
+                            <option value="0.85">85% (अति लहान)</option>
+                            <option value="0.90">90% (खूप लहान)</option>
+                            <option value="0.94">94% (लहान)</option>
+                            <option value="0.97">97% (मध्यम लहान)</option>
+                            <option value="1.00" selected>100% (सामान्य)</option>
+                            <option value="1.03">103% (मध्यम मोठा)</option>
+                            <option value="1.06">106% (मोठा)</option>
+                            <option value="1.10">110% (खूप मोठा)</option>
+                            <option value="1.15">115% (अतिशय मोठा)</option>
+                            <option value="1.20">120% (कमाल मोठा)</option>
+                        </select>
+                        <button type="button" class="btn-step" onclick="stepFontSize(1)" title="फॉन्ट मोठा करा (A+)"><i class="fa-solid fa-plus"></i> A+</button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label><i class="fa-solid fa-bold"></i> ठळकपणा (Weight)</label>
@@ -1082,7 +1279,7 @@
             
             <div class="preview-header-bar no-print">
                 <div class="preview-hint">
-                    <i class="fa-solid fa-eye"></i> <span>A4 अधिकृत नमुना (0.7 CM Margin | 1.5 Line Spacing)</span>
+                    <i class="fa-solid fa-eye"></i> <span>A4 अधिकृत नमुना (0.7 CM Margin | 2.0 Line Spacing)</span>
                 </div>
                 <div class="quick-font-bar">
                     <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;"><i class="fa-solid fa-font"></i> फॉन्ट:</span>
@@ -1097,6 +1294,15 @@
                         <option value="font-yatra">Yatra (यात्रा वन)</option>
                         <option value="font-gotu">Gotu (गोतू)</option>
                     </select>
+                </div>
+                <div class="quick-size-bar">
+                    <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;"><i class="fa-solid fa-text-height"></i> फॉन्ट साईझ:</span>
+                    <div class="size-btn-group">
+                        <button type="button" class="btn-size-step" onclick="stepFontSize(-1)" title="फॉन्ट लहान करा (A-)"><i class="fa-solid fa-minus"></i> A-</button>
+                        <span id="top_font_size_display" class="size-badge-display">100%</span>
+                        <button type="button" class="btn-size-step" onclick="stepFontSize(1)" title="फॉन्ट मोठा करा (A+)"><i class="fa-solid fa-plus"></i> A+</button>
+                        <button type="button" class="btn-size-reset" onclick="resetFontSize()" title="मूळ आकार (100%)"><i class="fa-solid fa-rotate-left"></i></button>
+                    </div>
                 </div>
                 <div style="font-size: 0.8rem; color: #38bdf8; font-weight: 600;">
                     <i class="fa-solid fa-check-circle"></i> १००% शासकीय फॉरमॅट
@@ -1133,7 +1339,7 @@
                         It is hereby notified that the undersigned has changed his/her name from
                     </div>
 
-                    <!-- Old Name Table -->
+                    <!-- Old & New Name Table -->
                     <table class="doc-name-table">
                         <tr>
                             <td class="label-col">Old Name</td>
@@ -1141,12 +1347,12 @@
                             <td class="name-col" id="view_old_mn_en">VISHNU</td>
                             <td class="name-col" id="view_old_ln_en">MORAJKAR</td>
                         </tr>
-                    </table>
-
-                    <div class="doc-table-connector">To</div>
-
-                    <!-- New Name Table -->
-                    <table class="doc-name-table">
+                        <tr class="table-sub-header-row">
+                            <td class="label-col sub-header-cell">To</td>
+                            <td class="sub-header-cell">Name</td>
+                            <td class="sub-header-cell">Father's/Husband's Name</td>
+                            <td class="sub-header-cell">Surname</td>
+                        </tr>
                         <tr>
                             <td class="label-col">New Name</td>
                             <td class="name-col" id="view_new_fn_en">SAYALI</td>
@@ -1166,7 +1372,7 @@
                             <div class="sign-line"></div>
                             <div>Signature of the Guardian</div>
                             <div class="sign-line" style="margin-top: 4px; width: 65%;"></div>
-                            <div style="font-size: 8.5pt; color: #333;">(In case of Minor)</div>
+                            <div style="font-size: calc(8.5pt * var(--doc-scale, 1)); color: #333;">(In case of Minor)</div>
                         </div>
                         <div class="doc-old-name-sign">
                             <div class="sign-line"></div>
@@ -1240,10 +1446,10 @@
                     <div class="doc-header-top">
                         <img src="images/logo/maharashtra_seal_gold.png" alt="Maharashtra Seal" class="doc-emblem-seal" onerror="this.src='images/logo/logo-e-maharashtraShasan.jpg'">
                         <div class="doc-header-text">
-                            <h2 style="font-size: 13.5pt;">महाराष्ट्र शासन</h2>
-                            <h3 style="font-size: 10.5pt;">शासन मुद्रण, लेखनसामग्री व प्रकाशन संचालनालय</h3>
-                            <div class="doc-title-bold" style="font-size: 11pt;">नाव बदलण्याचा नमुना</div>
-                            <div class="doc-subtitle-notice" style="font-size: 10.5pt;">नोटीस</div>
+                            <h2 style="font-size: calc(13.5pt * var(--doc-scale, 1));">महाराष्ट्र शासन</h2>
+                            <h3 style="font-size: calc(10.5pt * var(--doc-scale, 1));">शासन मुद्रण, लेखनसामग्री व प्रकाशन संचालनालय</h3>
+                            <div class="doc-title-bold" style="font-size: calc(11pt * var(--doc-scale, 1));">नाव बदलण्याचा नमुना</div>
+                            <div class="doc-subtitle-notice" style="font-size: calc(10.5pt * var(--doc-scale, 1));">नोटीस</div>
                         </div>
                     </div>
 
@@ -1256,7 +1462,7 @@
                     </div>
 
                     <!-- Intro Statement -->
-                    <div class="doc-statement" style="font-size: 9.2pt;">
+                    <div class="doc-statement" style="font-size: calc(9.2pt * var(--doc-scale, 1));">
                         यावरून असे जाहीर करण्यात येत आहे की, खाली सही <span id="view_mr_gender_term">करणारीने</span> आपले जुने नाव –
                     </div>
 
@@ -1268,11 +1474,11 @@
                             <td class="name-col" id="view_old_mn_mr">अनिल</td>
                             <td class="name-col" id="view_old_ln_mr">सावर्डेकर</td>
                         </tr>
-                        <tr>
-                            <td class="label-col" style="font-weight: normal; font-size: 8.5pt;">बदलून</td>
-                            <td style="font-size: 8.5pt; font-weight: normal;">नाव</td>
-                            <td style="font-size: 8.5pt; font-weight: normal;">वडिलांचे/पतीचे नाव</td>
-                            <td style="font-size: 8.5pt; font-weight: normal;">आडनाव</td>
+                        <tr class="table-sub-header-row">
+                            <td class="label-col sub-header-cell">बदलून</td>
+                            <td class="sub-header-cell">नाव</td>
+                            <td class="sub-header-cell">वडिलांचे/पतीचे नाव</td>
+                            <td class="sub-header-cell">आडनाव</td>
                         </tr>
                         <tr>
                             <td class="label-col">नवीन नाव</td>
@@ -1283,7 +1489,7 @@
                     </table>
 
                     <!-- Declaration Line -->
-                    <div style="font-weight: 700; font-size: 9.2pt; margin: 3px 0 12px 24px;">
+                    <div style="font-weight: 700; font-size: calc(9.2pt * var(--doc-scale, 1)); margin: 3px 0 12px 24px;">
                         हे नवीन नाव धारण केले आहे.
                     </div>
 
@@ -1291,7 +1497,7 @@
                     <div class="doc-sign-row-1">
                         <div class="doc-guardian-sign">
                             <div style="font-weight: 600;">आई / वडिलांची अथवा पालकाची सही</div>
-                            <div style="font-size: 8.5pt; color: #444; margin-top: 2px;">( फक्त अल्पवयीन इसमाच्या बाबतीत )</div>
+                            <div style="font-size: calc(8.5pt * var(--doc-scale, 1)); color: #444; margin-top: 2px;">( फक्त अल्पवयीन इसमाच्या बाबतीत )</div>
                         </div>
                         <div class="doc-old-name-sign">
                             <div style="font-weight: 600; margin-top: 6px;">जुन्या नावाप्रमाणे सही व तारीख</div>
@@ -1418,14 +1624,72 @@
             }
         }
 
+        // Dynamic Font Scaling State & Levels
+        let currentDocScale = 1.0;
+        const docScaleLevels = [0.85, 0.90, 0.94, 0.97, 1.00, 1.03, 1.06, 1.10, 1.15, 1.20];
+
+        function setDocFontSize(scaleVal) {
+            let scale = parseFloat(scaleVal);
+            if (isNaN(scale) || scale <= 0) scale = 1.0;
+            // Clamp between 0.80 and 1.25
+            scale = Math.min(Math.max(scale, 0.80), 1.25);
+            scale = Math.round(scale * 100) / 100;
+            currentDocScale = scale;
+
+            // Apply --doc-scale variable to root and pages
+            document.documentElement.style.setProperty('--doc-scale', scale);
+            const pEn = document.getElementById('page-en');
+            const pMr = document.getElementById('page-mr');
+            if (pEn) pEn.style.setProperty('--doc-scale', scale);
+            if (pMr) pMr.style.setProperty('--doc-scale', scale);
+
+            // Update top bar display badge
+            const topDisp = document.getElementById('top_font_size_display');
+            if (topDisp) {
+                topDisp.innerText = Math.round(scale * 100) + '%';
+            }
+
+            // Sync sidebar select dropdown
+            const selZoom = document.getElementById('sel_font_zoom');
+            if (selZoom) {
+                let closest = docScaleLevels.reduce((prev, curr) => Math.abs(curr - scale) < Math.abs(prev - scale) ? curr : prev);
+                selZoom.value = closest.toFixed(2);
+            }
+
+            try {
+                localStorage.setItem('gazette_doc_scale', scale.toString());
+            } catch (e) {}
+        }
+
+        function stepFontSize(dir) {
+            // dir is -1 (decrease/lahan) or +1 (increase/motha)
+            let curIdx = docScaleLevels.findIndex(s => Math.abs(s - currentDocScale) < 0.015);
+            if (curIdx === -1) {
+                let closestIdx = 0;
+                let minDiff = 999;
+                docScaleLevels.forEach((s, idx) => {
+                    let diff = Math.abs(s - currentDocScale);
+                    if (diff < minDiff) { minDiff = diff; closestIdx = idx; }
+                });
+                curIdx = closestIdx;
+            }
+            let nextIdx = curIdx + dir;
+            if (nextIdx >= 0 && nextIdx < docScaleLevels.length) {
+                setDocFontSize(docScaleLevels[nextIdx]);
+            }
+        }
+
+        function resetFontSize() {
+            setDocFontSize(1.00);
+        }
+
         // Apply Font, Margin & Line Spacing Styles to Document
         function applyFontChange() {
             const fontMr = document.getElementById('sel_font_mr').value;
             const fontEn = document.getElementById('sel_font_en').value;
-            const zoom = document.getElementById('sel_font_zoom').value;
             const weight = document.getElementById('sel_font_weight').value;
             const margin = document.getElementById('sel_page_margin') ? document.getElementById('sel_page_margin').value : 'margin-07';
-            const lineH = document.getElementById('sel_line_height') ? document.getElementById('sel_line_height').value : 'lh-15';
+            const lineH = document.getElementById('sel_line_height') ? document.getElementById('sel_line_height').value : 'lh-20';
 
             // Sync top dropdown if present
             const topFontMr = document.getElementById('top_font_mr');
@@ -1438,34 +1702,32 @@
 
             // All classes lists
             const allFonts = ['font-mukta', 'font-noto', 'font-poppins', 'font-tiro', 'font-utsaah', 'font-sakal', 'font-lohit', 'font-yatra', 'font-gotu', 'font-martel', 'font-inter', 'font-serif'];
-            const allZooms = ['zoom-compact', 'zoom-normal', 'zoom-large'];
             const allWeights = ['weight-normal', 'weight-medium', 'weight-semi'];
             const allMargins = ['margin-07', 'margin-10', 'margin-15', 'margin-05'];
-            const allLhs = ['lh-15', 'lh-14', 'lh-16', 'lh-13'];
+            const allLhs = ['lh-20', 'lh-15', 'lh-14', 'lh-16', 'lh-13'];
 
             if (pMr) {
                 allFonts.forEach(f => pMr.classList.remove(f));
-                allZooms.forEach(z => pMr.classList.remove(z));
                 allWeights.forEach(w => pMr.classList.remove(w));
                 allMargins.forEach(m => pMr.classList.remove(m));
                 allLhs.forEach(l => pMr.classList.remove(l));
-                pMr.classList.add(fontMr, zoom, weight, margin, lineH);
+                pMr.classList.add(fontMr, weight, margin, lineH);
+                pMr.style.setProperty('--doc-scale', currentDocScale);
             }
 
             if (pEn) {
                 allFonts.forEach(f => pEn.classList.remove(f));
-                allZooms.forEach(z => pEn.classList.remove(z));
                 allWeights.forEach(w => pEn.classList.remove(w));
                 allMargins.forEach(m => pEn.classList.remove(m));
                 allLhs.forEach(l => pEn.classList.remove(l));
-                pEn.classList.add(fontEn, zoom, weight, margin, lineH);
+                pEn.classList.add(fontEn, weight, margin, lineH);
+                pEn.style.setProperty('--doc-scale', currentDocScale);
             }
 
             // Save preferences
             try {
                 localStorage.setItem('gazette_font_mr', fontMr);
                 localStorage.setItem('gazette_font_en', fontEn);
-                localStorage.setItem('gazette_font_zoom', zoom);
                 localStorage.setItem('gazette_font_weight', weight);
                 localStorage.setItem('gazette_page_margin', margin);
                 localStorage.setItem('gazette_line_height', lineH);
@@ -1483,17 +1745,26 @@
             try {
                 const fMr = localStorage.getItem('gazette_font_mr');
                 const fEn = localStorage.getItem('gazette_font_en');
-                const z = localStorage.getItem('gazette_font_zoom');
                 const w = localStorage.getItem('gazette_font_weight');
                 const m = localStorage.getItem('gazette_page_margin');
                 const l = localStorage.getItem('gazette_line_height');
+                const sc = localStorage.getItem('gazette_doc_scale');
 
                 if (fMr && document.getElementById('sel_font_mr')) document.getElementById('sel_font_mr').value = fMr;
                 if (fEn && document.getElementById('sel_font_en')) document.getElementById('sel_font_en').value = fEn;
-                if (z && document.getElementById('sel_font_zoom')) document.getElementById('sel_font_zoom').value = z;
                 if (w && document.getElementById('sel_font_weight')) document.getElementById('sel_font_weight').value = w;
                 if (m && document.getElementById('sel_page_margin')) document.getElementById('sel_page_margin').value = m;
-                if (l && document.getElementById('sel_line_height')) document.getElementById('sel_line_height').value = l;
+                if (l && l !== 'lh-15' && document.getElementById('sel_line_height')) {
+                    document.getElementById('sel_line_height').value = l;
+                } else if (document.getElementById('sel_line_height')) {
+                    document.getElementById('sel_line_height').value = 'lh-20';
+                }
+
+                if (sc) {
+                    setDocFontSize(sc);
+                } else {
+                    setDocFontSize(1.00);
+                }
             } catch (e) {}
             applyFontChange();
         }
