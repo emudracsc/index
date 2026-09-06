@@ -1029,6 +1029,18 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
+  // 🗜️ उपयुक्त दस्तऐवज टूल्स (Document Tools)
+  {
+    id: "link-pdf-compressor",
+    category: "उपयुक्त दस्तऐवज टूल्स",
+    icon: "fa-solid fa-file-zipper",
+    title_mr: "🗜️ PDF Compressor (शासकीय कागदपत्रे २५६/५०० KB करा)",
+    title_en: "Official PDF Compressor Tool (Aaple Sarkar 256KB Preset)",
+    desc_mr: "आपले सरकार व महाडीबीटीसाठी आधार, ७/१२ व दाखल्यांची PDF ७५ KB ते २५६ KB मध्ये १००% सुरक्षितपणे कॉम्प्रेस करा.",
+    desc_en: "100% Client-side private PDF compression tool for Aaple Sarkar (under 256KB) & MahaDBT uploads.",
+    url: "pdf-compressor.html",
+    isInternal: true
+  },
   // 📋 नवीन विशेष शासकीय फॉर्म्स व अर्ज जनरेटर (New Government Form Generators)
   {
     id: "link-idsign-apply-dsc",

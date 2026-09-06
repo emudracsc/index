@@ -20,7 +20,7 @@
 
   // Check if page should be excluded from citizen form application tracking
   function isExcludedSlug(slug) {
-    return slug === 'index' || slug === 'aadhar-kendra' || slug === 'digital-dalan' || slug === 'digital-wall' || slug === 'book-wall' || slug === 'logo-wall' || slug === 'news_paper';
+    return slug === 'index' || slug === 'pdf-compressor' || slug === 'aadhar-kendra' || slug === 'digital-dalan' || slug === 'digital-wall' || slug === 'book-wall' || slug === 'logo-wall' || slug === 'news_paper';
   }
 
   // Generate prefix according to form type
@@ -247,7 +247,7 @@
     document.body.insertBefore(bar, document.body.firstChild);
   }
 
-  // Inject Floating Quick Action & Save Bar
+  // Inject Floating Quick Action & Save Bar (Only 💾 अर्ज सेव्ह करा visible, status hidden until printed)
   function injectFloatingActionBar() {
     if (document.getElementById('emudra-form-floating-bar')) return;
     var slug = getPageSlug();
@@ -256,19 +256,16 @@
     var bar = document.createElement('div');
     bar.id = 'emudra-form-floating-bar';
     bar.className = 'no-print';
-    bar.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:99999;display:flex;align-items:center;gap:8px;background:rgba(15,23,42,0.95);backdrop-filter:blur(10px);padding:8px 14px;border-radius:50px;border:1px solid rgba(255,255,255,0.18);box-shadow:0 12px 35px rgba(0,0,0,0.5);font-family:sans-serif;';
+    bar.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:99999;display:flex;align-items:center;gap:8px;background:rgba(15,23,42,0.95);backdrop-filter:blur(10px);padding:8px 12px;border-radius:50px;border:1px solid rgba(255,255,255,0.18);box-shadow:0 12px 35px rgba(0,0,0,0.5);font-family:sans-serif;';
 
     bar.innerHTML =
-      '<div id="emudra-save-status-pill" style="display:flex;align-items:center;gap:6px;color:#94a3b8;font-size:0.8rem;font-weight:600;padding:4px 10px;background:rgba(255,255,255,0.06);border-radius:20px;">' +
-      '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;"></span>' +
-      '<span id="emudra-save-status-text">क्लाउड सिंक सक्रिय</span>' +
-      '</div>' +
-      '<button type="button" id="emudra-floating-save-btn" style="background:linear-gradient(135deg,#059669,#047857);color:#ffffff;border:none;padding:8px 16px;border-radius:25px;font-size:0.85rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(5,150,105,0.4);transition:all 0.2s;">' +
+      '<button type="button" id="emudra-floating-save-btn" style="background:linear-gradient(135deg,#059669,#047857);color:#ffffff;border:none;padding:9px 18px;border-radius:25px;font-size:0.86rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 4px 12px rgba(5,150,105,0.4);transition:all 0.2s;">' +
       '<i class="fa-solid fa-cloud-arrow-up"></i> <span>💾 अर्ज सेव्ह करा</span>' +
       '</button>' +
-      '<a href="index.html" style="background:rgba(255,255,255,0.1);color:#e2e8f0;text-decoration:none;padding:8px 14px;border-radius:25px;font-size:0.82rem;font-weight:700;display:inline-flex;align-items:center;gap:5px;">' +
-      '<i class="fa-solid fa-gauge-high" style="color:#38bdf8;"></i> <span>डॅशबोर्ड</span>' +
-      '</a>';
+      '<div id="emudra-save-status-pill" style="display:none;align-items:center;gap:6px;color:#34d399;font-size:0.82rem;font-weight:700;padding:5px 12px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);border-radius:20px;">' +
+      '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;"></span>' +
+      '<span id="emudra-save-status-text"></span>' +
+      '</div>';
 
     document.body.appendChild(bar);
 
@@ -277,6 +274,38 @@
       saveBtn.addEventListener('click', function() {
         saveCurrentFormApplication(false);
       });
+    }
+  }
+
+  // Inject Dashboard Button into Header / Navbar across all forms
+  function injectHeaderDashboardButton() {
+    var slug = getPageSlug();
+    if (isExcludedSlug(slug)) return;
+    if (document.getElementById('emudra-header-dashboard-btn')) return;
+
+    var container = document.querySelector('.nav-actions, .header-actions, .actions-row, .btn-group, .top-bar-buttons, .controls-header-actions');
+    if (!container) {
+      container = document.querySelector('.top-navbar, .nav-left, header, nav');
+    }
+    if (!container) return;
+
+    var existingDash = Array.from(document.querySelectorAll('header a, nav a, .top-navbar a')).find(function(a) {
+      return (a.href && a.href.indexOf('index.html') !== -1) && (a.innerText.indexOf('डॅशबोर्ड') !== -1);
+    });
+    if (existingDash) return;
+
+    var dashLink = document.createElement('a');
+    dashLink.id = 'emudra-header-dashboard-btn';
+    dashLink.href = 'index.html';
+    dashLink.className = 'btn-nav no-print';
+    dashLink.title = 'मुख्य डॅशबोर्ड';
+    dashLink.style.cssText = 'background:rgba(56,189,248,0.15);color:#38bdf8;border:1px solid rgba(56,189,248,0.35);font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;font-size:0.85rem;transition:all 0.2s;';
+    dashLink.innerHTML = '<i class="fa-solid fa-gauge-high"></i> <span>डॅशबोर्ड</span>';
+
+    if (container.children.length > 0) {
+      container.insertBefore(dashLink, container.firstChild);
+    } else {
+      container.appendChild(dashLink);
     }
   }
 
@@ -313,6 +342,25 @@
       return null;
     }
 
+    // Check mandatory login for citizen
+    var loggedInUser = window.UserAuth && typeof window.UserAuth.getCurrentUser === 'function' ? window.UserAuth.getCurrentUser() : null;
+    var isAdmin = sessionStorage.getItem('emudra_admin_auth') === 'true';
+
+    if (!loggedInUser && !isAdmin) {
+      if (!silent) {
+        if (typeof showToast === 'function') {
+          showToast('शासकीय अर्ज भरण्यासाठी / सेव्ह करण्यासाठी नागरिक लॉगिन करणे अनिवार्य आहे!', 'warning');
+        } else {
+          alert('शासकीय अर्ज भरण्यासाठी / सेव्ह करण्यासाठी नागरिक लॉगिन करणे अनिवार्य आहे!');
+        }
+        if (window.UserAuth) {
+          window.UserAuth.enforceMandatoryFormLogin();
+          window.UserAuth.openLoginModal();
+        }
+      }
+      return null;
+    }
+
     isSavingInProgress = true;
 
     var statusEl = document.getElementById('emudra-save-status-text');
@@ -328,7 +376,8 @@
     if (!currentSessionAppId) {
       currentSessionAppId = existingAppId || (prefix + '-' + Math.floor(100000 + Math.random() * 900000));
     }
-    var targetAppId = existingAppId || currentSessionAppId;
+    var userMobile = loggedInUser ? loggedInUser.mobile : (meta.mobile || '');
+    var userName = loggedInUser ? loggedInUser.name : (meta.applicantName || '');
 
     var formRecord = {
       appId: targetAppId,
@@ -336,7 +385,9 @@
       formType: slug,
       formTitle: getFormCleanTitle(slug),
       applicantName: meta.applicantName,
-      mobile: meta.mobile,
+      mobile: meta.mobile || userMobile,
+      userMobile: userMobile,
+      userName: userName,
       aadhaar: meta.aadhaar,
       formData: formData,
       status: 'printed'
@@ -364,7 +415,9 @@
         localStorage.setItem('emudra_csc_applications', JSON.stringify(cscList));
       }
 
+      var pillEl = document.getElementById('emudra-save-status-pill');
       if (statusEl) statusEl.textContent = '✅ सेव्ह झाले (' + targetAppId + ')';
+      if (pillEl) pillEl.style.display = 'inline-flex';
 
       if (!silent) {
         showUniversalSaveToast('✅ अर्ज क्र. ' + targetAppId + ' सर्व्हरवर सेव्ह झाला!');
@@ -372,6 +425,8 @@
     } catch (err) {
       console.warn('Universal save warning:', err);
       if (statusEl) statusEl.textContent = 'स्थानिक मेमरीत सेव्ह झाले';
+      var pillEl = document.getElementById('emudra-save-status-pill');
+      if (pillEl) pillEl.style.display = 'inline-flex';
     } finally {
       setTimeout(function () {
         isSavingInProgress = false;
@@ -453,10 +508,26 @@
     }
   }
 
-  // Intercept window.print (NON-BLOCKING: triggers background save without delaying browser print prompt)
+  // Intercept window.print (MANDATORY LOGIN ENFORCED: blocks print if not logged in)
   var originalPrint = window.print;
   window.print = function () {
     if (!isExcludedSlug(getPageSlug())) {
+      var loggedInUser = window.UserAuth && typeof window.UserAuth.getCurrentUser === 'function' ? window.UserAuth.getCurrentUser() : null;
+      var isAdmin = sessionStorage.getItem('emudra_admin_auth') === 'true';
+
+      if (!loggedInUser && !isAdmin) {
+        if (typeof showToast === 'function') {
+          showToast('शासकीय अर्ज प्रिंट करण्यासाठी नागरिक लॉगिन करणे अनिवार्य आहे!', 'warning');
+        } else {
+          alert('शासकीय अर्ज प्रिंट करण्यासाठी नागरिक लॉगिन करणे अनिवार्य आहे!');
+        }
+        if (window.UserAuth) {
+          window.UserAuth.enforceMandatoryFormLogin();
+          window.UserAuth.openLoginModal();
+        }
+        return;
+      }
+
       try {
         saveCurrentFormApplication(false);
       } catch (e) {
@@ -507,19 +578,6 @@
     }
   }, true);
 
-  // Debounced Auto-Save on any form input change
-  var autoSaveTimer = null;
-  document.addEventListener('input', function (e) {
-    if (isExcludedSlug(getPageSlug())) return;
-    var t = e.target;
-    if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA')) {
-      if (autoSaveTimer) clearTimeout(autoSaveTimer);
-      autoSaveTimer = setTimeout(function () {
-        saveCurrentFormApplication(true);
-      }, 1400);
-    }
-  }, true);
-
   // On DOM Ready: Check Edit Mode, Autoprint, & Inject UI Elements
   window.addEventListener('DOMContentLoaded', function () {
     // Purge any accidental legacy 'aadhar-kendra' / 'AAK-' applications from storage
@@ -546,8 +604,22 @@
 
     if (isExcludedSlug(getPageSlug())) return;
 
+    if (!window.UserAuth && !document.querySelector('script[src*="user-auth.js"]')) {
+      var authScript = document.createElement('script');
+      authScript.src = 'js/user-auth.js';
+      document.head.appendChild(authScript);
+    }
+
     injectFloatingActionBar();
     setTimeout(injectHeaderSaveButton, 300);
+    setTimeout(injectHeaderDashboardButton, 300);
+
+    // Enforce mandatory citizen login on form page
+    setTimeout(function () {
+      if (window.UserAuth && typeof window.UserAuth.enforceMandatoryFormLogin === 'function') {
+        window.UserAuth.enforceMandatoryFormLogin();
+      }
+    }, 250);
 
     var urlParams = new URLSearchParams(window.location.search);
     var editId = urlParams.get('edit_app_id');

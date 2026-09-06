@@ -335,17 +335,21 @@ var DB = {
 
     // 2. Try Supabase cloud sync with on_conflict
     try {
+      var docsData = Object.assign({}, formRecord.formData || {});
+      if (formRecord.userMobile) docsData._user_mobile = formRecord.userMobile;
+      if (formRecord.userName) docsData._user_name = formRecord.userName;
+
       var row = {
         app_id: formRecord.appId,
         service_id: formRecord.formType || "form_fill",
         service_name: formRecord.formTitle || "ऑनलाइन फॉर्म",
-        full_name: formRecord.applicantName || "",
-        mobile: formRecord.mobile || "",
+        full_name: formRecord.applicantName || formRecord.userName || "",
+        mobile: formRecord.mobile || formRecord.userMobile || "",
         aadhaar: formRecord.aadhaar || "",
         email: formRecord.email || "",
         address: formRecord.address || "",
         purpose: formRecord.purpose || "",
-        docs: formRecord.formData || {}, // Store filled inputs as JSON
+        docs: docsData, // Store filled inputs as JSON with user attribution
         status: formRecord.status || "printed"
       };
       await sbFetch("applications", { method: "POST", body: row, upsert: true, filter: "on_conflict=app_id" });
@@ -365,12 +369,16 @@ var DB = {
       if (rows && rows.length > 0) {
         rows.forEach(function(r) {
           var existsIdx = localList.findIndex(function(l) { return l.appId === r.app_id; });
+          var uMob = (r.docs && r.docs._user_mobile) || r.mobile || "";
+          var uName = (r.docs && r.docs._user_name) || r.full_name || "";
           var item = {
             appId: r.app_id,
             formType: r.service_id,
             formTitle: r.service_name,
             applicantName: r.full_name,
             mobile: r.mobile,
+            userMobile: uMob,
+            userName: uName,
             aadhaar: r.aadhaar,
             email: r.email,
             address: r.address,
