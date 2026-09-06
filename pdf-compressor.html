@@ -1494,7 +1494,7 @@
       return outCanvas;
     }
 
-    // Compress Single Image to Exact Target Bytes with Portal Dimensions & Zero Blur
+    // Compress Single Image to Exact Target Bytes with Portal Dimensions & Zero Blur (९०% ते १००% ब्रॅकेट हमी: उदा. ५०० KB साठी ४५० ते ५०० KB)
     async function compressImageToTargetBytes(file, targetBytes, dimensionMode = 'original') {
       return new Promise((resolve, reject) => {
         const img = new Image();
@@ -1512,19 +1512,19 @@
             targetW = 256;
             targetH = 64;
           } else if (dimensionMode === 'document') {
-            // Document Scan: keep aspect ratio, max 1200 px
-            const maxD = 1200;
+            // Document Scan: keep aspect ratio, max 1600 px
+            const maxD = targetBytes >= 300 * 1024 ? 2000 : 1400;
             const scale = Math.min(1.0, maxD / Math.max(origW, origH));
             targetW = Math.max(300, Math.round(origW * scale));
             targetH = Math.max(300, Math.round(origH * scale));
           } else {
             // Original aspect ratio: calibrate max dimension based on target bytes
             let maxDim = 1250;
-            if (targetBytes >= 300 * 1024) maxDim = 1600;
-            else if (targetBytes >= 180 * 1024) maxDim = 1350;
-            else if (targetBytes >= 90 * 1024) maxDim = 1100;
-            else if (targetBytes >= 40 * 1024) maxDim = 900;
-            else maxDim = 680;
+            if (targetBytes >= 400 * 1024) maxDim = 2800;
+            else if (targetBytes >= 200 * 1024) maxDim = 2200;
+            else if (targetBytes >= 90 * 1024) maxDim = 1500;
+            else if (targetBytes >= 40 * 1024) maxDim = 1100;
+            else maxDim = 850;
 
             let scale = Math.min(1.0, maxDim / Math.max(origW, origH));
             targetW = Math.round(origW * scale);
@@ -1554,42 +1554,88 @@
 
           const cleanCanvas = enhanceCanvasForClarity(canvas);
 
-          // Calibrate initial quality factor
-          let q = 0.78;
-          if (targetBytes < 25 * 1024) q = 0.48;
-          else if (targetBytes < 55 * 1024) q = 0.62;
-          else if (targetBytes < 120 * 1024) q = 0.72;
+          // टार्गेट साईझ मर्यादा (९०% ते १००% अचूक ब्रॅकेट)
+          const targetMinBytes = Math.round(targetBytes * 0.90);
+          const targetSweetBytes = Math.round(targetBytes * 0.96);
 
-          let dataUrl = cleanCanvas.toDataURL('image/jpeg', q);
-          let byteSize = Math.round((dataUrl.length - 22) * 0.75);
+          // Calibrate initial quality factor
+          let q = 0.88;
+          if (targetBytes < 25 * 1024) q = 0.52;
+          else if (targetBytes < 55 * 1024) q = 0.65;
+          else if (targetBytes < 120 * 1024) q = 0.76;
+          else if (targetBytes < 300 * 1024) q = 0.82;
 
           let currCanvas = cleanCanvas;
-          let attempts = 0;
-          while (byteSize > targetBytes && attempts < 6) {
-            attempts++;
-            const ratio = targetBytes / byteSize;
-            q = Math.max(0.14, q * ratio * 0.94);
-            if (q <= 0.28 && byteSize > targetBytes && (dimensionMode === 'original' || dimensionMode === 'document')) {
-              const down = document.createElement('canvas');
-              down.width = Math.round(currCanvas.width * 0.84);
-              down.height = Math.round(currCanvas.height * 0.84);
-              const dCtx = down.getContext('2d', { alpha: false });
-              dCtx.drawImage(currCanvas, 0, 0, down.width, down.height);
-              currCanvas = down;
-              q = 0.45;
+          let bestDataUrl = null;
+          let bestBytes = 0;
+
+          // द्वि-दिश अचूक कॅलिब्रेशन लूप (Bi-directional Precision Convergence Loop)
+          for (let attempt = 0; attempt < 8; attempt++) {
+            const dataUrl = currCanvas.toDataURL('image/jpeg', q);
+            const byteSize = Math.round((dataUrl.length - 22) * 0.75);
+
+            if (byteSize <= targetBytes) {
+              if (byteSize > bestBytes) {
+                bestBytes = byteSize;
+                bestDataUrl = dataUrl;
+              }
+              // ९०% ते १००% च्या परिपूर्ण ब्रॅकेटमध्ये आले तर लगेच बाहेर पडा
+              if (byteSize >= targetMinBytes) {
+                break;
+              }
+              // ९०% पेक्षा लहान असल्यास क्वालिटी वाढवा (Upward Calibration)
+              const boost = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(byteSize, 1024)));
+              const nextQ = Math.min(0.98, q * boost);
+              if (Math.abs(nextQ - q) < 0.01) {
+                // क्वालिटी कमाल ०.९८ वर पोहोचल्यावर गरज असल्यास कॅनव्हास रिझोल्युशन मूळ आकाराकडे वाढवा
+                if ((dimensionMode === 'original' || dimensionMode === 'document') && (currCanvas.width < origW || currCanvas.height < origH)) {
+                  const upFactor = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(byteSize, 1024)));
+                  const nw = Math.min(origW, Math.round(currCanvas.width * upFactor));
+                  const nh = Math.min(origH, Math.round(currCanvas.height * upFactor));
+                  if (nw > currCanvas.width || nh > currCanvas.height) {
+                    const upCanvas = document.createElement('canvas');
+                    upCanvas.width = nw;
+                    upCanvas.height = nh;
+                    const uCtx = upCanvas.getContext('2d', { alpha: false });
+                    uCtx.drawImage(img, 0, 0, nw, nh);
+                    currCanvas = enhanceCanvasForClarity(upCanvas);
+                    q = 0.85;
+                    continue;
+                  }
+                }
+                break;
+              }
+              q = nextQ;
+            } else {
+              // टार्गेटपेक्षा जास्त असल्यास अचूक प्रमाणानुसार क्वालिटी कमी करा
+              const reduc = (targetSweetBytes / byteSize) * 0.98;
+              q = Math.max(0.12, q * reduc);
+              if (q <= 0.28 && byteSize > targetBytes && (dimensionMode === 'original' || dimensionMode === 'document')) {
+                const down = document.createElement('canvas');
+                down.width = Math.max(100, Math.round(currCanvas.width * 0.84));
+                down.height = Math.max(100, Math.round(currCanvas.height * 0.84));
+                const dCtx = down.getContext('2d', { alpha: false });
+                dCtx.drawImage(currCanvas, 0, 0, down.width, down.height);
+                currCanvas = down;
+                q = 0.45;
+              }
             }
-            dataUrl = currCanvas.toDataURL('image/jpeg', q);
-            byteSize = Math.round((dataUrl.length - 22) * 0.75);
           }
 
-          // Strict guarantee pass: Ensure file is <= targetBytes
-          if (byteSize > targetBytes) {
-            q = Math.max(0.08, q * (targetBytes / byteSize) * 0.90);
-            dataUrl = currCanvas.toDataURL('image/jpeg', q);
+          if (!bestDataUrl) {
+            bestDataUrl = currCanvas.toDataURL('image/jpeg', 0.22);
+          }
+          let finalDataUrl = bestDataUrl;
+          let finalByteSize = Math.round((finalDataUrl.length - 22) * 0.75);
+
+          // Strict guarantee pass: Ensure file NEVER exceeds targetBytes
+          if (finalByteSize > targetBytes) {
+            q = Math.max(0.08, q * (targetBytes / finalByteSize) * 0.95);
+            finalDataUrl = currCanvas.toDataURL('image/jpeg', q);
           }
 
           // Convert dataURL to Blob
-          const arr = dataUrl.split(',');
+          const arr = finalDataUrl.split(',');
           const mime = arr[0].match(/:(.*?);/)[1];
           const bstr = atob(arr[1]);
           let n = bstr.length;
@@ -1601,7 +1647,8 @@
 
           resolve({
             blob: blob,
-            dataUrl: dataUrl,
+            dataUrl: finalDataUrl,
+            canvas: currCanvas,
             width: currCanvas.width,
             height: currCanvas.height,
             bytes: blob.size
@@ -1681,14 +1728,13 @@
       const targetBytesPerPage = Math.floor(usableBytes / numPages);
 
       let targetMaxDim = 1150;
-      if (targetBytesPerPage >= 300 * 1024) targetMaxDim = 1600;
-      else if (targetBytesPerPage >= 180 * 1024) targetMaxDim = 1350;
-      else if (targetBytesPerPage >= 100 * 1024) targetMaxDim = 1150;
-      else if (targetBytesPerPage >= 60 * 1024) targetMaxDim = 950;
-      else if (targetBytesPerPage >= 35 * 1024) targetMaxDim = 800;
-      else targetMaxDim = 650;
+      if (targetBytesPerPage >= 350 * 1024) targetMaxDim = 2400;
+      else if (targetBytesPerPage >= 200 * 1024) targetMaxDim = 1900;
+      else if (targetBytesPerPage >= 100 * 1024) targetMaxDim = 1450;
+      else if (targetBytesPerPage >= 50 * 1024) targetMaxDim = 1150;
+      else targetMaxDim = 850;
 
-      let initialQuality = targetBytesPerPage < 70 * 1024 ? 0.52 : (targetBytesPerPage < 150 * 1024 ? 0.66 : 0.76);
+      let initialQuality = targetBytesPerPage >= 350 * 1024 ? 0.88 : (targetBytesPerPage >= 180 * 1024 ? 0.78 : (targetBytesPerPage >= 90 * 1024 ? 0.68 : (targetBytesPerPage >= 45 * 1024 ? 0.58 : 0.46)));
       const pagesData = [];
 
       for (let i = 1; i <= numPages; i++) {
@@ -1737,6 +1783,15 @@
           approxBytes = Math.round((imgData.length - 22) * 0.75);
         }
 
+        let upAttempts = 0;
+        while (approxBytes < targetBytesPerPage * 0.88 && q < 0.94 && upAttempts < 3) {
+          upAttempts++;
+          const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.96) / Math.max(approxBytes, 1024)));
+          q = Math.min(0.96, q * boost);
+          imgData = currCanvas.toDataURL('image/jpeg', q);
+          approxBytes = Math.round((imgData.length - 22) * 0.75);
+        }
+
         pagesData.push({
           canvas: currCanvas,
           imgData: imgData,
@@ -1751,18 +1806,51 @@
 
       progressFill.style.width = '88%';
       progressPct.textContent = '88%';
-      progressStatus.textContent = 'टार्गेट साईझ कॅलिब्रेशन...';
+      progressStatus.textContent = 'टार्गेट साईझ अचूक कॅलिब्रेशन (९०% ते १००% ब्रॅकेट)...';
 
+      const targetMinBytes = Math.round(targetBytes * 0.90);
+      const targetSweetBytes = Math.round(targetBytes * 0.96);
       let finalBlob = compileJsPdf(pagesData);
 
-      // Enforcement Loop
+      // Bi-directional Hard Size Enforcement Loop (९०% ते १००% ब्रॅकेट)
       let pass = 0;
-      while (finalBlob.size > targetBytes && pass < 4) {
+      while (pass < 8) {
         pass++;
-        const reductionRatio = (targetBytes / finalBlob.size) * 0.93;
+        const currSize = finalBlob.size;
+        if (currSize >= targetMinBytes && currSize <= targetBytes) {
+          break; // परिपूर्ण ब्रॅकेट (उदा. ५०० KB साठी ४५० ते ५०० KB)!
+        }
+
+        if (currSize > targetBytes) {
+          const reductionRatio = (targetSweetBytes / currSize) * 0.98;
+          for (let i = 0; i < pagesData.length; i++) {
+            const p = pagesData[i];
+            p.quality = Math.max(0.12, p.quality * reductionRatio);
+            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+          }
+          finalBlob = compileJsPdf(pagesData);
+        } else if (currSize < targetMinBytes) {
+          let canBoost = false;
+          const boostRatio = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(currSize, 1024)));
+          for (let i = 0; i < pagesData.length; i++) {
+            const p = pagesData[i];
+            if (p.quality < 0.96) {
+              p.quality = Math.min(0.97, p.quality * boostRatio);
+              p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+              canBoost = true;
+            }
+          }
+          if (!canBoost) break;
+          finalBlob = compileJsPdf(pagesData);
+        }
+      }
+
+      // अतिरिक्त हमी: फाईल कधीही टार्गेटपेक्षा जास्त होणार नाही
+      if (finalBlob.size > targetBytes) {
+        const safetyRatio = (targetBytes * 0.97) / finalBlob.size;
         for (let i = 0; i < pagesData.length; i++) {
           const p = pagesData[i];
-          p.quality = Math.max(0.14, p.quality * reductionRatio);
+          p.quality = Math.max(0.10, p.quality * safetyRatio);
           p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
         }
         finalBlob = compileJsPdf(pagesData);
@@ -1830,8 +1918,8 @@
       const usableBytes = Math.max(8192, targetBytes - overhead);
       const targetBytesPerPage = Math.floor(usableBytes / totalPagesAll);
 
-      let targetMaxDim = targetBytesPerPage >= 150 * 1024 ? 1300 : (targetBytesPerPage >= 80 * 1024 ? 1100 : 850);
-      let initialQuality = targetBytesPerPage < 60 * 1024 ? 0.48 : 0.68;
+      let targetMaxDim = targetBytesPerPage >= 300 * 1024 ? 2200 : (targetBytesPerPage >= 150 * 1024 ? 1600 : (targetBytesPerPage >= 80 * 1024 ? 1250 : 900));
+      let initialQuality = targetBytesPerPage >= 300 * 1024 ? 0.86 : (targetBytesPerPage >= 150 * 1024 ? 0.76 : 0.65);
 
       const allMergedPages = [];
       let globalPageNum = 0;
@@ -1885,6 +1973,15 @@
             approxBytes = Math.round((imgData.length - 22) * 0.75);
           }
 
+          let upAttempts = 0;
+          while (approxBytes < targetBytesPerPage * 0.88 && q < 0.94 && upAttempts < 3) {
+            upAttempts++;
+            const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.96) / Math.max(approxBytes, 1024)));
+            q = Math.min(0.96, q * boost);
+            imgData = currCanvas.toDataURL('image/jpeg', q);
+            approxBytes = Math.round((imgData.length - 22) * 0.75);
+          }
+
           allMergedPages.push({
             canvas: currCanvas,
             imgData: imgData,
@@ -1900,18 +1997,51 @@
 
       progressFill.style.width = '88%';
       progressPct.textContent = '88%';
-      progressStatus.textContent = 'एकत्रित PDF तयार होत आहे...';
+      progressStatus.textContent = 'एकत्रित PDF अचूक टार्गेट कॅलिब्रेशन...';
 
+      const targetMinBytes = Math.round(targetBytes * 0.90);
+      const targetSweetBytes = Math.round(targetBytes * 0.96);
       let finalBlob = compileJsPdf(allMergedPages);
 
-      // Enforcement
+      // Bi-directional Hard Size Enforcement Loop (९०% ते १००% ब्रॅकेट)
       let pass = 0;
-      while (finalBlob.size > targetBytes && pass < 4) {
+      while (pass < 8) {
         pass++;
-        const reductionRatio = (targetBytes / finalBlob.size) * 0.93;
+        const currSize = finalBlob.size;
+        if (currSize >= targetMinBytes && currSize <= targetBytes) {
+          break; // परिपूर्ण ब्रॅकेट (उदा. ५०० KB साठी ४५० ते ५०० KB)!
+        }
+
+        if (currSize > targetBytes) {
+          const reductionRatio = (targetSweetBytes / currSize) * 0.98;
+          for (let i = 0; i < allMergedPages.length; i++) {
+            const p = allMergedPages[i];
+            p.quality = Math.max(0.12, p.quality * reductionRatio);
+            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+          }
+          finalBlob = compileJsPdf(allMergedPages);
+        } else if (currSize < targetMinBytes) {
+          let canBoost = false;
+          const boostRatio = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(currSize, 1024)));
+          for (let i = 0; i < allMergedPages.length; i++) {
+            const p = allMergedPages[i];
+            if (p.quality < 0.96) {
+              p.quality = Math.min(0.97, p.quality * boostRatio);
+              p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+              canBoost = true;
+            }
+          }
+          if (!canBoost) break;
+          finalBlob = compileJsPdf(allMergedPages);
+        }
+      }
+
+      // अतिरिक्त हमी: फाईल कधीही टार्गेटपेक्षा जास्त होणार नाही
+      if (finalBlob.size > targetBytes) {
+        const safetyRatio = (targetBytes * 0.97) / finalBlob.size;
         for (let i = 0; i < allMergedPages.length; i++) {
           const p = allMergedPages[i];
-          p.quality = Math.max(0.14, p.quality * reductionRatio);
+          p.quality = Math.max(0.10, p.quality * safetyRatio);
           p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
         }
         finalBlob = compileJsPdf(allMergedPages);
@@ -1954,7 +2084,8 @@
         const usableBytes = Math.max(8192, targetBytes - overhead);
         const targetBytesPerPage = Math.floor(usableBytes / numPages);
 
-        let targetMaxDim = targetBytesPerPage >= 150 * 1024 ? 1300 : (targetBytesPerPage >= 80 * 1024 ? 1100 : 850);
+        let targetMaxDim = targetBytesPerPage >= 300 * 1024 ? 2200 : (targetBytesPerPage >= 150 * 1024 ? 1600 : (targetBytesPerPage >= 80 * 1024 ? 1250 : 900));
+        let initialQuality = targetBytesPerPage >= 300 * 1024 ? 0.85 : (targetBytesPerPage >= 150 * 1024 ? 0.75 : 0.65);
         const pagesData = [];
 
         for (let p = 1; p <= numPages; p++) {
@@ -1973,15 +2104,24 @@
           await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
           const cleanCanvas = enhanceCanvasForClarity(canvas);
-          let q = 0.65;
-          let imgData = cleanCanvas.toDataURL('image/jpeg', q);
+          let q = initialQuality;
+          let currCanvas = cleanCanvas;
+          let imgData = currCanvas.toDataURL('image/jpeg', q);
           let byteSize = Math.round((imgData.length - 22) * 0.75);
 
           let attempts = 0;
-          let currCanvas = cleanCanvas;
           while (byteSize > targetBytesPerPage && attempts < 4) {
             attempts++;
             q = Math.max(0.18, q * (targetBytesPerPage / byteSize) * 0.94);
+            imgData = currCanvas.toDataURL('image/jpeg', q);
+            byteSize = Math.round((imgData.length - 22) * 0.75);
+          }
+
+          let upAttempts = 0;
+          while (byteSize < targetBytesPerPage * 0.88 && q < 0.94 && upAttempts < 3) {
+            upAttempts++;
+            const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.96) / Math.max(byteSize, 1024)));
+            q = Math.min(0.96, q * boost);
             imgData = currCanvas.toDataURL('image/jpeg', q);
             byteSize = Math.round((imgData.length - 22) * 0.75);
           }
@@ -2000,14 +2140,45 @@
           }
         }
 
+        const targetMinBytes = Math.round(targetBytes * 0.90);
+        const targetSweetBytes = Math.round(targetBytes * 0.96);
         let compressedBlob = compileJsPdf(pagesData);
 
-        // Enforcement pass
+        // Bi-directional Hard Size Enforcement pass (९०% ते १००% ब्रॅकेट)
         let pass = 0;
-        while (compressedBlob.size > targetBytes && pass < 3) {
+        while (pass < 6) {
           pass++;
+          const currSize = compressedBlob.size;
+          if (currSize >= targetMinBytes && currSize <= targetBytes) {
+            break;
+          }
+          if (currSize > targetBytes) {
+            const reductionRatio = (targetSweetBytes / currSize) * 0.98;
+            for (let k = 0; k < pagesData.length; k++) {
+              pagesData[k].quality = Math.max(0.12, pagesData[k].quality * reductionRatio);
+              pagesData[k].imgData = pagesData[k].canvas.toDataURL('image/jpeg', pagesData[k].quality);
+            }
+            compressedBlob = compileJsPdf(pagesData);
+          } else if (currSize < targetMinBytes) {
+            let canBoost = false;
+            const boostRatio = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(currSize, 1024)));
+            for (let k = 0; k < pagesData.length; k++) {
+              if (pagesData[k].quality < 0.96) {
+                pagesData[k].quality = Math.min(0.97, pagesData[k].quality * boostRatio);
+                pagesData[k].imgData = pagesData[k].canvas.toDataURL('image/jpeg', pagesData[k].quality);
+                canBoost = true;
+              }
+            }
+            if (!canBoost) break;
+            compressedBlob = compileJsPdf(pagesData);
+          }
+        }
+
+        // Strict safety trim
+        if (compressedBlob.size > targetBytes) {
+          const safetyRatio = (targetBytes * 0.97) / compressedBlob.size;
           for (let k = 0; k < pagesData.length; k++) {
-            pagesData[k].quality = Math.max(0.15, pagesData[k].quality * 0.90);
+            pagesData[k].quality = Math.max(0.10, pagesData[k].quality * safetyRatio);
             pagesData[k].imgData = pagesData[k].canvas.toDataURL('image/jpeg', pagesData[k].quality);
           }
           compressedBlob = compileJsPdf(pagesData);
@@ -2087,8 +2258,9 @@
         const ptH = isLandscape ? 595.28 : 841.89;
 
         pagesData.push({
-          canvas: null,
+          canvas: res.canvas,
           imgData: res.dataUrl,
+          quality: 0.82,
           ptW: ptW,
           ptH: ptH,
           orientation: isLandscape ? 'landscape' : 'portrait'
@@ -2099,19 +2271,53 @@
 
       progressFill.style.width = '92%';
       progressPct.textContent = '92%';
-      progressStatus.textContent = 'सर्व फोटो जोडून PDF बनवत आहे...';
+      progressStatus.textContent = 'सर्व फोटो जोडून PDF अचूक टार्गेटमध्ये बसवत आहे...';
 
+      const targetMinBytes = Math.round(targetBytes * 0.90);
+      const targetSweetBytes = Math.round(targetBytes * 0.96);
       let finalBlob = compileJsPdf(pagesData);
 
-      // Strict enforcement loop for combined PDF
+      // Bi-directional Hard Size Enforcement loop (९०% ते १००% ब्रॅकेट)
       let pass = 0;
-      while (finalBlob.size > targetBytes && pass < 4) {
+      while (pass < 6) {
         pass++;
-        const reductionRatio = (targetBytes / finalBlob.size) * 0.92;
+        const currSize = finalBlob.size;
+        if (currSize >= targetMinBytes && currSize <= targetBytes) {
+          break;
+        }
+        if (currSize > targetBytes) {
+          const reductionRatio = (targetSweetBytes / currSize) * 0.98;
+          for (let i = 0; i < pagesData.length; i++) {
+            const p = pagesData[i];
+            p.quality = Math.max(0.12, p.quality * reductionRatio);
+            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+          }
+          finalBlob = compileJsPdf(pagesData);
+        } else if (currSize < targetMinBytes) {
+          let canBoost = false;
+          const boostRatio = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(currSize, 1024)));
+          for (let i = 0; i < pagesData.length; i++) {
+            const p = pagesData[i];
+            if (p.quality < 0.96) {
+              p.quality = Math.min(0.97, p.quality * boostRatio);
+              p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+              canBoost = true;
+            }
+          }
+          if (!canBoost) break;
+          finalBlob = compileJsPdf(pagesData);
+        }
+      }
+
+      // Final safety trim
+      if (finalBlob.size > targetBytes) {
+        const safetyRatio = (targetBytes * 0.97) / finalBlob.size;
         for (let i = 0; i < pagesData.length; i++) {
           const p = pagesData[i];
-          // recreate slightly smaller
+          p.quality = Math.max(0.10, p.quality * safetyRatio);
+          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
         }
+        finalBlob = compileJsPdf(pagesData);
       }
 
       progressFill.style.width = '100%';

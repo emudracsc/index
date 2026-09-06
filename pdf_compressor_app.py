@@ -103,15 +103,17 @@ def compress_image_to_exact_target(
             if scale < 1.0:
                 img = img.resize((int(round(orig_w * scale)), int(round(orig_h * scale))), Image.Resampling.LANCZOS)
         else:
-            # 'original': अस्पेक्ट रेशो कायम ठेवणे, टार्गेट साईझनुसार कमाल मर्यादा
-            if target_bytes < 40 * 1024:
-                max_d = 900
-            elif target_bytes < 90 * 1024:
-                max_d = 1200
-            elif target_bytes < 180 * 1024:
-                max_d = 1450
+            # 'original': अस्पेक्ट रेशो कायम ठेवणे, टार्गेट साईझनुसार अचूक कॅलिब्रेशन
+            if target_bytes >= 400 * 1024:
+                max_d = 2600
+            elif target_bytes >= 200 * 1024:
+                max_d = 2000
+            elif target_bytes >= 90 * 1024:
+                max_d = 1500
+            elif target_bytes >= 40 * 1024:
+                max_d = 1100
             else:
-                max_d = 1800
+                max_d = 850
             scale = min(1.0, max_d / max(orig_w, orig_h))
             if scale < 1.0:
                 img = img.resize((int(round(orig_w * scale)), int(round(orig_h * scale))), Image.Resampling.LANCZOS)
@@ -124,13 +126,16 @@ def compress_image_to_exact_target(
             img = sharpener.enhance(1.22)
             img = img.filter(ImageFilter.UnsharpMask(radius=1.2, percent=125, threshold=2))
 
-        # अचूक टार्गेट साईझ एनफोर्समेंट लूप
+        # अचूक टार्गेट साईझ एनफोर्समेंट लूप (९०% ते १००% ब्रॅकेट हमी: उदा. ५०० KB साठी ४५० ते ५०० KB)
+        target_min_bytes = int(round(target_bytes * 0.90))
+        target_sweet_bytes = int(round(target_bytes * 0.96))
+
         best_data = None
         best_size = 0
-        curr_q = 82 if target_kb >= 100 else (68 if target_kb >= 40 else 52)
+        curr_q = 88 if target_kb >= 300 else (80 if target_kb >= 100 else (68 if target_kb >= 40 else 52))
         curr_img = img
 
-        max_passes = 6
+        max_passes = 8
         for pass_idx in range(max_passes):
             if progress_callback:
                 progress_callback(pass_idx + 1, max_passes, f"इमेज फेरी {pass_idx + 1}: अचूक साईझ व क्लॅरिटी कॅलिब्रेशन...")
@@ -143,15 +148,31 @@ def compress_image_to_exact_target(
                 if size > best_size:
                     best_size = size
                     best_data = buf.getvalue()
-                if size >= target_bytes * 0.90:
+                # जर फाईल अचूक टार्गेट ब्रॅकेटमध्ये (९०% ते १००%) आली तर पूर्ण!
+                if size >= target_min_bytes:
                     break
-                curr_q = min(92, curr_q + 5)
+                # ९०% पेक्षा लहान असल्यास क्वालिटी वाढवणे (Upward Calibration)
+                boost = min(1.35, ((target_sweet_bytes / max(size, 1024)) ** 0.5))
+                next_q = min(98, int(round(curr_q * boost)))
+                if next_q == curr_q:
+                    # क्वालिटी कमाल झाल्यावर गरज असल्यास कॅनव्हास रिझोल्युशन मूळ आकाराकडे वाढवणे
+                    if dimension_preset in ("original", "document") and (curr_img.width < orig_w or curr_img.height < orig_h):
+                        up_factor = min(1.35, ((target_sweet_bytes / max(size, 1024)) ** 0.5))
+                        nw = min(orig_w, int(round(curr_img.width * up_factor)))
+                        nh = min(orig_h, int(round(curr_img.height * up_factor)))
+                        if nw > curr_img.width or nh > curr_img.height:
+                            curr_img = img.resize((nw, nh), Image.Resampling.LANCZOS)
+                            curr_q = 85
+                            continue
+                    break
+                curr_q = next_q
             else:
-                ratio = target_bytes / size
-                curr_q = max(16, int(curr_q * ratio * 0.95))
+                # टार्गेटपेक्षा मोठी असल्यास अचूक गुणोत्तरानुसार क्वालिटी कमी करणे
+                reduc = (target_sweet_bytes / size) * 0.98
+                curr_q = max(14, int(round(curr_q * reduc)))
                 if curr_q <= 28 and size > target_bytes and dimension_preset in ("original", "document"):
-                    nw = max(120, int(round(curr_img.width * 0.85)))
-                    nh = max(120, int(round(curr_img.height * 0.85)))
+                    nw = max(100, int(round(curr_img.width * 0.85)))
+                    nh = max(100, int(round(curr_img.height * 0.85)))
                     curr_img = curr_img.resize((nw, nh), Image.Resampling.LANCZOS)
                     curr_q = 45
 
@@ -221,30 +242,34 @@ def compress_pdf_to_exact_target(
     available_img_bytes = max(10240, target_bytes - overhead)
     target_per_page = available_img_bytes // total_pages
 
-    # सुरुवातीचे अचूक DPI व Quality कॅलिब्रेशन
+    # सुरुवातीचे अचूक DPI व Quality कॅलिब्रेशन (Headroom for High Targets)
     if target_per_page > 320 * 1024:
-        initial_dpi = 175
-        min_q, max_q = 68, 88
+        initial_dpi = 220
+        min_q, max_q = 78, 96
     elif target_per_page > 180 * 1024:
-        initial_dpi = 150
-        min_q, max_q = 58, 82
+        initial_dpi = 175
+        min_q, max_q = 68, 90
     elif target_per_page > 90 * 1024:
-        initial_dpi = 130
-        min_q, max_q = 48, 75
-    elif target_per_page > 45 * 1024:
-        initial_dpi = 110
-        min_q, max_q = 38, 65
-    else:
+        initial_dpi = 135
+        min_q, max_q = 55, 85
+    elif target_per_page > 50 * 1024:
         initial_dpi = 95
-        min_q, max_q = 30, 52
+        min_q, max_q = 40, 80
+    else:
+        initial_dpi = 85
+        min_q, max_q = 25, 75
 
     curr_dpi = initial_dpi
     curr_q = (min_q + max_q) // 2
 
+    # अचूक टार्गेट साईझ एनफोर्समेंट लूप (९०% ते १००% ब्रॅकेट हमी: उदा. ५०० KB साठी ४५० ते ५०० KB)
+    target_min_bytes = int(round(target_bytes * 0.90))
+    target_sweet_bytes = int(round(target_bytes * 0.96))
+
     best_size = 0
     best_temp_file = None
 
-    max_passes = 4
+    max_passes = 8
     for attempt in range(max_passes):
         if progress_callback:
             progress_callback(attempt + 1, max_passes, f"PDF फेरी {attempt + 1}: ऑप्टिमायझेशन सुरू आहे...")
@@ -287,29 +312,32 @@ def compress_pdf_to_exact_target(
                 if os.path.exists(temp_out):
                     os.remove(temp_out)
 
-            if size >= target_bytes * 0.90:
+            # जर फाईल अचूक टार्गेट ब्रॅकेटमध्ये (९०% ते १००%) आली तर पूर्ण!
+            if size >= target_min_bytes:
                 break
 
-            curr_q = min(max_q + 10, curr_q + 7)
-            curr_dpi = min(180, curr_dpi + 8)
+            # ९०% पेक्षा लहान असल्यास क्वालिटी व DPI वाढवणे (Upward Calibration)
+            boost_ratio = min(1.30, ((target_sweet_bytes / max(size, 1024)) ** 0.5))
+            curr_q = min(max_q, int(round(curr_q * boost_ratio)))
+            curr_dpi = min(240, int(round(curr_dpi * (boost_ratio ** 0.5))))
         else:
             if os.path.exists(temp_out):
                 os.remove(temp_out)
-            ratio = target_bytes / size
-            curr_q = max(24, int(curr_q * ratio * 0.96))
-            if size > target_bytes * 1.25:
-                curr_dpi = max(80, int(curr_dpi * 0.88))
-
-    doc.close()
+            reduc_ratio = (target_sweet_bytes / size) * 0.98
+            curr_q = max(16, int(round(curr_q * reduc_ratio)))
+            if curr_q <= 35 or size > target_bytes * 1.10:
+                scale_down = (target_sweet_bytes / size) ** 0.5
+                curr_dpi = max(70, int(round(curr_dpi * scale_down)))
 
     if best_temp_file and os.path.exists(best_temp_file):
         if os.path.exists(output_path):
             os.remove(output_path)
         os.rename(best_temp_file, output_path)
+        doc.close()
     else:
         # अतिरिक्त हमी फेरी (Guaranteed Fallback Pass)
         new_doc = fitz.open()
-        fallback_dpi = 85
+        fallback_dpi = 75 if target_kb < 100 else 85
         scale = fallback_dpi / 72.0
         mat = fitz.Matrix(scale, scale)
         for page_idx in range(total_pages):
@@ -317,11 +345,12 @@ def compress_pdf_to_exact_target(
             pix = page.get_pixmap(matrix=mat, alpha=False)
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
             img_buffer = io.BytesIO()
-            img.save(img_buffer, format="JPEG", quality=28, optimize=True)
+            img.save(img_buffer, format="JPEG", quality=24 if target_kb < 100 else 28, optimize=True)
             new_page = new_doc.new_page(width=page.rect.width, height=page.rect.height)
             new_page.insert_image(page.rect, stream=img_buffer.getvalue())
         new_doc.save(output_path, garbage=4, deflate=True, clean=True)
         new_doc.close()
+        doc.close()
 
     final_size = os.path.getsize(output_path)
     savings_pct = round((1 - (final_size / orig_bytes)) * 100, 1)
@@ -402,6 +431,51 @@ def convert_images_to_pdf(
     new_doc.close()
 
     final_size = os.path.getsize(output_path)
+    target_min_bytes = int(round(target_bytes * 0.90))
+    target_sweet_bytes = int(round(target_bytes * 0.96))
+
+    # जर एकत्र झालेली PDF ९०% पेक्षा लहान असेल तर Upward Calibration फेरी
+    if final_size < target_min_bytes:
+        boost = min(1.4, (target_sweet_bytes / max(final_size, 1024)) ** 0.5)
+        new_target_per_img_kb = int(round(target_per_img_kb * boost))
+        if new_target_per_img_kb > target_per_img_kb:
+            new_doc2 = fitz.open()
+            for idx, img_path in enumerate(image_paths):
+                temp_img_out = f"{output_path}.img_tmp_{idx}.jpg"
+                compress_image_to_exact_target(
+                    img_path,
+                    temp_img_out,
+                    target_kb=new_target_per_img_kb,
+                    dimension_preset="document",
+                    enhance_text=enhance_text
+                )
+                with Image.open(temp_img_out) as temp_im:
+                    w, h = temp_im.size
+                is_landscape = w > h
+                page_w = 841.89 if is_landscape else 595.28
+                page_h = 595.28 if is_landscape else 841.89
+                rect = fitz.Rect(0, 0, page_w, page_h)
+                page = new_doc2.new_page(width=page_w, height=page_h)
+                with open(temp_img_out, "rb") as f:
+                    page.insert_image(rect, stream=f.read())
+                if os.path.exists(temp_img_out):
+                    try:
+                        os.remove(temp_img_out)
+                    except Exception:
+                        pass
+            temp_out2 = f"{output_path}.tmp_boost.pdf"
+            new_doc2.save(temp_out2, garbage=4, deflate=True, clean=True)
+            new_doc2.close()
+            size2 = os.path.getsize(temp_out2)
+            if size2 <= target_bytes and size2 > final_size:
+                if os.path.exists(output_path):
+                    os.remove(output_path)
+                os.rename(temp_out2, output_path)
+                final_size = size2
+            else:
+                if os.path.exists(temp_out2):
+                    os.remove(temp_out2)
+
     savings_pct = round((1 - (final_size / total_orig_bytes)) * 100, 1) if total_orig_bytes > 0 else 0
 
     return {
