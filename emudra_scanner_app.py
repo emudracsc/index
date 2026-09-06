@@ -75,7 +75,7 @@ class ScannerAppGUI:
         self.scanner_dropdown = ttk.Combobox(top_bar, textvariable=self.selected_scanner_var, state="readonly", width=28, font=("Segoe UI", 9))
         self.scanner_dropdown.pack(side="left", padx=(0, 6))
 
-        refresh_btn = tk.Button(top_bar, text="🔄", font=("Segoe UI", 9, "bold"), bg="#1e293b", fg="#38bdf8", activebackground="#334155", bd=0, padx=6, pady=2, cursor="hand2", title="स्कॅनर शोधा", command=self.refresh_scanners)
+        refresh_btn = tk.Button(top_bar, text="🔄", font=("Segoe UI", 9, "bold"), bg="#1e293b", fg="#38bdf8", activebackground="#334155", bd=0, padx=6, pady=2, cursor="hand2", command=self.refresh_scanners)
         refresh_btn.pack(side="left", padx=(0, 12))
 
         # DPI Selector
