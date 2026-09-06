@@ -1441,12 +1441,12 @@
             <div class="gov-export-card">
               <div class="gov-card-head">
                 <span class="gov-card-title">आपले सरकार PDF</span>
-                <span class="gov-badge">< २५० KB</span>
+                <span class="gov-badge">< २५० KB (हार्ड लॉक)</span>
               </div>
               <div class="gov-desc">
                 तहसील, जात, उत्पन्न व रहिवासी दाखल्यासाठी अचूक २५० KB च्या आत सेव्ह होते.
               </div>
-              <button class="btn-gov-download" onclick="exportGovernmentPdf(245)">
+              <button class="btn-gov-download" onclick="exportGovernmentPdf(250)">
                 <i class="fa-solid fa-download"></i> <span>आपले सरकार PDF डाऊनलोड</span>
               </button>
             </div>
@@ -1455,12 +1455,12 @@
             <div class="gov-export-card dbt">
               <div class="gov-card-head">
                 <span class="gov-card-title">महाडीबीटी PDF</span>
-                <span class="gov-badge blue">< ५०० KB</span>
+                <span class="gov-badge blue">< ५०० KB (हार्ड लॉक)</span>
               </div>
               <div class="gov-desc">
                 महाडीबीटी स्कॉलरशिप व शेतकरी योजनांसाठी ५०० KB मल्टिपेज PDF.
               </div>
-              <button class="btn-gov-download blue" onclick="exportGovernmentPdf(490)">
+              <button class="btn-gov-download blue" onclick="exportGovernmentPdf(500)">
                 <i class="fa-solid fa-download"></i> <span>महाडीबीटी PDF डाऊनलोड</span>
               </button>
             </div>
@@ -1491,7 +1491,7 @@
               </div>
               <div style="display: flex; gap: 5px; margin-top: 3px;">
                 <button class="btn-gov-download" style="flex: 1; background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); box-shadow: 0 3px 10px rgba(147, 51, 234, 0.35);" onclick="exportCustomTargetPdf()">
-                  <i class="fa-solid fa-file-pdf"></i> <span>कम्प्रेश PDF डाऊनलोड</span>
+                  <i class="fa-solid fa-file-pdf"></i> <span>हार्ड कम्प्रेश PDF डाऊनलोड</span>
                 </button>
                 <button class="btn-tool" style="padding: 4px 8px; font-size: 0.74rem;" onclick="exportCustomTargetJpg()" title="चालू पानाचा JPG या साईझमध्ये सेव्ह करा">
                   <i class="fa-solid fa-file-image"></i> <span>JPG</span>
@@ -2569,9 +2569,7 @@
     }
 
     // =========================================================================
-    // 8. GOVERNMENT PDF EXPORT (AAPLE SARKAR 250 KB & MAHADBT 500 KB)
-    // =========================================================================
-    // 8. GOVERNMENT & CUSTOM TARGET SIZE PDF/JPG EXPORT ENGINE
+    // 8. GOVERNMENT & CUSTOM TARGET SIZE PDF/JPG EXPORT ENGINE (HARD COMPRESS)
     // =========================================================================
 
     function renderPageToOffscreenCanvas(page) {
@@ -2597,6 +2595,190 @@
       return offCanvas;
     }
 
+    // Helper: Enhance canvas contrast & clarity (Zero Blur मजकूर व स्वाक्षरी)
+    function enhanceCanvasForClarity(sourceCanvas) {
+      const outCanvas = document.createElement('canvas');
+      outCanvas.width = sourceCanvas.width;
+      outCanvas.height = sourceCanvas.height;
+      const ctx = outCanvas.getContext('2d', { alpha: false });
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+      // High contrast + mild saturation makes text bold & readable, cleans paper noise
+      ctx.filter = 'contrast(1.15) brightness(1.02) saturate(1.03)';
+      ctx.drawImage(sourceCanvas, 0, 0);
+      return outCanvas;
+    }
+
+    // Helper: Compile jsPDF from pagesData array with exact padding support
+    function compileJsPdf(pagesData, paddingChars = 0) {
+      const { jsPDF } = window.jspdf;
+      let doc = null;
+      for (let i = 0; i < pagesData.length; i++) {
+        const p = pagesData[i];
+        if (i === 0) {
+          doc = new jsPDF({
+            orientation: p.orientation,
+            unit: 'pt',
+            format: [p.ptW, p.ptH],
+            compress: true
+          });
+          if (paddingChars > 0) {
+            doc.setProperties({
+              keywords: '0'.repeat(paddingChars)
+            });
+          }
+          doc.addImage(p.imgData, 'JPEG', 0, 0, p.ptW, p.ptH, undefined, 'FAST');
+        } else {
+          doc.addPage([p.ptW, p.ptH], p.orientation);
+          doc.addImage(p.imgData, 'JPEG', 0, 0, p.ptW, p.ptH, undefined, 'FAST');
+        }
+      }
+      return doc.output('blob');
+    }
+
+    // Helper: Exact JPEG COM (0xFF 0xFE) marker padding (४ ते ५ KB अचूक फरक हमी)
+    async function padJpegBlob(jpegBlob, targetBytes, marginKb = 4.5) {
+      const buffer = await jpegBlob.arrayBuffer();
+      const u8 = new Uint8Array(buffer);
+      const currentBytes = u8.length;
+
+      let marginBytes = Math.round(marginKb * 1024);
+      if (targetBytes <= 35 * 1024) marginBytes = Math.min(1536, Math.round(targetBytes * 0.08));
+      else if (targetBytes <= 75 * 1024) marginBytes = Math.min(3072, Math.round(targetBytes * 0.06));
+      else if (targetBytes <= 150 * 1024) marginBytes = 4096;
+      else marginBytes = Math.min(5120, Math.max(4096, Math.round(targetBytes * 0.01)));
+
+      const desiredBytes = targetBytes - marginBytes;
+      const neededPad = desiredBytes - currentBytes;
+
+      if (neededPad <= 5 || u8[0] !== 0xFF || u8[1] !== 0xD8) {
+        const finalGapKb = Math.max(0, (targetBytes - currentBytes) / 1024).toFixed(1);
+        return { blob: jpegBlob, bytes: currentBytes, gapKb: finalGapKb };
+      }
+
+      const parts = [];
+      parts.push(u8.subarray(0, 2));
+
+      let remaining = neededPad;
+      while (remaining >= 5) {
+        const chunk = Math.min(remaining - 4, 65530);
+        const markerLen = chunk + 2;
+        const header = new Uint8Array(4);
+        header[0] = 0xFF;
+        header[1] = 0xFE;
+        header[2] = (markerLen >> 8) & 0xFF;
+        header[3] = markerLen & 0xFF;
+        parts.push(header);
+
+        const payload = new Uint8Array(chunk);
+        payload.fill(0x20);
+        parts.push(payload);
+
+        remaining -= (chunk + 4);
+      }
+
+      parts.push(u8.subarray(2));
+      const paddedBlob = new Blob(parts, { type: 'image/jpeg' });
+      const finalGapKb = Math.max(0, (targetBytes - paddedBlob.size) / 1024).toFixed(1);
+      return { blob: paddedBlob, bytes: paddedBlob.size, gapKb: finalGapKb };
+    }
+
+    // Helper: Enforce exact hard size on PDF (जास्तीत जास्त मजकूर स्पष्टता + अचूक ४ ते ५ KB फरक)
+    async function enforceExactPdfTargetSize(pagesData, targetBytes, marginKb = 4.5, onProgress = null) {
+      let marginBytes = Math.round(marginKb * 1024);
+      if (targetBytes <= 35 * 1024) marginBytes = Math.min(1536, Math.round(targetBytes * 0.08));
+      else if (targetBytes <= 75 * 1024) marginBytes = Math.min(3072, Math.round(targetBytes * 0.06));
+      else if (targetBytes <= 150 * 1024) marginBytes = 4096;
+      else marginBytes = Math.min(5120, Math.max(4096, Math.round(targetBytes * 0.01)));
+
+      const desiredBytes = targetBytes - marginBytes;
+      let blob = compileJsPdf(pagesData, 0);
+
+      // १) जर PDF टार्गेटपेक्षा मोठी असेल तर क्लॅरिटी संतुलित ठेवून क्वालिटी कमी करणे
+      let pass = 0;
+      while (blob.size > desiredBytes && pass < 8) {
+        pass++;
+        if (onProgress) onProgress(`अचूक साईझ कॅलिब्रेशन (फेरी ${pass})...`);
+        const reductionRatio = (desiredBytes * 0.985) / blob.size;
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          p.quality = Math.max(0.12, p.quality * reductionRatio);
+          if (pass >= 3 && p.quality <= 0.28) {
+            // Multi-page dimensional downscale if extreme compression required
+            const down = document.createElement('canvas');
+            down.width = Math.round(p.canvas.width * 0.82);
+            down.height = Math.round(p.canvas.height * 0.82);
+            const dCtx = down.getContext('2d', { alpha: false });
+            dCtx.fillStyle = '#FFFFFF';
+            dCtx.fillRect(0, 0, down.width, down.height);
+            dCtx.drawImage(p.canvas, 0, 0, down.width, down.height);
+            p.canvas = down;
+            p.quality = 0.45;
+          }
+          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+        }
+        blob = compileJsPdf(pagesData, 0);
+      }
+
+      // २) जर PDF खूप लहान असेल तर रिझोल्युशन व क्लॅरिटी कमाल ९७% पर्यंत वाढवणे
+      let upPass = 0;
+      while (blob.size < desiredBytes * 0.88 && upPass < 5) {
+        upPass++;
+        let canBoost = false;
+        const boostRatio = Math.min(1.30, Math.sqrt(desiredBytes / Math.max(blob.size, 1024)));
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          if (p.quality < 0.96) {
+            p.quality = Math.min(0.97, p.quality * boostRatio);
+            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+            canBoost = true;
+          }
+        }
+        if (!canBoost) break;
+        const candidate = compileJsPdf(pagesData, 0);
+        if (candidate.size <= desiredBytes) {
+          blob = candidate;
+        } else {
+          for (let i = 0; i < pagesData.length; i++) {
+            const p = pagesData[i];
+            p.quality = Math.max(0.12, p.quality * (desiredBytes / candidate.size));
+            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+          }
+          blob = compileJsPdf(pagesData, 0);
+          break;
+        }
+      }
+
+      // ३) हार्ड साईझ टार्गेट लॉक पॅडिंग (अचूक ४ ते ५ KB फरक हमी)
+      const currentBytes = blob.size;
+      const neededPad = desiredBytes - currentBytes;
+      if (neededPad > 20) {
+        const neededChars = Math.max(1, neededPad - 13);
+        blob = compileJsPdf(pagesData, neededChars);
+      }
+
+      // ४) सुरक्षा नियम: फाईल साईझ कधीही targetBytes पेक्षा जास्त होणार नाही
+      if (blob.size > targetBytes) {
+        const safetyRatio = (targetBytes * 0.98) / blob.size;
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          p.quality = Math.max(0.10, p.quality * safetyRatio);
+          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+        }
+        blob = compileJsPdf(pagesData, 0);
+      }
+
+      const finalBytes = blob.size;
+      const gapBytes = targetBytes - finalBytes;
+      const gapKb = Math.max(0, gapBytes / 1024).toFixed(1);
+
+      return {
+        blob: blob,
+        bytes: finalBytes,
+        gapKb: gapKb
+      };
+    }
+
     async function compressDocumentToTarget(maxTargetKb, format = 'pdf', customPrefix = '') {
       if (state.pages.length === 0) {
         showToast("PDF/इमेज बनवण्यासाठी आधी पाने स्कॅन किंवा ॲड करा!", "error");
@@ -2604,28 +2786,29 @@
       }
 
       const targetBytes = maxTargetKb * 1024;
-      showToast(`अचूक < ${maxTargetKb} KB मध्ये कम्प्रेशन सुरू आहे...`, "info");
+      showToast(`अचूक < ${maxTargetKb} KB हार्ड कम्प्रेशन सुरू आहे...`, "info");
       playBeep('start');
 
       if (format === 'jpg') {
         const page = state.pages[state.activePageIndex >= 0 ? state.activePageIndex : 0];
         const offCanvas = renderPageToOffscreenCanvas(page);
+        const cleanCanvas = enhanceCanvasForClarity(offCanvas);
 
         let lowQ = 0.1, highQ = 0.98, bestBlob = null;
-        let finalCanvas = offCanvas;
+        let finalCanvas = cleanCanvas;
 
-        if (maxTargetKb < 70 && (offCanvas.width > 1200 || offCanvas.height > 1600)) {
-          const scale = Math.min(1000 / offCanvas.width, 1400 / offCanvas.height);
+        if (maxTargetKb < 70 && (cleanCanvas.width > 1200 || cleanCanvas.height > 1600)) {
+          const scale = Math.min(1000 / cleanCanvas.width, 1400 / cleanCanvas.height);
           finalCanvas = document.createElement('canvas');
-          finalCanvas.width = Math.round(offCanvas.width * scale);
-          finalCanvas.height = Math.round(offCanvas.height * scale);
-          finalCanvas.getContext('2d').drawImage(offCanvas, 0, 0, finalCanvas.width, finalCanvas.height);
+          finalCanvas.width = Math.round(cleanCanvas.width * scale);
+          finalCanvas.height = Math.round(cleanCanvas.height * scale);
+          finalCanvas.getContext('2d').drawImage(cleanCanvas, 0, 0, finalCanvas.width, finalCanvas.height);
         }
 
         for (let iter = 0; iter < 6; iter++) {
           const midQ = +((lowQ + highQ) / 2).toFixed(2);
           const blob = await new Promise(res => finalCanvas.toBlob(res, 'image/jpeg', midQ));
-          if (blob.size <= targetBytes) {
+          if (blob.size <= targetBytes - 4500) {
             bestBlob = blob;
             lowQ = midQ;
           } else {
@@ -2638,87 +2821,68 @@
           bestBlob = await new Promise(res => finalCanvas.toBlob(res, 'image/jpeg', 0.2));
         }
 
-        const actualKb = (bestBlob.size / 1024).toFixed(1);
+        const paddedResult = await padJpegBlob(bestBlob, targetBytes, 4.5);
+        const actualKb = (paddedResult.bytes / 1024).toFixed(1);
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(bestBlob);
+        link.href = URL.createObjectURL(paddedResult.blob);
         link.download = `EMUDRA_SCAN_${actualKb}KB.jpg`;
         link.click();
         playBeep('success');
-        showToast(`JPG तयार झाली! फाईल साईझ: ${actualKb} KB (< ${maxTargetKb} KB)`, "success");
+        showToast(`JPG तयार झाली! फाईल साईझ: ${actualKb} KB (गॅप: ${paddedResult.gapKb} KB, लक्ष्य: < ${maxTargetKb} KB)`, "success");
         return;
       }
 
-      // Multi-page PDF Compression
-      const { jsPDF } = window.jspdf;
-      const totalPages = state.pages.length;
-      const overheadBytes = 2500 + (totalPages * 800);
-      const availableBytes = Math.max(4000, targetBytes - overheadBytes);
-      const perPageBudget = Math.floor(availableBytes / totalPages);
+      // Hard Compress PDF Engine (Exact Target Hard-Lock from PDF Compressor Pro)
+      const numPages = state.pages.length;
+      const targetBytesPerPage = Math.floor(targetBytes / numPages);
+      let targetMaxDim = 1500;
+      if (targetBytesPerPage >= 350 * 1024) targetMaxDim = 2400;
+      else if (targetBytesPerPage >= 200 * 1024) targetMaxDim = 1900;
+      else if (targetBytesPerPage >= 100 * 1024) targetMaxDim = 1500;
+      else if (targetBytesPerPage >= 50 * 1024) targetMaxDim = 1200;
+      else targetMaxDim = 900;
 
-      const offscreenCanvases = state.pages.map(p => renderPageToOffscreenCanvas(p));
+      const pagesData = [];
+      for (let pIdx = 0; pIdx < numPages; pIdx++) {
+        const page = state.pages[pIdx];
+        const offCanvas = renderPageToOffscreenCanvas(page);
+        const cleanCanvas = enhanceCanvasForClarity(offCanvas);
 
-      let resScale = 1.0;
-      if (perPageBudget < 40000) {
-        resScale = 0.65;
-      } else if (perPageBudget < 90000) {
-        resScale = 0.85;
-      }
+        const isLandscape = cleanCanvas.width > cleanCanvas.height;
+        const ptW = isLandscape ? 841.89 : 595.28;
+        const ptH = isLandscape ? 595.28 : 841.89;
 
-      const pageJpegBlobs = [];
-      for (let pIdx = 0; pIdx < totalPages; pIdx++) {
-        const origCanvas = offscreenCanvases[pIdx];
-        let pageCanvas = origCanvas;
-        if (resScale < 1.0) {
-          pageCanvas = document.createElement('canvas');
-          pageCanvas.width = Math.round(origCanvas.width * resScale);
-          pageCanvas.height = Math.round(origCanvas.height * resScale);
-          pageCanvas.getContext('2d').drawImage(origCanvas, 0, 0, pageCanvas.width, pageCanvas.height);
-        }
-
-        let lowQ = 0.12, highQ = 0.95, bestDataUrl = null;
-        for (let iter = 0; iter < 5; iter++) {
-          const midQ = +((lowQ + highQ) / 2).toFixed(2);
-          const b64 = pageCanvas.toDataURL('image/jpeg', midQ);
-          const approxBytes = Math.round(b64.length * 0.75);
-          if (approxBytes <= perPageBudget) {
-            bestDataUrl = b64;
-            lowQ = midQ;
-          } else {
-            highQ = midQ;
-          }
-          if (highQ - lowQ < 0.06) break;
-        }
-
-        if (!bestDataUrl) {
-          bestDataUrl = pageCanvas.toDataURL('image/jpeg', 0.18);
-        }
-        pageJpegBlobs.push(bestDataUrl);
-      }
-
-      let pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      for (let i = 0; i < pageJpegBlobs.length; i++) {
-        if (i > 0) pdf.addPage('a4', 'portrait');
-        pdf.addImage(pageJpegBlobs[i], 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
-      }
-
-      let finalBlob = pdf.output('blob');
-
-      // Adaptive second pass if PDF stream overhead pushed size slightly over
-      if (finalBlob.size > targetBytes) {
-        pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        for (let i = 0; i < offscreenCanvases.length; i++) {
-          if (i > 0) pdf.addPage('a4', 'portrait');
+        let currCanvas = cleanCanvas;
+        const maxDim = Math.max(cleanCanvas.width, cleanCanvas.height);
+        if (maxDim > targetMaxDim) {
+          const scale = targetMaxDim / maxDim;
           const sc = document.createElement('canvas');
-          sc.width = Math.round(offscreenCanvases[i].width * 0.6);
-          sc.height = Math.round(offscreenCanvases[i].height * 0.6);
-          sc.getContext('2d').drawImage(offscreenCanvases[i], 0, 0, sc.width, sc.height);
-          const downJpeg = sc.toDataURL('image/jpeg', 0.45);
-          pdf.addImage(downJpeg, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+          sc.width = Math.round(cleanCanvas.width * scale);
+          sc.height = Math.round(cleanCanvas.height * scale);
+          const sCtx = sc.getContext('2d', { alpha: false });
+          sCtx.fillStyle = '#FFFFFF';
+          sCtx.fillRect(0, 0, sc.width, sc.height);
+          sCtx.drawImage(cleanCanvas, 0, 0, sc.width, sc.height);
+          currCanvas = sc;
         }
-        finalBlob = pdf.output('blob');
+
+        const initialQuality = targetBytesPerPage >= 350 * 1024 ? 0.88 : (targetBytesPerPage >= 180 * 1024 ? 0.80 : (targetBytesPerPage >= 90 * 1024 ? 0.70 : (targetBytesPerPage >= 45 * 1024 ? 0.60 : 0.48)));
+
+        pagesData.push({
+          canvas: currCanvas,
+          imgData: currCanvas.toDataURL('image/jpeg', initialQuality),
+          quality: initialQuality,
+          ptW: ptW,
+          ptH: ptH,
+          orientation: isLandscape ? 'landscape' : 'portrait'
+        });
       }
 
-      const actualKb = (finalBlob.size / 1024).toFixed(1);
+      const exactRes = await enforceExactPdfTargetSize(pagesData, targetBytes, 4.5, (msg) => {
+        showToast(msg, "info");
+      });
+
+      const actualKb = (exactRes.bytes / 1024).toFixed(1);
       let fileName = `EMUDRA_SCAN_${actualKb}KB.pdf`;
       if (customPrefix === 'AAPLE_SARKAR') {
         fileName = `Aaple_Sarkar_${actualKb}KB.pdf`;
@@ -2728,13 +2892,19 @@
         fileName = `EMUDRA_Custom_${maxTargetKb}KB_Actual_${actualKb}KB.pdf`;
       }
 
-      pdf.save(fileName);
+      const url = URL.createObjectURL(exactRes.blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+
       playBeep('success');
-      showToast(`PDF तयार झाली! फाईल साईझ: ${actualKb} KB (मर्यादा: < ${maxTargetKb} KB)`, "success");
+      showToast(`PDF तयार झाली! फाईल साईझ: ${actualKb} KB (हार्ड लॉक गॅप: ${exactRes.gapKb} KB, लक्ष्य: < ${maxTargetKb} KB) - Zero Blur!`, "success");
     }
 
-    async function exportGovernmentPdf(maxTargetKb = 245) {
-      const prefix = maxTargetKb <= 250 ? 'AAPLE_SARKAR' : 'MAHADBT';
+    async function exportGovernmentPdf(maxTargetKb = 250) {
+      const prefix = maxTargetKb <= 256 ? 'AAPLE_SARKAR' : 'MAHADBT';
       await compressDocumentToTarget(maxTargetKb, 'pdf', prefix);
     }
 
