@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import threading
 import winreg
+import zipfile
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
@@ -32,26 +33,78 @@ def get_default_install_dir():
     return os.path.join(local_app_data, 'Programs', APP_NAME)
 
 def create_windows_shortcut(target_exe, shortcut_path, icon_path="", description="", work_dir=""):
-    """Create Windows .lnk shortcut using PowerShell COM object."""
+    """Create Windows .lnk shortcut cleanly without opening any console/PowerShell window."""
     if not work_dir:
         work_dir = os.path.dirname(target_exe)
     if not icon_path:
         icon_path = target_exe
 
-    ps_script = f"""
-    $WshShell = New-Object -comObject WScript.Shell
-    $Shortcut = $WshShell.CreateShortcut('{shortcut_path}')
-    $Shortcut.TargetPath = '{target_exe}'
-    $Shortcut.WorkingDirectory = '{work_dir}'
-    $Shortcut.IconLocation = '{icon_path}, 0'
-    $Shortcut.Description = '{description}'
-    $Shortcut.Save()
-    """
+    # 1. Native Windows Script Host (wscript.exe) - Subsystem 2 (GUI), 100% silent, zero console windows
     try:
-        subprocess.run(["powershell", "-NoProfile", "-Command", ps_script], check=True, capture_output=True)
+        import tempfile
+        vbs_path = os.path.join(tempfile.gettempdir(), f"_sc_{os.getpid()}_{os.urandom(4).hex()}.vbs")
+        esc_sc = shortcut_path.replace('"', '""')
+        esc_tgt = target_exe.replace('"', '""')
+        esc_dir = work_dir.replace('"', '""')
+        esc_ico = icon_path.replace('"', '""')
+        esc_desc = description.replace('"', '""')
+        vbs_content = (
+            'Set WshShell = CreateObject("WScript.Shell")\r\n'
+            f'Set Shortcut = WshShell.CreateShortcut("{esc_sc}")\r\n'
+            f'Shortcut.TargetPath = "{esc_tgt}"\r\n'
+            f'Shortcut.WorkingDirectory = "{esc_dir}"\r\n'
+            f'Shortcut.IconLocation = "{esc_ico}, 0"\r\n'
+            f'Shortcut.Description = "{esc_desc}"\r\n'
+            'Shortcut.Save\r\n'
+        )
+        with open(vbs_path, 'w', encoding='ascii', errors='replace') as f:
+            f.write(vbs_content)
+
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = 0  # SW_HIDE
+        subprocess.run(
+            ["wscript.exe", "//nologo", vbs_path],
+            check=False,
+            capture_output=True,
+            startupinfo=startupinfo,
+            creationflags=0x08000000  # CREATE_NO_WINDOW
+        )
+        try:
+            if os.path.exists(vbs_path):
+                os.remove(vbs_path)
+        except Exception:
+            pass
+
+        if os.path.exists(shortcut_path):
+            return True
+    except Exception as e:
+        print(f"wscript shortcut creation error: {e}")
+
+    # 2. Silent PowerShell fallback with hidden window style & CREATE_NO_WINDOW
+    try:
+        ps_script = f"""
+        $WshShell = New-Object -comObject WScript.Shell
+        $Shortcut = $WshShell.CreateShortcut('{shortcut_path}')
+        $Shortcut.TargetPath = '{target_exe}'
+        $Shortcut.WorkingDirectory = '{work_dir}'
+        $Shortcut.IconLocation = '{icon_path}, 0'
+        $Shortcut.Description = '{description}'
+        $Shortcut.Save()
+        """
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = 0  # SW_HIDE
+        subprocess.run(
+            ["powershell", "-NoProfile", "-WindowStyle", "Hidden", "-Command", ps_script],
+            check=True,
+            capture_output=True,
+            startupinfo=startupinfo,
+            creationflags=0x08000000  # CREATE_NO_WINDOW
+        )
         return True
     except Exception as e:
-        print(f"Shortcut creation error: {e}")
+        print(f"Silent shortcut fallback error: {e}")
         return False
 
 class InstallerGUI:
@@ -233,21 +286,47 @@ class InstallerGUI:
             update_ui(15, "१. इन्स्टॉलेशन डिरेक्टरी तयार करत आहे...")
             os.makedirs(install_dir, exist_ok=True)
 
-            # Locate payload files
-            payload_exe = None
-            possible_exe_locations = [
-                os.path.join(bundle_dir, 'payload', APP_EXE_NAME),
-                os.path.join(bundle_dir, 'softwares', APP_EXE_NAME),
-                os.path.join(bundle_dir, APP_EXE_NAME),
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), 'softwares', APP_EXE_NAME),
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), APP_EXE_NAME)
+            # Locate payload (1. zip bundle for super fast onedir launch, 2. directory, 3. standalone exe)
+            zip_bundle = None
+            possible_zip_locations = [
+                os.path.join(bundle_dir, 'payload', 'app_bundle.zip'),
+                os.path.join(bundle_dir, 'app_bundle.zip'),
+                os.path.join(os.path.dirname(os.path.abspath(__file__)), 'payload', 'app_bundle.zip'),
+                os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app_bundle.zip')
             ]
-            for p in possible_exe_locations:
+            for p in possible_zip_locations:
                 if os.path.exists(p):
-                    payload_exe = p
+                    zip_bundle = p
                     break
 
-            if not payload_exe:
+            payload_dir = None
+            if not zip_bundle:
+                possible_dir_locations = [
+                    os.path.join(bundle_dir, 'payload', 'app_bundle'),
+                    os.path.join(bundle_dir, 'app_bundle'),
+                    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'payload', 'app_bundle'),
+                    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist', 'EMUDRA_PDF_COMPRESSOR')
+                ]
+                for p in possible_dir_locations:
+                    if os.path.isdir(p) and os.path.exists(os.path.join(p, APP_EXE_NAME)):
+                        payload_dir = p
+                        break
+
+            payload_exe = None
+            if not zip_bundle and not payload_dir:
+                possible_exe_locations = [
+                    os.path.join(bundle_dir, 'payload', APP_EXE_NAME),
+                    os.path.join(bundle_dir, 'softwares', APP_EXE_NAME),
+                    os.path.join(bundle_dir, APP_EXE_NAME),
+                    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'softwares', APP_EXE_NAME),
+                    os.path.join(os.path.dirname(os.path.abspath(__file__)), APP_EXE_NAME)
+                ]
+                for p in possible_exe_locations:
+                    if os.path.exists(p):
+                        payload_exe = p
+                        break
+
+            if not zip_bundle and not payload_dir and not payload_exe:
                 raise FileNotFoundError(f"मुख्य प्रोग्राम फाईल सापडली नाही: {APP_EXE_NAME}")
 
             # Locate icon
@@ -263,10 +342,24 @@ class InstallerGUI:
                     payload_icon = p
                     break
 
-            # Copy Files to Target Directory
-            update_ui(35, "२. प्रोग्रॅम फाइल्स कॉपी करत आहे...")
             target_exe = os.path.join(install_dir, APP_EXE_NAME)
-            shutil.copy2(payload_exe, target_exe)
+
+            if zip_bundle:
+                update_ui(35, "२. प्रोग्रॅम फाइल्स अनपॅक करत आहे (जलद गती)...")
+                with zipfile.ZipFile(zip_bundle, 'r') as zf:
+                    members = zf.infolist()
+                    total_m = len(members)
+                    for i, m in enumerate(members):
+                        zf.extract(m, install_dir)
+                        if i % 15 == 0 or i == total_m - 1:
+                            pct = 35 + int((i / max(1, total_m)) * 20)
+                            update_ui(pct, f"२. फाइल्स अनपॅक होत आहेत ({i+1}/{total_m})...")
+            elif payload_dir:
+                update_ui(35, "२. प्रोग्रॅम फाइल्स कॉपी करत आहे...")
+                shutil.copytree(payload_dir, install_dir, dirs_exist_ok=True)
+            else:
+                update_ui(35, "२. प्रोग्रॅम फाईल कॉपी करत आहे...")
+                shutil.copy2(payload_exe, target_exe)
 
             target_icon = os.path.join(install_dir, "app_icon.ico")
             if payload_icon and os.path.exists(payload_icon):
@@ -386,7 +479,13 @@ exit
 
     def _finish(self, target_exe):
         if self.launch_after_var.get() and os.path.exists(target_exe):
-            subprocess.Popen([target_exe], cwd=os.path.dirname(target_exe))
+            try:
+                subprocess.Popen([target_exe], cwd=os.path.dirname(target_exe), creationflags=0x08000000)
+            except Exception:
+                try:
+                    os.startfile(target_exe)
+                except Exception:
+                    pass
         self.root.quit()
 
 def main():

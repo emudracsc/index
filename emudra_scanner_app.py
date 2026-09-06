@@ -849,37 +849,56 @@ class Naps2ScannerApp:
 
     def _build_pdf_bytes(self, target_bytes=0):
         num_pages = len(self.scanned_pages)
-        quality = 85
+        if num_pages == 0:
+            return b""
 
-        if target_bytes > 0:
-            per_page_bytes = (target_bytes - 3000) / num_pages
-            if per_page_bytes < 35 * 1024:
-                quality = 55
-            elif per_page_bytes < 60 * 1024:
-                quality = 70
-            else:
-                quality = 82
+        if target_bytes <= 0:
+            # Full original quality
+            rgb_pages = [img.convert("RGB") for img in self.scanned_pages]
+            buf = io.BytesIO()
+            rgb_pages[0].save(buf, format="PDF", save_all=True, append_images=rgb_pages[1:] if len(rgb_pages) > 1 else [], quality=90, optimize=True)
+            return buf.getvalue()
 
-        rgb_pages = []
-        for img in self.scanned_pages:
-            im = img.convert("RGB")
-            if target_bytes > 0 and per_page_bytes < 40 * 1024 and (im.width > 1200 or im.height > 1600):
-                im.thumbnail((1200, 1600), Image.Resampling.LANCZOS)
-            rgb_pages.append(im)
+        # Strict target budget calculation
+        overhead = (num_pages * 3000) + 4000
+        usable = max(8192, target_bytes - overhead)
+        per_page_budget = usable // num_pages
 
-        buf = io.BytesIO()
-        first = rgb_pages[0]
-        rest = rgb_pages[1:] if len(rgb_pages) > 1 else []
-        first.save(buf, format="PDF", save_all=True, append_images=rest, quality=quality, optimize=True)
-        data = buf.getvalue()
+        if per_page_budget >= 120 * 1024:
+            max_dim, quality = 1400, 75
+        elif per_page_budget >= 70 * 1024:
+            max_dim, quality = 1100, 65
+        elif per_page_budget >= 40 * 1024:
+            max_dim, quality = 900, 52
+        elif per_page_budget >= 20 * 1024:
+            max_dim, quality = 750, 40
+        else:
+            max_dim, quality = 600, 30
 
-        if target_bytes > 0 and len(data) > target_bytes and quality > 25:
-            for q in [quality - 15, quality - 30, 25]:
-                buf = io.BytesIO()
-                first.save(buf, format="PDF", save_all=True, append_images=rest, quality=q, optimize=True)
-                data = buf.getvalue()
-                if len(data) <= target_bytes:
-                    break
+        for attempt in range(5):
+            rgb_pages = []
+            for img in self.scanned_pages:
+                im = img.convert("RGB")
+                if max(im.width, im.height) > max_dim:
+                    scale = max_dim / max(im.width, im.height)
+                    nw = int(im.width * scale)
+                    nh = int(im.height * scale)
+                    im = im.resize((nw, nh), Image.Resampling.LANCZOS)
+                rgb_pages.append(im)
+
+            buf = io.BytesIO()
+            first = rgb_pages[0]
+            rest = rgb_pages[1:] if len(rgb_pages) > 1 else []
+            first.save(buf, format="PDF", save_all=True, append_images=rest, quality=quality, optimize=True)
+            data = buf.getvalue()
+
+            if len(data) <= target_bytes:
+                return data
+
+            # Reduce
+            ratio = (target_bytes * 0.94) / len(data)
+            max_dim = max(350, int(max_dim * (ratio ** 0.55)))
+            quality = max(14, int(quality * (ratio ** 0.5)))
 
         return data
 

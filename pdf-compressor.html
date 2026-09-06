@@ -27,13 +27,22 @@
 
   <style>
     :root {
-      --primary-navy: #0f172a;
+      --primary-navy: #080d1a;
+      --bg-dark-base: #060913;
+      --bg-surface: rgba(15, 23, 42, 0.85);
+      --bg-card: rgba(17, 26, 46, 0.78);
       --accent-blue: #0284c7;
       --accent-cyan: #38bdf8;
       --accent-emerald: #10b981;
       --accent-amber: #f59e0b;
       --accent-purple: #8b5cf6;
-      --border-glow: rgba(56, 189, 248, 0.25);
+      --accent-rose: #f43f5e;
+      --accent-teal: #14b8a6;
+      --border-glass: rgba(56, 189, 248, 0.22);
+      --border-glass-glow: rgba(56, 189, 248, 0.5);
+      --glow-cyan: 0 0 25px rgba(56, 189, 248, 0.35);
+      --glow-emerald: 0 0 25px rgba(16, 185, 129, 0.35);
+      --glow-gold: 0 0 25px rgba(245, 158, 11, 0.35);
     }
 
     * {
@@ -41,74 +50,223 @@
     }
 
     body {
-      background: #090d16;
+      background: var(--bg-dark-base);
+      background-image: 
+        radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 88% 82%, rgba(16, 185, 129, 0.10) 0%, transparent 45%),
+        radial-gradient(circle at 50% 40%, rgba(139, 92, 246, 0.07) 0%, transparent 60%);
       color: #f8fafc;
-      font-family: 'Mukta', 'Poppins', sans-serif;
+      font-family: 'Mukta', 'Poppins', -apple-system, sans-serif;
       margin: 0;
       padding: 0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+      transition: background 0.3s ease;
     }
 
     .gov-tricolor-stripe {
       height: 3px;
       background: linear-gradient(90deg, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%);
       width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
     .top-navbar {
-      background: rgba(15, 23, 42, 0.88);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(10px);
+      background: rgba(10, 15, 29, 0.92);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.14);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 3px;
+      z-index: 999;
+      transition: all 0.25s ease;
     }
 
     .compressor-container {
-      max-width: 1200px;
+      max-width: 1220px;
       margin: 0 auto;
-      padding: 10px 14px 16px 14px;
+      padding: 12px 16px 24px 16px;
       flex: 1;
       width: 100%;
       display: flex;
       flex-direction: column;
+      position: relative;
+    }
+
+    /* =========================================================================
+       Window Controls & Header Bar (Pro Graphic Titlebar)
+       ========================================================================= */
+    .window-controls-bar {
+      background: linear-gradient(90deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.85));
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 12px;
+      padding: 6px 12px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+    }
+    .win-controls-left {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .win-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .win-btn:hover {
+      transform: translateY(-1px);
+    }
+    .win-btn.win-min {
+      background: rgba(245, 158, 11, 0.18);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+    }
+    .win-btn.win-min:hover {
+      background: #f59e0b;
+      color: #000;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+    }
+    .win-btn.win-max {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+    .win-btn.win-max:hover {
+      background: #10b981;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+    }
+    .win-btn.win-reset {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    .win-btn.win-reset:hover {
+      background: #ef4444;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+    }
+    .win-bar-divider {
+      height: 16px;
+      width: 1px;
+      background: rgba(255, 255, 255, 0.15);
+      margin: 0 4px;
+    }
+    .win-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulseGlow 1.8s infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+    .win-controls-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-compact-toggle {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(56, 189, 248, 0.15));
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: #7dd3fc;
+      border-radius: 7px;
+      padding: 4px 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+    }
+    .btn-compact-toggle:hover {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #fff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+      transform: translateY(-1px);
+    }
+    .privacy-shield-tag {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
 
     /* Single View Header */
     .single-view-header {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .single-view-title-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       flex-wrap: wrap;
       gap: 8px;
     }
     .compact-title {
-      font-size: 1.22rem;
+      font-size: 1.25rem;
       font-weight: 800;
       margin: 0;
-      background: linear-gradient(135deg, #ffffff 0%, #38bdf8 100%);
+      background: linear-gradient(135deg, #ffffff 0%, #38bdf8 65%, #10b981 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: -0.3px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      text-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
     }
     .active-mode-tag-pill {
       background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.28);
+      border: 1px solid rgba(56, 189, 248, 0.35);
       color: #7dd3fc;
       border-radius: 8px;
-      padding: 3px 10px;
-      font-size: 0.8rem;
+      padding: 4px 12px;
+      font-size: 0.82rem;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
     }
 
     .btn-download-app, .btn-download-offline {
@@ -118,7 +276,7 @@
       font-weight: 700;
       font-size: 0.8rem;
       padding: 0.35rem 0.85rem;
-      border-radius: 6px;
+      border-radius: 7px;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
@@ -129,29 +287,1026 @@
     .btn-download-app:hover, .btn-download-offline:hover {
       background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
       transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.5);
+      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.55);
       color: #ffffff;
     }
 
-    .btn-app-badge, .btn-offline-badge {
+    /* =========================================================================
+       Mode Tabs: High-Tech Graphical 6-Card Grid
+       ========================================================================= */
+    .mode-tabs-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      border-radius: 12px;
+      padding: 5px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+    @media (max-width: 990px) {
+      .mode-tabs-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 540px) {
+      .mode-tabs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .mode-tab-btn {
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 7px 8px;
+      color: #cbd5e1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: left;
+      font-family: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+    .mode-tab-btn:hover {
       background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .mode-tab-btn.active {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.42) 0%, rgba(14, 165, 233, 0.22) 100%);
+      border-color: #38bdf8;
+      color: #fff;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.32);
+    }
+    .mode-tab-icon-wrap {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .mode-tab-icon-wrap.cyan { color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); }
+    .mode-tab-icon-wrap.emerald { color: #34d399; border-color: rgba(52, 211, 153, 0.4); }
+    .mode-tab-icon-wrap.amber { color: #fbbf24; border-color: rgba(251, 191, 36, 0.4); }
+    .mode-tab-icon-wrap.pink { color: #f472b6; border-color: rgba(244, 114, 182, 0.4); }
+    .mode-tab-icon-wrap.purple { color: #c084fc; border-color: rgba(192, 132, 252, 0.4); }
+    .mode-tab-icon-wrap.teal { color: #2dd4bf; border-color: rgba(45, 212, 191, 0.4); }
+
+    .mode-tab-texts {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      line-height: 1.15;
+    }
+    .mode-name {
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mode-subtag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      white-space: nowrap;
+      opacity: 0.85;
+    }
+    .mode-subtag.cyan { color: #7dd3fc; }
+    .mode-subtag.emerald { color: #a7f3d0; }
+    .mode-subtag.amber { color: #fde68a; }
+    .mode-subtag.pink { color: #fbcfe8; }
+    .mode-subtag.purple { color: #e9d5ff; }
+    .mode-subtag.teal { color: #99f6e4; }
+
+    /* =========================================================================
+       2-Column Workspace Grid & Glass Cards
+       ========================================================================= */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.08fr;
+      gap: 14px;
+      align-items: stretch;
+      flex: 1;
+    }
+    @media (max-width: 890px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .glass-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 14px;
+      padding: 14px 16px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.08);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.25s ease;
+    }
+    .glass-card:hover {
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+
+    .col-card-header {
+      margin-bottom: 10px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .col-card-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .btn-card-collapse {
+      background: transparent;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 3px 6px;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    .btn-card-collapse:hover {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    /* =========================================================================
+       Holographic Upload Dropzone
+       ========================================================================= */
+    .upload-dropzone {
+      border: 2px dashed rgba(56, 189, 248, 0.42);
+      border-radius: 12px;
+      padding: 24px 16px;
+      text-align: center;
+      cursor: pointer;
+      background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.07) 0%, rgba(15, 23, 42, 0.4) 100%);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      min-height: 195px;
+      position: relative;
+      overflow: hidden;
+    }
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+      border-color: #38bdf8;
+      background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.16) 0%, rgba(15, 23, 42, 0.7) 100%);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.35);
+      transform: scale(1.008);
+    }
+    .upload-icon-circle {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(2, 132, 199, 0.35));
+      border: 2px solid rgba(56, 189, 248, 0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 9px;
+      font-size: 1.45rem;
+      color: #38bdf8;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+      position: relative;
+      transition: all 0.25s ease;
+    }
+    .upload-dropzone:hover .upload-icon-circle {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 0 28px rgba(56, 189, 248, 0.55);
+    }
+    .upload-dropzone h3 {
+      margin: 0 0 8px 0;
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .format-pills-row {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .fmt-pill {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #94a3b8;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .fmt-pill.pdf { border-color: rgba(56, 189, 248, 0.4); color: #7dd3fc; }
+    .fmt-pill.jpg { border-color: rgba(244, 114, 182, 0.4); color: #f472b6; }
+    .fmt-pill.png { border-color: rgba(52, 211, 153, 0.4); color: #6ee7b7; }
+
+    .btn-select-file {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #fff;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.45);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-select-file:hover {
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.55);
+    }
+
+    /* File List */
+    .file-summary-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      background: rgba(30, 41, 59, 0.6);
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .btn-ctrl-sm {
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+    .btn-ctrl-sm.add {
+      background: rgba(56,189,248,0.15);
+      border-color: rgba(56,189,248,0.35);
+      color: #38bdf8;
+    }
+    .btn-ctrl-sm.add:hover {
+      background: rgba(56,189,248,0.3);
+      color: #fff;
+    }
+    .btn-ctrl-sm.danger {
+      background: rgba(239,68,68,0.15);
+      border-color: rgba(239,68,68,0.35);
+      color: #fca5a5;
+    }
+    .btn-ctrl-sm.danger:hover {
+      background: rgba(239,68,68,0.3);
+      color: #fff;
+    }
+    .file-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 230px;
+      overflow-y: auto;
+    }
+    .file-item-card {
+      background: rgba(30, 41, 59, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9px;
+      padding: 8px 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      transition: all 0.18s;
+    }
+    .file-item-card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(30, 41, 59, 0.9);
+    }
+    .file-item-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex: 1;
+      min-width: 0;
+    }
+    .file-item-icon {
+      font-size: 1.25rem;
+      color: #38bdf8;
+    }
+    .file-item-thumb {
+      width: 38px;
+      height: 38px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .file-item-title {
+      font-weight: 700;
+      color: #f1f5f9;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-item-sub {
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+    .file-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-item-ctrl {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #cbd5e1;
+      border-radius: 6px;
+      padding: 4px 7px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      transition: all 0.15s;
+    }
+    .btn-item-ctrl:hover {
+      background: rgba(239, 68, 68, 0.22);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+    }
+
+    /* =========================================================================
+       Target Size Controller & Super Minimise
+       ========================================================================= */
+    .target-size-box {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.09) 0%, rgba(15, 23, 42, 0.75) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      border-radius: 11px;
+      padding: 10px 13px;
+      margin-bottom: 9px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+    .target-size-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .target-size-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-super-minimise {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(234, 88, 12, 0.3));
+      border: 1px solid rgba(245, 158, 11, 0.6);
+      color: #fbbf24;
+      border-radius: 7px;
+      padding: 4px 10px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+    }
+    .btn-super-minimise:hover {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.7);
+      transform: translateY(-1px);
+    }
+    .badge-mini-tag {
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 0.66rem;
+      font-weight: 800;
+    }
+
+    .target-input-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .custom-kb-input-wrap {
+      display: inline-flex;
+      align-items: center;
+      background: #060a14;
+      border: 2px solid #38bdf8;
+      border-radius: 8px;
+      padding: 3px 8px;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.28);
+    }
+    .custom-kb-input-wrap input {
+      background: transparent;
+      border: none;
+      color: #38bdf8;
+      font-size: 1.25rem;
+      font-weight: 800;
+      width: 75px;
+      text-align: center;
+      outline: none;
+      font-family: 'Poppins', monospace;
+    }
+    .kb-unit-tag {
+      color: #94a3b8;
+      font-weight: 800;
+      font-size: 0.9rem;
+      padding-right: 2px;
+      user-select: none;
+    }
+
+    /* Range Slider Styling */
+    .slider-wrap {
+      width: 100%;
+      margin: 6px 0 8px 0;
+    }
+    .neon-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #10b981 0%, #38bdf8 50%, #8b5cf6 100%);
+      outline: none;
+      cursor: pointer;
+    }
+    .neon-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .neon-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 1);
+    }
+
+    .quick-size-chips {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .size-chip {
+      background: rgba(30, 41, 59, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #cbd5e1;
+      border-radius: 7px;
+      padding: 4px 9px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .size-chip:hover {
+      border-color: #38bdf8;
+      color: #ffffff;
+      background: rgba(56, 189, 248, 0.14);
+      transform: translateY(-1px);
+    }
+    .size-chip.active {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+    }
+
+    .dimension-chips-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .dim-chip {
+      background: rgba(30, 41, 59, 0.75);
+      border: 1px solid rgba(236, 72, 153, 0.35);
+      color: #f1f5f9;
+      border-radius: 7px;
+      padding: 4px 9px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .dim-chip:hover {
+      border-color: #f472b6;
+      background: rgba(236, 72, 153, 0.18);
+      color: #fff;
+    }
+    .dim-chip.active {
+      background: linear-gradient(135deg, #db2777 0%, #9d174d 100%);
+      border-color: #f472b6;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(236, 72, 153, 0.5);
+    }
+
+    /* Compact Features Strip */
+    .compact-features-strip {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .feature-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 3px 9px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #94a3b8;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .text-sky { color: #38bdf8; }
+    .text-emerald { color: #34d399; }
+    .text-amber { color: #fbbf24; }
+
+    /* Action Button */
+    .btn-compress-action {
+      width: 100%;
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: #fff;
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      padding: 11px 16px;
+      border-radius: 9px;
+      font-size: 0.94rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(5, 150, 105, 0.4);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-compress-action:hover:not(:disabled) {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(16, 185, 129, 0.55);
+    }
+    .btn-compress-action:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Progress */
+    .progress-section {
+      display: none;
+      margin-top: 9px;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 9px;
+      padding: 9px 12px;
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #10b981);
+      border-radius: 5px;
+      transition: width 0.18s ease;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+    }
+
+    /* =========================================================================
+       Visual Comparison Dashboard & Radial Meter (Results Card)
+       ========================================================================= */
+    .result-section {
+      display: none;
+      margin-top: 10px;
+      animation: fadeIn 0.25s ease;
+    }
+    .result-success-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(5, 150, 105, 0.08) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 9px;
+      padding: 8px 12px;
+      margin-bottom: 10px;
+    }
+
+    .visual-comparison-dashboard {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 10px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    @media (max-width: 520px) {
+      .visual-comparison-dashboard {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    /* Radial SVG Gauge */
+    .radial-gauge-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+    .radial-gauge-svg-wrap {
+      width: 90px;
+      height: 90px;
+      position: relative;
+    }
+    .radial-gauge-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .gauge-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.1);
+      stroke-width: 8;
+    }
+    .gauge-fill {
+      fill: none;
+      stroke: url(#gaugeGrad);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 264;
+      stroke-dashoffset: 264;
+      transition: stroke-dashoffset 0.8s ease;
+    }
+    .gauge-center-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.1;
+    }
+    .gauge-percent {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #34d399;
+      font-family: 'Poppins', monospace;
+    }
+    .gauge-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+    .gauge-footer-text {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #7dd3fc;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Before vs After Bars */
+    .size-bars-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .size-bar-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .size-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+    .bar-tag.orig { color: #fca5a5; }
+    .bar-tag.comp { color: #6ee7b7; }
+    .bar-track {
+      width: 100%;
+      height: 9px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .bar-fill.orig {
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #f97316);
+      border-radius: 5px;
+      transition: width 0.4s ease;
+    }
+    .bar-fill.comp {
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #10b981);
+      border-radius: 5px;
+      transition: width 0.4s ease;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+    }
+    .savings-difference-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .diff-badge {
+      background: rgba(56, 189, 248, 0.14);
       border: 1px solid rgba(56, 189, 248, 0.35);
       color: #7dd3fc;
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+    .clarity-seal {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #6ee7b7;
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-size: 0.72rem;
       font-weight: 700;
-      font-size: 0.78rem;
-      padding: 3px 9px;
-      border-radius: 7px;
-      text-decoration: none;
+    }
+
+    .comparison-stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .stat-box {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 7px;
+      text-align: center;
+    }
+    .stat-label {
+      font-size: 0.68rem;
+      color: #94a3b8;
+      margin-bottom: 2px;
+    }
+    .stat-value {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .stat-box.success {
+      border-color: rgba(16, 185, 129, 0.35);
+      background: rgba(16, 185, 129, 0.08);
+    }
+    .stat-box.success .stat-value {
+      color: #34d399;
+    }
+
+    .result-actions-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .btn-download-result {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #fff;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+      flex: 1;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .btn-download-result:hover {
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(56, 189, 248, 0.55);
+    }
+    .btn-secondary-action {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+      padding: 9px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.18s ease;
+      transition: all 0.15s;
     }
-    .btn-app-badge:hover, .btn-offline-badge:hover {
-      background: rgba(56, 189, 248, 0.22);
+    .btn-secondary-action:hover {
+      background: rgba(255, 255, 255, 0.15);
       border-color: #38bdf8;
-      color: #ffffff;
-      transform: translateY(-1px);
+      color: #38bdf8;
+    }
+    .btn-reset-action {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #94a3b8;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-reset-action:hover {
+      border-color: #fca5a5;
+      color: #fca5a5;
+    }
+
+    .thumbnails-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+      gap: 6px;
+      max-height: 120px;
+      overflow-y: auto;
+      padding: 5px;
+      background: rgba(10, 15, 29, 0.4);
+      border-radius: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .thumb-card {
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      padding: 3px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .thumb-card img {
+      width: 100%;
+      height: 60px;
+      object-fit: contain;
+      border-radius: 3px;
+      display: block;
+    }
+    .thumb-page-num {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* =========================================================================
+       MINIMISE / COMPACT MODE STYLES (कमी जागा व्यापणारा फ्लोटिंग व्ह्यू)
+       ========================================================================= */
+    body.compact-mode .top-navbar {
+      display: none;
+    }
+    body.compact-mode .gov-tricolor-stripe {
+      height: 2px;
+    }
+    body.compact-mode .compressor-container {
+      max-width: 920px;
+      padding: 6px 12px;
+    }
+    body.compact-mode .window-controls-bar {
+      margin-bottom: 6px;
+      padding: 4px 10px;
+    }
+    body.compact-mode .single-view-header {
+      margin-bottom: 6px;
+    }
+    body.compact-mode .single-view-title-row {
+      margin-bottom: 4px;
+    }
+    body.compact-mode .compact-title {
+      font-size: 1rem;
+    }
+    body.compact-mode .mode-tabs-grid {
+      padding: 3px;
+      gap: 4px;
+    }
+    body.compact-mode .mode-tab-btn {
+      padding: 4px 6px;
+    }
+    body.compact-mode .mode-tab-icon-wrap {
+      width: 22px;
+      height: 22px;
+      font-size: 0.78rem;
+    }
+    body.compact-mode .mode-subtag {
+      display: none;
+    }
+    body.compact-mode .workspace-grid {
+      gap: 8px;
+    }
+    body.compact-mode .glass-card {
+      padding: 10px 12px;
+      border-radius: 10px;
+    }
+    body.compact-mode .upload-dropzone {
+      min-height: 100px;
+      padding: 12px 10px;
+    }
+    body.compact-mode .upload-icon-circle {
+      width: 36px;
+      height: 36px;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+    body.compact-mode .upload-dropzone h3 {
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+    }
+    body.compact-mode .format-pills-row {
+      display: none;
+    }
+    body.compact-mode .btn-select-file {
+      padding: 5px 12px;
+      font-size: 0.78rem;
+    }
+    body.compact-mode .target-size-box {
+      padding: 6px 9px;
+      margin-bottom: 6px;
+    }
+    body.compact-mode .compact-features-strip {
+      display: none;
+    }
+    body.compact-mode .btn-compress-action {
+      padding: 8px 12px;
+      font-size: 0.86rem;
+    }
+    body.compact-mode .visual-comparison-dashboard {
+      grid-template-columns: 90px 1fr;
+      padding: 6px;
+      margin-bottom: 6px;
+    }
+    body.compact-mode .radial-gauge-svg-wrap {
+      width: 70px;
+      height: 70px;
+    }
+    body.compact-mode .gauge-percent {
+      font-size: 0.95rem;
     }
 
     /* Cropper Modal & Workspace Styles */
@@ -330,614 +1485,6 @@
       flex-wrap: wrap;
       gap: 8px;
     }
-      background: linear-gradient(135deg, #059669 0%, #047857 100%);
-      border: 1px solid rgba(52, 211, 153, 0.4);
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 0.8rem;
-      padding: 0.35rem 0.8rem;
-      border-radius: 6px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
-      transition: all 0.2s ease;
-    }
-    .btn-download-offline:hover {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.5);
-      color: #ffffff;
-    }
-
-    .btn-offline-badge {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(52, 211, 153, 0.35);
-      color: #6ee7b7;
-      font-weight: 700;
-      font-size: 0.78rem;
-      padding: 3px 9px;
-      border-radius: 7px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.18s ease;
-    }
-    .btn-offline-badge:hover {
-      background: rgba(16, 185, 129, 0.22);
-      border-color: #34d399;
-      color: #ffffff;
-      transform: translateY(-1px);
-    }
-
-    /* Mode Tabs: 1-Row Compact Grid */
-    .mode-tabs-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 5px;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 4px;
-    }
-    @media (max-width: 860px) {
-      .mode-tabs-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-    @media (max-width: 500px) {
-      .mode-tabs-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-    .mode-tab-btn {
-      background: rgba(30, 41, 59, 0.45);
-      border: 1px solid transparent;
-      border-radius: 7px;
-      padding: 7px 6px;
-      color: #cbd5e1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.18s ease;
-      text-align: center;
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-    .mode-tab-btn:hover {
-      background: rgba(56, 189, 248, 0.1);
-      border-color: rgba(56, 189, 248, 0.3);
-      color: #fff;
-    }
-    .mode-tab-btn.active {
-      background: linear-gradient(135deg, rgba(2, 132, 199, 0.4) 0%, rgba(14, 165, 233, 0.25) 100%);
-      border-color: #38bdf8;
-      color: #fff;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
-    }
-    .mode-tab-btn i {
-      font-size: 0.95rem;
-    }
-
-    /* 2-Column Single View Workspace */
-    .workspace-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.08fr;
-      gap: 12px;
-      align-items: stretch;
-      flex: 1;
-    }
-    @media (max-width: 860px) {
-      .workspace-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .glass-card {
-      background: rgba(15, 23, 42, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 14px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .col-card-header {
-      margin-bottom: 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    }
-    .col-card-title {
-      font-size: 0.88rem;
-      font-weight: 800;
-      color: #f1f5f9;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Dropzone (Compact in Single View) */
-    .upload-dropzone {
-      border: 2px dashed rgba(56, 189, 248, 0.4);
-      border-radius: 10px;
-      padding: 24px 14px;
-      text-align: center;
-      cursor: pointer;
-      background: rgba(56, 189, 248, 0.03);
-      transition: all 0.22s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      min-height: 180px;
-    }
-    .upload-dropzone:hover, .upload-dropzone.dragover {
-      border-color: #38bdf8;
-      background: rgba(56, 189, 248, 0.08);
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
-    }
-    .upload-icon-circle {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(59, 130, 246, 0.2));
-      border: 1.5px solid rgba(56, 189, 248, 0.4);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 8px;
-      font-size: 1.35rem;
-      color: #38bdf8;
-    }
-    .upload-dropzone h3 {
-      margin: 0 0 10px 0;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #f1f5f9;
-    }
-    .btn-select-file {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 7px;
-      font-size: 0.86rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 3px 12px rgba(2, 132, 199, 0.35);
-      transition: all 0.18s;
-    }
-    .btn-select-file:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 5px 16px rgba(2, 132, 199, 0.5);
-    }
-
-    /* File List */
-    .file-summary-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      background: rgba(30, 41, 59, 0.45);
-      padding: 6px 10px;
-      border-radius: 7px;
-    }
-    .btn-ctrl-sm {
-      padding: 3px 8px;
-      border-radius: 5px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      cursor: pointer;
-      border: 1px solid transparent;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .btn-ctrl-sm.add {
-      background: rgba(56,189,248,0.15);
-      border-color: rgba(56,189,248,0.3);
-      color: #38bdf8;
-    }
-    .btn-ctrl-sm.danger {
-      background: rgba(239,68,68,0.15);
-      border-color: rgba(239,68,68,0.3);
-      color: #fca5a5;
-    }
-    .file-items-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-    .file-item-card {
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 8px 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .file-item-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 1;
-      min-width: 0;
-    }
-    .file-item-icon {
-      font-size: 1.2rem;
-      color: #38bdf8;
-    }
-    .file-item-thumb {
-      width: 36px;
-      height: 36px;
-      object-fit: cover;
-      border-radius: 5px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    .file-item-title {
-      font-weight: 700;
-      color: #f1f5f9;
-      font-size: 0.84rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .file-item-sub {
-      font-size: 0.72rem;
-      color: #94a3b8;
-    }
-    .file-item-actions {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .btn-item-ctrl {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #cbd5e1;
-      border-radius: 5px;
-      padding: 3px 6px;
-      cursor: pointer;
-      font-size: 0.72rem;
-      transition: all 0.15s;
-    }
-    .btn-item-ctrl:hover {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.4);
-      color: #fca5a5;
-    }
-
-    /* Target Size Box (Right Column) */
-    .target-size-box {
-      background: rgba(14, 165, 233, 0.07);
-      border: 1px solid rgba(56, 189, 248, 0.28);
-      border-radius: 9px;
-      padding: 9px 12px;
-      margin-bottom: 8px;
-    }
-    .target-size-header {
-      margin-bottom: 7px;
-    }
-    .target-size-title {
-      font-size: 0.86rem;
-      font-weight: 800;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .target-input-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .custom-kb-input-wrap {
-      display: inline-flex;
-      align-items: center;
-      background: #090e1a;
-      border: 2px solid #38bdf8;
-      border-radius: 7px;
-      padding: 2px 7px;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
-    }
-    .custom-kb-input-wrap input {
-      background: transparent;
-      border: none;
-      color: #38bdf8;
-      font-size: 1.2rem;
-      font-weight: 800;
-      width: 72px;
-      text-align: center;
-      outline: none;
-      font-family: 'Poppins', monospace;
-    }
-    .kb-unit-tag {
-      color: #94a3b8;
-      font-weight: 800;
-      font-size: 0.9rem;
-      padding-right: 2px;
-      user-select: none;
-    }
-    .quick-size-chips {
-      display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .size-chip {
-      background: rgba(30, 41, 59, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: #cbd5e1;
-      border-radius: 6px;
-      padding: 4px 8px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .size-chip:hover {
-      border-color: #38bdf8;
-      color: #ffffff;
-      background: rgba(56, 189, 248, 0.12);
-    }
-    .size-chip.active {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      border-color: #38bdf8;
-      color: #ffffff;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
-    }
-
-    .dimension-chips-row {
-      display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
-    }
-    .dim-chip {
-      background: rgba(30, 41, 59, 0.75);
-      border: 1px solid rgba(236, 72, 153, 0.3);
-      color: #f1f5f9;
-      border-radius: 6px;
-      padding: 4px 8px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .dim-chip:hover {
-      border-color: #f472b6;
-      background: rgba(236, 72, 153, 0.15);
-      color: #fff;
-    }
-    .dim-chip.active {
-      background: linear-gradient(135deg, #db2777 0%, #9d174d 100%);
-      border-color: #f472b6;
-      color: #fff;
-      box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
-    }
-
-    /* Compact Features Strip */
-    .compact-features-strip {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-    .feature-chip {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 6px;
-      padding: 3px 8px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: #94a3b8;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .text-sky { color: #38bdf8; }
-    .text-emerald { color: #34d399; }
-
-    /* Action Button */
-    .btn-compress-action {
-      width: 100%;
-      background: linear-gradient(135deg, #059669 0%, #047857 100%);
-      color: #fff;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.92rem;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      box-shadow: 0 3px 12px rgba(5, 150, 105, 0.35);
-      transition: all 0.18s;
-    }
-    .btn-compress-action:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 5px 16px rgba(5, 150, 105, 0.5);
-    }
-    .btn-compress-action:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    /* Progress */
-    .progress-section {
-      display: none;
-      margin-top: 8px;
-      background: rgba(30, 41, 59, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 8px 10px;
-    }
-    .progress-bar-wrap {
-      width: 100%;
-      height: 7px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-top: 5px;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #38bdf8, #10b981);
-      border-radius: 4px;
-      transition: width 0.15s ease;
-    }
-
-    /* Results Card */
-    .result-section {
-      display: none;
-      margin-top: 10px;
-      animation: fadeIn 0.25s ease;
-    }
-    .result-success-banner {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      border-radius: 8px;
-      padding: 7px 10px;
-      margin-bottom: 8px;
-    }
-    .comparison-stats-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-    .stat-box {
-      background: rgba(30, 41, 59, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 7px;
-      padding: 6px;
-      text-align: center;
-    }
-    .stat-label {
-      font-size: 0.68rem;
-      color: #94a3b8;
-      margin-bottom: 2px;
-    }
-    .stat-value {
-      font-size: 1rem;
-      font-weight: 800;
-      color: #fff;
-    }
-    .stat-box.success {
-      border-color: rgba(16, 185, 129, 0.35);
-      background: rgba(16, 185, 129, 0.08);
-    }
-    .stat-box.success .stat-value {
-      color: #34d399;
-    }
-
-    .result-actions-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-    .btn-download-result {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 7px;
-      font-size: 0.88rem;
-      font-weight: 800;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 3px 12px rgba(2, 132, 199, 0.35);
-      flex: 1;
-      justify-content: center;
-    }
-    .btn-secondary-action {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 7px;
-      font-weight: 700;
-      font-size: 0.82rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .btn-reset-action {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      color: #94a3b8;
-      padding: 8px 10px;
-      border-radius: 7px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-
-    .thumbnails-preview-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-      gap: 6px;
-      max-height: 120px;
-      overflow-y: auto;
-      padding: 5px;
-      background: rgba(10, 15, 29, 0.4);
-      border-radius: 7px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .thumb-card {
-      background: #1e293b;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 5px;
-      padding: 3px;
-      text-align: center;
-      cursor: pointer;
-    }
-    .thumb-card img {
-      width: 100%;
-      height: 60px;
-      object-fit: contain;
-      border-radius: 3px;
-      display: block;
-    }
-    .thumb-page-num {
-      font-size: 0.65rem;
-      color: #94a3b8;
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(6px); }
@@ -979,6 +1526,43 @@
   <!-- Main Container: Single View -->
   <main class="compressor-container">
     
+    <!-- SVG Defs for Radial Gauge Gradient -->
+    <svg width="0" height="0" style="position: absolute;">
+      <defs>
+        <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#38bdf8" />
+          <stop offset="100%" stop-color="#10b981" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <!-- Pro Window Controls Bar (Mac/Windows Style with Minimise / Compact Toggle) -->
+    <div class="window-controls-bar" id="window-controls-bar">
+      <div class="win-controls-left">
+        <button type="button" class="win-btn win-min" title="मिनिमाइज व्ह्यू (Compact Mode)" onclick="toggleCompactMinimiseMode()">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+        <button type="button" class="win-btn win-max" title="विस्तृत व्ह्यू (Fullscreen/Expanded)" onclick="toggleFullscreenView()">
+          <i class="fa-solid fa-expand"></i>
+        </button>
+        <button type="button" class="win-btn win-reset" title="सर्व क्लिअर करा (Reset)" onclick="resetMasterUploader()">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+        <span class="win-bar-divider"></span>
+        <div class="win-status-badge">
+          <span class="pulse-dot"></span>
+          <span class="win-status-text">AI Precision Engine v3.2 • Zero Blur Hard-Lock</span>
+        </div>
+      </div>
+      <div class="win-controls-right">
+        <button type="button" class="btn-compact-toggle" id="btn-compact-toggle" onclick="toggleCompactMinimiseMode()" title="स्क्रीनवर कमी जागा व्यापण्यासाठी कॉम्पॅक्ट मोड टॉगल करा">
+          <i class="fa-solid fa-compress" id="compact-toggle-icon"></i>
+          <span id="compact-toggle-label">मिनिमाइज व्ह्यू (Compact)</span>
+        </button>
+        <span class="privacy-shield-tag"><i class="fa-solid fa-shield-halved"></i> १००% सुरक्षित (Client-Side)</span>
+      </div>
+    </div>
+
     <!-- Compact Header & 1-Row Mode Tabs -->
     <div class="single-view-header">
       <div class="single-view-title-row">
@@ -995,25 +1579,49 @@
         <div id="active-mode-badge" style="display: none;">१ फाईल ➔ अचूक टार्गेट साईझ</div>
       </div>
 
-      <!-- Mode Selector Tabs Bar -->
-      <div class="mode-tabs-grid">
+      <!-- Mode Selector Tabs Bar with Rich Graphical Badges -->
+      <div class="mode-tabs-grid" id="mode-tabs-bar">
         <button type="button" class="mode-tab-btn active" data-mode="single-pdf" onclick="switchToolMode('single-pdf')">
-          <i class="fa-solid fa-file-pdf text-sky"></i> <span>१. सिंगल PDF</span>
+          <div class="mode-tab-icon-wrap cyan"><i class="fa-solid fa-file-pdf"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">१. सिंगल PDF</span>
+            <span class="mode-subtag cyan">⚡ अचूक टार्गेट KB</span>
+          </div>
         </button>
         <button type="button" class="mode-tab-btn" data-mode="merge-pdf" onclick="switchToolMode('merge-pdf')">
-          <i class="fa-solid fa-copy text-emerald"></i> <span>२. मल्टिपल PDF ➔ १</span>
+          <div class="mode-tab-icon-wrap emerald"><i class="fa-solid fa-copy"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">२. मल्टिपल PDF ➔ १</span>
+            <span class="mode-subtag emerald">📄 एकत्र जोडा</span>
+          </div>
         </button>
         <button type="button" class="mode-tab-btn" data-mode="batch-pdf" onclick="switchToolMode('batch-pdf')">
-          <i class="fa-solid fa-file-zipper" style="color: #f59e0b;"></i> <span>३. बॅच PDF (ZIP)</span>
+          <div class="mode-tab-icon-wrap amber"><i class="fa-solid fa-file-zipper"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">३. बॅच PDF (ZIP)</span>
+            <span class="mode-subtag amber">📦 सर्व स्वतंत्र झिप</span>
+          </div>
         </button>
         <button type="button" class="mode-tab-btn" data-mode="single-img" onclick="switchToolMode('single-img')">
-          <i class="fa-solid fa-image" style="color: #ec4899;"></i> <span>४. सिंगल इमेज</span>
+          <div class="mode-tab-icon-wrap pink"><i class="fa-solid fa-image"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">४. सिंगल इमेज</span>
+            <span class="mode-subtag pink">👤 फोटो / स्वाक्षरी</span>
+          </div>
         </button>
         <button type="button" class="mode-tab-btn" data-mode="img-to-pdf" onclick="switchToolMode('img-to-pdf')">
-          <i class="fa-solid fa-images" style="color: #8b5cf6;"></i> <span>५. फोटो ➔ १ PDF</span>
+          <div class="mode-tab-icon-wrap purple"><i class="fa-solid fa-images"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">५. फोटो ➔ १ PDF</span>
+            <span class="mode-subtag purple">📸 कागदपत्र स्कॅन्स</span>
+          </div>
         </button>
         <button type="button" class="mode-tab-btn" data-mode="batch-img" onclick="switchToolMode('batch-img')">
-          <i class="fa-solid fa-folder-archive" style="color: #14b8a6;"></i> <span>६. बॅच इमेजेस (ZIP)</span>
+          <div class="mode-tab-icon-wrap teal"><i class="fa-solid fa-folder-archive"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">६. बॅच इमेजेस</span>
+            <span class="mode-subtag teal">🗂️ बल्क रीसाईझ</span>
+          </div>
         </button>
       </div>
     </div>
@@ -1022,194 +1630,276 @@
     <div class="workspace-grid" id="main-working-card">
       
       <!-- Left Column: File Drop & Selection Card -->
-      <div class="glass-card">
+      <div class="glass-card" id="upload-card">
         <div class="col-card-header">
           <div class="col-card-title">
             <i class="fa-solid fa-file-arrow-up text-sky"></i>
             <span>कागदपत्र / फाईल अपलोड</span>
           </div>
-        </div>
-
-        <!-- Dropzone -->
-        <div class="upload-dropzone" id="dropzone" onclick="triggerFileInput()">
-          <input type="file" id="master-file-input" style="display: none;">
-          <div class="upload-icon-circle" id="dropzone-icon">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-          </div>
-          <h3 id="dropzone-title">आपली फाईल येथे निवडा किंवा ड्रॅग करा</h3>
-          <p id="dropzone-desc" style="display: none;"></p>
-          <button type="button" class="btn-select-file" onclick="event.stopPropagation(); triggerFileInput();">
-            <i class="fa-solid fa-folder-open"></i> <span id="btn-browse-text">फाईल निवडा (Browse)</span>
+          <button type="button" class="btn-card-collapse" onclick="toggleCardCollapse('upload-card')" title="पॅनेल मिनिमाइज/एक्सपँड करा">
+            <i class="fa-solid fa-chevron-up"></i>
           </button>
         </div>
 
-        <!-- File List Section -->
-        <div id="file-list-section" style="display: none; flex: 1;">
-          <div class="file-summary-bar">
-            <div id="file-count-summary" style="font-size: 0.82rem; font-weight: 700; color: #cbd5e1;">१ फाईल निवडली</div>
-            <div style="display: flex; gap: 6px;">
-              <button type="button" onclick="triggerFileInput()" class="btn-ctrl-sm add">
-                <i class="fa-solid fa-plus"></i> आणखी जोडा
-              </button>
-              <button type="button" onclick="resetMasterUploader()" class="btn-ctrl-sm danger">
-                <i class="fa-solid fa-trash"></i> क्लिअर
-              </button>
+        <div class="card-collapsible-body" id="upload-card-body">
+          <!-- Holographic Dropzone -->
+          <div class="upload-dropzone" id="dropzone" onclick="triggerFileInput()">
+            <input type="file" id="master-file-input" style="display: none;">
+            <div class="upload-icon-circle" id="dropzone-icon">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
             </div>
+            <h3 id="dropzone-title">आपली फाईल येथे निवडा किंवा ड्रॅग करा</h3>
+            
+            <div class="format-pills-row">
+              <span class="fmt-pill pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span>
+              <span class="fmt-pill jpg"><i class="fa-solid fa-file-image"></i> JPG</span>
+              <span class="fmt-pill png"><i class="fa-solid fa-file-image"></i> PNG</span>
+              <span class="fmt-pill"><i class="fa-solid fa-file"></i> WEBP</span>
+            </div>
+
+            <p id="dropzone-desc" style="display: none;"></p>
+            <button type="button" class="btn-select-file" onclick="event.stopPropagation(); triggerFileInput();">
+              <i class="fa-solid fa-folder-open"></i> <span id="btn-browse-text">फाईल निवडा (Browse)</span>
+            </button>
           </div>
-          <div class="file-items-list" id="file-items-container"></div>
+
+          <!-- File List Section -->
+          <div id="file-list-section" style="display: none; flex: 1;">
+            <div class="file-summary-bar">
+              <div id="file-count-summary" style="font-size: 0.82rem; font-weight: 700; color: #cbd5e1;">१ फाईल निवडली</div>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" onclick="triggerFileInput()" class="btn-ctrl-sm add">
+                  <i class="fa-solid fa-plus"></i> आणखी जोडा
+                </button>
+                <button type="button" onclick="resetMasterUploader()" class="btn-ctrl-sm danger">
+                  <i class="fa-solid fa-trash"></i> क्लिअर
+                </button>
+              </div>
+            </div>
+            <div class="file-items-list" id="file-items-container"></div>
+          </div>
         </div>
       </div>
 
       <!-- Right Column: Settings, Action & Results -->
-      <div class="glass-card">
+      <div class="glass-card" id="settings-card">
         <div class="col-card-header">
           <div class="col-card-title">
             <i class="fa-solid fa-sliders text-sky"></i>
             <span>टार्गेट साईझ व कॉम्प्रेशन</span>
           </div>
-        </div>
-
-        <!-- Settings Section -->
-        <div id="settings-section">
-          
-          <!-- Image Presets Card (Image modes only) -->
-          <div id="image-presets-control-card" style="display: none; margin-bottom: 8px;">
-            <div class="dimension-chips-row">
-              <button type="button" class="dim-chip active" id="dim-btn-photo" onclick="setImageDimensionPreset('photo')">
-                <i class="fa-solid fa-user"></i> 👤 फोटो (160×210 px)
-              </button>
-              <button type="button" class="dim-chip" id="dim-btn-signature" onclick="setImageDimensionPreset('signature')">
-                <i class="fa-solid fa-pen-nib"></i> ✍️ सही (256×64 px)
-              </button>
-              <button type="button" class="dim-chip" id="dim-btn-original" onclick="setImageDimensionPreset('original')">
-                <i class="fa-solid fa-expand"></i> मूळ आकार
-              </button>
-              <button type="button" class="dim-chip" id="dim-btn-document" onclick="setImageDimensionPreset('document')">
-                <i class="fa-solid fa-file-image"></i> 📄 कागदपत्र
-              </button>
-              <button type="button" class="dim-chip" id="dim-btn-custom" onclick="setImageDimensionPreset('custom')">
-                <i class="fa-solid fa-sliders"></i> मॅन्युअल पिक्सेल
-              </button>
-            </div>
-
-            <!-- Manual Pixel Input & Crop Tool Row -->
-            <div class="manual-dim-row" id="manual-dim-row" style="display: flex; align-items: center; gap: 7px; margin-top: 7px; flex-wrap: wrap; background: rgba(30, 41, 59, 0.45); padding: 5px 9px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.08);">
-              <span style="font-size: 0.76rem; color: #94a3b8; font-weight: 700;"><i class="fa-solid fa-ruler-combined text-sky"></i> पिक्सेल (Px):</span>
-              <div style="display: flex; align-items: center; gap: 3px;">
-                <span style="font-size: 0.74rem; color: #cbd5e1;">रुंदी:</span>
-                <input type="number" id="custom-dim-w" value="160" min="10" max="5000" oninput="onCustomDimInputChanged()" style="width: 58px; background: rgba(15,23,42,0.85); border: 1px solid rgba(56,189,248,0.35); border-radius: 4px; color: #fff; padding: 2px 4px; font-weight: 700; font-size: 0.78rem; text-align: center;">
-                <span style="font-size: 0.7rem; color: #64748b;">px</span>
-              </div>
-              <span style="color: #64748b; font-weight: bold;">×</span>
-              <div style="display: flex; align-items: center; gap: 3px;">
-                <span style="font-size: 0.74rem; color: #cbd5e1;">उंची:</span>
-                <input type="number" id="custom-dim-h" value="210" min="10" max="5000" oninput="onCustomDimInputChanged()" style="width: 58px; background: rgba(15,23,42,0.85); border: 1px solid rgba(56,189,248,0.35); border-radius: 4px; color: #fff; padding: 2px 4px; font-weight: 700; font-size: 0.78rem; text-align: center;">
-                <span style="font-size: 0.7rem; color: #64748b;">px</span>
-              </div>
-              <button type="button" class="dim-chip" id="btn-open-cropper" onclick="openImageCropperModal()" style="margin-left: auto; border-color: #38bdf8; background: linear-gradient(135deg, rgba(2,132,199,0.35), rgba(56,189,248,0.2)); color: #38bdf8; font-weight: 700; padding: 3px 9px; font-size: 0.74rem; box-shadow: 0 0 10px rgba(56,189,248,0.25);">
-                <i class="fa-solid fa-crop-simple"></i> ✂️ क्रॉप टूल (Crop Tool)
-              </button>
-            </div>
-
-            <span id="dimension-hint-text" style="display: none;"></span>
-          </div>
-
-          <!-- Target Size Box -->
-          <div class="target-size-box">
-            <div class="target-size-header">
-              <span class="target-size-title" id="target-size-label-text">
-                <i class="fa-solid fa-bullseye text-sky"></i> हवी असलेली अचूक साईझ (Target KB):
-              </span>
-            </div>
-
-            <div class="target-input-row">
-              <div class="custom-kb-input-wrap">
-                <input type="number" id="target-kb-input" value="200" min="10" max="5000" step="5" oninput="handleTargetKbInputChange(this.value)">
-                <span class="kb-unit-tag">KB</span>
-              </div>
-              <div class="quick-size-chips" id="quick-chips-container">
-                <!-- Dynamically populated -->
-              </div>
-            </div>
-            <span id="target-hint-text" style="display: none;"></span>
-          </div>
-
-          <!-- Compact Status Strip -->
-          <div class="compact-features-strip">
-            <span class="feature-chip"><i class="fa-solid fa-crosshairs text-sky"></i> हार्ड साईझ लॉक (±४ KB)</span>
-            <span class="feature-chip"><i class="fa-solid fa-eye text-emerald"></i> Ultra-Clarity (Zero Blur)</span>
-          </div>
-
-          <!-- Start Compression Button -->
-          <button type="button" class="btn-compress-action" id="btn-start-compress" onclick="executeCurrentModeAction()">
-            <i class="fa-solid fa-bolt"></i> <span id="btn-action-text">आता अचूक साईझमध्ये कॉम्प्रेस करा (Start)</span>
+          <button type="button" class="btn-card-collapse" onclick="toggleCardCollapse('settings-card')" title="पॅनेल मिनिमाइज/एक्सपँड करा">
+            <i class="fa-solid fa-chevron-up"></i>
           </button>
-
-          <!-- Progress Section -->
-          <div class="progress-section" id="progress-section">
-            <div style="display: flex; justify-content: space-between; font-size: 0.82rem; color: #cbd5e1; font-weight: 600;">
-              <span id="progress-status-text">प्रोसेसिंग सुरू होत आहे...</span>
-              <span id="progress-percent-text" style="font-weight: 800; color: #38bdf8;">0%</span>
-            </div>
-            <div class="progress-bar-wrap">
-              <div class="progress-bar-fill" id="progress-bar-fill"></div>
-            </div>
-          </div>
         </div>
 
-        <!-- Result Section -->
-        <div class="result-section" id="result-card">
-          <div class="result-success-banner">
-            <i class="fa-solid fa-circle-check text-emerald" style="font-size: 1.25rem;"></i>
-            <div>
-              <div id="result-success-title" style="font-weight: 800; font-size: 0.92rem; color: #f8fafc;">कॉम्प्रेशन यशस्वी झाले!</div>
-              <div id="gov-compliance-badge" style="font-size: 0.76rem; color: #a7f3d0;">पोर्टल अपलोडसाठी १००% योग्य</div>
+        <div class="card-collapsible-body" id="settings-card-body">
+          <!-- Settings Section -->
+          <div id="settings-section">
+            
+            <!-- Image Presets Card (Image modes only) -->
+            <div id="image-presets-control-card" style="display: none; margin-bottom: 8px;">
+              <div class="dimension-chips-row">
+                <button type="button" class="dim-chip active" id="dim-btn-photo" onclick="setImageDimensionPreset('photo')">
+                  <i class="fa-solid fa-user"></i> 👤 फोटो (160×210 px)
+                </button>
+                <button type="button" class="dim-chip" id="dim-btn-signature" onclick="setImageDimensionPreset('signature')">
+                  <i class="fa-solid fa-pen-nib"></i> ✍️ सही (256×64 px)
+                </button>
+                <button type="button" class="dim-chip" id="dim-btn-original" onclick="setImageDimensionPreset('original')">
+                  <i class="fa-solid fa-expand"></i> मूळ आकार
+                </button>
+                <button type="button" class="dim-chip" id="dim-btn-document" onclick="setImageDimensionPreset('document')">
+                  <i class="fa-solid fa-file-image"></i> 📄 कागदपत्र
+                </button>
+                <button type="button" class="dim-chip" id="dim-btn-custom" onclick="setImageDimensionPreset('custom')">
+                  <i class="fa-solid fa-sliders"></i> मॅन्युअल पिक्सेल
+                </button>
+              </div>
+
+              <!-- Manual Pixel Input & Crop Tool Row -->
+              <div class="manual-dim-row" id="manual-dim-row" style="display: flex; align-items: center; gap: 7px; margin-top: 7px; flex-wrap: wrap; background: rgba(30, 41, 59, 0.45); padding: 5px 9px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.08);">
+                <span style="font-size: 0.76rem; color: #94a3b8; font-weight: 700;"><i class="fa-solid fa-ruler-combined text-sky"></i> पिक्सेल (Px):</span>
+                <div style="display: flex; align-items: center; gap: 3px;">
+                  <span style="font-size: 0.74rem; color: #cbd5e1;">रुंदी:</span>
+                  <input type="number" id="custom-dim-w" value="160" min="10" max="5000" oninput="onCustomDimInputChanged()" style="width: 58px; background: rgba(15,23,42,0.85); border: 1px solid rgba(56,189,248,0.35); border-radius: 4px; color: #fff; padding: 2px 4px; font-weight: 700; font-size: 0.78rem; text-align: center;">
+                  <span style="font-size: 0.7rem; color: #64748b;">px</span>
+                </div>
+                <span style="color: #64748b; font-weight: bold;">×</span>
+                <div style="display: flex; align-items: center; gap: 3px;">
+                  <span style="font-size: 0.74rem; color: #cbd5e1;">उंची:</span>
+                  <input type="number" id="custom-dim-h" value="210" min="10" max="5000" oninput="onCustomDimInputChanged()" style="width: 58px; background: rgba(15,23,42,0.85); border: 1px solid rgba(56,189,248,0.35); border-radius: 4px; color: #fff; padding: 2px 4px; font-weight: 700; font-size: 0.78rem; text-align: center;">
+                  <span style="font-size: 0.7rem; color: #64748b;">px</span>
+                </div>
+                <button type="button" class="dim-chip" id="btn-open-cropper" onclick="openImageCropperModal()" style="margin-left: auto; border-color: #38bdf8; background: linear-gradient(135deg, rgba(2,132,199,0.35), rgba(56,189,248,0.2)); color: #38bdf8; font-weight: 700; padding: 3px 9px; font-size: 0.74rem; box-shadow: 0 0 10px rgba(56,189,248,0.25);">
+                  <i class="fa-solid fa-crop-simple"></i> ✂️ क्रॉप टूल (Crop Tool)
+                </button>
+              </div>
+
+              <span id="dimension-hint-text" style="display: none;"></span>
+            </div>
+
+            <!-- Target Size Box with Super Minimise & Interactive Slider -->
+            <div class="target-size-box">
+              <div class="target-size-header">
+                <span class="target-size-title" id="target-size-label-text">
+                  <i class="fa-solid fa-bullseye text-sky"></i> हवी असलेली अचूक साईझ (Target KB):
+                </span>
+                
+                <!-- Super Minimise Button -->
+                <button type="button" class="btn-super-minimise" id="btn-super-minimise" onclick="applySuperMinimise()" title="कमाल कॉम्प्रेशन: किमान सुरक्षित साईझ एका क्लिकवर सेट करा">
+                  <i class="fa-solid fa-bolt-lightning text-amber"></i>
+                  <span>⚡ सुपर मिनिमाइज</span>
+                  <span class="badge-mini-tag">किमान KB</span>
+                </button>
+              </div>
+
+              <div class="target-input-row">
+                <div class="custom-kb-input-wrap">
+                  <input type="number" id="target-kb-input" value="200" min="10" max="5000" step="5" oninput="handleTargetKbInputChange(this.value)">
+                  <span class="kb-unit-tag">KB</span>
+                </div>
+
+                <div class="quick-size-chips" id="quick-chips-container">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+
+              <!-- Visual Range Slider -->
+              <div class="slider-wrap">
+                <input type="range" class="neon-slider" id="target-kb-slider" min="10" max="1000" step="5" value="200" oninput="handleSliderChange(this.value)" title="स्लायडर ड्रॅग करून हवी ती साईझ निवडा">
+              </div>
+
+              <span id="target-hint-text" style="display: none;"></span>
+            </div>
+
+            <!-- Compact Status Strip -->
+            <div class="compact-features-strip">
+              <span class="feature-chip"><i class="fa-solid fa-crosshairs text-sky"></i> हार्ड साईझ लॉक (±४ KB)</span>
+              <span class="feature-chip"><i class="fa-solid fa-eye text-emerald"></i> Ultra-Clarity (Zero Blur)</span>
+              <span class="feature-chip"><i class="fa-solid fa-microchip text-amber"></i> Multi-Pass Auto Calibration</span>
+            </div>
+
+            <!-- Start Compression Button -->
+            <button type="button" class="btn-compress-action" id="btn-start-compress" onclick="executeCurrentModeAction()">
+              <i class="fa-solid fa-bolt"></i> <span id="btn-action-text">आता अचूक साईझमध्ये कॉम्प्रेस करा (Start)</span>
+            </button>
+
+            <!-- Progress Section -->
+            <div class="progress-section" id="progress-section">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; color: #cbd5e1; font-weight: 600;">
+                <span id="progress-status-text">प्रोसेसिंग सुरू होत आहे...</span>
+                <span id="progress-percent-text" style="font-weight: 800; color: #38bdf8;">0%</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+              </div>
             </div>
           </div>
 
-          <!-- Stats Comparison Row -->
-          <div class="comparison-stats-row">
-            <div class="stat-box">
-              <div class="stat-label">मूळ साईझ</div>
-              <div class="stat-value" id="stat-orig-size">० MB</div>
+          <!-- Result Section with Visual Comparison Dashboard & Radial Meter -->
+          <div class="result-section" id="result-card">
+            <div class="result-success-banner">
+              <i class="fa-solid fa-circle-check text-emerald" style="font-size: 1.35rem;"></i>
+              <div>
+                <div id="result-success-title" style="font-weight: 800; font-size: 0.94rem; color: #f8fafc;">कॉम्प्रेशन यशस्वी झाले!</div>
+                <div id="gov-compliance-badge" style="font-size: 0.76rem; color: #a7f3d0;">पोर्टल अपलोडसाठी १००% योग्य</div>
+              </div>
             </div>
-            <div class="stat-box success">
-              <div class="stat-label">कॉम्प्रेस साईझ</div>
-              <div class="stat-value" id="stat-comp-size">० KB</div>
+
+            <!-- Visual Comparison Dashboard (Radial Meter + Before/After Bars) -->
+            <div class="visual-comparison-dashboard">
+              <!-- Radial SVG Reduction Gauge -->
+              <div class="radial-gauge-card">
+                <div class="radial-gauge-svg-wrap">
+                  <svg class="radial-gauge-svg" viewBox="0 0 100 100">
+                    <circle class="gauge-bg" cx="50" cy="50" r="42"></circle>
+                    <circle class="gauge-fill" id="gauge-fill-circle" cx="50" cy="50" r="42"></circle>
+                  </svg>
+                  <div class="gauge-center-content">
+                    <div class="gauge-percent" id="gauge-percent-display">-0%</div>
+                    <div class="gauge-label">बचत (Saved)</div>
+                  </div>
+                </div>
+                <div class="gauge-footer-text">
+                  <i class="fa-solid fa-crosshairs text-sky"></i>
+                  <span>हार्ड साईझ लॉक</span>
+                </div>
+              </div>
+
+              <!-- Side-by-side Comparative Bars -->
+              <div class="size-bars-card">
+                <div class="size-bar-group">
+                  <div class="size-bar-labels">
+                    <span class="bar-tag orig"><i class="fa-solid fa-file"></i> मूळ साईझ</span>
+                    <span class="bar-val" id="bar-orig-size">० KB</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill orig" id="bar-orig-fill" style="width: 100%;"></div>
+                  </div>
+                </div>
+                
+                <div class="size-bar-group">
+                  <div class="size-bar-labels">
+                    <span class="bar-tag comp"><i class="fa-solid fa-circle-check text-emerald"></i> नवीन कॉम्प्रेस साईझ</span>
+                    <span class="bar-val text-emerald" id="bar-comp-size">० KB</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill comp" id="bar-comp-fill" style="width: 25%;"></div>
+                  </div>
+                </div>
+
+                <div class="savings-difference-strip">
+                  <div class="diff-badge"><i class="fa-solid fa-arrow-trend-down"></i> <span id="diff-kb-saved">० KB बचत</span></div>
+                  <div class="clarity-seal"><i class="fa-solid fa-shield-check text-emerald"></i> Zero Blur Shield</div>
+                </div>
+              </div>
             </div>
-            <div class="stat-box" id="stat-gap-box">
-              <div class="stat-label">फरक</div>
-              <div class="stat-value" id="stat-gap-val" style="color: #38bdf8;">-४.५ KB</div>
+
+            <!-- Stats Comparison Row -->
+            <div class="comparison-stats-row">
+              <div class="stat-box">
+                <div class="stat-label">मूळ साईझ</div>
+                <div class="stat-value" id="stat-orig-size">० MB</div>
+              </div>
+              <div class="stat-box success">
+                <div class="stat-label">कॉम्प्रेस साईझ</div>
+                <div class="stat-value" id="stat-comp-size">० KB</div>
+              </div>
+              <div class="stat-box" id="stat-gap-box">
+                <div class="stat-label">फरक</div>
+                <div class="stat-value" id="stat-gap-val" style="color: #38bdf8;">-४.५ KB</div>
+              </div>
+              <div class="stat-box success">
+                <div class="stat-label">बचत</div>
+                <div class="stat-value" id="stat-savings-pct">०%</div>
+              </div>
+              <div class="stat-box" id="stat-dim-box" style="display: none;">
+                <div class="stat-label">आकार</div>
+                <div class="stat-value" id="stat-dim-val">१६०×२१० px</div>
+              </div>
             </div>
-            <div class="stat-box success">
-              <div class="stat-label">बचत</div>
-              <div class="stat-value" id="stat-savings-pct">०%</div>
+
+            <!-- Result Actions -->
+            <div class="result-actions-row">
+              <button type="button" class="btn-download-result" id="btn-download-primary" onclick="downloadCurrentResult()">
+                <i class="fa-solid fa-download"></i> <span id="download-btn-text">डाउनलोड करा</span>
+              </button>
+              <button type="button" id="btn-preview-result" onclick="previewCurrentResult()" class="btn-secondary-action">
+                <i class="fa-solid fa-eye"></i> प्रीव्ह्यू
+              </button>
+              <button type="button" onclick="resetMasterUploader()" class="btn-reset-action">
+                <i class="fa-solid fa-arrow-rotate-right"></i> नवीन फाईल
+              </button>
             </div>
-            <div class="stat-box" id="stat-dim-box" style="display: none;">
-              <div class="stat-label">आकार</div>
-              <div class="stat-value" id="stat-dim-val">१६०×२१० px</div>
+
+            <!-- Thumbnails Preview Strip -->
+            <div id="thumbnails-preview-section" style="display: none;">
+              <div class="thumbnails-preview-grid" id="thumbnails-container"></div>
             </div>
           </div>
 
-          <!-- Result Actions -->
-          <div class="result-actions-row">
-            <button type="button" class="btn-download-result" id="btn-download-primary" onclick="downloadCurrentResult()">
-              <i class="fa-solid fa-download"></i> <span id="download-btn-text">डाउनलोड करा</span>
-            </button>
-            <button type="button" id="btn-preview-result" onclick="previewCurrentResult()" class="btn-secondary-action">
-              <i class="fa-solid fa-eye"></i> प्रीव्ह्यू
-            </button>
-            <button type="button" onclick="resetMasterUploader()" class="btn-reset-action">
-              <i class="fa-solid fa-arrow-rotate-right"></i> नवीन फाईल
-            </button>
-          </div>
-
-          <!-- Thumbnails Preview Strip -->
-          <div id="thumbnails-preview-section" style="display: none;">
-            <div class="thumbnails-preview-grid" id="thumbnails-container"></div>
-          </div>
         </div>
-
       </div>
 
     </div>
@@ -1242,6 +1932,104 @@
     let finalResultFilename = 'document.pdf';
     let finalResultDimensions = ''; // e.g. '160 x 200 px'
     let renderedThumbnails = [];
+
+    // ==========================================
+    // Minimise / Compact View & Window Controls
+    // ==========================================
+    let isCompactMode = false;
+    let isFullscreenMode = false;
+
+    function toggleCompactMinimiseMode(forceState) {
+      if (typeof forceState === 'boolean') {
+        isCompactMode = forceState;
+      } else {
+        isCompactMode = !isCompactMode;
+      }
+      document.body.classList.toggle('compact-mode', isCompactMode);
+      
+      const lbl = document.getElementById('compact-toggle-label');
+      const ico = document.getElementById('compact-toggle-icon');
+      if (lbl) {
+        lbl.textContent = isCompactMode ? 'विस्तृत व्ह्यू (Expand)' : 'मिनिमाइज व्ह्यू (Compact)';
+      }
+      if (ico) {
+        ico.className = isCompactMode ? 'fa-solid fa-expand' : 'fa-solid fa-compress';
+      }
+      const winMinBtn = document.querySelector('.win-btn.win-min');
+      if (winMinBtn) {
+        winMinBtn.title = isCompactMode ? 'विस्तृत व्ह्यू (Restore)' : 'मिनिमाइज व्ह्यू (Compact)';
+      }
+    }
+
+    function toggleFullscreenView() {
+      isFullscreenMode = !isFullscreenMode;
+      const container = document.querySelector('.compressor-container');
+      if (container) {
+        container.style.maxWidth = isFullscreenMode ? '100%' : '1220px';
+      }
+      const winMaxBtn = document.querySelector('.win-btn.win-max i');
+      if (winMaxBtn) {
+        winMaxBtn.className = isFullscreenMode ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+      }
+    }
+
+    function toggleCardCollapse(cardId) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      const body = card.querySelector('.card-collapsible-body');
+      const icon = card.querySelector('.btn-card-collapse i');
+      if (!body) return;
+      if (body.style.display === 'none') {
+        body.style.display = 'block';
+        if (icon) icon.className = 'fa-solid fa-chevron-up';
+      } else {
+        body.style.display = 'none';
+        if (icon) icon.className = 'fa-solid fa-chevron-down';
+      }
+    }
+
+    // Range Slider Handler
+    function handleSliderChange(val) {
+      const kb = parseInt(val, 10);
+      if (!isNaN(kb)) {
+        document.getElementById('target-kb-input').value = kb;
+        handleTargetKbInputChange(kb);
+      }
+    }
+
+    // Super Minimise (किमान शक्य साईझ) Handler
+    function applySuperMinimise() {
+      let miniKb = 100;
+      if (currentMode === 'single-img' || currentMode === 'batch-img') {
+        if (currentImageDimensionPreset === 'signature') miniKb = 15;
+        else if (currentImageDimensionPreset === 'photo') miniKb = 35;
+        else if (currentImageDimensionPreset === 'document') miniKb = 60;
+        else miniKb = 40;
+      } else if (currentMode === 'single-pdf') {
+        miniKb = 80;
+      } else if (currentMode === 'merge-pdf') {
+        miniKb = 150;
+      } else if (currentMode === 'batch-pdf') {
+        miniKb = 100;
+      } else if (currentMode === 'img-to-pdf') {
+        miniKb = 150;
+      }
+
+      document.getElementById('target-kb-input').value = miniKb;
+      const slider = document.getElementById('target-kb-slider');
+      if (slider) slider.value = miniKb;
+      syncSizeUI(miniKb);
+
+      // Flash feedback
+      const btn = document.getElementById('btn-super-minimise');
+      if (btn) {
+        btn.style.boxShadow = '0 0 25px rgba(245, 158, 11, 1)';
+        setTimeout(() => {
+          btn.style.boxShadow = '';
+        }, 500);
+      }
+    }
+
 
     // Mode Configuration Definitions
     const MODE_CONFIGS = {
@@ -1411,6 +2199,17 @@
       document.getElementById('target-size-label-text').textContent = conf.targetLabel;
       document.getElementById('target-hint-text').innerHTML = conf.targetHint;
       document.getElementById('target-kb-input').value = conf.defaultKb;
+      const slider = document.getElementById('target-kb-slider');
+      if (slider) {
+        if (mode === 'single-img' || mode === 'batch-img') {
+          slider.min = 10;
+          slider.max = 500;
+        } else {
+          slider.min = 30;
+          slider.max = 1200;
+        }
+        slider.value = conf.defaultKb;
+      }
 
       // Render Chips
       renderQuickChips(conf.chips, conf.defaultKb);
@@ -1522,6 +2321,10 @@
         const chipKb = parseInt(chip.getAttribute('data-kb'), 10);
         chip.classList.toggle('active', chipKb === kb);
       });
+      const slider = document.getElementById('target-kb-slider');
+      if (slider && !isNaN(kb)) {
+        slider.value = Math.min(parseInt(slider.max, 10), Math.max(parseInt(slider.min, 10), kb));
+      }
     }
 
     // ==========================================
@@ -2586,6 +3389,33 @@
       document.getElementById('stat-orig-size').textContent = formatBytes(origTotalBytes);
       document.getElementById('stat-comp-size').textContent = formatBytes(compBytes);
       document.getElementById('stat-savings-pct').textContent = savingsPct > 0 ? `-${savingsPct}%` : '०%';
+
+      // Update Visual Comparison Dashboard (SVG Radial Meter & Before/After Bars)
+      const gaugePercent = document.getElementById('gauge-percent-display');
+      const gaugeCircle = document.getElementById('gauge-fill-circle');
+      if (gaugePercent) gaugePercent.textContent = savingsPct > 0 ? `-${savingsPct}%` : '०%';
+      if (gaugeCircle) {
+        // Circumference for r=42 is 263.89
+        const circumference = 263.89;
+        const offset = circumference - (circumference * Math.min(100, Math.max(0, savingsPct)) / 100);
+        gaugeCircle.style.strokeDashoffset = offset;
+      }
+
+      const barOrigSize = document.getElementById('bar-orig-size');
+      const barCompSize = document.getElementById('bar-comp-size');
+      const barCompFill = document.getElementById('bar-comp-fill');
+      const diffKbSaved = document.getElementById('diff-kb-saved');
+
+      if (barOrigSize) barOrigSize.textContent = formatBytes(origTotalBytes);
+      if (barCompSize) barCompSize.textContent = formatBytes(compBytes);
+      if (barCompFill) {
+        const fillPct = origTotalBytes > 0 ? Math.max(10, Math.min(100, Math.round((compBytes / origTotalBytes) * 100))) : 20;
+        barCompFill.style.width = `${fillPct}%`;
+      }
+      if (diffKbSaved) {
+        const savedBytes = Math.max(0, origTotalBytes - compBytes);
+        diffKbSaved.textContent = `${formatBytes(savedBytes)} बचत`;
+      }
 
       const gapBox = document.getElementById('stat-gap-box');
       const gapVal = document.getElementById('stat-gap-val');
