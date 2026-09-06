@@ -1029,6 +1029,18 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
+  // 🖨️ युनिव्हर्सल स्कॅनर टूल (Universal Scanner Tool)
+  {
+    id: "link-universal-scanner",
+    category: "उपयुक्त दस्तऐवज टूल्स",
+    icon: "fa-solid fa-print",
+    title_mr: "🖨️ Universal Scanner Pro (सर्व स्कॅनर्सना सपोर्ट)",
+    title_en: "Universal Scanner Pro (All Scanners Support like NAPS2)",
+    desc_mr: "Canon, HP, Epson, Brother सह सर्व स्कॅनर्सवरून थेट स्कॅनिंग करून आपले सरकार २५० KB व महाडीबीटी ५०० KB PDF एका क्लिकवर बनवा.",
+    desc_en: "Universal scanner desktop software supporting Canon, HP, Epson, Brother scanners with instant 250KB/500KB PDF lock.",
+    url: "scanner.html",
+    isInternal: true
+  },
   // 🗜️ उपयुक्त दस्तऐवज टूल्स (Document Tools)
   {
     id: "link-pdf-compressor",
