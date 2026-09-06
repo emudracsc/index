@@ -1001,6 +1001,24 @@
       transform: translateY(-1px);
     }
 
+    /* Custom Target Size Chips */
+    .chip-kb {
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      color: #d8b4fe;
+      font-weight: 700;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .chip-kb:hover {
+      background: rgba(168, 85, 247, 0.35);
+      border-color: #c084fc;
+      color: #ffffff;
+    }
+
     /* Modal Styling */
     .modal-overlay {
       position: fixed;
@@ -1445,6 +1463,40 @@
               <button class="btn-gov-download blue" onclick="exportGovernmentPdf(490)">
                 <i class="fa-solid fa-download"></i> <span>महाडीबीटी PDF डाऊनलोड</span>
               </button>
+            </div>
+
+            <!-- Manual Target Size Compressor Card -->
+            <div class="gov-export-card custom" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(15, 23, 42, 0.85) 100%); border: 1px solid rgba(168, 85, 247, 0.45); border-radius: 8px; padding: 6px 10px; display: flex; flex-direction: column; gap: 3px;">
+              <div class="gov-card-head">
+                <span class="gov-card-title" style="color: #c084fc;">
+                  <i class="fa-solid fa-bullseye" style="color: #a855f7;"></i> मॅन्युअल साईझ (Custom KB)
+                </span>
+                <span class="gov-badge" style="background: rgba(168, 85, 247, 0.2); color: #d8b4fe; border-color: rgba(168, 85, 247, 0.4);">
+                  हवी ती साईझ
+                </span>
+              </div>
+              <div class="gov-desc">
+                हवी ती साईझ KB मध्ये टाका व अचूक त्या मर्यादेत कम्प्रेश करा:
+              </div>
+              <div style="display: flex; gap: 4px; align-items: center; margin-top: 2px;">
+                <div style="position: relative; flex: 1; display: flex; align-items: center;">
+                  <input type="number" id="customTargetKbInput" value="200" min="15" max="10000" step="5" placeholder="200" 
+                    style="width: 100%; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(168, 85, 247, 0.4); color: #ffffff; padding: 4px 30px 4px 8px; border-radius: 5px; font-size: 0.8rem; font-weight: 700; outline: none;">
+                  <span style="position: absolute; right: 6px; font-size: 0.68rem; font-weight: 800; color: #c084fc; pointer-events: none;">KB</span>
+                </div>
+                <button type="button" class="chip-kb" onclick="setCustomTargetKb(100)">100</button>
+                <button type="button" class="chip-kb" onclick="setCustomTargetKb(200)">200</button>
+                <button type="button" class="chip-kb" onclick="setCustomTargetKb(300)">300</button>
+                <button type="button" class="chip-kb" onclick="setCustomTargetKb(500)">500</button>
+              </div>
+              <div style="display: flex; gap: 5px; margin-top: 3px;">
+                <button class="btn-gov-download" style="flex: 1; background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); box-shadow: 0 3px 10px rgba(147, 51, 234, 0.35);" onclick="exportCustomTargetPdf()">
+                  <i class="fa-solid fa-file-pdf"></i> <span>कम्प्रेश PDF डाऊनलोड</span>
+                </button>
+                <button class="btn-tool" style="padding: 4px 8px; font-size: 0.74rem;" onclick="exportCustomTargetJpg()" title="चालू पानाचा JPG या साईझमध्ये सेव्ह करा">
+                  <i class="fa-solid fa-file-image"></i> <span>JPG</span>
+                </button>
+              </div>
             </div>
 
             <!-- Standard Download Options -->
@@ -2519,74 +2571,198 @@
     // =========================================================================
     // 8. GOVERNMENT PDF EXPORT (AAPLE SARKAR 250 KB & MAHADBT 500 KB)
     // =========================================================================
+    // 8. GOVERNMENT & CUSTOM TARGET SIZE PDF/JPG EXPORT ENGINE
+    // =========================================================================
 
-    async function exportGovernmentPdf(maxTargetKb = 245) {
+    function renderPageToOffscreenCanvas(page) {
+      const offCanvas = document.createElement('canvas');
+      const rot = page.rotation % 360;
+
+      if (rot === 90 || rot === 270) {
+        offCanvas.width = page.rawImage.height;
+        offCanvas.height = page.rawImage.width;
+      } else {
+        offCanvas.width = page.rawImage.width;
+        offCanvas.height = page.rawImage.height;
+      }
+
+      const offCtx = offCanvas.getContext('2d');
+      offCtx.save();
+      offCtx.translate(offCanvas.width / 2, offCanvas.height / 2);
+      offCtx.rotate((rot * Math.PI) / 180);
+      offCtx.drawImage(page.rawImage, -page.rawImage.width / 2, -page.rawImage.height / 2);
+      offCtx.restore();
+
+      applyCanvasFilterEffects(offCtx, offCanvas.width, offCanvas.height, page.filter);
+      return offCanvas;
+    }
+
+    async function compressDocumentToTarget(maxTargetKb, format = 'pdf', customPrefix = '') {
       if (state.pages.length === 0) {
-        showToast("PDF बनवण्यासाठी आधी पाने स्कॅन करा!", "error");
+        showToast("PDF/इमेज बनवण्यासाठी आधी पाने स्कॅन किंवा ॲड करा!", "error");
         return;
       }
 
-      showToast(`शासकीय PDF (< ${maxTargetKb} KB) तयार करत आहे...`, "info");
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const targetBytes = maxTargetKb * 1024;
+      showToast(`अचूक < ${maxTargetKb} KB मध्ये कम्प्रेशन सुरू आहे...`, "info");
+      playBeep('start');
 
-      // Iterative Compression Engine
-      // Scale JPEG quality and page dimensions so total PDF <= targetBytes
-      const totalPages = state.pages.length;
-      let targetQuality = totalPages > 1 ? 0.65 : 0.78;
-      if (maxTargetKb > 300) targetQuality = 0.85;
+      if (format === 'jpg') {
+        const page = state.pages[state.activePageIndex >= 0 ? state.activePageIndex : 0];
+        const offCanvas = renderPageToOffscreenCanvas(page);
 
-      for (let i = 0; i < state.pages.length; i++) {
-        if (i > 0) pdf.addPage('a4', 'portrait');
-
-        // Render page with rotation and filter to an offscreen canvas
-        const page = state.pages[i];
-        const offCanvas = document.createElement('canvas');
-        const rot = page.rotation % 360;
-
-        if (rot === 90 || rot === 270) {
-          offCanvas.width = page.rawImage.height;
-          offCanvas.height = page.rawImage.width;
-        } else {
-          offCanvas.width = page.rawImage.width;
-          offCanvas.height = page.rawImage.height;
-        }
-
-        const offCtx = offCanvas.getContext('2d');
-        offCtx.save();
-        offCtx.translate(offCanvas.width / 2, offCanvas.height / 2);
-        offCtx.rotate((rot * Math.PI) / 180);
-        offCtx.drawImage(page.rawImage, -page.rawImage.width / 2, -page.rawImage.height / 2);
-        offCtx.restore();
-
-        applyCanvasFilterEffects(offCtx, offCanvas.width, offCanvas.height, page.filter);
-
-        // Resize down if too high resolution for government portal
+        let lowQ = 0.1, highQ = 0.98, bestBlob = null;
         let finalCanvas = offCanvas;
-        if (offCanvas.width > 1654 || offCanvas.height > 2338) {
-          const scaleDown = Math.min(1654 / offCanvas.width, 2338 / offCanvas.height);
+
+        if (maxTargetKb < 70 && (offCanvas.width > 1200 || offCanvas.height > 1600)) {
+          const scale = Math.min(1000 / offCanvas.width, 1400 / offCanvas.height);
           finalCanvas = document.createElement('canvas');
-          finalCanvas.width = Math.round(offCanvas.width * scaleDown);
-          finalCanvas.height = Math.round(offCanvas.height * scaleDown);
-          const fCtx = finalCanvas.getContext('2d');
-          fCtx.drawImage(offCanvas, 0, 0, finalCanvas.width, finalCanvas.height);
+          finalCanvas.width = Math.round(offCanvas.width * scale);
+          finalCanvas.height = Math.round(offCanvas.height * scale);
+          finalCanvas.getContext('2d').drawImage(offCanvas, 0, 0, finalCanvas.width, finalCanvas.height);
         }
 
-        const jpegUrl = finalCanvas.toDataURL('image/jpeg', targetQuality);
-        pdf.addImage(jpegUrl, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+        for (let iter = 0; iter < 6; iter++) {
+          const midQ = +((lowQ + highQ) / 2).toFixed(2);
+          const blob = await new Promise(res => finalCanvas.toBlob(res, 'image/jpeg', midQ));
+          if (blob.size <= targetBytes) {
+            bestBlob = blob;
+            lowQ = midQ;
+          } else {
+            highQ = midQ;
+          }
+          if (highQ - lowQ < 0.05) break;
+        }
+
+        if (!bestBlob) {
+          bestBlob = await new Promise(res => finalCanvas.toBlob(res, 'image/jpeg', 0.2));
+        }
+
+        const actualKb = (bestBlob.size / 1024).toFixed(1);
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(bestBlob);
+        link.download = `EMUDRA_SCAN_${actualKb}KB.jpg`;
+        link.click();
+        playBeep('success');
+        showToast(`JPG तयार झाली! फाईल साईझ: ${actualKb} KB (< ${maxTargetKb} KB)`, "success");
+        return;
       }
 
-      // Check final size
-      const pdfBlob = pdf.output('blob');
-      const actualKb = (pdfBlob.size / 1024).toFixed(1);
+      // Multi-page PDF Compression
+      const { jsPDF } = window.jspdf;
+      const totalPages = state.pages.length;
+      const overheadBytes = 2500 + (totalPages * 800);
+      const availableBytes = Math.max(4000, targetBytes - overheadBytes);
+      const perPageBudget = Math.floor(availableBytes / totalPages);
 
-      const fileName = maxTargetKb <= 250 
-        ? `Aaple_Sarkar_${actualKb}KB.pdf` 
-        : `MahaDBT_${actualKb}KB.pdf`;
+      const offscreenCanvases = state.pages.map(p => renderPageToOffscreenCanvas(p));
+
+      let resScale = 1.0;
+      if (perPageBudget < 40000) {
+        resScale = 0.65;
+      } else if (perPageBudget < 90000) {
+        resScale = 0.85;
+      }
+
+      const pageJpegBlobs = [];
+      for (let pIdx = 0; pIdx < totalPages; pIdx++) {
+        const origCanvas = offscreenCanvases[pIdx];
+        let pageCanvas = origCanvas;
+        if (resScale < 1.0) {
+          pageCanvas = document.createElement('canvas');
+          pageCanvas.width = Math.round(origCanvas.width * resScale);
+          pageCanvas.height = Math.round(origCanvas.height * resScale);
+          pageCanvas.getContext('2d').drawImage(origCanvas, 0, 0, pageCanvas.width, pageCanvas.height);
+        }
+
+        let lowQ = 0.12, highQ = 0.95, bestDataUrl = null;
+        for (let iter = 0; iter < 5; iter++) {
+          const midQ = +((lowQ + highQ) / 2).toFixed(2);
+          const b64 = pageCanvas.toDataURL('image/jpeg', midQ);
+          const approxBytes = Math.round(b64.length * 0.75);
+          if (approxBytes <= perPageBudget) {
+            bestDataUrl = b64;
+            lowQ = midQ;
+          } else {
+            highQ = midQ;
+          }
+          if (highQ - lowQ < 0.06) break;
+        }
+
+        if (!bestDataUrl) {
+          bestDataUrl = pageCanvas.toDataURL('image/jpeg', 0.18);
+        }
+        pageJpegBlobs.push(bestDataUrl);
+      }
+
+      let pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      for (let i = 0; i < pageJpegBlobs.length; i++) {
+        if (i > 0) pdf.addPage('a4', 'portrait');
+        pdf.addImage(pageJpegBlobs[i], 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+      }
+
+      let finalBlob = pdf.output('blob');
+
+      // Adaptive second pass if PDF stream overhead pushed size slightly over
+      if (finalBlob.size > targetBytes) {
+        pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        for (let i = 0; i < offscreenCanvases.length; i++) {
+          if (i > 0) pdf.addPage('a4', 'portrait');
+          const sc = document.createElement('canvas');
+          sc.width = Math.round(offscreenCanvases[i].width * 0.6);
+          sc.height = Math.round(offscreenCanvases[i].height * 0.6);
+          sc.getContext('2d').drawImage(offscreenCanvases[i], 0, 0, sc.width, sc.height);
+          const downJpeg = sc.toDataURL('image/jpeg', 0.45);
+          pdf.addImage(downJpeg, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+        }
+        finalBlob = pdf.output('blob');
+      }
+
+      const actualKb = (finalBlob.size / 1024).toFixed(1);
+      let fileName = `EMUDRA_SCAN_${actualKb}KB.pdf`;
+      if (customPrefix === 'AAPLE_SARKAR') {
+        fileName = `Aaple_Sarkar_${actualKb}KB.pdf`;
+      } else if (customPrefix === 'MAHADBT') {
+        fileName = `MahaDBT_${actualKb}KB.pdf`;
+      } else if (customPrefix === 'CUSTOM') {
+        fileName = `EMUDRA_Custom_${maxTargetKb}KB_Actual_${actualKb}KB.pdf`;
+      }
 
       pdf.save(fileName);
+      playBeep('success');
       showToast(`PDF तयार झाली! फाईल साईझ: ${actualKb} KB (मर्यादा: < ${maxTargetKb} KB)`, "success");
+    }
+
+    async function exportGovernmentPdf(maxTargetKb = 245) {
+      const prefix = maxTargetKb <= 250 ? 'AAPLE_SARKAR' : 'MAHADBT';
+      await compressDocumentToTarget(maxTargetKb, 'pdf', prefix);
+    }
+
+    async function exportCustomTargetPdf() {
+      const val = parseInt(document.getElementById('customTargetKbInput').value, 10);
+      if (!val || val < 10) {
+        showToast("कृपया वैध साईझ (उदा. 150 KB) टाका!", "error");
+        return;
+      }
+      await compressDocumentToTarget(val, 'pdf', 'CUSTOM');
+    }
+
+    async function exportCustomTargetJpg() {
+      const val = parseInt(document.getElementById('customTargetKbInput').value, 10);
+      if (!val || val < 10) {
+        showToast("कृपया वैध साईझ (उदा. 150 KB) टाका!", "error");
+        return;
+      }
+      await compressDocumentToTarget(val, 'jpg', 'CUSTOM');
+    }
+
+    function setCustomTargetKb(kb) {
+      const inp = document.getElementById('customTargetKbInput');
+      if (inp) {
+        inp.value = kb;
+        inp.focus();
+        showToast(`लक्ष्य साईझ ${kb} KB सेट केली!`, "info");
+      }
     }
 
     function exportOriginalPdf() {
