@@ -45,6 +45,37 @@ IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff", ".tif"}
 PDF_EXTENSIONS = {".pdf"}
 
 
+def pad_jpeg(data: bytes, target_bytes: int, margin_kb: float = 4.5) -> bytes:
+    """
+    JPEG COM (0xFF 0xFE) मार्कर वापरून फाईल अचूक ४ ते ५ KB च्या फरकात पॅड करते.
+    """
+    if target_bytes <= 35 * 1024:
+        margin_bytes = min(1536, int(target_bytes * 0.08))
+    elif target_bytes <= 75 * 1024:
+        margin_bytes = min(3072, int(target_bytes * 0.06))
+    elif target_bytes <= 150 * 1024:
+        margin_bytes = 4096
+    else:
+        margin_bytes = min(5120, max(4096, int(target_bytes * 0.01)))
+
+    desired = target_bytes - margin_bytes
+    needed = desired - len(data)
+    if needed <= 5 or len(data) < 2 or data[:2] != b'\xff\xd8':
+        return data
+
+    chunks = [data[:2]]
+    rem = needed
+    while rem >= 5:
+        chunk = min(rem - 4, 65530)
+        marker_len = chunk + 2
+        header = bytes([0xFF, 0xFE, (marker_len >> 8) & 0xFF, marker_len & 0xFF])
+        chunks.append(header)
+        chunks.append(b' ' * chunk)
+        rem -= (chunk + 4)
+    chunks.append(data[2:])
+    return b''.join(chunks)
+
+
 # =============================================================================
 # १. कोर इमेज कॉम्प्रेशन अल्गोरिदम (Exact Target Size Image Engine)
 # =============================================================================
@@ -52,7 +83,7 @@ def compress_image_to_exact_target(
     input_path: str,
     output_path: str,
     target_kb: int = 50,
-    dimension_preset: str = "original",  # 'original' | 'photo' | 'signature' | 'document'
+    dimension_preset: str = "photo", custom_dimensions: tuple = None,  # 'original' | 'photo' | 'signature' | 'document' | 'custom'
     enhance_text: bool = True,
     progress_callback=None
 ) -> dict:
@@ -79,9 +110,17 @@ def compress_image_to_exact_target(
         orig_w, orig_h = img.size
 
         # डायमेन्शन व रिझोल्युशन प्रिसेट ॲप्लाय करणे
-        if dimension_preset == "photo":
-            # शासकीय पासपोर्ट फोटो: १६० x २०० px (सेंटर कव्हर फिट)
-            tw, th = 160, 200
+        if custom_dimensions and len(custom_dimensions) == 2 and custom_dimensions[0] > 0 and custom_dimensions[1] > 0:
+            tw, th = int(custom_dimensions[0]), int(custom_dimensions[1])
+            scale = max(tw / orig_w, th / orig_h)
+            new_w, new_h = max(1, int(round(orig_w * scale))), max(1, int(round(orig_h * scale)))
+            img_scaled = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+            left = (new_w - tw) // 2
+            top = (new_h - th) // 2
+            img = img_scaled.crop((left, top, left + tw, top + th))
+        elif dimension_preset == "photo":
+            # शासकीय पासपोर्ट फोटो: १६० x २१० px (सेंटर कव्हर फिट)
+            tw, th = 160, 210
             scale = max(tw / orig_w, th / orig_h)
             new_w, new_h = max(1, int(round(orig_w * scale))), max(1, int(round(orig_h * scale)))
             img_scaled = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
@@ -188,7 +227,8 @@ def compress_image_to_exact_target(
                 curr_img.save(buf, format="JPEG", quality=20, optimize=True)
             best_data = buf.getvalue()
 
-        # अंतिम फाईल सेव्ह करणे
+        # अंतिम फाईल सेव्ह करणे (हार्ड साईझ टार्गेट लॉक - ४ ते ५ KB फरक हमी)
+        best_data = pad_jpeg(best_data, target_bytes, margin_kb=4.5)
         with open(output_path, "wb") as f:
             f.write(best_data)
 
@@ -352,6 +392,31 @@ def compress_pdf_to_exact_target(
         new_doc.close()
         doc.close()
 
+    # हार्ड साईझ टार्गेट लॉक (Hard Size Target Lock - अचूक ४ ते ५ KB फरक हमी)
+    if target_kb <= 35:
+        margin_bytes = min(1536, int(target_bytes * 0.08))
+    elif target_kb <= 75:
+        margin_bytes = min(3072, int(target_bytes * 0.06))
+    elif target_kb <= 150:
+        margin_bytes = 4096
+    else:
+        margin_bytes = min(5120, max(4096, int(target_bytes * 0.01)))
+
+    desired_bytes = target_bytes - margin_bytes
+    curr_size = os.path.getsize(output_path)
+
+    if curr_size < desired_bytes:
+        pad_doc = fitz.open(output_path)
+        base_len = len(pad_doc.write(garbage=4, deflate=True, clean=True))
+        needed_pad = desired_bytes - base_len
+        if needed_pad > 20:
+            pad_chars = max(1, needed_pad - 48)
+            pad_doc.set_metadata({'keywords': '0' * pad_chars})
+            padded_bytes = pad_doc.write(garbage=4, deflate=True, clean=True)
+            with open(output_path, "wb") as f:
+                f.write(padded_bytes)
+        pad_doc.close()
+
     final_size = os.path.getsize(output_path)
     savings_pct = round((1 - (final_size / orig_bytes)) * 100, 1)
 
@@ -476,6 +541,32 @@ def convert_images_to_pdf(
                 if os.path.exists(temp_out2):
                     os.remove(temp_out2)
 
+    # हार्ड साईझ टार्गेट लॉक (Hard Size Target Lock - अचूक ४ ते ५ KB फरक हमी)
+    if target_kb <= 35:
+        margin_bytes = min(1536, int(target_bytes * 0.08))
+    elif target_kb <= 75:
+        margin_bytes = min(3072, int(target_bytes * 0.06))
+    elif target_kb <= 150:
+        margin_bytes = 4096
+    else:
+        margin_bytes = min(5120, max(4096, int(target_bytes * 0.01)))
+
+    desired_bytes = target_bytes - margin_bytes
+    curr_size = os.path.getsize(output_path)
+
+    if curr_size < desired_bytes:
+        pad_doc = fitz.open(output_path)
+        base_len = len(pad_doc.write(garbage=4, deflate=True, clean=True))
+        needed_pad = desired_bytes - base_len
+        if needed_pad > 20:
+            pad_chars = max(1, needed_pad - 48)
+            pad_doc.set_metadata({'keywords': '0' * pad_chars})
+            padded_bytes = pad_doc.write(garbage=4, deflate=True, clean=True)
+            with open(output_path, "wb") as f:
+                f.write(padded_bytes)
+        pad_doc.close()
+
+    final_size = os.path.getsize(output_path)
     savings_pct = round((1 - (final_size / total_orig_bytes)) * 100, 1) if total_orig_bytes > 0 else 0
 
     return {
@@ -507,8 +598,14 @@ def launch_gui():
     ctk.set_default_color_theme("blue")
 
     root = ctk.CTk()
-    root.title("🏛️ ई-मुद्रा शासकीय PDF & Image Compressor Pro")
-    root.geometry("740x720")
+    root.title("EMUDRA PDF COMPRESSOR PRO")
+    icon_p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "images", "emudra_compressor_icon.ico")
+    if os.path.exists(icon_p):
+        try:
+            root.iconbitmap(icon_p)
+        except Exception:
+            pass
+    root.geometry("780x760")
     root.resizable(False, False)
 
     # State variables
@@ -526,7 +623,7 @@ def launch_gui():
 
     title_lbl = ctk.CTkLabel(
         header_frame,
-        text="🗜️ ई-मुद्रा शासकीय PDF & Image Suite Pro",
+        text="🗜️ EMUDRA PDF COMPRESSOR PRO",
         font=ctk.CTkFont(family="Mukta", size=20, weight="bold"),
         text_color="#38bdf8"
     )
@@ -534,7 +631,7 @@ def launch_gui():
 
     sub_lbl = ctk.CTkLabel(
         header_frame,
-        text="PDF, फोटो व स्वाक्षरी गुणवत्ता कमी न होता अचूक टार्गेट साईझमध्ये (२० KB, ५० KB, २५० KB) कॉम्प्रेस करा",
+        text="PDF व इमेज अचूक टार्गेट साईझ कॉम्प्रेशन • 160×210 px पासपोर्ट फोटो व स्वाक्षरी",
         font=ctk.CTkFont(size=12),
         text_color="#94a3b8"
     )
@@ -633,7 +730,7 @@ def launch_gui():
 
         if preset == "photo":
             target_kb_var.set("50")
-            dim_hint_lbl.configure(text="👤 पासपोर्ट फोटो: १६० × २०० px रिझोल्युशन व ५० KB साईझ (आपले सरकार, महाडीबीटी, MPSC)")
+            dim_hint_lbl.configure(text="👤 पासपोर्ट फोटो: १६० × २१० px रिझोल्युशन व ५० KB साईझ (आपले सरकार, महाडीबीटी, भरती)")
         elif preset == "signature":
             target_kb_var.set("20")
             dim_hint_lbl.configure(text="✍️ स्वाक्षरी (Signature): २५६ × ६४ px रिझोल्युशन व २० KB साईझ (शासकीय पोर्टल नियम)")
@@ -643,24 +740,46 @@ def launch_gui():
         else:
             dim_hint_lbl.configure(text="🔄 मूळ आकार: फोटोचा मूळ अस्पेक्ट रेशो कायम ठेवून फाईल टार्गेट KB मध्ये कॉम्प्रेस होईल.")
 
+    manual_w_var = ctk.StringVar(value="160")
+    manual_h_var = ctk.StringVar(value="210")
+
     dim_buttons = {}
-    b1 = ctk.CTkButton(dim_btn_row, text="👤 फोटो (160×200)", width=130, command=lambda: set_dim_preset("photo"))
-    b1.pack(side="left", padx=4)
+    b1 = ctk.CTkButton(dim_btn_row, text="👤 फोटो (160×210)", width=135, command=lambda: set_dim_preset("photo"))
+    b1.pack(side="left", padx=3)
     dim_buttons["photo"] = b1
 
-    b2 = ctk.CTkButton(dim_btn_row, text="✍️ स्वाक्षरी (256×64)", width=130, command=lambda: set_dim_preset("signature"))
-    b2.pack(side="left", padx=4)
+    b2 = ctk.CTkButton(dim_btn_row, text="✍️ स्वाक्षरी (256×64)", width=135, command=lambda: set_dim_preset("signature"))
+    b2.pack(side="left", padx=3)
     dim_buttons["signature"] = b2
 
-    b3 = ctk.CTkButton(dim_btn_row, text="🔄 मूळ आकार", width=130, command=lambda: set_dim_preset("original"))
-    b3.pack(side="left", padx=4)
+    b3 = ctk.CTkButton(dim_btn_row, text="🔄 मूळ आकार", width=110, command=lambda: set_dim_preset("original"))
+    b3.pack(side="left", padx=3)
     dim_buttons["original"] = b3
 
-    b4 = ctk.CTkButton(dim_btn_row, text="📄 कागदपत्र", width=130, command=lambda: set_dim_preset("document"))
-    b4.pack(side="left", padx=4)
+    b4 = ctk.CTkButton(dim_btn_row, text="📄 कागदपत्र", width=110, command=lambda: set_dim_preset("document"))
+    b4.pack(side="left", padx=3)
     dim_buttons["document"] = b4
 
-    dim_hint_lbl = ctk.CTkLabel(dim_frame, text="शासकीय भरती, आपले सरकार, महाडीबीटीसाठी फोटो 160×200 px व स्वाक्षरी 256×64 px मध्ये आपोआप रिसाइज होते.", font=ctk.CTkFont(size=11), text_color="#cbd5e1")
+    # Manual dimensions row
+    manual_dim_row = ctk.CTkFrame(dim_frame, fg_color="transparent")
+    manual_dim_row.pack(fill="x", padx=16, pady=(2, 6))
+
+    ctk.CTkLabel(manual_dim_row, text="📐 मॅन्युअल पिक्सेल (Custom Px):", font=ctk.CTkFont(size=11, weight="bold"), text_color="#f472b6").pack(side="left", padx=(0, 6))
+    ctk.CTkLabel(manual_dim_row, text="रुंदी:", font=ctk.CTkFont(size=11)).pack(side="left", padx=(0, 3))
+    w_entry = ctk.CTkEntry(manual_dim_row, textvariable=manual_w_var, width=65)
+    w_entry.pack(side="left", padx=(0, 6))
+    ctk.CTkLabel(manual_dim_row, text="× उंची:", font=ctk.CTkFont(size=11)).pack(side="left", padx=(0, 3))
+    h_entry = ctk.CTkEntry(manual_dim_row, textvariable=manual_h_var, width=65)
+    h_entry.pack(side="left", padx=(0, 8))
+
+    def apply_custom_pixels():
+        set_dim_preset("custom")
+
+    b_apply_px = ctk.CTkButton(manual_dim_row, text="पिक्सेल लागू करा", width=120, height=28, fg_color="#db2777", hover_color="#be185d", command=apply_custom_pixels)
+    b_apply_px.pack(side="left")
+    dim_buttons["custom"] = b_apply_px
+
+    dim_hint_lbl = ctk.CTkLabel(dim_frame, text="शासकीय भरती, आपले सरकार, महाडीबीटीसाठी फोटो 160×210 px व स्वाक्षरी 256×64 px मध्ये आपोआप रिसाइज होते.", font=ctk.CTkFont(size=11), text_color="#cbd5e1")
     dim_hint_lbl.pack(anchor="w", padx=16, pady=(0, 8))
 
     # 5. Target Size Selection Box
@@ -690,19 +809,18 @@ def launch_gui():
         mode = current_tool_mode.get()
         if mode == "image":
             chips_data = [
+                ("⚡ १० KB", 10, "#059669"),
                 ("✍️ २० KB", 20, "#db2777"),
                 ("👤 ५० KB", 50, "#0284c7"),
-                ("📄 १०० KB", 100, "#059669"),
-                ("🎯 १५० KB", 150, "#d97706"),
-                ("📦 २०० KB", 200, "#475569")
+                ("📄 १०० KB", 100, "#d97706")
             ]
         else:
             chips_data = [
                 ("⚡ १०० KB", 100, "#d97706"),
-                ("📄 १५० KB", 150, "#0284c7"),
+                ("📄 २०० KB", 200, "#0284c7"),
                 ("🏛️ २५० KB", 250, "#0284c7"),
-                ("🎓 ४८० KB", 480, "#059669"),
-                ("📑 १ MB", 1024, "#475569")
+                ("📑 ३०० KB", 300, "#059669"),
+                ("🎓 ५०० KB", 500, "#475569")
             ]
 
         for label, val, col in chips_data:

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>शासकीय PDF व इमेज Compressor Pro | आपले सरकार, महाडीबीटी व शासकीय कागदपत्रे</title>
+  <title>EMUDRA PDF COMPRESSOR PRO | शासकीय PDF व इमेज कॉम्प्रेशर</title>
   <meta name="description" content="शासकीय कागदपत्रे (PDF व इमेजेस) आपले सरकार २५६ KB, महाडीबीटी ५०० KB, फोटो ५० KB व स्वाक्षरी २० KB साठी सुरक्षितपणे अचूक साईझमध्ये कॉम्प्रेस करा, मल्टिपल PDF/इमेज एकत्र करा किंवा झिप (ZIP) डाउनलोड करा.">
   
   <!-- Google Fonts: Mukta & Poppins -->
@@ -14,6 +14,9 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/emudra_compressor_icon.png">
+
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 
@@ -33,6 +36,10 @@
       --border-glow: rgba(56, 189, 248, 0.25);
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       background: #090d16;
       color: #f8fafc;
@@ -42,295 +49,572 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .gov-tricolor-stripe {
+      height: 3px;
+      background: linear-gradient(90deg, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%);
+      width: 100%;
+    }
+
+    .top-navbar {
+      background: rgba(15, 23, 42, 0.88);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
     }
 
     .compressor-container {
-      max-width: 1060px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 24px 16px 60px 16px;
+      padding: 10px 14px 16px 14px;
       flex: 1;
       width: 100%;
-      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Top Banner */
-    .hero-banner {
-      text-align: center;
-      margin-bottom: 24px;
+    /* Single View Header */
+    .single-view-header {
+      margin-bottom: 10px;
     }
-    .hero-banner h1 {
-      font-size: 2.1rem;
+    .single-view-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .compact-title {
+      font-size: 1.22rem;
       font-weight: 800;
-      margin: 0 0 8px 0;
+      margin: 0;
       background: linear-gradient(135deg, #ffffff 0%, #38bdf8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      letter-spacing: -0.5px;
-    }
-    .hero-banner p {
-      color: #94a3b8;
-      font-size: 0.98rem;
-      max-width: 760px;
-      margin: 0 auto 14px auto;
-      line-height: 1.55;
-    }
-    .trust-chips-row {
+      letter-spacing: -0.3px;
       display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
     }
-    .trust-chip {
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.22);
-      border-radius: 20px;
-      padding: 4px 12px;
-      font-size: 0.78rem;
-      font-weight: 600;
+    .active-mode-tag-pill {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.28);
       color: #7dd3fc;
+      border-radius: 8px;
+      padding: 3px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
 
-    /* Modern Mode Selector Tabs Bar */
-    .mode-tabs-wrapper {
-      margin-bottom: 22px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 16px;
-      padding: 8px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(12px);
-    }
-    .mode-tabs-header-text {
-      font-size: 0.84rem;
+    .btn-download-app, .btn-download-offline {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #ffffff;
       font-weight: 700;
-      color: #94a3b8;
-      margin: 2px 0 8px 8px;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.4);
+      transition: all 0.2s ease;
+    }
+    .btn-download-app:hover, .btn-download-offline:hover {
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.5);
+      color: #ffffff;
+    }
+
+    .btn-app-badge, .btn-offline-badge {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #7dd3fc;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 3px 9px;
+      border-radius: 7px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+    .btn-app-badge:hover, .btn-offline-badge:hover {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: #38bdf8;
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Cropper Modal & Workspace Styles */
+    .crop-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 8, 18, 0.88);
+      backdrop-filter: blur(12px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    .crop-modal-container {
+      background: #0f172a;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(56, 189, 248, 0.2);
+      overflow: hidden;
+      animation: fadeIn 0.2s ease;
+    }
+    .crop-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .crop-modal-close {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .crop-modal-close:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+    .crop-toolbar {
       display: flex;
       align-items: center;
       gap: 6px;
+      padding: 8px 12px;
+      background: rgba(30, 41, 59, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-wrap: wrap;
     }
+    .crop-preset-group {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .crop-preset-btn {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .crop-preset-btn:hover {
+      border-color: #38bdf8;
+      color: #fff;
+    }
+    .crop-preset-btn.active {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      border-color: #38bdf8;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+    }
+    .crop-tool-btn {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .crop-tool-btn:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+    .crop-workspace-viewport {
+      flex: 1;
+      min-height: 280px;
+      max-height: 440px;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+    #crop-canvas {
+      display: block;
+      max-width: 100%;
+      max-height: 440px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+    }
+    .crop-box-element {
+      position: absolute;
+      border: 2px solid #38bdf8;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65), 0 0 12px rgba(56, 189, 248, 0.6);
+      cursor: move;
+      box-sizing: border-box;
+    }
+    .crop-grid-line {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.35);
+      pointer-events: none;
+    }
+    .crop-grid-line.h1 { top: 33.33%; left: 0; right: 0; height: 1px; }
+    .crop-grid-line.h2 { top: 66.66%; left: 0; right: 0; height: 1px; }
+    .crop-grid-line.v1 { left: 33.33%; top: 0; bottom: 0; width: 1px; }
+    .crop-grid-line.v2 { left: 66.66%; top: 0; bottom: 0; width: 1px; }
+    .crop-handle {
+      position: absolute;
+      width: 13px;
+      height: 13px;
+      background: #38bdf8;
+      border: 2px solid #ffffff;
+      border-radius: 2px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+    .crop-handle.nw { top: -7px; left: -7px; cursor: nwse-resize; }
+    .crop-handle.ne { top: -7px; right: -7px; cursor: nesw-resize; }
+    .crop-handle.sw { bottom: -7px; left: -7px; cursor: nesw-resize; }
+    .crop-handle.se { bottom: -7px; right: -7px; cursor: nwse-resize; }
+    .crop-dimension-badge {
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .crop-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+      transition: all 0.2s ease;
+    }
+    .btn-download-offline:hover {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.5);
+      color: #ffffff;
+    }
+
+    .btn-offline-badge {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      color: #6ee7b7;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 3px 9px;
+      border-radius: 7px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.18s ease;
+    }
+    .btn-offline-badge:hover {
+      background: rgba(16, 185, 129, 0.22);
+      border-color: #34d399;
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Mode Tabs: 1-Row Compact Grid */
     .mode-tabs-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 6px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 4px;
+    }
+    @media (max-width: 860px) {
+      .mode-tabs-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 500px) {
+      .mode-tabs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
     .mode-tab-btn {
-      background: rgba(30, 41, 59, 0.5);
-      border: 1.5px solid transparent;
-      border-radius: 10px;
-      padding: 10px 8px;
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid transparent;
+      border-radius: 7px;
+      padding: 7px 6px;
       color: #cbd5e1;
       cursor: pointer;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      transition: all 0.2s ease;
+      gap: 6px;
+      transition: all 0.18s ease;
       text-align: center;
       font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
     }
     .mode-tab-btn:hover {
       background: rgba(56, 189, 248, 0.1);
       border-color: rgba(56, 189, 248, 0.3);
       color: #fff;
-      transform: translateY(-1px);
     }
     .mode-tab-btn.active {
-      background: linear-gradient(135deg, rgba(2, 132, 199, 0.35) 0%, rgba(14, 165, 233, 0.2) 100%);
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.4) 0%, rgba(14, 165, 233, 0.25) 100%);
       border-color: #38bdf8;
       color: #fff;
-      box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
     }
-    .mode-tab-icon {
-      font-size: 1.3rem;
-    }
-    .mode-tab-title {
-      font-size: 0.88rem;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-    .mode-tab-desc {
-      font-size: 0.7rem;
-      color: #94a3b8;
-      line-height: 1.1;
-    }
-    .mode-tab-btn.active .mode-tab-desc {
-      color: #7dd3fc;
+    .mode-tab-btn i {
+      font-size: 0.95rem;
     }
 
-    /* Main Working Glass Card */
+    /* 2-Column Single View Workspace */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.08fr;
+      gap: 12px;
+      align-items: stretch;
+      flex: 1;
+    }
+    @media (max-width: 860px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .glass-card {
       background: rgba(15, 23, 42, 0.82);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 24px;
+      border-radius: 12px;
+      padding: 14px;
       backdrop-filter: blur(12px);
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
-      margin-bottom: 22px;
-      transition: all 0.2s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Mode Banner Indicator */
-    .active-mode-banner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      flex-wrap: wrap;
-      gap: 10px;
+    .col-card-header {
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     }
-    .active-mode-tag {
-      font-size: 1.15rem;
+    .col-card-title {
+      font-size: 0.88rem;
       font-weight: 800;
       color: #f1f5f9;
       display: flex;
       align-items: center;
-      gap: 10px;
-    }
-    .active-mode-badge {
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: #38bdf8;
-      font-size: 0.78rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 8px;
+      gap: 6px;
     }
 
-    /* Upload Dropzone */
+    /* Dropzone (Compact in Single View) */
     .upload-dropzone {
-      border: 2px dashed rgba(56, 189, 248, 0.45);
-      border-radius: 14px;
-      padding: 38px 20px;
+      border: 2px dashed rgba(56, 189, 248, 0.4);
+      border-radius: 10px;
+      padding: 24px 14px;
       text-align: center;
       cursor: pointer;
       background: rgba(56, 189, 248, 0.03);
-      transition: all 0.25s ease;
-      position: relative;
+      transition: all 0.22s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      min-height: 180px;
     }
     .upload-dropzone:hover, .upload-dropzone.dragover {
       border-color: #38bdf8;
       background: rgba(56, 189, 248, 0.08);
-      box-shadow: 0 0 24px rgba(56, 189, 248, 0.2);
-      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
     }
     .upload-icon-circle {
-      width: 64px;
-      height: 64px;
+      width: 48px;
+      height: 48px;
       background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(59, 130, 246, 0.2));
       border: 1.5px solid rgba(56, 189, 248, 0.4);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 12px auto;
-      font-size: 1.8rem;
+      margin-bottom: 8px;
+      font-size: 1.35rem;
       color: #38bdf8;
     }
     .upload-dropzone h3 {
-      margin: 0 0 6px 0;
-      font-size: 1.2rem;
+      margin: 0 0 10px 0;
+      font-size: 0.95rem;
       font-weight: 700;
       color: #f1f5f9;
-    }
-    .upload-dropzone p {
-      margin: 0 0 14px 0;
-      color: #94a3b8;
-      font-size: 0.88rem;
     }
     .btn-select-file {
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #fff;
       border: none;
-      padding: 10px 22px;
-      border-radius: 8px;
-      font-size: 0.92rem;
+      padding: 8px 16px;
+      border-radius: 7px;
+      font-size: 0.86rem;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
-      transition: all 0.2s;
+      gap: 6px;
+      box-shadow: 0 3px 12px rgba(2, 132, 199, 0.35);
+      transition: all 0.18s;
     }
     .btn-select-file:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.6);
+      box-shadow: 0 5px 16px rgba(2, 132, 199, 0.5);
     }
 
-    /* File List & Items Display */
+    /* File List */
+    .file-summary-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      background: rgba(30, 41, 59, 0.45);
+      padding: 6px 10px;
+      border-radius: 7px;
+    }
+    .btn-ctrl-sm {
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-ctrl-sm.add {
+      background: rgba(56,189,248,0.15);
+      border-color: rgba(56,189,248,0.3);
+      color: #38bdf8;
+    }
+    .btn-ctrl-sm.danger {
+      background: rgba(239,68,68,0.15);
+      border-color: rgba(239,68,68,0.3);
+      color: #fca5a5;
+    }
     .file-items-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-top: 14px;
-      max-height: 280px;
+      gap: 6px;
+      max-height: 220px;
       overflow-y: auto;
     }
     .file-item-card {
-      background: rgba(30, 41, 59, 0.65);
+      background: rgba(30, 41, 59, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 10px 14px;
+      border-radius: 8px;
+      padding: 8px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      transition: all 0.2s;
-    }
-    .file-item-card:hover {
-      border-color: rgba(56, 189, 248, 0.3);
-      background: rgba(30, 41, 59, 0.9);
+      gap: 8px;
     }
     .file-item-left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex: 1;
       min-width: 0;
     }
     .file-item-icon {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       color: #38bdf8;
     }
     .file-item-thumb {
-      width: 44px;
-      height: 44px;
+      width: 36px;
+      height: 36px;
       object-fit: cover;
-      border-radius: 6px;
+      border-radius: 5px;
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
     .file-item-title {
       font-weight: 700;
       color: #f1f5f9;
-      font-size: 0.92rem;
+      font-size: 0.84rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .file-item-sub {
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       color: #94a3b8;
     }
     .file-item-actions {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
     .btn-item-ctrl {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.12);
       color: #cbd5e1;
-      border-radius: 6px;
-      padding: 5px 8px;
+      border-radius: 5px;
+      padding: 3px 6px;
       cursor: pointer;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       transition: all 0.15s;
     }
     .btn-item-ctrl:hover {
@@ -338,51 +622,30 @@
       border-color: rgba(239, 68, 68, 0.4);
       color: #fca5a5;
     }
-    .btn-item-ctrl.reorder:hover {
-      background: rgba(56, 189, 248, 0.2);
-      border-color: rgba(56, 189, 248, 0.4);
-      color: #38bdf8;
-    }
 
-    /* Prominent Target Size Control Card */
-    .target-size-control-card {
-      background: linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(30, 41, 59, 0.7) 100%);
-      border: 1.5px solid rgba(56, 189, 248, 0.4);
-      border-radius: 14px;
-      padding: 18px 20px;
-      margin: 18px 0 16px 0;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    /* Target Size Box (Right Column) */
+    .target-size-box {
+      background: rgba(14, 165, 233, 0.07);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      border-radius: 9px;
+      padding: 9px 12px;
+      margin-bottom: 8px;
     }
     .target-size-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-      gap: 8px;
+      margin-bottom: 7px;
     }
     .target-size-title {
-      font-size: 1.12rem;
+      font-size: 0.86rem;
       font-weight: 800;
       color: #ffffff;
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-    .size-badge-pill {
-      background: linear-gradient(135deg, #0284c7, #0369a1);
-      color: #ffffff;
-      font-size: 0.74rem;
-      font-weight: 800;
-      padding: 3px 10px;
-      border-radius: 12px;
-      letter-spacing: 0.3px;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+      gap: 6px;
     }
     .target-input-row {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 8px;
       flex-wrap: wrap;
     }
     .custom-kb-input-wrap {
@@ -390,23 +653,17 @@
       align-items: center;
       background: #090e1a;
       border: 2px solid #38bdf8;
-      border-radius: 10px;
-      padding: 4px 10px;
-      box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
-      transition: all 0.2s ease;
-    }
-    .custom-kb-input-wrap:focus-within {
-      border-color: #7dd3fc;
-      box-shadow: 0 0 22px rgba(56, 189, 248, 0.45);
-      transform: scale(1.02);
+      border-radius: 7px;
+      padding: 2px 7px;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
     }
     .custom-kb-input-wrap input {
       background: transparent;
       border: none;
       color: #38bdf8;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       font-weight: 800;
-      width: 100px;
+      width: 72px;
       text-align: center;
       outline: none;
       font-family: 'Poppins', monospace;
@@ -414,13 +671,13 @@
     .kb-unit-tag {
       color: #94a3b8;
       font-weight: 800;
-      font-size: 1.1rem;
-      padding-right: 4px;
+      font-size: 0.9rem;
+      padding-right: 2px;
       user-select: none;
     }
     .quick-size-chips {
       display: flex;
-      gap: 8px;
+      gap: 5px;
       flex-wrap: wrap;
       align-items: center;
     }
@@ -428,271 +685,262 @@
       background: rgba(30, 41, 59, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.16);
       color: #cbd5e1;
-      border-radius: 8px;
-      padding: 7px 12px;
-      font-size: 0.85rem;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.76rem;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.18s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+      transition: all 0.15s ease;
     }
     .size-chip:hover {
       border-color: #38bdf8;
       color: #ffffff;
       background: rgba(56, 189, 248, 0.12);
-      transform: translateY(-1px);
     }
     .size-chip.active {
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       border-color: #38bdf8;
       color: #ffffff;
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+    }
+
+    .dimension-chips-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
     }
     .dim-chip {
       background: rgba(30, 41, 59, 0.75);
-      border: 1.5px solid rgba(236, 72, 153, 0.28);
+      border: 1px solid rgba(236, 72, 153, 0.3);
       color: #f1f5f9;
-      border-radius: 8px;
-      padding: 7px 13px;
-      font-size: 0.84rem;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.74rem;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.18s ease;
+      transition: all 0.15s ease;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
     .dim-chip:hover {
       border-color: #f472b6;
-      color: #ffffff;
       background: rgba(236, 72, 153, 0.15);
-      transform: translateY(-1px);
+      color: #fff;
     }
     .dim-chip.active {
       background: linear-gradient(135deg, #db2777 0%, #9d174d 100%);
       border-color: #f472b6;
-      color: #ffffff;
-      box-shadow: 0 0 16px rgba(236, 72, 153, 0.4);
-    }
-    .size-input-hint {
-      margin-top: 10px;
-      font-size: 0.82rem;
-      color: #94a3b8;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      line-height: 1.4;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
     }
 
-    /* Quality & Clarity Toggle Box */
-    .clarity-toggle-row {
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      border-radius: 10px;
-      padding: 10px 14px;
+    /* Compact Features Strip */
+    .compact-features-strip {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
+      gap: 8px;
+      margin-bottom: 10px;
       flex-wrap: wrap;
-      gap: 8px;
     }
-    .clarity-label {
-      font-size: 0.86rem;
-      font-weight: 700;
-      color: #34d399;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .clarity-badge {
-      font-size: 0.74rem;
-      color: #a7f3d0;
-      background: rgba(16, 185, 129, 0.2);
-      padding: 2px 8px;
+    .feature-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #94a3b8;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
+    .text-sky { color: #38bdf8; }
+    .text-emerald { color: #34d399; }
 
-    /* Action Buttons */
+    /* Action Button */
     .btn-compress-action {
       width: 100%;
       background: linear-gradient(135deg, #059669 0%, #047857 100%);
       color: #fff;
       border: none;
-      padding: 14px 20px;
-      border-radius: 10px;
-      font-size: 1.05rem;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.92rem;
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      box-shadow: 0 4px 18px rgba(5, 150, 105, 0.4);
-      transition: all 0.2s;
-      margin-top: 10px;
+      gap: 7px;
+      box-shadow: 0 3px 12px rgba(5, 150, 105, 0.35);
+      transition: all 0.18s;
     }
-    .btn-compress-action:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(5, 150, 105, 0.6);
+    .btn-compress-action:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 16px rgba(5, 150, 105, 0.5);
     }
     .btn-compress-action:disabled {
-      opacity: 0.6;
+      opacity: 0.5;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
 
-    /* Progress Section */
+    /* Progress */
     .progress-section {
       display: none;
-      margin-top: 18px;
+      margin-top: 8px;
       background: rgba(30, 41, 59, 0.5);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
+      border-radius: 8px;
+      padding: 8px 10px;
     }
     .progress-bar-wrap {
       width: 100%;
-      height: 10px;
+      height: 7px;
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
+      border-radius: 4px;
       overflow: hidden;
-      margin: 10px 0 6px 0;
+      margin-top: 5px;
     }
     .progress-bar-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #38bdf8, #10b981);
-      border-radius: 6px;
-      transition: width 0.2s ease;
+      border-radius: 4px;
+      transition: width 0.15s ease;
     }
 
     /* Results Card */
     .result-section {
       display: none;
-      animation: fadeIn 0.3s ease;
+      margin-top: 10px;
+      animation: fadeIn 0.25s ease;
+    }
+    .result-success-banner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 8px;
+      padding: 7px 10px;
+      margin-bottom: 8px;
     }
     .comparison-stats-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px;
-      margin: 16px 0;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 6px;
+      margin-bottom: 8px;
     }
     .stat-box {
       background: rgba(30, 41, 59, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 7px;
+      padding: 6px;
       text-align: center;
     }
     .stat-label {
-      font-size: 0.78rem;
+      font-size: 0.68rem;
       color: #94a3b8;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
     .stat-value {
-      font-size: 1.3rem;
+      font-size: 1rem;
       font-weight: 800;
       color: #fff;
     }
     .stat-box.success {
-      border-color: rgba(16, 185, 129, 0.4);
-      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.35);
+      background: rgba(16, 185, 129, 0.08);
     }
     .stat-box.success .stat-value {
       color: #34d399;
     }
 
+    .result-actions-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
     .btn-download-result {
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #fff;
       border: none;
-      padding: 12px 20px;
-      border-radius: 9px;
-      font-size: 0.98rem;
+      padding: 8px 14px;
+      border-radius: 7px;
+      font-size: 0.88rem;
       font-weight: 800;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
-      transition: all 0.2s;
+      gap: 6px;
+      box-shadow: 0 3px 12px rgba(2, 132, 199, 0.35);
+      flex: 1;
+      justify-content: center;
     }
-    .btn-download-result:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 22px rgba(2, 132, 199, 0.6);
+    .btn-secondary-action {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 7px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-reset-action {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #94a3b8;
+      padding: 8px 10px;
+      border-radius: 7px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
     }
 
-    /* Page Thumbnails Preview Grid */
     .thumbnails-preview-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 10px;
-      margin-top: 14px;
-      max-height: 240px;
+      grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+      gap: 6px;
+      max-height: 120px;
       overflow-y: auto;
-      padding: 6px;
+      padding: 5px;
       background: rgba(10, 15, 29, 0.4);
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
     .thumb-card {
       background: #1e293b;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 8px;
-      padding: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      padding: 3px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.2s;
     }
-    .thumb-card:hover {
-      border-color: #38bdf8;
-      transform: scale(1.02);
-    }
-    .thumb-card canvas, .thumb-card img {
+    .thumb-card img {
       width: 100%;
-      height: auto;
-      max-height: 120px;
+      height: 60px;
       object-fit: contain;
-      border-radius: 4px;
+      border-radius: 3px;
       display: block;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
     .thumb-page-num {
-      font-size: 0.74rem;
+      font-size: 0.65rem;
       color: #94a3b8;
-      margin-top: 4px;
-      font-weight: 600;
+      margin-top: 2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* FAQ Section */
-    .faq-card {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin-bottom: 12px;
-    }
-    .faq-card h4 {
-      margin: 0 0 6px 0;
-      color: #38bdf8;
-      font-size: 0.98rem;
-    }
-    .faq-card p {
-      margin: 0;
-      color: #cbd5e1;
-      font-size: 0.88rem;
-      line-height: 1.5;
-    }
-
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
@@ -704,308 +952,266 @@
 
   <!-- Top Navigation Bar -->
   <nav class="top-navbar">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;">
-      <a href="index.html" class="brand-link" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-        <div style="width: 38px; height: 38px; background: linear-gradient(135deg, #0284c7, #0369a1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 14px;">
+      <a href="index.html" class="brand-link" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+        <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #0284c7, #0369a1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1rem;">
           <i class="fa-solid fa-file-zipper"></i>
         </div>
         <div>
-          <div style="color: #fff; font-weight: 800; font-size: 1rem; line-height: 1.2;">ई-मुद्रा सेवा केंद्र</div>
-          <div style="color: #38bdf8; font-size: 0.76rem; font-weight: 600;">शासकीय PDF & Image Suite Pro</div>
+          <div style="color: #fff; font-weight: 800; font-size: 0.92rem; line-height: 1.2;">ई-मुद्रा सेवा केंद्र</div>
+          <div style="color: #38bdf8; font-size: 0.72rem; font-weight: 600;">शासकीय PDF & Image Suite Pro</div>
         </div>
       </a>
 
       <div class="nav-actions-cluster" style="display: flex; align-items: center; gap: 8px;">
-        <a href="index.html" class="btn-nav" title="मुख्य डॅशबोर्डवर जा" style="background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.3); color: #38bdf8; font-weight: 700; font-size: 0.84rem; padding: 0.4rem 0.85rem; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+        <a href="softwares/EMUDRA_PDF_COMPRESSOR_Setup.exe" download="EMUDRA_PDF_COMPRESSOR_Setup.exe" class="btn-download-app" title="Windows PC वर इन्स्टॉल करण्यासाठी EMUDRA PDF COMPRESSOR सेटअप डाउनलोड करा">
+          <img src="images/emudra_compressor_icon.png" alt="icon" style="width: 20px; height: 20px; border-radius: 4px; box-shadow: 0 0 6px rgba(56,189,248,0.6);">
+          <span>EMUDRA PDF COMPRESSOR (Setup.exe)</span>
+        </a>
+        <a href="index.html" class="btn-nav" title="मुख्य डॅशबोर्डवर जा" style="background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.3); color: #38bdf8; font-weight: 700; font-size: 0.8rem; padding: 0.3rem 0.75rem; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
           <i class="fa-solid fa-house"></i> <span>मुख्य पृष्ठ</span>
         </a>
-
-        <!-- Citizen Auth Slot -->
         <div class="citizen-auth-slot" id="citizen-auth-slot"></div>
       </div>
     </div>
   </nav>
 
-  <!-- Main Container -->
+  <!-- Main Container: Single View -->
   <main class="compressor-container">
     
-    <!-- Hero Header -->
-    <div class="hero-banner">
-      <h1>🗜️ शासकीय PDF व इमेज Compressor Pro Suite</h1>
-      <p>
-        आपले सरकार (२५६ KB), महाडीबीटी (५०० KB), पोलीस भरती, स्कॉलरशिप व शासकीय पोर्टलसाठी PDF आणि इमेजेस अचूक साईझमध्ये कॉम्प्रेस करा. फोटो अजिबात ब्लर न होता मजकूर १००% स्पष्ट राहतो.
-      </p>
-      <div class="trust-chips-row">
-        <span class="trust-chip"><i class="fa-solid fa-lock"></i> १००% सुरक्षित (In-Browser)</span>
-        <span class="trust-chip"><i class="fa-solid fa-bolt"></i> हाय-स्पीड कॉम्प्रेस</span>
-        <span class="trust-chip"><i class="fa-solid fa-file-pdf"></i> मल्टिपल PDF एकत्र करा</span>
-        <span class="trust-chip"><i class="fa-solid fa-file-zipper"></i> बॅच ZIP डाउनलोड</span>
-        <span class="trust-chip"><i class="fa-solid fa-image"></i> फोटो व स्वाक्षरी ऑप्टिमाइझर</span>
+    <!-- Compact Header & 1-Row Mode Tabs -->
+    <div class="single-view-header">
+      <div class="single-view-title-row">
+        <h1 class="compact-title">
+          <i class="fa-solid fa-file-zipper text-sky"></i>
+          <span>शासकीय PDF & इमेज Compressor Pro</span>
+        </h1>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <div class="active-mode-tag-pill" id="active-mode-title">
+            <i class="fa-solid fa-file-pdf" style="color: #38bdf8;"></i>
+            <span>सिंगल PDF कॉम्प्रेसर</span>
+          </div>
+        </div>
+        <div id="active-mode-badge" style="display: none;">१ फाईल ➔ अचूक टार्गेट साईझ</div>
       </div>
-    </div>
 
-    <!-- 🌟 MODE SELECTION TABS BAR (६ कार्यप्रणालींचे आधुनिक स्विचिंग) -->
-    <div class="mode-tabs-wrapper">
-      <div class="mode-tabs-header-text">
-        <i class="fa-solid fa-wand-magic-sparkles" style="color: #38bdf8;"></i>
-        <span>खालीलपैकी तुम्हाला काय करायचे आहे ते निवडा:</span>
-      </div>
+      <!-- Mode Selector Tabs Bar -->
       <div class="mode-tabs-grid">
-        
-        <!-- Tab 1: Single PDF -->
         <button type="button" class="mode-tab-btn active" data-mode="single-pdf" onclick="switchToolMode('single-pdf')">
-          <div class="mode-tab-icon" style="color: #38bdf8;"><i class="fa-solid fa-file-pdf"></i></div>
-          <div class="mode-tab-title">१. सिंगल PDF</div>
-          <div class="mode-tab-desc">१ फाईल अचूक KB मध्ये</div>
+          <i class="fa-solid fa-file-pdf text-sky"></i> <span>१. सिंगल PDF</span>
         </button>
-
-        <!-- Tab 2: Multiple PDFs to 1 PDF -->
         <button type="button" class="mode-tab-btn" data-mode="merge-pdf" onclick="switchToolMode('merge-pdf')">
-          <div class="mode-tab-icon" style="color: #10b981;"><i class="fa-solid fa-copy"></i></div>
-          <div class="mode-tab-title">२. मल्टिपल PDF ➔ १ PDF</div>
-          <div class="mode-tab-desc">अनेक PDF जोडून १ फाईल</div>
+          <i class="fa-solid fa-copy text-emerald"></i> <span>२. मल्टिपल PDF ➔ १</span>
         </button>
-
-        <!-- Tab 3: Batch PDFs to ZIP -->
         <button type="button" class="mode-tab-btn" data-mode="batch-pdf" onclick="switchToolMode('batch-pdf')">
-          <div class="mode-tab-icon" style="color: #f59e0b;"><i class="fa-solid fa-file-zipper"></i></div>
-          <div class="mode-tab-title">३. बॅच PDF (ZIP)</div>
-          <div class="mode-tab-desc">सर्व PDF सेपरेट कॉम्प्रेस</div>
+          <i class="fa-solid fa-file-zipper" style="color: #f59e0b;"></i> <span>३. बॅच PDF (ZIP)</span>
         </button>
-
-        <!-- Tab 4: Single Image -->
         <button type="button" class="mode-tab-btn" data-mode="single-img" onclick="switchToolMode('single-img')">
-          <div class="mode-tab-icon" style="color: #ec4899;"><i class="fa-solid fa-image"></i></div>
-          <div class="mode-tab-title">४. सिंगल इमेज</div>
-          <div class="mode-tab-desc">फोटो/स्वाक्षरी (२०/५० KB)</div>
+          <i class="fa-solid fa-image" style="color: #ec4899;"></i> <span>४. सिंगल इमेज</span>
         </button>
-
-        <!-- Tab 5: Images to 1 PDF -->
         <button type="button" class="mode-tab-btn" data-mode="img-to-pdf" onclick="switchToolMode('img-to-pdf')">
-          <div class="mode-tab-icon" style="color: #8b5cf6;"><i class="fa-solid fa-images"></i></div>
-          <div class="mode-tab-title">५. फोटो ➔ १ एकत्र PDF</div>
-          <div class="mode-tab-desc">कागदपत्रांचे फोटो जोडून PDF</div>
+          <i class="fa-solid fa-images" style="color: #8b5cf6;"></i> <span>५. फोटो ➔ १ PDF</span>
         </button>
-
-        <!-- Tab 6: Batch Images to ZIP -->
         <button type="button" class="mode-tab-btn" data-mode="batch-img" onclick="switchToolMode('batch-img')">
-          <div class="mode-tab-icon" style="color: #14b8a6;"><i class="fa-solid fa-folder-archive"></i></div>
-          <div class="mode-tab-title">६. बॅच इमेजेस (ZIP)</div>
-          <div class="mode-tab-desc">सर्व फोटो सेपरेट कॉम्प्रेस</div>
+          <i class="fa-solid fa-folder-archive" style="color: #14b8a6;"></i> <span>६. बॅच इमेजेस (ZIP)</span>
         </button>
-
       </div>
     </div>
 
-    <!-- Working Area Glass Card -->
-    <div class="glass-card" id="main-working-card">
-
-      <!-- Active Mode Info Banner -->
-      <div class="active-mode-banner">
-        <div class="active-mode-tag" id="active-mode-title">
-          <i class="fa-solid fa-file-pdf" style="color: #38bdf8;"></i>
-          <span>सिंगल PDF कॉम्प्रेसर</span>
-        </div>
-        <div class="active-mode-badge" id="active-mode-badge">१ फाईल ➔ अचूक टार्गेट साईझ</div>
-      </div>
-
-      <!-- Step 1: Upload Dropzone Card -->
-      <div class="upload-dropzone" id="dropzone" onclick="triggerFileInput()">
-        <input type="file" id="master-file-input" style="display: none;">
-        <div class="upload-icon-circle" id="dropzone-icon">
-          <i class="fa-solid fa-cloud-arrow-up"></i>
-        </div>
-        <h3 id="dropzone-title">आपली PDF फाईल येथे ड्रॅग करा किंवा निवडा</h3>
-        <p id="dropzone-desc">कोणतीही मोठी PDF फाईल निवडा (आधार, रेशनकार्ड, ७/१२, दाखले इ.)</p>
-        <button type="button" class="btn-select-file" onclick="event.stopPropagation(); triggerFileInput();">
-          <i class="fa-solid fa-folder-open"></i> <span id="btn-browse-text">फाईल निवडा (Browse)</span>
-        </button>
-      </div>
-
-      <!-- File List Container (Shows selected files) -->
-      <div id="file-list-section" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
-          <div style="font-size: 0.9rem; font-weight: 700; color: #cbd5e1;" id="file-count-summary">
-            निवडलेल्या फाईल्स: १ फाईल
-          </div>
-          <div style="display: flex; gap: 8px;">
-            <button type="button" onclick="triggerFileInput()" style="background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
-              <i class="fa-solid fa-plus"></i> आणखी जोडा
-            </button>
-            <button type="button" onclick="resetMasterUploader()" style="background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
-              <i class="fa-solid fa-trash"></i> सर्व क्लिअर
-            </button>
+    <!-- 2-Column Single View Workspace Grid -->
+    <div class="workspace-grid" id="main-working-card">
+      
+      <!-- Left Column: File Drop & Selection Card -->
+      <div class="glass-card">
+        <div class="col-card-header">
+          <div class="col-card-title">
+            <i class="fa-solid fa-file-arrow-up text-sky"></i>
+            <span>कागदपत्र / फाईल अपलोड</span>
           </div>
         </div>
 
-        <div class="file-items-list" id="file-items-container"></div>
-      </div>
-
-      <!-- Step 2: Settings & Prominent Size Control Box -->
-      <div id="settings-section" style="display: none;">
-        
-        <!-- 🖼️ IMAGE DIMENSION & PORTAL PRESETS (Shown for single-img & batch-img) -->
-        <div id="image-presets-control-card" class="target-size-control-card" style="display: none; background: rgba(30, 41, 59, 0.45); border: 1.5px solid rgba(236, 72, 153, 0.4); margin-bottom: 14px;">
-          <div class="target-size-header">
-            <div class="target-size-title" style="color: #f472b6;">
-              <i class="fa-solid fa-crop-simple"></i>
-              <span>शासकीय पोर्टल इमेज डायमेन्शन्स (Portal Preset):</span>
-            </div>
-            <span class="size-badge-pill" style="background: linear-gradient(135deg, #db2777, #be185d); box-shadow: 0 2px 8px rgba(219,39,119,0.4);">ऑटो पिक्सेल फिट</span>
+        <!-- Dropzone -->
+        <div class="upload-dropzone" id="dropzone" onclick="triggerFileInput()">
+          <input type="file" id="master-file-input" style="display: none;">
+          <div class="upload-icon-circle" id="dropzone-icon">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
           </div>
-          <div class="dimension-chips-row" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
-            <button type="button" class="dim-chip active" id="dim-btn-original" onclick="setImageDimensionPreset('original')">
-              <i class="fa-solid fa-expand"></i> 🔄 मूळ आकार (Original Ratio)
-            </button>
-            <button type="button" class="dim-chip" id="dim-btn-photo" onclick="setImageDimensionPreset('photo')">
-              <i class="fa-solid fa-user"></i> 👤 पासपोर्ट फोटो (160×200 px • ५० KB)
-            </button>
-            <button type="button" class="dim-chip" id="dim-btn-signature" onclick="setImageDimensionPreset('signature')">
-              <i class="fa-solid fa-pen-nib"></i> ✍️ स्वाक्षरी (256×64 px • २० KB)
-            </button>
-            <button type="button" class="dim-chip" id="dim-btn-document" onclick="setImageDimensionPreset('document')">
-              <i class="fa-solid fa-file-image"></i> 📄 कागदपत्र / स्कॅन (कमाल 1200 px)
-            </button>
-          </div>
-          <div class="size-input-hint" style="margin-top: 10px;">
-            <i class="fa-solid fa-circle-info" style="color: #f472b6;"></i>
-            <span id="dimension-hint-text">शासकीय भरती, आपले सरकार, महाडीबीटीसाठी फोटो 160×200 px व स्वाक्षरी 256×64 px मध्ये आपोआप रिसाइज होते.</span>
-          </div>
-        </div>
-
-        <!-- 🎯 PROMINENT ALWAYS-VISIBLE TARGET SIZE INPUT BOX -->
-        <div class="target-size-control-card">
-          <div class="target-size-header">
-            <div class="target-size-title">
-              <i class="fa-solid fa-bullseye" style="color: #38bdf8;"></i>
-              <span id="target-size-label-text">हवी असलेली अचूक फाईल साईझ (Target Size in KB):</span>
-            </div>
-            <span class="size-badge-pill">अचूक कॉम्प्रेशन हमी</span>
-          </div>
-
-          <div class="target-input-row">
-            <div class="custom-kb-input-wrap">
-              <input type="number" id="target-kb-input" value="200" min="10" max="5000" step="5" oninput="handleTargetKbInputChange(this.value)">
-              <span class="kb-unit-tag">KB</span>
-            </div>
-            <div class="quick-size-chips" id="quick-chips-container">
-              <!-- Dynamically populated per mode -->
-            </div>
-          </div>
-
-          <div class="size-input-hint">
-            <i class="fa-solid fa-circle-info" style="color: #38bdf8;"></i>
-            <span id="target-hint-text">येथे तुम्हाला हवी असलेली अचूक साईझ टाका. सिस्टीम फाईलला <strong>तंतोतंत या साईझच्या आत बसवणारे हार्ड कॉम्प्रेशन</strong> करेल.</span>
-          </div>
-        </div>
-
-        <!-- Text & Photo Clarity Guarantee Row -->
-        <div class="clarity-toggle-row">
-          <div class="clarity-label">
-            <i class="fa-solid fa-eye" style="color: #10b981;"></i>
-            <span>अल्ट्रा-क्लॅरिटी टेक्स्ट & कॉन्ट्रास्ट बूस्ट (Zero Blur Guarantee)</span>
-            <span class="clarity-badge">सक्रिय</span>
-          </div>
-          <span style="font-size: 0.78rem; color: #94a3b8;">मजकूर व फोटो अजिबात फिकट होणार नाहीत, १००% वाचण्याजोगे राहतील.</span>
-        </div>
-
-        <!-- Start Compression Button -->
-        <button type="button" class="btn-compress-action" id="btn-start-compress" onclick="executeCurrentModeAction()">
-          <i class="fa-solid fa-bolt"></i> <span id="btn-action-text">आता अचूक साईझमध्ये कॉम्प्रेस करा (Start)</span>
-        </button>
-
-        <!-- Progress Bar Section -->
-        <div class="progress-section" id="progress-section">
-          <div style="display: flex; justify-content: space-between; font-size: 0.86rem; color: #cbd5e1;">
-            <span id="progress-status-text">प्रोसेसिंग सुरू होत आहे...</span>
-            <span id="progress-percent-text" style="font-weight: 800; color: #38bdf8;">0%</span>
-          </div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar-fill" id="progress-bar-fill"></div>
-          </div>
-          <div style="font-size: 0.76rem; color: #94a3b8;" id="progress-sub-text">कृपया थांबा, सर्व पेजेस व इमेजेस अचूक रिझोल्युशनमध्ये ऑप्टिमाईज होत आहेत...</div>
-        </div>
-      </div>
-
-      <!-- Step 3: Results & Download Section -->
-      <div class="result-section" id="result-card" style="margin-top: 20px;">
-        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.35); border-radius: 10px; padding: 12px 16px;">
-          <i class="fa-solid fa-circle-check" style="color: #34d399; font-size: 1.5rem;"></i>
-          <div>
-            <h3 style="margin: 0; font-size: 1.1rem; color: #f8fafc;" id="result-success-title">कॉम्प्रेशन १००% यशस्वी झाले!</h3>
-            <div style="font-size: 0.84rem; color: #a7f3d0;" id="gov-compliance-badge">पोर्टलवर अपलोड करण्यासाठी फाईल १००% योग्य.</div>
-          </div>
-        </div>
-
-        <!-- Stats Comparison Row -->
-        <div class="comparison-stats-row">
-          <div class="stat-box">
-            <div class="stat-label">मूळ फाईल साईझ</div>
-            <div class="stat-value" id="stat-orig-size">० MB</div>
-          </div>
-          <div class="stat-box success">
-            <div class="stat-label">कॉम्प्रेस झालेली साईझ</div>
-            <div class="stat-value" id="stat-comp-size">० KB</div>
-          </div>
-          <div class="stat-box success">
-            <div class="stat-label">एकूण बचत</div>
-            <div class="stat-value" id="stat-savings-pct">०%</div>
-          </div>
-          <div class="stat-box" id="stat-dim-box" style="display: none; border-color: rgba(236,72,153,0.35);">
-            <div class="stat-label" style="color: #f472b6;">डायमेन्शन्स (आकार)</div>
-            <div class="stat-value" id="stat-dim-val" style="color: #f472b6;">१६० × २०० px</div>
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;">
-          <button type="button" class="btn-download-result" id="btn-download-primary" onclick="downloadCurrentResult()">
-            <i class="fa-solid fa-download"></i> <span id="download-btn-text">डाउनलोड करा</span>
-          </button>
-          <button type="button" id="btn-preview-result" onclick="previewCurrentResult()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 18px; border-radius: 9px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-eye"></i> प्रीव्ह्यू पहा
-          </button>
-          <button type="button" onclick="resetMasterUploader()" style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; padding: 12px 16px; border-radius: 9px; font-weight: 600; cursor: pointer;">
-            <i class="fa-solid fa-arrow-rotate-right"></i> नवीन फाईल
+          <h3 id="dropzone-title">आपली फाईल येथे निवडा किंवा ड्रॅग करा</h3>
+          <p id="dropzone-desc" style="display: none;"></p>
+          <button type="button" class="btn-select-file" onclick="event.stopPropagation(); triggerFileInput();">
+            <i class="fa-solid fa-folder-open"></i> <span id="btn-browse-text">फाईल निवडा (Browse)</span>
           </button>
         </div>
 
-        <!-- Page Thumbnails Preview Grid -->
-        <div id="thumbnails-preview-section" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; display: none;">
-          <h4 style="margin: 0 0 10px 0; font-size: 0.95rem; color: #cbd5e1; display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-images" style="color: #38bdf8;"></i> पानांचा प्रीव्ह्यू (मजकूर स्पष्ट दिसतोय का ते तपासा):
-          </h4>
-          <div class="thumbnails-preview-grid" id="thumbnails-container"></div>
+        <!-- File List Section -->
+        <div id="file-list-section" style="display: none; flex: 1;">
+          <div class="file-summary-bar">
+            <div id="file-count-summary" style="font-size: 0.82rem; font-weight: 700; color: #cbd5e1;">१ फाईल निवडली</div>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" onclick="triggerFileInput()" class="btn-ctrl-sm add">
+                <i class="fa-solid fa-plus"></i> आणखी जोडा
+              </button>
+              <button type="button" onclick="resetMasterUploader()" class="btn-ctrl-sm danger">
+                <i class="fa-solid fa-trash"></i> क्लिअर
+              </button>
+            </div>
+          </div>
+          <div class="file-items-list" id="file-items-container"></div>
         </div>
       </div>
 
-    </div>
+      <!-- Right Column: Settings, Action & Results -->
+      <div class="glass-card">
+        <div class="col-card-header">
+          <div class="col-card-title">
+            <i class="fa-solid fa-sliders text-sky"></i>
+            <span>टार्गेट साईझ व कॉम्प्रेशन</span>
+          </div>
+        </div>
 
-    <!-- Useful Guidance & FAQ -->
-    <div style="margin-top: 30px;">
-      <h3 style="font-size: 1.15rem; color: #f1f5f9; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
-        <i class="fa-solid fa-circle-question" style="color: #38bdf8;"></i> शासकीय पोर्टल नियम व महत्त्वाची माहिती
-      </h3>
+        <!-- Settings Section -->
+        <div id="settings-section">
+          
+          <!-- Image Presets Card (Image modes only) -->
+          <div id="image-presets-control-card" style="display: none; margin-bottom: 8px;">
+            <div class="dimension-chips-row">
+              <button type="button" class="dim-chip active" id="dim-btn-photo" onclick="setImageDimensionPreset('photo')">
+                <i class="fa-solid fa-user"></i> 👤 फोटो (160×210 px)
+              </button>
+              <button type="button" class="dim-chip" id="dim-btn-signature" onclick="setImageDimensionPreset('signature')">
+                <i class="fa-solid fa-pen-nib"></i> ✍️ सही (256×64 px)
+              </button>
+              <button type="button" class="dim-chip" id="dim-btn-original" onclick="setImageDimensionPreset('original')">
+                <i class="fa-solid fa-expand"></i> मूळ आकार
+              </button>
+              <button type="button" class="dim-chip" id="dim-btn-document" onclick="setImageDimensionPreset('document')">
+                <i class="fa-solid fa-file-image"></i> 📄 कागदपत्र
+              </button>
+              <button type="button" class="dim-chip" id="dim-btn-custom" onclick="setImageDimensionPreset('custom')">
+                <i class="fa-solid fa-sliders"></i> मॅन्युअल पिक्सेल
+              </button>
+            </div>
 
-      <div class="faq-card">
-        <h4>१. आपले सरकार पोर्टलवर कागदपत्रे व दाखल्यांची साईझ किती लागते?</h4>
-        <p>आपले सरकार पोर्टलवर कागदपत्रे PDF किंवा JPEG स्वरूपात <strong>७५ KB ते २५६ KB</strong> च्या आत असावी लागतात. यासाठी 'सिंगल PDF' किंवा 'फोटो ➔ एकत्र PDF' पर्याय वापरून <strong>२५० KB</strong> टार्गेट निवडा.</p>
+            <!-- Manual Pixel Input & Crop Tool Row -->
+            <div class="manual-dim-row" id="manual-dim-row" style="display: flex; align-items: center; gap: 7px; margin-top: 7px; flex-wrap: wrap; background: rgba(30, 41, 59, 0.45); padding: 5px 9px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.08);">
+              <span style="font-size: 0.76rem; color: #94a3b8; font-weight: 700;"><i class="fa-solid fa-ruler-combined text-sky"></i> पिक्सेल (Px):</span>
+              <div style="display: flex; align-items: center; gap: 3px;">
+                <span style="font-size: 0.74rem; color: #cbd5e1;">रुंदी:</span>
+                <input type="number" id="custom-dim-w" value="160" min="10" max="5000" oninput="onCustomDimInputChanged()" style="width: 58px; background: rgba(15,23,42,0.85); border: 1px solid rgba(56,189,248,0.35); border-radius: 4px; color: #fff; padding: 2px 4px; font-weight: 700; font-size: 0.78rem; text-align: center;">
+                <span style="font-size: 0.7rem; color: #64748b;">px</span>
+              </div>
+              <span style="color: #64748b; font-weight: bold;">×</span>
+              <div style="display: flex; align-items: center; gap: 3px;">
+                <span style="font-size: 0.74rem; color: #cbd5e1;">उंची:</span>
+                <input type="number" id="custom-dim-h" value="210" min="10" max="5000" oninput="onCustomDimInputChanged()" style="width: 58px; background: rgba(15,23,42,0.85); border: 1px solid rgba(56,189,248,0.35); border-radius: 4px; color: #fff; padding: 2px 4px; font-weight: 700; font-size: 0.78rem; text-align: center;">
+                <span style="font-size: 0.7rem; color: #64748b;">px</span>
+              </div>
+              <button type="button" class="dim-chip" id="btn-open-cropper" onclick="openImageCropperModal()" style="margin-left: auto; border-color: #38bdf8; background: linear-gradient(135deg, rgba(2,132,199,0.35), rgba(56,189,248,0.2)); color: #38bdf8; font-weight: 700; padding: 3px 9px; font-size: 0.74rem; box-shadow: 0 0 10px rgba(56,189,248,0.25);">
+                <i class="fa-solid fa-crop-simple"></i> ✂️ क्रॉप टूल (Crop Tool)
+              </button>
+            </div>
+
+            <span id="dimension-hint-text" style="display: none;"></span>
+          </div>
+
+          <!-- Target Size Box -->
+          <div class="target-size-box">
+            <div class="target-size-header">
+              <span class="target-size-title" id="target-size-label-text">
+                <i class="fa-solid fa-bullseye text-sky"></i> हवी असलेली अचूक साईझ (Target KB):
+              </span>
+            </div>
+
+            <div class="target-input-row">
+              <div class="custom-kb-input-wrap">
+                <input type="number" id="target-kb-input" value="200" min="10" max="5000" step="5" oninput="handleTargetKbInputChange(this.value)">
+                <span class="kb-unit-tag">KB</span>
+              </div>
+              <div class="quick-size-chips" id="quick-chips-container">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+            <span id="target-hint-text" style="display: none;"></span>
+          </div>
+
+          <!-- Compact Status Strip -->
+          <div class="compact-features-strip">
+            <span class="feature-chip"><i class="fa-solid fa-crosshairs text-sky"></i> हार्ड साईझ लॉक (±४ KB)</span>
+            <span class="feature-chip"><i class="fa-solid fa-eye text-emerald"></i> Ultra-Clarity (Zero Blur)</span>
+          </div>
+
+          <!-- Start Compression Button -->
+          <button type="button" class="btn-compress-action" id="btn-start-compress" onclick="executeCurrentModeAction()">
+            <i class="fa-solid fa-bolt"></i> <span id="btn-action-text">आता अचूक साईझमध्ये कॉम्प्रेस करा (Start)</span>
+          </button>
+
+          <!-- Progress Section -->
+          <div class="progress-section" id="progress-section">
+            <div style="display: flex; justify-content: space-between; font-size: 0.82rem; color: #cbd5e1; font-weight: 600;">
+              <span id="progress-status-text">प्रोसेसिंग सुरू होत आहे...</span>
+              <span id="progress-percent-text" style="font-weight: 800; color: #38bdf8;">0%</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="progress-bar-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result Section -->
+        <div class="result-section" id="result-card">
+          <div class="result-success-banner">
+            <i class="fa-solid fa-circle-check text-emerald" style="font-size: 1.25rem;"></i>
+            <div>
+              <div id="result-success-title" style="font-weight: 800; font-size: 0.92rem; color: #f8fafc;">कॉम्प्रेशन यशस्वी झाले!</div>
+              <div id="gov-compliance-badge" style="font-size: 0.76rem; color: #a7f3d0;">पोर्टल अपलोडसाठी १००% योग्य</div>
+            </div>
+          </div>
+
+          <!-- Stats Comparison Row -->
+          <div class="comparison-stats-row">
+            <div class="stat-box">
+              <div class="stat-label">मूळ साईझ</div>
+              <div class="stat-value" id="stat-orig-size">० MB</div>
+            </div>
+            <div class="stat-box success">
+              <div class="stat-label">कॉम्प्रेस साईझ</div>
+              <div class="stat-value" id="stat-comp-size">० KB</div>
+            </div>
+            <div class="stat-box" id="stat-gap-box">
+              <div class="stat-label">फरक</div>
+              <div class="stat-value" id="stat-gap-val" style="color: #38bdf8;">-४.५ KB</div>
+            </div>
+            <div class="stat-box success">
+              <div class="stat-label">बचत</div>
+              <div class="stat-value" id="stat-savings-pct">०%</div>
+            </div>
+            <div class="stat-box" id="stat-dim-box" style="display: none;">
+              <div class="stat-label">आकार</div>
+              <div class="stat-value" id="stat-dim-val">१६०×२१० px</div>
+            </div>
+          </div>
+
+          <!-- Result Actions -->
+          <div class="result-actions-row">
+            <button type="button" class="btn-download-result" id="btn-download-primary" onclick="downloadCurrentResult()">
+              <i class="fa-solid fa-download"></i> <span id="download-btn-text">डाउनलोड करा</span>
+            </button>
+            <button type="button" id="btn-preview-result" onclick="previewCurrentResult()" class="btn-secondary-action">
+              <i class="fa-solid fa-eye"></i> प्रीव्ह्यू
+            </button>
+            <button type="button" onclick="resetMasterUploader()" class="btn-reset-action">
+              <i class="fa-solid fa-arrow-rotate-right"></i> नवीन फाईल
+            </button>
+          </div>
+
+          <!-- Thumbnails Preview Strip -->
+          <div id="thumbnails-preview-section" style="display: none;">
+            <div class="thumbnails-preview-grid" id="thumbnails-container"></div>
+          </div>
+        </div>
+
       </div>
 
-      <div class="faq-card">
-        <h4>२. महाडीबीटी (MahaDBT) व स्कॉलरशिप पोर्टलवर साईझ मर्यादा काय आहे?</h4>
-        <p>महाडीबीटी व समाज कल्याण विभागाच्या अर्जांसाठी कागदपत्रांची साईझ <strong>१०० KB ते ५०० KB</strong> चालते. यासाठी टार्गेट साईझ <strong>४८० KB</strong> निवडा.</p>
-      </div>
-
-      <div class="faq-card">
-        <h4>३. फोटो व स्वाक्षरी (Photo & Signature) कॉम्प्रेस कशी करावी?</h4>
-        <p>'सिंगल इमेज' मोडमध्ये फोटोसाठी <strong>५० KB</strong> आणि स्वाक्षरीसाठी <strong>२० KB</strong> चे क्विक बटण उपलब्ध आहे. फोटो अजिबात ब्लर होत नाही आणि शासकीय नियमानुसार अचूक कॉम्प्रेस होतो.</p>
-      </div>
-
-      <div class="faq-card">
-        <h4>४. अनेक PDF किंवा फोटो एकत्र जोडून (Merge) १ च PDF कशी करावी?</h4>
-        <p>मोड २ (मल्टिपल PDF ➔ १ PDF) किंवा मोड ५ (फोटो ➔ १ एकत्र PDF) निवडून सर्व फाईल्स अपलोड करा. तुम्हाला हवी असलेली फायनल साईझ (उदा. २५० KB) टाका. सिस्टीम सर्व पेजेस जोडून तंतोतंत त्याच साईझची १ PDF तयार करून देईल.</p>
-      </div>
     </div>
 
   </main>
@@ -1040,118 +1246,118 @@
     // Mode Configuration Definitions
     const MODE_CONFIGS = {
       'single-pdf': {
-        title: 'सिंगल PDF कॉम्प्रेसर',
-        badge: '१ फाईल ➔ अचूक टार्गेट साईझ',
+        title: '१. सिंगल PDF',
+        badge: '१ फाईल',
         accept: '.pdf,application/pdf',
         multiple: false,
-        dropTitle: 'आपली PDF फाईल येथे ड्रॅग करा किंवा निवडा',
-        dropDesc: 'कोणतीही मोठी PDF फाईल निवडा (आधार, रेशनकार्ड, ७/१२, दाखले इ.)',
+        dropTitle: 'आपली PDF फाईल निवडा किंवा ड्रॅग करा',
+        dropDesc: '',
         btnBrowse: 'PDF फाईल निवडा',
         defaultKb: 200,
-        targetLabel: 'हवी असलेली अचूक फाईल साईझ (Target Size in KB):',
-        targetHint: 'येथे तुम्हाला हवी असलेली अचूक साईझ (उदा. १५० किंवा २००) टाका. सिस्टीम PDF ला तंतोतंत या साईझच्या आत बसवणारे हार्ड कॉम्प्रेस करेल.',
+        targetLabel: 'हवी असलेली साईझ (Target KB):',
+        targetHint: '',
         chips: [
           { kb: 100, label: '⚡ १०० KB' },
-          { kb: 150, label: '📄 १५० KB' },
           { kb: 200, label: '🎯 २०० KB' },
           { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
-          { kb: 480, label: '🎓 ४८० KB (महाडीबीटी)' },
-          { kb: 750, label: '📦 ७५० KB' }
+          { kb: 300, label: '📄 ३०० KB' },
+          { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
         ],
         btnAction: 'आता अचूक साईझमध्ये कॉम्प्रेस करा'
       },
       'merge-pdf': {
-        title: 'मल्टिपल PDF ➔ १ एकत्र कॉम्प्रेस PDF',
-        badge: 'अनेक PDF जोडून १ फाईल',
+        title: '२. मल्टिपल PDF ➔ १',
+        badge: 'अनेक PDF ➔ १',
         accept: '.pdf,application/pdf',
         multiple: true,
-        dropTitle: '२ किंवा अधिक PDF फाईल्स येथे ड्रॅग करा किंवा निवडा',
-        dropDesc: 'उदा. ७/१२ + आधार + स्वयंघोषणापत्र एकत्र करून १ PDF बनवण्यासाठी',
+        dropTitle: 'सर्व PDF फाईल्स निवडा किंवा ड्रॅग करा',
+        dropDesc: '',
         btnBrowse: 'मल्टिपल PDF निवडा',
         defaultKb: 250,
-        targetLabel: 'एकत्रित फायनल PDF साईझ (Merged PDF Target KB):',
-        targetHint: 'सर्व PDF जोडल्यानंतर तयार होणाऱ्या अंतिम PDF फाईलची कमाल साईझ (उदा. २५० KB किंवा ४८० KB).',
-        chips: [
-          { kb: 150, label: '⚡ १५० KB' },
-          { kb: 200, label: '📄 २०० KB' },
-          { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
-          { kb: 480, label: '🎓 ४८० KB (महाडीबीटी)' },
-          { kb: 1024, label: '📑 १ MB' }
-        ],
-        btnAction: 'सर्व PDF एकत्र करून कॉम्प्रेस PDF बनवा'
-      },
-      'batch-pdf': {
-        title: 'बॅच PDF कॉम्प्रेसर (ZIP डाउनलोड)',
-        badge: 'अनेक PDF स्वतंत्र कॉम्प्रेस ➔ १ ZIP',
-        accept: '.pdf,application/pdf',
-        multiple: true,
-        dropTitle: 'सर्व PDF फाईल्स येथे ड्रॅग करा किंवा निवडा',
-        dropDesc: 'एकाच वेळी अनेक PDF कॉम्प्रेस करून १ झिप फाईलमध्ये डाउनलोड करा',
-        btnBrowse: 'सर्व PDF निवडा',
-        defaultKb: 250,
-        targetLabel: 'प्रत्येक PDF ची टार्गेट साईझ (Per PDF Target KB):',
-        targetHint: 'प्रत्येक PDF फाईल स्वतंत्रपणे या दिलेल्या साईझच्या आत कॉम्प्रेस केली जाईल.',
+        targetLabel: 'एकत्रित PDF साईझ (Target KB):',
+        targetHint: '',
         chips: [
           { kb: 100, label: '⚡ १०० KB' },
-          { kb: 150, label: '📄 १५० KB' },
           { kb: 200, label: '🎯 २०० KB' },
           { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
-          { kb: 480, label: '🎓 ४८० KB (महाडीबीटी)' }
+          { kb: 300, label: '📄 ३०० KB' },
+          { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
+        ],
+        btnAction: 'सर्व PDF एकत्र करून कॉम्प्रेस करा'
+      },
+      'batch-pdf': {
+        title: '३. बॅच PDF (ZIP)',
+        badge: 'स्वतंत्र PDF ➔ १ ZIP',
+        accept: '.pdf,application/pdf',
+        multiple: true,
+        dropTitle: 'सर्व PDF फाईल्स निवडा किंवा ड्रॅग करा',
+        dropDesc: '',
+        btnBrowse: 'सर्व PDF निवडा',
+        defaultKb: 200,
+        targetLabel: 'प्रत्येक PDF ची साईझ (Target KB):',
+        targetHint: '',
+        chips: [
+          { kb: 100, label: '⚡ १०० KB' },
+          { kb: 200, label: '🎯 २०० KB' },
+          { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
+          { kb: 300, label: '📄 ३०० KB' },
+          { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
         ],
         btnAction: 'सर्व PDF कॉम्प्रेस करा व ZIP डाउनलोड करा'
       },
       'single-img': {
-        title: 'सिंगल इमेज / फोटो कॉम्प्रेसर',
-        badge: '१ फोटो/स्वाक्षरी ➔ अचूक KB',
+        title: '४. सिंगल इमेज',
+        badge: '१ फोटो/स्वाक्षरी',
         accept: 'image/jpeg,image/png,image/webp,image/jpg',
         multiple: false,
-        dropTitle: 'आपला फोटो किंवा स्वाक्षरी येथे निवडा',
-        dropDesc: 'JPG, PNG किंवा WebP इमेज (पासपोर्ट फोटो, स्वाक्षरी, कागदपत्रांचा फोटो)',
-        btnBrowse: 'इमेज निवडा (Browse Photo)',
+        dropTitle: 'फोटो किंवा स्वाक्षरी निवडा किंवा ड्रॅग करा',
+        dropDesc: '',
+        btnBrowse: 'इमेज निवडा',
         defaultKb: 50,
-        targetLabel: 'हवी असलेली इमेज साईझ (Target Size in KB):',
-        targetHint: 'शासकीय पोर्टलसाठी फोटो ५० KB आणि स्वाक्षरी २० KB च्या आत असावी लागते.',
+        targetLabel: 'हवी असलेली इमेज साईझ (Target KB):',
+        targetHint: '',
         chips: [
+          { kb: 10, label: '⚡ १० KB' },
           { kb: 20, label: '✍️ २० KB (स्वाक्षरी)' },
           { kb: 50, label: '👤 ५० KB (फोटो)' },
           { kb: 100, label: '📄 १०० KB' },
-          { kb: 150, label: '🎯 १५० KB' },
           { kb: 200, label: '📦 २०० KB' }
         ],
         btnAction: 'आता इमेज अचूक KB मध्ये कॉम्प्रेस करा'
       },
       'img-to-pdf': {
-        title: 'अनेक फोटो ➔ १ एकत्र PDF बनवा',
-        badge: 'फोटो/स्कॅन जोडून १ कॉम्प्रेस PDF',
+        title: '५. फोटो ➔ १ PDF',
+        badge: 'फोटो ➔ १ PDF',
         accept: 'image/jpeg,image/png,image/webp,image/jpg',
         multiple: true,
-        dropTitle: 'कागदपत्रांचे सर्व फोटो येथे निवडा',
-        dropDesc: 'मोबाईलने काढलेले आधार, दाखले, करार यांचे फोटो जोडून १ स्वच्छ PDF बनवा',
+        dropTitle: 'कागदपत्रांचे सर्व फोटो निवडा किंवा ड्रॅग करा',
+        dropDesc: '',
         btnBrowse: 'सर्व फोटो निवडा',
         defaultKb: 250,
-        targetLabel: 'तयार होणाऱ्या PDF ची फायनल साईझ (PDF Target KB):',
-        targetHint: 'सर्व फोटो जोडून तयार होणारी PDF या साईझच्या आत तंतोतंत बसेल.',
+        targetLabel: 'तयार होणाऱ्या PDF ची साईझ (Target KB):',
+        targetHint: '',
         chips: [
-          { kb: 150, label: '⚡ १५० KB' },
-          { kb: 200, label: '📄 २०० KB' },
+          { kb: 100, label: '⚡ १०० KB' },
+          { kb: 200, label: '🎯 २०० KB' },
           { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
-          { kb: 480, label: '🎓 ४८० KB (महाडीबीटी)' },
-          { kb: 1024, label: '📑 १ MB' }
+          { kb: 300, label: '📄 ३०० KB' },
+          { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
         ],
         btnAction: 'सर्व फोटो जोडून कॉम्प्रेस PDF बनवा'
       },
       'batch-img': {
-        title: 'बॅच इमेज कॉम्प्रेसर (ZIP डाउनलोड)',
-        badge: 'अनेक फोटो स्वतंत्र कॉम्प्रेस ➔ १ ZIP',
+        title: '६. बॅच इमेजेस (ZIP)',
+        badge: 'स्वतंत्र फोटो ➔ १ ZIP',
         accept: 'image/jpeg,image/png,image/webp,image/jpg',
         multiple: true,
-        dropTitle: 'सर्व इमेजेस/फोटो येथे निवडा',
-        dropDesc: 'एकाच वेळी अनेक फोटो/स्वाक्षऱ्या कॉम्प्रेस करून १ झिप फाईलमध्ये मिळवा',
+        dropTitle: 'सर्व इमेजेस निवडा किंवा ड्रॅग करा',
+        dropDesc: '',
         btnBrowse: 'सर्व इमेजेस निवडा',
         defaultKb: 50,
-        targetLabel: 'प्रत्येक इमेजची टार्गेट साईझ (Per Image Target KB):',
-        targetHint: 'सर्व इमेजेस स्वतंत्रपणे या दिलेल्या साईझच्या आत हाय-क्वालिटीमध्ये कॉम्प्रेस केल्या जातील.',
+        targetLabel: 'प्रत्येक इमेजची साईझ (Target KB):',
+        targetHint: '',
         chips: [
+          { kb: 10, label: '⚡ १० KB' },
           { kb: 20, label: '✍️ २० KB (स्वाक्षरी)' },
           { kb: 50, label: '👤 ५० KB (फोटो)' },
           { kb: 100, label: '📄 १०० KB' },
@@ -1218,33 +1424,48 @@
 
     function setImageDimensionPreset(preset, autoSetKb = true) {
       currentImageDimensionPreset = preset;
-      ['original', 'photo', 'signature', 'document'].forEach(p => {
+      ['original', 'photo', 'signature', 'document', 'custom'].forEach(p => {
         const btn = document.getElementById(`dim-btn-${p}`);
         if (btn) btn.classList.toggle('active', p === preset);
       });
 
       const hint = document.getElementById('dimension-hint-text');
+      const wInput = document.getElementById('custom-dim-w');
+      const hInput = document.getElementById('custom-dim-h');
+
       if (preset === 'photo') {
+        if (wInput) wInput.value = 160;
+        if (hInput) hInput.value = 210;
         if (autoSetKb) {
           document.getElementById('target-kb-input').value = 50;
           syncSizeUI(50);
         }
-        if (hint) hint.innerHTML = '👤 <strong>पासपोर्ट फोटो:</strong> १६० × २०० px रिझोल्युशन व ५० KB साईझ (आपले सरकार, महाडीबीटी, MPSC व पोलीस भरतीसाठी १००% योग्य).';
+        if (hint) hint.innerHTML = '👤 <strong>पासपोर्ट फोटो:</strong> १६० × २१० px रिझोल्युशन व ५० KB साईझ (आपले सरकार, महाडीबीटी, MPSC व पोलीस भरतीसाठी १००% योग्य).';
       } else if (preset === 'signature') {
+        if (wInput) wInput.value = 256;
+        if (hInput) hInput.value = 64;
         if (autoSetKb) {
           document.getElementById('target-kb-input').value = 20;
           syncSizeUI(20);
         }
         if (hint) hint.innerHTML = '✍️ <strong>स्वाक्षरी (Signature):</strong> २५६ × ६४ px रिझोल्युशन व कमाल २० KB साईझ (शासकीय पोर्टल नियम).';
+      } else if (preset === 'custom') {
+        const cw = (wInput && parseInt(wInput.value, 10)) || 160;
+        const ch = (hInput && parseInt(hInput.value, 10)) || 210;
+        if (hint) hint.innerHTML = `⚙️ <strong>मॅन्युअल पिक्सेल:</strong> ${cw} × ${ch} px रिझोल्युशनवर अचूक रीसाईझ व कॉम्प्रेस.`;
       } else if (preset === 'document') {
         if (autoSetKb) {
-          document.getElementById('target-kb-input').value = 150;
-          syncSizeUI(150);
+          document.getElementById('target-kb-input').value = 100;
+          syncSizeUI(100);
         }
         if (hint) hint.innerHTML = '📄 <strong>कागदपत्र / स्कॅन:</strong> रुंदी कमाल १२०० px ठेवून कागदपत्र स्वच्छ व वाचण्याजोगे केले जाईल.';
       } else {
         if (hint) hint.innerHTML = '🔄 <strong>मूळ आकार (Original):</strong> मूळ अस्पेक्ट रेशो कायम ठेवून फाईल टार्गेट KB मध्ये हार्ड कॉम्प्रेस केली जाईल.';
       }
+    }
+
+    function onCustomDimInputChanged() {
+      setImageDimensionPreset('custom', false);
     }
 
     function getModeIcon(mode) {
@@ -1446,6 +1667,8 @@
       document.getElementById('file-list-section').style.display = 'block';
       document.getElementById('settings-section').style.display = 'block';
       document.getElementById('result-card').style.display = 'none';
+      document.getElementById('btn-start-compress').disabled = false;
+      document.getElementById('btn-action-text').textContent = MODE_CONFIGS[currentMode].btnAction;
 
       // If single mode, collapse dropzone
       if (!conf.multiple) {
@@ -1464,12 +1687,13 @@
       renderedThumbnails = [];
       masterFileInput.value = '';
 
-      document.getElementById('dropzone').style.display = 'block';
+      document.getElementById('dropzone').style.display = 'flex';
       document.getElementById('file-list-section').style.display = 'none';
-      document.getElementById('settings-section').style.display = 'none';
+      document.getElementById('settings-section').style.display = 'block';
       document.getElementById('result-card').style.display = 'none';
       document.getElementById('progress-section').style.display = 'none';
-      document.getElementById('btn-start-compress').disabled = false;
+      document.getElementById('btn-start-compress').disabled = true;
+      document.getElementById('btn-action-text').textContent = 'प्रथम फाईल निवडा';
 
       if (fullReset) {
         // Keeps current mode
@@ -1494,7 +1718,7 @@
       return outCanvas;
     }
 
-    // Compress Single Image to Exact Target Bytes with Portal Dimensions & Zero Blur (९०% ते १००% ब्रॅकेट हमी: उदा. ५०० KB साठी ४५० ते ५०० KB)
+    // Compress Single Image to Exact Target Bytes with Portal Dimensions & Zero Blur (९७% ते १००% Exact Hard Size: उदा. ५०० KB साठी ४८५ ते ५०० KB)
     async function compressImageToTargetBytes(file, targetBytes, dimensionMode = 'original') {
       return new Promise((resolve, reject) => {
         const img = new Image();
@@ -1504,13 +1728,18 @@
           let targetW, targetH;
 
           if (dimensionMode === 'photo') {
-            // Official Government Standard Passport Photo: 160 x 200 px
+            // Official Government Standard Passport Photo: 160 x 210 px
             targetW = 160;
-            targetH = 200;
+            targetH = 210;
           } else if (dimensionMode === 'signature') {
             // Official Government Standard Signature: 256 x 64 px
             targetW = 256;
             targetH = 64;
+          } else if (dimensionMode === 'custom') {
+            const cw = parseInt(document.getElementById('custom-dim-w')?.value, 10);
+            const ch = parseInt(document.getElementById('custom-dim-h')?.value, 10);
+            targetW = (cw && cw > 10) ? cw : 160;
+            targetH = (ch && ch > 10) ? ch : 210;
           } else if (dimensionMode === 'document') {
             // Document Scan: keep aspect ratio, max 1600 px
             const maxD = targetBytes >= 300 * 1024 ? 2000 : 1400;
@@ -1538,7 +1767,7 @@
           ctx.fillStyle = '#FFFFFF';
           ctx.fillRect(0, 0, targetW, targetH);
 
-          if (dimensionMode === 'photo' || dimensionMode === 'signature') {
+          if (dimensionMode === 'photo' || dimensionMode === 'signature' || dimensionMode === 'custom') {
             // Clean aspect cover & center
             const hRatio = targetW / origW;
             const vRatio = targetH / origH;
@@ -1554,9 +1783,9 @@
 
           const cleanCanvas = enhanceCanvasForClarity(canvas);
 
-          // टार्गेट साईझ मर्यादा (९०% ते १००% अचूक ब्रॅकेट)
-          const targetMinBytes = Math.round(targetBytes * 0.90);
-          const targetSweetBytes = Math.round(targetBytes * 0.96);
+          // टार्गेट साईझ मर्यादा (९७% ते १००% अचूक ब्रॅकेट - Exact Hard Size)
+          const targetMinBytes = Math.round(targetBytes * 0.97);
+          const targetSweetBytes = Math.round(targetBytes * 0.985);
 
           // Calibrate initial quality factor
           let q = 0.88;
@@ -1579,7 +1808,7 @@
                 bestBytes = byteSize;
                 bestDataUrl = dataUrl;
               }
-              // ९०% ते १००% च्या परिपूर्ण ब्रॅकेटमध्ये आले तर लगेच बाहेर पडा
+              // ९७% ते १००% च्या परिपूर्ण ब्रॅकेटमध्ये आले तर लगेच बाहेर पडा
               if (byteSize >= targetMinBytes) {
                 break;
               }
@@ -1657,6 +1886,164 @@
         img.onerror = reject;
         img.src = URL.createObjectURL(file);
       });
+    }
+
+    // Helper: Compile jsPDF from pagesData array with exact padding support
+    function compileJsPdf(pagesData, paddingChars = 0) {
+      const { jsPDF } = window.jspdf;
+      let doc = null;
+      for (let i = 0; i < pagesData.length; i++) {
+        const p = pagesData[i];
+        if (i === 0) {
+          doc = new jsPDF({
+            orientation: p.orientation,
+            unit: 'pt',
+            format: [p.ptW, p.ptH],
+            compress: true
+          });
+          if (paddingChars > 0) {
+            doc.setProperties({
+              keywords: '0'.repeat(paddingChars)
+            });
+          }
+          doc.addImage(p.imgData, 'JPEG', 0, 0, p.ptW, p.ptH, undefined, 'FAST');
+        } else {
+          doc.addPage([p.ptW, p.ptH], p.orientation);
+          doc.addImage(p.imgData, 'JPEG', 0, 0, p.ptW, p.ptH, undefined, 'FAST');
+        }
+      }
+      return doc.output('blob');
+    }
+
+    // Helper: Exact JPEG COM (0xFF 0xFE) marker padding (४ ते ५ KB अचूक फरक हमी)
+    async function padJpegBlob(jpegBlob, targetBytes, marginKb = 4.5) {
+      const buffer = await jpegBlob.arrayBuffer();
+      const u8 = new Uint8Array(buffer);
+      const currentBytes = u8.length;
+
+      let marginBytes = Math.round(marginKb * 1024);
+      if (targetBytes <= 35 * 1024) marginBytes = Math.min(1536, Math.round(targetBytes * 0.08));
+      else if (targetBytes <= 75 * 1024) marginBytes = Math.min(3072, Math.round(targetBytes * 0.06));
+      else if (targetBytes <= 150 * 1024) marginBytes = 4096;
+      else marginBytes = Math.min(5120, Math.max(4096, Math.round(targetBytes * 0.01))); // ~4.5 KB for 500 KB
+
+      const desiredBytes = targetBytes - marginBytes;
+      const neededPad = desiredBytes - currentBytes;
+
+      if (neededPad <= 5 || u8[0] !== 0xFF || u8[1] !== 0xD8) {
+        const finalGapKb = Math.max(0, (targetBytes - currentBytes) / 1024).toFixed(1);
+        return { blob: jpegBlob, bytes: currentBytes, gapKb: finalGapKb };
+      }
+
+      const parts = [];
+      parts.push(u8.subarray(0, 2)); // 0xFF, 0xD8
+
+      let remaining = neededPad;
+      while (remaining >= 5) {
+        const chunk = Math.min(remaining - 4, 65530);
+        const markerLen = chunk + 2;
+        const header = new Uint8Array(4);
+        header[0] = 0xFF;
+        header[1] = 0xFE;
+        header[2] = (markerLen >> 8) & 0xFF;
+        header[3] = markerLen & 0xFF;
+        parts.push(header);
+
+        const payload = new Uint8Array(chunk);
+        payload.fill(0x20); // space payload
+        parts.push(payload);
+
+        remaining -= (chunk + 4);
+      }
+
+      parts.push(u8.subarray(2));
+      const paddedBlob = new Blob(parts, { type: 'image/jpeg' });
+      const finalGapKb = Math.max(0, (targetBytes - paddedBlob.size) / 1024).toFixed(1);
+      return { blob: paddedBlob, bytes: paddedBlob.size, gapKb: finalGapKb };
+    }
+
+    // Helper: Enforce exact hard size on PDF (जास्तीत जास्त मजकूर स्पष्टता + अचूक ४ ते ५ KB फरक)
+    async function enforceExactPdfTargetSize(pagesData, targetBytes, marginKb = 4.5, onProgress = null) {
+      let marginBytes = Math.round(marginKb * 1024);
+      if (targetBytes <= 35 * 1024) marginBytes = Math.min(1536, Math.round(targetBytes * 0.08));
+      else if (targetBytes <= 75 * 1024) marginBytes = Math.min(3072, Math.round(targetBytes * 0.06));
+      else if (targetBytes <= 150 * 1024) marginBytes = 4096;
+      else marginBytes = Math.min(5120, Math.max(4096, Math.round(targetBytes * 0.01))); // ~4.5 KB for 500 KB
+
+      const desiredBytes = targetBytes - marginBytes;
+      let blob = compileJsPdf(pagesData, 0);
+
+      // १) जर PDF टार्गेटपेक्षा मोठी असेल तर क्लॅरिटी संतुलित ठेवून क्वालिटी कमी करणे
+      let pass = 0;
+      while (blob.size > desiredBytes && pass < 8) {
+        pass++;
+        if (onProgress) onProgress(`अचूक साईझ कॅलिब्रेशन (फेरी ${pass})...`);
+        const reductionRatio = (desiredBytes * 0.985) / blob.size;
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          p.quality = Math.max(0.12, p.quality * reductionRatio);
+          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+        }
+        blob = compileJsPdf(pagesData, 0);
+      }
+
+      // २) जर PDF खूप लहान असेल तर रिझोल्युशन व क्लॅरिटी कमाल ९७% पर्यंत वाढवणे
+      let upPass = 0;
+      while (blob.size < desiredBytes * 0.88 && upPass < 5) {
+        upPass++;
+        let canBoost = false;
+        const boostRatio = Math.min(1.30, Math.sqrt(desiredBytes / Math.max(blob.size, 1024)));
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          if (p.quality < 0.96) {
+            p.quality = Math.min(0.97, p.quality * boostRatio);
+            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+            canBoost = true;
+          }
+        }
+        if (!canBoost) break;
+        const candidate = compileJsPdf(pagesData, 0);
+        if (candidate.size <= desiredBytes) {
+          blob = candidate;
+        } else {
+          for (let i = 0; i < pagesData.length; i++) {
+            const p = pagesData[i];
+            p.quality = Math.max(0.12, p.quality * (desiredBytes / candidate.size));
+            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+          }
+          blob = compileJsPdf(pagesData, 0);
+          break;
+        }
+      }
+
+      // ३) हार्ड साईझ टार्गेट लॉक पॅडिंग (अचूक ४ ते ५ KB फरक हमी)
+      const currentBytes = blob.size;
+      const neededPad = desiredBytes - currentBytes;
+      if (neededPad > 20) {
+        const neededChars = Math.max(1, neededPad - 13);
+        blob = compileJsPdf(pagesData, neededChars);
+      }
+
+      // ४) सुरक्षा नियम: फाईल साईझ कधीही targetBytes पेक्षा जास्त होणार नाही
+      if (blob.size > targetBytes) {
+        const safetyRatio = (targetBytes * 0.98) / blob.size;
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          p.quality = Math.max(0.10, p.quality * safetyRatio);
+          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+        }
+        blob = compileJsPdf(pagesData, 0);
+      }
+
+      const finalBytes = blob.size;
+      const gapBytes = targetBytes - finalBytes;
+      const gapKb = Math.max(0, gapBytes / 1024).toFixed(1);
+
+      return {
+        blob: blob,
+        bytes: finalBytes,
+        gapKb: gapKb
+      };
     }
 
     // Master Action Execution Router
@@ -1784,10 +2171,10 @@
         }
 
         let upAttempts = 0;
-        while (approxBytes < targetBytesPerPage * 0.88 && q < 0.94 && upAttempts < 3) {
+        while (approxBytes < targetBytesPerPage * 0.96 && q < 0.97 && upAttempts < 5) {
           upAttempts++;
-          const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.96) / Math.max(approxBytes, 1024)));
-          q = Math.min(0.96, q * boost);
+          const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.985) / Math.max(approxBytes, 1024)));
+          q = Math.min(0.97, q * boost);
           imgData = currCanvas.toDataURL('image/jpeg', q);
           approxBytes = Math.round((imgData.length - 22) * 0.75);
         }
@@ -1806,87 +2193,22 @@
 
       progressFill.style.width = '88%';
       progressPct.textContent = '88%';
-      progressStatus.textContent = 'टार्गेट साईझ अचूक कॅलिब्रेशन (९०% ते १००% ब्रॅकेट)...';
+      progressStatus.textContent = 'टार्गेट साईझ अचूक कॅलिब्रेशन (हार्ड लॉक: ४ ते ५ KB फरक)...';
 
-      const targetMinBytes = Math.round(targetBytes * 0.90);
-      const targetSweetBytes = Math.round(targetBytes * 0.96);
-      let finalBlob = compileJsPdf(pagesData);
-
-      // Bi-directional Hard Size Enforcement Loop (९०% ते १००% ब्रॅकेट)
-      let pass = 0;
-      while (pass < 8) {
-        pass++;
-        const currSize = finalBlob.size;
-        if (currSize >= targetMinBytes && currSize <= targetBytes) {
-          break; // परिपूर्ण ब्रॅकेट (उदा. ५०० KB साठी ४५० ते ५०० KB)!
-        }
-
-        if (currSize > targetBytes) {
-          const reductionRatio = (targetSweetBytes / currSize) * 0.98;
-          for (let i = 0; i < pagesData.length; i++) {
-            const p = pagesData[i];
-            p.quality = Math.max(0.12, p.quality * reductionRatio);
-            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
-          }
-          finalBlob = compileJsPdf(pagesData);
-        } else if (currSize < targetMinBytes) {
-          let canBoost = false;
-          const boostRatio = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(currSize, 1024)));
-          for (let i = 0; i < pagesData.length; i++) {
-            const p = pagesData[i];
-            if (p.quality < 0.96) {
-              p.quality = Math.min(0.97, p.quality * boostRatio);
-              p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
-              canBoost = true;
-            }
-          }
-          if (!canBoost) break;
-          finalBlob = compileJsPdf(pagesData);
-        }
-      }
-
-      // अतिरिक्त हमी: फाईल कधीही टार्गेटपेक्षा जास्त होणार नाही
-      if (finalBlob.size > targetBytes) {
-        const safetyRatio = (targetBytes * 0.97) / finalBlob.size;
-        for (let i = 0; i < pagesData.length; i++) {
-          const p = pagesData[i];
-          p.quality = Math.max(0.10, p.quality * safetyRatio);
-          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
-        }
-        finalBlob = compileJsPdf(pagesData);
-      }
+      const exactRes = await enforceExactPdfTargetSize(pagesData, targetBytes, 4.5, (msg) => {
+        progressStatus.textContent = msg;
+      });
 
       progressFill.style.width = '100%';
       progressPct.textContent = '100%';
       progressStatus.textContent = 'कॉम्प्रेशन १००% यशस्वी!';
 
-      finalResultBlob = finalBlob;
+      finalResultBlob = exactRes.blob;
+      finalResultGapKb = exactRes.gapKb;
       finalResultType = 'pdf';
       finalResultFilename = file.name.replace(/\.pdf$/i, '') + `_compressed_${targetKb}KB.pdf`;
       if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
       finalResultUrl = URL.createObjectURL(finalResultBlob);
-    }
-
-    // Helper: Compile jsPDF from pagesData array
-    function compileJsPdf(pagesData) {
-      const { jsPDF } = window.jspdf;
-      let doc = null;
-      for (let i = 0; i < pagesData.length; i++) {
-        const p = pagesData[i];
-        if (i === 0) {
-          doc = new jsPDF({
-            orientation: p.orientation,
-            unit: 'pt',
-            format: [p.ptW, p.ptH],
-            compress: true
-          });
-          doc.addImage(p.imgData, 'JPEG', 0, 0, p.ptW, p.ptH, undefined, 'FAST');
-        } else {
-          doc.addPage([p.ptW, p.ptH], p.orientation);
-          doc.addImage(p.imgData, 'JPEG', 0, 0, p.ptW, p.ptH, undefined, 'FAST');
-        }
-      }
-      return doc.output('blob');
     }
 
     // -------------------------------------------------------------------------
@@ -1974,10 +2296,10 @@
           }
 
           let upAttempts = 0;
-          while (approxBytes < targetBytesPerPage * 0.88 && q < 0.94 && upAttempts < 3) {
+          while (approxBytes < targetBytesPerPage * 0.96 && q < 0.96 && upAttempts < 5) {
             upAttempts++;
-            const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.96) / Math.max(approxBytes, 1024)));
-            q = Math.min(0.96, q * boost);
+            const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.985) / Math.max(approxBytes, 1024)));
+            q = Math.min(0.97, q * boost);
             imgData = currCanvas.toDataURL('image/jpeg', q);
             approxBytes = Math.round((imgData.length - 22) * 0.75);
           }
@@ -1997,61 +2319,18 @@
 
       progressFill.style.width = '88%';
       progressPct.textContent = '88%';
-      progressStatus.textContent = 'एकत्रित PDF अचूक टार्गेट कॅलिब्रेशन...';
+      progressStatus.textContent = 'एकत्रित PDF अचूक टार्गेट कॅलिब्रेशन (हार्ड लॉक: ४ ते ५ KB फरक)...';
 
-      const targetMinBytes = Math.round(targetBytes * 0.90);
-      const targetSweetBytes = Math.round(targetBytes * 0.96);
-      let finalBlob = compileJsPdf(allMergedPages);
-
-      // Bi-directional Hard Size Enforcement Loop (९०% ते १००% ब्रॅकेट)
-      let pass = 0;
-      while (pass < 8) {
-        pass++;
-        const currSize = finalBlob.size;
-        if (currSize >= targetMinBytes && currSize <= targetBytes) {
-          break; // परिपूर्ण ब्रॅकेट (उदा. ५०० KB साठी ४५० ते ५०० KB)!
-        }
-
-        if (currSize > targetBytes) {
-          const reductionRatio = (targetSweetBytes / currSize) * 0.98;
-          for (let i = 0; i < allMergedPages.length; i++) {
-            const p = allMergedPages[i];
-            p.quality = Math.max(0.12, p.quality * reductionRatio);
-            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
-          }
-          finalBlob = compileJsPdf(allMergedPages);
-        } else if (currSize < targetMinBytes) {
-          let canBoost = false;
-          const boostRatio = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(currSize, 1024)));
-          for (let i = 0; i < allMergedPages.length; i++) {
-            const p = allMergedPages[i];
-            if (p.quality < 0.96) {
-              p.quality = Math.min(0.97, p.quality * boostRatio);
-              p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
-              canBoost = true;
-            }
-          }
-          if (!canBoost) break;
-          finalBlob = compileJsPdf(allMergedPages);
-        }
-      }
-
-      // अतिरिक्त हमी: फाईल कधीही टार्गेटपेक्षा जास्त होणार नाही
-      if (finalBlob.size > targetBytes) {
-        const safetyRatio = (targetBytes * 0.97) / finalBlob.size;
-        for (let i = 0; i < allMergedPages.length; i++) {
-          const p = allMergedPages[i];
-          p.quality = Math.max(0.10, p.quality * safetyRatio);
-          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
-        }
-        finalBlob = compileJsPdf(allMergedPages);
-      }
+      const exactRes = await enforceExactPdfTargetSize(allMergedPages, targetBytes, 4.5, (msg) => {
+        progressStatus.textContent = msg;
+      });
 
       progressFill.style.width = '100%';
       progressPct.textContent = '100%';
       progressStatus.textContent = 'सर्व PDF यशस्वीरीत्या एकत्र झाल्या!';
 
-      finalResultBlob = finalBlob;
+      finalResultBlob = exactRes.blob;
+      finalResultGapKb = exactRes.gapKb;
       finalResultType = 'pdf';
       finalResultFilename = `Merged_Documents_${targetKb}KB.pdf`;
       if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
@@ -2118,10 +2397,10 @@
           }
 
           let upAttempts = 0;
-          while (byteSize < targetBytesPerPage * 0.88 && q < 0.94 && upAttempts < 3) {
+          while (byteSize < targetBytesPerPage * 0.96 && q < 0.96 && upAttempts < 5) {
             upAttempts++;
-            const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.96) / Math.max(byteSize, 1024)));
-            q = Math.min(0.96, q * boost);
+            const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.985) / Math.max(byteSize, 1024)));
+            q = Math.min(0.97, q * boost);
             imgData = currCanvas.toDataURL('image/jpeg', q);
             byteSize = Math.round((imgData.length - 22) * 0.75);
           }
@@ -2140,52 +2419,9 @@
           }
         }
 
-        const targetMinBytes = Math.round(targetBytes * 0.90);
-        const targetSweetBytes = Math.round(targetBytes * 0.96);
-        let compressedBlob = compileJsPdf(pagesData);
-
-        // Bi-directional Hard Size Enforcement pass (९०% ते १००% ब्रॅकेट)
-        let pass = 0;
-        while (pass < 6) {
-          pass++;
-          const currSize = compressedBlob.size;
-          if (currSize >= targetMinBytes && currSize <= targetBytes) {
-            break;
-          }
-          if (currSize > targetBytes) {
-            const reductionRatio = (targetSweetBytes / currSize) * 0.98;
-            for (let k = 0; k < pagesData.length; k++) {
-              pagesData[k].quality = Math.max(0.12, pagesData[k].quality * reductionRatio);
-              pagesData[k].imgData = pagesData[k].canvas.toDataURL('image/jpeg', pagesData[k].quality);
-            }
-            compressedBlob = compileJsPdf(pagesData);
-          } else if (currSize < targetMinBytes) {
-            let canBoost = false;
-            const boostRatio = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(currSize, 1024)));
-            for (let k = 0; k < pagesData.length; k++) {
-              if (pagesData[k].quality < 0.96) {
-                pagesData[k].quality = Math.min(0.97, pagesData[k].quality * boostRatio);
-                pagesData[k].imgData = pagesData[k].canvas.toDataURL('image/jpeg', pagesData[k].quality);
-                canBoost = true;
-              }
-            }
-            if (!canBoost) break;
-            compressedBlob = compileJsPdf(pagesData);
-          }
-        }
-
-        // Strict safety trim
-        if (compressedBlob.size > targetBytes) {
-          const safetyRatio = (targetBytes * 0.97) / compressedBlob.size;
-          for (let k = 0; k < pagesData.length; k++) {
-            pagesData[k].quality = Math.max(0.10, pagesData[k].quality * safetyRatio);
-            pagesData[k].imgData = pagesData[k].canvas.toDataURL('image/jpeg', pagesData[k].quality);
-          }
-          compressedBlob = compileJsPdf(pagesData);
-        }
-
+        const exactRes = await enforceExactPdfTargetSize(pagesData, targetBytes, 4.5);
         const outName = file.name.replace(/\.pdf$/i, '') + `_compressed_${targetKb}KB.pdf`;
-        zip.file(outName, compressedBlob);
+        zip.file(outName, exactRes.blob);
       }
 
       progressFill.style.width = '95%';
@@ -2214,14 +2450,22 @@
       const targetBytes = targetKb * 1024;
       const res = await compressImageToTargetBytes(file, targetBytes, currentImageDimensionPreset);
 
+      // Apply Exact Hard Size Pad (अचूक ४ ते ५ KB फरक हमी)
+      progressFill.style.width = '80%';
+      progressPct.textContent = '80%';
+      progressStatus.textContent = 'हार्ड साईझ टार्गेट लॉक कॅलिब्रेशन (४ ते ५ KB फरक)...';
+
+      const exactRes = await padJpegBlob(res.blob, targetBytes, 4.5);
+
       progressFill.style.width = '100%';
       progressPct.textContent = '100%';
-      progressStatus.textContent = 'इमेज कॉम्प्रेशन यशस्वी!';
+      progressStatus.textContent = 'इमेज कॉम्प्रेशन १००% यशस्वी!';
 
       finalResultDimensions = `${res.width} × ${res.height} px`;
-      renderedThumbnails.push({ dataUrl: res.dataUrl, title: `${res.width} × ${res.height} px (${formatBytes(res.bytes)})` });
+      renderedThumbnails.push({ dataUrl: res.dataUrl, title: `${res.width} × ${res.height} px (${formatBytes(exactRes.bytes)})` });
 
-      finalResultBlob = res.blob;
+      finalResultBlob = exactRes.blob;
+      finalResultGapKb = exactRes.gapKb;
       finalResultType = 'image';
       finalResultFilename = file.name.replace(/\.[^/.]+$/, "") + `_compressed_${targetKb}KB.jpg`;
       if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
@@ -2271,61 +2515,19 @@
 
       progressFill.style.width = '92%';
       progressPct.textContent = '92%';
-      progressStatus.textContent = 'सर्व फोटो जोडून PDF अचूक टार्गेटमध्ये बसवत आहे...';
+      progressStatus.textContent = 'सर्व फोटो जोडून PDF अचूक टार्गेटमध्ये बसवत आहे (४ ते ५ KB फरक)...';
 
-      const targetMinBytes = Math.round(targetBytes * 0.90);
-      const targetSweetBytes = Math.round(targetBytes * 0.96);
-      let finalBlob = compileJsPdf(pagesData);
-
-      // Bi-directional Hard Size Enforcement loop (९०% ते १००% ब्रॅकेट)
-      let pass = 0;
-      while (pass < 6) {
-        pass++;
-        const currSize = finalBlob.size;
-        if (currSize >= targetMinBytes && currSize <= targetBytes) {
-          break;
-        }
-        if (currSize > targetBytes) {
-          const reductionRatio = (targetSweetBytes / currSize) * 0.98;
-          for (let i = 0; i < pagesData.length; i++) {
-            const p = pagesData[i];
-            p.quality = Math.max(0.12, p.quality * reductionRatio);
-            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
-          }
-          finalBlob = compileJsPdf(pagesData);
-        } else if (currSize < targetMinBytes) {
-          let canBoost = false;
-          const boostRatio = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(currSize, 1024)));
-          for (let i = 0; i < pagesData.length; i++) {
-            const p = pagesData[i];
-            if (p.quality < 0.96) {
-              p.quality = Math.min(0.97, p.quality * boostRatio);
-              p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
-              canBoost = true;
-            }
-          }
-          if (!canBoost) break;
-          finalBlob = compileJsPdf(pagesData);
-        }
-      }
-
-      // Final safety trim
-      if (finalBlob.size > targetBytes) {
-        const safetyRatio = (targetBytes * 0.97) / finalBlob.size;
-        for (let i = 0; i < pagesData.length; i++) {
-          const p = pagesData[i];
-          p.quality = Math.max(0.10, p.quality * safetyRatio);
-          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
-        }
-        finalBlob = compileJsPdf(pagesData);
-      }
+      const exactRes = await enforceExactPdfTargetSize(pagesData, targetBytes, 4.5, (msg) => {
+        progressStatus.textContent = msg;
+      });
 
       progressFill.style.width = '100%';
       progressPct.textContent = '100%';
       progressStatus.textContent = 'PDF तयार झाली!';
 
       finalResultDimensions = '';
-      finalResultBlob = finalBlob;
+      finalResultBlob = exactRes.blob;
+      finalResultGapKb = exactRes.gapKb;
       finalResultType = 'pdf';
       finalResultFilename = `Images_Combined_${targetKb}KB.pdf`;
       if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
@@ -2351,8 +2553,9 @@
         progressStatus.textContent = `इमेज ${i + 1}/${files.length} कॉम्प्रेस होत आहे: ${file.name}...`;
 
         const res = await compressImageToTargetBytes(file, targetBytes, currentImageDimensionPreset);
+        const exactRes = await padJpegBlob(res.blob, targetBytes, 4.5);
         const outName = file.name.replace(/\.[^/.]+$/, "") + `_compressed_${targetKb}KB.jpg`;
-        zip.file(outName, res.blob);
+        zip.file(outName, exactRes.blob);
 
         renderedThumbnails.push({ dataUrl: res.dataUrl, title: `${file.name.substring(0, 10)}.. (${res.width}×${res.height})` });
       }
@@ -2384,6 +2587,14 @@
       document.getElementById('stat-comp-size').textContent = formatBytes(compBytes);
       document.getElementById('stat-savings-pct').textContent = savingsPct > 0 ? `-${savingsPct}%` : '०%';
 
+      const gapBox = document.getElementById('stat-gap-box');
+      const gapVal = document.getElementById('stat-gap-val');
+      const gapKb = Math.max(0, (targetKb - compKb)).toFixed(1);
+      if (gapBox && gapVal) {
+        gapVal.textContent = `-${gapKb} KB`;
+        gapBox.style.display = 'block';
+      }
+
       const dimBox = document.getElementById('stat-dim-box');
       const dimVal = document.getElementById('stat-dim-val');
       if (finalResultType === 'image' && finalResultDimensions) {
@@ -2399,16 +2610,16 @@
       const dlBtnText = document.getElementById('download-btn-text');
 
       if (finalResultType === 'zip') {
-        badge.innerHTML = `<i class="fa-solid fa-file-zipper" style="color:#38bdf8;"></i> <strong>सर्व फाईल्स झिप (ZIP) मध्ये पॅक केल्या आहेत</strong> (${selectedFiles.length} फाईल्स • प्रत्येक फाईल ${targetKb} KB च्या आत)`;
+        badge.innerHTML = `<i class="fa-solid fa-file-zipper" style="color:#38bdf8;"></i> <strong>सर्व फाईल्स झिप (ZIP) मध्ये पॅक केल्या आहेत</strong> (${selectedFiles.length} फाईल्स • प्रत्येक फाईल ${targetKb} KB च्या आत, हार्ड साईझ लॉक सक्रिय)`;
         dlBtnText.textContent = `झिप फाईल डाउनलोड करा (${formatBytes(compBytes)})`;
         document.getElementById('btn-preview-result').style.display = 'none';
       } else {
         document.getElementById('btn-preview-result').style.display = 'inline-flex';
         if (finalResultType === 'image') {
-          badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#34d399;"></i> <strong>🎯 अचूक इमेज साईझ व रिझोल्युशन साध्य!</strong> (टार्गेट: ${targetKb} KB • प्रत्यक्षात: ${formatBytes(compBytes)} • आकार: ${finalResultDimensions || 'कन्व्हर्टेड'}) - फोटो व मजकूर १००% स्पष्ट!`;
+          badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#34d399;"></i> <strong>🎯 अचूक हार्ड साईझ इमेज साध्य!</strong> (टार्गेट: ${targetKb} KB • प्रत्यक्षात: ${formatBytes(compBytes)} • फरक: केवळ -${gapKb} KB • आकार: ${finalResultDimensions || 'कन्व्हर्टेड'}) - फोटो व मजकूर १००% स्पष्ट!`;
           dlBtnText.textContent = `इमेज डाउनलोड करा (${formatBytes(compBytes)})`;
         } else {
-          badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#34d399;"></i> <strong>🎯 अचूक PDF साईझ साध्य!</strong> (टार्गेट: ${targetKb} KB • प्रत्यक्षात: ${formatBytes(compBytes)}) - शासकीय पोर्टल अपलोडसाठी १००% योग्य!`;
+          badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#34d399;"></i> <strong>🎯 अचूक हार्ड साईझ PDF साध्य!</strong> (टार्गेट: ${targetKb} KB • प्रत्यक्षात: ${formatBytes(compBytes)} • फरक: केवळ -${gapKb} KB) - शासकीय पोर्टल अपलोडसाठी १००% योग्य!`;
           dlBtnText.textContent = `PDF डाउनलोड करा (${formatBytes(compBytes)})`;
         }
       }
@@ -2475,6 +2686,477 @@
 
     // Initialize default mode
     switchToolMode('single-pdf');
+  </script>
+
+
+  <!-- Interactive Image Crop Tool Modal -->
+  <div id="crop-modal" class="crop-modal-overlay" style="display: none;">
+    <div class="crop-modal-container">
+      <div class="crop-modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-crop-simple text-sky" style="font-size: 1.1rem;"></i>
+          <h3 style="margin: 0; font-size: 0.98rem; font-weight: 800; color: #fff;">फोटो व इमेज क्रॉप टूल (160×210 px & Custom)</h3>
+        </div>
+        <button type="button" class="crop-modal-close" onclick="closeImageCropperModal()" title="बंद करा">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Quick Aspect Presets & Controls -->
+      <div class="crop-toolbar">
+        <div class="crop-preset-group">
+          <button type="button" class="crop-preset-btn active" id="crop-preset-160-210" onclick="setCropRatio(160, 210, '160-210')">
+            👤 फोटो (160×210)
+          </button>
+          <button type="button" class="crop-preset-btn" id="crop-preset-256-64" onclick="setCropRatio(256, 64, '256-64')">
+            ✍️ सही (256×64)
+          </button>
+          <button type="button" class="crop-preset-btn" id="crop-preset-1-1" onclick="setCropRatio(1, 1, '1-1')">
+            ⏹️ 1:1 चौरस
+          </button>
+          <button type="button" class="crop-preset-btn" id="crop-preset-free" onclick="setCropRatio(0, 0, 'free')">
+            📐 Free Crop (मुक्त)
+          </button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+          <button type="button" class="crop-tool-btn" onclick="rotateCropper(90)" title="९० अंश फिरवा">
+            <i class="fa-solid fa-rotate-right"></i> फिरवा
+          </button>
+          <button type="button" class="crop-tool-btn" onclick="resetCropBox()" title="रिसेट करा">
+            <i class="fa-solid fa-arrows-rotate"></i> रिसेट
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Cropper Area -->
+      <div class="crop-workspace-viewport" id="crop-viewport">
+        <canvas id="crop-canvas"></canvas>
+        <div id="crop-box" class="crop-box-element">
+          <div class="crop-grid-line h1"></div>
+          <div class="crop-grid-line h2"></div>
+          <div class="crop-grid-line v1"></div>
+          <div class="crop-grid-line v2"></div>
+          <div class="crop-handle nw" data-handle="nw"></div>
+          <div class="crop-handle ne" data-handle="ne"></div>
+          <div class="crop-handle sw" data-handle="sw"></div>
+          <div class="crop-handle se" data-handle="se"></div>
+          <div class="crop-dimension-badge" id="crop-box-dim-badge">160 × 210 px</div>
+        </div>
+      </div>
+
+      <!-- Modal Footer Actions -->
+      <div class="crop-modal-footer">
+        <div style="font-size: 0.76rem; color: #94a3b8;">
+          <i class="fa-solid fa-circle-info text-sky"></i> क्रॉप बॉक्स हलवून फोटो व्यवस्थित सेट करा.
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn-ctrl-sm danger" onclick="closeImageCropperModal()" style="padding: 5px 12px; font-size: 0.82rem;">
+            रद्द करा
+          </button>
+          <button type="button" class="btn-select-file" onclick="applyCropAndSave()" style="padding: 5px 14px; font-size: 0.82rem; background: linear-gradient(135deg, #10b981, #059669);">
+            <i class="fa-solid fa-check"></i> ✂️ क्रॉप लागू करा (Apply)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // Interactive Canvas Cropper Engine
+    // =========================================================================
+    let cropperImage = null;
+    let cropperRotation = 0;
+    let cropRatioW = 160;
+    let cropRatioH = 210;
+    let cropRatioMode = '160-210';
+    let cropperScale = 1;
+    let canvasOffsetLeft = 0;
+    let canvasOffsetTop = 0;
+
+    let cropBoxState = {
+      x: 0,
+      y: 0,
+      w: 160,
+      h: 210
+    };
+
+    let isDraggingCropBox = false;
+    let isResizingCropBox = false;
+    let activeResizeHandle = null;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let initialBoxState = { x: 0, y: 0, w: 0, h: 0 };
+
+    function openImageCropperModal() {
+      // If current mode is not image mode, switch to single-img
+      if (!currentMode.includes('img')) {
+        switchToolMode('single-img');
+      }
+
+      // Check if image file exists
+      const imgFile = selectedFiles.find(f => f.type && f.type.startsWith('image/'));
+      if (!imgFile) {
+        alert('कृपया प्रथम क्रॉप करण्यासाठी इमेज / फोटो निवडा.');
+        triggerFileInput();
+        return;
+      }
+
+      cropperRotation = 0;
+      const img = new Image();
+      img.onload = () => {
+        cropperImage = img;
+        const modal = document.getElementById('crop-modal');
+        modal.style.display = 'flex';
+        setTimeout(() => {
+          initCropperCanvas();
+        }, 50);
+      };
+      img.src = URL.createObjectURL(imgFile);
+    }
+
+    function closeImageCropperModal() {
+      const modal = document.getElementById('crop-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function setCropRatio(w, h, modeKey) {
+      cropRatioW = w;
+      cropRatioH = h;
+      cropRatioMode = modeKey;
+
+      document.querySelectorAll('.crop-preset-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `crop-preset-${modeKey}`);
+      });
+
+      // Update manual inputs if predefined
+      if (w > 0 && h > 0) {
+        const cwInput = document.getElementById('custom-dim-w');
+        const chInput = document.getElementById('custom-dim-h');
+        if (cwInput) cwInput.value = w;
+        if (chInput) chInput.value = h;
+      }
+
+      resetCropBox();
+    }
+
+    function rotateCropper(deg) {
+      cropperRotation = (cropperRotation + deg) % 360;
+      initCropperCanvas();
+    }
+
+    function initCropperCanvas() {
+      if (!cropperImage) return;
+
+      const viewport = document.getElementById('crop-viewport');
+      const canvas = document.getElementById('crop-canvas');
+      const ctx = canvas.getContext('2d');
+
+      const isRotated90 = (cropperRotation === 90 || cropperRotation === 270);
+      const natW = isRotated90 ? cropperImage.naturalHeight : cropperImage.naturalWidth;
+      const natH = isRotated90 ? cropperImage.naturalWidth : cropperImage.naturalHeight;
+
+      const maxViewW = Math.min(viewport.clientWidth - 20, 680);
+      const maxViewH = Math.min(viewport.clientHeight - 20, 420);
+
+      const scale = Math.min(maxViewW / natW, maxViewH / natH, 1.0);
+      cropperScale = scale;
+
+      const dispW = Math.max(100, Math.round(natW * scale));
+      const dispH = Math.max(100, Math.round(natH * scale));
+
+      canvas.width = dispW;
+      canvas.height = dispH;
+      canvas.style.width = dispW + 'px';
+      canvas.style.height = dispH + 'px';
+
+      ctx.save();
+      ctx.translate(dispW / 2, dispH / 2);
+      ctx.rotate((cropperRotation * Math.PI) / 180);
+      if (isRotated90) {
+        ctx.drawImage(cropperImage, -dispH / 2, -dispW / 2, dispH, dispW);
+      } else {
+        ctx.drawImage(cropperImage, -dispW / 2, -dispH / 2, dispW, dispH);
+      }
+      ctx.restore();
+
+      // Viewport offsets
+      const vpRect = viewport.getBoundingClientRect();
+      const cvRect = canvas.getBoundingClientRect();
+      canvasOffsetLeft = cvRect.left - vpRect.left;
+      canvasOffsetTop = cvRect.top - vpRect.top;
+
+      resetCropBox();
+    }
+
+    function resetCropBox() {
+      const canvas = document.getElementById('crop-canvas');
+      const dispW = canvas.width;
+      const dispH = canvas.height;
+
+      let targetW, targetH;
+      if (cropRatioW > 0 && cropRatioH > 0) {
+        const ratio = cropRatioW / cropRatioH;
+        if (ratio >= 1) {
+          targetW = Math.round(dispW * 0.75);
+          targetH = Math.round(targetW / ratio);
+          if (targetH > dispH * 0.9) {
+            targetH = Math.round(dispH * 0.9);
+            targetW = Math.round(targetH * ratio);
+          }
+        } else {
+          targetH = Math.round(dispH * 0.85);
+          targetW = Math.round(targetH * ratio);
+          if (targetW > dispW * 0.9) {
+            targetW = Math.round(dispW * 0.9);
+            targetH = Math.round(targetW / ratio);
+          }
+        }
+      } else {
+        // Free Crop default 80%
+        targetW = Math.round(dispW * 0.8);
+        targetH = Math.round(dispH * 0.8);
+      }
+
+      cropBoxState.w = Math.max(40, targetW);
+      cropBoxState.h = Math.max(40, targetH);
+      cropBoxState.x = Math.round((dispW - cropBoxState.w) / 2);
+      cropBoxState.y = Math.round((dispH - cropBoxState.h) / 2);
+
+      updateCropBoxDOM();
+    }
+
+    function updateCropBoxDOM() {
+      const box = document.getElementById('crop-box');
+      const badge = document.getElementById('crop-box-dim-badge');
+      if (!box) return;
+
+      const left = canvasOffsetLeft + cropBoxState.x;
+      const top = canvasOffsetTop + cropBoxState.y;
+
+      box.style.left = left + 'px';
+      box.style.top = top + 'px';
+      box.style.width = cropBoxState.w + 'px';
+      box.style.height = cropBoxState.h + 'px';
+
+      let labelText = `${cropBoxState.w} × ${cropBoxState.h} px`;
+      if (cropRatioMode === '160-210') labelText = '160 × 210 px (फोटो)';
+      else if (cropRatioMode === '256-64') labelText = '256 × 64 px (सही)';
+      else if (cropRatioMode === '1-1') labelText = '1:1 Square';
+      else labelText = `${Math.round(cropBoxState.w / cropperScale)} × ${Math.round(cropBoxState.h / cropperScale)} px`;
+
+      if (badge) badge.textContent = labelText;
+    }
+
+    // Bind cropper pointer events
+    (function setupCropperEvents() {
+      const viewport = document.getElementById('crop-viewport');
+      const box = document.getElementById('crop-box');
+      if (!viewport || !box) return;
+
+      function onPointerDown(e) {
+        if (!cropperImage) return;
+        const handle = e.target.getAttribute('data-handle');
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+        dragStartX = clientX;
+        dragStartY = clientY;
+        initialBoxState = { ...cropBoxState };
+
+        if (handle) {
+          isResizingCropBox = true;
+          activeResizeHandle = handle;
+          e.stopPropagation();
+          e.preventDefault();
+        } else if (e.target === box || box.contains(e.target)) {
+          isDraggingCropBox = true;
+          e.preventDefault();
+        }
+      }
+
+      function onPointerMove(e) {
+        if (!isDraggingCropBox && !isResizingCropBox) return;
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        const dx = clientX - dragStartX;
+        const dy = clientY - dragStartY;
+
+        const canvas = document.getElementById('crop-canvas');
+        const maxW = canvas.width;
+        const maxH = canvas.height;
+
+        if (isDraggingCropBox) {
+          let nx = initialBoxState.x + dx;
+          let ny = initialBoxState.y + dy;
+          nx = Math.max(0, Math.min(maxW - cropBoxState.w, nx));
+          ny = Math.max(0, Math.min(maxH - cropBoxState.h, ny));
+          cropBoxState.x = nx;
+          cropBoxState.y = ny;
+          updateCropBoxDOM();
+        } else if (isResizingCropBox) {
+          const ratio = (cropRatioW > 0 && cropRatioH > 0) ? (cropRatioW / cropRatioH) : null;
+          let nx = initialBoxState.x;
+          let ny = initialBoxState.y;
+          let nw = initialBoxState.w;
+          let nh = initialBoxState.h;
+
+          if (activeResizeHandle === 'se') {
+            nw = Math.max(30, initialBoxState.w + dx);
+            if (ratio) nh = Math.round(nw / ratio);
+            else nh = Math.max(30, initialBoxState.h + dy);
+          } else if (activeResizeHandle === 'sw') {
+            nw = Math.max(30, initialBoxState.w - dx);
+            if (ratio) {
+              nh = Math.round(nw / ratio);
+              nx = initialBoxState.x + (initialBoxState.w - nw);
+            } else {
+              nh = Math.max(30, initialBoxState.h + dy);
+              nx = initialBoxState.x + (initialBoxState.w - nw);
+            }
+          } else if (activeResizeHandle === 'ne') {
+            nw = Math.max(30, initialBoxState.w + dx);
+            if (ratio) {
+              nh = Math.round(nw / ratio);
+              ny = initialBoxState.y + (initialBoxState.h - nh);
+            } else {
+              nh = Math.max(30, initialBoxState.h - dy);
+              ny = initialBoxState.y + (initialBoxState.h - nh);
+            }
+          } else if (activeResizeHandle === 'nw') {
+            nw = Math.max(30, initialBoxState.w - dx);
+            if (ratio) {
+              nh = Math.round(nw / ratio);
+              nx = initialBoxState.x + (initialBoxState.w - nw);
+              ny = initialBoxState.y + (initialBoxState.h - nh);
+            } else {
+              nh = Math.max(30, initialBoxState.h - dy);
+              nx = initialBoxState.x + (initialBoxState.w - nw);
+              ny = initialBoxState.y + (initialBoxState.h - nh);
+            }
+          }
+
+          // Bounds clamp
+          if (nx < 0) { nw += nx; nx = 0; if (ratio) nh = Math.round(nw / ratio); }
+          if (ny < 0) { nh += ny; ny = 0; if (ratio) nw = Math.round(nh * ratio); }
+          if (nx + nw > maxW) { nw = maxW - nx; if (ratio) nh = Math.round(nw / ratio); }
+          if (ny + nh > maxH) { nh = maxH - ny; if (ratio) nw = Math.round(nh * ratio); }
+
+          cropBoxState.x = Math.round(nx);
+          cropBoxState.y = Math.round(ny);
+          cropBoxState.w = Math.max(30, Math.round(nw));
+          cropBoxState.h = Math.max(30, Math.round(nh));
+          updateCropBoxDOM();
+        }
+      }
+
+      function onPointerUp() {
+        isDraggingCropBox = false;
+        isResizingCropBox = false;
+        activeResizeHandle = null;
+      }
+
+      viewport.addEventListener('mousedown', onPointerDown);
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+
+      viewport.addEventListener('touchstart', onPointerDown, { passive: false });
+      window.addEventListener('touchmove', onPointerMove, { passive: false });
+      window.addEventListener('touchend', onPointerUp);
+    })();
+
+    async function applyCropAndSave() {
+      if (!cropperImage) return;
+
+      const isRotated90 = (cropperRotation === 90 || cropperRotation === 270);
+
+      // Create an unscaled rotated canvas to extract pristine pixels
+      const fullCanvas = document.createElement('canvas');
+      const natW = isRotated90 ? cropperImage.naturalHeight : cropperImage.naturalWidth;
+      const natH = isRotated90 ? cropperImage.naturalWidth : cropperImage.naturalHeight;
+      fullCanvas.width = natW;
+      fullCanvas.height = natH;
+      const fCtx = fullCanvas.getContext('2d');
+
+      fCtx.save();
+      fCtx.translate(natW / 2, natH / 2);
+      fCtx.rotate((cropperRotation * Math.PI) / 180);
+      if (isRotated90) {
+        fCtx.drawImage(cropperImage, -natH / 2, -natW / 2, natH, natW);
+      } else {
+        fCtx.drawImage(cropperImage, -natW / 2, -natH / 2, natW, natH);
+      }
+      fCtx.restore();
+
+      // Convert display crop box to natural source coordinates
+      const invScale = 1.0 / cropperScale;
+      const srcX = Math.max(0, Math.round(cropBoxState.x * invScale));
+      const srcY = Math.max(0, Math.round(cropBoxState.y * invScale));
+      const srcW = Math.min(natW - srcX, Math.round(cropBoxState.w * invScale));
+      const srcH = Math.min(natH - srcY, Math.round(cropBoxState.h * invScale));
+
+      // Determine output target dimensions
+      let outW, outH;
+      if (cropRatioMode === '160-210') {
+        outW = 160;
+        outH = 210;
+        setImageDimensionPreset('photo', false);
+      } else if (cropRatioMode === '256-64') {
+        outW = 256;
+        outH = 64;
+        setImageDimensionPreset('signature', false);
+      } else {
+        const cw = parseInt(document.getElementById('custom-dim-w')?.value, 10);
+        const ch = parseInt(document.getElementById('custom-dim-h')?.value, 10);
+        if (cw && ch && cw > 10 && ch > 10) {
+          outW = cw;
+          outH = ch;
+          setImageDimensionPreset('custom', false);
+        } else {
+          outW = srcW;
+          outH = srcH;
+          setImageDimensionPreset('original', false);
+        }
+      }
+
+      // Render cropped result
+      const outCanvas = document.createElement('canvas');
+      outCanvas.width = outW;
+      outCanvas.height = outH;
+      const oCtx = outCanvas.getContext('2d', { alpha: false });
+      oCtx.fillStyle = '#FFFFFF';
+      oCtx.fillRect(0, 0, outW, outH);
+      oCtx.drawImage(fullCanvas, srcX, srcY, srcW, srcH, 0, 0, outW, outH);
+
+      outCanvas.toBlob(blob => {
+        if (!blob) {
+          alert('क्रॉपिंग अयशस्वी झाले.');
+          return;
+        }
+        const origFile = selectedFiles[0] || { name: 'photo.jpg' };
+        const croppedFile = new File([blob], 'cropped_' + origFile.name, {
+          type: 'image/jpeg',
+          lastModified: Date.now()
+        });
+
+        selectedFiles[0] = croppedFile;
+        updateFilesUI();
+        closeImageCropperModal();
+
+        // Update stats and trigger instant feedback
+        const dimBox = document.getElementById('stat-dim-box');
+        const dimVal = document.getElementById('stat-dim-val');
+        if (dimBox) dimBox.style.display = 'block';
+        if (dimVal) dimVal.textContent = `${outW}×${outH} px`;
+
+        // Switch to single-img mode if not already
+        if (currentMode !== 'single-img') {
+          switchToolMode('single-img');
+        }
+
+        console.log(`Cropped successfully to ${outW}x${outH} px`);
+      }, 'image/jpeg', 0.95);
+    }
   </script>
 
 </body>
