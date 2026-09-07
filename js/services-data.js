@@ -1053,6 +1053,18 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "pdf-compressor.html",
     isInternal: true
   },
+  // 🖼️ A4 ४x६ फोटो प्रिंट स्टुडिओ (A4 4x6 Photo Print Pro)
+  {
+    id: "link-photo-print-4x6",
+    category: "उपयुक्त दस्तऐवज टूल्स",
+    icon: "fa-solid fa-images",
+    title_mr: "🖼️ A4 ४×६ फोटो प्रिंटर (एका A4 पेजवर ४ फोटो)",
+    title_en: "A4 4x6 Photo Print Studio (4 Photos on A4 Page)",
+    desc_mr: "A4 पेजवर ४*६ आकाराचे ४ फोटो आपोआप ॲडजस्ट करून हाय-क्वालिटी प्रिंट करा. कात्री कटिंग रेषा, झूम व सरकारी योजनांसाठी शेरा स्टॅम्प.",
+    desc_en: "Print 4 photos of 4x6 size on a single A4 sheet with cutting guides, drag & drop, zoom, rotate, and official stamps.",
+    url: "photo-print-4x6.html",
+    isInternal: true
+  },
   // 📋 नवीन विशेष शासकीय फॉर्म्स व अर्ज जनरेटर (New Government Form Generators)
   {
     id: "link-idsign-apply-dsc",

@@ -20,7 +20,7 @@
 
   // Check if page should be excluded from citizen form application tracking
   function isExcludedSlug(slug) {
-    return slug === 'index' || slug === 'pdf-compressor' || slug === 'aadhar-kendra' || slug === 'digital-dalan' || slug === 'digital-wall' || slug === 'book-wall' || slug === 'logo-wall' || slug === 'news_paper';
+    return slug === 'index' || slug === 'pdf-compressor' || slug === 'photo-print-4x6' || slug === 'scanner' || slug === 'aadhar-kendra' || slug === 'digital-dalan' || slug === 'digital-wall' || slug === 'book-wall' || slug === 'logo-wall' || slug === 'news_paper';
   }
 
   // Generate prefix according to form type
