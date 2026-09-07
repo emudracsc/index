@@ -41,6 +41,10 @@
       'mahabocw': 'BOC',
       'mahabocwgramsevak': 'GSV',
       'gramsevak90': 'GSV',
+      'gharelu-kamgar': 'GHR',
+      'gharelu-kamgar-sangnakikaran': 'GKS',
+      'ghareli-kamgar': 'GHR',
+      'ghareli-kamgar-sangnakikaran': 'GKS',
       'pikpera': 'PIK',
       'eaadhaar-print': 'EAD',
       'aero': 'AER'
@@ -66,6 +70,10 @@
       'mahabocw': 'बांधकाम कामगार कल्याणकारी नोंदणी अर्ज',
       'mahabocwgramsevak': 'बांधकाम कामगार ९० दिवस प्रमाणपत्र',
       'gramsevak90': 'ग्रामसेवक ९० दिवस प्रमाणपत्र',
+      'gharelu-kamgar': 'महाराष्ट्र घरेलू कामगार नोंदणी अर्ज (नमुना च)',
+      'gharelu-kamgar-sangnakikaran': 'घरेलू कामगार संगणकीकरण माहिती व मालकाचे प्रमाणपत्र',
+      'ghareli-kamgar': 'महाराष्ट्र घरेलू कामगार नोंदणी अर्ज (नमुना च)',
+      'ghareli-kamgar-sangnakikaran': 'घरेलू कामगार संगणकीकरण माहिती व मालकाचे प्रमाणपत्र',
       'pikpera': 'ई-पीक पाहणी / पीकपेरा स्वयंघोषणापत्र',
       'eaadhaar-print': 'e-Aadhaar PVC कार्ड प्रिंट',
       'aero': 'Aero ई-सेवा अहवाल'

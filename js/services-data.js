@@ -1479,6 +1479,28 @@ const DEFAULT_IMPORTANT_LINKS = [
     isInternal: true
   },
   {
+    id: "link-gharelu-kamgar",
+    category: "कामगार कल्याण योजना (BOCW)",
+    icon: "fa-solid fa-broom",
+    title_mr: "🏠 महाराष्ट्र घरेलू कामगार नोंदणी अर्ज (नमुना च)",
+    title_en: "Maharashtra Domestic Worker Registration Form (Form Cha)",
+    desc_mr: "महाराष्ट्र घरेलू कामगार कल्याण मंडळ नोंदणी अर्ज, मालकाचे प्रमाणपत्र व स्वयंघोषणापत्र जनरेटर.",
+    desc_en: "Maharashtra Domestic Workers Welfare Board registration form, employer certificate and self-affidavit.",
+    url: "gharelu-kamgar.html",
+    isInternal: true
+  },
+  {
+    id: "link-gharelu-sangnak",
+    category: "कामगार कल्याण योजना (BOCW)",
+    icon: "fa-solid fa-laptop-file",
+    title_mr: "💻 घरेलू कामगार संगणकीकरण अर्ज व मालकाचे प्रमाणपत्र",
+    title_en: "Domestic Worker Computerization Data Form & Employer Certificate",
+    desc_mr: "घरेलू कामगारांच्या अर्जांचे संगणकीकरण करण्यासाठी लागणारी माहिती व मालकाचे अधिकृत प्रमाणपत्र.",
+    desc_en: "Domestic workers application computerization details and employer certificate format.",
+    url: "gharelu-kamgar-sangnakikaran.html",
+    isInternal: true
+  },
+  {
     id: "link-main-setu-server",
     category: "सेतू व शासकीय सर्व्हर",
     icon: "fa-solid fa-server",

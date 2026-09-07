@@ -2981,6 +2981,8 @@ function getFormTypeBadge(formType, formTitle) {
     return `<span style="background:#f0f9ff;color:#0369a1;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-file-signature"></i> राजपत्र नाव बदल</span>`;
   } else if (type.includes("bocw") || type.includes("gramsevak")) {
     return `<span style="background:#e0e7ff;color:#4338ca;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-helmet-safety"></i> बांधकाम कामगार ९० दिवस</span>`;
+  } else if (type.includes("gharelu") || type.includes("ghareli") || type.includes("domestic") || type.includes("gharkamgar")) {
+    return `<span style="background:#fce7f3;color:#be185d;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-broom"></i> घरेलू कामगार नोंदणी</span>`;
   } else if (type.includes("pikpera")) {
     return `<span style="background:#ecfdf5;color:#047857;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;"><i class="fa-solid fa-wheat-awn"></i> पीकपेरा स्वयंघोषणा</span>`;
   } else {
@@ -3047,6 +3049,12 @@ function getFormTargetPage(formType) {
   if (normalized.includes("mahabocw") || normalized.includes("bocw")) {
     return "mahabocw.html";
   }
+  if (normalized.includes("sangnak") || normalized.includes("sangnakikaran") || normalized.includes("gharelu-kamgar-sangnakikaran") || normalized.includes("ghareli-kamgar-sangnakikaran")) {
+    return "gharelu-kamgar-sangnakikaran.html";
+  }
+  if (normalized.includes("gharelu") || normalized.includes("ghareli") || normalized.includes("domestic") || normalized.includes("gharkamgar")) {
+    return "gharelu-kamgar.html";
+  }
   if (normalized.includes("pikpera")) {
     return "Pikpera.html";
   }
@@ -3059,7 +3067,9 @@ function getFormTargetPage(formType) {
     'janma-mrutyu-dakhla', 'ration-card-addition', 'ration-card-deletion',
     'varas-affidavit', 'bhumi-abhilekh-nakal', 'nakal-arja',
     'gazette-name-change', 'affidavit-print', 'pratigya-patra',
-    'mahabocw', 'mahabocwgramsevak', 'gramsevak90', 'pikpera',
+    'mahabocw', 'mahabocwgramsevak', 'gramsevak90',
+    'gharelu-kamgar', 'gharelu-kamgar-sangnakikaran',
+    'ghareli-kamgar', 'ghareli-kamgar-sangnakikaran', 'pikpera',
     'eaadhaar-print', 'aadhar-kendra', 'aero'
   ];
 
