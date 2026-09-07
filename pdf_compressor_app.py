@@ -33,6 +33,17 @@ if sys.platform.startswith("win"):
     except Exception:
         pass
 
+# Auto-configure Tk/Tcl libraries for Python 3.15 Windows
+if 'TK_LIBRARY' not in os.environ:
+    _tk_cand = os.path.join(sys.prefix, 'tcl', 'tk9.0')
+    if os.path.exists(_tk_cand):
+        os.environ['TK_LIBRARY'] = _tk_cand
+if 'TCL_LIBRARY' not in os.environ:
+    _tcl_cand = os.path.join(sys.prefix, 'tcl', 'tcl9.0')
+    if os.path.exists(_tcl_cand):
+        os.environ['TCL_LIBRARY'] = _tcl_cand
+
+
 # Required Libraries
 try:
     import fitz  # PyMuPDF

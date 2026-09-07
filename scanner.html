@@ -3073,12 +3073,12 @@
     window.addEventListener('DOMContentLoaded', () => {
       initCropInteractions();
       checkBridgeConnection(false);
-      // Auto-retry polling every 6 seconds if disconnected
+      // Auto-retry polling frequently when disconnected, less when connected
       setInterval(() => {
         if (!state.isBridgeConnected) {
           checkBridgeConnection(false);
         }
-      }, 6000);
+      }, 2500);
     });
   </script>
 </body>

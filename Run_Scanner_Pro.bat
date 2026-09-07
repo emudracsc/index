@@ -1,9 +1,9 @@
 @echo off
-title EMUDRA UNIVERSAL SCANNER - LOCAL BRIDGE
+title EMUDRA UNIVERSAL SCANNER PRO (DESKTOP)
 cd /d "%~dp0"
 
 echo =====================================================================
-echo   EMUDRA UNIVERSAL SCANNER - LOCAL BRIDGE SERVICE
+echo   EMUDRA UNIVERSAL SCANNER PRO - DESKTOP APPLICATION
 echo =====================================================================
 echo.
 
@@ -40,12 +40,12 @@ if %errorlevel% neq 0 (
 )
 
 echo [*] Python engine: %PY_EXE%
-echo [*] Starting scanner bridge service...
+echo [*] Launching Desktop Scanner App...
 echo.
 
-%PY_EXE% scanner_bridge.py
+%PY_EXE% emudra_scanner_app.py
 if errorlevel 1 (
     echo.
-    echo [ERROR] Scanner bridge stopped with an error.
+    echo [ERROR] Scanner application stopped with an error.
     pause
 )
