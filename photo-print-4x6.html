@@ -1436,6 +1436,7 @@
           <span>A4 वर ४*६ चे ४ फोटो • ऑटोमॅटिक मल्टी-पेज व पोर्ट्रेट/लँडस्केप प्रिंटिंग</span>
           <span class="badge-counter" id="headerPageCounter">१ पेज • ४ स्लॉट्स</span>
           <span class="badge-orientation" id="headerOrientationBadge"><i class="fa-solid fa-arrows-up-down"></i> पोर्ट्रेट (उभे)</span>
+          <span class="badge-counter" id="headerDpiBadge" style="background: rgba(16, 185, 129, 0.2); border: 1px solid var(--accent-emerald); color: #34d399;"><i class="fa-solid fa-gauge-high"></i> <span id="headerDpiVal">300</span> DPI</span>
         </div>
       </div>
     </div>
@@ -1451,8 +1452,8 @@
       <button type="button" class="btn btn-glass" onclick="clearAllSlots()" title="सर्व फोटो काढून टाका">
         <i class="fa-solid fa-trash-can"></i> रिसेट
       </button>
-      <button type="button" class="btn btn-emerald" onclick="downloadHDImage()" title="सर्व पेजेसचे ३०० DPI फोटो डाउनलोड करा">
-        <i class="fa-solid fa-download"></i> HD इमेज
+      <button type="button" class="btn btn-emerald" onclick="downloadHDImage()" title="निवडलेल्या DPI मध्ये हाय-क्वालिटी फोटो डाउनलोड करा">
+        <i class="fa-solid fa-download"></i> <span id="navDpiBadgeText">300 DPI</span> इमेज
       </button>
       <button type="button" class="btn btn-amber" onclick="generateA4PDF()" title="सर्व पेजेसची A4 PDF फाईल सेव्ह करा">
         <i class="fa-solid fa-file-pdf"></i> सर्व पेजेस PDF
@@ -1551,11 +1552,34 @@
         </div>
       </div>
 
-      <!-- Panel 3: Page, Border & Cutting Guidelines -->
+      <!-- Panel 3: DPI Quality, Border & Cutting Guidelines -->
       <div class="panel-card">
         <div class="panel-header">
           <div class="panel-title">
-            <i class="fa-solid fa-scissors"></i> कटिंग व बॉर्डर सेटिंग्ज
+            <i class="fa-solid fa-gauge-high"></i> DPI, बॉर्डर व कटिंग सेटिंग्ज
+          </div>
+          <span class="value-badge" id="dpiValueBadge" style="background: rgba(16, 185, 129, 0.2); border: 1px solid var(--accent-emerald); color: #34d399;">300 DPI</span>
+        </div>
+
+        <!-- DPI Quality Selector -->
+        <div class="control-row">
+          <div class="control-label">
+            <span>प्रिंट रिझोल्यूशन (Print Quality / DPI)</span>
+          </div>
+          <div class="pill-select-group" style="grid-template-columns: repeat(3, 1fr);">
+            <button type="button" class="pill-btn" id="btnDpi200" onclick="setExportDpi(200)" title="२०० DPI - जलद व हलकी फाईल (१६५४ × २३३९ px)">
+              <i class="fa-solid fa-bolt"></i> 200 DPI
+            </button>
+            <button type="button" class="pill-btn active" id="btnDpi300" onclick="setExportDpi(300)" title="३०० DPI - स्टुडिओ स्टँडर्ड HD (२४८० × ३५०८ px)">
+              <i class="fa-solid fa-award"></i> 300 DPI
+            </button>
+            <button type="button" class="pill-btn" id="btnDpi600" onclick="setExportDpi(600)" title="६०० DPI - अल्ट्रा HD लॅब प्रिंट (४९६० × ७०१६ px)">
+              <i class="fa-solid fa-crown"></i> 600 DPI
+            </button>
+          </div>
+          <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 6px; display: flex; justify-content: space-between;" id="dpiResolutionHint">
+            <span>📐 रिझोल्यूशन: २४८० × ३५०८ px (A4)</span>
+            <span style="color: var(--accent-emerald);">✨ स्टुडिओ स्टँडर्ड (मानक)</span>
           </div>
         </div>
 
@@ -1785,8 +1809,8 @@
           <div class="meta-badge" style="background: rgba(168, 85, 247, 0.12); border-color: rgba(168, 85, 247, 0.35); color: var(--accent-purple);" id="livePageCountPill">
             <i class="fa-solid fa-layer-group"></i> एकूण पेजेस: १
           </div>
-          <div class="meta-badge" style="background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.35); color: var(--accent-amber);">
-            <i class="fa-solid fa-award"></i> ३०० DPI स्टुडिओ प्रिंट
+          <div class="meta-badge" id="viewportDpiBadge" style="background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.35); color: var(--accent-amber);">
+            <i class="fa-solid fa-award"></i> <span id="viewportDpiVal">300</span> DPI स्टुडिओ प्रिंट
           </div>
         </div>
 
@@ -2052,6 +2076,7 @@
     ];
 
     let pageOrientation = 'portrait'; // 'portrait' or 'landscape'
+    let exportDpi = 300; // 200, 300, 600 DPI
     let activeSlotIndex = 0;
     let pendingSlotUploadIndex = 0;
     let previewScale = 0.68;
@@ -2061,6 +2086,62 @@
     let dragStartX = 0;
     let dragStartY = 0;
     let currentCameraStream = null;
+
+    /* DPI Setting Handler (200, 300, 600) */
+    function setExportDpi(dpi) {
+      exportDpi = parseInt(dpi) || 300;
+
+      // Update button active states
+      const btn200 = document.getElementById('btnDpi200');
+      const btn300 = document.getElementById('btnDpi300');
+      const btn600 = document.getElementById('btnDpi600');
+      if (btn200) btn200.classList.toggle('active', exportDpi === 200);
+      if (btn300) btn300.classList.toggle('active', exportDpi === 300);
+      if (btn600) btn600.classList.toggle('active', exportDpi === 600);
+
+      // Update badges
+      const dpiValueBadge = document.getElementById('dpiValueBadge');
+      if (dpiValueBadge) dpiValueBadge.textContent = `${exportDpi} DPI`;
+
+      const headerDpiVal = document.getElementById('headerDpiVal');
+      if (headerDpiVal) headerDpiVal.textContent = exportDpi;
+
+      const navDpiBadgeText = document.getElementById('navDpiBadgeText');
+      if (navDpiBadgeText) navDpiBadgeText.textContent = `${exportDpi} DPI`;
+
+      const isLandscape = (pageOrientation === 'landscape');
+      const viewportDpiBadge = document.getElementById('viewportDpiBadge');
+      if (viewportDpiBadge) {
+        if (exportDpi === 200) {
+          viewportDpiBadge.innerHTML = `<i class="fa-solid fa-bolt"></i> २०० DPI जलद प्रिंट`;
+          viewportDpiBadge.style.color = '#38bdf8';
+          viewportDpiBadge.style.borderColor = 'rgba(56, 189, 248, 0.35)';
+        } else if (exportDpi === 600) {
+          viewportDpiBadge.innerHTML = `<i class="fa-solid fa-crown"></i> ६०० DPI अल्ट्रा HD लॅब`;
+          viewportDpiBadge.style.color = '#c084fc';
+          viewportDpiBadge.style.borderColor = 'rgba(192, 132, 252, 0.35)';
+        } else {
+          viewportDpiBadge.innerHTML = `<i class="fa-solid fa-award"></i> ३०० DPI स्टुडिओ प्रिंट`;
+          viewportDpiBadge.style.color = 'var(--accent-amber)';
+          viewportDpiBadge.style.borderColor = 'rgba(245, 158, 11, 0.35)';
+        }
+      }
+
+      // Update resolution dimensions hint
+      const hint = document.getElementById('dpiResolutionHint');
+      if (hint) {
+        if (exportDpi === 200) {
+          const dims = isLandscape ? '२३३९ × १६५४ px' : '१६५४ × २३३९ px';
+          hint.innerHTML = `<span>📐 रिझोल्यूशन: ${dims}</span><span style="color: #38bdf8;">⚡ जलद / हलकी फाईल</span>`;
+        } else if (exportDpi === 600) {
+          const dims = isLandscape ? '७०१६ × ४९६१ px' : '४९६१ × ७०१६ px';
+          hint.innerHTML = `<span>📐 रिझोल्यूशन: ${dims}</span><span style="color: #c084fc;">👑 अल्ट्रा HD लॅब प्रिंट</span>`;
+        } else {
+          const dims = isLandscape ? '३५०८ × २४८० px' : '२४८० × ३५०८ px';
+          hint.innerHTML = `<span>📐 रिझोल्यूशन: ${dims}</span><span style="color: var(--accent-emerald);">✨ स्टुडिओ स्टँडर्ड (मानक)</span>`;
+        }
+      }
+    }
 
     // Manual Modal State (Temporary working clone)
     let manualModalIndex = 0;
@@ -2144,6 +2225,7 @@
       // Re-render all pages with new orientation layout
       renderAllPages();
       fitPreviewToScreen();
+      setExportDpi(exportDpi);
     }
 
     function updatePrintPageStyle() {
@@ -3313,7 +3395,7 @@
     }
 
     /* =========================================================================
-       PRINT & EXPORT ENGINE (MULTI-PAGE A4 300 DPI PORTRAIT / LANDSCAPE)
+       PRINT & EXPORT ENGINE (MULTI-PAGE A4 DYNAMIC 200 / 300 / 600 DPI)
        ========================================================================= */
     function triggerPrint() {
       for (let i = 0; i < photoSlots.length; i++) {
@@ -3323,12 +3405,16 @@
       window.print();
     }
 
-    /* Render Single Page Canvas at 300 DPI */
-    async function renderPageCanvas300DPI(pageIndex) {
+    /* Render Single Page Canvas at selected DPI (200, 300, 600) */
+    async function renderPageCanvas(pageIndex, dpi = exportDpi) {
       const isLandscape = (pageOrientation === 'landscape');
-      // 300 DPI A4: 2480px x 3508px (Portrait) vs 3508px x 2480px (Landscape)
-      const targetW = isLandscape ? 3508 : 2480;
-      const targetH = isLandscape ? 2480 : 3508;
+      const selectedDpi = parseInt(dpi) || 300;
+      const pxPerMm = selectedDpi / 25.4;
+
+      // Exact pixel dimensions for A4 (210mm x 297mm)
+      const targetW = Math.round((isLandscape ? 297 : 210) * pxPerMm);
+      const targetH = Math.round((isLandscape ? 210 : 297) * pxPerMm);
+
       const canvas = document.createElement('canvas');
       canvas.width = targetW;
       canvas.height = targetH;
@@ -3337,11 +3423,11 @@
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, targetW, targetH);
 
-      const marginSlider = parseInt(document.getElementById('marginSlider').value);
-      const gapSlider = parseInt(document.getElementById('gapSlider').value);
+      const marginSlider = parseInt(document.getElementById('marginSlider').value) || 6;
+      const gapSlider = parseInt(document.getElementById('gapSlider').value) || 4;
 
-      const marginPx = Math.round(marginSlider * 11.81);
-      const gapPx = Math.round(gapSlider * 11.81);
+      const marginPx = Math.round(marginSlider * pxPerMm);
+      const gapPx = Math.round(gapSlider * pxPerMm);
 
       const gridW = targetW - (2 * marginPx);
       const gridH = targetH - (2 * marginPx);
@@ -3357,6 +3443,7 @@
       ];
 
       const startIdx = pageIndex * 4;
+      const dpiScale = selectedDpi / 300;
 
       for (let i = 0; i < 4; i++) {
         const globalSlotIdx = startIdx + i;
@@ -3369,12 +3456,13 @@
         ctx.clip();
 
         if (sData && sData.imageSrc) {
-          await drawSlotImageOnCanvas(ctx, sData, rect.x, rect.y, slotW, slotH, isLandscape);
+          await drawSlotImageOnCanvas(ctx, sData, rect.x, rect.y, slotW, slotH, isLandscape, selectedDpi);
         } else {
           ctx.fillStyle = '#f1f5f9';
           ctx.fillRect(rect.x, rect.y, slotW, slotH);
           ctx.fillStyle = '#94a3b8';
-          ctx.font = 'bold 50px "Poppins", "Mukta", sans-serif';
+          const placeholderFontSize = Math.max(16, Math.round(50 * dpiScale));
+          ctx.font = `bold ${placeholderFontSize}px "Poppins", "Mukta", sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText(`फोटो ${globalSlotIdx + 1} (${isLandscape ? '6x4' : '4x6'})`, rect.x + slotW / 2, rect.y + slotH / 2);
@@ -3388,15 +3476,16 @@
           const stampText = [scheme, date ? `दिनांक: ${date}` : '', remark].filter(Boolean).join(' • ');
 
           if (stampText) {
-            const barH = 50;
+            const barH = Math.max(24, Math.round(50 * dpiScale));
             ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
             ctx.fillRect(rect.x, rect.y + slotH - barH, slotW, barH);
             ctx.strokeStyle = '#cbd5e1';
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = Math.max(1, Math.round(1.5 * dpiScale));
             ctx.strokeRect(rect.x, rect.y + slotH - barH, slotW, barH);
 
             ctx.fillStyle = '#000000';
-            ctx.font = 'bold 24px "Poppins", "Mukta", sans-serif';
+            const stampFontSize = Math.max(10, Math.round(24 * dpiScale));
+            ctx.font = `bold ${stampFontSize}px "Poppins", "Mukta", sans-serif`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(stampText, rect.x + slotW / 2, rect.y + slotH - barH / 2);
@@ -3407,18 +3496,18 @@
 
         if (borderStyle === 'thin') {
           ctx.strokeStyle = '#000000';
-          ctx.lineWidth = 3;
+          ctx.lineWidth = Math.max(1, Math.round(3 * dpiScale));
           ctx.strokeRect(rect.x, rect.y, slotW, slotH);
         } else if (borderStyle === 'studio') {
           ctx.strokeStyle = '#000000';
-          ctx.lineWidth = 8;
+          ctx.lineWidth = Math.max(2, Math.round(8 * dpiScale));
           ctx.strokeRect(rect.x, rect.y, slotW, slotH);
         } else if (borderStyle === 'white') {
           ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 20;
+          ctx.lineWidth = Math.max(4, Math.round(20 * dpiScale));
           ctx.strokeRect(rect.x, rect.y, slotW, slotH);
           ctx.strokeStyle = '#cbd5e1';
-          ctx.lineWidth = 2;
+          ctx.lineWidth = Math.max(1, Math.round(2 * dpiScale));
           ctx.strokeRect(rect.x, rect.y, slotW, slotH);
         }
       }
@@ -3426,9 +3515,9 @@
       const chkCutting = document.getElementById('chkCuttingGuides').checked;
       if (chkCutting) {
         ctx.save();
-        ctx.setLineDash([18, 12]);
+        ctx.setLineDash([Math.max(6, Math.round(18 * dpiScale)), Math.max(4, Math.round(12 * dpiScale))]);
         ctx.strokeStyle = '#64748b';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = Math.max(1, Math.round(3 * dpiScale));
 
         const midX = targetW / 2;
         ctx.beginPath();
@@ -3448,7 +3537,12 @@
       return canvas;
     }
 
-    function drawSlotImageOnCanvas(ctx, slotData, x, y, w, h, isLandscape) {
+    /* Backwards-compatible alias */
+    async function renderPageCanvas300DPI(pageIndex) {
+      return renderPageCanvas(pageIndex, 300);
+    }
+
+    function drawSlotImageOnCanvas(ctx, slotData, x, y, w, h, isLandscape, dpi = exportDpi) {
       return new Promise((resolve) => {
         const img = new Image();
         img.onload = () => {
@@ -3459,7 +3553,8 @@
 
           const centerX = x + w / 2;
           const centerY = y + h / 2;
-          const panFactor = isLandscape ? 3.12 : 3.12;
+          // Scale pan factor dynamically based on selected DPI
+          const panFactor = (dpi / 96.0);
           ctx.translate(centerX + (slotData.panX * panFactor), centerY + (slotData.panY * panFactor));
 
           ctx.rotate((slotData.rotate * Math.PI) / 180);
@@ -3510,11 +3605,11 @@
         const totalPages = getTotalPages();
         const isLandscape = (pageOrientation === 'landscape');
         for (let p = 0; p < totalPages; p++) {
-          const canvas = await renderPageCanvas300DPI(p);
+          const canvas = await renderPageCanvas(p, exportDpi);
           const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
           const a = document.createElement('a');
           a.href = dataUrl;
-          a.download = `A4_4x6_${isLandscape ? 'Landscape' : 'Portrait'}_Page_${p + 1}_${new Date().toISOString().slice(0, 10)}.jpg`;
+          a.download = `A4_4x6_${isLandscape ? 'Landscape' : 'Portrait'}_Page_${p + 1}_${exportDpi}DPI_${new Date().toISOString().slice(0, 10)}.jpg`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
@@ -3523,7 +3618,7 @@
       } catch (err) {
         alert('इमेज डाऊनलोड करण्यात त्रुटी: ' + err.message);
       } finally {
-        if (btn) btn.innerHTML = '<i class="fa-solid fa-download"></i> HD इमेज';
+        if (btn) btn.innerHTML = `<i class="fa-solid fa-download"></i> <span id="navDpiBadgeText">${exportDpi} DPI</span> इमेज`;
       }
     }
 
@@ -3545,7 +3640,7 @@
         const totalPages = getTotalPages();
         for (let p = 0; p < totalPages; p++) {
           if (p > 0) doc.addPage('a4', pageOrientation);
-          const canvas = await renderPageCanvas300DPI(p);
+          const canvas = await renderPageCanvas(p, exportDpi);
           const imgData = canvas.toDataURL('image/jpeg', 0.92);
           if (isLandscape) {
             doc.addImage(imgData, 'JPEG', 0, 0, 297, 210, undefined, 'FAST');
@@ -3554,7 +3649,7 @@
           }
         }
 
-        doc.save(`A4_4x6_Photos_${isLandscape ? 'Landscape' : 'Portrait'}_${totalPages}_Pages_${new Date().toISOString().slice(0, 10)}.pdf`);
+        doc.save(`A4_4x6_Photos_${isLandscape ? 'Landscape' : 'Portrait'}_${totalPages}_Pages_${exportDpi}DPI_${new Date().toISOString().slice(0, 10)}.pdf`);
       } catch (err) {
         alert('PDF डाऊनलोड करण्यात त्रुटी: ' + err.message);
       } finally {
