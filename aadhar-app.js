@@ -221,7 +221,7 @@ function handleAdminLogin(e) {
   } else {
     const err = document.getElementById('login-error-msg');
     if(err) {
-      err.textContent = 'चुकीचा पिन! (Admin PIN: 341992)';
+      err.textContent = 'चुकीचा पिन! कृपया बरोबर पिन टाका.';
       err.style.display = 'block';
     }
     playSound('delete');

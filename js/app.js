@@ -1515,7 +1515,7 @@ function initAdminDashboard() {
         }
       }, 150);
     } else {
-      showToast(CURRENT_LANG === "mr" ? "चुकीचा सुरक्षा पासवर्ड (PIN: 341992)." : "Invalid Security Password (PIN: 341992).", "error");
+      showToast(CURRENT_LANG === "mr" ? "चुकीचा सुरक्षा पासवर्ड / पिन. कृपया पुन्हा प्रयत्न करा." : "Invalid Security Password / PIN. Please try again.", "error");
     }
   });
 
