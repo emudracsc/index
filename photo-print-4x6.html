@@ -50,6 +50,13 @@
       padding: 0;
     }
 
+    html, body {
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden; /* संपूर्ण पेजचा स्क्रोल बार काढला - No full page scrollbar */
+      box-sizing: border-box;
+    }
+
     body {
       background: var(--bg-dark-base);
       background-image: 
@@ -58,10 +65,10 @@
         radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 60%);
       color: var(--text-main);
       font-family: 'Poppins', 'Mukta', -apple-system, sans-serif;
-      min-height: 100vh;
+      height: 100vh;
+      max-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
       user-select: none;
     }
 
@@ -70,8 +77,7 @@
       height: 4px;
       background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%);
       width: 100%;
-      position: sticky;
-      top: 0;
+      flex-shrink: 0;
       z-index: 1000;
       box-shadow: 0 2px 10px rgba(255, 153, 51, 0.3);
     }
@@ -82,10 +88,9 @@
       border-bottom: 1px solid var(--border-glass);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      position: sticky;
-      top: 4px;
+      flex-shrink: 0;
       z-index: 999;
-      padding: 0.7rem 1.4rem;
+      padding: 0.55rem 1.4rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -250,33 +255,49 @@
       color: #ffffff;
     }
 
-    /* Main Workspace Layout */
+    /* Main Workspace Layout (Two-Column Fixed Viewport) */
     .app-main-layout {
       display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 20px;
-      max-width: 1720px;
+      grid-template-columns: 390px 1fr;
+      gap: 16px;
+      max-width: 100%;
       width: 100%;
-      margin: 0 auto;
-      padding: 16px 20px 32px 20px;
+      margin: 0;
+      padding: 10px 16px 12px 16px;
       flex: 1;
+      min-height: 0;
+      height: calc(100vh - 62px);
+      max-height: calc(100vh - 62px);
       box-sizing: border-box;
+      overflow: hidden;
     }
 
     @media (max-width: 1180px) {
       .app-main-layout {
         grid-template-columns: 1fr;
+        height: auto;
+        max-height: none;
+        overflow-y: auto;
+      }
+      html, body {
+        overflow-y: auto;
+        height: auto;
       }
     }
 
-    /* Left Controls Sidebar */
+    /* Left Controls Sidebar (Function Buttons Dedicated Scrollbar) */
     .sidebar-controls {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      height: fit-content;
-      position: sticky;
-      top: 75px;
+      gap: 12px;
+      height: 100%;
+      max-height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 8px;
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(56, 189, 248, 0.45) rgba(15, 23, 42, 0.65);
     }
 
     .panel-card {
@@ -553,13 +574,18 @@
       display: block;
     }
 
-    /* Right Preview Canvas Container */
+    /* Right Preview Canvas Container (Photo Sheet Dedicated Viewport) */
     .canvas-viewport-panel {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      align-items: center;
+      gap: 10px;
       width: 100%;
+      height: 100%;
+      max-height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      min-width: 0;
+      box-sizing: border-box;
     }
 
     /* Viewport Toolbar */
@@ -568,13 +594,14 @@
       background: var(--bg-card);
       border: 1px solid var(--border-glass);
       border-radius: var(--card-radius);
-      padding: 10px 18px;
+      padding: 9px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      flex-shrink: 0;
     }
 
     .sheet-meta-badges {
@@ -631,22 +658,54 @@
       text-align: center;
     }
 
-    /* Scrollable Multi-Page Stack Container ("एका खाली एक") */
+    /* Scrollable Multi-Page Stack Container ("एका खाली एक" with Dedicated Scrollbar) */
     .sheet-scroll-container {
       width: 100%;
-      max-height: calc(100vh - 160px);
+      flex: 1;
+      min-height: 0;
+      height: 100%;
+      max-height: 100%;
       overflow-y: auto;
-      overflow-x: hidden;
+      overflow-x: auto;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 36px;
-      padding: 24px 12px 60px 12px;
+      padding: 20px 12px 60px 12px;
       background: rgba(0, 0, 0, 0.4);
       border-radius: 18px;
       border: 1px solid rgba(255, 255, 255, 0.06);
       position: relative;
       scroll-behavior: smooth;
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(56, 189, 248, 0.45) rgba(15, 23, 42, 0.65);
+    }
+
+    /* Dedicated Scrollbar Styles for Function Buttons Pane and Photo Sheet Pane */
+    .sidebar-controls::-webkit-scrollbar,
+    .sheet-scroll-container::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .sidebar-controls::-webkit-scrollbar-track,
+    .sheet-scroll-container::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.65);
+      border-radius: 10px;
+    }
+
+    .sidebar-controls::-webkit-scrollbar-thumb,
+    .sheet-scroll-container::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.5) 0%, rgba(168, 85, 247, 0.5) 100%);
+      border-radius: 10px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    .sidebar-controls::-webkit-scrollbar-thumb:hover,
+    .sheet-scroll-container::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.85) 0%, rgba(168, 85, 247, 0.85) 100%);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
     }
 
     /* Page Wrapper (Contains Page Header Badge + A4 Paper Sheet) */
@@ -1060,6 +1119,9 @@
         margin: 0 !important;
         padding: 0 !important;
         width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
@@ -1636,22 +1698,73 @@
           </div>
         </div>
 
-        <!-- Brightness Slider -->
-        <div class="control-row">
-          <div class="control-label">
-            <span>उजेड (Brightness)</span>
-            <span class="value-badge" id="activeBrightText">0%</span>
+        <!-- Photo Color, Contrast & Brightness Studio -->
+        <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+          <div class="control-label" style="margin-bottom: 8px;">
+            <span style="color: var(--accent-cyan); font-weight: 800; font-size: 0.85rem;">
+              <i class="fa-solid fa-palette"></i> फोटो कलर व कॉन्ट्रास्ट (Color & Contrast)
+            </span>
+            <button type="button" class="btn btn-glass" style="padding: 1px 7px; font-size: 0.7rem;" onclick="resetActiveSlotColor()" title="कलर व कॉन्ट्रास्ट रीसेट करा">
+              <i class="fa-solid fa-rotate-left"></i> रिसेट
+            </button>
           </div>
-          <input type="range" id="activeBrightSlider" class="modern-slider" min="-50" max="60" step="2" value="0" oninput="updateActiveSlotBrightness(this.value)">
-        </div>
 
-        <!-- Contrast Slider -->
-        <div class="control-row" style="margin-bottom: 0;">
-          <div class="control-label">
-            <span>कॉन्ट्रास्ट (Contrast)</span>
-            <span class="value-badge" id="activeContrastText">0%</span>
+          <!-- Color / Saturation Slider -->
+          <div class="control-row">
+            <div class="control-label">
+              <span><i class="fa-solid fa-droplet" style="color: #38bdf8;"></i> रंग / सॅच्युरेशन (Color)</span>
+              <span class="value-badge" id="activeColorText">0%</span>
+            </div>
+            <input type="range" id="activeColorSlider" class="modern-slider" min="-100" max="100" step="2" value="0" oninput="updateActiveSlotColor(this.value)">
           </div>
-          <input type="range" id="activeContrastSlider" class="modern-slider" min="-50" max="60" step="2" value="0" oninput="updateActiveSlotContrast(this.value)">
+
+          <!-- Contrast Slider -->
+          <div class="control-row">
+            <div class="control-label">
+              <span><i class="fa-solid fa-circle-half-stroke" style="color: #f59e0b;"></i> कॉन्ट्रास्ट (Contrast)</span>
+              <span class="value-badge" id="activeContrastText">0%</span>
+            </div>
+            <input type="range" id="activeContrastSlider" class="modern-slider" min="-50" max="80" step="2" value="0" oninput="updateActiveSlotContrast(this.value)">
+          </div>
+
+          <!-- Brightness Slider -->
+          <div class="control-row">
+            <div class="control-label">
+              <span><i class="fa-solid fa-sun" style="color: #fbbf24;"></i> उजेड (Brightness)</span>
+              <span class="value-badge" id="activeBrightText">0%</span>
+            </div>
+            <input type="range" id="activeBrightSlider" class="modern-slider" min="-50" max="60" step="2" value="0" oninput="updateActiveSlotBrightness(this.value)">
+          </div>
+
+          <!-- Quick Color Presets -->
+          <div class="control-row">
+            <div class="control-label"><span>कलर व टोन प्रीसेट्स</span></div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+              <button type="button" class="pill-btn" onclick="applyColorPreset('original')" title="मूळ रंग (Original)">
+                🌈 मूळ
+              </button>
+              <button type="button" class="pill-btn" onclick="applyColorPreset('vivid')" title="चमकदार रंग (Vivid)">
+                ✨ व्हायब्रंट
+              </button>
+              <button type="button" class="pill-btn" onclick="applyColorPreset('portrait')" title="स्टुडिओ स्किन ग्लो (Portrait)">
+                👤 पोर्ट्रेट
+              </button>
+              <button type="button" class="pill-btn" onclick="applyColorPreset('crisp')" title="हाय कॉन्ट्रास्ट (Crisp / Dark)">
+                📄 डार्क
+              </button>
+              <button type="button" class="pill-btn" onclick="applyColorPreset('bw')" title="ब्लॅक & व्हाईट (B&W)">
+                ⚪ B&W
+              </button>
+              <button type="button" class="pill-btn" onclick="applyColorPreset('warm')" title="उबदार टोन (Warm)">
+                ☀️ वॉर्म
+              </button>
+            </div>
+          </div>
+
+          <!-- Apply to all photos button -->
+          <button type="button" class="btn btn-glass" style="width: 100%; font-size: 0.78rem; padding: 6px 8px; margin-top: 6px; border-color: rgba(56, 189, 248, 0.4); color: var(--accent-cyan);" onclick="applyActiveColorToAll()" title="हाच रंग व कॉन्ट्रास्ट सर्व फोटोंना लागू करा">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> सर्व फोटोंना हा रंग/कॉन्ट्रास्ट लावा
+          </button>
         </div>
       </div>
 
@@ -1854,6 +1967,46 @@
 
       </div>
 
+      <!-- Modal Color & Contrast Studio Row -->
+      <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 10px 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-cyan); display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-palette"></i> रंग, उजेड व कॉन्ट्रास्ट (Color & Contrast Studio)
+          </span>
+          <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+            <button type="button" class="pill-btn" style="padding: 1px 7px; font-size: 0.7rem;" onclick="applyModalColorPreset('original')">🌈 मूळ</button>
+            <button type="button" class="pill-btn" style="padding: 1px 7px; font-size: 0.7rem;" onclick="applyModalColorPreset('vivid')">✨ व्हायब्रंट</button>
+            <button type="button" class="pill-btn" style="padding: 1px 7px; font-size: 0.7rem;" onclick="applyModalColorPreset('portrait')">👤 पोर्ट्रेट</button>
+            <button type="button" class="pill-btn" style="padding: 1px 7px; font-size: 0.7rem;" onclick="applyModalColorPreset('crisp')">📄 डार्क</button>
+            <button type="button" class="pill-btn" style="padding: 1px 7px; font-size: 0.7rem;" onclick="applyModalColorPreset('bw')">⚪ B&W</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+          <div>
+            <div class="control-label" style="margin-bottom: 3px; font-size: 0.72rem;">
+              <span><i class="fa-solid fa-droplet" style="color: #38bdf8;"></i> रंग (Color)</span>
+              <span class="value-badge" id="modalColorVal">0%</span>
+            </div>
+            <input type="range" id="modalColorSlider" class="modern-slider" min="-100" max="100" step="2" value="0" oninput="handleModalColorChange(this.value)">
+          </div>
+          <div>
+            <div class="control-label" style="margin-bottom: 3px; font-size: 0.72rem;">
+              <span><i class="fa-solid fa-circle-half-stroke" style="color: #f59e0b;"></i> कॉन्ट्रास्ट</span>
+              <span class="value-badge" id="modalContrastVal">0%</span>
+            </div>
+            <input type="range" id="modalContrastSlider" class="modern-slider" min="-50" max="80" step="2" value="0" oninput="handleModalContrastChange(this.value)">
+          </div>
+          <div>
+            <div class="control-label" style="margin-bottom: 3px; font-size: 0.72rem;">
+              <span><i class="fa-solid fa-sun" style="color: #fbbf24;"></i> उजेड</span>
+              <span class="value-badge" id="modalBrightVal">0%</span>
+            </div>
+            <input type="range" id="modalBrightSlider" class="modern-slider" min="-50" max="60" step="2" value="0" oninput="handleModalBrightnessChange(this.value)">
+          </div>
+        </div>
+      </div>
+
       <!-- Modal Footer -->
       <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
         <span style="font-size: 0.74rem; color: #94a3b8;">
@@ -1885,6 +2038,7 @@
       fitMode: 'auto', // 'auto', 'cover', 'contain', 'manual'
       brightness: 0,
       contrast: 0,
+      colorSaturation: 0,
       grayscale: false,
       naturalWidth: 0,
       naturalHeight: 0
@@ -2333,6 +2487,7 @@
         photoSlots[i].flipV = activeSlot.flipV;
         photoSlots[i].brightness = activeSlot.brightness;
         photoSlots[i].contrast = activeSlot.contrast;
+        photoSlots[i].colorSaturation = activeSlot.colorSaturation || 0;
         photoSlots[i].grayscale = activeSlot.grayscale;
         photoSlots[i].fitMode = activeSlot.fitMode;
         renderSlot(i);
@@ -2473,10 +2628,11 @@
       const transform = `translate(${slotData.panX}px, ${slotData.panY}px) scale(${slotData.zoom * slotData.flipH}, ${slotData.zoom * slotData.flipV}) rotate(${slotData.rotate}deg)`;
       img.style.transform = transform;
 
-      const bFilter = 100 + Number(slotData.brightness);
-      const cFilter = 100 + Number(slotData.contrast);
+      const bFilter = 100 + Number(slotData.brightness || 0);
+      const cFilter = 100 + Number(slotData.contrast || 0);
+      const sFilter = 100 + Number(slotData.colorSaturation || 0);
       const gFilter = slotData.grayscale ? 100 : 0;
-      img.style.filter = `brightness(${bFilter}%) contrast(${cFilter}%) grayscale(${gFilter}%)`;
+      img.style.filter = `brightness(${bFilter}%) contrast(${cFilter}%) saturate(${sFilter}%) grayscale(${gFilter}%)`;
     }
 
     /* =========================================================================
@@ -2547,10 +2703,13 @@
       document.getElementById('activePanXText').textContent = `${Math.round(slot.panX)}px`;
       document.getElementById('activePanYSlider').value = slot.panY;
       document.getElementById('activePanYText').textContent = `${Math.round(slot.panY)}px`;
-      document.getElementById('activeBrightSlider').value = slot.brightness;
-      document.getElementById('activeBrightText').textContent = `${slot.brightness > 0 ? '+' : ''}${slot.brightness}%`;
-      document.getElementById('activeContrastSlider').value = slot.contrast;
-      document.getElementById('activeContrastText').textContent = `${slot.contrast > 0 ? '+' : ''}${slot.contrast}%`;
+      const colorVal = slot.colorSaturation || 0;
+      document.getElementById('activeColorSlider').value = colorVal;
+      document.getElementById('activeColorText').textContent = `${colorVal > 0 ? '+' : ''}${colorVal}%`;
+      document.getElementById('activeBrightSlider').value = slot.brightness || 0;
+      document.getElementById('activeBrightText').textContent = `${(slot.brightness || 0) > 0 ? '+' : ''}${slot.brightness || 0}%`;
+      document.getElementById('activeContrastSlider').value = slot.contrast || 0;
+      document.getElementById('activeContrastText').textContent = `${(slot.contrast || 0) > 0 ? '+' : ''}${slot.contrast || 0}%`;
 
       const btnBw = document.getElementById('btnGrayscale');
       if (slot.grayscale) {
@@ -2578,6 +2737,12 @@
       renderSlot(activeSlotIndex);
     }
 
+    function updateActiveSlotColor(val) {
+      photoSlots[activeSlotIndex].colorSaturation = parseInt(val);
+      document.getElementById('activeColorText').textContent = `${val > 0 ? '+' : ''}${val}%`;
+      renderSlot(activeSlotIndex);
+    }
+
     function updateActiveSlotBrightness(val) {
       photoSlots[activeSlotIndex].brightness = parseInt(val);
       document.getElementById('activeBrightText').textContent = `${val > 0 ? '+' : ''}${val}%`;
@@ -2588,6 +2753,72 @@
       photoSlots[activeSlotIndex].contrast = parseInt(val);
       document.getElementById('activeContrastText').textContent = `${val > 0 ? '+' : ''}${val}%`;
       renderSlot(activeSlotIndex);
+    }
+
+    function applyColorPreset(preset) {
+      const slot = photoSlots[activeSlotIndex];
+      if (!slot) return;
+      if (preset === 'original') {
+        slot.colorSaturation = 0;
+        slot.contrast = 0;
+        slot.brightness = 0;
+        slot.grayscale = false;
+      } else if (preset === 'vivid') {
+        slot.colorSaturation = 30;
+        slot.contrast = 20;
+        slot.brightness = 6;
+        slot.grayscale = false;
+      } else if (preset === 'portrait') {
+        slot.colorSaturation = 12;
+        slot.contrast = 14;
+        slot.brightness = 10;
+        slot.grayscale = false;
+      } else if (preset === 'crisp') {
+        slot.colorSaturation = 0;
+        slot.contrast = 35;
+        slot.brightness = -4;
+        slot.grayscale = false;
+      } else if (preset === 'bw') {
+        slot.grayscale = true;
+        slot.contrast = 22;
+        slot.brightness = 4;
+      } else if (preset === 'warm') {
+        slot.colorSaturation = 20;
+        slot.contrast = 10;
+        slot.brightness = 8;
+        slot.grayscale = false;
+      }
+      renderSlot(activeSlotIndex);
+      updateActiveEditorControls();
+    }
+
+    function resetActiveSlotColor() {
+      const slot = photoSlots[activeSlotIndex];
+      if (!slot) return;
+      slot.colorSaturation = 0;
+      slot.contrast = 0;
+      slot.brightness = 0;
+      slot.grayscale = false;
+      renderSlot(activeSlotIndex);
+      updateActiveEditorControls();
+    }
+
+    function applyActiveColorToAll() {
+      const activeSlot = photoSlots[activeSlotIndex];
+      if (!activeSlot || !activeSlot.imageSrc) {
+        alert('कृपया आधी किमान एक फोटो निवडा!');
+        return;
+      }
+      for (let i = 0; i < photoSlots.length; i++) {
+        if (photoSlots[i].imageSrc) {
+          photoSlots[i].colorSaturation = activeSlot.colorSaturation || 0;
+          photoSlots[i].contrast = activeSlot.contrast || 0;
+          photoSlots[i].brightness = activeSlot.brightness || 0;
+          photoSlots[i].grayscale = !!activeSlot.grayscale;
+          renderSlot(i);
+        }
+      }
+      alert('हा रंग व कॉन्ट्रास्ट सर्व फोटोंना लागू करण्यात आला आहे!');
     }
 
     function rotateSlot(idx, deg) {
@@ -2620,6 +2851,7 @@
       s.flipV = 1;
       s.brightness = 0;
       s.contrast = 0;
+      s.colorSaturation = 0;
       s.grayscale = false;
       computeAutoFitParameters(s);
       renderSlot(activeSlotIndex);
@@ -2703,12 +2935,75 @@
       const transform = `translate(${modalSlotData.panX * scaleFactor}px, ${modalSlotData.panY * scaleFactor}px) scale(${modalSlotData.zoom * modalSlotData.flipH}, ${modalSlotData.zoom * modalSlotData.flipV}) rotate(${modalSlotData.rotate}deg)`;
       img.style.transform = transform;
 
+      const bFilter = 100 + Number(modalSlotData.brightness || 0);
+      const cFilter = 100 + Number(modalSlotData.contrast || 0);
+      const sFilter = 100 + Number(modalSlotData.colorSaturation || 0);
+      const gFilter = modalSlotData.grayscale ? 100 : 0;
+      img.style.filter = `brightness(${bFilter}%) contrast(${cFilter}%) saturate(${sFilter}%) grayscale(${gFilter}%)`;
+
       document.getElementById('modalZoomSlider').value = modalSlotData.zoom;
       document.getElementById('modalZoomVal').textContent = `${Math.round(modalSlotData.zoom * 100)}%`;
       document.getElementById('modalPanXSlider').value = modalSlotData.panX;
       document.getElementById('modalPanXVal').textContent = `${Math.round(modalSlotData.panX)}px`;
       document.getElementById('modalPanYSlider').value = modalSlotData.panY;
       document.getElementById('modalPanYVal').textContent = `${Math.round(modalSlotData.panY)}px`;
+
+      const mColor = modalSlotData.colorSaturation || 0;
+      document.getElementById('modalColorSlider').value = mColor;
+      document.getElementById('modalColorVal').textContent = `${mColor > 0 ? '+' : ''}${mColor}%`;
+
+      const mContrast = modalSlotData.contrast || 0;
+      document.getElementById('modalContrastSlider').value = mContrast;
+      document.getElementById('modalContrastVal').textContent = `${mContrast > 0 ? '+' : ''}${mContrast}%`;
+
+      const mBright = modalSlotData.brightness || 0;
+      document.getElementById('modalBrightSlider').value = mBright;
+      document.getElementById('modalBrightVal').textContent = `${mBright > 0 ? '+' : ''}${mBright}%`;
+    }
+
+    function handleModalColorChange(val) {
+      modalSlotData.colorSaturation = parseInt(val);
+      updateModalView();
+    }
+
+    function handleModalContrastChange(val) {
+      modalSlotData.contrast = parseInt(val);
+      updateModalView();
+    }
+
+    function handleModalBrightnessChange(val) {
+      modalSlotData.brightness = parseInt(val);
+      updateModalView();
+    }
+
+    function applyModalColorPreset(preset) {
+      if (!modalSlotData) return;
+      if (preset === 'original') {
+        modalSlotData.colorSaturation = 0;
+        modalSlotData.contrast = 0;
+        modalSlotData.brightness = 0;
+        modalSlotData.grayscale = false;
+      } else if (preset === 'vivid') {
+        modalSlotData.colorSaturation = 30;
+        modalSlotData.contrast = 20;
+        modalSlotData.brightness = 6;
+        modalSlotData.grayscale = false;
+      } else if (preset === 'portrait') {
+        modalSlotData.colorSaturation = 12;
+        modalSlotData.contrast = 14;
+        modalSlotData.brightness = 10;
+        modalSlotData.grayscale = false;
+      } else if (preset === 'crisp') {
+        modalSlotData.colorSaturation = 0;
+        modalSlotData.contrast = 35;
+        modalSlotData.brightness = -4;
+        modalSlotData.grayscale = false;
+      } else if (preset === 'bw') {
+        modalSlotData.grayscale = true;
+        modalSlotData.contrast = 22;
+        modalSlotData.brightness = 4;
+      }
+      updateModalView();
     }
 
     function handleModalZoomChange(val) {
@@ -2762,6 +3057,10 @@
       modalSlotData.rotate = 0;
       modalSlotData.flipH = 1;
       modalSlotData.flipV = 1;
+      modalSlotData.brightness = 0;
+      modalSlotData.contrast = 0;
+      modalSlotData.colorSaturation = 0;
+      modalSlotData.grayscale = false;
       updateModalView();
     }
 
@@ -3188,10 +3487,11 @@
             }
           }
 
-          const bFilter = 100 + Number(slotData.brightness);
-          const cFilter = 100 + Number(slotData.contrast);
+          const bFilter = 100 + Number(slotData.brightness || 0);
+          const cFilter = 100 + Number(slotData.contrast || 0);
+          const sFilter = 100 + Number(slotData.colorSaturation || 0);
           const gFilter = slotData.grayscale ? 100 : 0;
-          ctx.filter = `brightness(${bFilter}%) contrast(${cFilter}%) grayscale(${gFilter}%)`;
+          ctx.filter = `brightness(${bFilter}%) contrast(${cFilter}%) saturate(${sFilter}%) grayscale(${gFilter}%)`;
 
           ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
           ctx.restore();
