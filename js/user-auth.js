@@ -8,6 +8,63 @@
 
   var SESSION_KEY = 'emudra_citizen_user';
   var USERS_KEY = 'emudra_registered_users';
+  var SUPABASE_URL = "https://vaaaqvwenxjrroroitlh.supabase.co";
+  var SUPABASE_ANON = "sb_publishable_PIdPgy6voOiw70vk_YVQ4g_egoPLq0T";
+
+  // Dedicated direct cloud fetch with fallback to sbFetch
+  async function cloudDbFetch(table, options) {
+    if (typeof window.sbFetch === 'function') {
+      try {
+        var r = await window.sbFetch(table, options);
+        if (r !== null) return r;
+      } catch (e) {
+        console.warn('sbFetch wrapper note, trying direct:', e);
+      }
+    }
+
+    options = options || {};
+    var method = options.method || 'GET';
+    var filter = options.filter || '';
+    var body = options.body || null;
+    var upsert = options.upsert || false;
+
+    var queryParts = [];
+    if (filter) queryParts.push(filter);
+    if (upsert) {
+      if (table === 'applications' && !filter.includes('on_conflict')) {
+        queryParts.push('on_conflict=app_id');
+      } else if (!filter.includes('on_conflict')) {
+        queryParts.push('on_conflict=id');
+      }
+    }
+
+    var queryString = queryParts.length > 0 ? '?' + queryParts.join('&') : '';
+    var url = SUPABASE_URL + '/rest/v1/' + table + queryString;
+    var headers = {
+      'apikey': SUPABASE_ANON,
+      'Authorization': 'Bearer ' + SUPABASE_ANON,
+      'Content-Type': 'application/json',
+      'Prefer': upsert ? 'resolution=merge-duplicates,return=representation' : 'return=representation'
+    };
+
+    try {
+      var res = await fetch(url, {
+        method: method,
+        headers: headers,
+        body: body ? JSON.stringify(body) : undefined
+      });
+      if (!res.ok) {
+        var errText = await res.text();
+        console.warn('Cloud DB ' + method + ' ' + table + ' note:', errText);
+        return null;
+      }
+      var text = await res.text();
+      return text ? JSON.parse(text) : [];
+    } catch (err) {
+      console.warn('Cloud DB fetch failed:', err);
+      return null;
+    }
+  }
 
   // Helper: Normalize 10-digit mobile number
   function cleanMobile(m) {
@@ -39,6 +96,158 @@
       }
     },
 
+    // Save user permanently to Supabase server
+    saveUserToServer: async function (user) {
+      if (!user || !user.mobile) return false;
+      var cleanMob = cleanMobile(user.mobile);
+      var userRow = {
+        app_id: 'USER-' + cleanMob,
+        service_id: 'citizen_user',
+        service_name: 'नोंदणीकृत नागरिक वापरकर्ता',
+        full_name: user.name || '',
+        mobile: cleanMob,
+        email: user.email || '',
+        purpose: user.pin || '',
+        docs: {
+          id: user.id || ('CIT-' + cleanMob),
+          name: user.name,
+          mobile: cleanMob,
+          pin: user.pin,
+          email: user.email || '',
+          registeredAt: user.registeredAt || new Date().toISOString(),
+          role: 'citizen'
+        },
+        status: 'active'
+      };
+
+      var saved = false;
+      try {
+        var res = await cloudDbFetch('applications', {
+          method: 'POST',
+          body: userRow,
+          upsert: true,
+          filter: 'on_conflict=app_id'
+        });
+        if (res && res.length > 0) {
+          saved = true;
+        }
+      } catch (e) {
+        console.warn('User server save note:', e);
+      }
+
+      // Also attempt citizen_users table in case schema was created
+      try {
+        await cloudDbFetch('citizen_users', {
+          method: 'POST',
+          body: {
+            user_id: user.id || ('CIT-' + cleanMob),
+            full_name: user.name,
+            mobile: cleanMob,
+            pin: user.pin,
+            email: user.email || '',
+            registered_at: user.registeredAt || new Date().toISOString()
+          },
+          upsert: true
+        });
+      } catch (e) {}
+
+      return saved;
+    },
+
+    // Fetch user account from Supabase server by 10-digit mobile
+    fetchUserFromServer: async function (mobileInput) {
+      var mobile = cleanMobile(mobileInput);
+      if (!mobile || mobile.length !== 10) return null;
+
+      try {
+        // 1. Primary check in applications table (guaranteed server persistence)
+        var rows = await cloudDbFetch('applications', {
+          filter: 'service_id=eq.citizen_user&mobile=eq.' + mobile
+        });
+        if (rows && rows.length > 0) {
+          var r = rows[0];
+          return {
+            id: (r.docs && r.docs.id) || r.app_id || ('CIT-' + mobile),
+            name: r.full_name || (r.docs && r.docs.name) || '',
+            mobile: r.mobile || mobile,
+            pin: (r.docs && r.docs.pin) || r.purpose || '',
+            email: r.email || (r.docs && r.docs.email) || '',
+            registeredAt: (r.docs && r.docs.registeredAt) || r.submitted_at || new Date().toISOString()
+          };
+        }
+
+        // 2. Secondary check in citizen_users table
+        var cuRows = await cloudDbFetch('citizen_users', { filter: 'mobile=eq.' + mobile });
+        if (cuRows && cuRows.length > 0) {
+          var cr = cuRows[0];
+          return {
+            id: cr.user_id || ('CIT-' + (cr.id || mobile)),
+            name: cr.full_name || '',
+            mobile: cr.mobile || mobile,
+            pin: cr.pin || '',
+            email: cr.email || '',
+            registeredAt: cr.registered_at || new Date().toISOString()
+          };
+        }
+      } catch (err) {
+        console.warn('fetchUserFromServer error:', err);
+      }
+
+      return null;
+    },
+
+    // Sync all registered users from server and migrate any local-only users
+    syncUsersFromServer: async function () {
+      try {
+        var rows = await cloudDbFetch('applications', {
+          filter: 'service_id=eq.citizen_user'
+        });
+
+        var localUsers = UserAuth.getRegisteredUsers();
+        var userMap = {};
+
+        // Populate from local cache first
+        localUsers.forEach(function (u) {
+          var m = cleanMobile(u.mobile);
+          if (m && m.length === 10) {
+            userMap[m] = u;
+          }
+        });
+
+        // Merge records from cloud server
+        if (rows && rows.length > 0) {
+          rows.forEach(function (r) {
+            var m = cleanMobile(r.mobile);
+            if (!m || m.length !== 10) return;
+            var serverUser = {
+              id: (r.docs && r.docs.id) || r.app_id,
+              name: r.full_name || (r.docs && r.docs.name) || '',
+              mobile: m,
+              pin: (r.docs && r.docs.pin) || r.purpose || '',
+              email: r.email || (r.docs && r.docs.email) || '',
+              registeredAt: (r.docs && r.docs.registeredAt) || r.submitted_at || new Date().toISOString()
+            };
+            userMap[m] = serverUser;
+          });
+        }
+
+        var mergedList = Object.values(userMap);
+        localStorage.setItem(USERS_KEY, JSON.stringify(mergedList));
+
+        // Auto-upload any local users that don't exist on server yet (backward compatibility migration)
+        var serverMobiles = new Set((rows || []).map(function (r) { return cleanMobile(r.mobile); }));
+        for (var i = 0; i < localUsers.length; i++) {
+          var lu = localUsers[i];
+          var lm = cleanMobile(lu.mobile);
+          if (lm && lm.length === 10 && !serverMobiles.has(lm)) {
+            UserAuth.saveUserToServer(lu);
+          }
+        }
+      } catch (err) {
+        console.warn('syncUsersFromServer note:', err);
+      }
+    },
+
     // Register a new citizen/operator
     register: async function (userData) {
       var mobile = cleanMobile(userData.mobile);
@@ -55,10 +264,22 @@
         return { success: false, message: 'किमान ४ अंकी सुरक्षा पिन (PIN) तयार करा.' };
       }
 
+      // Check local cache
       var users = UserAuth.getRegisteredUsers();
       var existing = users.find(function (u) { return cleanMobile(u.mobile) === mobile; });
+
+      // Check server to prevent duplicate account
+      if (!existing) {
+        var serverUser = await UserAuth.fetchUserFromServer(mobile);
+        if (serverUser) {
+          existing = serverUser;
+          users.push(serverUser);
+          localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        }
+      }
+
       if (existing) {
-        return { success: false, message: 'या मोबाईल नंबरवर आधीच खाते नोंदणीकृत आहे. कृपया लॉगिन करा.' };
+        return { success: false, message: 'या मोबाईल नंबरवर (' + mobile + ') आधीच खाते नोंदणीकृत आहे. कृपया लॉगिन करा.' };
       }
 
       var newUser = {
@@ -70,30 +291,14 @@
         registeredAt: new Date().toISOString()
       };
 
+      // 1. Save permanently to Supabase cloud server
+      await UserAuth.saveUserToServer(newUser);
+
+      // 2. Save into local cache
       users.push(newUser);
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
 
-      // Attempt Supabase Cloud Sync
-      try {
-        if (typeof window.sbFetch === 'function') {
-          await window.sbFetch('citizen_users', {
-            method: 'POST',
-            body: {
-              user_id: newUser.id,
-              full_name: newUser.name,
-              mobile: newUser.mobile,
-              pin: newUser.pin,
-              email: newUser.email,
-              registered_at: newUser.registeredAt
-            },
-            upsert: true
-          });
-        }
-      } catch (err) {
-        console.warn('Cloud user sync note:', err);
-      }
-
-      // Set active session
+      // 3. Set active session
       localStorage.setItem(SESSION_KEY, JSON.stringify(newUser));
       UserAuth.updateHeaderUI();
       return { success: true, user: newUser };
@@ -114,24 +319,18 @@
       var users = UserAuth.getRegisteredUsers();
       var user = users.find(function (u) { return cleanMobile(u.mobile) === mobile; });
 
-      // Try fetching from Supabase if not found locally
-      if (!user && typeof window.sbFetch === 'function') {
-        try {
-          var res = await window.sbFetch('citizen_users', { filter: 'mobile=eq.' + mobile });
-          if (res && res.length > 0) {
-            var r = res[0];
-            user = {
-              id: r.user_id || 'CIT-' + r.id,
-              name: r.full_name,
-              mobile: r.mobile,
-              pin: r.pin,
-              email: r.email || ''
-            };
-            users.push(user);
-            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      // Always fetch fresh from server if not found locally OR if PIN mismatch (in case PIN was changed)
+      if (!user || user.pin !== pin) {
+        var serverUser = await UserAuth.fetchUserFromServer(mobile);
+        if (serverUser) {
+          user = serverUser;
+          var idx = users.findIndex(function (u) { return cleanMobile(u.mobile) === mobile; });
+          if (idx >= 0) {
+            users[idx] = serverUser;
+          } else {
+            users.push(serverUser);
           }
-        } catch (e) {
-          console.warn('Cloud login fetch note:', e);
+          localStorage.setItem(USERS_KEY, JSON.stringify(users));
         }
       }
 
@@ -725,34 +924,74 @@
     },
 
     handleLoginSubmit: async function () {
-      var mobile = document.getElementById('auth_login_mobile').value;
-      var pin = document.getElementById('auth_login_pin').value;
+      var btn = document.querySelector('#auth-section-login button[type="submit"]');
+      var origContent = btn ? btn.innerHTML : '';
+      var mobile = (document.getElementById('auth_login_mobile')?.value || '').trim();
+      var pin = (document.getElementById('auth_login_pin')?.value || '').trim();
       var errBox = document.getElementById('auth-error-msg');
+      if (errBox) errBox.style.display = 'none';
 
-      var res = await UserAuth.login(mobile, pin);
-      if (res.success) {
-        UserAuth.onAuthSuccess(res.user, false);
-      } else {
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> लॉगिन तपासत आहे...';
+      }
+
+      try {
+        var res = await UserAuth.login(mobile, pin);
+        if (res.success) {
+          UserAuth.onAuthSuccess(res.user, false);
+        } else {
+          if (errBox) {
+            errBox.textContent = res.message;
+            errBox.style.display = 'block';
+          }
+        }
+      } catch (err) {
         if (errBox) {
-          errBox.textContent = res.message;
+          errBox.textContent = 'लॉगिन करताना त्रुटी आली. कृपया पुन्हा प्रयत्न करा.';
           errBox.style.display = 'block';
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origContent;
         }
       }
     },
 
     handleRegisterSubmit: async function () {
-      var name = document.getElementById('auth_reg_name').value;
-      var mobile = document.getElementById('auth_reg_mobile').value;
-      var pin = document.getElementById('auth_reg_pin').value;
+      var btn = document.querySelector('#auth-section-register button[type="submit"]');
+      var origContent = btn ? btn.innerHTML : '';
+      var name = (document.getElementById('auth_reg_name')?.value || '').trim();
+      var mobile = (document.getElementById('auth_reg_mobile')?.value || '').trim();
+      var pin = (document.getElementById('auth_reg_pin')?.value || '').trim();
       var errBox = document.getElementById('auth-error-msg');
+      if (errBox) errBox.style.display = 'none';
 
-      var res = await UserAuth.register({ name: name, mobile: mobile, pin: pin });
-      if (res.success) {
-        UserAuth.onAuthSuccess(res.user, true);
-      } else {
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> सर्व्हरवर सेव्ह करत आहे...';
+      }
+
+      try {
+        var res = await UserAuth.register({ name: name, mobile: mobile, pin: pin });
+        if (res.success) {
+          UserAuth.onAuthSuccess(res.user, true);
+        } else {
+          if (errBox) {
+            errBox.textContent = res.message;
+            errBox.style.display = 'block';
+          }
+        }
+      } catch (err) {
         if (errBox) {
-          errBox.textContent = res.message;
+          errBox.textContent = 'नोंदणी करताना त्रुटी आली. कृपया पुन्हा प्रयत्न करा.';
           errBox.style.display = 'block';
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origContent;
         }
       }
     }
@@ -772,6 +1011,7 @@
   window.addEventListener('DOMContentLoaded', function () {
     UserAuth.createAuthModals();
     setTimeout(UserAuth.updateHeaderUI, 200);
+    setTimeout(UserAuth.syncUsersFromServer, 400);
 
     var path = window.location.pathname;
     var slug = path.substring(path.lastIndexOf('/') + 1).replace(/\.html$/i, '').toLowerCase() || 'index';

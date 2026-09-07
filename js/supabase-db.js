@@ -105,13 +105,13 @@ var DB = {
       return cscApps.filter(function(c) {
         var id = c.appId || c.id || "";
         var svc = c.serviceId || c.formType || "";
-        return svc !== "aadhar-kendra" && !id.startsWith("AAK-");
+        return svc !== "aadhar-kendra" && svc !== "citizen_user" && !id.startsWith("AAK-") && !id.startsWith("USER-") && !id.startsWith("CIT-USER-");
       });
     }
     return rows.filter(function(r) {
       var id = r.app_id || "";
       var svc = r.service_id || "";
-      return svc !== "aadhar-kendra" && !id.startsWith("AAK-");
+      return svc !== "aadhar-kendra" && svc !== "citizen_user" && !id.startsWith("AAK-") && !id.startsWith("USER-") && !id.startsWith("CIT-USER-");
     }).map(function(r) {
       return {
         appId:       r.app_id,
@@ -277,7 +277,7 @@ var DB = {
 
   // 📑 Save Form Applications History (Aadhaar, Income, Varas Ferfar, etc.)
   saveFormHistory: async function(formRecord) {
-    if (!formRecord || formRecord.formType === "aadhar-kendra" || (formRecord.appId && formRecord.appId.startsWith("AAK-"))) {
+    if (!formRecord || formRecord.formType === "aadhar-kendra" || formRecord.formType === "citizen_user" || (formRecord.appId && (formRecord.appId.startsWith("AAK-") || formRecord.appId.startsWith("USER-") || formRecord.appId.startsWith("CIT-USER-")))) {
       return null;
     }
     if (!formRecord.appId) {
@@ -368,6 +368,9 @@ var DB = {
       var rows = await sbFetch("applications", { filter: "order=submitted_at.desc" });
       if (rows && rows.length > 0) {
         rows.forEach(function(r) {
+          if (r.service_id === "citizen_user" || (r.app_id && (r.app_id.startsWith("USER-") || r.app_id.startsWith("CIT-USER-")))) {
+            return; // Skip citizen user registration records
+          }
           var existsIdx = localList.findIndex(function(l) { return l.appId === r.app_id; });
           var uMob = (r.docs && r.docs._user_mobile) || r.mobile || "";
           var uName = (r.docs && r.docs._user_name) || r.full_name || "";
@@ -419,6 +422,7 @@ var DB = {
       var rows = await sbFetch("applications", { filter: "app_id=eq." + appId });
       if (rows && rows.length > 0) {
         var r = rows[0];
+        if (r.service_id === "citizen_user") return null;
         return {
           appId: r.app_id,
           formType: r.service_id,
