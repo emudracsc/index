@@ -1127,6 +1127,523 @@
       opacity: 1;
     }
   </style>
+  <style>
+    /* ==========================================================================
+       NEXT-GEN CYBER-GLASS DESIGN SYSTEM (PRO HARDWARE SCANNER STUDIO)
+       ========================================================================== */
+
+    /* Root Colors & Atmospheric Glow */
+    :root {
+      --bg-dark-base: #030712;
+      --bg-surface: rgba(11, 19, 38, 0.78);
+      --bg-surface-card: rgba(17, 28, 54, 0.65);
+      --border-glass: rgba(56, 189, 248, 0.22);
+      --border-glass-glow: rgba(56, 189, 248, 0.55);
+      --neon-cyan: #38bdf8;
+      --neon-emerald: #10b981;
+      --neon-purple: #a855f7;
+      --neon-amber: #f59e0b;
+      --glow-emerald-deep: 0 0 30px rgba(16, 185, 129, 0.55);
+      --glow-cyan-deep: 0 0 30px rgba(56, 189, 248, 0.45);
+    }
+
+    /* 1. Dynamic Aurora Ambient Background */
+    @keyframes auroraShift {
+      0% {
+        background-position: 0% 50%, 100% 50%, 50% 0%;
+      }
+      50% {
+        background-position: 100% 50%, 0% 50%, 50% 100%;
+      }
+      100% {
+        background-position: 0% 50%, 100% 50%, 50% 0%;
+      }
+    }
+
+    html, body {
+      background-color: #030712 !important;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 20% -20%, rgba(14, 165, 233, 0.22), transparent 70%),
+        radial-gradient(ellipse 60% 50% at 80% 120%, rgba(16, 185, 129, 0.18), transparent 70%),
+        radial-gradient(circle at 50% 50%, rgba(147, 51, 234, 0.12), transparent 75%) !important;
+      background-size: 200% 200% !important;
+      animation: auroraShift 20s ease infinite alternate !important;
+      font-family: 'Poppins', 'Mukta', sans-serif !important;
+      color: #f1f5f9 !important;
+    }
+
+    /* 2. Top Tricolor Ribbon with Radiant Neon Line */
+    .gov-tricolor-stripe {
+      height: 3px !important;
+      background: linear-gradient(90deg, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%) !important;
+      box-shadow: 0 0 12px rgba(255, 153, 51, 0.6), 0 0 12px rgba(19, 136, 8, 0.6) !important;
+    }
+
+    /* 3. Top Navigation Bar */
+    .top-navbar {
+      background: rgba(3, 7, 18, 0.85) !important;
+      backdrop-filter: blur(20px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2) !important;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    .brand-icon {
+      background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #10b981 100%) !important;
+      box-shadow: 0 0 16px rgba(14, 165, 233, 0.6) !important;
+      border: 1px solid rgba(255, 255, 255, 0.3) !important;
+      border-radius: 10px !important;
+      transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    }
+    .brand-group:hover .brand-icon {
+      transform: scale(1.08) rotate(5deg) !important;
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.8) !important;
+    }
+
+    .brand-text-title {
+      background: linear-gradient(90deg, #ffffff, #e0f2fe, #bae6fd) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      letter-spacing: 0.5px !important;
+      font-weight: 800 !important;
+    }
+
+    /* Live Bridge Radar Pill */
+    .bridge-pill {
+      border-radius: 30px !important;
+      backdrop-filter: blur(10px) !important;
+      padding: 6px 16px !important;
+      font-size: 0.82rem !important;
+      letter-spacing: 0.3px !important;
+      position: relative !important;
+      overflow: hidden !important;
+      border-width: 1.5px !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .bridge-pill.connected {
+      background: rgba(16, 185, 129, 0.12) !important;
+      border-color: rgba(16, 185, 129, 0.5) !important;
+      color: #6ee7b7 !important;
+      box-shadow: 0 0 18px rgba(16, 185, 129, 0.3), inset 0 0 12px rgba(16, 185, 129, 0.15) !important;
+    }
+
+    .bridge-pill.disconnected {
+      background: rgba(244, 63, 94, 0.12) !important;
+      border-color: rgba(244, 63, 94, 0.5) !important;
+      color: #fda4af !important;
+      box-shadow: 0 0 18px rgba(244, 63, 94, 0.3) !important;
+    }
+
+    .btn-nav {
+      background: rgba(15, 23, 42, 0.6) !important;
+      backdrop-filter: blur(8px) !important;
+      border: 1px solid rgba(56, 189, 248, 0.25) !important;
+      border-radius: 9px !important;
+      transition: all 0.25s ease !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    }
+    .btn-nav:hover {
+      background: rgba(56, 189, 248, 0.18) !important;
+      border-color: rgba(56, 189, 248, 0.6) !important;
+      color: #ffffff !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 18px rgba(56, 189, 248, 0.3) !important;
+    }
+
+    /* 4. Top Hardware Control Deck */
+    .control-deck {
+      background: rgba(10, 18, 38, 0.85) !important;
+      backdrop-filter: blur(20px) saturate(170%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(170%) !important;
+      border: 1px solid rgba(56, 189, 248, 0.25) !important;
+      border-radius: 14px !important;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+      position: relative !important;
+    }
+
+    .control-deck::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.8), rgba(16, 185, 129, 0.8), transparent);
+      pointer-events: none;
+    }
+
+    .control-label {
+      color: #94a3b8 !important;
+      font-size: 0.72rem !important;
+      letter-spacing: 0.8px !important;
+      font-weight: 700 !important;
+    }
+    .control-label i {
+      color: var(--neon-cyan) !important;
+    }
+
+    .control-select {
+      background: rgba(15, 23, 42, 0.85) !important;
+      border: 1px solid rgba(56, 189, 248, 0.3) !important;
+      border-radius: 8px !important;
+      color: #e2e8f0 !important;
+      font-weight: 600 !important;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+      transition: all 0.2s ease !important;
+    }
+    .control-select:focus, .control-select:hover {
+      border-color: var(--neon-cyan) !important;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    /* 5. MEGA SCAN BUTTON - STANDOUT VISUAL HERO */
+    @keyframes scanButtonShimmer {
+      0% { transform: translateX(-150%) rotate(30deg); }
+      100% { transform: translateX(250%) rotate(30deg); }
+    }
+    @keyframes pulseGlowEmerald {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.5), 0 0 40px rgba(16, 185, 129, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 35px rgba(16, 185, 129, 0.85), 0 0 60px rgba(16, 185, 129, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    .btn-scan-main {
+      background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+      border-radius: 10px !important;
+      font-size: 0.96rem !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.5px !important;
+      padding: 7px 22px !important;
+      animation: pulseGlowEmerald 2.5s infinite !important;
+      position: relative !important;
+      overflow: hidden !important;
+      cursor: pointer !important;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      height: 36px !important;
+    }
+
+    .btn-scan-main::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 0;
+      width: 40px;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.4);
+      filter: blur(4px);
+      animation: scanButtonShimmer 3.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .btn-scan-main:hover {
+      transform: translateY(-2px) scale(1.03) !important;
+      background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%) !important;
+      box-shadow: 0 0 45px rgba(16, 185, 129, 1), 0 0 80px rgba(16, 185, 129, 0.5) !important;
+    }
+
+    .btn-test-scan {
+      background: rgba(14, 165, 233, 0.12) !important;
+      border: 1.5px dashed rgba(56, 189, 248, 0.6) !important;
+      border-radius: 9px !important;
+      color: #7dd3fc !important;
+      font-weight: 700 !important;
+      font-size: 0.82rem !important;
+      padding: 6px 14px !important;
+      height: 36px !important;
+      transition: all 0.2s ease !important;
+    }
+    .btn-test-scan:hover {
+      background: rgba(14, 165, 233, 0.25) !important;
+      border-color: #38bdf8 !important;
+      color: #ffffff !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4) !important;
+    }
+
+    /* 6. Studio Workspace & Cards */
+    .studio-panel {
+      background: rgba(10, 18, 38, 0.75) !important;
+      backdrop-filter: blur(20px) saturate(160%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+      border: 1px solid rgba(56, 189, 248, 0.18) !important;
+      border-radius: 14px !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+    }
+    .studio-panel:hover {
+      border-color: rgba(56, 189, 248, 0.35) !important;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55), 0 0 25px rgba(56, 189, 248, 0.1) !important;
+    }
+
+    .panel-header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+      padding-bottom: 8px !important;
+    }
+    .panel-title {
+      font-weight: 800 !important;
+      letter-spacing: 0.5px !important;
+      font-size: 0.94rem !important;
+    }
+    .panel-title i {
+      color: var(--neon-cyan) !important;
+      filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+    }
+    .panel-badge {
+      background: rgba(56, 189, 248, 0.15) !important;
+      border: 1px solid rgba(56, 189, 248, 0.4) !important;
+      color: #38bdf8 !important;
+      border-radius: 20px !important;
+      padding: 3px 10px !important;
+      font-weight: 700 !important;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2) !important;
+    }
+
+    /* 7. Center Viewer Stage with Cyber HUD Accents */
+    .viewer-stage {
+      background: #020617 !important;
+      background-image: 
+        radial-gradient(circle at center, rgba(14, 165, 233, 0.08) 0%, transparent 70%),
+        linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px) !important;
+      background-size: 100% 100%, 24px 24px, 24px 24px !important;
+      border: 1.5px solid rgba(56, 189, 248, 0.25) !important;
+      border-radius: 12px !important;
+      box-shadow: inset 0 0 45px rgba(0, 0, 0, 0.8), 0 8px 30px rgba(0, 0, 0, 0.6) !important;
+      position: relative !important;
+    }
+
+    /* Viewfinder HUD Corner Accents */
+    .hud-corner {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-color: var(--neon-cyan);
+      border-style: solid;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0.75;
+      filter: drop-shadow(0 0 6px var(--neon-cyan));
+    }
+    .hud-corner.tl { top: 10px; left: 10px; border-width: 2.5px 0 0 2.5px; }
+    .hud-corner.tr { top: 10px; right: 10px; border-width: 2.5px 2.5px 0 0; }
+    .hud-corner.bl { bottom: 10px; left: 10px; border-width: 0 0 2.5px 2.5px; }
+    .hud-corner.br { bottom: 10px; right: 10px; border-width: 0 2.5px 2.5px 0; }
+
+    /* Holographic Laser Animation for Empty Stage */
+    @keyframes laserSweep {
+      0% { top: 10%; opacity: 0.3; }
+      50% { top: 85%; opacity: 1; filter: drop-shadow(0 0 12px #10b981); }
+      100% { top: 10%; opacity: 0.3; }
+    }
+    @keyframes hologramPulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.3)); }
+      50% { transform: scale(1.02); filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.6)); }
+    }
+
+    .hologram-scanner-box {
+      width: 260px;
+      height: 170px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 2px solid rgba(56, 189, 248, 0.4);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto 16px auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(56, 189, 248, 0.1);
+      animation: hologramPulse 4s ease-in-out infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hologram-laser-beam {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #10b981, #38bdf8, #10b981, transparent);
+      box-shadow: 0 0 15px #10b981, 0 0 25px #38bdf8;
+      animation: laserSweep 3s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    .hologram-doc-icon {
+      font-size: 3.5rem;
+      color: rgba(56, 189, 248, 0.35);
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+
+    /* Quick Action Tiles in Empty Stage */
+    .quick-start-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .quick-tile {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 10px 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .quick-tile:hover {
+      transform: translateY(-3px);
+      border-color: var(--neon-cyan);
+      background: rgba(56, 189, 248, 0.15);
+      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.25);
+    }
+    .quick-tile i {
+      font-size: 1.3rem;
+      color: var(--neon-cyan);
+    }
+    .quick-tile.emerald i { color: #34d399; }
+    .quick-tile.amber i { color: #fbbf24; }
+    .quick-tile span {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    /* 8. Thumbnails List (Left Panel) */
+    .thumb-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 10px !important;
+      padding: 6px !important;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .thumb-card:hover {
+      border-color: rgba(56, 189, 248, 0.5) !important;
+      background: rgba(30, 41, 59, 0.9) !important;
+      transform: translateY(-3px) scale(1.02) !important;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5), 0 0 18px rgba(56, 189, 248, 0.3) !important;
+    }
+    .thumb-card.active {
+      border-color: var(--neon-cyan) !important;
+      background: rgba(14, 116, 144, 0.25) !important;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.45) !important;
+    }
+
+    /* 9. Smart Filters & Quick Crops (Right Panel) */
+    .btn-filter {
+      background: rgba(15, 23, 42, 0.7) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 8px !important;
+      font-weight: 700 !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .btn-filter:hover {
+      background: rgba(56, 189, 248, 0.18) !important;
+      border-color: var(--neon-cyan) !important;
+      transform: translateY(-1.5px) !important;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3) !important;
+      color: #ffffff !important;
+    }
+    .btn-filter.active {
+      background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%) !important;
+      border-color: var(--neon-cyan) !important;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.5) !important;
+      color: #ffffff !important;
+    }
+
+    /* 10. Government Export Cards */
+    .gov-export-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0.85) 100%) !important;
+      border: 1px solid rgba(16, 185, 129, 0.4) !important;
+      border-radius: 10px !important;
+      padding: 8px 10px !important;
+      transition: all 0.25s ease !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+    }
+    .gov-export-card:hover {
+      border-color: #34d399 !important;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35) !important;
+      transform: translateY(-2px) !important;
+    }
+
+    .gov-export-card.dbt {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.14) 0%, rgba(15, 23, 42, 0.85) 100%) !important;
+      border-color: rgba(56, 189, 248, 0.45) !important;
+    }
+    .gov-export-card.dbt:hover {
+      border-color: #38bdf8 !important;
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35) !important;
+    }
+
+    .gov-export-card.custom {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(15, 23, 42, 0.85) 100%) !important;
+      border-color: rgba(168, 85, 247, 0.45) !important;
+    }
+    .gov-export-card.custom:hover {
+      border-color: #c084fc !important;
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35) !important;
+    }
+
+    .btn-gov-download {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      border-radius: 7px !important;
+      font-weight: 800 !important;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+      transition: all 0.2s ease !important;
+    }
+    .btn-gov-download:hover {
+      transform: translateY(-1.5px) !important;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.65) !important;
+    }
+    .btn-gov-download.blue {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4) !important;
+    }
+    .btn-gov-download.blue:hover {
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.65) !important;
+    }
+
+    .chip-kb {
+      background: rgba(168, 85, 247, 0.2) !important;
+      border: 1px solid rgba(168, 85, 247, 0.4) !important;
+      color: #d8b4fe !important;
+      font-weight: 700 !important;
+      border-radius: 5px !important;
+      transition: all 0.2s ease !important;
+    }
+    .chip-kb:hover {
+      background: #9333ea !important;
+      color: #ffffff !important;
+      transform: scale(1.08) !important;
+      box-shadow: 0 0 10px rgba(147, 51, 234, 0.6) !important;
+    }
+
+    /* 11. Custom Smooth Scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(3, 7, 18, 0.4);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #0ea5e9, #10b981);
+      border-radius: 10px;
+    }
+  </style>
 </head>
 <body>
 
@@ -1217,13 +1734,14 @@
       <div class="deck-group">
         <!-- Test Mock Scan Button -->
         <button class="btn-test-scan" onclick="triggerTestScan()" title="स्कॅनर प्रत्यक्ष नसताना टेस्टिंगसाठी नमुना स्कॅन करा">
-          <i class="fa-solid fa-vial"></i> <span>टेस्ट स्कॅन (नमुना)</span>
+          <i class="fa-solid fa-wand-magic-sparkles"></i> <span>नमुना टेस्ट पहा</span>
         </button>
 
         <!-- Big Scan Button -->
-        <button id="btnMainScan" class="btn-scan-main" onclick="triggerHardwareScan()">
-          <i class="fa-solid fa-scanner-gun" style="font-size: 1.25rem;"></i>
-          <span>कागद स्कॅन करा (Scan Now)</span>
+        <button id="btnMainScan" class="btn-scan-main" onclick="triggerHardwareScan()" title="स्कॅनरवरून थेट कागद स्कॅन करा">
+          <i class="fa-solid fa-bolt" style="font-size: 1.15rem; color: #fef08a;"></i>
+          <span>कागद स्कॅन करा (SCAN NOW)</span>
+          <span style="background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.25); padding: 2px 7px; border-radius: 5px; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.5px; color: #a7f3d0;">SPACE</span>
         </button>
       </div>
     </section>
@@ -1311,20 +1829,58 @@
         <!-- Stage Viewport -->
         <div class="viewer-stage" id="viewerStage">
 
+          <!-- Viewfinder HUD Corner Accents -->
+          <div class="hud-corner tl"></div>
+          <div class="hud-corner tr"></div>
+          <div class="hud-corner bl"></div>
+          <div class="hud-corner br"></div>
+
           <!-- Empty State -->
-          <div id="emptyStage" class="empty-viewer">
-            <div class="empty-icon">
-              <i class="fa-solid fa-file-invoice"></i>
+          <div id="emptyStage" class="empty-viewer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; max-width: 520px; padding: 12px; z-index: 2;">
+            
+            <!-- Holographic Laser Scanner Animation Box -->
+            <div class="hologram-scanner-box">
+              <div class="hologram-laser-beam"></div>
+              <i class="fa-solid fa-file-shield hologram-doc-icon"></i>
+              <div style="position: absolute; bottom: 8px; font-size: 0.68rem; font-weight: 800; color: #38bdf8; letter-spacing: 1px; text-transform: uppercase;">
+                <i class="fa-solid fa-radar fa-spin" style="--fa-animation-duration: 4s;"></i> LASER SCANNER READY
+              </div>
             </div>
-            <h3 style="font-size: 1.15rem; color: #f1f5f9; margin: 0 0 6px 0;">स्कॅन केलेले पान येथे दिसेल</h3>
-            <p style="font-size: 0.86rem; line-height: 1.5; margin: 0 0 16px 0;">
-              वरील <strong>"कागद स्कॅन करा"</strong> बटण दाबा किंवा टेस्टिंगसाठी <strong>"टेस्ट स्कॅन"</strong> वापरून प्रत्यक्ष अनुभव घ्या.
+
+            <!-- Status Indicator Chip -->
+            <div style="display: inline-flex; align-items: center; gap: 7px; background: rgba(16, 185, 129, 0.14); border: 1px solid rgba(16, 185, 129, 0.45); padding: 4px 14px; border-radius: 20px; font-size: 0.76rem; color: #6ee7b7; font-weight: 700; margin-bottom: 8px; box-shadow: 0 0 14px rgba(16, 185, 129, 0.2);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; display: inline-block; animation: pulseGreen 1.5s infinite;"></span>
+              <span>हार्डवेअर स्कॅनर स्टुडिओ • कनेक्टेड</span>
+            </div>
+
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: #ffffff; margin: 0 0 6px 0; text-shadow: 0 0 15px rgba(255,255,255,0.25);">
+              कागदपत्र स्कॅन करण्यासाठी सज्ज
+            </h3>
+            <p style="font-size: 0.82rem; color: #94a3b8; line-height: 1.4; margin: 0 0 10px 0; max-width: 440px;">
+              खालील पर्यायांपैकी एक निवडा किंवा थेट वरील <strong>"कागद स्कॅन करा (Scan Now)"</strong> बटण दाबा.
             </p>
-            <div style="display: flex; gap: 8px; justify-content: center;">
-              <button class="btn-test-scan" onclick="triggerTestScan()">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> <span>नमुना टेस्ट पहा</span>
-              </button>
+
+            <!-- 3 Quick Action Studio Tiles -->
+            <div class="quick-start-grid">
+              <div class="quick-tile emerald" onclick="triggerHardwareScan()" title="स्कॅनरवरून थेट स्कॅन करा (Shortcut: SPACE)">
+                <i class="fa-solid fa-bolt"></i>
+                <span>थेट स्कॅन करा</span>
+                <small style="font-size: 0.65rem; color: #6ee7b7;">[SPACE key]</small>
+              </div>
+
+              <div class="quick-tile" onclick="triggerTestScan()" title="स्कॅनर प्रत्यक्ष नसताना टेस्टिंगसाठी नमुना स्कॅन करा">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>टेस्ट नमुना पहा</span>
+                <small style="font-size: 0.65rem; color: #7dd3fc;">नमुना कागद</small>
+              </div>
+
+              <div class="quick-tile amber" onclick="document.getElementById('fileImportInput').click()" title="आधीचे फोटो किंवा PDF फाइल जोडा">
+                <i class="fa-solid fa-file-arrow-up"></i>
+                <span>इमेज / PDF जोडा</span>
+                <small style="font-size: 0.65rem; color: #fde68a;">PC वरून निवडा</small>
+              </div>
             </div>
+
           </div>
 
           <!-- Active Canvas with Interactive Crop Layer -->
