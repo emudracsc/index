@@ -1029,6 +1029,18 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
+  // ⚡ QR स्मार्ट प्रिंट व झेरॉक्स हब (Smart QR Scan & Print Hub)
+  {
+    id: "link-smart-print",
+    category: "उपयुक्त दस्तऐवज टूल्स",
+    icon: "fa-solid fa-qrcode",
+    title_mr: "⚡ QR स्मार्ट प्रिंट हब (QR Scan & Print & Xerox)",
+    title_en: "Smart QR Scan & Print Hub (Customer Upload & Instant Print)",
+    desc_mr: "मोबाईलने QR स्कॅन करून PDF/फोटो अपलोड करा, B&W/कलर व डुप्लेक्स निवडा, UPI पेमेंट करा आणि ऑपरेटर कडून तात्काळ प्रिंट मिळवा.",
+    desc_en: "Self-service customer document upload via QR code with real-time UPI pricing, order token tracking and operator direct print console.",
+    url: "smart-print.html",
+    isInternal: true
+  },
   // 🖨️ युनिव्हर्सल स्कॅनर टूल (Universal Scanner Tool)
   {
     id: "link-universal-scanner",
