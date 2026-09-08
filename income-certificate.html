@@ -442,26 +442,30 @@
 
         /* Page 6: Precise Single-Page Layout (Fixes print cut-off & prevents 2nd page spillover) */
         #page-6 {
-            line-height: 1.45;
+            line-height: 1.35;
         }
         #page-6 .page-border {
-            padding: 6mm 7mm 10mm 7mm;
+            padding: 5mm 6mm 6mm 6mm;
+            min-height: calc(297mm - 16mm);
         }
         #page-6 .p6-justified-para {
             text-align: justify;
             text-justify: inter-word;
             word-spacing: normal;
-            line-height: 1.5 !important;
+            line-height: 1.35 !important;
             text-indent: 28px;
-            margin-bottom: 6px;
+            margin-bottom: 3px;
         }
         #page-6 .gov-table td, #page-6 .gov-table th {
-            padding: 2.5px 4px !important;
-            line-height: 1.25 !important;
+            padding: 1.5px 3px !important;
+            line-height: 1.15 !important;
+            font-size: 8.5pt !important;
         }
-        #page-6 .sign-block-right {
-            margin-top: 14px !important;
-            line-height: 1.4 !important;
+        #page-6 .p6-sign-block {
+            text-align: right;
+            padding-right: 16px;
+            margin-top: 4px !important;
+            line-height: 1.25 !important;
         }
 
         .justified-p-25 {
@@ -653,19 +657,42 @@
                 page-break-before: always !important;
                 page-break-after: always !important;
                 page-break-inside: avoid !important;
-                height: 297mm !important;
-                max-height: 297mm !important;
-                overflow: hidden !important;
-            }
-            #page-6 .page-border {
-                min-height: calc(297mm - 12mm) !important;
-                max-height: calc(297mm - 12mm) !important;
-                padding: 5mm 6mm 8mm 6mm !important;
+                break-inside: avoid !important;
+                padding: 3mm 4mm !important;
+                margin: 0 !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: 275mm !important;
                 box-sizing: border-box !important;
             }
+            #page-6 .page-border {
+                min-height: 240mm !important;
+                max-height: 265mm !important;
+                height: auto !important;
+                padding: 3mm 4mm 4mm 4mm !important;
+                box-sizing: border-box !important;
+                border: 1px solid #000 !important;
+            }
+            #page-6 .p6-justified-para {
+                line-height: 1.32 !important;
+                margin-bottom: 2px !important;
+            }
+            #page-6 .gov-table {
+                margin: 2px auto !important;
+            }
             #page-6 .gov-table td, #page-6 .gov-table th {
-                padding: 2px 4px !important;
+                padding: 1.2px 3px !important;
+                line-height: 1.15 !important;
+                font-size: 8pt !important;
+            }
+            #page-6 .p6-sign-block {
+                margin-top: 3px !important;
                 line-height: 1.2 !important;
+            }
+            #page-6 .page-number-footer {
+                bottom: 2mm !important;
+                right: 3mm !important;
+                font-size: 8pt !important;
             }
 
             @page {
@@ -1520,61 +1547,61 @@
     <!-- ================= PAGE 6 (Single Page Compact Layout) ================= -->
     <div class="a4-page page-view" id="page-6">
         <div class="page-border">
-            <div style="text-align:center; font-weight:800; font-size:11.5pt; margin-bottom:2px; line-height:1.35;">
+            <div style="text-align:center; font-weight:800; font-size:10.5pt; margin-bottom:1px; line-height:1.2;">
                 परिशिष्ट 'ब'<br>
                 Form क<br>
                 विनंती अर्ज
             </div>
 
-            <div style="text-align:right; font-size:9.5pt; margin-bottom:4px; padding-right:16px; line-height:1.35;">
+            <div style="text-align:right; font-size:9pt; margin-bottom:2px; padding-right:12px; line-height:1.2;">
                 दिनांक:- <span class="fill-text" id="p6_date"></span>
             </div>
 
             <!-- प्रति block with indented second line -->
-            <div style="font-size:11pt; line-height:1.45; margin-bottom:4px;">
+            <div style="font-size:10pt; line-height:1.25; margin-bottom:2px;">
                 <strong>प्रति,</strong><br>
-                <div style="text-indent: 32px; display: inline-block; width: 100%;">
+                <div style="text-indent: 28px; display: inline-block; width: 100%;">
                     <span class="fill-text" id="p6_officer_full">ग्राम महसूल अधिकारी (तलाठी) कणकवली</span>
                 </div>
             </div>
 
             <!-- अर्जदार व विषय block aligned to start at the exact same vertical left line -->
-            <div style="margin-left:26%; font-size:10.5pt; line-height:1.45; margin-top:4px; margin-bottom:6px;">
+            <div style="margin-left:22%; font-size:10pt; line-height:1.25; margin-top:2px; margin-bottom:3px;">
                 <div>
                     <strong>अर्जदार :-</strong> श्री./श्रीम: <span class="fill-text" id="p6_name"></span>, वय: <span class="fill-text" id="p6_age"></span> वर्षे
                 </div>
-                <div style="padding-left:20px;">
+                <div style="padding-left:18px;">
                     रा. <span class="fill-text" id="p6_address"></span>, ता. <span class="fill-text" id="p6_taluka">कणकवली</span>, जि. <span class="fill-text" id="p6_district">सिंधुदुर्ग</span>
                 </div>
-                <div style="font-weight:700; font-size:11.5pt; margin-top:3px; line-height:1.35;">
+                <div style="font-weight:700; font-size:10.5pt; margin-top:2px; line-height:1.2;">
                     विषयः- उत्पन्नाचे प्रमाणपत्र मिळण्याबाबत.
                 </div>
             </div>
 
-            <div style="font-size:10.5pt;">
-                <div class="no-indent" style="font-weight:700; margin-bottom:2px; line-height:1.35;">महोदय,</div>
-                <p class="p6-justified-para" style="margin-bottom:6px; font-size:10.5pt; line-height:1.55; text-indent:32px; text-align:justify;">
+            <div style="font-size:10pt;">
+                <div class="no-indent" style="font-weight:700; margin-bottom:1px; line-height:1.2;">महोदय,</div>
+                <p class="p6-justified-para" style="margin-bottom:3px; font-size:9.5pt; line-height:1.35; text-indent:28px; text-align:justify;">
                     मी. मौजे <span class="fill-text" id="p6_village"></span> ता. <span class="fill-text" id="p6_taluka2">कणकवली</span>, जि. <span class="fill-text" id="p6_district2">सिंधुदुर्ग</span> येथील रहिवासी असून माझ्या कुटुंबात <span class="fill-text" id="p6_fam_count"></span> व्यक्ती असून <span class="fill-text" id="p6_land"></span> जमिन आहे. माझे मजुरी/नोकरी/पेन्शन/शेती/इतर व्यवसाय पासून मिळणारे उत्पन्न खालीलप्रमाणे आहे.
                 </p>
             </div>
 
             <!-- Page 6 Dynamic Income Table -->
-            <table class="gov-table" style="margin:4px auto; width:80%; font-size:9.5pt; text-align:center;">
-                <thead><tr style="background:#f8fafc;"><th style="padding:3px 6px;">सन</th><th style="padding:3px 6px;">उत्पन्न</th></tr></thead>
+            <table class="gov-table" style="margin:2px auto; width:80%; font-size:8.5pt; text-align:center;">
+                <thead><tr style="background:#f8fafc;"><th style="padding:1.5px 4px;">सन</th><th style="padding:1.5px 4px;">उत्पन्न</th></tr></thead>
                 <tbody id="p6_income_rows">
                     <!-- Dynamic rows populated by JS with blank fill lines -->
                 </tbody>
             </table>
 
-            <div style="font-weight:700; font-size:9.5pt; margin:4px 0 2px 0; line-height:1.35;">माझ्या कुटुंबातील व्यक्तींची माहिती खालीलप्रमाणे:</div>
-            <table class="gov-table" style="font-size:8.5pt; width:100%; margin-bottom:4px;">
+            <div style="font-weight:700; font-size:9pt; margin:2px 0 1px 0; line-height:1.2;">माझ्या कुटुंबातील व्यक्तींची माहिती खालीलप्रमाणे:</div>
+            <table class="gov-table" style="font-size:8pt; width:100%; margin-bottom:3px;">
                 <thead>
                     <tr style="background:#f8fafc;">
-                        <th style="width:26px; padding:2.5px 3px;">अ.क्र.</th>
-                        <th style="padding:2.5px 4px;">कुटुंबातील व्यक्तींची नावे</th>
-                        <th style="width:45px; padding:2.5px 3px;">वय</th>
-                        <th style="width:70px; padding:2.5px 3px;">नाते</th>
-                        <th style="padding:2.5px 4px;">व्यवसाय/नोकरी</th>
+                        <th style="width:24px; padding:1.5px 2px;">अ.क्र.</th>
+                        <th style="padding:1.5px 3px;">कुटुंबातील व्यक्तींची नावे</th>
+                        <th style="width:40px; padding:1.5px 2px;">वय</th>
+                        <th style="width:65px; padding:1.5px 2px;">नाते</th>
+                        <th style="padding:1.5px 3px;">व्यवसाय/नोकरी</th>
                     </tr>
                 </thead>
                 <tbody id="p6_family_rows">
@@ -1582,16 +1609,17 @@
                 </tbody>
             </table>
 
-            <p class="p6-justified-para" style="font-size:10pt; line-height:1.5; text-indent:32px; text-align:justify; margin-top:6px; margin-bottom:6px;">
+            <p class="p6-justified-para" style="font-size:9.5pt; line-height:1.35; text-indent:28px; text-align:justify; margin-top:3px; margin-bottom:3px;">
                 याप्रमाणे माझे उत्पन्न आहे. मला माझे स्वतः /मुलगा/मुलगी/पत्नी <span class="fill-text" id="p6_ben_name"></span> याला/हिला नोकरी/कर्ज/शैक्षणिक सवलत/नॉन क्रिमिलेयर/कलाकार मानधन/पेन्शन/शिधापत्रिका/वैद्यकीय शासकीय इ. कामासाठी उत्पन्नाच्या दाखल्याची आवश्यकता आहे. तरी मला उत्पन्न दाखला मिळावा, हि विनंती.
             </p>
 
-            <div class="sign-block-right" style="margin-top:14px; font-size:10.5pt; line-height:1.4;">
-                आपला विश्वासू,<br><br>
+            <div class="p6-sign-block" style="text-align:right; margin-top:4px; padding-right:16px; font-size:9.5pt; line-height:1.25;">
+                आपला विश्वासू,<br>
+                <div style="height:12px;"></div>
                 ( <span class="fill-text" id="p6_sign_name"></span> )
             </div>
 
-            <div class="page-number-footer">[ पृष्ठ ६ / १० ]</div>
+            <div class="page-number-footer" style="bottom: 2mm; right: 3mm; font-size: 8pt;">[ पृष्ठ ६ / १० ]</div>
         </div>
     </div>
 
