@@ -220,28 +220,6 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 4px;
         }
-
-        /* High-Contrast Crisp AcroForm Field Styling */
-        .annotationLayer input,
-        .annotationLayer textarea,
-        .annotationLayer select {
-            color: #0f172a !important;
-            font-weight: 700 !important;
-            font-family: 'Mukta', 'Roboto Mono', sans-serif !important;
-            background: rgba(239, 246, 255, 0.85) !important;
-            border: 1px solid rgba(2, 132, 199, 0.4) !important;
-            border-radius: 2px !important;
-            transition: all 0.2s ease !important;
-        }
-
-        .annotationLayer input:focus,
-        .annotationLayer textarea:focus,
-        .annotationLayer select:focus {
-            background: #ffffff !important;
-            border-color: #0284c7 !important;
-            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.4) !important;
-            outline: none !important;
-        }
         
         /* Glamorous Glass Loading Overlay */
         #loading-overlay {
@@ -1034,25 +1012,19 @@
                 let loadingTask = null;
                 currentPdfDocument = null;
 
-                // Priority 1: Use embedded Base64 PDF data (avoids file:/// CORS & offline 404s)
-                const base64Data = window[config.base64Key];
-                if (base64Data) {
-                    try {
-                        const pdfData = base64ToUint8Array(base64Data);
-                        loadingTask = pdfjsLib.getDocument({ data: pdfData });
-                        currentPdfDocument = await loadingTask.promise;
-                    } catch (b64Err) {
-                        console.warn("Base64 load failed for " + formKey + ", attempting file URL fallback:", b64Err);
-                    }
+                const isFileProtocol = window.location.protocol === 'file:';
+
+                // Open server's original fillable PDF file AS-IS with its native filling settings
+                if (!isFileProtocol) {
+                    const pdfUrl = config.fileName + '?v=' + Date.now();
+                    loadingTask = pdfjsLib.getDocument(pdfUrl);
+                } else {
+                    const base64Data = window[config.base64Key];
+                    const pdfData = base64ToUint8Array(base64Data);
+                    loadingTask = pdfjsLib.getDocument({ data: pdfData });
                 }
 
-                // Priority 2: Fallback to local/web URL if base64 was missing
-                if (!currentPdfDocument) {
-                    const isFileProtocol = window.location.protocol === 'file:';
-                    const pdfUrl = isFileProtocol ? config.fileName : (config.fileName + '?v=' + Date.now());
-                    loadingTask = pdfjsLib.getDocument(pdfUrl);
-                    currentPdfDocument = await loadingTask.promise;
-                }
+                currentPdfDocument = await loadingTask.promise;
 
                 // Render PDF cleanly in viewer
                 renderDocumentInViewer(currentPdfDocument);
