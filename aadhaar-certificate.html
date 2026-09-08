@@ -1110,13 +1110,21 @@
 
                 // Auto-save application to Server / Database
                 try {
+                    const loggedInUser = (typeof UserAuth !== 'undefined' && typeof UserAuth.getCurrentUser === 'function') 
+                        ? UserAuth.getCurrentUser() : null;
+                    const userMobile = loggedInUser ? loggedInUser.mobile : (mobile || "");
+                    const userName = loggedInUser ? loggedInUser.name : (applicantName || "");
+
                     const formRecord = {
                         appId: "ADH-" + Date.now().toString().slice(-6),
                         prefix: "ADH",
                         formType: "aadhaar-certificate",
                         formTitle: "आधार प्रमाणपत्र (" + (config.name || "Aadhaar") + ")",
-                        applicantName: applicantName || "आधार नोंदणी अर्जदार",
-                        mobile: mobile || "",
+                        applicantName: applicantName || userName || "आधार नोंदणी अर्जदार",
+                        fullName: applicantName || userName || "आधार नोंदणी अर्जदार",
+                        mobile: mobile || userMobile,
+                        userMobile: userMobile,
+                        userName: userName,
                         aadhaar: aadhaar || "",
                         purpose: "आधार नोंदणी व सुधारणा",
                         formData: fieldValues,
