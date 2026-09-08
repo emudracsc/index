@@ -673,8 +673,8 @@
       if (!isFormPage) return true;
 
       var user = UserAuth.getCurrentUser();
-      var isAdmin = sessionStorage.getItem('emudra_admin_auth') === 'true';
-      if (user || isAdmin) {
+      var isAdmin = sessionStorage.getItem('emudra_admin_auth') === 'true' || localStorage.getItem('emudra_admin_auth') === 'true';
+      if (user || isAdmin || sessionStorage.getItem('emudra_gate_dismissed') === 'true') {
         var existingGate = document.getElementById('emudra-mandatory-gate');
         if (existingGate) existingGate.remove();
         return true;
@@ -686,25 +686,29 @@
       var gate = document.createElement('div');
       gate.id = 'emudra-mandatory-gate';
       gate.className = 'no-print';
-      gate.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.95);backdrop-filter:blur(12px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit;';
+      gate.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.92);backdrop-filter:blur(10px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit;';
 
       gate.innerHTML =
-        '<div style="background:#1e293b;border:1.5px solid rgba(56,189,248,0.45);border-radius:18px;max-width:480px;width:100%;padding:32px 24px;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,0.8);color:#fff;animation:authPopIn 0.3s ease-out;">' +
+        '<div style="position:relative;background:#1e293b;border:1.5px solid rgba(56,189,248,0.45);border-radius:18px;max-width:480px;width:100%;padding:32px 24px;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,0.8);color:#fff;animation:authPopIn 0.3s ease-out;">' +
+        '<button type="button" onclick="sessionStorage.setItem(\'emudra_gate_dismissed\',\'true\');document.getElementById(\'emudra-mandatory-gate\')?.remove();" title="बंद करा" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.1);border:none;color:#94a3b8;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all 0.2s;" onmouseover="this.style.color=\'#fff\';this.style.background=\'rgba(255,255,255,0.2)\';" onmouseout="this.style.color=\'#94a3b8\';this.style.background=\'rgba(255,255,255,0.1)\';">✕</button>' +
         '<div style="width:68px;height:68px;background:linear-gradient(135deg,rgba(56,189,248,0.2),rgba(59,130,246,0.2));border:1.5px solid rgba(56,189,248,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px auto;color:#38bdf8;font-size:1.9rem;">' +
         '<i class="fa-solid fa-user-lock"></i>' +
         '</div>' +
-        '<h2 style="font-size:1.35rem;font-weight:800;color:#f8fafc;margin:0 0 8px 0;">नागरिक लॉगिन अनिवार्य आहे</h2>' +
+        '<h2 style="font-size:1.35rem;font-weight:800;color:#f8fafc;margin:0 0 8px 0;">नागरिक लॉगिन / नोंदणी</h2>' +
         '<div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);border-radius:10px;padding:6px 12px;display:inline-block;margin-bottom:14px;color:#38bdf8;font-size:0.82rem;font-weight:700;">' +
-        '<i class="fa-solid fa-shield-halved"></i> शासकीय सेवा नियम व अर्ज सुरक्षा' +
+        '<i class="fa-solid fa-shield-halved"></i> अर्ज इतिहास व सुरक्षितता' +
         '</div>' +
-        '<p style="color:#cbd5e1;font-size:0.92rem;line-height:1.6;margin:0 0 24px 0;">' +
-        'हा शासकीय अर्ज भरण्यासाठी, सेव्ह करण्यासाठी व प्रिंट करण्यासाठी प्रथम आपले <strong>नाव व १० अंकी मोबाईल नंबर</strong> टाकून <strong>नागरिक लॉगिन</strong> करणे अनिवार्य आहे. आपण नवीन असाल तर २ सेकंदात मोफत नवीन नोंदणी करू शकता.' +
+        '<p style="color:#cbd5e1;font-size:0.92rem;line-height:1.6;margin:0 0 20px 0;">' +
+        'आपले भरलेले अर्ज सुरक्षित सेव्ह राहण्यासाठी व केव्हाही पुन्हा डाउनलोड/प्रिंट करण्यासाठी <strong>नागरिक लॉगिन</strong> करा. आपण ऑपरेटर किंवा अतिथी असल्यास थेट अर्ज भरू शकता.' +
         '</p>' +
-        '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        '<div style="display:flex;flex-direction:column;gap:10px;">' +
         '<button type="button" onclick="UserAuth.openLoginModal()" style="background:linear-gradient(135deg,#0284c7,#0369a1);border:none;color:#fff;padding:12px 18px;border-radius:10px;font-weight:800;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 15px rgba(2,132,199,0.4);transition:all 0.2s;">' +
         '<i class="fa-solid fa-right-to-bracket"></i> नागरिक लॉगिन / नवीन नोंदणी' +
         '</button>' +
-        '<a href="index.html" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#cbd5e1;text-decoration:none;padding:10px 18px;border-radius:10px;font-weight:600;font-size:0.88rem;display:flex;align-items:center;justify-content:center;gap:8px;">' +
+        '<button type="button" onclick="sessionStorage.setItem(\'emudra_gate_dismissed\',\'true\');document.getElementById(\'emudra-mandatory-gate\')?.remove();" style="background:rgba(16,185,129,0.18);border:1px solid rgba(16,185,129,0.4);color:#34d399;padding:11px 18px;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;">' +
+        '<i class="fa-solid fa-pen-to-square"></i> थेट फॉर्म भरा (Continue as Guest / Operator)' +
+        '</button>' +
+        '<a href="index.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#94a3b8;text-decoration:none;padding:8px 18px;border-radius:10px;font-weight:600;font-size:0.84rem;display:flex;align-items:center;justify-content:center;gap:8px;">' +
         '<i class="fa-solid fa-house"></i> मुख्य पृष्ठावर परत जा' +
         '</a>' +
         '</div>' +

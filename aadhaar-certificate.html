@@ -1359,12 +1359,7 @@
             };
 
             try {
-                // 1. Supabase Cloud DB
-                if (typeof DB !== 'undefined' && typeof DB.saveFormHistory === 'function') {
-                    await DB.saveFormHistory(formRecord);
-                }
-
-                // 2. emudra_form_history (LocalStorage)
+                // 1. emudra_form_history (LocalStorage - Always save first!)
                 const key = "emudra_form_history";
                 const list = JSON.parse(localStorage.getItem(key) || "[]");
                 const idx = list.findIndex(item => item.appId === formRecord.appId);
@@ -1372,7 +1367,7 @@
                 else list.unshift(formRecord);
                 localStorage.setItem(key, JSON.stringify(list));
 
-                // 3. emudra_csc_applications (LocalStorage)
+                // 2. emudra_csc_applications (LocalStorage)
                 const cscKey = "emudra_csc_applications";
                 const cscList = JSON.parse(localStorage.getItem(cscKey) || "[]");
                 const cscIdx = cscList.findIndex(item => (item.appId || item.id) === formRecord.appId);
@@ -1392,6 +1387,15 @@
                 if (cscIdx >= 0) cscList[cscIdx] = cscRecord;
                 else cscList.unshift(cscRecord);
                 localStorage.setItem(cscKey, JSON.stringify(cscList));
+
+                // 3. Supabase Cloud DB (safe sync)
+                if (typeof DB !== 'undefined' && typeof DB.saveFormHistory === 'function') {
+                    try {
+                        await DB.saveFormHistory(formRecord);
+                    } catch(dbErr) {
+                        console.warn("Cloud DB save note:", dbErr);
+                    }
+                }
 
                 // Update UI status pill
                 const pill = document.getElementById('save-status-pill');

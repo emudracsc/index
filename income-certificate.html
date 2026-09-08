@@ -2654,14 +2654,18 @@
         };
 
         try {
+            const key = "emudra_form_history";
+            const list = JSON.parse(localStorage.getItem(key) || "[]");
+            const idx = list.findIndex(item => item.appId === formRecord.appId);
+            if (idx >= 0) list[idx] = formRecord; else list.unshift(formRecord);
+            localStorage.setItem(key, JSON.stringify(list));
+
             if (typeof DB !== 'undefined' && typeof DB.saveFormHistory === 'function') {
-                await DB.saveFormHistory(formRecord);
-            } else {
-                const key = "emudra_form_history";
-                const list = JSON.parse(localStorage.getItem(key) || "[]");
-                const idx = list.findIndex(item => item.appId === formRecord.appId);
-                if (idx >= 0) list[idx] = formRecord; else list.unshift(formRecord);
-                localStorage.setItem(key, JSON.stringify(list));
+                try {
+                    await DB.saveFormHistory(formRecord);
+                } catch (dbErr) {
+                    console.warn("Cloud DB save note:", dbErr);
+                }
             }
         } catch(e) {
             console.warn("Save form history failed:", e);

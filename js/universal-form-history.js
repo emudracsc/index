@@ -359,29 +359,14 @@
       return null;
     }
 
-    // Check mandatory login for citizen
     var loggedInUser = window.UserAuth && typeof window.UserAuth.getCurrentUser === 'function' ? window.UserAuth.getCurrentUser() : null;
-    var isAdmin = sessionStorage.getItem('emudra_admin_auth') === 'true';
-
-    if (!loggedInUser && !isAdmin) {
-      if (!silent) {
-        if (typeof showToast === 'function') {
-          showToast('शासकीय अर्ज भरण्यासाठी / सेव्ह करण्यासाठी नागरिक लॉगिन करणे अनिवार्य आहे!', 'warning');
-        } else {
-          alert('शासकीय अर्ज भरण्यासाठी / सेव्ह करण्यासाठी नागरिक लॉगिन करणे अनिवार्य आहे!');
-        }
-        if (window.UserAuth) {
-          window.UserAuth.enforceMandatoryFormLogin();
-          window.UserAuth.openLoginModal();
-        }
-      }
-      return null;
-    }
+    var isAdmin = sessionStorage.getItem('emudra_admin_auth') === 'true' || localStorage.getItem('emudra_admin_auth') === 'true';
 
     isSavingInProgress = true;
 
     var statusEl = document.getElementById('emudra-save-status-text');
-    if (statusEl) statusEl.textContent = 'सेव्ह होत आहे...';
+    var pillEl = document.getElementById('emudra-save-status-pill');
+    if (statusEl && !silent) statusEl.textContent = 'सेव्ह होत आहे...';
 
     var formData = scanAndCollectFormData();
     var meta = extractApplicantMeta(formData);
@@ -393,6 +378,8 @@
     if (!currentSessionAppId) {
       currentSessionAppId = existingAppId || (prefix + '-' + Math.floor(100000 + Math.random() * 900000));
     }
+    var targetAppId = existingAppId || currentSessionAppId;
+
     var userMobile = loggedInUser ? loggedInUser.mobile : (meta.mobile || '');
     var userName = loggedInUser ? loggedInUser.name : (meta.applicantName || '');
 
@@ -401,53 +388,69 @@
       prefix: prefix,
       formType: slug,
       formTitle: getFormCleanTitle(slug),
-      applicantName: meta.applicantName,
-      mobile: meta.mobile || userMobile,
-      userMobile: userMobile,
-      userName: userName,
-      aadhaar: meta.aadhaar,
+      applicantName: meta.applicantName || userName || 'नागरिक / अर्जदार',
+      fullName: meta.applicantName || userName || 'नागरिक / अर्जदार',
+      mobile: meta.mobile || userMobile || '',
+      userMobile: userMobile || meta.mobile || '',
+      userName: userName || meta.applicantName || '',
+      aadhaar: meta.aadhaar || '',
       formData: formData,
+      timestamp: new Date().toISOString(),
+      date: new Date().toISOString().split('T')[0],
+      dateFormatted: new Date().toLocaleString('mr-IN'),
       status: 'printed'
     };
 
     try {
-      if (typeof window.DB !== 'undefined' && typeof window.DB.saveFormHistory === 'function') {
-        await window.DB.saveFormHistory(formRecord);
-      } else {
-        var key = 'emudra_form_history';
-        var list = JSON.parse(localStorage.getItem(key) || '[]');
-        var idx = list.findIndex(function (item) { return item.appId === formRecord.appId; });
-        if (idx >= 0) list[idx] = formRecord; else list.unshift(formRecord);
-        localStorage.setItem(key, JSON.stringify(list));
+      // 1. LocalStorage primary save (emudra_form_history)
+      var key = 'emudra_form_history';
+      var list = JSON.parse(localStorage.getItem(key) || '[]');
+      var idx = list.findIndex(function (item) { return item.appId === formRecord.appId; });
+      if (idx >= 0) list[idx] = formRecord; else list.unshift(formRecord);
+      localStorage.setItem(key, JSON.stringify(list));
 
-        var cscList = JSON.parse(localStorage.getItem('emudra_csc_applications') || '[]');
-        var cscIdx = cscList.findIndex(function (item) { return (item.appId || item.id) === formRecord.appId; });
-        var cscRec = {
-          appId: formRecord.appId, id: formRecord.appId, serviceId: slug, serviceName: formRecord.formTitle,
-          fullName: meta.applicantName, mobile: meta.mobile, aadhaar: meta.aadhaar,
-          date: new Date().toISOString().split('T')[0], submittedAt: new Date().toISOString(),
-          status: 'printed', isFormHistory: true
-        };
-        if (cscIdx >= 0) cscList[cscIdx] = cscRec; else cscList.unshift(cscRec);
-        localStorage.setItem('emudra_csc_applications', JSON.stringify(cscList));
+      // 2. LocalStorage secondary save (emudra_csc_applications)
+      var cscList = JSON.parse(localStorage.getItem('emudra_csc_applications') || '[]');
+      var cscIdx = cscList.findIndex(function (item) { return (item.appId || item.id) === formRecord.appId; });
+      var cscRec = {
+        appId: formRecord.appId,
+        id: formRecord.appId,
+        serviceId: slug,
+        serviceName: formRecord.formTitle,
+        fullName: formRecord.applicantName,
+        mobile: formRecord.mobile,
+        aadhaar: formRecord.aadhaar,
+        date: formRecord.date,
+        submittedAt: formRecord.timestamp,
+        status: 'printed',
+        isFormHistory: true
+      };
+      if (cscIdx >= 0) cscList[cscIdx] = cscRec; else cscList.unshift(cscRec);
+      localStorage.setItem('emudra_csc_applications', JSON.stringify(cscList));
+
+      // 3. Supabase Cloud DB save (if DB is available)
+      if (typeof window.DB !== 'undefined' && typeof window.DB.saveFormHistory === 'function') {
+        try {
+          await window.DB.saveFormHistory(formRecord);
+        } catch (dbErr) {
+          console.warn('Cloud DB saveFormHistory note:', dbErr);
+        }
       }
 
-      var pillEl = document.getElementById('emudra-save-status-pill');
       if (statusEl) statusEl.textContent = '✅ सेव्ह झाले (' + targetAppId + ')';
       if (pillEl) pillEl.style.display = 'inline-flex';
 
       if (!silent) {
-        showUniversalSaveToast('✅ अर्ज क्र. ' + targetAppId + ' सर्व्हरवर सेव्ह झाला!');
+        showUniversalSaveToast('✅ अर्ज क्र. ' + targetAppId + ' यशस्वीरित्या सेव्ह झाला!');
       }
     } catch (err) {
       console.warn('Universal save warning:', err);
-      if (statusEl) statusEl.textContent = 'स्थानिक मेमरीत सेव्ह झाले';
-      var pillEl = document.getElementById('emudra-save-status-pill');
+      if (statusEl) statusEl.textContent = 'स्थानिक मेमरीत सेव्ह झाले (' + targetAppId + ')';
       if (pillEl) pillEl.style.display = 'inline-flex';
     } finally {
       setTimeout(function () {
         isSavingInProgress = false;
-      }, 800);
+      }, 500);
     }
 
     return formRecord;
@@ -531,26 +534,10 @@
     }
   }
 
-  // Intercept window.print (MANDATORY LOGIN ENFORCED: blocks print if not logged in)
+  // Intercept window.print (reliably triggers background save without blocking print dialog)
   var originalPrint = window.print;
   window.print = function () {
     if (!isExcludedSlug(getPageSlug())) {
-      var loggedInUser = window.UserAuth && typeof window.UserAuth.getCurrentUser === 'function' ? window.UserAuth.getCurrentUser() : null;
-      var isAdmin = sessionStorage.getItem('emudra_admin_auth') === 'true';
-
-      if (!loggedInUser && !isAdmin) {
-        if (typeof showToast === 'function') {
-          showToast('शासकीय अर्ज प्रिंट करण्यासाठी नागरिक लॉगिन करणे अनिवार्य आहे!', 'warning');
-        } else {
-          alert('शासकीय अर्ज प्रिंट करण्यासाठी नागरिक लॉगिन करणे अनिवार्य आहे!');
-        }
-        if (window.UserAuth) {
-          window.UserAuth.enforceMandatoryFormLogin();
-          window.UserAuth.openLoginModal();
-        }
-        return;
-      }
-
       try {
         saveCurrentFormApplication(false);
       } catch (e) {
@@ -598,6 +585,30 @@
     var slug = getPageSlug();
     if (!isExcludedSlug(slug)) {
       saveCurrentFormApplication(false);
+    }
+  }, true);
+
+  // Live Debounced Auto-Save on any form input or select change
+  var autoSaveTimer = null;
+  function triggerFormAutoSave() {
+    if (isExcludedSlug(getPageSlug())) return;
+    if (autoSaveTimer) clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(function () {
+      saveCurrentFormApplication(true);
+    }, 1200);
+  }
+
+  document.addEventListener('input', function (e) {
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA')) {
+      triggerFormAutoSave();
+    }
+  }, true);
+
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA')) {
+      triggerFormAutoSave();
     }
   }, true);
 

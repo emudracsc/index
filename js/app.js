@@ -1445,7 +1445,7 @@ function showTokenSlipModal(token) {
  * Check Admin Authentication State
  */
 function checkAdminAuthState() {
-  const isAuth = sessionStorage.getItem("emudra_admin_auth") === "true";
+  const isAuth = sessionStorage.getItem("emudra_admin_auth") === "true" || localStorage.getItem("emudra_admin_auth") === "true";
   const webAppSec = document.getElementById("interactive-app");
   const navBtn = document.getElementById("nav-admin-login-btn");
   const navBtnText = document.getElementById("nav-admin-btn-text");
@@ -1472,7 +1472,7 @@ function checkAdminAuthState() {
 }
 
 function handleNavAdminClick() {
-  const isAuth = sessionStorage.getItem("emudra_admin_auth") === "true";
+  const isAuth = sessionStorage.getItem("emudra_admin_auth") === "true" || localStorage.getItem("emudra_admin_auth") === "true";
   if (isAuth) {
     adminLogout();
   } else {
@@ -1482,6 +1482,7 @@ function handleNavAdminClick() {
 
 function adminLogout() {
   sessionStorage.removeItem("emudra_admin_auth");
+  localStorage.removeItem("emudra_admin_auth");
   checkAdminAuthState();
   showToast(CURRENT_LANG === "mr" ? "अधिकारी लॉगआउट झाले. डॅशबोर्ड बंद झाला." : "Logged out successfully.", "info");
   const home = document.getElementById("home");
@@ -1501,6 +1502,7 @@ function initAdminDashboard() {
     if (pin === "341992" || pin === "1234" || pin === "40068" || pin === "73016" || pin === "admin") {
       closeModal("admin-login-modal");
       sessionStorage.setItem("emudra_admin_auth", "true");
+      localStorage.setItem("emudra_admin_auth", "true");
       checkAdminAuthState();
       renderAdminDashboard();
       if (typeof renderAdminFormHistoryTable === "function") {
