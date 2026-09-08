@@ -220,6 +220,19 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 4px;
         }
+
+        /* Ensure crisp, uniform appearance in browser interactive viewer */
+        .annotationLayer input,
+        .annotationLayer textarea {
+            text-transform: uppercase;
+            font-weight: 600 !important;
+        }
+
+        .annotationLayer .textWidgetAnnotation input.comb {
+            font-family: 'Poppins', 'Courier New', monospace !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+        }
         
         /* Glamorous Glass Loading Overlay */
         #loading-overlay {
@@ -1013,6 +1026,57 @@
             return bytes;
         }
 
+        // Helper: Compute clean, uniform and perfectly proportioned font size for fields
+        function getOptimalFieldFontSize(field) {
+            try {
+                const widgets = field.acroField.getWidgets();
+                const rect = widgets && widgets[0] ? widgets[0].getRectangle() : null;
+                const isCombed = typeof field.isCombed === 'function' && field.isCombed();
+                const maxLen = (typeof field.getMaxLength === 'function' ? field.getMaxLength() : 0) || 1;
+                const width = rect ? rect.width : 200;
+                const height = rect ? rect.height : 14;
+                const cellW = width / maxLen;
+
+                if (isCombed) {
+                    // For dense/narrow comb cells (like Designation / Office Address with 40 cells ~10.6pt wide)
+                    if (cellW < 12) return 10;
+                    // Standard comb cells (Aadhaar Number 12 cells, Names 32 cells, House No, PIN, etc.)
+                    return 11;
+                }
+                // Single-line non-combed fields with standard box height ~14-16pt
+                if (height <= 18) {
+                    return 10.5;
+                }
+                return 11;
+            } catch (e) {
+                return 10.5;
+            }
+        }
+
+        // Helper: Clean and format field values (Block Letters, spacing, length safety)
+        function cleanFieldValue(name, val, field) {
+            let textVal = String(val).trim();
+            const lowerName = (name || '').toLowerCase();
+            if (lowerName.includes('aadhaar') || lowerName.includes('uid')) {
+                textVal = textVal.replace(/\D/g, '').slice(0, 12);
+            } else if (lowerName.includes('pin') || lowerName === 'undefined_8') {
+                textVal = textVal.replace(/\D/g, '').slice(0, 6);
+            } else if (lowerName.includes('contact') || (lowerName.includes('mobile') && !lowerName.includes('email'))) {
+                textVal = textVal.replace(/\D/g, '').slice(0, 10);
+            } else if (!lowerName.includes('email') && !lowerName.includes('mail')) {
+                textVal = textVal.toUpperCase();
+            }
+
+            if (field) {
+                const isCombed = typeof field.isCombed === 'function' && field.isCombed();
+                const maxLen = (typeof field.getMaxLength === 'function' ? field.getMaxLength() : 0) || 0;
+                if (isCombed && maxLen > 0 && textVal.length > maxLen) {
+                    textVal = textVal.slice(0, maxLen);
+                }
+            }
+            return textVal;
+        }
+
         // Cleanly initialize/render PDF in viewer container without dirty state collisions
         function renderDocumentInViewer(pdfDoc, fieldValuesToApply = null) {
             const container = document.getElementById('viewerContainer');
@@ -1153,7 +1217,10 @@
                                 const field = form.getField(name);
                                 if (!field) continue;
                                 if (typeof field.setText === 'function') {
-                                    field.setText(String(val));
+                                    const fontSize = getOptimalFieldFontSize(field);
+                                    field.setFontSize(fontSize);
+                                    const cleanVal = cleanFieldValue(name, val, field);
+                                    field.setText(cleanVal);
                                 } else if (typeof field.check === 'function') {
                                     if (val === true || val === 'true' || val === 'on' || val === 'Yes' || val === 1) {
                                         field.check();
@@ -1449,76 +1516,94 @@
         async function downloadFlattenedPDF() {
             const btn = document.getElementById('btn-download');
             const originalHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing PDF...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> PDF तयार होत आहे...';
             btn.disabled = true;
 
             try {
                 if (!currentPdfDocument) throw new Error("PDF लोड झालेली नाही.");
                 const config = AADHAAR_FORMS[currentFormKey] || AADHAAR_FORMS.standard;
 
-                // 1. Extract filled values from pdf.js annotation storage
-                let filledPdfData = null;
-                try {
-                    filledPdfData = await currentPdfDocument.saveDocument();
-                } catch(saveDocErr) {
-                    console.warn("saveDocument fallback:", saveDocErr);
-                }
-                
-                // 2. Load into pdf-lib
-                let pdfDoc = null;
-                if (filledPdfData) {
-                    pdfDoc = await PDFLib.PDFDocument.load(filledPdfData);
-                } else {
-                    const isFileProtocol = window.location.protocol === 'file:';
-                    let rawBytes = null;
-                    if (!isFileProtocol) {
-                        const r = await fetch(config.fileName + '?v=' + Date.now());
-                        rawBytes = new Uint8Array(await r.arrayBuffer());
-                    } else {
-                        rawBytes = base64ToUint8Array(window[config.base64Key]);
-                    }
-                    pdfDoc = await PDFLib.PDFDocument.load(rawBytes);
-                }
-
-                // Collect latest DOM values
+                // 1. Collect latest values from viewer DOM inputs and memory
                 const currentValues = collectCurrentPdfFormValues();
                 Object.assign(activeFormValues, currentValues);
 
-                // Ensure every single field from activeFormValues is applied to pdfDoc
-                try {
-                    const form = pdfDoc.getForm();
-                    for (const [name, val] of Object.entries(activeFormValues)) {
-                        if (!name || name.startsWith('_')) continue;
-                        if (val === undefined || val === null || val === '') continue;
-                        try {
-                            const field = form.getField(name);
-                            if (!field) continue;
-                            if (typeof field.setText === 'function') {
-                                field.setText(String(val));
-                            } else if (typeof field.check === 'function') {
-                                if (val === true || val === 'true' || val === 'on' || val === 'Yes' || val === 1) field.check();
-                                else field.uncheck();
-                            } else if (typeof field.select === 'function') {
-                                field.select(String(val));
-                            }
-                        } catch(e) {}
+                // 2. Load fresh base PDF template to ensure clean font and layout rendering
+                const isFileProtocol = window.location.protocol === 'file:';
+                let rawBytes = null;
+                if (!isFileProtocol) {
+                    try {
+                        const r = await fetch(config.fileName + '?v=' + Date.now());
+                        if (r.ok) rawBytes = new Uint8Array(await r.arrayBuffer());
+                    } catch (fetchErr) {
+                        console.warn("Direct fetch fallback notice:", fetchErr);
                     }
-                } catch(syncErr) {
-                    console.warn("Field sync warning before flatten:", syncErr);
+                }
+                if (!rawBytes) {
+                    const base64Data = window[config.base64Key];
+                    if (base64Data) rawBytes = base64ToUint8Array(base64Data);
+                }
+                if (!rawBytes) throw new Error("PDF डेटा उपलब्ध नाही.");
+
+                const pdfDoc = await PDFLib.PDFDocument.load(rawBytes);
+                const form = pdfDoc.getForm();
+
+                // 3. Populate all fields with fixed, uniform font sizes
+                for (const [name, val] of Object.entries(activeFormValues)) {
+                    if (!name || name.startsWith('_')) continue;
+                    if (val === undefined || val === null || val === '') continue;
+                    try {
+                        const field = form.getField(name);
+                        if (!field) continue;
+                        if (typeof field.setText === 'function') {
+                            const fontSize = getOptimalFieldFontSize(field);
+                            field.setFontSize(fontSize);
+                            const textVal = cleanFieldValue(name, val, field);
+                            field.setText(textVal);
+                        } else if (typeof field.check === 'function') {
+                            if (val === true || val === 'true' || val === 'on' || val === 'Yes' || val === 1) {
+                                field.check();
+                            } else {
+                                field.uncheck();
+                            }
+                        } else if (typeof field.select === 'function') {
+                            field.select(String(val));
+                        }
+                    } catch (fErr) {
+                        console.warn("Field setting note for " + name + ":", fErr);
+                    }
                 }
 
-                // 3. Save application to DB / LocalStorage
+                // 4. Save application state to DB / LocalStorage
                 await saveAadhaarApplicationState(true);
 
-                // 4. Flatten form fields (locks input into static document)
+                // 5. Flatten form fields (locks input into static document)
                 try {
-                    const form = pdfDoc.getForm();
                     form.flatten();
                 } catch (flattenErr) {
                     console.warn("Flatten note:", flattenErr);
                 }
+
+                // 6. Clean up any leftover widget annotation references and set XObject Subtype to Form
+                const pages = pdfDoc.getPages();
+                for (const page of pages) {
+                    try {
+                        page.node.delete(PDFLib.PDFName.of('Annots'));
+                    } catch (e) {}
+
+                    const xObjectDict = page.node.Resources()?.lookup(PDFLib.PDFName.of('XObject'));
+                    if (xObjectDict instanceof PDFLib.PDFDict) {
+                        for (const [key, ref] of xObjectDict.entries()) {
+                            try {
+                                const xobj = pdfDoc.context.lookup(ref);
+                                if (xobj instanceof PDFLib.PDFStream && !xobj.dict.has(PDFLib.PDFName.of('Subtype'))) {
+                                    xobj.dict.set(PDFLib.PDFName.of('Subtype'), PDFLib.PDFName.of('Form'));
+                                }
+                            } catch (e) {}
+                        }
+                    }
+                }
                 
-                // 5. Save and trigger clean download
+                // 7. Save and trigger clean download
                 const flattenedBytes = await pdfDoc.save();
                 const blob = new Blob([flattenedBytes], { type: 'application/pdf' });
                 
