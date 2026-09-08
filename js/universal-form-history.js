@@ -87,6 +87,15 @@
 
   // Intelligently scan and collect all form inputs and dynamic tables
   function scanAndCollectFormData() {
+    if (typeof window.getAadhaarCurrentFormData === 'function') {
+      try {
+        var aadhaarData = window.getAadhaarCurrentFormData();
+        if (aadhaarData && Object.keys(aadhaarData).length > 0) {
+          return aadhaarData;
+        }
+      } catch (e) {}
+    }
+
     var data = {};
     var allInputs = document.querySelectorAll('input, select, textarea');
 
@@ -447,6 +456,12 @@
   // Pre-fill form from database record
   function populateFormInputs(formData) {
     if (!formData) return;
+
+    if (typeof window.populateAadhaarForm === 'function') {
+      try {
+        window.populateAadhaarForm(formData);
+      } catch (e) {}
+    }
 
     // 1. Populate standard form elements
     for (var key in formData) {

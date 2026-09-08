@@ -304,6 +304,60 @@
             transform: translateY(0) scale(0.98);
         }
 
+        /* 💾 Save Draft & Status Pill Styles */
+        .btn-save-draft {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #ffffff !important;
+            padding: 0.6rem 1.15rem;
+            border-radius: 8px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            font-weight: 700;
+            font-size: 0.92rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.25s ease;
+            font-family: 'Mukta', sans-serif;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+        }
+
+        .btn-save-draft:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+            transform: translateY(-1.5px);
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5);
+            border-color: #38bdf8;
+        }
+
+        .save-status-pill {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+
+        /* ✏️ Top Edit Mode Banner */
+        .edit-mode-strip {
+            background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+            border-bottom: 2px solid #10b981;
+            color: #f8fafc;
+            padding: 8px 20px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+            z-index: 40;
+        }
+
         /* 🎛️ Form Switcher Bar Styles */
         .form-switcher-bar {
             background: linear-gradient(180deg, rgba(13, 27, 42, 0.98) 0%, rgba(9, 19, 34, 0.98) 100%);
@@ -740,6 +794,17 @@
 
     <div class="gov-tricolor-stripe"></div>
 
+    <!-- ✏️ Active Edit Mode Banner -->
+    <div id="emudra-edit-banner" class="edit-mode-strip">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <i class="fa-solid fa-pen-to-square" style="color:#34d399;font-size:1.05rem;"></i>
+            <span>अर्ज संपादन मोड: अर्ज क्र. <strong id="edit-banner-app-id" style="color:#6ee7b7;">ADH-XXXXXX</strong> (<span id="edit-banner-name">अर्जदार</span>) - बदल करून पुन्हा डाऊनलोड करा.</span>
+        </div>
+        <a href="dashboard.html" style="color:#38bdf8;text-decoration:none;font-size:0.82rem;display:inline-flex;align-items:center;gap:6px;background:rgba(56,189,248,0.12);padding:4px 12px;border-radius:6px;border:1px solid rgba(56,189,248,0.3);">
+            <i class="fa-solid fa-arrow-left"></i> डॅशबोर्डला परत जा
+        </a>
+    </div>
+
     <nav class="top-navbar">
         <a href="index.html" class="back-btn">
             <i class="fa-solid fa-arrow-left"></i>
@@ -753,9 +818,16 @@
         </div>
 
         <div class="action-group">
-            <button id="btn-download" class="btn-download-glamour" onclick="handleDownloadTrigger()">
+            <span id="save-status-pill" class="save-status-pill" style="display: none;">
+                <i class="fa-solid fa-check"></i> <span id="save-status-text">सेव्ह झाले</span>
+            </span>
+            <button type="button" id="btn-save-draft" class="btn-save-draft" onclick="saveAadhaarApplicationState(false)" title="माहिती सर्व्हरवर सेव्ह करा">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>अर्ज सेव्ह करा</span>
+            </button>
+            <button type="button" id="btn-download" class="btn-download-glamour" onclick="handleDownloadTrigger()">
                 <i class="fa-solid fa-download"></i>
-                <span>फॉर्म डाऊनलोड करा (₹१०)</span>
+                <span id="btn-download-text">फॉर्म डाऊनलोड करा (₹१०)</span>
             </button>
         </div>
     </nav>
@@ -921,6 +993,11 @@
         let pdfViewer = null;
         let linkService = null;
         let eventBus = null;
+        let isEditMode = false;
+        let currentSessionAppId = null;
+        let activeFormValues = {};
+        let autoSaveTimer = null;
+        let isPaymentVerified = false;
 
         // Set pdf.js worker path
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -937,7 +1014,7 @@
         }
 
         // Cleanly initialize/render PDF in viewer container without dirty state collisions
-        function renderDocumentInViewer(pdfDoc) {
+        function renderDocumentInViewer(pdfDoc, fieldValuesToApply = null) {
             const container = document.getElementById('viewerContainer');
             // Cleanly reset viewer DOM
             container.scrollTop = 0;
@@ -957,6 +1034,28 @@
 
             eventBus.on('pagesinit', function () {
                 pdfViewer.currentScaleValue = 'page-width';
+            });
+
+            // Ensure rendered DOM input fields reflect active values immediately
+            eventBus.on('annotationlayerrendered', function (event) {
+                const targetValues = fieldValuesToApply || activeFormValues;
+                if (!targetValues || Object.keys(targetValues).length === 0) return;
+                const pageDiv = event.source && event.source.div;
+                if (!pageDiv) return;
+                const inputs = pageDiv.querySelectorAll('input, textarea, select');
+                inputs.forEach(inp => {
+                    const name = inp.name;
+                    if (name && targetValues[name] !== undefined) {
+                        const val = targetValues[name];
+                        if (inp.type === 'checkbox') {
+                            inp.checked = (val === true || val === 'true' || val === 'on' || val === 'Yes' || val === 1);
+                        } else if (inp.type === 'radio') {
+                            inp.checked = (inp.value === String(val));
+                        } else {
+                            inp.value = String(val);
+                        }
+                    }
+                });
             });
 
             pdfViewer.setDocument(pdfDoc);
@@ -983,11 +1082,18 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // Select & Switch Aadhaar Form dynamically
-        async function selectForm(formKey) {
+        // Select & Switch Aadhaar Form dynamically with field pre-population support
+        async function selectForm(formKey, fieldValuesToApply = null) {
             if (!AADHAAR_FORMS[formKey]) return;
             currentFormKey = formKey;
             const config = AADHAAR_FORMS[formKey];
+
+            // If no explicit fieldValuesToApply passed, retain whatever user already typed
+            if (!fieldValuesToApply && Object.keys(activeFormValues).length > 0) {
+                fieldValuesToApply = activeFormValues;
+            } else if (fieldValuesToApply) {
+                Object.assign(activeFormValues, fieldValuesToApply);
+            }
 
             // 1. Update button active states
             document.querySelectorAll('.form-select-btn').forEach(btn => btn.classList.remove('active'));
@@ -1013,21 +1119,64 @@
                 currentPdfDocument = null;
 
                 const isFileProtocol = window.location.protocol === 'file:';
+                let pdfBytes = null;
 
                 // Open server's original fillable PDF file AS-IS with its native filling settings
                 if (!isFileProtocol) {
-                    const pdfUrl = config.fileName + '?v=' + Date.now();
-                    loadingTask = pdfjsLib.getDocument(pdfUrl);
+                    try {
+                        const pdfUrl = config.fileName + '?v=' + Date.now();
+                        const resp = await fetch(pdfUrl);
+                        if (!resp.ok) throw new Error("HTTP " + resp.status);
+                        pdfBytes = new Uint8Array(await resp.arrayBuffer());
+                    } catch (fetchErr) {
+                        console.warn("Direct fetch notice, using fallback data:", fetchErr);
+                        const base64Data = window[config.base64Key];
+                        if (base64Data) pdfBytes = base64ToUint8Array(base64Data);
+                    }
                 } else {
                     const base64Data = window[config.base64Key];
-                    const pdfData = base64ToUint8Array(base64Data);
-                    loadingTask = pdfjsLib.getDocument({ data: pdfData });
+                    if (base64Data) pdfBytes = base64ToUint8Array(base64Data);
                 }
 
+                if (!pdfBytes) throw new Error("PDF डेटा उपलब्ध नाही.");
+
+                // If existing saved values need to be pre-populated (Edit mode or tab switch)
+                if (fieldValuesToApply && Object.keys(fieldValuesToApply).length > 0) {
+                    try {
+                        const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+                        const form = pdfDoc.getForm();
+                        
+                        for (const [name, val] of Object.entries(fieldValuesToApply)) {
+                            if (!name || name.startsWith('_')) continue;
+                            if (val === undefined || val === null || val === '') continue;
+                            try {
+                                const field = form.getField(name);
+                                if (!field) continue;
+                                if (typeof field.setText === 'function') {
+                                    field.setText(String(val));
+                                } else if (typeof field.check === 'function') {
+                                    if (val === true || val === 'true' || val === 'on' || val === 'Yes' || val === 1) {
+                                        field.check();
+                                    } else {
+                                        field.uncheck();
+                                    }
+                                } else if (typeof field.select === 'function') {
+                                    field.select(String(val));
+                                }
+                            } catch (fErr) {}
+                        }
+                        // Save without flattening: AcroForm remains interactive with field values set
+                        pdfBytes = await pdfDoc.save();
+                    } catch (prefillErr) {
+                        console.warn("Pre-population note:", prefillErr);
+                    }
+                }
+
+                loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
                 currentPdfDocument = await loadingTask.promise;
 
                 // Render PDF cleanly in viewer
-                renderDocumentInViewer(currentPdfDocument);
+                renderDocumentInViewer(currentPdfDocument, fieldValuesToApply);
 
                 if (loadingOverlay) loadingOverlay.style.display = 'none';
             } catch (error) {
@@ -1053,13 +1202,244 @@
             }
         }
 
-        // PDF Viewer Initialization
+        // Collect all currently typed/selected values from PDF DOM inputs and memory
+        function collectCurrentPdfFormValues() {
+            const values = Object.assign({}, activeFormValues);
+            const container = document.getElementById('viewerContainer');
+            if (container) {
+                const inputs = container.querySelectorAll('input, textarea, select');
+                inputs.forEach(inp => {
+                    if (!inp.name) return;
+                    if (inp.type === 'checkbox') {
+                        values[inp.name] = inp.checked;
+                    } else if (inp.type === 'radio') {
+                        if (inp.checked) values[inp.name] = inp.value;
+                    } else {
+                        values[inp.name] = inp.value;
+                    }
+                });
+            }
+            return values;
+        }
+
+        function showSaveToast(msg) {
+            let toast = document.getElementById('emudra-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'emudra-toast';
+                toast.style.cssText = 'position:fixed;top:20px;right:20px;z-index:999999;background:linear-gradient(135deg,#059669 0%,#047857 100%);color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 8px 25px rgba(0,0,0,0.35);font-family:sans-serif;font-size:0.9rem;font-weight:700;display:flex;align-items:center;gap:10px;transition:all 0.3s ease;';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = '<i class="fa-solid fa-circle-check" style="font-size:1.2rem;"></i> <span>' + msg + '</span>';
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+            }, 3500);
+        }
+
+        // Auto-save application data reliably to Supabase and LocalStorage
+        async function saveAadhaarApplicationState(silent = false) {
+            const config = AADHAAR_FORMS[currentFormKey] || AADHAAR_FORMS.standard;
+            const values = collectCurrentPdfFormValues();
+            Object.assign(activeFormValues, values);
+
+            let applicantName = "";
+            let mobile = "";
+            let aadhaar = "";
+
+            for (const [name, val] of Object.entries(values)) {
+                if (!val || typeof val !== 'string') continue;
+                const str = val.trim();
+                const lower = name.toLowerCase();
+                if (!applicantName && (lower.includes('name') || lower.includes('resident') || lower.includes('नाव') || lower.includes('text1'))) {
+                    applicantName = str;
+                }
+                if (!mobile && (lower.includes('mobile') || lower.includes('phone') || lower.includes('contact') || /^[6-9]\d{9}$/.test(str))) {
+                    mobile = str;
+                }
+                if (!aadhaar && (lower.includes('aadhaar') || lower.includes('uid') || /^\d{4}\s?\d{4}\s?\d{4}$/.test(str) || /^\d{12}$/.test(str))) {
+                    aadhaar = str;
+                }
+            }
+
+            const loggedInUser = (typeof UserAuth !== 'undefined' && typeof UserAuth.getCurrentUser === 'function') 
+                ? UserAuth.getCurrentUser() : null;
+            const userMobile = loggedInUser ? loggedInUser.mobile : (mobile || "");
+            const userName = loggedInUser ? loggedInUser.name : (applicantName || "");
+
+            if (!currentSessionAppId) {
+                const urlParams = new URLSearchParams(window.location.search);
+                currentSessionAppId = urlParams.get('edit_app_id') || ("ADH-" + Math.floor(100000 + Math.random() * 900000));
+            }
+
+            const formRecord = {
+                appId: currentSessionAppId,
+                prefix: "ADH",
+                formType: "aadhaar-certificate",
+                formKey: currentFormKey,
+                formTitle: "आधार प्रमाणपत्र (" + (config.name || "Aadhaar") + ")",
+                applicantName: applicantName || userName || "आधार नोंदणी अर्जदार",
+                fullName: applicantName || userName || "आधार नोंदणी अर्जदार",
+                mobile: mobile || userMobile,
+                userMobile: userMobile,
+                userName: userName,
+                aadhaar: aadhaar || "",
+                purpose: "आधार नोंदणी व सुधारणा",
+                formData: values,
+                status: isPaymentVerified ? "paid" : "draft"
+            };
+
+            try {
+                // 1. Supabase Cloud DB
+                if (typeof DB !== 'undefined' && typeof DB.saveFormHistory === 'function') {
+                    await DB.saveFormHistory(formRecord);
+                }
+
+                // 2. emudra_form_history (LocalStorage)
+                const key = "emudra_form_history";
+                const list = JSON.parse(localStorage.getItem(key) || "[]");
+                const idx = list.findIndex(item => item.appId === formRecord.appId);
+                if (idx >= 0) list[idx] = formRecord;
+                else list.unshift(formRecord);
+                localStorage.setItem(key, JSON.stringify(list));
+
+                // 3. emudra_csc_applications (LocalStorage)
+                const cscKey = "emudra_csc_applications";
+                const cscList = JSON.parse(localStorage.getItem(cscKey) || "[]");
+                const cscIdx = cscList.findIndex(item => (item.appId || item.id) === formRecord.appId);
+                const cscRecord = {
+                    appId: formRecord.appId,
+                    id: formRecord.appId,
+                    serviceId: "aadhaar-certificate",
+                    serviceName: formRecord.formTitle,
+                    fullName: formRecord.applicantName,
+                    mobile: formRecord.mobile,
+                    aadhaar: formRecord.aadhaar,
+                    date: new Date().toISOString().split('T')[0],
+                    submittedAt: new Date().toISOString(),
+                    status: formRecord.status,
+                    isFormHistory: true
+                };
+                if (cscIdx >= 0) cscList[cscIdx] = cscRecord;
+                else cscList.unshift(cscRecord);
+                localStorage.setItem(cscKey, JSON.stringify(cscList));
+
+                // Update UI status pill
+                const pill = document.getElementById('save-status-pill');
+                const pillText = document.getElementById('save-status-text');
+                if (pill) pill.style.display = 'inline-flex';
+                if (pillText) pillText.textContent = "✅ सेव्ह झाले (" + currentSessionAppId + ")";
+
+                if (!silent) {
+                    showSaveToast("✅ आधार अर्ज " + currentSessionAppId + " सर्व्हरवर सेव्ह झाला!");
+                }
+            } catch (err) {
+                console.warn("Save aadhaar form warning:", err);
+            }
+
+            return formRecord;
+        }
+
+        // Live auto-save on viewer input/change
+        function setupLiveAutoSave() {
+            const container = document.getElementById('viewerContainer');
+            if (!container) return;
+
+            const onFieldInput = function(e) {
+                const target = e.target;
+                if (target && target.name) {
+                    activeFormValues[target.name] = (target.type === 'checkbox') ? target.checked : target.value;
+                }
+                clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(() => {
+                    saveAadhaarApplicationState(true);
+                }, 1000);
+            };
+
+            container.addEventListener('input', onFieldInput, true);
+            container.addEventListener('change', onFieldInput, true);
+        }
+
+        // PDF Viewer Initialization & Edit Mode Auto-Loading
         async function initViewer() {
             try {
-                // Load initial form from URL hash if provided (#destitute or #childcare), else standard
+                const urlParams = new URLSearchParams(window.location.search);
+                const editId = urlParams.get('edit_app_id');
                 const hash = window.location.hash ? window.location.hash.replace('#', '').toLowerCase() : '';
-                const initialForm = AADHAAR_FORMS[hash] ? hash : 'standard';
-                await selectForm(initialForm);
+
+                if (editId) {
+                    isEditMode = true;
+                    currentSessionAppId = editId;
+
+                    let app = null;
+                    try {
+                        if (typeof window.DB !== 'undefined' && typeof window.DB.getFormById === 'function') {
+                            app = await window.DB.getFormById(editId);
+                        }
+                        if (!app) {
+                            const list = JSON.parse(localStorage.getItem('emudra_form_history') || '[]');
+                            app = list.find(a => a.appId === editId);
+                        }
+                        if (!app) {
+                            const cscList = JSON.parse(localStorage.getItem('emudra_csc_applications') || '[]');
+                            app = cscList.find(a => (a.appId || a.id) === editId);
+                        }
+                    } catch (e) {
+                        console.warn("Fetch edit app error:", e);
+                    }
+
+                    let savedValues = {};
+                    let targetForm = AADHAAR_FORMS[hash] ? hash : 'standard';
+
+                    if (app) {
+                        const rawData = app.formData || app.fieldValues || app.docs || {};
+                        savedValues = (rawData && rawData.fieldValues) ? rawData.fieldValues : rawData;
+                        activeFormValues = Object.assign({}, savedValues);
+
+                        if (app.formKey && AADHAAR_FORMS[app.formKey]) {
+                            targetForm = app.formKey;
+                        } else if (savedValues && savedValues._formKey && AADHAAR_FORMS[savedValues._formKey]) {
+                            targetForm = savedValues._formKey;
+                        } else if ((app.formTitle || '').includes('निराधार') || (app.formTitle || '').toLowerCase().includes('destitute')) {
+                            targetForm = 'destitute';
+                        } else if ((app.formTitle || '').includes('बालगृह') || (app.formTitle || '').toLowerCase().includes('childcare')) {
+                            targetForm = 'childcare';
+                        }
+
+                        // Display top edit banner
+                        const banner = document.getElementById('emudra-edit-banner');
+                        if (banner) {
+                            banner.style.display = 'flex';
+                            const idEl = document.getElementById('edit-banner-app-id');
+                            const nameEl = document.getElementById('edit-banner-name');
+                            if (idEl) idEl.textContent = editId;
+                            if (nameEl) nameEl.textContent = app.applicantName || app.fullName || 'अर्जदार';
+                        }
+                    }
+
+                    // In Edit Mode, user already created/paid this application: exempt payment
+                    isPaymentVerified = true;
+                    const downloadBtn = document.getElementById('btn-download');
+                    const downloadBtnText = document.getElementById('btn-download-text');
+                    if (downloadBtn) {
+                        downloadBtn.style.background = 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
+                        downloadBtn.style.boxShadow = '0 4px 15px rgba(22, 163, 74, 0.45)';
+                    }
+                    if (downloadBtnText) {
+                        downloadBtnText.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#4ade80;"></i> बदल सेव्ह & डाऊनलोड करा (सुरक्षित PDF)';
+                    }
+
+                    await selectForm(targetForm, savedValues);
+                } else {
+                    currentSessionAppId = "ADH-" + Math.floor(100000 + Math.random() * 900000);
+                    const initialForm = AADHAAR_FORMS[hash] ? hash : 'standard';
+                    await selectForm(initialForm);
+                }
+
+                // Setup live auto-saving
+                setupLiveAutoSave();
             } catch (error) {
                 console.error("Error initializing viewer:", error);
             }
@@ -1077,80 +1457,68 @@
                 const config = AADHAAR_FORMS[currentFormKey] || AADHAAR_FORMS.standard;
 
                 // 1. Extract filled values from pdf.js annotation storage
-                const filledPdfData = await currentPdfDocument.saveDocument();
+                let filledPdfData = null;
+                try {
+                    filledPdfData = await currentPdfDocument.saveDocument();
+                } catch(saveDocErr) {
+                    console.warn("saveDocument fallback:", saveDocErr);
+                }
                 
                 // 2. Load into pdf-lib
-                const pdfDoc = await PDFLib.PDFDocument.load(filledPdfData);
+                let pdfDoc = null;
+                if (filledPdfData) {
+                    pdfDoc = await PDFLib.PDFDocument.load(filledPdfData);
+                } else {
+                    const isFileProtocol = window.location.protocol === 'file:';
+                    let rawBytes = null;
+                    if (!isFileProtocol) {
+                        const r = await fetch(config.fileName + '?v=' + Date.now());
+                        rawBytes = new Uint8Array(await r.arrayBuffer());
+                    } else {
+                        rawBytes = base64ToUint8Array(window[config.base64Key]);
+                    }
+                    pdfDoc = await PDFLib.PDFDocument.load(rawBytes);
+                }
 
-                // Extract field values for server history
-                const fieldValues = {};
-                let applicantName = "";
-                let mobile = "";
-                let aadhaar = "";
+                // Collect latest DOM values
+                const currentValues = collectCurrentPdfFormValues();
+                Object.assign(activeFormValues, currentValues);
+
+                // Ensure every single field from activeFormValues is applied to pdfDoc
                 try {
                     const form = pdfDoc.getForm();
-                    const fields = form.getFields();
-                    fields.forEach(f => {
-                        const name = f.getName();
-                        let val = "";
+                    for (const [name, val] of Object.entries(activeFormValues)) {
+                        if (!name || name.startsWith('_')) continue;
+                        if (val === undefined || val === null || val === '') continue;
                         try {
-                            if (typeof f.getText === 'function') val = f.getText();
+                            const field = form.getField(name);
+                            if (!field) continue;
+                            if (typeof field.setText === 'function') {
+                                field.setText(String(val));
+                            } else if (typeof field.check === 'function') {
+                                if (val === true || val === 'true' || val === 'on' || val === 'Yes' || val === 1) field.check();
+                                else field.uncheck();
+                            } else if (typeof field.select === 'function') {
+                                field.select(String(val));
+                            }
                         } catch(e) {}
-                        if (val) {
-                            fieldValues[name] = val;
-                            const lower = name.toLowerCase();
-                            if (!applicantName && (lower.includes('name') || lower.includes('resident') || lower.includes('नाव'))) applicantName = val;
-                            if (!mobile && (lower.includes('mobile') || lower.includes('phone') || lower.includes('मोबाईल'))) mobile = val;
-                            if (!aadhaar && (lower.includes('aadhaar') || lower.includes('uid') || lower.includes('आधार'))) aadhaar = val;
-                        }
-                    });
-                } catch(extErr) {
-                    console.warn("Field extraction notice:", extErr);
-                }
-
-                // Auto-save application to Server / Database
-                try {
-                    const loggedInUser = (typeof UserAuth !== 'undefined' && typeof UserAuth.getCurrentUser === 'function') 
-                        ? UserAuth.getCurrentUser() : null;
-                    const userMobile = loggedInUser ? loggedInUser.mobile : (mobile || "");
-                    const userName = loggedInUser ? loggedInUser.name : (applicantName || "");
-
-                    const formRecord = {
-                        appId: "ADH-" + Date.now().toString().slice(-6),
-                        prefix: "ADH",
-                        formType: "aadhaar-certificate",
-                        formTitle: "आधार प्रमाणपत्र (" + (config.name || "Aadhaar") + ")",
-                        applicantName: applicantName || userName || "आधार नोंदणी अर्जदार",
-                        fullName: applicantName || userName || "आधार नोंदणी अर्जदार",
-                        mobile: mobile || userMobile,
-                        userMobile: userMobile,
-                        userName: userName,
-                        aadhaar: aadhaar || "",
-                        purpose: "आधार नोंदणी व सुधारणा",
-                        formData: fieldValues,
-                        status: "downloaded"
-                    };
-                    if (typeof DB !== 'undefined' && typeof DB.saveFormHistory === 'function') {
-                        DB.saveFormHistory(formRecord);
-                    } else {
-                        const key = "emudra_form_history";
-                        const list = JSON.parse(localStorage.getItem(key) || "[]");
-                        list.unshift(formRecord);
-                        localStorage.setItem(key, JSON.stringify(list));
                     }
-                } catch(saveErr) {
-                    console.warn("Auto-save aadhaar form failed:", saveErr);
+                } catch(syncErr) {
+                    console.warn("Field sync warning before flatten:", syncErr);
                 }
-                
-                // 3. Flatten form fields (locks input into static document)
+
+                // 3. Save application to DB / LocalStorage
+                await saveAadhaarApplicationState(true);
+
+                // 4. Flatten form fields (locks input into static document)
                 try {
                     const form = pdfDoc.getForm();
                     form.flatten();
                 } catch (flattenErr) {
-                    console.warn("No form fields to flatten or already flattened:", flattenErr);
+                    console.warn("Flatten note:", flattenErr);
                 }
                 
-                // 4. Save and trigger clean download
+                // 5. Save and trigger clean download
                 const flattenedBytes = await pdfDoc.save();
                 const blob = new Blob([flattenedBytes], { type: 'application/pdf' });
                 
@@ -1184,10 +1552,8 @@
             note: "Aadhaar_Certificate_Form_Download"
         };
 
-        let isPaymentVerified = false;
-
         function handleDownloadTrigger() {
-            if (isPaymentVerified) {
+            if (isPaymentVerified || isEditMode) {
                 downloadFlattenedPDF();
             } else {
                 openPaymentModal();
@@ -1325,6 +1691,18 @@
             closePaymentModal();
             downloadFlattenedPDF();
         }
+
+        // Global APIs for Universal Form History integration
+        window.getAadhaarCurrentFormData = function() {
+            return collectCurrentPdfFormValues();
+        };
+
+        window.populateAadhaarForm = function(formData) {
+            if (!formData) return;
+            const values = (formData && formData.fieldValues) ? formData.fieldValues : formData;
+            Object.assign(activeFormValues, values);
+            selectForm(currentFormKey, values);
+        };
 
         window.addEventListener("DOMContentLoaded", initViewer);
     </script>
