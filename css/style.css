@@ -552,8 +552,19 @@ button, input, select, textarea {
 
 .logo-pill.csc {
   color: #1a0533;
-  border-left: 4px solid #00a86b;
+  border: 1px solid rgba(0, 168, 107, 0.3);
+  border-left: 3.5px solid #00a86b;
   background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(230,249,243,0.9));
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.logo-pill.csc:hover {
+  background: #00a86b;
+  color: #ffffff !important;
+  border-color: #008f5a;
+  box-shadow: 0 4px 12px rgba(0, 168, 107, 0.35);
+  transform: translateY(-2px);
 }
 
 /* 🔮 FROSTED GLASS Premium Sticky Navigation */
@@ -641,6 +652,56 @@ button, input, select, textarea {
   white-space: nowrap !important;
   cursor: pointer !important;
   transition: var(--transition) !important;
+}
+
+/* 0. eMudra Hub Button */
+.nav-hub-btn {
+  background: linear-gradient(135deg, #ff9500 0%, #e07400 50%, #d97706 100%) !important;
+  color: #ffffff !important;
+  border: 1.5px solid #fde68a !important;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4), 0 0 12px rgba(255, 149, 0, 0.25) !important;
+  text-decoration: none !important;
+  font-family: var(--font-marathi) !important;
+  font-size: 0.8rem !important;
+  font-weight: 800 !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 6px 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.4rem !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  transition: var(--transition) !important;
+  animation: pulseHubGlow 2.5s infinite alternate;
+}
+.nav-hub-btn span, .nav-hub-btn i {
+  color: #ffffff !important;
+}
+.nav-hub-btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  border-color: #a7f3d0 !important;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.5) !important;
+  transform: translateY(-2px);
+}
+@keyframes pulseHubGlow {
+  0% { box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35); }
+  100% { box-shadow: 0 2px 14px rgba(245, 158, 11, 0.7), 0 0 14px rgba(255, 149, 0, 0.45); }
+}
+
+.badge-new-glow {
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-left: 4px;
+  vertical-align: middle;
+  animation: pulseBadge 1.5s infinite;
+}
+@keyframes pulseBadge {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.08); }
 }
 
 /* 1. Softwares Hub Button */
@@ -3869,6 +3930,17 @@ body.dark-mode .logo-pill {
   color: #f8fafc !important;
   border: 1px solid #1e293b !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .logo-pill.csc {
+  background: rgba(6, 78, 59, 0.4) !important;
+  color: #6ee7b7 !important;
+  border: 1px solid rgba(52, 211, 153, 0.3) !important;
+  border-left: 3.5px solid #10b981 !important;
+}
+body.dark-mode .logo-pill.csc:hover {
+  background: #059669 !important;
+  color: #ffffff !important;
 }
 
 body.dark-mode .main-navbar {

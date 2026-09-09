@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>पासपोर्ट फोटो मेकर (Passport Photo Maker & A4 6-Photo Sheet) - eMudra CSC</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/emudra_logo.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-navy: #1a0533;
+      --primary-indigo: #2d1b69;
+      --primary-purple: #4c2885;
+      --saffron-gold: #ff9500;
+      --saffron-dark: #d97706;
+      --emerald-green: #059669;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', 'Mukta', sans-serif;
+      background: #f1f5f9;
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Header */
+    .top-navbar {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-indigo) 100%);
+      color: #ffffff;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid var(--saffron-gold);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #ffffff;
+    }
+
+    .nav-brand-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--saffron-gold), var(--saffron-dark));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #ffffff;
+    }
+
+    .nav-brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .nav-brand-sub {
+      font-size: 0.75rem;
+      color: #fed7aa;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-nav-home {
+      background: rgba(255,255,255,0.15);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .btn-nav-home:hover {
+      background: #ffffff;
+      color: var(--primary-navy);
+    }
+    .btn-nav-hub {
+      background: linear-gradient(135deg, var(--saffron-gold), var(--saffron-dark));
+      color: #ffffff;
+      border: 1px solid #fde68a;
+    }
+
+    /* Page Hero Banner */
+    .page-hero {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+      color: #ffffff;
+      padding: 1.75rem 1.25rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .page-hero h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-hero p {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-features-chips {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .hero-chip {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fde68a;
+    }
+
+    /* App Layout */
+    .app-main-layout {
+      max-width: 1440px;
+      width: 100%;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 1fr 520px; /* Left: A4 Sheet Preview, Right (Starts at Center): Photo Queue & Controls */
+      gap: 1.5rem;
+      flex: 1;
+    }
+
+    @media (max-width: 1100px) {
+      .app-main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Card Panels */
+    .app-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .app-card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--primary-navy);
+    }
+
+    /* Upload Zone */
+    .dropzone-box {
+      border: 2px dashed #93c5fd;
+      background: #eff6ff;
+      border-radius: 12px;
+      padding: 2rem 1.25rem;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .dropzone-box:hover {
+      border-color: var(--saffron-gold);
+      background: #fffbeb;
+    }
+
+    .dropzone-box i {
+      font-size: 2.4rem;
+      color: #3b82f6;
+      margin-bottom: 8px;
+    }
+
+    .dropzone-box h4 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-bottom: 4px;
+    }
+
+    .dropzone-box p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .file-input-hidden {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    /* Multi-Customer Queue List */
+    .customer-queue-container {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .customer-queue-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 12px;
+      transition: all 0.2s;
+    }
+
+    .customer-queue-card.active {
+      border-color: var(--primary-purple);
+      background: #faf5ff;
+      box-shadow: 0 0 0 2px rgba(126, 34, 206, 0.15);
+    }
+
+    .customer-thumb {
+      width: 50px;
+      height: 64px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+    }
+
+    .customer-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .customer-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .customer-copies-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .copy-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.15s;
+    }
+    .copy-btn:hover { background: #e2e8f0; }
+
+    .copy-count-badge {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--primary-purple);
+      min-width: 55px;
+      text-align: center;
+    }
+
+    .customer-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-action-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .btn-action-icon:hover {
+      background: #fee2e2;
+      color: #dc2626;
+      border-color: #fca5a5;
+    }
+
+    /* Active Photo Editor Box */
+    .editor-section {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 1rem;
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .crop-canvas-box {
+      width: 140px;
+      height: 180px; /* 35x45 mm ratio */
+      border: 2px solid var(--primary-purple);
+      border-radius: 6px;
+      background: #e2e8f0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    #active-crop-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Color Swatches for Background Change */
+    .color-swatches-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 99px;
+      border: 2px solid #cbd5e1;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .color-swatch-btn:hover, .color-swatch-btn.active {
+      transform: scale(1.15);
+      border-color: var(--primary-navy);
+      box-shadow: 0 0 0 2px rgba(26,5,51,0.3);
+    }
+
+    /* Form Controls */
+    .control-group {
+      margin-bottom: 10px;
+    }
+
+    .control-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .control-select, .control-input {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
+    /* Right Preview Stage */
+    .sheet-preview-pane {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .sheet-canvas-wrapper {
+      background: #334155;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: auto;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+      flex: 1;
+      min-height: 550px;
+    }
+
+    #a4-print-sheet-canvas {
+      background: #ffffff;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    .sheet-action-bar {
+      margin-top: 1rem;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-print-main {
+      background: linear-gradient(135deg, var(--saffron-gold), var(--saffron-dark));
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-print-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-download-hd {
+      background: linear-gradient(135deg, var(--emerald-green), #047857);
+      color: #ffffff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+      transition: all 0.2s;
+    }
+    .btn-download-hd:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Print media */
+    @media print {
+      body { background: #fff !important; margin: 0 !important; }
+      .top-navbar, .page-hero, .app-card, .sheet-action-bar, .no-print {
+        display: none !important;
+      }
+      .app-main-layout { display: block !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+      .sheet-canvas-wrapper { background: transparent !important; padding: 0 !important; box-shadow: none !important; }
+      #a4-print-sheet-canvas { width: 100% !important; height: auto !important; box-shadow: none !important; }
+      @page { size: A4 portrait; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="top-navbar no-print">
+    <a href="index.html" class="nav-brand">
+      <div class="nav-brand-icon">
+        <i class="fa-solid fa-camera"></i>
+      </div>
+      <div>
+        <div class="nav-brand-title">eMudra Passport Studio</div>
+        <div class="nav-brand-sub">आपले सरकार सेवा केंद्र (Center ID: 152153410016)</div>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <button class="btn-nav btn-nav-home" onclick="toggleLayoutDirection()" id="btn-toggle-layout" title="लेआउट बदला (डावीकडे / उजवीकडे)">
+        <i class="fa-solid fa-table-columns"></i> <span>लेआउट स्विच</span>
+      </button>
+      <a href="emudra-hub.html" class="btn-nav btn-nav-hub">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> eMudra Hub सर्व टूल्स
+      </a>
+      <a href="index.html" class="btn-nav btn-nav-home">
+        <i class="fa-solid fa-house"></i> मुख्यपृष्ठ
+      </a>
+    </div>
+  </header>
+
+  <!-- Page Hero Banner -->
+  <section class="page-hero no-print">
+    <h1>
+      <i class="fa-solid fa-images" style="color: #fbbf24;"></i>
+      पासपोर्ट फोटो मेकर & ६*४ / A4 फोटो शीट (Passport Photo Studio)
+    </h1>
+    <p>
+      ३५×४५ मिमी अधिकृत मानक • ६*४ पोस्टकार्ड पेपर व A4 शीटवर वेगवेगळ्या ग्राहकांचे फोटो लावा • ६ ते ३६ फोटो • बॅकग्राउंड बदला • कोट/ब्लेझर ओव्हरले • १००% मोफत व सुरक्षित
+    </p>
+    <div class="hero-features-chips">
+      <span class="hero-chip"><i class="fa-solid fa-users"></i> मल्टी-कस्टमर प्रिंट रांग</span>
+      <span class="hero-chip"><i class="fa-solid fa-table-cells"></i> ६*४ व A4 पेपर सपोर्ट</span>
+      <span class="hero-chip"><i class="fa-solid fa-palette"></i> बॅकग्राउंड कलर चेंजर</span>
+      <span class="hero-chip"><i class="fa-solid fa-user-tie"></i> फॉर्मल सूट/कोट ओव्हरले</span>
+      <span class="hero-chip"><i class="fa-solid fa-scissors"></i> कटिंग बॉर्डर्स (300 DPI)</span>
+    </div>
+  </section>
+
+  <!-- Main 2-Column Studio Layout -->
+  <main class="app-main-layout">
+
+    <!-- LEFT COLUMN: LIVE SHEET PREVIEW & PRINT ACTIONS -->
+    <div class="sheet-preview-pane">
+      
+      <div class="app-card" style="display: flex; flex-direction: column; flex: 1;">
+        <div class="app-card-title">
+          <span><i class="fa-solid fa-file-image" style="color: #059669;"></i> <span id="sheet-title-text">६*४ प्रिंट शीट</span> लाइव्ह प्रिव्ह्यू (300 DPI High Definition)</span>
+          <span id="sheet-total-count-tag" style="font-size: 0.8rem; font-weight: 800; color: #059669; background: #ecfdf5; padding: 2px 10px; border-radius: 99px;">एकूण ० फोटो (0/8)</span>
+        </div>
+
+        <div class="sheet-canvas-wrapper">
+          <canvas id="a4-print-sheet-canvas"></canvas>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="sheet-action-bar no-print">
+          <div>
+            <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">
+              <i class="fa-solid fa-check-circle" style="color: #059669;"></i> Epson, Canon, HP सर्व प्रिंटर्सवर अचूक ३५×४५ मिमी फिटिंग
+            </span>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-download-hd" onclick="downloadSheetHD()">
+              <i class="fa-solid fa-download"></i> HD शीट सेव्ह करा (300 DPI)
+            </button>
+            <button class="btn-print-main" onclick="printSheetDirect()">
+              <i class="fa-solid fa-print"></i> थेट प्रिंट करा (Print Sheet)
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN (STARTS FROM CENTER OF PAGE): PHOTO QUEUE & EDITOR CONTROLS -->
+    <div class="no-print">
+      
+      <!-- Upload Card -->
+      <div class="app-card">
+        <div class="app-card-title">
+          <span><i class="fa-solid fa-cloud-arrow-up" style="color: #3b82f6;"></i> ग्राहक फोटो अपलोड करा</span>
+          <span style="font-size: 0.75rem; color: #059669; font-weight: 700;">अनेक फोटो एकदम निवडू शकता</span>
+        </div>
+
+        <!-- Passport Size Dropdown (Country & Custom Presets) -->
+        <div class="control-group" style="margin-bottom: 12px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.95rem; font-weight: 800; color: #1e293b; margin-bottom: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+              <path d="M6 2v14a2 2 0 0 0 2 2h14"></path>
+              <path d="M18 22V8a2 2 0 0 0-2-2H2"></path>
+            </svg>
+            <span>Passport Size</span>
+          </label>
+          <select class="control-select" id="passport-size-preset" onchange="onPassportPresetChange(this.value)" style="width: 100%; font-weight: 700; border: 1.5px solid #cbd5e1; padding: 9px 12px; font-size: 0.92rem; border-radius: 8px; cursor: pointer; color: #1e1b4b; background-color: #ffffff; outline: none; transition: border-color 0.2s;">
+            <option value="" disabled>--Select Country--</option>
+            <option value="a4_6" selected>A4 6 Photos/Row (Equal Margins) - 3.2×4.114cm</option>
+            <option value="india">India (Passport/PAN) - 3.5×4.5cm</option>
+            <option value="usa">USA (Passport/Visa) - 2×2 inch</option>
+            <option value="uk">UK (Passport) - 3.5×4.5cm</option>
+            <option value="schengen">Schengen (Europe) - 3.5×4.5cm</option>
+            <option value="canada">Canada (Passport) - 50×70mm</option>
+            <option value="australia">Australia - 35×45mm</option>
+            <option value="japan">Japan (Visa/Passport) - 35×45mm</option>
+            <option value="china">China (Visa) - 33×48mm</option>
+            <option value="russia">Russia - 35×45mm</option>
+            <option value="uae">UAE (Visa) - 4×6cm</option>
+            <option value="saudi">Saudi Arabia - 4×6cm</option>
+            <option value="singapore">Singapore - 35×45mm</option>
+            <option value="malaysia">Malaysia - 35×50mm</option>
+            <option value="korea">South Korea - 35×45mm</option>
+            <option value="brazil">Brazil - 5×7cm</option>
+            <option value="turkey">Turkey - 50×60mm</option>
+            <option value="custom">Custom Size(cm)</option>
+          </select>
+
+          <!-- Custom Dimensions Input Row (Hidden by default) -->
+          <div id="custom-size-inputs-row" style="display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; background: #e0e7ff; padding: 8px 10px; border-radius: 6px;">
+            <div>
+              <label style="font-size: 0.75rem; font-weight: 700; color: #312e81;">रुंदी (Width cm):</label>
+              <input type="number" id="custom-photo-w-cm" step="0.1" value="3.5" class="control-input" oninput="onCustomDimensionsChange()">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem; font-weight: 700; color: #312e81;">उंची (Height cm):</label>
+              <input type="number" id="custom-photo-h-cm" step="0.1" value="4.5" class="control-input" oninput="onCustomDimensionsChange()">
+            </div>
+          </div>
+        </div>
+
+        <div class="dropzone-box">
+          <i class="fa-solid fa-camera"></i>
+          <h4>फोटो येथे ड्रॅग करा किंवा क्लिक करा</h4>
+          <p>JPG, PNG किंवा WEBP (एकावेळी १ किंवा जास्त फोटो)</p>
+          <input type="file" id="batch-photo-input" class="file-input-hidden" accept="image/*" multiple onchange="handleBatchPhotoUpload(event)">
+        </div>
+
+        <!-- Customer Queue List (Starts from Center) -->
+        <div style="margin-top: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1.5px dashed #cbd5e1; padding-bottom: 6px;">
+            <span style="font-size: 0.9rem; font-weight: 800; color: var(--primary-navy);">
+              <i class="fa-solid fa-users-viewfinder" style="color: #4f46e5; margin-right: 4px;"></i> ग्राहकांची फोटो यादी (Print Queue):
+            </span>
+            <span id="queue-stat-badge" style="font-size: 0.75rem; background: #e0e7ff; color: #4338ca; padding: 2px 10px; border-radius: 99px; font-weight: 800;">0 फोटो</span>
+          </div>
+
+          <div class="customer-queue-container" id="customer-queue-list">
+            <div style="text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.85rem;">
+              अद्याप कोणताही फोटो निवडला नाही. कृपया वरून ग्राहकांचे फोटो निवडा.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Photo Editor Card -->
+      <div class="app-card" id="editor-card" style="display: none;">
+        <div class="app-card-title">
+          <span><i class="fa-solid fa-sliders" style="color: #8b5cf6;"></i> निवडलेला फोटो एडिट करा</span>
+          <span id="active-photo-tag" style="font-size: 0.75rem; background: #f3e8ff; color: #7e22ce; padding: 2px 8px; border-radius: 6px; font-weight: 700;">Customer 1</span>
+        </div>
+
+        <div class="editor-section">
+          <div class="editor-grid">
+            
+            <!-- Crop Frame Canvas -->
+            <div>
+              <div class="crop-canvas-box">
+                <canvas id="active-crop-canvas" width="350" height="450"></canvas>
+              </div>
+              <div style="display: flex; gap: 4px; margin-top: 6px;">
+                <button class="copy-btn" onclick="adjustActiveZoom(0.1)" title="Zoom In" style="flex: 1;"><i class="fa-solid fa-plus"></i></button>
+                <button class="copy-btn" onclick="adjustActiveZoom(-0.1)" title="Zoom Out" style="flex: 1;"><i class="fa-solid fa-minus"></i></button>
+                <button class="copy-btn" onclick="rotateActivePhoto()" title="Rotate 90°" style="flex: 1;"><i class="fa-solid fa-rotate-right"></i></button>
+              </div>
+            </div>
+
+            <!-- Editing Options -->
+            <div>
+              <!-- Background Color -->
+              <div class="control-group">
+                <span class="control-label">बॅकग्राउंड रंग (Background Color):</span>
+                <div class="color-swatches-row">
+                  <button class="color-swatch-btn active" style="background: #ffffff;" onclick="changeBgColor('#ffffff')" title="White (पांढरा)"></button>
+                  <button class="color-swatch-btn" style="background: #dbeafe;" onclick="changeBgColor('#dbeafe')" title="Light Blue (आकाशी)"></button>
+                  <button class="color-swatch-btn" style="background: #2563eb;" onclick="changeBgColor('#2563eb')" title="Royal Blue (निळा)"></button>
+                  <button class="color-swatch-btn" style="background: #e2e8f0;" onclick="changeBgColor('#e2e8f0')" title="Grey (करडा)"></button>
+                  <button class="color-swatch-btn" style="background: #dc2626;" onclick="changeBgColor('#dc2626')" title="Red (लाल)"></button>
+                  <button class="color-swatch-btn" style="background: transparent; border: 2px dashed #94a3b8;" onclick="changeBgColor('original')" title="Original (मूळ फोटो)"></button>
+                </div>
+              </div>
+
+              <!-- Suit / Clothing Overlay -->
+              <div class="control-group" style="margin-top: 10px;">
+                <span class="control-label">कोट / ब्लेझर ओव्हरले (Add Formal Suit):</span>
+                <select class="control-select" id="suit-overlay-select" onchange="changeSuitOverlay(this.value)">
+                  <option value="none" selected>काहीही नाही (मूळ कपडे)</option>
+                  <option value="suit_black">फॉर्मल काळा कोट व लाल टाय</option>
+                  <option value="suit_blue">नेव्ही ब्लू ब्लेझर व टाय</option>
+                </select>
+              </div>
+
+              <!-- Brightness & Contrast -->
+              <div class="control-group" style="margin-top: 8px;">
+                <span class="control-label">उजेड / ब्राईटनेस (Brightness):</span>
+                <input type="range" min="80" max="130" value="100" id="brightness-slider" style="width: 100%;" oninput="changePhotoFilters()">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Sheet Settings Card -->
+      <div class="app-card">
+        <div class="app-card-title">
+          <span><i class="fa-solid fa-gear" style="color: #d97706;"></i> प्रिंट शीट सेटिंग्ज</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="control-group">
+            <span class="control-label">पेपर प्रकार (Sheet Size):</span>
+            <select class="control-select" id="sheet-paper-type" onchange="updateSheetSettings()">
+              <option value="6x4" selected>६*४ फोटो पेपर (6*4 inch Postcard / लँडस्केप)</option>
+              <option value="a4">A4 शीट (१ ओळीत ६ फोटो / पोर्ट्रेट)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <span class="control-label">कटिंग बॉर्डर (Border):</span>
+            <select class="control-select" id="sheet-border-style" onchange="updateSheetSettings()">
+              <option value="thin" selected>१px बारीक काळी बॉर्डर</option>
+              <option value="none">बॉर्डर नको (No Border)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px;">
+          <div class="control-group">
+            <span class="control-label">फोटो मधील अंतर (Gap):</span>
+            <select class="control-select" id="sheet-gap-select" onchange="updateSheetSettings()">
+              <option value="small">बारीक अंतर (Compact)</option>
+              <option value="normal" selected>मध्यम अंतर (Standard 3mm)</option>
+              <option value="wide">अधिक अंतर (Wide 5mm)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <span class="control-label">केंद्राचे नाव प्रिंटवर:</span>
+            <select class="control-select" id="sheet-watermark-select" onchange="updateSheetSettings()">
+              <option value="yes" selected>eMudra CSC (तळटीप)</option>
+              <option value="no">काहीही नको (Blank)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top: 8px; background: #eef2ff; border: 1.5px solid #c7d2fe; border-radius: 8px; padding: 8px 12px;">
+          <div class="control-group" style="margin-bottom: 0;">
+            <span class="control-label" style="display: flex; align-items: center; justify-content: space-between; font-weight: 800; color: #3730a3;">
+              <span><i class="fa-solid fa-align-center" style="color: #6366f1;"></i> फोटो मांडणी / अलाइनमेंट (Alignment):</span>
+              <span style="font-size: 0.72rem; background: #4338ca; color: #ffffff; padding: 2px 7px; border-radius: 99px;">कटर फ्रेंडली</span>
+            </span>
+            <select class="control-select" id="sheet-align-select" onchange="updateSheetSettings()" style="font-weight: 700; color: #1e1b4b; background: #ffffff; border: 1.5px solid #818cf8; margin-top: 4px;">
+              <option value="studio_center" selected>🎯 स्टुडिओ सेंटर (Portrait: वर मध्यभागी | Landscape: डावीकडे मध्यभागी)</option>
+              <option value="page_middle">⚖️ पूर्ण पेजच्या मध्यभागी (Page Middle)</option>
+              <option value="top_left">↖️ वर डावीकडून (Top Left)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Clean Print Dialog Script & Passport Engine -->
+  <script>
+    // Global Passport & Visa Size Presets
+    const COUNTRY_PRESETS = {
+      a4_6: { wCm: 3.2, hCm: 4.114, label: "A4 6 Photos/Row (Equal Margins) - 3.2×4.114cm", colsA4: 6 },
+      india: { wCm: 3.5, hCm: 4.5, label: "India (Passport/PAN) - 3.5×4.5cm", colsA4: 6 },
+      usa: { wCm: 5.08, hCm: 5.08, label: "USA (Passport/Visa) - 2×2 inch", colsA4: 4 },
+      uk: { wCm: 3.5, hCm: 4.5, label: "UK (Passport) - 3.5×4.5cm", colsA4: 6 },
+      schengen: { wCm: 3.5, hCm: 4.5, label: "Schengen (Europe) - 3.5×4.5cm", colsA4: 6 },
+      canada: { wCm: 5.0, hCm: 7.0, label: "Canada (Passport) - 50×70mm", colsA4: 4 },
+      australia: { wCm: 3.5, hCm: 4.5, label: "Australia - 35×45mm", colsA4: 6 },
+      japan: { wCm: 3.5, hCm: 4.5, label: "Japan (Visa/Passport) - 35×45mm", colsA4: 6 },
+      china: { wCm: 3.3, hCm: 4.8, label: "China (Visa) - 33×48mm", colsA4: 6 },
+      russia: { wCm: 3.5, hCm: 4.5, label: "Russia - 35×45mm", colsA4: 6 },
+      uae: { wCm: 4.0, hCm: 6.0, label: "UAE (Visa) - 4×6cm", colsA4: 5 },
+      saudi: { wCm: 4.0, hCm: 6.0, label: "Saudi Arabia - 4×6cm", colsA4: 5 },
+      singapore: { wCm: 3.5, hCm: 4.5, label: "Singapore - 35×45mm", colsA4: 6 },
+      malaysia: { wCm: 3.5, hCm: 5.0, label: "Malaysia - 35×50mm", colsA4: 6 },
+      korea: { wCm: 3.5, hCm: 4.5, label: "South Korea - 35×45mm", colsA4: 6 },
+      brazil: { wCm: 5.0, hCm: 7.0, label: "Brazil - 5×7cm", colsA4: 4 },
+      turkey: { wCm: 5.0, hCm: 6.0, label: "Turkey - 50×60mm", colsA4: 4 },
+      custom: { wCm: 3.5, hCm: 4.5, label: "Custom Size(cm)", colsA4: 6 }
+    };
+
+    // State management for Multi-Customer Queue
+    const passportEngine = {
+      queue: [], // { id, name, img, copies: 8, zoom: 1, rotation: 0, bgColor: 'original', suit: 'none', brightness: 100 }
+      activeId: null,
+      paper: '6x4', // Default 6*4 inch Postcard photo paper
+      border: 'thin',
+      gap: 'normal',
+      watermark: 'yes',
+      presetKey: 'a4_6',
+      wCm: 3.2,
+      hCm: 4.114,
+      align: 'studio_center' // 'studio_center' (Portrait: Upper Center | Landscape: Left Center) | 'page_middle' | 'top_left'
+    };
+
+    function onPassportPresetChange(val) {
+      passportEngine.presetKey = val;
+      const customRow = document.getElementById('custom-size-inputs-row');
+      if (val === 'custom') {
+        if (customRow) customRow.style.display = 'grid';
+        passportEngine.wCm = parseFloat(document.getElementById('custom-photo-w-cm').value) || 3.5;
+        passportEngine.hCm = parseFloat(document.getElementById('custom-photo-h-cm').value) || 4.5;
+      } else {
+        if (customRow) customRow.style.display = 'none';
+        const preset = COUNTRY_PRESETS[val];
+        if (preset) {
+          passportEngine.wCm = preset.wCm;
+          passportEngine.hCm = preset.hCm;
+        }
+      }
+      const cropBox = document.querySelector('.crop-canvas-box');
+      if (cropBox) {
+        cropBox.style.aspectRatio = `${passportEngine.wCm} / ${passportEngine.hCm}`;
+      }
+      renderCropCanvas();
+      renderA4Sheet();
+    }
+
+    function onCustomDimensionsChange() {
+      passportEngine.wCm = parseFloat(document.getElementById('custom-photo-w-cm').value) || 3.5;
+      passportEngine.hCm = parseFloat(document.getElementById('custom-photo-h-cm').value) || 4.5;
+      const cropBox = document.querySelector('.crop-canvas-box');
+      if (cropBox) {
+        cropBox.style.aspectRatio = `${passportEngine.wCm} / ${passportEngine.hCm}`;
+      }
+      renderCropCanvas();
+      renderA4Sheet();
+    }
+
+    // Suit SVG Overlays
+    const SUIT_SVGS = {
+      suit_black: `data:image/svg+xml;utf8,<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><path d="M 20 200 L 45 90 L 95 65 L 120 75 L 150 150 L 180 75 L 205 65 L 255 90 L 280 200 Z" fill="%231e293b"/><path d="M 95 65 L 120 140 L 150 170 L 120 75 Z" fill="%230f172a"/><path d="M 205 65 L 180 140 L 150 170 L 180 75 Z" fill="%230f172a"/><polygon points="120,75 180,75 150,150" fill="%23ffffff"/><polygon points="144,80 156,80 158,135 150,165 142,135" fill="%23dc2626"/><polygon points="142,75 158,75 155,85 145,85" fill="%23b91c1c"/></svg>`,
+      suit_blue: `data:image/svg+xml;utf8,<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><path d="M 20 200 L 45 90 L 95 65 L 120 75 L 150 150 L 180 75 L 205 65 L 255 90 L 280 200 Z" fill="%231e3a8a"/><path d="M 95 65 L 120 140 L 150 170 L 120 75 Z" fill="%23172554"/><path d="M 205 65 L 180 140 L 150 170 L 180 75 Z" fill="%23172554"/><polygon points="120,75 180,75 150,150" fill="%23ffffff"/><polygon points="144,80 156,80 158,135 150,165 142,135" fill="%230284c7"/><polygon points="142,75 158,75 155,85 145,85" fill="%230369a1"/></svg>`
+    };
+
+    const loadedSuitImages = {};
+    for (const [key, svgUrl] of Object.entries(SUIT_SVGS)) {
+      const img = new Image();
+      img.src = svgUrl;
+      loadedSuitImages[key] = img;
+    }
+
+    // Handle Uploading Multiple Photos
+    function handleBatchPhotoUpload(event) {
+      const files = Array.from(event.target.files);
+      if (!files.length) return;
+
+      files.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const customerId = 'cust_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+            const customerObj = {
+              id: customerId,
+              name: `Customer ${passportEngine.queue.length + 1}`,
+              img: img,
+              copies: (passportEngine.paper === '6x4' || passportEngine.paper === '4x6') ? 8 : 6, // Default 8 copies on 6*4, 6 on A4
+              zoom: 1,
+              rotation: 0,
+              bgColor: 'original',
+              suit: 'none',
+              brightness: 100
+            };
+            passportEngine.queue.push(customerObj);
+            if (!passportEngine.activeId) {
+              setActiveCustomer(customerId);
+            }
+            renderQueueUI();
+            renderA4Sheet();
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderQueueUI() {
+      const list = document.getElementById('customer-queue-list');
+      const badge = document.getElementById('queue-stat-badge');
+      badge.innerText = `${passportEngine.queue.length} ग्राहक`;
+
+      if (!passportEngine.queue.length) {
+        list.innerHTML = `<div style="text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.85rem;">अद्याप कोणताही फोटो निवडला नाही. कृपया वरून ग्राहकांचे फोटो निवडा.</div>`;
+        document.getElementById('editor-card').style.display = 'none';
+        return;
+      }
+
+      list.innerHTML = '';
+      passportEngine.queue.forEach((c) => {
+        const card = document.createElement('div');
+        card.className = `customer-queue-card ${c.id === passportEngine.activeId ? 'active' : ''}`;
+        card.innerHTML = `
+          <img src="${c.img.src}" class="customer-thumb" onclick="setActiveCustomer('${c.id}')" title="एडिट करण्यासाठी क्लिक करा">
+          <div class="customer-info" onclick="setActiveCustomer('${c.id}')">
+            <div class="customer-name">${c.name}</div>
+            <div class="customer-copies-row">
+              <button class="copy-btn" onclick="event.stopPropagation(); changeCopies('${c.id}', -1)" title="१ फोटो कमी करा">-१</button>
+              <span class="copy-count-badge">${c.copies} फोटो</span>
+              <button class="copy-btn" onclick="event.stopPropagation(); changeCopies('${c.id}', 1)" title="१ फोटो वाढवा">+१</button>
+              <button class="copy-btn" onclick="event.stopPropagation(); setExactCopies('${c.id}', 4)" title="४ फोटो सेट करा" style="background: #eef2ff; color: #4338ca; font-weight: 700;">४</button>
+              <button class="copy-btn" onclick="event.stopPropagation(); setExactCopies('${c.id}', 6)" title="६ फोटो सेट करा" style="background: #eef2ff; color: #4338ca; font-weight: 700;">६</button>
+              <button class="copy-btn" onclick="event.stopPropagation(); setExactCopies('${c.id}', 8)" title="८ फोटो सेट करा" style="background: #eef2ff; color: #4338ca; font-weight: 700;">८</button>
+            </div>
+          </div>
+          <div class="customer-actions">
+            <button class="btn-action-icon" onclick="setActiveCustomer('${c.id}')" title="एडिट करा"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button class="btn-action-icon" onclick="removeCustomer('${c.id}')" title="हटवा"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function setActiveCustomer(id) {
+      passportEngine.activeId = id;
+      const customer = passportEngine.queue.find(c => c.id === id);
+      if (!customer) return;
+
+      document.getElementById('editor-card').style.display = 'block';
+      document.getElementById('active-photo-tag').innerText = customer.name;
+      document.getElementById('brightness-slider').value = customer.brightness;
+      document.getElementById('suit-overlay-select').value = customer.suit;
+
+      renderCropCanvas();
+      renderQueueUI();
+    }
+
+    function changeCopies(id, delta) {
+      const customer = passportEngine.queue.find(c => c.id === id);
+      if (!customer) return;
+      customer.copies = Math.max(1, Math.min(36, customer.copies + delta));
+      renderQueueUI();
+      renderA4Sheet();
+    }
+
+    function setExactCopies(id, count) {
+      const customer = passportEngine.queue.find(c => c.id === id);
+      if (!customer) return;
+      customer.copies = Math.max(1, Math.min(36, count));
+      renderQueueUI();
+      renderA4Sheet();
+    }
+
+    function removeCustomer(id) {
+      passportEngine.queue = passportEngine.queue.filter(c => c.id !== id);
+      if (passportEngine.activeId === id) {
+        passportEngine.activeId = passportEngine.queue.length ? passportEngine.queue[0].id : null;
+      }
+      if (passportEngine.activeId) {
+        setActiveCustomer(passportEngine.activeId);
+      } else {
+        document.getElementById('editor-card').style.display = 'none';
+      }
+      renderQueueUI();
+      renderA4Sheet();
+    }
+
+    function adjustActiveZoom(delta) {
+      const customer = passportEngine.queue.find(c => c.id === passportEngine.activeId);
+      if (!customer) return;
+      customer.zoom = Math.max(0.6, Math.min(2.5, customer.zoom + delta));
+      renderCropCanvas();
+      renderA4Sheet();
+    }
+
+    function rotateActivePhoto() {
+      const customer = passportEngine.queue.find(c => c.id === passportEngine.activeId);
+      if (!customer) return;
+      customer.rotation = (customer.rotation + 90) % 360;
+      renderCropCanvas();
+      renderA4Sheet();
+    }
+
+    function changeBgColor(color) {
+      const customer = passportEngine.queue.find(c => c.id === passportEngine.activeId);
+      if (!customer) return;
+      customer.bgColor = color;
+      renderCropCanvas();
+      renderA4Sheet();
+    }
+
+    function changeSuitOverlay(suitType) {
+      const customer = passportEngine.queue.find(c => c.id === passportEngine.activeId);
+      if (!customer) return;
+      customer.suit = suitType;
+      renderCropCanvas();
+      renderA4Sheet();
+    }
+
+    function changePhotoFilters() {
+      const customer = passportEngine.queue.find(c => c.id === passportEngine.activeId);
+      if (!customer) return;
+      customer.brightness = document.getElementById('brightness-slider').value;
+      renderCropCanvas();
+      renderA4Sheet();
+    }
+
+    // Render single photo on crop canvas using active country preset dimensions
+    function renderCropCanvas() {
+      const canvas = document.getElementById('active-crop-canvas');
+      const customer = passportEngine.queue.find(c => c.id === passportEngine.activeId);
+      if (!canvas || !customer) return;
+      const targetW = Math.round((passportEngine.wCm || 3.2) * 100);
+      const targetH = Math.round((passportEngine.hCm || 4.114) * 100);
+      drawPassportPhoto(canvas, customer, targetW, targetH);
+    }
+
+    // Generic function to render 1 passport photo on any canvas
+    function drawPassportPhoto(targetCanvas, customer, w, h) {
+      targetCanvas.width = w;
+      targetCanvas.height = h;
+      const ctx = targetCanvas.getContext('2d');
+
+      ctx.clearRect(0, 0, w, h);
+
+      // 1. Background Color
+      if (customer.bgColor !== 'original') {
+        ctx.fillStyle = customer.bgColor;
+        ctx.fillRect(0, 0, w, h);
+      } else {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      // 2. Photo Image with Zoom & Rotate
+      ctx.save();
+      ctx.filter = `brightness(${customer.brightness}%)`;
+      ctx.translate(w / 2, h / 2);
+      ctx.rotate((customer.rotation * Math.PI) / 180);
+      ctx.scale(customer.zoom, customer.zoom);
+
+      const img = customer.img;
+      const aspect = img.width / img.height;
+      let dw, dh;
+      if (aspect > w / h) {
+        dh = h;
+        dw = dh * aspect;
+      } else {
+        dw = w;
+        dh = dw / aspect;
+      }
+      ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
+      ctx.restore();
+
+      // 3. Suit / Clothing Overlay
+      if (customer.suit && customer.suit !== 'none' && loadedSuitImages[customer.suit]) {
+        const suitImg = loadedSuitImages[customer.suit];
+        const suitW = w * 1.05;
+        const suitH = suitW * (200 / 300);
+        const suitX = (w - suitW) / 2;
+        const suitY = h - suitH + 10;
+        ctx.drawImage(suitImg, suitX, suitY, suitW, suitH);
+      }
+
+      // 4. Cutting Border
+      if (passportEngine.border === 'thin') {
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(1, 1, w - 2, h - 2);
+      }
+    }
+
+    // Render A4 Sheet with country preset dimensions (Equal Margins)
+    function renderA4Sheet() {
+      const sheetCanvas = document.getElementById('a4-print-sheet-canvas');
+      if (!sheetCanvas) return;
+      const sCtx = sheetCanvas.getContext('2d');
+
+      const is6x4 = (passportEngine.paper === '6x4' || passportEngine.paper === '4x6');
+      const isA4 = !is6x4;
+      
+      // Dimensions at 300 DPI
+      // A4: 2480 x 3508 px (Portrait)
+      // 6x4: 1800 x 1200 px (Landscape 6in x 4in Postcard)
+      const sheetW = is6x4 ? 1800 : 2480;
+      const sheetH = is6x4 ? 1200 : 3508;
+
+      sheetCanvas.width = sheetW;
+      sheetCanvas.height = sheetH;
+
+      // White background
+      sCtx.fillStyle = '#ffffff';
+      sCtx.fillRect(0, 0, sheetW, sheetH);
+
+      // Dynamic Photo Dimensions at 300 DPI (1 cm = 118.11 px)
+      const wCm = passportEngine.wCm || 3.2;
+      const hCm = passportEngine.hCm || 4.114;
+      const photoW = Math.round(wCm * 118.11);
+      const photoH = Math.round(hCm * 118.11);
+
+      let gapX = 14;
+      let gapY = 24;
+      if (passportEngine.gap === 'small') { gapX = 8; gapY = 16; }
+      else if (passportEngine.gap === 'wide') { gapX = 22; gapY = 32; }
+
+      let cols;
+      if (passportEngine.presetKey === 'a4_6' && isA4) {
+        cols = 6;
+      } else {
+        const availableW = sheetW - 80;
+        cols = isA4 ? (COUNTRY_PRESETS[passportEngine.presetKey]?.colsA4 || Math.max(1, Math.floor(availableW / (photoW + gapX)))) : Math.max(1, Math.floor((sheetW - 60) / (photoW + gapX)));
+      }
+
+      let maxRows = isA4 ? Math.max(1, Math.floor((sheetH - 200) / (photoH + gapY))) : 2;
+
+      // Prepare an offscreen canvas for each customer to stamp quickly
+      const customerCanvases = {};
+      passportEngine.queue.forEach(c => {
+        const offCanvas = document.createElement('canvas');
+        drawPassportPhoto(offCanvas, c, photoW, photoH);
+        customerCanvases[c.id] = offCanvas;
+      });
+
+      // Flatten the queue into a list of photo instances
+      const allPhotosToDraw = [];
+      passportEngine.queue.forEach(c => {
+        for (let i = 0; i < c.copies; i++) {
+          allPhotosToDraw.push(c.id);
+        }
+      });
+
+      const maxCapacity = cols * maxRows; // 36 on A4
+      document.getElementById('sheet-total-count-tag').innerText = `एकूण ${allPhotosToDraw.length} फोटो (${allPhotosToDraw.length}/${maxCapacity})`;
+
+      // Studio Center placement:
+      // - Portrait page -> UPPER SIDE CENTER (Top margin 100px, horizontally centered row)
+      // - Landscape page -> LEFT SIDE CENTER (Left margin 80px, vertically centered rows)
+      const totalPhotos = allPhotosToDraw.length;
+      const actualRows = Math.max(1, Math.ceil(totalPhotos / cols));
+      const totalGridH = (actualRows * photoH) + ((actualRows - 1) * gapY);
+
+      const isPortrait = sheetH >= sheetW;
+      const align = passportEngine.align || 'studio_center';
+
+      let startY;
+      if (align === 'studio_center') {
+        if (isPortrait) {
+          // Portrait: Upper side center (at top, not in middle!)
+          startY = 100;
+        } else {
+          // Landscape: Left side center (vertically centered)
+          startY = Math.max(60, Math.floor((sheetH - totalGridH) / 2));
+        }
+      } else if (align === 'page_middle') {
+        // Full page middle (exact middle of sheet)
+        startY = Math.max(60, Math.floor((sheetH - totalGridH) / 2));
+      } else {
+        // top_left
+        startY = isPortrait ? 100 : 60;
+      }
+
+      let placedCount = 0;
+      for (let r = 0; r < actualRows; r++) {
+        if (placedCount >= totalPhotos) break;
+        const remainingInSheet = totalPhotos - placedCount;
+        const photosInThisRow = Math.min(cols, remainingInSheet);
+        if (photosInThisRow <= 0) break;
+
+        let rowStartX;
+        if (align === 'studio_center') {
+          if (isPortrait) {
+            // Portrait: Upper side center (horizontally centered row)
+            const thisRowW = (photosInThisRow * photoW) + ((photosInThisRow - 1) * gapX);
+            rowStartX = Math.floor((sheetW - thisRowW) / 2);
+          } else {
+            // Landscape: Left side center (starts from left margin!)
+            rowStartX = 80;
+          }
+        } else if (align === 'page_middle') {
+          const thisRowW = (photosInThisRow * photoW) + ((photosInThisRow - 1) * gapX);
+          rowStartX = Math.floor((sheetW - thisRowW) / 2);
+        } else {
+          // top_left
+          const fullRowW = (cols * photoW) + ((cols - 1) * gapX);
+          rowStartX = Math.floor((sheetW - fullRowW) / 2);
+        }
+
+        for (let c = 0; c < photosInThisRow; c++) {
+          if (placedCount >= totalPhotos) break;
+
+          const custId = allPhotosToDraw[placedCount];
+          const stampCanvas = customerCanvases[custId];
+
+          const x = rowStartX + (c * (photoW + gapX));
+          const y = startY + (r * (photoH + gapY));
+
+          if (stampCanvas) {
+            sCtx.drawImage(stampCanvas, x, y, photoW, photoH);
+          }
+
+          // Light Cutting mark
+          sCtx.strokeStyle = '#cbd5e1';
+          sCtx.lineWidth = 1;
+          sCtx.strokeRect(x - 1, y - 1, photoW + 2, photoH + 2);
+
+          placedCount++;
+        }
+      }
+
+      // Watermark Footer
+      if (passportEngine.watermark === 'yes') {
+        sCtx.fillStyle = '#64748b';
+        sCtx.font = '22px Poppins, sans-serif';
+        sCtx.textAlign = 'center';
+        sCtx.fillText('eMudra CSC • आपले सरकार सेवा केंद्र • Center ID: 152153410016 • मो. 9890869793', sheetW / 2, sheetH - 40);
+      }
+    }
+
+    function updateSheetSettings() {
+      passportEngine.paper = document.getElementById('sheet-paper-type').value;
+      passportEngine.border = document.getElementById('sheet-border-style').value;
+      passportEngine.gap = document.getElementById('sheet-gap-select').value;
+      passportEngine.watermark = document.getElementById('sheet-watermark-select').value;
+      passportEngine.align = document.getElementById('sheet-align-select')?.value || 'studio_center';
+      const titleSpan = document.getElementById('sheet-title-text');
+      if (titleSpan) {
+        titleSpan.innerText = (passportEngine.paper === '6x4' || passportEngine.paper === '4x6') ? '६*४ प्रिंट शीट' : 'A4 प्रिंट शीट';
+      }
+      renderCropCanvas();
+      renderA4Sheet();
+    }
+
+    function printSheetDirect() {
+      const canvas = document.getElementById('a4-print-sheet-canvas');
+      if (!canvas) return;
+      const dataUrl = canvas.toDataURL('image/png');
+      const is6x4 = (passportEngine.paper === '6x4' || passportEngine.paper === '4x6');
+      const win = window.open('', '_blank');
+      win.document.write(`
+        <html>
+          <head>
+            <title>eMudra Passport Sheet Print</title>
+            <style>
+              @page { size: ${is6x4 ? '6in 4in landscape' : 'A4 portrait'}; margin: 0; }
+              body { margin: 0; display: flex; justify-content: center; align-items: center; background: #fff; }
+              img { width: 100vw; height: 100vh; object-fit: contain; }
+            </style>
+          </head>
+          <body>
+            <img src="${dataUrl}">
+            <script>setTimeout(() => { window.print(); window.close(); }, 350);<\/script>
+          </body>
+        </html>
+      `);
+      win.document.close();
+    }
+
+    function downloadSheetHD() {
+      const canvas = document.getElementById('a4-print-sheet-canvas');
+      if (!canvas) return;
+      const a = document.createElement('a');
+      const is6x4 = (passportEngine.paper === '6x4' || passportEngine.paper === '4x6');
+      a.download = `eMudra_Passport_${is6x4 ? '6x4' : 'A4'}_Sheet_${Date.now()}.jpg`;
+      a.href = canvas.toDataURL('image/jpeg', 0.95);
+      a.click();
+    }
+
+    function toggleLayoutDirection() {
+      const main = document.querySelector('.app-main-layout');
+      if (!main) return;
+      if (main.style.gridTemplateColumns === '520px 1fr') {
+        main.style.gridTemplateColumns = '1fr 520px';
+      } else {
+        main.style.gridTemplateColumns = '520px 1fr';
+      }
+    }
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderA4Sheet();
+    });
+  </script>
+
+</body>
+</html>

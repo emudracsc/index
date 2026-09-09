@@ -30,11 +30,12 @@ const I18N_DATA = {
     nav_charter: "नागरिक सनद",
     nav_useful_links: "महत्त्वाच्या लिंक्स",
     nav_softwares: "उपयुक्त सॉफ्टवेअर",
+    nav_emudra_hub: "ई मुद्रा हब",
     nav_contact: "संपर्क",
     nav_admin: "अधिकारी लॉगिन",
 
     // Welcome Banner Modal
-    welcome_badge: "अधिकृत स्वागत बॅनर • आपले सरकार सेवा केंद्र",
+    welcome_badge: "अधिकृत स्वागत बॅनर • ई मुद्रा आपले सरकार सेवा केंद्र",
     welcome_subtext: "आपले सरकार सेवा केंद्रात आपले सहर्ष स्वागत आहे! सर्व शासकीय योजना व दाखल्यांची कामे येथे तत्पर केली जातात.",
     welcome_btn_services: "सर्व सेवा पहा",
     welcome_btn_apply: "ऑनलाइन अर्ज करा",
@@ -224,11 +225,12 @@ const I18N_DATA = {
     nav_charter: "Citizen Charter",
     nav_useful_links: "Useful Links",
     nav_softwares: "Softwares",
+    nav_emudra_hub: "eMudra Hub",
     nav_contact: "Contact",
     nav_admin: "Officer Login",
 
     // Welcome Banner Modal
-    welcome_badge: "Official Welcome Banner • Aaple Sarkar Seva Kendra",
+    welcome_badge: "Official Welcome Banner • eMudra Aaple Sarkar Seva Kendra",
     welcome_subtext: "Welcome to Aaple Sarkar Seva Kendra! All government schemes and official certificates processed here.",
     welcome_btn_services: "Explore Services",
     welcome_btn_apply: "Apply Online",

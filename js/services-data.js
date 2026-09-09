@@ -1029,28 +1029,16 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
-  // ⚡ QR स्मार्ट प्रिंट व झेरॉक्स हब (Smart QR Scan & Print Hub)
+  // 🌟 ई मुद्रा हब (eMudra Hub - All-in-One Digital Printing & Studio)
   {
-    id: "link-smart-print",
+    id: "link-emudra-hub",
     category: "उपयुक्त दस्तऐवज टूल्स",
-    icon: "fa-solid fa-qrcode",
-    title_mr: "⚡ QR स्मार्ट प्रिंट हब (QR Scan & Print & Xerox)",
-    title_en: "Smart QR Scan & Print Hub (Customer Upload & Instant Print)",
-    desc_mr: "मोबाईलने QR स्कॅन करून PDF/फोटो अपलोड करा, B&W/कलर व डुप्लेक्स निवडा, UPI पेमेंट करा आणि ऑपरेटर कडून तात्काळ प्रिंट मिळवा.",
-    desc_en: "Self-service customer document upload via QR code with real-time UPI pricing, order token tracking and operator direct print console.",
-    url: "smart-print.html",
-    isInternal: true
-  },
-  // 🖨️ युनिव्हर्सल स्कॅनर टूल (Universal Scanner Tool)
-  {
-    id: "link-universal-scanner",
-    category: "उपयुक्त दस्तऐवज टूल्स",
-    icon: "fa-solid fa-print",
-    title_mr: "🖨️ Universal Scanner Pro (सर्व स्कॅनर्सना सपोर्ट)",
-    title_en: "Universal Scanner Pro (All Scanners Support like NAPS2)",
-    desc_mr: "Canon, HP, Epson, Brother सह सर्व स्कॅनर्सवरून थेट स्कॅनिंग करून आपले सरकार २५० KB व महाडीबीटी ५०० KB PDF एका क्लिकवर बनवा.",
-    desc_en: "Universal scanner desktop software supporting Canon, HP, Epson, Brother scanners with instant 250KB/500KB PDF lock.",
-    url: "scanner.html",
+    icon: "fa-solid fa-wand-magic-sparkles",
+    title_mr: "🌟 ई मुद्रा हब (eMudra Hub - सर्व प्रिंटिंग व डिजिटल टूल्स)",
+    title_en: "eMudra Hub (Smart QR Print, Scanner Pro, Studio & Tools)",
+    desc_mr: "QR स्मार्ट प्रिंट हब, Scanner Pro, प्रगत पासपोर्ट फोटो स्टुडिओ व दुकान UPI QR स्टँडी टूल्स एकाच ठिकाणी वापरा.",
+    desc_en: "All-in-one digital printing studio with Smart QR Print, Universal Scanner Pro, Advanced Passport Photo Studio & Shop QR Standee.",
+    url: "emudra-hub.html",
     isInternal: true
   },
   // 🗜️ उपयुक्त दस्तऐवज टूल्स (Document Tools)
