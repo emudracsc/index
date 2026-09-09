@@ -10,7 +10,7 @@ const I18N_DATA = {
     portal_title: "ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र",
     portal_tagline: "पारदर्शक, गतिमान आणि सुरक्षित ई-नागरिक सेवा दालन",
     reg_id: "केंद्र नोंदणी क्र:",
-    vle_operator: "VLE संचालक:",
+    vle_operator: "VLE केंद्र संचालक:",
     
     // Accessibility
     font_size: "फॉन्ट आकार:",
