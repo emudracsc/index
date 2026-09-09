@@ -47,7 +47,8 @@
       'ghareli-kamgar-sangnakikaran': 'GKS',
       'pikpera': 'PIK',
       'eaadhaar-print': 'EAD',
-      'aero': 'AER'
+      'aero': 'AER',
+      'aadhaar-annexure': 'ANX'
     };
     return map[slug] || 'FRM';
   }
@@ -76,7 +77,8 @@
       'ghareli-kamgar-sangnakikaran': 'घरेलू कामगार संगणकीकरण माहिती व मालकाचे प्रमाणपत्र',
       'pikpera': 'ई-पीक पाहणी / पीकपेरा स्वयंघोषणापत्र',
       'eaadhaar-print': 'e-Aadhaar PVC कार्ड प्रिंट',
-      'aero': 'Aero ई-सेवा अहवाल'
+      'aero': 'Aero ई-सेवा अहवाल',
+      'aadhaar-annexure': 'आधार जन्मदिनांक सुधारणा शपथपत्र (लेजर पेपर)'
     };
     if (map[slug]) return map[slug];
 
@@ -146,7 +148,7 @@
 
     // Check by known IDs first
     var nameKeys = [
-      'm_name', 'applicant_name', 'applicantName', 'inp_applicant_name', 'inp_app_name',
+      'deponentName', 'm_name', 'applicant_name', 'applicantName', 'inp_applicant_name', 'inp_app_name',
       'farmerName', 'print_workerName', 'personName', 'cust_name', 'fullName',
       'full_name', 'resident_name', 'deceased_name', 'head_name', 'person_name',
       'name', 'first_name', 'editNameInput'
@@ -156,7 +158,7 @@
       'in_mobile', 'phone', 'contact', 'applicant_mobile', 'cust_mobile'
     ];
     var aadhaarKeys = [
-      'm_aadhaar', 'aadhaar', 'uid', 'aadhar', 'inp_ration_no', 'farmerId',
+      'aadhaarNumber', 'm_aadhaar', 'aadhaar', 'uid', 'aadhar', 'inp_ration_no', 'farmerId',
       'print_outwardNumber', 'applicant_aadhaar'
     ];
 

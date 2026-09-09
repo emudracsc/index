@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>आधार जन्मतारीख सुधारणा व रिअ‍ॅक्टिव्हेशन शपथपत्र | लेजर पेपर (Ledger Paper)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Supabase Database & Universal Form History Tracker -->
+    <script src="js/supabase-db.js"></script>
+    <script src="js/user-auth.js"></script>
+    <script src="js/universal-form-history.js"></script>
+
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --primary-blue: #1d4ed8;
+            --primary-hover: #1e40af;
+            --accent-green: #047857;
+            --bg-body: #334155;
+            --card-bg: #ffffff;
+            --border-color: #cbd5e1;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --ledger-bg: #f2fbf6;
+            --ledger-border: #86efac;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Mukta', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* -------------------------------------------------------------------------
+           TOP NAV BAR
+        ------------------------------------------------------------------------- */
+        .top-navbar {
+            background: linear-gradient(135deg, #064e3b 0%, #0f172a 100%);
+            color: #ffffff;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #10b981, #047857);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+        }
+
+        .brand-title h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-title p {
+            font-size: 0.78rem;
+            color: #a7f3d0;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-home {
+            background: rgba(255,255,255,0.12);
+            color: #f8fafc;
+        }
+        .btn-home:hover {
+            background: rgba(255,255,255,0.22);
+        }
+
+        .btn-sample {
+            background: #0284c7;
+            color: #ffffff;
+        }
+        .btn-sample:hover {
+            background: #0369a1;
+            transform: translateY(-1px);
+        }
+
+        .btn-reset {
+            background: #475569;
+            color: #ffffff;
+        }
+        .btn-reset:hover {
+            background: #334155;
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+            font-weight: 700;
+            padding: 9px 20px;
+        }
+        .btn-print:hover {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.45);
+        }
+
+        /* -------------------------------------------------------------------------
+           MAIN WORKSPACE LAYOUT
+        ------------------------------------------------------------------------- */
+        .workspace-wrapper {
+            display: grid;
+            grid-template-columns: 480px 1fr;
+            flex: 1;
+            height: calc(100vh - 68px);
+            overflow: hidden;
+        }
+
+        @media (max-width: 1150px) {
+            .workspace-wrapper {
+                grid-template-columns: 1fr;
+                height: auto;
+                overflow: visible;
+            }
+        }
+
+        /* -------------------------------------------------------------------------
+           LEFT PANEL: CONTROLS & INPUTS
+        ------------------------------------------------------------------------- */
+        .input-panel {
+            background: #ffffff;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Annexure Selector Tabs */
+        .annexure-selector-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .annexure-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .annexure-btn {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .annexure-btn:hover {
+            border-color: #059669;
+            background: #f0fdf4;
+        }
+
+        .annexure-btn.active {
+            border-color: #047857;
+            background: #ecfdf5;
+            box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.25);
+        }
+
+        .annexure-btn .badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #047857;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .annexure-btn .title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #0f172a;
+            line-height: 1.25;
+        }
+
+        .annexure-btn .paper-type {
+            font-size: 0.68rem;
+            color: #065f46;
+            font-weight: 600;
+        }
+
+        /* Ledger Settings Box */
+        .ledger-settings-box {
+            background: #ecfdf5;
+            border: 1.5px solid #a7f3d0;
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ledger-settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #065f46;
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: #065f46;
+            font-weight: 600;
+        }
+
+        .setting-row input[type="range"] {
+            flex: 1;
+            accent-color: #059669;
+            cursor: pointer;
+        }
+
+        .setting-val {
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: #ffffff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #6ee7b7;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .btn-preset {
+            flex: 1;
+            background: #ffffff;
+            border: 1.5px solid #6ee7b7;
+            color: #065f46;
+            padding: 6px 4px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .btn-preset:hover {
+            background: #059669;
+            color: #ffffff;
+            border-color: #047857;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(5, 150, 105, 0.2);
+        }
+
+        .btn-preset:active {
+            transform: translateY(0);
+        }
+
+        /* Form Card */
+        .form-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .form-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .form-card-title i {
+            color: #059669;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        label span.req {
+            color: #ef4444;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.86rem;
+            color: #0f172a;
+            background: #f8fafc;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #059669;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 52px;
+        }
+
+        /* -------------------------------------------------------------------------
+           RIGHT PANEL: PREVIEW STAGE
+        ------------------------------------------------------------------------- */
+        .preview-panel {
+            background: #334155;
+            overflow-y: auto;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .preview-toolbar {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-size: 0.82rem;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toolbar-group input[type="range"] {
+            width: 90px;
+            cursor: pointer;
+            accent-color: #34d399;
+        }
+
+        .paper-toggle-btn {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.76rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .paper-toggle-btn.active {
+            background: #059669;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        /* LEDGER PAPER SHEET (LEGAL SIZE 215mm x 345mm) */
+        .ledger-document-sheet {
+            --doc-top-margin: 15mm;
+            --doc-bottom-margin: 15mm;
+            --doc-left-margin: 14mm;
+            --doc-right-margin: 14mm;
+            width: 215mm;
+            min-height: 345mm;
+            background: #ffffff;
+            padding-top: var(--doc-top-margin);
+            padding-bottom: var(--doc-bottom-margin);
+            padding-left: var(--doc-left-margin);
+            padding-right: var(--doc-right-margin);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+            border-radius: 3px;
+            color: #000000;
+            box-sizing: border-box;
+            line-height: 1.65;
+            font-family: Arial, sans-serif;
+            font-size: 11.5pt;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+            transition: all 0.15s ease;
+        }
+
+        /* Green Ledger Appearance Mode */
+        .ledger-document-sheet.green-ledger-mode {
+            background-color: var(--ledger-bg);
+            border: 1px solid var(--ledger-border);
+        }
+
+        /* A4 Size Mode */
+        .ledger-document-sheet.a4-mode {
+            width: 210mm;
+            min-height: 297mm;
+        }
+
+        /* Document Typography */
+        .doc-header-block {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .doc-annexure-id {
+            font-size: 11.5pt;
+            font-weight: bold;
+            text-align: right;
+            margin-bottom: 8px;
+        }
+
+        .doc-main-title {
+            font-size: 13.5pt;
+            font-weight: bold;
+            text-transform: capitalize;
+            margin-bottom: 6px;
+        }
+
+        .doc-subtitle-note {
+            font-size: 9.8pt;
+            font-style: italic;
+            margin: 0 auto 10px auto;
+            max-width: 95%;
+            line-height: 1.4;
+            color: #1f2937;
+        }
+
+        .doc-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: justify;
+        }
+
+        .doc-para {
+            margin-bottom: 4px;
+            text-indent: 0px;
+        }
+
+        .doc-clause-list {
+            list-style: none;
+            padding-left: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .doc-clause-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .clause-num {
+            min-width: 28px;
+            font-weight: normal;
+        }
+
+        .clause-content {
+            flex: 1;
+            text-align: justify;
+        }
+
+        .fill-text {
+            font-weight: bold;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            color: #000000;
+            padding: 0 2px;
+        }
+
+        .blank-line {
+            display: inline-block;
+            border-bottom: 1px solid #000000;
+            min-width: 100px;
+            height: 14px;
+            vertical-align: middle;
+        }
+
+        .doc-footer-section {
+            margin-top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .sig-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 14px;
+        }
+
+        .date-col {
+            font-size: 11pt;
+        }
+
+        .sig-col {
+            text-align: right;
+            font-size: 11pt;
+            font-weight: bold;
+            min-width: 260px;
+            border-top: 1px dotted #666;
+            padding-top: 6px;
+        }
+
+        .attestation-notice {
+            font-size: 9pt;
+            font-style: italic;
+            text-align: center;
+            border-top: 0.5px solid #94a3b8;
+            padding-top: 10px;
+            margin-top: 10px;
+            color: #334155;
+        }
+
+        /* -------------------------------------------------------------------------
+           PRINT MEDIA STYLES - DEDICATED FOR LEDGER / LEGAL PAPER
+        ------------------------------------------------------------------------- */
+        @media print {
+            @page {
+                size: auto;
+                margin: 0mm !important; /* CRITICAL: Setting page margin to 0 removes browser header (URL, title) and footer (date, page #) */
+            }
+
+            body, html {
+                background: #ffffff !important;
+                color: #000000 !important;
+                width: 100% !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .top-navbar,
+            .input-panel,
+            .preview-toolbar,
+            .toast,
+            .no-print,
+            .attestation-notice,
+            #displayAttestationNote,
+            #emudra-form-floating-bar,
+            #emudra-universal-edit-bar {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            .workspace-wrapper,
+            .preview-panel {
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: transparent !important;
+            }
+
+            .ledger-document-sheet {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-height: auto !important;
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+                background: transparent !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+                box-sizing: border-box !important;
+                /* Matches screen margins 1:1 without shrinking */
+                padding-top: var(--doc-top-margin, 15mm) !important;
+                padding-bottom: var(--doc-bottom-margin, 15mm) !important;
+                padding-left: var(--doc-left-margin, 14mm) !important;
+                padding-right: var(--doc-right-margin, 14mm) !important;
+            }
+
+            .ledger-document-sheet.a4-mode {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar no-print">
+        <div class="brand-section">
+            <div class="brand-logo">
+                <i class="fa-solid fa-file-contract"></i>
+            </div>
+            <div class="brand-title">
+                <h1>आधार जन्मदिनांक सुधारणा शपथपत्र <span style="font-size:0.75rem; background:#047857; padding:2px 8px; border-radius:12px; border:1px solid #34d399;">लेजर पेपर फॉरमॅट</span></h1>
+                <p>सर्व Annexure I, IA, II, IIA, III, IIIA लेजर पेपरवर (Legal/Ledger Paper) थेट प्रिंटसाठी तयार</p>
+            </div>
+        </div>
+
+        <div class="top-actions">
+            <a href="index.html" class="btn btn-home" title="मुख्य पृष्ठावर परत जा">
+                <i class="fa-solid fa-house"></i> होम
+            </a>
+            <button class="btn btn-sample" id="btnSample" title="डेमोसाठी नमुना माहिती भरा">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना भरा (Sample)
+            </button>
+            <button class="btn" id="btnSaveForm" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35); font-weight: 700;" title="हा अर्ज ऑनलाइन डेटाबेस व स्थानिक इतिहासात सेव्ह करा">
+                <i class="fa-solid fa-cloud-arrow-up"></i> अर्ज सेव्ह करा
+            </button>
+            <button class="btn btn-reset" id="btnReset" title="सर्व माहिती रिकामी करा">
+                <i class="fa-solid fa-rotate-left"></i> रीसेट
+            </button>
+            <button class="btn btn-print" id="btnPrint" title="थेट प्रिंट करा किंवा PDF म्हणून सेव्ह करा">
+                <i class="fa-solid fa-print"></i> प्रिंट / PDF सेव्ह
+            </button>
+        </div>
+    </header>
+
+    <!-- Workspace -->
+    <div class="workspace-wrapper">
+        
+        <!-- Left Input Panel -->
+        <aside class="input-panel no-print">
+            <input type="hidden" id="selectedAnnexure" name="selectedAnnexure" value="I">
+            
+            <!-- Annexure Selector -->
+            <div class="annexure-selector-box">
+                <div class="section-label">
+                    <i class="fa-solid fa-list-check" style="color: #059669;"></i> १. शपथपत्र / स्वयं-घोषणापत्र प्रकार निवडा
+                </div>
+                <div class="annexure-grid">
+                    <!-- Annexure I -->
+                    <div class="annexure-btn active" data-annexure="I">
+                        <div class="badge"><i class="fa-solid fa-file-circle-check"></i> Annexure-I (प्रौढ)</div>
+                        <div class="title">DoB Updation (Adult)</div>
+                        <div class="paper-type">लेजर पेपर (Ledger Paper)</div>
+                    </div>
+                    <!-- Annexure IA -->
+                    <div class="annexure-btn" data-annexure="IA">
+                        <div class="badge"><i class="fa-solid fa-file-circle-check"></i> Annexure-IA (मुलगा/मुलगी)</div>
+                        <div class="title">DoB Updation (Child)</div>
+                        <div class="paper-type">लेजर पेपर (Ledger Paper)</div>
+                    </div>
+                    <!-- Annexure II -->
+                    <div class="annexure-btn" data-annexure="II">
+                        <div class="badge"><i class="fa-solid fa-file-lines"></i> Annexure-II (प्रौढ)</div>
+                        <div class="title">Operator Error / Typo</div>
+                        <div class="paper-type">लेजर पेपर (Self-Dec)</div>
+                    </div>
+                    <!-- Annexure IIA -->
+                    <div class="annexure-btn" data-annexure="IIA">
+                        <div class="badge"><i class="fa-solid fa-file-lines"></i> Annexure-IIA (मुलगा/मुलगी)</div>
+                        <div class="title">Child Typo Mistake</div>
+                        <div class="paper-type">लेजर पेपर (Self-Dec)</div>
+                    </div>
+                    <!-- Annexure III -->
+                    <div class="annexure-btn" data-annexure="III">
+                        <div class="badge"><i class="fa-solid fa-file-circle-check"></i> Annexure-III (प्रौढ)</div>
+                        <div class="title">Aadhaar Reactivation</div>
+                        <div class="paper-type">लेजर पेपर (Ledger Paper)</div>
+                    </div>
+                    <!-- Annexure IIIA -->
+                    <div class="annexure-btn" data-annexure="IIIA">
+                        <div class="badge"><i class="fa-solid fa-file-circle-check"></i> Annexure-IIIA (मुलगा/मुलगी)</div>
+                        <div class="title">Child Reactivation</div>
+                        <div class="paper-type">लेजर पेपर (Ledger Paper)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ledger Paper Layout Setting Box -->
+            <div class="ledger-settings-box">
+                <div class="ledger-settings-header">
+                    <span><i class="fa-solid fa-sliders"></i> लेजर पेपर मार्जिन सेटिंग्ज (Margin Settings)</span>
+                </div>
+                <div class="setting-row">
+                    <span>वरचे मार्जिन (Top Margin):</span>
+                    <input type="range" id="topMarginSlider" min="0" max="50" value="15" step="1">
+                    <span class="setting-val" id="topMarginVal">15 mm</span>
+                </div>
+                <!-- Independent Left Margin -->
+                <div class="setting-row">
+                    <span><i class="fa-solid fa-arrow-left" style="font-size:0.75rem;"></i> डावे मार्जिन (Left):</span>
+                    <input type="range" id="leftMarginSlider" min="0" max="45" value="14" step="1">
+                    <span class="setting-val" id="leftMarginVal">14 mm</span>
+                </div>
+                <!-- Independent Right Margin -->
+                <div class="setting-row">
+                    <span><i class="fa-solid fa-arrow-right" style="font-size:0.75rem;"></i> उजवे मार्जिन (Right):</span>
+                    <input type="range" id="rightMarginSlider" min="0" max="45" value="14" step="1">
+                    <span class="setting-val" id="rightMarginVal">14 mm</span>
+                </div>
+                <!-- Bottom Margin -->
+                <div class="setting-row">
+                    <span>खालचे मार्जिन (Bottom):</span>
+                    <input type="range" id="bottomMarginSlider" min="0" max="45" value="15" step="1">
+                    <span class="setting-val" id="bottomMarginVal">15 mm</span>
+                </div>
+
+                <!-- Quick Presets -->
+                <div style="display: flex; gap: 6px; margin-top: 6px;">
+                    <button type="button" class="btn-preset" id="presetStandard" title="स्टँडर्ड मार्जिन">सामान्य (14mm)</button>
+                    <button type="button" class="btn-preset" id="presetWide" title="कमी मार्जिन - रुंद मजकूर">रुंद मजकूर (8mm)</button>
+                    <button type="button" class="btn-preset" id="presetCourt" title="कोर्ट फाइलिंग डावीकडे जास्त जागा">कोर्ट फाईल (L:25 R:10)</button>
+                </div>
+
+                <div class="setting-row" style="margin-top: 6px;">
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.82rem;">
+                        <input type="checkbox" id="chkGreenLedgerTint" checked>
+                        <span>स्क्रीनवर ग्रीन लेजर पेपर शेड दाखवा</span>
+                    </label>
+                </div>
+                <div class="setting-row" style="margin-top: 2px;">
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #065f46;">
+                        <input type="checkbox" id="chkShowAttestation">
+                        <span>मॅजिस्ट्रेट/नोटरी सूचना स्क्रीनवर दाखवा (कागदावर प्रिंट होणार नाही)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Form Card: Deponent Information -->
+            <div class="form-card">
+                <div class="form-card-title">
+                    <i class="fa-solid fa-user"></i> २. अर्जदार / शपथपत्रकर्त्याची माहिती (Deponent)
+                </div>
+
+                <div class="field-group">
+                    <label>अर्जदाराचे संपूर्ण नाव (Full Name in English) <span class="req">*</span></label>
+                    <input type="text" id="deponentName" placeholder="उदा. RAMESH SURESH PATIL" autocomplete="off">
+                </div>
+
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>नाते (Relation) <span class="req">*</span></label>
+                        <select id="relationType">
+                            <option value="S/o">S/o (मुलाचे वडील / Son of)</option>
+                            <option value="D/o">D/o (मुलीचे वडील / Daughter of)</option>
+                            <option value="W/o">W/o (पत्नीचे पती / Wife of)</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label>वडील / पतीचे नाव (Father/Husband Name) <span class="req">*</span></label>
+                        <input type="text" id="relativeName" placeholder="उदा. SURESH SHANKAR PATIL">
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label>संपूर्ण रहिवासी पत्ता (Full Residential Address) <span class="req">*</span></label>
+                    <textarea id="address" placeholder="उदा. At Post Vadgaon, Taluka Haveli, Dist Pune - 411041"></textarea>
+                </div>
+
+                <div class="field-group">
+                    <label>अर्जदाराचा आधार नंबर (Aadhaar Number) <span class="req">*</span></label>
+                    <input type="text" id="aadhaarNumber" placeholder="XXXX XXXX XXXX" maxlength="14">
+                </div>
+            </div>
+
+            <!-- Form Card: Minor / Child Information (Shown for IA, IIA, IIIA) -->
+            <div class="form-card" id="childInfoCard" style="display: none; background: #f0fdf4; border-color: #86efac;">
+                <div class="form-card-title" style="color: #166534;">
+                    <i class="fa-solid fa-child" style="color: #16a34a;"></i> ३. पाल्याची / मुलाची माहिती (Child / Ward)
+                </div>
+
+                <div class="field-group">
+                    <label>मुलाचे / पाल्याचे संपूर्ण नाव (Name of Child) <span class="req">*</span></label>
+                    <input type="text" id="childName" placeholder="उदा. AARAV RAMESH PATIL">
+                </div>
+
+                <div class="field-group">
+                    <label>मुलाचा आधार क्रमांक (Child Aadhaar No) <span class="req">*</span></label>
+                    <input type="text" id="childAadhaarNumber" placeholder="XXXX XXXX XXXX" maxlength="14">
+                </div>
+            </div>
+
+            <!-- Form Card: Date of Birth Details -->
+            <div class="form-card">
+                <div class="form-card-title">
+                    <i class="fa-solid fa-cake-candles"></i> ४. जन्मतारीख व अपडेट तपशील (DoB Details)
+                </div>
+
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>योग्य / खरी जन्मतारीख (Correct DoB) <span class="req">*</span></label>
+                        <input type="text" id="correctDob" placeholder="DD/MM/YYYY (उदा. 15/08/1998)">
+                    </div>
+                    <div class="field-group">
+                        <label>पूर्वीची नोंदवलेली तारीख (Earlier DoB) <span class="req">*</span></label>
+                        <input type="text" id="earlierDob" placeholder="DD/MM/YYYY (उदा. 01/01/1997)">
+                    </div>
+                </div>
+
+                <!-- Update Frequency (Annexure I, IA) -->
+                <div class="field-group" id="updateFreqGroup">
+                    <label>यापूर्वी आधारमध्ये जन्मतारीख किती वेळा बदलली? (Updated DoB earlier) <span class="req">*</span></label>
+                    <select id="updateFrequency">
+                        <option value="never">never (कधीही नाही)</option>
+                        <option value="once">once (एकदा)</option>
+                        <option value="more than once">more than once (एकापेक्षा जास्त वेळा)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Form Card: Document & EID Details -->
+            <div class="form-card">
+                <div class="form-card-title">
+                    <i class="fa-solid fa-file-circle-check"></i> ५. कागदपत्र व नोंदणी पावती (Documents & EID)
+                </div>
+
+                <!-- Earlier Submitted Document Name -->
+                <div class="field-group">
+                    <label id="lblEarlierDoc">पूर्वी दिलेला जन्मतारीख पुरावा (Earlier Submitted Document) <span class="req">*</span></label>
+                    <input type="text" id="earlierDocName" placeholder="उदा. School Leaving Certificate / Birth Certificate">
+                </div>
+
+                <!-- Earlier Document Number & Date (Annexure II, IIA, III, IIIA) -->
+                <div class="field-row" id="earlierDocMetaRow">
+                    <div class="field-group">
+                        <label>कागदपत्र नंबर (Document No)</label>
+                        <input type="text" id="earlierDocNo" placeholder="उदा. SLC/2015/884">
+                    </div>
+                    <div class="field-group">
+                        <label>कागदपत्र दिनांक (Document Date)</label>
+                        <input type="text" id="earlierDocDate" placeholder="DD/MM/YYYY">
+                    </div>
+                </div>
+
+                <!-- EID Number (Annexure II, IIA, III, IIIA) -->
+                <div class="field-group" id="eidGroup">
+                    <label>नोंदणी / अपडेट पावती क्रमांक (EID Number) <span class="req">*</span></label>
+                    <input type="text" id="eidNumber" placeholder="उदा. 1234/12345/12345 किंवा 28 अंकी EID">
+                </div>
+
+                <!-- New Document being submitted as proof (Annexure I, III, IIIA) -->
+                <div class="field-group" id="newDocGroup">
+                    <label>आता सादर करत असलेला खरा पुरावा (Proof Document Now Submitting) <span class="req">*</span></label>
+                    <input type="text" id="newDocName" placeholder="उदा. Municipal Birth Certificate / Board Certificate">
+                </div>
+
+                <!-- Annexure I Clause (v) choice -->
+                <div class="field-group" id="annexure1DocChoiceGroup">
+                    <label>सध्या सादर करत असलेला पुरावा पर्याय निवडा (Clause v)</label>
+                    <select id="annexure1DocChoice">
+                        <option value="birth certificate">birth certificate (जन्म दाखला)</option>
+                        <option value="a corrected version of the same document as mentioned in (iii) above">a corrected version of the same document as mentioned in (iii) above</option>
+                    </select>
+                </div>
+
+                <!-- Annexure II/IIA Possession clause option -->
+                <div class="field-group" id="possessionChoiceGroup" style="display: none;">
+                    <label>कागदपत्र उपलब्धतेबाबत पर्याय (Clause iv / v)</label>
+                    <select id="possessionChoice">
+                        <option value="That I do not have possession of earlier submitted proof of date of birth document">That I do not have possession of earlier submitted proof of date of birth document</option>
+                        <option value="The document then submitted is no longer a valid proof of date of birth">The document then submitted is no longer a valid proof of date of birth</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Date & Place -->
+            <div class="form-card">
+                <div class="form-card-title">
+                    <i class="fa-solid fa-location-dot"></i> ६. दिनांक व ठिकाण
+                </div>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>तारीख (Date)</label>
+                        <input type="text" id="docDate" placeholder="DD/MM/YYYY">
+                    </div>
+                    <div class="field-group">
+                        <label>ठिकाण (Place / City)</label>
+                        <input type="text" id="docPlace" placeholder="उदा. Pune / Mumbai">
+                    </div>
+                </div>
+            </div>
+
+            <div style="height: 40px;"></div>
+        </aside>
+
+        <!-- Right Preview Panel -->
+        <main class="preview-panel">
+            
+            <!-- Live Preview Top Toolbar -->
+            <div class="preview-toolbar no-print">
+                <div class="toolbar-group">
+                    <i class="fa-solid fa-scroll" style="color: #34d399;"></i>
+                    <span><strong>ग्रीन लेजर प्रिंट प्रिव्ह्यू</strong></span>
+                </div>
+
+                <!-- Paper Size Switcher -->
+                <div class="toolbar-group">
+                    <button class="paper-toggle-btn active" id="btnPaperLegal" title="लीगल लेजर पेपर (215mm x 345mm)">
+                        <i class="fa-solid fa-file"></i> लेजर / लीगल (Legal)
+                    </button>
+                    <button class="paper-toggle-btn" id="btnPaperA4" title="A4 पेपर (210mm x 297mm)">
+                        A4 साईझ
+                    </button>
+                </div>
+
+                <div class="toolbar-group">
+                    <label style="color:#cbd5e1; font-size:0.75rem;">फॉन्ट:</label>
+                    <input type="range" id="fontSizeSlider" min="10" max="14" step="0.5" value="11.5">
+                    <span id="fontSizeVal" style="font-size:0.75rem; color:#34d399;">11.5pt</span>
+                </div>
+                <div class="toolbar-group">
+                    <label style="color:#cbd5e1; font-size:0.75rem;">स्पेसिंग:</label>
+                    <input type="range" id="lineHeightSlider" min="1.4" max="2.0" step="0.05" value="1.65">
+                    <span id="lineHeightVal" style="font-size:0.75rem; color:#34d399;">1.65</span>
+                </div>
+                <button class="btn btn-print" onclick="window.print()" style="padding: 5px 14px; font-size: 0.8rem;">
+                    <i class="fa-solid fa-print"></i> प्रिंट करा
+                </button>
+            </div>
+
+            <!-- Ledger Document Sheet (Set directly for Ledger Paper) -->
+            <div class="ledger-document-sheet green-ledger-mode" id="printSheet">
+
+                <!-- Document Header Section -->
+                <div class="doc-header-block">
+                    <div class="doc-annexure-id" id="docAnnexureId">Annexure-I- For Adults</div>
+                    <div class="doc-main-title" id="docTitle">Affidavit for date of birth updation</div>
+                    <div class="doc-subtitle-note" id="docSubtitle">
+                        (Applicable for cases where the DoB is verified in Aadhaar. To be printed on Ledger Paper)
+                    </div>
+                </div>
+
+                <!-- Document Dynamic Body Container -->
+                <div class="doc-body" id="docBodyContainer">
+                    <!-- Injected dynamically via JS based on selected Annexure -->
+                </div>
+
+                <!-- Document Footer Section -->
+                <div class="doc-footer-section" id="docFooterSection">
+                    <div class="sig-row">
+                        <div class="date-col">
+                            <strong>Date:</strong> <span class="fill-text" id="displayDate">09/09/2026</span><br>
+                            <span id="displayPlaceRow" style="display:none;"><strong>Place:</strong> <span class="fill-text" id="displayPlace">Pune</span></span>
+                        </div>
+                        <div class="sig-col" id="displaySignatureTitle">
+                            Name & Signature of Resident (Deponent)
+                        </div>
+                    </div>
+                    <div class="attestation-notice" id="displayAttestationNote">
+                        (This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="height: 50px;"></div>
+        </main>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-check" style="color: #4ade80;"></i>
+        <span id="toastMsg">माहिती यशस्वीरित्या अपडेट झाली!</span>
+    </div>
+
+    <script>
+        // State
+        let currentAnnexure = 'I';
+
+        // Elements
+        const annexureBtns = document.querySelectorAll('.annexure-btn');
+        const topMarginSlider = document.getElementById('topMarginSlider');
+        const topMarginVal = document.getElementById('topMarginVal');
+        const leftMarginSlider = document.getElementById('leftMarginSlider');
+        const leftMarginVal = document.getElementById('leftMarginVal');
+        const rightMarginSlider = document.getElementById('rightMarginSlider');
+        const rightMarginVal = document.getElementById('rightMarginVal');
+        const bottomMarginSlider = document.getElementById('bottomMarginSlider');
+        const bottomMarginVal = document.getElementById('bottomMarginVal');
+
+        const presetStandard = document.getElementById('presetStandard');
+        const presetWide = document.getElementById('presetWide');
+        const presetCourt = document.getElementById('presetCourt');
+
+        const chkGreenLedgerTint = document.getElementById('chkGreenLedgerTint');
+        const chkShowAttestation = document.getElementById('chkShowAttestation');
+
+        const btnPaperLegal = document.getElementById('btnPaperLegal');
+        const btnPaperA4 = document.getElementById('btnPaperA4');
+
+        const childInfoCard = document.getElementById('childInfoCard');
+        const updateFreqGroup = document.getElementById('updateFreqGroup');
+        const earlierDocMetaRow = document.getElementById('earlierDocMetaRow');
+        const eidGroup = document.getElementById('eidGroup');
+        const newDocGroup = document.getElementById('newDocGroup');
+        const annexure1DocChoiceGroup = document.getElementById('annexure1DocChoiceGroup');
+        const possessionChoiceGroup = document.getElementById('possessionChoiceGroup');
+        const lblEarlierDoc = document.getElementById('lblEarlierDoc');
+
+        const fontSizeSlider = document.getElementById('fontSizeSlider');
+        const fontSizeVal = document.getElementById('fontSizeVal');
+        const lineHeightSlider = document.getElementById('lineHeightSlider');
+        const lineHeightVal = document.getElementById('lineHeightVal');
+        const printSheet = document.getElementById('printSheet');
+
+        // Input Fields
+        const deponentName = document.getElementById('deponentName');
+        const relationType = document.getElementById('relationType');
+        const relativeName = document.getElementById('relativeName');
+        const address = document.getElementById('address');
+        const aadhaarNumber = document.getElementById('aadhaarNumber');
+
+        const childName = document.getElementById('childName');
+        const childAadhaarNumber = document.getElementById('childAadhaarNumber');
+
+        const correctDob = document.getElementById('correctDob');
+        const earlierDob = document.getElementById('earlierDob');
+        const updateFrequency = document.getElementById('updateFrequency');
+
+        const earlierDocName = document.getElementById('earlierDocName');
+        const earlierDocNo = document.getElementById('earlierDocNo');
+        const earlierDocDate = document.getElementById('earlierDocDate');
+        const eidNumber = document.getElementById('eidNumber');
+        const newDocName = document.getElementById('newDocName');
+        const annexure1DocChoice = document.getElementById('annexure1DocChoice');
+        const possessionChoice = document.getElementById('possessionChoice');
+
+        const docDate = document.getElementById('docDate');
+        const docPlace = document.getElementById('docPlace');
+
+        // Set default date to today DD/MM/YYYY
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        docDate.value = `${dd}/${mm}/${yyyy}`;
+
+        // Format Aadhaar inputs
+        function formatAadhaarInput(input) {
+            input.addEventListener('input', function(e) {
+                let val = e.target.value.replace(/\D/g, '');
+                if (val.length > 12) val = val.substring(0, 12);
+                let formatted = '';
+                for (let i = 0; i < val.length; i++) {
+                    if (i > 0 && i % 4 === 0) formatted += ' ';
+                    formatted += val[i];
+                }
+                e.target.value = formatted;
+                renderDocument();
+            });
+        }
+        formatAadhaarInput(aadhaarNumber);
+        formatAadhaarInput(childAadhaarNumber);
+
+        // Helper to format blank or filled text
+        function getVal(val, defaultPlaceholder = "____________________") {
+            if (val && val.trim() !== '') {
+                return `<span class="fill-text">${escapeHtml(val.trim())}</span>`;
+            }
+            return `<span class="blank-line" style="min-width: 90px;"></span>`;
+        }
+
+        function escapeHtml(string) {
+            return String(string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        // Switch Annexure
+        function selectAnnexure(annexureId) {
+            annexureBtns.forEach(b => {
+                if (b.getAttribute('data-annexure') === annexureId) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+            currentAnnexure = annexureId;
+            const selInput = document.getElementById('selectedAnnexure');
+            if (selInput) selInput.value = annexureId;
+            updateUiForAnnexure();
+            renderDocument();
+        }
+
+        annexureBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectAnnexure(btn.getAttribute('data-annexure'));
+                showToast(`Annexure ${currentAnnexure} (लेजर पेपर फॉरमॅट) लोड झाले.`);
+            });
+        });
+
+        function updateUiForAnnexure() {
+            // Is it child related?
+            const isChild = ['IA', 'IIA', 'IIIA'].includes(currentAnnexure);
+            childInfoCard.style.display = isChild ? 'flex' : 'none';
+
+            // Specific field visibility
+            if (currentAnnexure === 'I') {
+                updateFreqGroup.style.display = 'flex';
+                earlierDocMetaRow.style.display = 'none';
+                eidGroup.style.display = 'none';
+                newDocGroup.style.display = 'flex';
+                annexure1DocChoiceGroup.style.display = 'flex';
+                possessionChoiceGroup.style.display = 'none';
+                lblEarlierDoc.innerHTML = `पूर्वी दिलेला जन्मतारीख पुरावा (Earlier Submitted Document) <span class="req">*</span>`;
+            } else if (currentAnnexure === 'IA') {
+                updateFreqGroup.style.display = 'flex';
+                earlierDocMetaRow.style.display = 'none';
+                eidGroup.style.display = 'none';
+                newDocGroup.style.display = 'none';
+                annexure1DocChoiceGroup.style.display = 'none';
+                possessionChoiceGroup.style.display = 'none';
+                lblEarlierDoc.innerHTML = `पूर्वी दिलेला जन्मतारीख पुरावा (Earlier Submitted Document) <span class="req">*</span>`;
+            } else if (currentAnnexure === 'II' || currentAnnexure === 'IIA') {
+                updateFreqGroup.style.display = 'none';
+                earlierDocMetaRow.style.display = 'grid';
+                eidGroup.style.display = 'flex';
+                newDocGroup.style.display = 'none';
+                annexure1DocChoiceGroup.style.display = 'none';
+                possessionChoiceGroup.style.display = 'flex';
+                lblEarlierDoc.innerHTML = `पूर्वी सादर केलेले वैध कागदपत्र (Earlier Valid Document) <span class="req">*</span>`;
+            } else if (currentAnnexure === 'III' || currentAnnexure === 'IIIA') {
+                updateFreqGroup.style.display = 'none';
+                earlierDocMetaRow.style.display = 'grid';
+                eidGroup.style.display = 'flex';
+                newDocGroup.style.display = 'flex';
+                annexure1DocChoiceGroup.style.display = 'none';
+                possessionChoiceGroup.style.display = 'none';
+                lblEarlierDoc.innerHTML = `पूर्वी सादर केलेले अवैध कागदपत्र (Earlier Invalid Document) <span class="req">*</span>`;
+            }
+        }
+
+        // Render Document Preview
+        function renderDocument() {
+            const name = getVal(deponentName.value);
+            const rel = relationType.value;
+            const relative = getVal(relativeName.value);
+            const addr = getVal(address.value);
+            const aadh = getVal(aadhaarNumber.value);
+
+            const cName = getVal(childName.value);
+            const cAadh = getVal(childAadhaarNumber.value);
+
+            const cDob = getVal(correctDob.value);
+            const eDob = getVal(earlierDob.value);
+            const freq = getVal(updateFrequency.value);
+
+            const eDoc = getVal(earlierDocName.value);
+            const eDocNo = getVal(earlierDocNo.value);
+            const eDocDate = getVal(earlierDocDate.value);
+            const eid = getVal(eidNumber.value);
+            const nDoc = getVal(newDocName.value);
+
+            const a1DocOpt = annexure1DocChoice.value;
+            const possOpt = possessionChoice.value;
+
+            const dDate = docDate.value.trim() ? docDate.value.trim() : `${dd}/${mm}/${yyyy}`;
+            document.getElementById('displayDate').textContent = dDate;
+
+            if (docPlace.value.trim()) {
+                document.getElementById('displayPlaceRow').style.display = 'inline';
+                document.getElementById('displayPlace').textContent = docPlace.value.trim();
+            } else {
+                document.getElementById('displayPlaceRow').style.display = 'none';
+            }
+
+            const docAnnexureId = document.getElementById('docAnnexureId');
+            const docTitle = document.getElementById('docTitle');
+            const docSubtitle = document.getElementById('docSubtitle');
+            const docBodyContainer = document.getElementById('docBodyContainer');
+            const displaySignatureTitle = document.getElementById('displaySignatureTitle');
+            const displayAttestationNote = document.getElementById('displayAttestationNote');
+            const showAttestation = (chkShowAttestation && chkShowAttestation.checked);
+
+            let bodyHtml = '';
+
+            // =========================================================================
+            // 1. ANNEXURE-I (For Adults - DoB Updation - Ledger Paper)
+            // =========================================================================
+            if (currentAnnexure === 'I') {
+                docAnnexureId.textContent = 'Annexure-I- For Adults';
+                docTitle.textContent = 'Affidavit for date of birth updation';
+                docSubtitle.textContent = '(Applicable for cases where the DoB is verified in Aadhaar. To be printed on Ledger Paper)';
+                displaySignatureTitle.innerHTML = `Name & Signature of Resident (Deponent)`;
+                displayAttestationNote.style.display = showAttestation ? 'block' : 'none';
+                displayAttestationNote.textContent = '(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)';
+
+                bodyHtml = `
+                    <div class="doc-para">
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr}, holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under:-
+                    </div>
+                    <ul class="doc-clause-list">
+                        <li class="doc-clause-item">
+                            <span class="clause-num">i)</span>
+                            <span class="clause-content">That I am the resident of the above said address.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">ii)</span>
+                            <span class="clause-content">That my correct date of birth is ${cDob}.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iii)</span>
+                            <span class="clause-content">That the earlier recorded date of birth in Aadhaar is ${eDob} based on ${eDoc} document submitted by me.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iv)</span>
+                            <span class="clause-content">That I have ${freq} (never/ once/ more than once) updated my date of birth in Aadhaar.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">v)</span>
+                            <span class="clause-content">That currently <strong>${escapeHtml(a1DocOpt)}</strong> is being provided in support of DoB update request.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">vi)</span>
+                            <span class="clause-content">That I wish to get my date of birth updated in the Aadhaar as ${cDob}, for which I am submitting ${nDoc} as proof of date of birth.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">vii)</span>
+                            <span class="clause-content">That I further undertake that I shall not be eligible for any further updation of my date of birth in Aadhaar.</span>
+                        </li>
+                    </ul>
+                    <div class="doc-para" style="margin-top: 12px;">
+                        <strong>2.</strong> I undertake that if the document submitted as proof of date of birth is found to be fraudulent/false/forged/non-genuine or I was not entitled for the said document, my Aadhaar number may be deactivated as per Regulation 28 of the Aadhaar (Enrolment and Update) Regulations, 2016 and I shall be liable to be prosecuted under provisions of the applicable law.
+                    </div>
+                    <div class="doc-para" style="margin-top: 8px;">
+                        <strong>3.</strong> I hereby declare that all the information mentioned above is true to the best of my knowledge. In case of any discrepancies, the undersigned will be held responsible.
+                    </div>
+                `;
+            }
+
+            // =========================================================================
+            // 2. ANNEXURE-IA (For Children - DoB Updation - Ledger Paper)
+            // =========================================================================
+            else if (currentAnnexure === 'IA') {
+                docAnnexureId.textContent = 'Annexure IA- For children';
+                docTitle.textContent = 'Affidavit for date of birth updation';
+                docSubtitle.textContent = '(Applicable for cases where the DoB is verified in Aadhaar. To be printed on Ledger Paper)';
+                displaySignatureTitle.innerHTML = `Name & Signature of Parent /Guardian of Minor (Deponent)`;
+                displayAttestationNote.style.display = showAttestation ? 'block' : 'none';
+                displayAttestationNote.textContent = '(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)';
+
+                bodyHtml = `
+                    <div class="doc-para">
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr} holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under:-
+                    </div>
+                    <div class="doc-para" style="margin-top: 4px;">
+                        <strong>2.</strong> That I am the resident of the above said address.
+                    </div>
+                    <ul class="doc-clause-list">
+                        <li class="doc-clause-item">
+                            <span class="clause-num">i)</span>
+                            <span class="clause-content">That I am the resident of the above said address.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">ii)</span>
+                            <span class="clause-content">That I am parent/legal guardian of the <strong>&lt;&lt;name of child&gt;&gt;</strong> ${cName} holding Aadhaar number ${cAadh}.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iii)</span>
+                            <span class="clause-content">That correct date of birth of my child/ ward is ${cDob}.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iv)</span>
+                            <span class="clause-content">That the earlier recorded date of birth in Aadhaar of my child/ward is ${eDob} based on ${eDoc} document submitted by me.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">v)</span>
+                            <span class="clause-content">That I have ${freq} (never/ once/ more than once) updated my child/ward date of birth in Aadhaar.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">vi)</span>
+                            <span class="clause-content">That birth certificate of my child/ward is being provided in support of DoB update request.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">vii)</span>
+                            <span class="clause-content">That I wish to get my child/ward date of birth updated in the Aadhaar as ${cDob}, for which I am submitting his/her birth certificate as proof of date of birth.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">viii)</span>
+                            <span class="clause-content">That I further undertake that my child/ward shall not be eligible for any further updation of date of birth in Aadhaar.</span>
+                        </li>
+                    </ul>
+                    <div class="doc-para" style="margin-top: 12px;">
+                        <strong>3.</strong> I undertake that if the document submitted as proof of date of birth is found to be fraudulent/false/forged/non-genuine or my child/ward was not entitled for the said document, the Aadhaar number of my child/ward may be deactivated as per Regulation 28 of the Aadhaar (Enrolment and Update) Regulations, 2016 and I shall be liable to be prosecuted under provisions of the applicable law.
+                    </div>
+                    <div class="doc-para" style="margin-top: 8px;">
+                        <strong>4.</strong> I hereby declare that all the information mentioned above is true to the best of my knowledge. In case of any discrepancies, the undersigned will be held responsible.
+                    </div>
+                `;
+            }
+
+            // =========================================================================
+            // 3. ANNEXURE-II (For Adults - Operator Error / Typo Mistake - Ledger Paper)
+            // =========================================================================
+            else if (currentAnnexure === 'II') {
+                docAnnexureId.textContent = 'Annexure II- For adults';
+                docTitle.textContent = 'Self-Declaration requesting DoB update for correcting operator error / typographical mistake';
+                docSubtitle.textContent = '(To be printed on Ledger Paper / Legal Sheet)';
+                displaySignatureTitle.innerHTML = `Name & Signature of Resident`;
+                displayAttestationNote.style.display = 'none';
+
+                bodyHtml = `
+                    <div class="doc-para">
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr}, holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under: -
+                    </div>
+                    <ul class="doc-clause-list">
+                        <li class="doc-clause-item">
+                            <span class="clause-num">i)</span>
+                            <span class="clause-content">That I am the resident of the above said address.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">ii)</span>
+                            <span class="clause-content">That I had earlier submitted a valid document- ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate}, while enrolment / update through EID number ${eid}, as proof of date of birth for updating my date of birth in Aadhaar.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iii)</span>
+                            <span class="clause-content">That the date of birth was incorrectly mentioned as ${eDob} in Aadhaar, while the date of birth mentioned in the submitted valid document was ${cDob}, which is indeed my correct date of birth.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iv)</span>
+                            <span class="clause-content"><strong>${escapeHtml(possOpt)}.</strong></span>
+                        </li>
+                    </ul>
+                    <div class="doc-para" style="margin-top: 14px;">
+                        <strong>2.</strong> I request UIDAI to update my date of birth based on previously submitted and then valid proof of date of birth document.
+                    </div>
+                    <div class="doc-para" style="margin-top: 8px;">
+                        <strong>3.</strong> I undertake that if the earlier document submitted as proof of date of birth is found to be fraudulent/false/forged/non-genuine or I was not entitled for the said document, my Aadhaar number may be deactivated as per Regulation 28 of the Aadhaar (Enrolment and Update) Regulations, 2016.
+                    </div>
+                    <div class="doc-para" style="margin-top: 8px;">
+                        <strong>4.</strong> I hereby declare that all the information mentioned above is true to the best of my knowledge. In case of any discrepancies if arises, the undersigned will be held responsible.
+                    </div>
+                `;
+            }
+
+            // =========================================================================
+            // 4. ANNEXURE-IIA (For Children - Operator Error / Typo Mistake - Ledger Paper)
+            // =========================================================================
+            else if (currentAnnexure === 'IIA') {
+                docAnnexureId.textContent = 'Annexure IIA- For children';
+                docTitle.textContent = 'Self-Declaration requesting DoB update for correcting operator error / typographical mistake';
+                docSubtitle.textContent = '(To be printed on Ledger Paper / Legal Sheet)';
+                displaySignatureTitle.innerHTML = `Name & Signature of Parent /Guardian of Minor`;
+                displayAttestationNote.style.display = 'none';
+
+                bodyHtml = `
+                    <div class="doc-para">
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr}, holding Aadhaar No ${aadh}, do hereby solemnly affirm and declare as under: -
+                    </div>
+                    <ul class="doc-clause-list">
+                        <li class="doc-clause-item">
+                            <span class="clause-num">i)</span>
+                            <span class="clause-content">That I am the resident of the above said address.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">ii)</span>
+                            <span class="clause-content">That I am parent/legal guardian of the <strong>&lt;&lt;name of child&gt;&gt;</strong> ${cName} holding Aadhaar No ${cAadh}.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iii)</span>
+                            <span class="clause-content">That I had earlier submitted a valid document- ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate}, while enrolment / update through EID number ${eid}, as proof of date of birth for updating date of birth of my child/ward in Aadhaar.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iv)</span>
+                            <span class="clause-content">That the date of birth of my child/ward was wrongly mentioned as ${eDob} in Aadhaar, while the date of birth mentioned in the submitted valid document was ${cDob}, which is indeed the correct date of birth of my child/ward.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">v)</span>
+                            <span class="clause-content"><strong>${escapeHtml(possOpt)}.</strong></span>
+                        </li>
+                    </ul>
+                    <div class="doc-para" style="margin-top: 14px;">
+                        <strong>2.</strong> I request UIDAI to update date of birth of my child / ward based on previously submitted and then valid proof of date of birth document.
+                    </div>
+                    <div class="doc-para" style="margin-top: 8px;">
+                        <strong>3.</strong> I undertake that if the earlier document submitted as proof of date of birth is found to be fraudulent/false/forged/non-genuine or my child/ward was not entitled for the said document, Aadhaar number of my child/ward may be deactivated as per Regulation 28 of the Aadhaar (Enrolment and Update) Regulations, 2016.
+                    </div>
+                    <div class="doc-para" style="margin-top: 8px;">
+                        <strong>4.</strong> I hereby declare that all the information mentioned above is true to the best of my knowledge. In case of any discrepancies if arises, the undersigned will be held responsible.
+                    </div>
+                `;
+            }
+
+            // =========================================================================
+            // 5. ANNEXURE-III (For Adults - Reactivation of Aadhaar - Ledger Paper)
+            // =========================================================================
+            else if (currentAnnexure === 'III') {
+                docAnnexureId.textContent = 'Annexure III-For adults';
+                docTitle.textContent = 'Affidavit for reactivation of Aadhaar';
+                docSubtitle.textContent = '(To be printed on Ledger Paper / Legal Sheet)';
+                displaySignatureTitle.innerHTML = `Name & Signature of Resident (Deponent)`;
+                displayAttestationNote.style.display = showAttestation ? 'block' : 'none';
+                displayAttestationNote.textContent = '(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)';
+
+                bodyHtml = `
+                    <div class="doc-para">
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr}, holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under: -
+                    </div>
+                    <ul class="doc-clause-list">
+                        <li class="doc-clause-item">
+                            <span class="clause-num">i)</span>
+                            <span class="clause-content">That I am resident of the above said address.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">ii)</span>
+                            <span class="clause-content">That I had earlier submitted an invalid document - ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate}, and provided false information, while enrolment/update through EID number ${eid}, as proof of date of birth.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iii)</span>
+                            <span class="clause-content">That I understand and accept that submission of such invalid document and false information is a violation of law and legal action may be taken against me for the same under Aadhaar Act and/or any other applicable laws.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iv)</span>
+                            <span class="clause-content">That I sincerely regret this act and tenders an unconditional apology and ensures that such mistake shall not be repeated.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">v)</span>
+                            <span class="clause-content">That I humbly seek pardon and request UIDAI to kindly reactivate my Aadhaar number ${aadh} to enable its continued usage.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">vi)</span>
+                            <span class="clause-content">That I undertake to submit only genuine, correct and verifiable proof of date of birth document ${nDoc} in support of my request to reactivate my Aadhaar.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">vii)</span>
+                            <span class="clause-content">That the I further undertake that I shall not be eligible for any further updation of my date of birth in Aadhaar.</span>
+                        </li>
+                    </ul>
+                    <div class="doc-para" style="margin-top: 12px;">
+                        <strong>2.</strong> I undertake that if the document submitted as proof of date of birth is found to be fraudulent/false/forged/non-genuine or I was not entitled for the said document, my Aadhaar number may again be deactivated as per Regulation 28 of the Aadhaar (Enrolment and Update) Regulations, 2016 and I shall be liable to be prosecuted under provisions of the applicable laws.
+                    </div>
+                    <div class="doc-para" style="margin-top: 8px;">
+                        <strong>3.</strong> I hereby declare that all the information mentioned above is true to the best of my knowledge. In case of any discrepancies if arises, the undersigned will be held responsible.
+                    </div>
+                `;
+            }
+
+            // =========================================================================
+            // 6. ANNEXURE-IIIA (For Children - Reactivation of Aadhaar - Ledger Paper)
+            // =========================================================================
+            else if (currentAnnexure === 'IIIA') {
+                docAnnexureId.textContent = 'Annexure IIIA-For children';
+                docTitle.textContent = 'Affidavit for reactivation of Aadhaar';
+                docSubtitle.textContent = '(To be printed on Ledger Paper / Legal Sheet)';
+                displaySignatureTitle.innerHTML = `Name & Signature of Parent /Guardian of Minor (Deponent)`;
+                displayAttestationNote.style.display = showAttestation ? 'block' : 'none';
+                displayAttestationNote.textContent = '(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)';
+
+                bodyHtml = `
+                    <div class="doc-para">
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr}, holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under: -
+                    </div>
+                    <ul class="doc-clause-list">
+                        <li class="doc-clause-item">
+                            <span class="clause-num">i)</span>
+                            <span class="clause-content">That I am resident of the above said address.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">ii)</span>
+                            <span class="clause-content">That I am parent/legal guardian of the <strong>&lt;&lt;name of child&gt;&gt;</strong> ${cName} holding Aadhaar No ${cAadh}.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iii)</span>
+                            <span class="clause-content">That I had earlier submitted an invalid document- ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate}, or provided false information, while enrolment/update through EID number ${eid}, as proof of date of birth of my child/ward.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">iv)</span>
+                            <span class="clause-content">That I understand and accepts that submission of such invalid document and false information is a violation of law and legal action may be taken against me for the same under Aadhaar Act and/or any other applicable laws.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">v)</span>
+                            <span class="clause-content">That I sincerely regret this act and tenders an unconditional apology and ensures that such mistake shall not be repeated.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">vi)</span>
+                            <span class="clause-content">That I humbly seek pardon and request UIDAI to kindly reactivate my child/ward Aadhaar number ${cAadh} to enable its continued usage.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">vii)</span>
+                            <span class="clause-content">That I undertake to submit only genuine, correct and verifiable proof of date of birth document ${nDoc} in support of my request to reactivate my child/ward Aadhaar.</span>
+                        </li>
+                        <li class="doc-clause-item">
+                            <span class="clause-num">viii)</span>
+                            <span class="clause-content">That I further undertake that my child/ward shall not be eligible for any further updation of date of birth in Aadhaar.</span>
+                        </li>
+                    </ul>
+                    <div class="doc-para" style="margin-top: 12px;">
+                        <strong>2.</strong> I undertake that if the document submitted as proof of date of birth is found to be fraudulent/false/forged/non-genuine or my child/ward was not entitled for the same, Aadhaar number of my child/ward may again be deactivated as per Regulation 28 of the Aadhaar (Enrolment and Update) Regulations, 2016 and I shall be liable to be prosecuted under provisions of the applicable laws.
+                    </div>
+                    <div class="doc-para" style="margin-top: 8px;">
+                        <strong>3.</strong> I hereby declare that all the information mentioned above is true to the best of my knowledge. In case of any discrepancies if arises, the undersigned will be held responsible.
+                    </div>
+                `;
+            }
+
+            docBodyContainer.innerHTML = bodyHtml;
+        }
+
+        // Live input binding
+        const allInputs = [
+            deponentName, relationType, relativeName, address, aadhaarNumber,
+            childName, childAadhaarNumber, correctDob, earlierDob, updateFrequency,
+            earlierDocName, earlierDocNo, earlierDocDate, eidNumber, newDocName,
+            annexure1DocChoice, possessionChoice, docDate, docPlace
+        ];
+
+        allInputs.forEach(input => {
+            input.addEventListener('input', renderDocument);
+            input.addEventListener('change', renderDocument);
+        });
+
+        // Margins Adjuster Function (Synchronizes Screen & Print 1:1)
+        function updateMargins() {
+            const top = topMarginSlider ? parseInt(topMarginSlider.value, 10) : 15;
+            const left = leftMarginSlider ? parseInt(leftMarginSlider.value, 10) : 14;
+            const right = rightMarginSlider ? parseInt(rightMarginSlider.value, 10) : 14;
+            const bottom = bottomMarginSlider ? parseInt(bottomMarginSlider.value, 10) : 15;
+
+            if (topMarginVal) topMarginVal.textContent = top + ' mm';
+            if (leftMarginVal) leftMarginVal.textContent = left + ' mm';
+            if (rightMarginVal) rightMarginVal.textContent = right + ' mm';
+            if (bottomMarginVal) bottomMarginVal.textContent = bottom + ' mm';
+
+            if (printSheet) {
+                // Update CSS variables for print styles
+                printSheet.style.setProperty('--doc-top-margin', top + 'mm');
+                printSheet.style.setProperty('--doc-bottom-margin', bottom + 'mm');
+                printSheet.style.setProperty('--doc-left-margin', left + 'mm');
+                printSheet.style.setProperty('--doc-right-margin', right + 'mm');
+
+                // Update inline padding for immediate live screen preview
+                printSheet.style.paddingTop = top + 'mm';
+                printSheet.style.paddingBottom = bottom + 'mm';
+                printSheet.style.paddingLeft = left + 'mm';
+                printSheet.style.paddingRight = right + 'mm';
+            }
+        }
+
+        // Live slider input listeners
+        if (topMarginSlider) topMarginSlider.addEventListener('input', updateMargins);
+        if (leftMarginSlider) leftMarginSlider.addEventListener('input', updateMargins);
+        if (rightMarginSlider) rightMarginSlider.addEventListener('input', updateMargins);
+        if (bottomMarginSlider) bottomMarginSlider.addEventListener('input', updateMargins);
+
+        // Quick Preset 1-Click Buttons
+        if (presetStandard) {
+            presetStandard.addEventListener('click', () => {
+                if (topMarginSlider) topMarginSlider.value = 15;
+                if (leftMarginSlider) leftMarginSlider.value = 14;
+                if (rightMarginSlider) rightMarginSlider.value = 14;
+                if (bottomMarginSlider) bottomMarginSlider.value = 15;
+                updateMargins();
+                showToast('सामान्य मार्जिन (डावे 14mm, उजवे 14mm) सेट केले.');
+            });
+        }
+        if (presetWide) {
+            presetWide.addEventListener('click', () => {
+                if (topMarginSlider) topMarginSlider.value = 12;
+                if (leftMarginSlider) leftMarginSlider.value = 8;
+                if (rightMarginSlider) rightMarginSlider.value = 8;
+                if (bottomMarginSlider) bottomMarginSlider.value = 12;
+                updateMargins();
+                showToast('कमी स्पेस / रुंद मजकूर (डावे 8mm, उजवे 8mm) सेट केले.');
+            });
+        }
+        if (presetCourt) {
+            presetCourt.addEventListener('click', () => {
+                if (topMarginSlider) topMarginSlider.value = 15;
+                if (leftMarginSlider) leftMarginSlider.value = 25;
+                if (rightMarginSlider) rightMarginSlider.value = 10;
+                if (bottomMarginSlider) bottomMarginSlider.value = 15;
+                updateMargins();
+                showToast('कोर्ट फाइलिंग मार्जिन (डावे 25mm, उजवे 10mm) सेट केले.');
+            });
+        }
+
+        // Green Ledger Background Tint Toggle
+        chkGreenLedgerTint.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                printSheet.classList.add('green-ledger-mode');
+            } else {
+                printSheet.classList.remove('green-ledger-mode');
+            }
+        });
+
+        // Show/Hide Attestation Notice Screen Toggle
+        if (chkShowAttestation) {
+            chkShowAttestation.addEventListener('change', renderDocument);
+        }
+
+        // Paper Size Switcher
+        btnPaperLegal.addEventListener('click', () => {
+            btnPaperLegal.classList.add('active');
+            btnPaperA4.classList.remove('active');
+            printSheet.classList.remove('a4-mode');
+            showToast('लीगल लेजर पेपर (Legal Size 215mm × 345mm) निवडले.');
+        });
+
+        btnPaperA4.addEventListener('click', () => {
+            btnPaperA4.classList.add('active');
+            btnPaperLegal.classList.remove('active');
+            printSheet.classList.add('a4-mode');
+            showToast('A4 पेपर (210mm × 297mm) निवडले.');
+        });
+
+        // Font Size Adjuster
+        fontSizeSlider.addEventListener('input', (e) => {
+            const val = e.target.value;
+            fontSizeVal.textContent = val + 'pt';
+            printSheet.style.fontSize = val + 'pt';
+        });
+
+        // Line Height Adjuster
+        lineHeightSlider.addEventListener('input', (e) => {
+            const val = e.target.value;
+            lineHeightVal.textContent = val;
+            printSheet.style.lineHeight = val;
+        });
+
+        // Sample Data Fill
+        document.getElementById('btnSample').addEventListener('click', () => {
+            deponentName.value = 'GANESH SURESH DESHMUKH';
+            relationType.value = 'S/o';
+            relativeName.value = 'SURESH NAMDEV DESHMUKH';
+            address.value = 'Plot No. 42, Shivneri Nagar, Near Gram Panchayat, Tal. Haveli, Dist. Pune - 411028';
+            aadhaarNumber.value = '7894 5612 3045';
+
+            childName.value = 'SWARA GANESH DESHMUKH';
+            childAadhaarNumber.value = '9876 5432 1098';
+
+            correctDob.value = '12/04/1995';
+            earlierDob.value = '01/01/1993';
+            updateFrequency.value = 'once';
+
+            earlierDocName.value = 'School Leaving Certificate';
+            earlierDocNo.value = 'SLC/2012/984';
+            earlierDocDate.value = '15/06/2012';
+            eidNumber.value = '2045/87654/12398';
+            newDocName.value = 'Municipal Birth Certificate';
+
+            renderDocument();
+            showToast('नमुना माहिती भरली आहे (Sample Data Loaded)');
+        });
+
+        // Reset Form
+        document.getElementById('btnReset').addEventListener('click', () => {
+            if (confirm('तुम्हाला सर्व भरलेली माहिती साफ करायची आहे का?')) {
+                allInputs.forEach(input => {
+                    if (input.tagName === 'SELECT') {
+                        input.selectedIndex = 0;
+                    } else if (input.id !== 'docDate') {
+                        input.value = '';
+                    }
+                });
+                renderDocument();
+                showToast('फॉर्म रीसेट केला आहे.');
+            }
+        });
+
+        // Print Action
+        document.getElementById('btnPrint').addEventListener('click', () => {
+            if (window.UniversalFormHistory && typeof window.UniversalFormHistory.saveCurrentForm === 'function') {
+                window.UniversalFormHistory.saveCurrentForm(false);
+            }
+            window.print();
+        });
+
+        // Save Form Button Action
+        const btnSaveForm = document.getElementById('btnSaveForm');
+        if (btnSaveForm) {
+            btnSaveForm.addEventListener('click', () => {
+                if (window.UniversalFormHistory && typeof window.UniversalFormHistory.saveCurrentForm === 'function') {
+                    window.UniversalFormHistory.saveCurrentForm(false);
+                } else {
+                    showToast('अर्ज सेव्ह केला जात आहे...');
+                }
+            });
+        }
+
+        // Remove browser URL/date/title headers when printing
+        window.addEventListener('beforeprint', function() {
+            window._prevDocTitle = document.title;
+            document.title = "";
+        });
+        window.addEventListener('afterprint', function() {
+            if (window._prevDocTitle) {
+                document.title = window._prevDocTitle;
+            }
+        });
+
+        // Universal Form History Integration Hooks
+        window.getAadhaarCurrentFormData = function() {
+            return {
+                selectedAnnexure: currentAnnexure,
+                deponentName: deponentName.value,
+                relationType: relationType.value,
+                relativeName: relativeName.value,
+                address: address.value,
+                aadhaarNumber: aadhaarNumber.value,
+                childName: childName.value,
+                childAadhaarNumber: childAadhaarNumber.value,
+                correctDob: correctDob.value,
+                earlierDob: earlierDob.value,
+                updateFrequency: updateFrequency.value,
+                earlierDocName: earlierDocName.value,
+                earlierDocNo: earlierDocNo.value,
+                earlierDocDate: earlierDocDate.value,
+                eidNumber: eidNumber.value,
+                newDocName: newDocName.value,
+                annexure1DocChoice: annexure1DocChoice.value,
+                possessionChoice: possessionChoice.value,
+                docDate: docDate ? docDate.value : '',
+                docPlace: docPlace ? docPlace.value : '',
+                topMargin: topMarginSlider ? topMarginSlider.value : 15,
+                leftMargin: leftMarginSlider ? leftMarginSlider.value : 14,
+                rightMargin: rightMarginSlider ? rightMarginSlider.value : 14,
+                bottomMargin: bottomMarginSlider ? bottomMarginSlider.value : 15,
+                fontSize: fontSizeSlider ? fontSizeSlider.value : 11.5,
+                lineHeight: lineHeightSlider ? lineHeightSlider.value : 1.65,
+                paperMode: (btnPaperA4 && btnPaperA4.classList.contains('active')) ? 'a4' : 'legal'
+            };
+        };
+
+        window.syncForm = function(savedData) {
+            if (savedData) {
+                if (savedData.selectedAnnexure) selectAnnexure(savedData.selectedAnnexure);
+                if (savedData.topMargin && topMarginSlider) topMarginSlider.value = savedData.topMargin;
+                if (savedData.leftMargin && leftMarginSlider) leftMarginSlider.value = savedData.leftMargin;
+                if (savedData.rightMargin && rightMarginSlider) rightMarginSlider.value = savedData.rightMargin;
+                if (savedData.bottomMargin && bottomMarginSlider) bottomMarginSlider.value = savedData.bottomMargin;
+                if (savedData.fontSize && fontSizeSlider) {
+                    fontSizeSlider.value = savedData.fontSize;
+                    if (fontSizeVal) fontSizeVal.textContent = savedData.fontSize + 'pt';
+                    if (printSheet) printSheet.style.fontSize = savedData.fontSize + 'pt';
+                }
+                if (savedData.lineHeight && lineHeightSlider) {
+                    lineHeightSlider.value = savedData.lineHeight;
+                    if (lineHeightVal) lineHeightVal.textContent = savedData.lineHeight;
+                    if (printSheet) printSheet.style.lineHeight = savedData.lineHeight;
+                }
+                updateMargins();
+            } else {
+                const selInput = document.getElementById('selectedAnnexure');
+                if (selInput && selInput.value) {
+                    selectAnnexure(selInput.value);
+                }
+            }
+            renderDocument();
+        };
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize
+        updateUiForAnnexure();
+        updateMargins();
+        renderDocument();
+    </script>
+</body>
+</html>
