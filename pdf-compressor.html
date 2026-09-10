@@ -1584,8 +1584,8 @@
         <button type="button" class="mode-tab-btn active" data-mode="single-pdf" onclick="switchToolMode('single-pdf')">
           <div class="mode-tab-icon-wrap cyan"><i class="fa-solid fa-file-pdf"></i></div>
           <div class="mode-tab-texts">
-            <span class="mode-name">१. सिंगल PDF</span>
-            <span class="mode-subtag cyan">⚡ अचूक टार्गेट KB</span>
+            <span class="mode-name">१. सिंगल PDF / डॉक</span>
+            <span class="mode-subtag cyan">⚡ PDF किंवा इमेज ➔ PDF</span>
           </div>
         </button>
         <button type="button" class="mode-tab-btn" data-mode="merge-pdf" onclick="switchToolMode('merge-pdf')">
@@ -1606,14 +1606,14 @@
           <div class="mode-tab-icon-wrap pink"><i class="fa-solid fa-image"></i></div>
           <div class="mode-tab-texts">
             <span class="mode-name">४. सिंगल इमेज</span>
-            <span class="mode-subtag pink">👤 फोटो / स्वाक्षरी</span>
+            <span class="mode-subtag pink">👤 फोटो / सही / PDF</span>
           </div>
         </button>
         <button type="button" class="mode-tab-btn" data-mode="img-to-pdf" onclick="switchToolMode('img-to-pdf')">
-          <div class="mode-tab-icon-wrap purple"><i class="fa-solid fa-images"></i></div>
+          <div class="mode-tab-icon-wrap purple"><i class="fa-solid fa-file-pdf"></i></div>
           <div class="mode-tab-texts">
-            <span class="mode-name">५. फोटो ➔ १ PDF</span>
-            <span class="mode-subtag purple">📸 कागदपत्र स्कॅन्स</span>
+            <span class="mode-name">५. इमेज ➔ PDF</span>
+            <span class="mode-subtag purple">📑 सिंगल किंवा मल्टिपल</span>
           </div>
         </button>
         <button type="button" class="mode-tab-btn" data-mode="batch-img" onclick="switchToolMode('batch-img')">
@@ -1697,6 +1697,36 @@
           <!-- Settings Section -->
           <div id="settings-section">
             
+            <!-- Mode 5 Output Type Selector (Separate Single PDFs vs 1 Combined PDF) -->
+            <div id="img-to-pdf-output-mode-card" style="display: none; margin-bottom: 8px; background: rgba(30, 41, 59, 0.45); padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.25);">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #cbd5e1;"><i class="fa-solid fa-file-export text-sky"></i> PDF आउटपुट प्रकार:</span>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                  <button type="button" class="dim-chip active" id="btn-pdf-mode-separate" onclick="setPdfOutputMode('separate')" title="प्रत्येक फोटोची स्वतंत्र सिंगल-पेज PDF बनेल व प्रत्येकी स्वतंत्र साईझ मेंशन करता येईल">
+                    <i class="fa-solid fa-copy text-sky"></i> 📄 प्रत्येक फोटोची स्वतंत्र सिंगल PDF (Bulk)
+                  </button>
+                  <button type="button" class="dim-chip" id="btn-pdf-mode-combined" onclick="setPdfOutputMode('combined')" title="सर्व फोटो जोडून एकच एकत्रित मल्टी-पेज PDF बनेल">
+                    <i class="fa-solid fa-layer-group text-purple"></i> 📚 सर्व फोटो जोडून १ एकत्रित PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mode 4 Output Format Selector (JPG vs Single Page PDF) -->
+            <div id="image-output-format-card" style="display: none; margin-bottom: 8px; background: rgba(30, 41, 59, 0.45); padding: 7px 10px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.25);">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #cbd5e1;"><i class="fa-solid fa-file-export text-sky"></i> आउटपुट फॉरमॅट:</span>
+                <div style="display: flex; gap: 6px;">
+                  <button type="button" class="dim-chip active" id="btn-img-fmt-jpg" onclick="setImageOutputFormat('jpg')">
+                    <i class="fa-solid fa-image"></i> 🖼️ JPG इमेज
+                  </button>
+                  <button type="button" class="dim-chip" id="btn-img-fmt-pdf" onclick="setImageOutputFormat('pdf')">
+                    <i class="fa-solid fa-file-pdf text-rose"></i> 📑 सिंगल पेज PDF (A4)
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <!-- Image Presets Card (Image modes only) -->
             <div id="image-presets-control-card" style="display: none; margin-bottom: 8px;">
               <div class="dimension-chips-row">
@@ -1737,6 +1767,32 @@
               </div>
 
               <span id="dimension-hint-text" style="display: none;"></span>
+            </div>
+
+            <!-- Image to PDF Page Controls Card (Orientation & Fit) -->
+            <div id="img-to-pdf-controls-card" style="display: none; margin-bottom: 8px; background: rgba(30, 41, 59, 0.45); padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.25);">
+              <div style="font-size: 0.78rem; font-weight: 800; color: #7dd3fc; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-file-pdf text-sky"></i> <span>इमेज ➔ सिंगल पेज PDF मांडणी (A4 Layout):</span>
+              </div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                <button type="button" class="dim-chip active" id="btn-orient-auto" onclick="setImgToPdfOrientation('auto')">
+                  <i class="fa-solid fa-wand-magic-sparkles text-amber"></i> ⚡ ऑटो-डिटेक्ट
+                </button>
+                <button type="button" class="dim-chip" id="btn-orient-portrait" onclick="setImgToPdfOrientation('portrait')">
+                  <i class="fa-solid fa-file"></i> 📄 उभा (Portrait A4)
+                </button>
+                <button type="button" class="dim-chip" id="btn-orient-landscape" onclick="setImgToPdfOrientation('landscape')">
+                  <i class="fa-solid fa-image"></i> 🔄 आडवा (Landscape A4)
+                </button>
+              </div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button type="button" class="dim-chip active" id="btn-fit-margin" onclick="setImgToPdfFit('margin')" title="कागदपत्राचा मजकूर न कापता स्वच्छ मार्जिनसह A4 पानावर फिट">
+                  <i class="fa-solid fa-expand text-emerald"></i> 📐 A4 मार्जिनसह फिट (शासकीय मानक)
+                </button>
+                <button type="button" class="dim-chip" id="btn-fit-full" onclick="setImgToPdfFit('full')" title="संपूर्ण पानावर पसरून फिट">
+                  <i class="fa-solid fa-maximize"></i> 🖼️ संपूर्ण पान (Full Bleed)
+                </button>
+              </div>
             </div>
 
             <!-- Target Size Box with Super Minimise & Interactive Slider -->
@@ -1897,6 +1953,15 @@
             <div id="thumbnails-preview-section" style="display: none;">
               <div class="thumbnails-preview-grid" id="thumbnails-container"></div>
             </div>
+
+            <!-- Separate Single PDFs Results List (प्रत्येक सिंगल फाईल थेट डाउनलोड व प्रीव्ह्यू) -->
+            <div id="separate-pdfs-results-section" style="display: none; margin-top: 12px; border-top: 1px solid rgba(56, 189, 248, 0.25); padding-top: 10px;">
+              <div style="font-size: 0.82rem; font-weight: 800; color: #7dd3fc; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <span><i class="fa-solid fa-folder-open text-sky"></i> स्वतंत्र सिंगल-पेज PDFs यादी:</span>
+                <span id="separate-pdfs-count-badge" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; padding: 2px 7px; border-radius: 5px; font-size: 0.72rem;"></span>
+              </div>
+              <div id="separate-pdfs-items-list" style="display: flex; flex-direction: column; gap: 7px; max-height: 280px; overflow-y: auto;"></div>
+            </div>
           </div>
 
         </div>
@@ -1924,14 +1989,103 @@
     // ==========================================
     let currentMode = 'single-pdf'; // 'single-pdf' | 'merge-pdf' | 'batch-pdf' | 'single-img' | 'img-to-pdf' | 'batch-img'
     let currentImageDimensionPreset = 'photo'; // 'original' | 'photo' | 'signature' | 'document'
+    let currentImgToPdfOrientation = 'auto'; // 'auto' | 'portrait' | 'landscape'
+    let currentImgToPdfFit = 'margin'; // 'margin' | 'full'
+    let currentSingleImgOutputFormat = 'jpg'; // 'jpg' | 'pdf'
+    let currentPdfOutputMode = 'separate'; // 'separate' | 'combined'
+    let generatedSinglePdfs = []; // Array of { id, name, origName, origSize, compSize, gapKb, targetKb, blob, url, thumbUrl }
+
+    function setPdfOutputMode(mode) {
+      currentPdfOutputMode = mode;
+      const btnSep = document.getElementById('btn-pdf-mode-separate');
+      const btnComb = document.getElementById('btn-pdf-mode-combined');
+      if (btnSep) btnSep.classList.toggle('active', mode === 'separate');
+      if (btnComb) btnComb.classList.toggle('active', mode === 'combined');
+
+      const btnAction = document.getElementById('btn-action-text');
+      const targetLabel = document.getElementById('target-size-label-text');
+
+      if (mode === 'separate') {
+        if (btnAction) btnAction.textContent = selectedFiles.length > 0 
+          ? `सर्व ${selectedFiles.length} फोटो स्वतंत्र सिंगल-पेज PDF मध्ये रूपांतरित करा (Start)` 
+          : 'सर्व फोटो स्वतंत्र सिंगल-पेज PDF मध्ये रूपांतरित करा (Start)';
+        if (targetLabel) targetLabel.innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> प्रत्येक सिंगल-पेज PDF ची मास्टर साईझ (Target KB):';
+      } else {
+        if (btnAction) btnAction.textContent = selectedFiles.length > 0 
+          ? `सर्व ${selectedFiles.length} फोटो जोडून १ एकत्रित PDF बनवा (Start)` 
+          : 'सर्व फोटो जोडून १ एकत्रित PDF बनवा (Start)';
+        if (targetLabel) targetLabel.innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> एकत्रित PDF ची साईझ (Target KB):';
+      }
+      updateFilesUI();
+    }
+
     let selectedFiles = []; // Array of File objects
     let loadedPdfDocs = []; // Array of PDFDocumentProxy
     let finalResultBlob = null;
     let finalResultUrl = null;
-    let finalResultType = 'pdf'; // 'pdf' | 'image' | 'zip'
+    let finalResultType = 'pdf'; // 'pdf' | 'image' | 'zip' | 'separate-pdfs'
     let finalResultFilename = 'document.pdf';
     let finalResultDimensions = ''; // e.g. '160 x 200 px'
     let renderedThumbnails = [];
+
+    function setImgToPdfOrientation(orient) {
+      currentImgToPdfOrientation = orient;
+      ['auto', 'portrait', 'landscape'].forEach(o => {
+        const btn = document.getElementById(`btn-orient-${o}`);
+        if (btn) btn.classList.toggle('active', o === orient);
+      });
+    }
+
+    function setImgToPdfFit(fit) {
+      currentImgToPdfFit = fit;
+      ['margin', 'full'].forEach(f => {
+        const btn = document.getElementById(`btn-fit-${f}`);
+        if (btn) btn.classList.toggle('active', f === fit);
+      });
+    }
+
+    function setImageOutputFormat(fmt, autoSyncChips = true) {
+      currentSingleImgOutputFormat = fmt;
+      const btnJpg = document.getElementById('btn-img-fmt-jpg');
+      const btnPdf = document.getElementById('btn-img-fmt-pdf');
+      if (btnJpg) btnJpg.classList.toggle('active', fmt === 'jpg');
+      if (btnPdf) btnPdf.classList.toggle('active', fmt === 'pdf');
+
+      const imgToPdfCard = document.getElementById('img-to-pdf-controls-card');
+      const imgPresetCard = document.getElementById('image-presets-control-card');
+      const targetLabel = document.getElementById('target-size-label-text');
+      const btnAction = document.getElementById('btn-action-text');
+
+      if (fmt === 'pdf') {
+        if (imgToPdfCard) imgToPdfCard.style.display = 'block';
+        if (imgPresetCard) imgPresetCard.style.display = 'none';
+        if (targetLabel) targetLabel.innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> तयार होणाऱ्या सिंगल पेज PDF ची साईझ (Target KB):';
+        if (btnAction) btnAction.textContent = 'आता इमेज ➔ सिंगल पेज PDF बनवा (Start)';
+        if (autoSyncChips) {
+          const pdfChips = [
+            { kb: 100, label: '⚡ १०० KB' },
+            { kb: 150, label: '🎯 १५० KB' },
+            { kb: 200, label: '🎯 २०० KB' },
+            { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
+            { kb: 300, label: '📄 ३०० KB' },
+            { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
+          ];
+          renderQuickChips(pdfChips, 200);
+          document.getElementById('target-kb-input').value = 200;
+          syncSizeUI(200);
+        }
+      } else {
+        if (imgToPdfCard) imgToPdfCard.style.display = 'none';
+        if (imgPresetCard) imgPresetCard.style.display = 'block';
+        if (targetLabel) targetLabel.innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> हवी असलेली इमेज साईझ (Target KB):';
+        if (btnAction) btnAction.textContent = 'आता इमेज अचूक KB मध्ये कॉम्प्रेस करा';
+        if (autoSyncChips) {
+          renderQuickChips(MODE_CONFIGS['single-img'].chips, 50);
+          document.getElementById('target-kb-input').value = 50;
+          syncSizeUI(50);
+        }
+      }
+    }
 
     // ==========================================
     // Minimise / Compact View & Window Controls
@@ -2034,24 +2188,25 @@
     // Mode Configuration Definitions
     const MODE_CONFIGS = {
       'single-pdf': {
-        title: '१. सिंगल PDF',
+        title: '१. सिंगल PDF / डॉक',
         badge: '१ फाईल',
-        accept: '.pdf,application/pdf',
+        accept: '.pdf,application/pdf,image/jpeg,image/png,image/webp,image/jpg',
         multiple: false,
-        dropTitle: 'आपली PDF फाईल निवडा किंवा ड्रॅग करा',
-        dropDesc: '',
-        btnBrowse: 'PDF फाईल निवडा',
+        dropTitle: 'आपली PDF किंवा इमेज फाईल निवडा किंवा ड्रॅग करा',
+        dropDesc: 'PDF असल्यास कॉम्प्रेस होईल किंवा फोटो असल्यास सिंगल पेज PDF तयार होईल',
+        btnBrowse: 'PDF किंवा इमेज निवडा',
         defaultKb: 200,
-        targetLabel: 'हवी असलेली साईझ (Target KB):',
+        targetLabel: 'हवी असलेली PDF साईझ (Target KB):',
         targetHint: '',
         chips: [
           { kb: 100, label: '⚡ १०० KB' },
+          { kb: 150, label: '🎯 १५० KB' },
           { kb: 200, label: '🎯 २०० KB' },
           { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
           { kb: 300, label: '📄 ३०० KB' },
           { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
         ],
-        btnAction: 'आता अचूक साईझमध्ये कॉम्प्रेस करा'
+        btnAction: 'आता अचूक साईझमध्ये PDF बनवा'
       },
       'merge-pdf': {
         title: '२. मल्टिपल PDF ➔ १',
@@ -2114,24 +2269,25 @@
         btnAction: 'आता इमेज अचूक KB मध्ये कॉम्प्रेस करा'
       },
       'img-to-pdf': {
-        title: '५. फोटो ➔ १ PDF',
-        badge: 'फोटो ➔ १ PDF',
+        title: '५. इमेज ➔ PDF (स्वतंत्र / एकत्रित)',
+        badge: 'फोटो ➔ सिंगल PDFs (Bulk)',
         accept: 'image/jpeg,image/png,image/webp,image/jpg',
         multiple: true,
-        dropTitle: 'कागदपत्रांचे सर्व फोटो निवडा किंवा ड्रॅग करा',
-        dropDesc: '',
-        btnBrowse: 'सर्व फोटो निवडा',
+        dropTitle: '१ किंवा अनेक फोटो निवडा किंवा ड्रॅग करा',
+        dropDesc: 'प्रत्येक फोटोची स्वतंत्र सिंगल-पेज PDF (Bulk) किंवा सर्व फोटो जोडून १ एकत्रित PDF बनवा',
+        btnBrowse: 'फोटो निवडा (Select Photos)',
         defaultKb: 250,
-        targetLabel: 'तयार होणाऱ्या PDF ची साईझ (Target KB):',
+        targetLabel: 'प्रत्येक सिंगल-पेज PDF ची साईझ (Target KB):',
         targetHint: '',
         chips: [
           { kb: 100, label: '⚡ १०० KB' },
+          { kb: 150, label: '🎯 १५० KB' },
           { kb: 200, label: '🎯 २०० KB' },
           { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
           { kb: 300, label: '📄 ३०० KB' },
           { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
         ],
-        btnAction: 'सर्व फोटो जोडून कॉम्प्रेस PDF बनवा'
+        btnAction: 'सर्व फोटो स्वतंत्र सिंगल-पेज PDF मध्ये रूपांतरित करा'
       },
       'batch-img': {
         title: '६. बॅच इमेजेस (ZIP)',
@@ -2186,6 +2342,9 @@
 
       // Manage Image Dimension Preset Card visibility
       const imgPresetCard = document.getElementById('image-presets-control-card');
+      const imgOutputFmtCard = document.getElementById('image-output-format-card');
+      const imgToPdfCard = document.getElementById('img-to-pdf-controls-card');
+
       if (imgPresetCard) {
         if (mode === 'single-img' || mode === 'batch-img') {
           imgPresetCard.style.display = 'block';
@@ -2193,6 +2352,25 @@
         } else {
           imgPresetCard.style.display = 'none';
         }
+      }
+
+      if (imgOutputFmtCard) {
+        imgOutputFmtCard.style.display = (mode === 'single-img') ? 'block' : 'none';
+        if (mode === 'single-img') {
+          setImageOutputFormat('jpg', false);
+        }
+      }
+
+      const imgOutputModeCard = document.getElementById('img-to-pdf-output-mode-card');
+      if (imgOutputModeCard) {
+        imgOutputModeCard.style.display = (mode === 'img-to-pdf') ? 'block' : 'none';
+        if (mode === 'img-to-pdf') {
+          setPdfOutputMode('separate');
+        }
+      }
+
+      if (imgToPdfCard) {
+        imgToPdfCard.style.display = (mode === 'img-to-pdf') ? 'block' : 'none';
       }
 
       // Update Target Input & Label
@@ -2293,9 +2471,27 @@
       });
     }
 
+    function onFileCustomTargetInput(idx, val) {
+      const kb = parseInt(val, 10);
+      if (!isNaN(kb) && kb > 0 && selectedFiles[idx]) {
+        selectedFiles[idx].customTargetKb = kb;
+        selectedFiles[idx].hasManualOverride = true;
+      }
+    }
+
     function setQuickSize(kb) {
       document.getElementById('target-kb-input').value = kb;
       syncSizeUI(kb);
+
+      if (currentMode === 'img-to-pdf' && currentPdfOutputMode === 'separate') {
+        selectedFiles.forEach((f, idx) => {
+          if (!f.hasManualOverride) {
+            f.customTargetKb = kb;
+            const inp = document.getElementById(`file-custom-kb-${idx}`);
+            if (inp) inp.value = kb;
+          }
+        });
+      }
 
       // Auto link quick KB to dimension presets in image mode
       if (currentMode === 'single-img' || currentMode === 'batch-img') {
@@ -2309,6 +2505,15 @@
       const kb = parseInt(val, 10);
       if (!isNaN(kb)) {
         syncSizeUI(kb);
+        if (currentMode === 'img-to-pdf' && currentPdfOutputMode === 'separate') {
+          selectedFiles.forEach((f, idx) => {
+            if (!f.hasManualOverride) {
+              f.customTargetKb = kb;
+              const inp = document.getElementById(`file-custom-kb-${idx}`);
+              if (inp) inp.value = kb;
+            }
+          });
+        }
         if (currentMode === 'single-img' || currentMode === 'batch-img') {
           if (kb === 20) setImageDimensionPreset('signature', false);
           else if (kb === 50) setImageDimensionPreset('photo', false);
@@ -2371,15 +2576,33 @@
       const conf = MODE_CONFIGS[currentMode];
 
       // Filter valid files
-      const isPdfMode = currentMode.includes('pdf');
-      const filtered = newFiles.filter(f => {
-        if (isPdfMode) return f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf');
-        return f.type.startsWith('image/');
-      });
+      let filtered;
+      if (currentMode === 'single-pdf') {
+        filtered = newFiles.filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf') || f.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(f.name));
+      } else if (currentMode === 'merge-pdf' || currentMode === 'batch-pdf') {
+        filtered = newFiles.filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+      } else {
+        filtered = newFiles.filter(f => f.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(f.name));
+      }
 
       if (filtered.length === 0) {
-        alert(isPdfMode ? 'कृपया वैध PDF फाईल निवडा.' : 'कृपया वैध इमेज फाईल (JPG/PNG) निवडा.');
+        if (currentMode === 'single-pdf') {
+          alert('कृपया वैध PDF किंवा इमेज (JPG/PNG/WEBP) फाईल निवडा.');
+        } else if (currentMode.includes('pdf')) {
+          alert('कृपया वैध PDF फाईल निवडा.');
+        } else {
+          alert('कृपया वैध इमेज फाईल (JPG/PNG/WEBP) निवडा.');
+        }
         return;
+      }
+
+      if (!conf.multiple && filtered.length > 1) {
+        if (filtered.every(f => f.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(f.name))) {
+          switchToolMode('img-to-pdf');
+          selectedFiles = filtered;
+          updateFilesUI();
+          return;
+        }
       }
 
       if (conf.multiple) {
@@ -2421,9 +2644,15 @@
       const listContainer = document.getElementById('file-items-container');
       listContainer.innerHTML = '';
 
+      const masterTargetKb = parseInt(document.getElementById('target-kb-input')?.value, 10) || conf.defaultKb;
+
       let totalBytes = 0;
       selectedFiles.forEach((file, idx) => {
         totalBytes += file.size;
+        if (!file.customTargetKb) {
+          file.customTargetKb = masterTargetKb;
+        }
+
         const card = document.createElement('div');
         card.className = 'file-item-card';
 
@@ -2447,12 +2676,40 @@
           `;
         }
 
+        let formatNote = '';
+        let targetMentionHtml = '';
+
+        if (file.type.startsWith('image/')) {
+          if (currentMode === 'single-pdf' || (currentMode === 'single-img' && currentSingleImgOutputFormat === 'pdf')) {
+            formatNote = ' • <span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-file-pdf"></i> सिंगल पेज PDF बनेल</span>';
+          } else if (currentMode === 'img-to-pdf') {
+            if (selectedFiles.length === 1) {
+              formatNote = ' • <span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-file-pdf"></i> सिंगल पेज PDF बनेल</span>';
+            } else if (currentPdfOutputMode === 'separate') {
+              formatNote = ' • <span style="color:#34d399; font-weight:700;"><i class="fa-solid fa-file-pdf"></i> स्वतंत्र सिंगल PDF</span>';
+              targetMentionHtml = `
+                <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap;">
+                  <span style="font-size: 0.72rem; color: #7dd3fc; font-weight: 700;"><i class="fa-solid fa-bullseye text-sky"></i> टार्गेट साईझ:</span>
+                  <div style="display: inline-flex; align-items: center; background: #060a14; border: 1.5px solid #38bdf8; border-radius: 5px; padding: 1px 6px;">
+                    <input type="number" id="file-custom-kb-${idx}" value="${file.customTargetKb}" min="10" max="2000" step="5" oninput="onFileCustomTargetInput(${idx}, this.value)" style="width: 52px; background: transparent; border: none; color: #38bdf8; font-weight: 800; font-size: 0.82rem; text-align: center; outline: none; font-family: 'Poppins', monospace;">
+                    <span style="font-size: 0.68rem; color: #94a3b8; font-weight: 800;">KB</span>
+                  </div>
+                  <span style="font-size: 0.68rem; color: #94a3b8;">(शासकीय मानक २५६ / ५०० KB)</span>
+                </div>
+              `;
+            } else {
+              formatNote = ' • <span style="color:#c084fc; font-weight:700;"><i class="fa-solid fa-file-pdf"></i> एकत्रित PDF चे पान</span>';
+            }
+          }
+        }
+
         card.innerHTML = `
           <div class="file-item-left">
             ${leftVisual}
-            <div style="min-width: 0;">
+            <div style="min-width: 0; flex: 1;">
               <div class="file-item-title">${file.name}</div>
-              <div class="file-item-sub">मूळ साईझ: ${formatBytes(file.size)}</div>
+              <div class="file-item-sub">मूळ साईझ: ${formatBytes(file.size)}${formatNote}</div>
+              ${targetMentionHtml}
             </div>
           </div>
           <div class="file-item-actions">
@@ -2471,7 +2728,41 @@
       document.getElementById('settings-section').style.display = 'block';
       document.getElementById('result-card').style.display = 'none';
       document.getElementById('btn-start-compress').disabled = false;
-      document.getElementById('btn-action-text').textContent = MODE_CONFIGS[currentMode].btnAction;
+
+      // Manage Mode 5 output selector card
+      const imgOutputModeCard = document.getElementById('img-to-pdf-output-mode-card');
+      if (imgOutputModeCard) {
+        imgOutputModeCard.style.display = (currentMode === 'img-to-pdf' && selectedFiles.length > 1) ? 'block' : 'none';
+      }
+
+      // Check if uploaded file is an image in single-pdf or single-img or img-to-pdf mode
+      const isImgInPdfMode = (currentMode === 'single-pdf' && selectedFiles.length > 0 && (selectedFiles[0].type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(selectedFiles[0].name)));
+      const imgToPdfCard = document.getElementById('img-to-pdf-controls-card');
+      if (imgToPdfCard) {
+        if (currentMode === 'img-to-pdf' || isImgInPdfMode || (currentMode === 'single-img' && currentSingleImgOutputFormat === 'pdf')) {
+          imgToPdfCard.style.display = 'block';
+        } else {
+          imgToPdfCard.style.display = 'none';
+        }
+      }
+
+      if (isImgInPdfMode) {
+        document.getElementById('btn-action-text').textContent = 'आता इमेज ➔ सिंगल पेज PDF बनवा (Start)';
+        document.getElementById('target-size-label-text').innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> तयार होणाऱ्या सिंगल पेज PDF ची साईझ (Target KB):';
+      } else if (currentMode === 'img-to-pdf') {
+        if (selectedFiles.length === 1) {
+          document.getElementById('btn-action-text').textContent = 'आता इमेज ➔ सिंगल पेज PDF बनवा (Start)';
+          document.getElementById('target-size-label-text').innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> तयार होणाऱ्या सिंगल पेज PDF ची साईझ (Target KB):';
+        } else if (currentPdfOutputMode === 'separate') {
+          document.getElementById('btn-action-text').textContent = `सर्व ${selectedFiles.length} फोटो स्वतंत्र सिंगल-पेज PDF मध्ये रूपांतरित करा (Start)`;
+          document.getElementById('target-size-label-text').innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> प्रत्येक सिंगल PDF ची मास्टर साईझ (Target KB):';
+        } else {
+          document.getElementById('btn-action-text').textContent = `सर्व ${selectedFiles.length} फोटो जोडून १ एकत्रित PDF बनवा (Start)`;
+          document.getElementById('target-size-label-text').innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> एकत्रित PDF ची साईझ (Target KB):';
+        }
+      } else {
+        document.getElementById('btn-action-text').textContent = MODE_CONFIGS[currentMode].btnAction;
+      }
 
       // If single mode, collapse dropzone
       if (!conf.multiple) {
@@ -2487,6 +2778,15 @@
         finalResultUrl = null;
       }
       finalResultBlob = null;
+      if (generatedSinglePdfs && generatedSinglePdfs.length > 0) {
+        generatedSinglePdfs.forEach(item => {
+          if (item.url) URL.revokeObjectURL(item.url);
+        });
+        generatedSinglePdfs = [];
+      }
+      const sepSection = document.getElementById('separate-pdfs-results-section');
+      if (sepSection) sepSection.style.display = 'none';
+
       renderedThumbnails = [];
       masterFileInput.value = '';
 
@@ -2697,6 +2997,11 @@
       let doc = null;
       for (let i = 0; i < pagesData.length; i++) {
         const p = pagesData[i];
+        const dx = (p.drawX !== undefined) ? p.drawX : 0;
+        const dy = (p.drawY !== undefined) ? p.drawY : 0;
+        const dw = (p.drawW !== undefined) ? p.drawW : p.ptW;
+        const dh = (p.drawH !== undefined) ? p.drawH : p.ptH;
+
         if (i === 0) {
           doc = new jsPDF({
             orientation: p.orientation,
@@ -2709,10 +3014,10 @@
               keywords: '0'.repeat(paddingChars)
             });
           }
-          doc.addImage(p.imgData, 'JPEG', 0, 0, p.ptW, p.ptH, undefined, 'FAST');
+          doc.addImage(p.imgData, 'JPEG', dx, dy, dw, dh, undefined, 'FAST');
         } else {
           doc.addPage([p.ptW, p.ptH], p.orientation);
-          doc.addImage(p.imgData, 'JPEG', 0, 0, p.ptW, p.ptH, undefined, 'FAST');
+          doc.addImage(p.imgData, 'JPEG', dx, dy, dw, dh, undefined, 'FAST');
         }
       }
       return doc.output('blob');
@@ -2873,15 +3178,31 @@
 
       try {
         if (currentMode === 'single-pdf') {
-          await processSinglePdfMode(selectedFiles[0], targetKb);
+          if (selectedFiles.length > 1 && selectedFiles.every(f => f.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(f.name))) {
+            await processBulkImagesToSeparatePdfs(selectedFiles, targetKb);
+          } else {
+            await processSinglePdfMode(selectedFiles[0], targetKb);
+          }
         } else if (currentMode === 'merge-pdf') {
           await processMergePdfMode(selectedFiles, targetKb);
         } else if (currentMode === 'batch-pdf') {
           await processBatchPdfMode(selectedFiles, targetKb);
         } else if (currentMode === 'single-img') {
-          await processSingleImageMode(selectedFiles[0], targetKb);
+          if (currentSingleImgOutputFormat === 'pdf') {
+            await processSingleImageToPdf(selectedFiles[0], targetKb);
+          } else {
+            await processSingleImageMode(selectedFiles[0], targetKb);
+          }
         } else if (currentMode === 'img-to-pdf') {
-          await processImagesToPdfMode(selectedFiles, targetKb);
+          if (selectedFiles.length === 1) {
+            await processSingleImageToPdf(selectedFiles[0], targetKb);
+          } else {
+            if (currentPdfOutputMode === 'separate') {
+              await processBulkImagesToSeparatePdfs(selectedFiles, targetKb);
+            } else {
+              await processImagesToPdfMode(selectedFiles, targetKb);
+            }
+          }
         } else if (currentMode === 'batch-img') {
           await processBatchImagesMode(selectedFiles, targetKb);
         }
@@ -2900,10 +3221,210 @@
       }
     }
 
+    // Helper: Create High-Quality A4 Single-Page PDF from Image File
+    async function createSinglePagePdfFromFile(file, targetKb, onProgress = null) {
+      const targetBytes = targetKb * 1024;
+      const overhead = 3800; // Single page PDF structure overhead
+      const usableBytes = Math.max(8192, targetBytes - overhead);
+
+      // Compress and clarify image
+      const res = await compressImageToTargetBytes(file, usableBytes, 'document');
+
+      // Orientation: auto, portrait, or landscape
+      let isLandscape = false;
+      if (currentImgToPdfOrientation === 'portrait') {
+        isLandscape = false;
+      } else if (currentImgToPdfOrientation === 'landscape') {
+        isLandscape = true;
+      } else {
+        isLandscape = res.width > res.height;
+      }
+
+      // Standard A4 points (Portrait: 595.28 x 841.89, Landscape: 841.89 x 595.28)
+      const pageW = isLandscape ? 841.89 : 595.28;
+      const pageH = isLandscape ? 595.28 : 841.89;
+
+      let drawW, drawH, drawX, drawY;
+      if (currentImgToPdfFit === 'full') {
+        drawW = pageW;
+        drawH = pageH;
+        drawX = 0;
+        drawY = 0;
+      } else {
+        const margin = 18;
+        const availW = pageW - (margin * 2);
+        const availH = pageH - (margin * 2);
+        const imgRatio = res.width / res.height;
+        const pageRatio = availW / availH;
+
+        if (imgRatio > pageRatio) {
+          drawW = availW;
+          drawH = availW / imgRatio;
+        } else {
+          drawH = availH;
+          drawW = availH * imgRatio;
+        }
+        drawX = margin + ((availW - drawW) / 2);
+        drawY = margin + ((availH - drawH) / 2);
+      }
+
+      const pagesData = [{
+        canvas: res.canvas,
+        imgData: res.dataUrl,
+        quality: 0.88,
+        ptW: pageW,
+        ptH: pageH,
+        drawX: drawX,
+        drawY: drawY,
+        drawW: drawW,
+        drawH: drawH,
+        orientation: isLandscape ? 'landscape' : 'portrait'
+      }];
+
+      const exactRes = await enforceExactPdfTargetSize(pagesData, targetBytes, 4.5, onProgress);
+
+      return {
+        blob: exactRes.blob,
+        gapKb: exactRes.gapKb,
+        thumbUrl: res.dataUrl,
+        dimensions: `${res.width}×${res.height} px ➔ A4 PDF`,
+        isLandscape: isLandscape
+      };
+    }
+
+    // -------------------------------------------------------------------------
+    // Dedicated Engine: Single Image to Crisp Single-Page PDF (Exact Target KB)
+    // -------------------------------------------------------------------------
+    async function processSingleImageToPdf(file, targetKb) {
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progressStatus = document.getElementById('progress-status-text');
+      const progressPct = document.getElementById('progress-percent-text');
+
+      progressFill.style.width = '25%';
+      progressPct.textContent = '25%';
+      progressStatus.textContent = 'इमेज विश्लेषण व स्पष्टता ऑप्टिमायझेशन सुरू...';
+
+      const res = await createSinglePagePdfFromFile(file, targetKb, (msg) => {
+        progressStatus.textContent = msg;
+      });
+
+      progressFill.style.width = '100%';
+      progressPct.textContent = '100%';
+      progressStatus.textContent = 'सिंगल पेज PDF तयार झाली!';
+
+      renderedThumbnails = [{
+        dataUrl: res.thumbUrl,
+        title: `सिंगल पेज PDF (${res.isLandscape ? 'लँडस्केप A4' : 'पोर्ट्रेट A4'})`
+      }];
+
+      finalResultDimensions = res.dimensions;
+      finalResultBlob = res.blob;
+      finalResultGapKb = res.gapKb;
+      finalResultType = 'pdf';
+      finalResultFilename = file.name.replace(/\.[^/.]+$/, "") + `_single_page_${targetKb}KB.pdf`;
+      if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
+      finalResultUrl = URL.createObjectURL(finalResultBlob);
+    }
+
+    // -------------------------------------------------------------------------
+    // Dedicated Engine: Bulk Images to Separate Single PDFs (Each with Target Size)
+    // -------------------------------------------------------------------------
+    async function processBulkImagesToSeparatePdfs(files, masterTargetKb) {
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progressStatus = document.getElementById('progress-status-text');
+      const progressPct = document.getElementById('progress-percent-text');
+
+      const zip = new JSZip();
+      if (generatedSinglePdfs && generatedSinglePdfs.length > 0) {
+        generatedSinglePdfs.forEach(item => {
+          if (item.url) URL.revokeObjectURL(item.url);
+        });
+      }
+      generatedSinglePdfs = [];
+      renderedThumbnails = [];
+
+      let totalCompBytes = 0;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileTargetKb = file.customTargetKb || masterTargetKb;
+        const pct = Math.round((i / files.length) * 88);
+        progressFill.style.width = `${pct}%`;
+        progressPct.textContent = `${pct}%`;
+        progressStatus.textContent = `फोटो ${i + 1}/${files.length} ➔ सिंगल-पेज PDF बनवत आहे (${fileTargetKb} KB): ${file.name}...`;
+
+        const pdfResult = await createSinglePagePdfFromFile(file, fileTargetKb, (msg) => {
+          progressStatus.textContent = `फोटो ${i + 1}/${files.length}: ${msg}`;
+        });
+
+        totalCompBytes += pdfResult.blob.size;
+
+        const cleanBaseName = file.name.replace(/\.[^/.]+$/, "");
+        const outPdfName = `${cleanBaseName}_single_${fileTargetKb}KB.pdf`;
+        zip.file(outPdfName, pdfResult.blob);
+
+        const pdfUrl = URL.createObjectURL(pdfResult.blob);
+        generatedSinglePdfs.push({
+          id: i,
+          name: outPdfName,
+          origName: file.name,
+          origSize: file.size,
+          compSize: pdfResult.blob.size,
+          targetKb: fileTargetKb,
+          gapKb: pdfResult.gapKb,
+          blob: pdfResult.blob,
+          url: pdfUrl,
+          thumbUrl: pdfResult.thumbUrl
+        });
+
+        renderedThumbnails.push({
+          dataUrl: pdfResult.thumbUrl,
+          title: `${cleanBaseName.substring(0, 10)}.. (${formatBytes(pdfResult.blob.size)})`
+        });
+      }
+
+      progressFill.style.width = '95%';
+      progressPct.textContent = '95%';
+      progressStatus.textContent = 'सर्व सिंगल PDFs झिप (ZIP) आर्काइव्हमध्ये पॅक करत आहे...';
+
+      finalResultBlob = await zip.generateAsync({ type: 'blob' });
+      finalResultType = 'separate-pdfs';
+      finalResultFilename = `Single_PDFs_${masterTargetKb}KB.zip`;
+      if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
+      finalResultUrl = URL.createObjectURL(finalResultBlob);
+    }
+
+    // Single PDF Preview & Download Helpers
+    function previewSinglePdf(id) {
+      const item = generatedSinglePdfs.find(p => p.id === id);
+      if (item && item.url) {
+        window.open(item.url, '_blank');
+      }
+    }
+
+    function downloadSinglePdf(id) {
+      const item = generatedSinglePdfs.find(p => p.id === id);
+      if (item && item.url) {
+        const link = document.createElement('a');
+        link.href = item.url;
+        link.download = item.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        if (typeof showToast === 'function') {
+          showToast(`${item.name} डाउनलोड झाली!`, 'success');
+        }
+      }
+    }
+
     // -------------------------------------------------------------------------
     // Mode 1: Single PDF Compressor
     // -------------------------------------------------------------------------
     async function processSinglePdfMode(file, targetKb) {
+      if (file.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(file.name)) {
+        await processSingleImageToPdf(file, targetKb);
+        return;
+      }
       const progressFill = document.getElementById('progress-bar-fill');
       const progressStatus = document.getElementById('progress-status-text');
       const progressPct = document.getElementById('progress-percent-text');
@@ -3279,6 +3800,11 @@
     // Mode 5: Images to 1 Combined PDF
     // -------------------------------------------------------------------------
     async function processImagesToPdfMode(files, targetKb) {
+      if (files.length === 1) {
+        await processSingleImageToPdf(files[0], targetKb);
+        return;
+      }
+
       const progressFill = document.getElementById('progress-bar-fill');
       const progressStatus = document.getElementById('progress-status-text');
       const progressPct = document.getElementById('progress-percent-text');
@@ -3299,17 +3825,48 @@
 
         const res = await compressImageToTargetBytes(file, targetBytesPerPage, 'document');
 
-        // A4 standard points: 595.28 x 841.89
-        const isLandscape = res.width > res.height;
-        const ptW = isLandscape ? 841.89 : 595.28;
-        const ptH = isLandscape ? 595.28 : 841.89;
+        let isLandscape = false;
+        if (currentImgToPdfOrientation === 'portrait') isLandscape = false;
+        else if (currentImgToPdfOrientation === 'landscape') isLandscape = true;
+        else isLandscape = res.width > res.height;
+
+        const pageW = isLandscape ? 841.89 : 595.28;
+        const pageH = isLandscape ? 595.28 : 841.89;
+
+        let drawW, drawH, drawX, drawY;
+        if (currentImgToPdfFit === 'full') {
+          drawW = pageW;
+          drawH = pageH;
+          drawX = 0;
+          drawY = 0;
+        } else {
+          const margin = 18;
+          const availW = pageW - (margin * 2);
+          const availH = pageH - (margin * 2);
+          const imgRatio = res.width / res.height;
+          const pageRatio = availW / availH;
+
+          if (imgRatio > pageRatio) {
+            drawW = availW;
+            drawH = availW / imgRatio;
+          } else {
+            drawH = availH;
+            drawW = availH * imgRatio;
+          }
+          drawX = margin + ((availW - drawW) / 2);
+          drawY = margin + ((availH - drawH) / 2);
+        }
 
         pagesData.push({
           canvas: res.canvas,
           imgData: res.dataUrl,
           quality: 0.82,
-          ptW: ptW,
-          ptH: ptH,
+          ptW: pageW,
+          ptH: pageH,
+          drawX: drawX,
+          drawY: drawY,
+          drawW: drawW,
+          drawH: drawH,
           orientation: isLandscape ? 'landscape' : 'portrait'
         });
 
@@ -3438,19 +3995,56 @@
 
       const badge = document.getElementById('gov-compliance-badge');
       const dlBtnText = document.getElementById('download-btn-text');
+      const sepSection = document.getElementById('separate-pdfs-results-section');
+      const sepList = document.getElementById('separate-pdfs-items-list');
+      const sepCount = document.getElementById('separate-pdfs-count-badge');
 
-      if (finalResultType === 'zip') {
-        badge.innerHTML = `<i class="fa-solid fa-file-zipper" style="color:#38bdf8;"></i> <strong>सर्व फाईल्स झिप (ZIP) मध्ये पॅक केल्या आहेत</strong> (${selectedFiles.length} फाईल्स • प्रत्येक फाईल ${targetKb} KB च्या आत, हार्ड साईझ लॉक सक्रिय)`;
-        dlBtnText.textContent = `झिप फाईल डाउनलोड करा (${formatBytes(compBytes)})`;
+      if (finalResultType === 'separate-pdfs') {
+        badge.innerHTML = `<i class="fa-solid fa-copy" style="color:#38bdf8;"></i> <strong>🎯 ${generatedSinglePdfs.length} स्वतंत्र सिंगल-पेज PDFs तयार!</strong> (प्रत्येक फोटोची स्वतंत्र A4 PDF • अचूक टार्गेट KB मध्ये हार्ड लॉक)`;
+        dlBtnText.textContent = `सर्व सिंगल PDFs झिप (ZIP) डाउनलोड करा (${formatBytes(compBytes)})`;
         document.getElementById('btn-preview-result').style.display = 'none';
+
+        if (sepSection && sepList) {
+          sepCount.textContent = `${generatedSinglePdfs.length} फाईल्स`;
+          sepList.innerHTML = generatedSinglePdfs.map(item => `
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.22); border-radius: 8px; padding: 7px 10px; transition: all 0.2s;">
+              <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+                <img src="${item.thumbUrl}" style="width: 36px; height: 36px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;" alt="Thumb">
+                <div style="min-width: 0;">
+                  <div style="font-weight: 700; font-size: 0.82rem; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</div>
+                  <div style="font-size: 0.72rem; color: #94a3b8;">
+                    मूळ: ${formatBytes(item.origSize)} ➔ <strong style="color: #34d399;">${formatBytes(item.compSize)}</strong>
+                    <span style="color: #7dd3fc; font-weight: 700;">(टार्गेट: ${item.targetKb} KB • फरक: -${item.gapKb} KB)</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+                <button type="button" class="btn-ctrl-sm" onclick="previewSinglePdf(${item.id})" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.35); color: #38bdf8;" title="PDF उघडून पहा">
+                  <i class="fa-solid fa-eye"></i> पहा
+                </button>
+                <button type="button" class="btn-ctrl-sm" onclick="downloadSinglePdf(${item.id})" style="background: linear-gradient(135deg, #0284c7, #0369a1); border-color: #38bdf8; color: #fff; font-weight: 800;" title="स्वतंत्र सिंगल PDF डाउनलोड करा">
+                  <i class="fa-solid fa-download"></i> PDF
+                </button>
+              </div>
+            </div>
+          `).join('');
+          sepSection.style.display = 'block';
+        }
       } else {
-        document.getElementById('btn-preview-result').style.display = 'inline-flex';
-        if (finalResultType === 'image') {
-          badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#34d399;"></i> <strong>🎯 अचूक हार्ड साईझ इमेज साध्य!</strong> (टार्गेट: ${targetKb} KB • प्रत्यक्षात: ${formatBytes(compBytes)} • फरक: केवळ -${gapKb} KB • आकार: ${finalResultDimensions || 'कन्व्हर्टेड'}) - फोटो व मजकूर १००% स्पष्ट!`;
-          dlBtnText.textContent = `इमेज डाउनलोड करा (${formatBytes(compBytes)})`;
+        if (sepSection) sepSection.style.display = 'none';
+        if (finalResultType === 'zip') {
+          badge.innerHTML = `<i class="fa-solid fa-file-zipper" style="color:#38bdf8;"></i> <strong>सर्व फाईल्स झिप (ZIP) मध्ये पॅक केल्या आहेत</strong> (${selectedFiles.length} फाईल्स • प्रत्येक फाईल ${targetKb} KB च्या आत, हार्ड साईझ लॉक सक्रिय)`;
+          dlBtnText.textContent = `झिप फाईल डाउनलोड करा (${formatBytes(compBytes)})`;
+          document.getElementById('btn-preview-result').style.display = 'none';
         } else {
-          badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#34d399;"></i> <strong>🎯 अचूक हार्ड साईझ PDF साध्य!</strong> (टार्गेट: ${targetKb} KB • प्रत्यक्षात: ${formatBytes(compBytes)} • फरक: केवळ -${gapKb} KB) - शासकीय पोर्टल अपलोडसाठी १००% योग्य!`;
-          dlBtnText.textContent = `PDF डाउनलोड करा (${formatBytes(compBytes)})`;
+          document.getElementById('btn-preview-result').style.display = 'inline-flex';
+          if (finalResultType === 'image') {
+            badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#34d399;"></i> <strong>🎯 अचूक हार्ड साईझ इमेज साध्य!</strong> (टार्गेट: ${targetKb} KB • प्रत्यक्षात: ${formatBytes(compBytes)} • फरक: केवळ -${gapKb} KB • आकार: ${finalResultDimensions || 'कन्व्हर्टेड'}) - फोटो व मजकूर १००% स्पष्ट!`;
+            dlBtnText.textContent = `इमेज डाउनलोड करा (${formatBytes(compBytes)})`;
+          } else {
+            badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#34d399;"></i> <strong>🎯 अचूक हार्ड साईझ PDF साध्य!</strong> (टार्गेट: ${targetKb} KB • प्रत्यक्षात: ${formatBytes(compBytes)} • फरक: केवळ -${gapKb} KB) - शासकीय पोर्टल अपलोडसाठी १००% योग्य!`;
+            dlBtnText.textContent = `PDF डाउनलोड करा (${formatBytes(compBytes)})`;
+          }
         }
       }
 

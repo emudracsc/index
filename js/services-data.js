@@ -1065,6 +1065,18 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "photo-print-4x6.html",
     isInternal: true
   },
+  // 🗳️ मतदार सुनावणी शोध (२६८-कणकवली मतदार सुनावणी व आक्षेप यादी शोध इंजिन)
+  {
+    id: "link-hearing-search",
+    category: "शासकीय सेवा व शोध",
+    icon: "fa-solid fa-magnifying-glass",
+    title_mr: "🗳️ मतदार सुनावणी शोध (२६८-कणकवली मतदार सुनावणी यादी)",
+    title_en: "Voter Hearing Search Engine (268-Kankavli Constituency)",
+    desc_mr: "२६८-कणकवली मतदार नोंदणी सुनावणी व आक्षेप यादी नाव, गाव किंवा मतदान केंद्रानुसार थेट शोधा.",
+    desc_en: "Search 268-Kankavli voter registration hearing and objection lists directly by name or booth.",
+    url: "hearing-search.html",
+    isInternal: true
+  },
   // 📋 नवीन विशेष शासकीय फॉर्म्स व अर्ज जनरेटर (New Government Form Generators)
   {
     id: "link-idsign-apply-dsc",
