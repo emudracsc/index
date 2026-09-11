@@ -651,6 +651,8 @@
             .preview-toolbar,
             .toast,
             .no-print,
+            .doc-subtitle-note,
+            #docSubtitle,
             .attestation-notice,
             #displayAttestationNote,
             #emudra-form-floating-bar,
@@ -818,7 +820,7 @@
                 </div>
                 <div class="setting-row">
                     <span>वरचे मार्जिन (Top Margin):</span>
-                    <input type="range" id="topMarginSlider" min="0" max="50" value="15" step="1">
+                    <input type="range" id="topMarginSlider" min="0" max="120" value="15" step="1">
                     <span class="setting-val" id="topMarginVal">15 mm</span>
                 </div>
                 <!-- Independent Left Margin -->
@@ -841,10 +843,11 @@
                 </div>
 
                 <!-- Quick Presets -->
-                <div style="display: flex; gap: 6px; margin-top: 6px;">
-                    <button type="button" class="btn-preset" id="presetStandard" title="स्टँडर्ड मार्जिन">सामान्य (14mm)</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px;">
+                    <button type="button" class="btn-preset" id="presetStandard" title="सामान्य मार्जिन">सामान्य (14mm)</button>
                     <button type="button" class="btn-preset" id="presetWide" title="कमी मार्जिन - रुंद मजकूर">रुंद मजकूर (8mm)</button>
                     <button type="button" class="btn-preset" id="presetCourt" title="कोर्ट फाइलिंग डावीकडे जास्त जागा">कोर्ट फाईल (L:25 R:10)</button>
+                    <button type="button" class="btn-preset" id="presetStamp" title="₹10/₹100 स्टॅम्प पेपरसाठी वर मोकळी जागा">स्टॅम्प पेपर (Top: 85mm)</button>
                 </div>
 
                 <div class="setting-row" style="margin-top: 6px;">
@@ -855,9 +858,12 @@
                 </div>
                 <div class="setting-row" style="margin-top: 2px;">
                     <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #065f46;">
-                        <input type="checkbox" id="chkShowAttestation">
-                        <span>मॅजिस्ट्रेट/नोटरी सूचना स्क्रीनवर दाखवा (कागदावर प्रिंट होणार नाही)</span>
+                        <input type="checkbox" id="chkShowAttestation" checked>
+                        <span>स्क्रीनवर मॅजिस्ट्रेट/नोटरी सूचना दाखवा (प्रिंटमध्ये लपवले जाईल)</span>
                     </label>
+                </div>
+                <div style="font-size: 0.72rem; color: #047857; background: #d1fae5; padding: 4px 8px; border-radius: 6px; border: 1px solid #a7f3d0; margin-top: 4px;">
+                    <i class="fa-solid fa-circle-info"></i> स्टॅम्प पेपर टीप व नोटरी अटेस्टेशन सूचना प्रिंटवर छापली जाणार नाही.
                 </div>
             </div>
 
@@ -983,6 +989,7 @@
                 <div class="field-group" id="annexure1DocChoiceGroup">
                     <label>सध्या सादर करत असलेला पुरावा पर्याय निवडा (Clause v)</label>
                     <select id="annexure1DocChoice">
+                        <option value="a corrected version of the same document as mentioned in (iii) above / birth certificate (choose as applicable)">a corrected version of the same document as mentioned in (iii) above / birth certificate (choose as applicable) [मूळ PDF]</option>
                         <option value="birth certificate">birth certificate (जन्म दाखला)</option>
                         <option value="a corrected version of the same document as mentioned in (iii) above">a corrected version of the same document as mentioned in (iii) above</option>
                     </select>
@@ -992,8 +999,9 @@
                 <div class="field-group" id="possessionChoiceGroup" style="display: none;">
                     <label>कागदपत्र उपलब्धतेबाबत पर्याय (Clause iv / v)</label>
                     <select id="possessionChoice">
+                        <option value="That I do not have possession of earlier submitted proof of date of birth document/ the document then submitted is no longer a valid proof of date of birth. (choose applicable)">That I do not have possession of earlier submitted proof of date of birth document/ the document then submitted is no longer a valid proof of date of birth. (choose applicable) [मूळ PDF]</option>
                         <option value="That I do not have possession of earlier submitted proof of date of birth document">That I do not have possession of earlier submitted proof of date of birth document</option>
-                        <option value="The document then submitted is no longer a valid proof of date of birth">The document then submitted is no longer a valid proof of date of birth</option>
+                        <option value="the document then submitted is no longer a valid proof of date of birth">the document then submitted is no longer a valid proof of date of birth</option>
                     </select>
                 </div>
             </div>
@@ -1308,20 +1316,39 @@
 
             let bodyHtml = '';
 
+            // Helper to render clause (v) for Annexure I
+            let clauseV_Ann1 = '';
+            if (a1DocOpt.includes('choose as applicable')) {
+                clauseV_Ann1 = `That currently a corrected version of the same document as mentioned in (iii) above / birth certificate (choose as applicable) is being provided in support of DoB update request.`;
+            } else {
+                clauseV_Ann1 = `That currently <span class="fill-text">${escapeHtml(a1DocOpt)}</span> is being provided in support of DoB update request.`;
+            }
+
+            // Helper to render possession clause for Annexure II & IIA
+            let clausePossession = '';
+            if (possOpt.includes('choose applicable')) {
+                clausePossession = `That I do not have possession of earlier submitted proof of date of birth document/ the document then submitted is no longer a valid proof of date of birth. (choose applicable)`;
+            } else if (possOpt.toLowerCase().includes('not have possession')) {
+                clausePossession = `That I do not have possession of earlier submitted proof of date of birth document.`;
+            } else {
+                clausePossession = `The document then submitted is no longer a valid proof of date of birth.`;
+            }
+
             // =========================================================================
-            // 1. ANNEXURE-I (For Adults - DoB Updation - Ledger Paper)
+            // 1. ANNEXURE-I (For Adults - DoB Updation - Non-Judicial Stamp Paper)
             // =========================================================================
             if (currentAnnexure === 'I') {
                 docAnnexureId.textContent = 'Annexure-I- For Adults';
                 docTitle.textContent = 'Affidavit for date of birth updation';
-                docSubtitle.textContent = '(Applicable for cases where the DoB is verified in Aadhaar. To be printed on Ledger Paper)';
+                docSubtitle.textContent = '(Applicable for cases where the DoB is verified in Aadhaar. To be printed on non-judicial stamp paper of minimum value of ₹ 10)';
+                docSubtitle.style.display = 'block';
                 displaySignatureTitle.innerHTML = `Name & Signature of Resident (Deponent)`;
                 displayAttestationNote.style.display = showAttestation ? 'block' : 'none';
                 displayAttestationNote.textContent = '(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)';
 
                 bodyHtml = `
                     <div class="doc-para">
-                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr}, holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under:-
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative} resident of ${addr} holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under:-
                     </div>
                     <ul class="doc-clause-list">
                         <li class="doc-clause-item">
@@ -1342,7 +1369,7 @@
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">v)</span>
-                            <span class="clause-content">That currently <strong>${escapeHtml(a1DocOpt)}</strong> is being provided in support of DoB update request.</span>
+                            <span class="clause-content">${clauseV_Ann1}</span>
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">vi)</span>
@@ -1363,19 +1390,20 @@
             }
 
             // =========================================================================
-            // 2. ANNEXURE-IA (For Children - DoB Updation - Ledger Paper)
+            // 2. ANNEXURE-IA (For Children - DoB Updation - Non-Judicial Stamp Paper)
             // =========================================================================
             else if (currentAnnexure === 'IA') {
                 docAnnexureId.textContent = 'Annexure IA- For children';
                 docTitle.textContent = 'Affidavit for date of birth updation';
-                docSubtitle.textContent = '(Applicable for cases where the DoB is verified in Aadhaar. To be printed on Ledger Paper)';
+                docSubtitle.textContent = '(Applicable for cases where the DoB is verified in Aadhaar. To be printed on non-judicial stamp paper of minimum value of ₹ 10)';
+                docSubtitle.style.display = 'block';
                 displaySignatureTitle.innerHTML = `Name & Signature of Parent /Guardian of Minor (Deponent)`;
                 displayAttestationNote.style.display = showAttestation ? 'block' : 'none';
                 displayAttestationNote.textContent = '(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)';
 
                 bodyHtml = `
                     <div class="doc-para">
-                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr} holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under:-
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative} resident of ${addr} holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under:-
                     </div>
                     <div class="doc-para" style="margin-top: 4px;">
                         <strong>2.</strong> That I am the resident of the above said address.
@@ -1424,18 +1452,19 @@
             }
 
             // =========================================================================
-            // 3. ANNEXURE-II (For Adults - Operator Error / Typo Mistake - Ledger Paper)
+            // 3. ANNEXURE-II (For Adults - Operator Error / Typo Mistake - Self-Declaration)
             // =========================================================================
             else if (currentAnnexure === 'II') {
                 docAnnexureId.textContent = 'Annexure II- For adults';
                 docTitle.textContent = 'Self-Declaration requesting DoB update for correcting operator error / typographical mistake';
-                docSubtitle.textContent = '(To be printed on Ledger Paper / Legal Sheet)';
+                docSubtitle.textContent = '';
+                docSubtitle.style.display = 'none';
                 displaySignatureTitle.innerHTML = `Name & Signature of Resident`;
                 displayAttestationNote.style.display = 'none';
 
                 bodyHtml = `
                     <div class="doc-para">
-                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr}, holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under: -
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative} resident of ${addr} holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under: -
                     </div>
                     <ul class="doc-clause-list">
                         <li class="doc-clause-item">
@@ -1444,7 +1473,7 @@
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">ii)</span>
-                            <span class="clause-content">That I had earlier submitted a valid document- ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate}, while enrolment / update through EID number ${eid}, as proof of date of birth for updating my date of birth in Aadhaar.</span>
+                            <span class="clause-content">That I had earlier submitted a valid document- ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate} while enrolment / update through EID number ${eid}, as proof of date of birth for updating my date of birth in Aadhaar.</span>
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">iii)</span>
@@ -1452,7 +1481,7 @@
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">iv)</span>
-                            <span class="clause-content"><strong>${escapeHtml(possOpt)}.</strong></span>
+                            <span class="clause-content">${clausePossession}</span>
                         </li>
                     </ul>
                     <div class="doc-para" style="margin-top: 14px;">
@@ -1468,18 +1497,19 @@
             }
 
             // =========================================================================
-            // 4. ANNEXURE-IIA (For Children - Operator Error / Typo Mistake - Ledger Paper)
+            // 4. ANNEXURE-IIA (For Children - Operator Error / Typo Mistake - Self-Declaration)
             // =========================================================================
             else if (currentAnnexure === 'IIA') {
                 docAnnexureId.textContent = 'Annexure IIA- For children';
                 docTitle.textContent = 'Self-Declaration requesting DoB update for correcting operator error / typographical mistake';
-                docSubtitle.textContent = '(To be printed on Ledger Paper / Legal Sheet)';
+                docSubtitle.textContent = '';
+                docSubtitle.style.display = 'none';
                 displaySignatureTitle.innerHTML = `Name & Signature of Parent /Guardian of Minor`;
                 displayAttestationNote.style.display = 'none';
 
                 bodyHtml = `
                     <div class="doc-para">
-                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr}, holding Aadhaar No ${aadh}, do hereby solemnly affirm and declare as under: -
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr} holding Aadhaar No ${aadh}, do hereby solemnly affirm and declare as under: -
                     </div>
                     <ul class="doc-clause-list">
                         <li class="doc-clause-item">
@@ -1492,7 +1522,7 @@
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">iii)</span>
-                            <span class="clause-content">That I had earlier submitted a valid document- ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate}, while enrolment / update through EID number ${eid}, as proof of date of birth for updating date of birth of my child/ward in Aadhaar.</span>
+                            <span class="clause-content">That I had earlier submitted a valid document- ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate} while enrolment / update through EID number ${eid}, as proof of date of birth for updating date of birth of my child/ward in Aadhaar.</span>
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">iv)</span>
@@ -1500,7 +1530,7 @@
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">v)</span>
-                            <span class="clause-content"><strong>${escapeHtml(possOpt)}.</strong></span>
+                            <span class="clause-content">${clausePossession}</span>
                         </li>
                     </ul>
                     <div class="doc-para" style="margin-top: 14px;">
@@ -1516,19 +1546,20 @@
             }
 
             // =========================================================================
-            // 5. ANNEXURE-III (For Adults - Reactivation of Aadhaar - Ledger Paper)
+            // 5. ANNEXURE-III (For Adults - Reactivation of Aadhaar - Non-Judicial Stamp Paper)
             // =========================================================================
             else if (currentAnnexure === 'III') {
                 docAnnexureId.textContent = 'Annexure III-For adults';
                 docTitle.textContent = 'Affidavit for reactivation of Aadhaar';
-                docSubtitle.textContent = '(To be printed on Ledger Paper / Legal Sheet)';
+                docSubtitle.textContent = '(To be printed on non-judicial stamp paper of minimum value of ₹ 10)';
+                docSubtitle.style.display = 'block';
                 displaySignatureTitle.innerHTML = `Name & Signature of Resident (Deponent)`;
                 displayAttestationNote.style.display = showAttestation ? 'block' : 'none';
                 displayAttestationNote.textContent = '(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)';
 
                 bodyHtml = `
                     <div class="doc-para">
-                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr}, holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under: -
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr} holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under: -
                     </div>
                     <ul class="doc-clause-list">
                         <li class="doc-clause-item">
@@ -1537,7 +1568,7 @@
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">ii)</span>
-                            <span class="clause-content">That I had earlier submitted an invalid document - ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate}, and provided false information, while enrolment/update through EID number ${eid}, as proof of date of birth.</span>
+                            <span class="clause-content">That I had earlier submitted an invalid document - ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate} and provided false information, while enrolment/update through EID number ${eid}, as proof of date of birth.</span>
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">iii)</span>
@@ -1570,19 +1601,20 @@
             }
 
             // =========================================================================
-            // 6. ANNEXURE-IIIA (For Children - Reactivation of Aadhaar - Ledger Paper)
+            // 6. ANNEXURE-IIIA (For Children - Reactivation of Aadhaar - Non-Judicial Stamp Paper)
             // =========================================================================
             else if (currentAnnexure === 'IIIA') {
                 docAnnexureId.textContent = 'Annexure IIIA-For children';
                 docTitle.textContent = 'Affidavit for reactivation of Aadhaar';
-                docSubtitle.textContent = '(To be printed on Ledger Paper / Legal Sheet)';
+                docSubtitle.textContent = '(To be printed on non-judicial stamp paper of minimum value of ₹ 10)';
+                docSubtitle.style.display = 'block';
                 displaySignatureTitle.innerHTML = `Name & Signature of Parent /Guardian of Minor (Deponent)`;
                 displayAttestationNote.style.display = showAttestation ? 'block' : 'none';
                 displayAttestationNote.textContent = '(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)';
 
                 bodyHtml = `
                     <div class="doc-para">
-                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr}, holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under: -
+                        <strong>1.</strong> I, ${name} <strong>${rel}</strong> ${relative}, resident of ${addr} holding Aadhaar number ${aadh}, do hereby solemnly affirm and declare as under: -
                     </div>
                     <ul class="doc-clause-list">
                         <li class="doc-clause-item">
@@ -1595,7 +1627,7 @@
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">iii)</span>
-                            <span class="clause-content">That I had earlier submitted an invalid document- ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate}, or provided false information, while enrolment/update through EID number ${eid}, as proof of date of birth of my child/ward.</span>
+                            <span class="clause-content">That I had earlier submitted an invalid document- ${eDoc}, bearing number ${eDocNo}, dated ${eDocDate} or provided false information, while enrolment/update through EID number ${eid}, as proof of date of birth of my child/ward.</span>
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">iv)</span>
@@ -1615,7 +1647,7 @@
                         </li>
                         <li class="doc-clause-item">
                             <span class="clause-num">viii)</span>
-                            <span class="clause-content">That I further undertake that my child/ward shall not be eligible for any further updation of date of birth in Aadhaar.</span>
+                            <span class="clause-content">That I the further undertake that my child/ward shall not be eligible for any further updation of date of birth in Aadhaar.</span>
                         </li>
                     </ul>
                     <div class="doc-para" style="margin-top: 12px;">
@@ -1705,6 +1737,17 @@
                 if (bottomMarginSlider) bottomMarginSlider.value = 15;
                 updateMargins();
                 showToast('कोर्ट फाइलिंग मार्जिन (डावे 25mm, उजवे 10mm) सेट केले.');
+            });
+        }
+        const presetStamp = document.getElementById('presetStamp');
+        if (presetStamp) {
+            presetStamp.addEventListener('click', () => {
+                if (topMarginSlider) topMarginSlider.value = 85;
+                if (leftMarginSlider) leftMarginSlider.value = 14;
+                if (rightMarginSlider) rightMarginSlider.value = 14;
+                if (bottomMarginSlider) bottomMarginSlider.value = 15;
+                updateMargins();
+                showToast('स्टॅम्प पेपर मार्जिन (Top: 85mm) सेट केले.');
             });
         }
 
