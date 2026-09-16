@@ -173,35 +173,52 @@
             gap: 4px;
         }
 
-        /* The 5 Form Tabs Bar - Distinct, Clean & NEVER Overlaps */
+        /* The 5 Form Tabs Bar - Zero Overlap, Responsive Multi-Row Grid */
         .page-tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 5px;
             background: #f1f5f9;
-            padding: 3px;
-            border-radius: 7px;
+            padding: 4px;
+            border-radius: 8px;
             border: 1px solid #cbd5e1;
             width: 100%;
+            box-sizing: border-box;
         }
 
         .tab-btn {
-            flex: 1 1 calc(20% - 4px);
-            min-width: 78px;
-            padding: 5px 6px;
+            width: 100%;
+            min-height: 32px;
+            padding: 5px 8px;
             font-size: 0.74rem;
             font-weight: 700;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #cbd5e1;
             background: #ffffff;
-            color: #475569;
-            border-radius: 5px;
+            color: #334155;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.18s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 6px;
+            text-align: center;
+            box-sizing: border-box;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+
+        .tab-btn i {
+            flex-shrink: 0;
+            font-size: 0.82rem;
+        }
+
+        .tab-btn .tab-text {
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            max-width: 100%;
         }
 
         .tab-btn:hover {
@@ -217,6 +234,14 @@
             box-shadow: 0 2px 6px rgba(234, 88, 12, 0.35);
         }
 
+        .tab-btn.active i {
+            color: #ffffff;
+        }
+
+        .tab-btn.active .tab-text {
+            color: #ffffff;
+        }
+
         /* DEDICATED SEPARATE STRIP FOR COLLAPSE / EXPAND BUTTON (NEVER MIXES WITH TABS) */
         .form-collapse-strip {
             display: flex;
@@ -225,9 +250,10 @@
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 6px;
-            padding: 3px 8px;
+            padding: 4px 10px;
             margin-bottom: 4px;
             gap: 8px;
+            box-sizing: border-box;
         }
 
         .active-tab-indicator {
@@ -237,6 +263,14 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .active-tab-indicator span {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1759,20 +1793,20 @@
         <!-- TABS FOR FORM SECTIONS (5 DEDICATED TABS - NEVER OVERLAPS) -->
         <div class="page-tabs-wrapper">
             <div class="page-tabs">
-                <button type="button" class="tab-btn active" onclick="switchTab('tab-applicant', this)">
-                    <i class="fa-solid fa-user-tie"></i> १. अर्जदार
+                <button type="button" class="tab-btn active" onclick="switchTab('tab-applicant', this)" title="१. अर्जदार (न्यायालय व अर्जदार तपशील)">
+                    <i class="fa-solid fa-user-tie"></i> <span class="tab-text">१. अर्जदार</span>
                 </button>
-                <button type="button" class="tab-btn" onclick="switchTab('tab-caste', this)">
-                    <i class="fa-solid fa-certificate"></i> २. लाभार्थी व जात
+                <button type="button" class="tab-btn" onclick="switchTab('tab-caste', this)" title="२. लाभार्थी व जात (प्रवर्ग व नाव)">
+                    <i class="fa-solid fa-certificate"></i> <span class="tab-text">२. लाभार्थी व जात</span>
                 </button>
-                <button type="button" class="tab-btn" onclick="switchTab('tab-residence', this)">
-                    <i class="fa-solid fa-map-location-dot"></i> ३. वास्तव्य व पुरावे
+                <button type="button" class="tab-btn" onclick="switchTab('tab-residence', this)" title="३. वास्तव्य व पुरावे (पत्ता व दाखले)">
+                    <i class="fa-solid fa-map-location-dot"></i> <span class="tab-text">३. वास्तव्य व पुरावे</span>
                 </button>
-                <button type="button" class="tab-btn" onclick="switchTab('tab-tree', this)">
-                    <i class="fa-solid fa-sitemap"></i> ४. वंशावळ पर्याय
+                <button type="button" class="tab-btn" onclick="switchTab('tab-tree', this)" title="४. वंशावळ पर्याय (टूलबॉक्स व वंशावळ)">
+                    <i class="fa-solid fa-sitemap"></i> <span class="tab-text">४. वंशावळ पर्याय</span>
                 </button>
-                <button type="button" class="tab-btn" onclick="switchTab('tab-sign', this)">
-                    <i class="fa-solid fa-signature"></i> ५. स्वाक्षरी व साक्षीदार
+                <button type="button" class="tab-btn" onclick="switchTab('tab-sign', this)" title="५. स्वाक्षरी व साक्षीदार (दिनांक व ओळख)">
+                    <i class="fa-solid fa-signature"></i> <span class="tab-text">५. स्वाक्षरी व साक्षीदार</span>
                 </button>
             </div>
 
