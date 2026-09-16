@@ -1177,6 +1177,17 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "varas-affidavit.html",
     isInternal: true
   },
+  {
+    id: "link-caste-affidavit",
+    category: "विशेष शासकीय फॉर्म्स",
+    icon: "fa-solid fa-scroll",
+    title_mr: "📜 जातीचे प्रमाणपत्र प्रतिज्ञापत्र व वंशावळ जनरेटर",
+    title_en: "Caste Certificate Affidavit & Family Tree Generator (BNS)",
+    desc_mr: "कार्यकारी दंडाधिकारी समक्ष जातीच्या प्रमाणपत्रासाठी द्यावयाचे अधिकृत प्रतिज्ञापत्र व वंशावळ (२-पाने A4).",
+    desc_en: "Official caste certificate affidavit & pedigree tree generator with Bharatiya Nyaya Sanhita clauses.",
+    url: "caste-affidavit.html",
+    isInternal: true
+  },
   // 🆔 Official e-Aadhaar PVC Smart Card Print Studio (85mm x 55mm)
   {
     id: "link-eaadhaar-print",

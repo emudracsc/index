@@ -1,0 +1,3900 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>जातीचे प्रमाणपत्र प्रतिज्ञापत्र व वंशावळ जनरेटर | eMudra CSC</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #ea580c;
+            --primary-dark: #c2410c;
+            --secondary: #475569;
+            --accent: #d97706;
+            --success: #059669;
+            --bg-color: #334155;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --base-font-size: 11.8pt;
+            --line-spacing: 1.85;
+            --para-gap: 14px;
+            --doc-gap: 11px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 4px 8px;
+        }
+
+        /* -------------------------------------------------------------
+           TOP CONTROL BAR & MASTER INPUT PANEL (ULTRA COMPACT DESIGN)
+        ------------------------------------------------------------- */
+        .controls-wrapper {
+            max-width: 1240px;
+            margin: 0 auto 6px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+            padding: 6px 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 4px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 4px;
+        }
+
+        .bar-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #c2410c;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bar-title i {
+            color: #ea580c;
+            font-size: 0.95rem;
+            background: #ffedd5;
+            padding: 4px 6px;
+            border-radius: 5px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary { background: #ea580c; color: #fff; }
+        .btn-primary:hover { background: #c2410c; }
+
+        .btn-success { background: #059669; color: #fff; }
+        .btn-success:hover { background: #047857; }
+
+        .btn-sample { background: #7c3aed; color: #fff; }
+        .btn-sample:hover { background: #6d28d9; }
+
+        .btn-secondary { background: #e2e8f0; color: #334155; }
+        .btn-secondary:hover { background: #cbd5e1; }
+
+        .btn-home { background: #334155; color: #fff; }
+        .btn-home:hover { background: #1e293b; }
+
+        /* Print Settings & Fine-tune Bar (Ultra Compact Strip) */
+        .settings-bar {
+            background: #fff7ed;
+            border: 1px dashed #fdba74;
+            border-radius: 6px;
+            padding: 3px 8px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .settings-title {
+            display: none;
+        }
+
+        .settings-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .setting-item input[type="range"] {
+            width: 60px;
+            height: 3px;
+            cursor: pointer;
+        }
+
+        /* Page Tabs for Form Navigation */
+        .page-tabs {
+            display: flex;
+            gap: 3px;
+            background: #f8fafc;
+            padding: 2px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 90px;
+            padding: 4px 6px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: #ea580c;
+            color: #ffffff;
+            box-shadow: 0 1px 4px rgba(234, 88, 12, 0.3);
+        }
+
+        .tab-btn-collapse {
+            background: #e2e8f0;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 3px 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+            transition: all 0.15s ease;
+        }
+        .tab-btn-collapse:hover {
+            background: #cbd5e1;
+        }
+
+        /* Form Grid */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 4px 8px;
+            margin-bottom: 4px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .form-group input, .form-group select {
+            padding: 3px 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #f8fafc;
+            height: 27px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            padding: 3px 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #f8fafc;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #ea580c;
+            background: #ffffff;
+            box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.12);
+        }
+
+        .section-subhead {
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: #c2410c;
+            margin: 2px 0 3px 0;
+            padding-bottom: 1px;
+            border-bottom: 1px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Document table styling */
+        .doc-list-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            padding: 3px 6px;
+            margin-bottom: 4px;
+        }
+
+        .doc-item-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 1px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 0.78rem;
+        }
+
+        .doc-item-row:last-child {
+            border-bottom: none;
+        }
+
+        /* -------------------------------------------------------------
+           FLOATING FAMILY TREE TOOLBOX POPUP
+        ------------------------------------------------------------- */
+        .tree-floating-popup {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 380px;
+            max-width: 92vw;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+            border: 2px solid #ea580c;
+            z-index: 9999;
+            font-family: inherit;
+            overflow: hidden;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .popup-header {
+            background: linear-gradient(135deg, #ea580c, #c2410c);
+            color: #ffffff;
+            padding: 8px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+            user-select: none;
+        }
+
+        .popup-title {
+            font-weight: 800;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .popup-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 0.95rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            line-height: 1;
+        }
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .popup-body {
+            padding: 12px;
+            background: #fffbeb;
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+
+        .popup-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .tool-btn {
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 7px 10px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            color: #1e293b;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+
+        .tool-btn:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            transform: translateY(-1px);
+        }
+
+        .tool-btn-primary {
+            background: #ea580c;
+            color: #ffffff;
+            border-color: #c2410c;
+        }
+        .tool-btn-primary:hover {
+            background: #c2410c;
+        }
+
+        .tool-btn-active {
+            background: #059669 !important;
+            color: #ffffff !important;
+            border-color: #047857 !important;
+            box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.35);
+        }
+
+        /* Selected Element Adjuster Bar */
+        .selected-element-panel {
+            background: #ffffff;
+            border: 1.5px solid #2563eb;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin-top: 8px;
+        }
+
+        .selected-badge {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #1d4ed8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nudge-controls-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .nudge-btn {
+            padding: 4px 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .nudge-btn:hover {
+            background: #e2e8f0;
+        }
+        .btn-del-sel {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fca5a5;
+            margin-left: auto;
+        }
+
+        /* Floating Trigger Button */
+        .tree-popup-trigger-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #ea580c;
+            color: #ffffff;
+            font-family: inherit;
+            font-weight: 800;
+            font-size: 0.92rem;
+            padding: 10px 18px;
+            border-radius: 40px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 8px 24px rgba(234, 88, 12, 0.4);
+            cursor: pointer;
+            z-index: 9998;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .tree-popup-trigger-btn:hover {
+            background: #c2410c;
+            transform: scale(1.05);
+        }
+
+        /* -------------------------------------------------------------
+           TREE ELEMENTS (BORDERLESS TEXT & ENHANCED DRAG HIT-TARGETS)
+        ------------------------------------------------------------- */
+        .tree-item-draggable {
+            position: absolute;
+            user-select: none;
+            z-index: 10;
+        }
+
+        .tree-item-draggable:hover {
+            outline: 1px dashed #fdba74;
+            background: rgba(255, 237, 213, 0.35);
+            border-radius: 4px;
+        }
+
+        /* Selected Element State */
+        .tree-item-draggable.tree-selected {
+            outline: 2px solid #2563eb !important;
+            background: rgba(37, 99, 235, 0.08) !important;
+            border-radius: 4px;
+            z-index: 50 !important;
+        }
+
+        .tree-item-draggable.tree-selected .item-del-btn,
+        .tree-item-draggable.tree-selected .item-resize-handle,
+        .tree-item-draggable.tree-selected .line-resize-h,
+        .tree-item-draggable.tree-selected .line-resize-w {
+            display: flex !important;
+        }
+
+        /* Dragging active state */
+        .tree-item-draggable.is-dragging {
+            opacity: 0.9;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3) !important;
+            cursor: grabbing !important;
+            z-index: 1000 !important;
+        }
+
+        /* Manual Person Text - BORDERLESS (मजकुराभोवती कोणतीही चौकट/बॉर्डर नाही) */
+        .tree-manual-box {
+            border: none;
+            background: transparent;
+            padding: 2px 6px;
+            border-radius: 4px;
+            min-width: 80px;
+            text-align: center;
+            cursor: grab;
+            font-family: inherit;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+        }
+
+        .tree-manual-box:active {
+            cursor: grabbing;
+        }
+
+        /* Top Drag Handle for super easy moving */
+        .box-drag-handle {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: 800;
+            line-height: 1;
+            padding: 2px 7px;
+            border-radius: 4px;
+            cursor: grab;
+            display: none;
+            z-index: 35;
+            user-select: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            white-space: nowrap;
+            border: 1px solid #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .box-drag-handle:active {
+            cursor: grabbing;
+            background: #1d4ed8;
+        }
+
+        .tree-item-draggable:hover .box-drag-handle,
+        .tree-item-draggable.tree-selected .box-drag-handle {
+            display: flex !important;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .tbox-name {
+            font-size: 10.5pt;
+            font-weight: 700;
+            color: #000000;
+            outline: none;
+            line-height: 1.25;
+            word-break: break-word;
+            width: 100%;
+            cursor: text;
+        }
+
+        .tbox-rel {
+            font-size: 8.5pt;
+            font-weight: 600;
+            color: #334155;
+            outline: none;
+            line-height: 1.2;
+            word-break: break-word;
+            width: 100%;
+            cursor: text;
+        }
+
+        /* Delete button */
+        .item-del-btn {
+            position: absolute;
+            top: -9px;
+            right: -9px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 900;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1.5px solid #ffffff;
+            z-index: 30;
+            line-height: 1;
+        }
+
+        .tree-item-draggable:hover .item-del-btn {
+            display: flex;
+        }
+
+        /* Resize handle for text box */
+        .item-resize-handle {
+            position: absolute;
+            bottom: -3px;
+            right: -3px;
+            width: 11px;
+            height: 11px;
+            background: #2563eb;
+            border: 1.5px solid #ffffff;
+            border-radius: 2px;
+            cursor: se-resize;
+            display: none;
+            z-index: 30;
+        }
+
+        .tree-item-draggable:hover .item-resize-handle {
+            display: block;
+        }
+
+        /* Branch T-Connector (┬) */
+        .tree-branch-t {
+            position: absolute;
+            cursor: move;
+            z-index: 10;
+            box-sizing: border-box;
+        }
+        .tree-branch-t .t-stem {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 15px;
+            background: #000000;
+            transform: translateX(-50%);
+        }
+        .tree-branch-t .t-bar {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #000000;
+        }
+        .tree-branch-t .t-drop-l {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 2px;
+            height: 15px;
+            background: #000000;
+        }
+        .tree-branch-t .t-drop-r {
+            position: absolute;
+            top: 15px;
+            right: 0;
+            width: 2px;
+            height: 15px;
+            background: #000000;
+        }
+
+        /* Branch L-Connector (┌) */
+        .tree-branch-l {
+            position: absolute;
+            cursor: move;
+            z-index: 10;
+            box-sizing: border-box;
+        }
+        .tree-branch-l .l-v {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: #000000;
+        }
+        .tree-branch-l .l-h {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #000000;
+        }
+
+        /* Connector Lines & Arrows with Invisible Touch/Click Padding (Never miss clicking a small line!) */
+        .tree-line-v, .tree-arrow-down {
+            width: 2px;
+            background: #000000;
+            cursor: move;
+            position: absolute;
+            box-sizing: border-box;
+        }
+
+        .tree-line-v::before, .tree-arrow-down::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -12px;
+            width: 26px;
+            height: calc(100% + 12px);
+            cursor: move;
+            background: transparent;
+            z-index: 2;
+        }
+
+        .tree-line-h, .tree-arrow-right {
+            height: 2px;
+            background: #000000;
+            cursor: move;
+            position: absolute;
+            box-sizing: border-box;
+        }
+
+        .tree-line-h::before, .tree-arrow-right::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: -6px;
+            width: calc(100% + 12px);
+            height: 26px;
+            cursor: move;
+            background: transparent;
+            z-index: 2;
+        }
+
+        /* Line resize handles */
+        .tree-line-v .line-resize-h, .tree-arrow-down .line-resize-h {
+            position: absolute;
+            bottom: -6px;
+            left: -5px;
+            width: 12px;
+            height: 12px;
+            background: #2563eb;
+            border: 1.5px solid #ffffff;
+            border-radius: 50%;
+            cursor: s-resize;
+            display: none;
+            z-index: 30;
+        }
+        .tree-line-v:hover .line-resize-h, .tree-arrow-down:hover .line-resize-h { display: block; }
+
+        .tree-line-h .line-resize-w, .tree-arrow-right .line-resize-w {
+            position: absolute;
+            right: -6px;
+            top: -5px;
+            width: 12px;
+            height: 12px;
+            background: #2563eb;
+            border: 1.5px solid #ffffff;
+            border-radius: 50%;
+            cursor: e-resize;
+            display: none;
+            z-index: 30;
+        }
+        .tree-line-h:hover .line-resize-w, .tree-arrow-right:hover .line-resize-w { display: block; }
+
+        /* Arrowhead Down */
+        .tree-arrow-down::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: -4px;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 7px solid #000000;
+        }
+
+        /* Arrowhead Right */
+        .tree-arrow-right::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 7px solid #000000;
+        }
+
+        /* Freehand Canvas layer */
+        #treeFreehandCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+        #treeFreehandCanvas.pen-active {
+            pointer-events: auto;
+            cursor: crosshair;
+        }
+
+        /* -------------------------------------------------------------
+           A4 PRINT PREVIEW SHEETS (EXACT 2-PAGE FORMAT WITH TIGHT MARGINS)
+        ------------------------------------------------------------- */
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin: 0 auto 30px auto;
+        }
+
+        /* Preview Page Toggle Selector Bar */
+        .preview-mode-bar {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto 8px auto;
+            background: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 4px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px;
+            border: 1px solid #fed7aa;
+        }
+
+        .preview-mode-title {
+            font-weight: 800;
+            color: #c2410c;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preview-btn-tabs {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .prev-tab-btn {
+            font-family: inherit;
+            font-size: 0.76rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            color: #334155;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s ease;
+        }
+
+        .prev-tab-btn:hover {
+            background: #e2e8f0;
+            border-color: #94a3b8;
+        }
+
+        .prev-tab-btn.active {
+            background: #ea580c;
+            color: #ffffff;
+            border-color: #c2410c;
+            box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+        }
+
+        .active-page-hint {
+            font-size: 0.75rem;
+            color: #475569;
+            background: #fff7ed;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #fed7aa;
+        }
+
+        .btn-micro {
+            padding: 4px 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s ease;
+        }
+        .btn-micro:hover {
+            background: #e2e8f0;
+            border-color: #94a3b8;
+        }
+
+        .btn-micro-action {
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border: 1px solid #fed7aa;
+            background: #fff7ed;
+            color: #c2410c;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+        .btn-micro-action:hover {
+            background: #ea580c;
+            color: #ffffff;
+            border-color: #c2410c;
+        }
+
+        .a4-sheet {
+            width: 210mm;
+            height: 297mm;
+            max-height: 297mm;
+            min-height: 297mm;
+            padding: 7mm 10mm; /* Reduced outer page margin */
+            background: #ffffff;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.35);
+            position: relative;
+            color: #000000;
+            box-sizing: border-box;
+            line-height: var(--line-spacing, 1.85);
+            font-size: var(--base-font-size, 11.8pt);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            transition: opacity 0.2s ease;
+        }
+
+        .a4-sheet.preview-hidden {
+            display: none !important;
+        }
+
+        /* Main Border Box matching the scan */
+        .sheet-border-frame {
+            border: 1.5px solid #000000;
+            padding: 6mm 8mm; /* Reduced inner frame margin */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .page1-frame {
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .page1-content-flow {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            font-size: var(--base-font-size, 11.8pt);
+            line-height: var(--line-spacing, 1.85);
+        }
+
+        .page2-frame {
+            justify-content: flex-start !important; /* Never push signatures to bottom */
+            height: 100%;
+        }
+
+        .page2-content-flow {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Top Exemption Header */
+        .exemption-header-box {
+            border-bottom: 1.5px solid #000000;
+            margin-top: -6mm;
+            margin-left: -8mm;
+            margin-right: -8mm;
+            padding: 3.5mm 6mm;
+            text-align: center;
+            font-size: 9.6pt;
+            font-weight: 600;
+            line-height: 1.4;
+            color: #000000;
+        }
+
+        .affidavit-main-title {
+            text-align: center;
+            font-size: 15pt;
+            font-weight: 800;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .affidavit-court-title {
+            text-align: center;
+            font-size: 13pt;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+
+        /* Applicant & Brace Row */
+        .applicant-declaration-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--para-gap, 14px);
+            font-size: var(--base-font-size, 11.8pt);
+            line-height: var(--line-spacing, 1.85);
+        }
+
+        .applicant-text-col {
+            flex: 1;
+            padding-right: 12px;
+        }
+
+        .applicant-brace-col {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 800;
+            font-size: 12pt;
+            white-space: nowrap;
+        }
+
+        .large-brace {
+            font-size: 36pt;
+            font-weight: 300;
+            line-height: 0.9;
+            user-select: none;
+        }
+
+        .brace-label {
+            text-align: center;
+            line-height: 1.25;
+        }
+
+        .aff-p {
+            font-size: var(--base-font-size, 11.8pt);
+            line-height: var(--line-spacing, 1.85);
+            margin-bottom: var(--para-gap, 14px);
+            text-align: justify;
+        }
+
+        .aff-p-indent {
+            text-indent: 40px;
+        }
+
+        /* Dynamic Single Underline (NO DOUBLE LINES) */
+        .field-fill {
+            font-weight: 700;
+            color: #000000;
+            border-bottom: 1px solid #000000;
+            padding: 0 4px;
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+            line-height: 1.2;
+            vertical-align: bottom;
+        }
+
+        /* Documents list - Fills full Page 1 gracefully */
+        .doc-list-print {
+            list-style: none;
+            margin: 6px 0 8px 0;
+            padding: 0;
+            font-size: var(--base-font-size, 11.6pt);
+            line-height: var(--line-spacing, 1.8);
+        }
+
+        .doc-list-print li {
+            margin-bottom: var(--doc-gap, 11px);
+            display: flex;
+            align-items: flex-start;
+            line-height: var(--line-spacing, 1.8);
+        }
+
+        .doc-list-print .doc-sr {
+            width: 26px;
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+
+        .doc-list-print .doc-content {
+            flex: 1;
+        }
+
+        .page1-bottom-label {
+            text-align: right;
+            font-weight: 700;
+            font-size: 11.5pt;
+            margin-top: auto;
+            padding-top: 6px;
+        }
+
+        /* PAGE 2 STYLES */
+        .p2-header-title {
+            text-align: center;
+            font-size: 15pt;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* Vanshawaal Area Container - BORDERLESS (पानावरील आतील बॉक्स काढून टाकला) */
+        .vanshawaal-box-container {
+            border: none !important;
+            border-radius: 0 !important;
+            min-height: 110mm;
+            height: 110mm;
+            margin-bottom: 8px;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background: transparent;
+            transition: height 0.1s ease;
+            overflow: visible;
+        }
+
+        .vanshawaal-box-container:hover {
+            outline: 1px dashed rgba(203, 213, 225, 0.5);
+        }
+
+        .vanshawaal-empty-watermark {
+            font-size: 11pt;
+            color: #94a3b8;
+            font-style: italic;
+            border: 1px dashed #cbd5e1;
+            padding: 14px 20px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        /* Standard 4-Gen Tree (when chart mode is selected) */
+        .tree-print-view {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 10.5pt;
+        }
+
+        .tree-node-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            position: relative;
+        }
+
+        .tree-node-box {
+            border: none;
+            padding: 2px 6px;
+            border-radius: 0;
+            background: transparent;
+            font-weight: 700;
+            text-align: center;
+            min-width: 110px;
+            max-width: 240px;
+            line-height: 1.25;
+        }
+
+        .tree-node-rel {
+            font-size: 8.5pt;
+            font-weight: 600;
+            color: #334155;
+            display: block;
+        }
+
+        .tree-connector-v {
+            width: 1.5px;
+            height: 14px;
+            background: #000000;
+        }
+
+        /* Text Tree Mode */
+        .text-tree-display {
+            width: 90%;
+            font-size: 11.5pt;
+            line-height: 1.8;
+            font-weight: 700;
+            margin: auto;
+        }
+
+        .p2-bns-clause {
+            font-size: 11pt;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+
+        .p2-date-row {
+            font-size: 11.5pt;
+            font-weight: 700;
+            margin: 10px 0 0 0;
+        }
+
+        /* Signatures positioned with 2 lines gap below date, not pushed to the page bottom */
+        .p2-signatures-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 26px;
+            padding: 0 4px;
+        }
+
+        .witness-sign-col {
+            text-align: left;
+            font-size: 11.5pt;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .applicant-sign-col {
+            text-align: center;
+            font-size: 11.5pt;
+            line-height: 1.5;
+            min-width: 220px;
+        }
+
+        /* -------------------------------------------------------------
+           MASTER RESPONSIVE SPLIT & 3D REALISTIC SCROLL DOCK
+        ------------------------------------------------------------- */
+        .main-app-container {
+            width: 100%;
+            max-width: 1720px;
+            margin: 0 auto;
+            position: relative;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .controls-sidebar-wrapper {
+            width: 100%;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .preview-stage-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* 1. PERMANENT SIDE-BY-SIDE SPLIT MODE (DESKTOP >= 1080px) */
+        @media (min-width: 1080px) {
+            .main-app-container.layout-split {
+                display: flex;
+                gap: 14px;
+                align-items: flex-start;
+                justify-content: flex-start;
+                padding: 2px 4px;
+            }
+
+            .main-app-container.layout-split .controls-sidebar-wrapper {
+                width: 440px;
+                min-width: 420px;
+                max-width: 450px;
+                flex-shrink: 0;
+                position: sticky;
+                top: 4px;
+                z-index: 100;
+            }
+
+            .main-app-container.layout-split .controls-wrapper {
+                height: calc(100vh - 12px);
+                max-height: calc(100vh - 12px);
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                border-radius: 12px;
+                box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(254, 215, 170, 0.6);
+            }
+
+            .main-app-container.layout-split #formPanesContainer {
+                flex: 1;
+                overflow-y: auto;
+                padding-right: 4px;
+                scrollbar-width: thin;
+                scrollbar-color: #ea580c #f1f5f9;
+            }
+
+            .main-app-container.layout-split .preview-stage-wrapper {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .main-app-container.layout-split .preview-mode-bar {
+                max-width: 820px;
+                width: 100%;
+            }
+
+            .main-app-container.layout-split .input-grid {
+                grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+                gap: 4px 6px;
+            }
+        }
+
+        /* 2. 3D REALISTIC SCROLL-SHIFT DOCKING (WHEN USER SCROLLS DOWN) */
+        @media (min-width: 1080px) {
+            .controls-sidebar-wrapper.scrolled-docked-left {
+                position: fixed !important;
+                top: 6px !important;
+                left: 8px !important;
+                width: 440px !important;
+                max-width: 440px !important;
+                height: calc(100vh - 12px) !important;
+                z-index: 1000 !important;
+                animation: shiftToLeftRealistic 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                transform-origin: top left;
+            }
+
+            .controls-sidebar-wrapper.scrolled-docked-left .controls-wrapper {
+                height: 100% !important;
+                max-height: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                border-radius: 12px !important;
+                border: 2px solid #ea580c !important;
+                box-shadow: 0 24px 50px -10px rgba(0, 0, 0, 0.4), 0 0 0 1px #ea580c, 0 10px 25px -5px rgba(234, 88, 12, 0.3) !important;
+                overflow: hidden !important;
+            }
+
+            .controls-sidebar-wrapper.scrolled-docked-left #formPanesContainer {
+                flex: 1 !important;
+                overflow-y: auto !important;
+                padding-right: 4px !important;
+                scrollbar-width: thin;
+                scrollbar-color: #ea580c #f1f5f9;
+            }
+
+            .controls-sidebar-wrapper.scrolled-docked-left .input-grid {
+                grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)) !important;
+                gap: 4px 6px !important;
+            }
+
+            .main-app-container.has-docked-left .preview-stage-wrapper {
+                margin-left: 456px !important;
+                transition: margin-left 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            .controls-sidebar-wrapper.returning-to-top {
+                animation: shiftToTopRealistic 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                transform-origin: top center;
+            }
+        }
+
+        /* 3D Transform Keyframes for Ultra-Realistic Physical Elevation */
+        @keyframes shiftToLeftRealistic {
+            0% {
+                transform: perspective(1200px) translate3d(0, -30px, 80px) rotateY(-6deg) scale(0.92);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+                opacity: 0.8;
+            }
+            65% {
+                transform: perspective(1200px) translate3d(0, 4px, 15px) rotateY(1.5deg) scale(1.02);
+            }
+            100% {
+                transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shiftToTopRealistic {
+            0% {
+                transform: perspective(1200px) translate3d(-30px, 0, 40px) rotateY(5deg) scale(0.96);
+                opacity: 0.9;
+            }
+            100% {
+                transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Layout Switcher Pill in Top Bar */
+        .layout-switch-pill {
+            display: inline-flex;
+            background: #f1f5f9;
+            padding: 2px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            gap: 2px;
+            margin-right: 4px;
+        }
+
+        .layout-switch-btn {
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: none;
+            background: transparent;
+            color: #475569;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s ease;
+        }
+
+        .layout-switch-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .layout-switch-btn.active {
+            background: #ea580c;
+            color: #ffffff;
+            box-shadow: 0 1px 4px rgba(234, 88, 12, 0.3);
+        }
+
+        .dock-indicator-badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #c2410c;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 4px;
+            padding: 2px 6px;
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .controls-sidebar-wrapper.scrolled-docked-left .dock-indicator-badge,
+        .main-app-container.layout-split .dock-indicator-badge {
+            display: inline-flex;
+        }
+
+        /* Preview Zoom Cluster */
+        .preview-zoom-cluster {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .zoom-chip {
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: #ea580c;
+            min-width: 38px;
+            text-align: center;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT MEDIA QUERIES (ZERO OVERFLOW A4 PRINT)
+        ------------------------------------------------------------- */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0mm;
+            }
+
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .no-print, .controls-wrapper, .preview-mode-bar, .tree-floating-popup, .tree-popup-trigger-btn, .controls-sidebar-wrapper, .layout-switch-pill {
+                display: none !important;
+            }
+
+            .main-app-container {
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+
+            .preview-stage-wrapper {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                display: block !important;
+            }
+
+            .preview-container {
+                gap: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important;
+            }
+
+            .a4-sheet {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                min-height: 297mm !important;
+                max-height: 297mm !important;
+                padding: 7mm 10mm !important;
+                margin: 0 !important;
+                page-break-after: always;
+                break-after: page;
+                box-sizing: border-box;
+                overflow: hidden !important;
+                display: flex !important;
+            }
+
+            .a4-sheet.preview-hidden {
+                display: flex !important; /* Visible when printing */
+            }
+
+            .a4-sheet:last-child {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+
+            .vanshawaal-empty-watermark, .item-del-btn, .item-resize-handle, .line-resize-h, .line-resize-w {
+                display: none !important;
+            }
+
+            .tree-item-draggable {
+                outline: none !important;
+                box-shadow: none !important;
+            }
+
+            /* खात्रीशीरपणे मजकुराभोवती कोणतीही चौकट/बॉर्डर प्रिंट होणार नाही */
+            .tree-manual-box, .tree-node-box {
+                border: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                outline: none !important;
+            }
+
+            .vanshawaal-box-container {
+                border: none !important;
+                outline: none !important;
+            }
+
+            .print-page-1-only #page2Sheet {
+                display: none !important;
+            }
+
+            .print-page-2-only #page1Sheet {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MASTER APP CONTAINER (SPLIT SCREEN & 3D REALISTIC SCROLL DOCK) -->
+    <div class="main-app-container layout-split" id="mainAppContainer">
+
+        <!-- LEFT PANE: MASTER FORM FILLING SIDEBAR -->
+        <div class="controls-sidebar-wrapper no-print" id="controlsSidebarWrapper">
+            <div class="controls-wrapper" id="controlsWrapper">
+                <div class="bar-header">
+                    <div class="bar-title">
+                        <i class="fa-solid fa-scroll"></i>
+                        <span>जातीचे प्रमाणपत्र प्रतिज्ञापत्र</span>
+                        <div class="dock-indicator-badge" id="dockIndicator">
+                            <i class="fa-solid fa-thumbtack"></i> डावीकडे
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <!-- 3D Layout Switcher Pill -->
+                        <div class="layout-switch-pill" title="स्क्रीन मांडणी निवडा">
+                            <button type="button" class="layout-switch-btn active" id="btnLayoutSplit" onclick="setLayoutMode('split')" title="डावीकडे फॉर्म व उजवीकडे A4 पान (Side-by-Side)">
+                                <i class="fa-solid fa-table-columns"></i> स्प्लिट
+                            </button>
+                            <button type="button" class="layout-switch-btn" id="btnLayoutAuto" onclick="setLayoutMode('autoshift')" title="स्क्रोल करताच 3D इफेक्टसह आपोआप डावीकडे शिफ्ट होईल">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> 3D ऑटो
+                            </button>
+                            <button type="button" class="layout-switch-btn" id="btnLayoutTop" onclick="setLayoutMode('top')" title="पारंपारिक वर पॅनल">
+                                <i class="fa-solid fa-window-maximize"></i> वर
+                            </button>
+                        </div>
+
+                        <button type="button" class="btn btn-sample" onclick="loadSampleData()" title="नमुना डेटा भरा">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="resetAllData()" title="सर्व डेटा रीसेट करा">
+                            <i class="fa-solid fa-rotate-left"></i> रीसेट
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="printDocument('all')" title="दोन्ही पाने प्रिंट किंवा PDF म्हणून सेव्ह करा">
+                            <i class="fa-solid fa-print"></i> प्रिंट (२ पाने)
+                        </button>
+                        <button type="button" class="btn btn-success" onclick="printDocument('p1')" title="फक्त पान १ प्रिंट करा">
+                            <i class="fa-solid fa-file-lines"></i> पान १
+                        </button>
+                        <button type="button" class="btn btn-success" onclick="printDocument('p2')" title="फक्त पान २ प्रिंट करा">
+                            <i class="fa-solid fa-sitemap"></i> पान २
+                        </button>
+                        <a href="index.html" class="btn btn-home" title="मुख्य पोर्टल">
+                            <i class="fa-solid fa-house"></i> होम
+                        </a>
+                    </div>
+                </div>
+
+                <!-- FINE-TUNE SETTINGS (ULTRA COMPACT SINGLE ROW) -->
+        <div class="settings-bar">
+            <div class="settings-row">
+                <div class="setting-item">
+                    <i class="fa-solid fa-sliders" style="color: #ea580c;"></i>
+                    <label>फॉन्ट:</label>
+                    <input type="range" id="fontSizeSlider" min="10" max="13.5" step="0.2" value="11.8" oninput="updateFontSize(this.value)">
+                    <span id="fontSizeLabel" style="font-weight: 800; color: #ea580c;">11.8 pt</span>
+                </div>
+                <div class="setting-item">
+                    <label>लाईन स्पेसिंग:</label>
+                    <button type="button" class="btn-micro" onclick="adjustLineSpacing(-0.05)" title="लाईन स्पेसिंग कमी करा">➖</button>
+                    <input type="range" id="lineSpacingSlider" min="1.35" max="2.4" step="0.05" value="1.85" oninput="updateLineSpacing(this.value)" style="width: 65px;">
+                    <button type="button" class="btn-micro" onclick="adjustLineSpacing(+0.05)" title="लाईन स्पेसिंग जास्त करा">➕</button>
+                    <span id="lineSpacingLabel" style="font-weight: 800; color: #ea580c; min-width: 26px;">1.85</span>
+                </div>
+                <div class="setting-item">
+                    <button type="button" class="btn-micro-action" onclick="autoFitPage1()" title="पान १ वरील मजकूर आपोआप पूर्ण पानावर सेट करा">
+                        📐 पान १ फिट
+                    </button>
+                </div>
+                <div class="setting-item">
+                    <label>वंशावळ उंची:</label>
+                    <input type="range" id="treeHeightSlider" min="85" max="145" step="5" value="110" oninput="updateTreeHeight(this.value)">
+                    <span id="treeHeightLabel" style="font-weight: 800; color: #ea580c;">110 mm</span>
+                </div>
+                <div class="setting-item" style="margin-left: auto;">
+                    <input type="checkbox" id="chkShowUnderlines" checked onchange="syncAll()">
+                    <label for="chkShowUnderlines" style="cursor: pointer;">कोऱ्या जागी रेषा</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS FOR FORM SECTIONS -->
+        <div class="page-tabs">
+            <button type="button" class="tab-btn active" onclick="switchTab('tab-applicant', this)">
+                <i class="fa-solid fa-user-tie"></i> १. अर्जदार
+            </button>
+            <button type="button" class="tab-btn" onclick="switchTab('tab-caste', this)">
+                <i class="fa-solid fa-certificate"></i> २. लाभार्थी व जात
+            </button>
+            <button type="button" class="tab-btn" onclick="switchTab('tab-residence', this)">
+                <i class="fa-solid fa-map-location-dot"></i> ३. वास्तव्य व पुरावे
+            </button>
+            <button type="button" class="tab-btn" onclick="switchTab('tab-tree', this)">
+                <i class="fa-solid fa-sitemap"></i> ४. वंशावळ पर्याय
+            </button>
+            <button type="button" class="tab-btn" onclick="switchTab('tab-sign', this)">
+                <i class="fa-solid fa-signature"></i> ५. स्वाक्षरी व साक्षीदार
+            </button>
+            <button type="button" class="tab-btn-collapse" id="btnCollapseForm" onclick="toggleFormCollapse()" title="फॉर्म पॅनल बंद किंवा उघडा">
+                <span id="collapseIcon">▲</span> <span id="collapseText">फॉर्म लपवा</span>
+            </button>
+        </div>
+
+        <!-- COLLAPSIBLE FORM PANES WRAPPER -->
+        <div id="formPanesContainer">
+
+        <!-- TAB 1: APPLICANT & COURT -->
+        <div id="tab-applicant" class="tab-pane">
+            <div class="section-subhead"><i class="fa-solid fa-gavel"></i> न्यायालय व आदेश तपशील</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>दंडाधिकारी न्यायालय शीर्षक</label>
+                    <input type="text" id="inp_court_title" value="मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे न्यायालयात" placeholder="उदा. मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे न्यायालयात" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>उपविभागीय अधिकारी (प्रांत) कार्यालय</label>
+                    <input type="text" id="inp_sdo_office" value="कणकवली" placeholder="उदा. कणकवली / सावंतवाडी / कुडाळ" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>मुद्रांक शुल्क माफी आदेश क्र.</label>
+                    <input type="text" id="inp_exemption_order" value="मुद्रांक २००८/१६३६/ प्र.क्र. ४३६/म-१ दि. १-७-०८" oninput="syncAll()">
+                </div>
+            </div>
+
+            <div class="section-subhead"><i class="fa-solid fa-user"></i> प्रतिज्ञापत्र करणारा (अर्जदाराची माहिती)</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>अर्जदाराचे शीर्षक (Title)</label>
+                    <select id="inp_app_salutation" onchange="syncAll()">
+                        <option value="श्री.">श्री. (Shri)</option>
+                        <option value="श्रीमती">श्रीमती (Shrimati)</option>
+                        <option value="सौ.">सौ. (Sau)</option>
+                        <option value="कुमारी">कुमारी (Kumari)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>अर्जदाराचे पूर्ण नाव</label>
+                    <input type="text" id="inp_app_name" placeholder="उदा. संतोष पांडुरंग राणे" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>वय (वर्षे)</label>
+                    <input type="text" id="inp_app_age" placeholder="उदा. ४२" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>धंदा / व्यवसाय</label>
+                    <input type="text" id="inp_app_occ" placeholder="उदा. शेती / नोकरी / व्यवसाय" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>राहाणार गाव (रा.)</label>
+                    <input type="text" id="inp_app_village" placeholder="उदा. ओरोस" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>तालुका</label>
+                    <input type="text" id="inp_app_taluka" placeholder="उदा. कणकवली" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>जिल्हा</label>
+                    <input type="text" id="inp_app_district" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: BENEFICIARY & CASTE -->
+        <div id="tab-caste" class="tab-pane" style="display: none;">
+            <div class="section-subhead"><i class="fa-solid fa-id-card"></i> जातीचा दाखला कोणासाठी आहे? (लाभार्थी)</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>दाखला कोणासाठी हवा आहे?</label>
+                    <select id="inp_ben_relation_type" onchange="handleRelationChange(); syncAll();">
+                        <option value="मला">स्वतः करिता (मला - Self)</option>
+                        <option value="माझा मुलगा" selected>माझा मुलगा (Son)</option>
+                        <option value="माझी मुलगी">माझी मुलगी (Daughter)</option>
+                        <option value="माझे वडील">माझे वडील (Father)</option>
+                        <option value="माझी आई">माझी आई (Mother)</option>
+                        <option value="माझा भाऊ">माझा भाऊ (Brother)</option>
+                        <option value="माझी बहीण">माझी बहीण (Sister)</option>
+                        <option value="माझा पुतण्या">माझा पुतण्या (भावाचा मुलगा - Nephew)</option>
+                        <option value="माझी पुतणी">माझी पुतणी (भावाची मुलगी - Niece)</option>
+                        <option value="माझा भाचा">माझा भाचा (बहिणीचा मुलगा - Nephew)</option>
+                        <option value="माझी भाची">माझी भाची (बहिणीची मुलगी - Niece)</option>
+                        <option value="माझा नातू">माझा नातू (Grandson)</option>
+                        <option value="माझी नात">माझी नात (Granddaughter)</option>
+                        <option value="माझे पती">माझे पती (Husband)</option>
+                        <option value="माझी पत्नी">माझी पत्नी (Wife)</option>
+                        <option value="माझे काका">माझे काका / चुलते (Uncle)</option>
+                        <option value="माझी काकू">माझी काकू (Aunt)</option>
+                        <option value="माझे आजोबा">माझे आजोबा (Grandfather)</option>
+                        <option value="माझी आजी">माझी आजी (Grandmother)</option>
+                        <option value="इतर">इतर नाते (Other Relation)</option>
+                    </select>
+                </div>
+                <div class="form-group" id="grp_custom_relation" style="display: none;">
+                    <label>इतर नाते लिहा (Custom Relation)</label>
+                    <input type="text" id="inp_custom_relation" placeholder="उदा. चुलत भाऊ / दत्तक मुलगा" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>दाखला धारकाचे नाव (नाव/मुलगा/मुलगी)</label>
+                    <input type="text" id="inp_ben_name" placeholder="उदा. कु. साहिल संतोष राणे" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>सर्वनाम (Pronoun)</label>
+                    <select id="inp_ben_pronoun" onchange="syncAll()">
+                        <option value="याला">याला (Male)</option>
+                        <option value="हिला">हिला (Female)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-subhead"><i class="fa-solid fa-users-rectangle"></i> जात व जातीचा प्रवर्ग</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>जात (Caste Name)</label>
+                    <input type="text" id="inp_caste_name" placeholder="उदा. कुणबी / मराठा / तेली / महार / भंडारी इ." oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>जात कोणत्या वर्गात मोडते? (Category)</label>
+                    <select id="inp_caste_category" onchange="syncAll()">
+                        <option value="इतर मागास प्रवर्ग (OBC)">इतर मागास प्रवर्ग (OBC)</option>
+                        <option value="अनुसूचित जाती (SC)">अनुसूचित जाती (SC)</option>
+                        <option value="अनुसूचित जमाती (ST)">अनुसूचित जमाती (ST)</option>
+                        <option value="विमुक्त जाती (VJ / DT-A)">विमुक्त जाती (VJ / DT-A)</option>
+                        <option value="भटक्या जमाती (NT-B)">भटक्या जमाती (NT-B)</option>
+                        <option value="भटक्या जमाती (NT-C / धनगर)">भटक्या जमाती (NT-C)</option>
+                        <option value="भटक्या जमाती (NT-D / वंजारी)">भटक्या जमाती (NT-D)</option>
+                        <option value="विशेष मागास प्रवर्ग (SBC)">विशेष मागास प्रवर्ग (SBC)</option>
+                        <option value="सामाजिक व शैक्षणिकदृष्ट्या मागास प्रवर्ग (SEBC)">सामाजिक व शैक्षणिकदृष्ट्या मागास प्रवर्ग (SEBC)</option>
+                        <option value="आर्थिकदृष्ट्या दुर्बल घटक (EWS)">आर्थिकदृष्ट्या दुर्बल घटक (EWS)</option>
+                        <option value="खुला प्रवर्ग (OPEN)">खुला प्रवर्ग (OPEN)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>किंवा स्वतः टाईप करा (Custom Category)</label>
+                    <input type="text" id="inp_custom_category" placeholder="उदा. इतर मागास प्रवर्ग" oninput="syncAll()">
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: RESIDENCE & PROOF DOCUMENTS -->
+        <div id="tab-residence" class="tab-pane" style="display: none;">
+            <div class="section-subhead"><i class="fa-solid fa-house"></i> वास्तव्याचे पत्ते (मूळ व सध्याचे)</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>मूळ / कायम रहिवासी गाव</label>
+                    <input type="text" id="inp_orig_village" placeholder="उदा. ओरोस" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>मूळ तालुका</label>
+                    <input type="text" id="inp_orig_taluka" placeholder="उदा. कणकवली" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>मूळ जिल्हा</label>
+                    <input type="text" id="inp_orig_district" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>सध्या राहत असलेले गाव (नोकरी/शिक्षणामुळे)</label>
+                    <input type="text" id="inp_curr_village" placeholder="उदा. ओरोस किंवा मुंबई" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>सध्याचा तालुका</label>
+                    <input type="text" id="inp_curr_taluka" placeholder="उदा. कणकवली" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>सध्याचा जिल्हा</label>
+                    <input type="text" id="inp_curr_district" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="syncAll()">
+                </div>
+            </div>
+
+            <div class="section-subhead"><i class="fa-solid fa-file-circle-check"></i> अर्जासोबत जोडलेली पुरावे कागदपत्रे (पान १ वरील पुरावे)</div>
+            <div class="doc-list-box">
+                <div class="doc-item-row">
+                    <div style="font-weight: 700; width: 25px;">१)</div>
+                    <div style="flex: 1;">
+                        <input type="text" id="inp_doc1_name" placeholder="श्री./कुमार यांचे नाव (शाळेचा दाखला)" oninput="syncAll()" style="width: 55%;">
+                        <input type="text" id="inp_doc1_caste" placeholder="नोंद असलेली जात" oninput="syncAll()" style="width: 42%;">
+                    </div>
+                </div>
+                <div class="doc-item-row">
+                    <div style="font-weight: 700; width: 25px;">२)</div>
+                    <div style="flex: 1;">
+                        <input type="text" id="inp_doc2_name" placeholder="श्री./कुमार यांचे नाव (जन्म नोंदीचा उतारा)" oninput="syncAll()" style="width: 55%;">
+                        <input type="text" id="inp_doc2_caste" placeholder="नोंद असलेली जात" oninput="syncAll()" style="width: 42%;">
+                    </div>
+                </div>
+                <div class="doc-item-row">
+                    <div style="font-weight: 700; width: 25px;">३)</div>
+                    <div style="flex: 1;">
+                        <input type="text" id="inp_doc3_name" placeholder="श्री./श्रीमती यांचे नावे रेशन कार्ड उतारा" oninput="syncAll()" style="width: 55%;">
+                        <input type="text" id="inp_doc3_place" placeholder="रा. गाव" oninput="syncAll()" style="width: 42%;">
+                    </div>
+                </div>
+                <div class="doc-item-row">
+                    <div style="font-weight: 700; width: 25px;">४)</div>
+                    <div style="flex: 1;">
+                        <input type="text" id="inp_doc4_name" placeholder="घरपत्रक उतारा ज्यांच्या नावे आहे ते नाव" oninput="syncAll()" style="width: 38%;">
+                        <input type="text" id="inp_doc4_place" placeholder="रा. गाव" oninput="syncAll()" style="width: 28%;">
+                        <input type="text" id="inp_doc4_rel" placeholder="नाते (उदा. वडील / आजोबा)" oninput="syncAll()" style="width: 30%;">
+                    </div>
+                </div>
+                <div class="doc-item-row">
+                    <div style="font-weight: 700; width: 25px;">५)</div>
+                    <div style="flex: 1; font-weight: 600; color: #475569; font-size: 0.88rem;">
+                        जात आणि कायम वास्तव्य नमूद केलेले गावच्या सरपंच / पोलीस पाटील / तलाठी यांचे दाखले.
+                    </div>
+                </div>
+                <div class="doc-item-row">
+                    <div style="font-weight: 700; width: 25px;">६)</div>
+                    <div style="flex: 1;">
+                        <input type="text" id="inp_doc6_name" placeholder="श्री. (नातेवाईकाचे नाव ज्यांच्या दाखल्यावर जात नमूद आहे)" oninput="syncAll()" style="width: 60%;">
+                        <input type="text" id="inp_doc6_rel" placeholder="दाखलाधारकाशी नाते (उदा. चुलते / आजोबा)" oninput="syncAll()" style="width: 37%;">
+                    </div>
+                </div>
+                <div class="doc-item-row">
+                    <div style="font-weight: 700; width: 25px;">७)</div>
+                    <div style="flex: 1; font-weight: 600; color: #475569; font-size: 0.88rem;">
+                        इतर पुरावे असल्यास (समाजाचा दाखला, सेवा पुस्तकाच्या पहिल्या पानाची छायांकित प्रत वगैरे)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: FAMILY TREE (VANSHAWAAL) SETTINGS -->
+        <div id="tab-tree" class="tab-pane" style="display: none;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin: 4px 0 6px 0; background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 4px 10px;">
+                <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 250px;">
+                    <label style="font-size: 0.8rem; font-weight: 700; white-space: nowrap; color: #92400e;">
+                        <i class="fa-solid fa-diagram-project"></i> वंशावळ मोड:
+                    </label>
+                    <select id="sel_tree_mode" onchange="handleTreeModeChange(); syncAll();" style="flex: 1; padding: 3px 8px; font-size: 0.82rem; border-radius: 5px; border: 1px solid #cbd5e1; background: #fff;">
+                        <option value="manual" selected>🎨 १. मॅन्युअल ड्रॉईंग मोड (टूलबॉक्सद्वारे व्यक्ती, रेषा व ॲरो जोडा)</option>
+                        <option value="chart">२. ऑटोमॅटिक ४-पिढ्या साधा नमुना (Standard Vertical Tree)</option>
+                        <option value="text">३. मजकूर वंशावळ (Text List Format)</option>
+                        <option value="blank">४. हाताने काढण्यासाठी कोरी जागा (Blank Space for Drawing)</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="toggleTreePopup(true)" style="padding: 4px 10px; font-size: 0.78rem;">
+                    <i class="fa-solid fa-toolbox"></i> 🎨 टूलबॉक्स उघडा
+                </button>
+            </div>
+
+            <!-- Standard 4-Gen Builder (shown only when chart mode is selected) -->
+            <div id="tree_chart_builder" class="tree-builder-card" style="display: none;">
+                <div style="font-weight: 800; color: #c2410c; margin-bottom: 10px;">
+                    <i class="fa-solid fa-pen-to-square"></i> पिढ्यांची नावे भरा (Standard 4-Gen Details):
+                </div>
+                
+                <div class="tree-level-row">
+                    <div class="tree-level-label">१. खापरपणजोबा / पणजोबा:</div>
+                    <input type="text" id="inp_tree_g1" placeholder="उदा. कै. बाबाजी गणपत राणे" oninput="syncAll()" style="flex: 1; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                </div>
+
+                <div class="tree-level-row">
+                    <div class="tree-level-label">२. आजोबा (Grandfather):</div>
+                    <input type="text" id="inp_tree_g2" placeholder="उदा. कै. पांडुरंग बाबाजी राणे" oninput="syncAll()" style="flex: 1; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                </div>
+
+                <div class="tree-level-row">
+                    <div class="tree-level-label">३. वडील व चुलते:</div>
+                    <input type="text" id="inp_tree_g3" placeholder="उदा. संतोष पांडुरंग राणे (वडील), रवींद्र पांडुरंग राणे (चुलते)" oninput="syncAll()" style="flex: 1; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                </div>
+
+                <div class="tree-level-row">
+                    <div class="tree-level-label">४. अर्जदार व भावंडे:</div>
+                    <input type="text" id="inp_tree_g4" placeholder="उदा. कु. साहिल संतोष राणे (दाखलाधारक / मुलगा), कु. सिया (मुलगी)" oninput="syncAll()" style="flex: 1; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                </div>
+            </div>
+
+            <!-- Custom Text Mode Input -->
+            <div id="tree_text_builder" class="tree-builder-card" style="display: none;">
+                <div class="form-group">
+                    <label>वंशावळ मजकूर (Custom Text Format):</label>
+                    <textarea id="inp_custom_tree_text" rows="5" oninput="syncAll()" placeholder="उदा.&#10;१. कै. बाबाजी गणपत राणे (खापरपणजोबा)&#10;२. कै. पांडुरंग बाबाजी राणे (आजोबा)&#10;३. श्री. संतोष पांडुरंग राणे (वडील)&#10;४. कु. साहिल संतोष राणे (दाखलाधारक/मुलगा)"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: SIGNATURES & WITNESS -->
+        <div id="tab-sign" class="tab-pane" style="display: none;">
+            <div class="section-subhead"><i class="fa-solid fa-calendar-days"></i> दिनांक व साक्षीदार तपशील</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>प्रतिज्ञापत्र दिनांक (Date)</label>
+                    <input type="text" id="inp_aff_date" placeholder="उदा. १६/०९/२०२६" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>ओळख देणाऱ्याचे नाव (Witness Name)</label>
+                    <input type="text" id="inp_witness_name" placeholder="उदा. श्री. गणेश विष्णू सावंत" oninput="syncAll()">
+                </div>
+                <div class="form-group">
+                    <label>ओळख देणाऱ्याचा पत्ता (Witness Address)</label>
+                    <input type="text" id="inp_witness_address" placeholder="उदा. रा. कणकवली, जि. सिंधुदुर्ग" oninput="syncAll()">
+                </div>
+            </div>
+        </div>
+
+        </div> <!-- END COLLAPSIBLE FORM PANES WRAPPER -->
+    </div> <!-- END CONTROLS WRAPPER -->
+    </div> <!-- END CONTROLS SIDEBAR WRAPPER -->
+
+    <!-- RIGHT PANE: LIVE FULL A4 PREVIEW STAGE -->
+    <div class="preview-stage-wrapper" id="previewStageWrapper">
+
+        <!-- PREVIEW PAGE SELECTOR BAR (NO PRINT) -->
+        <div class="preview-mode-bar no-print">
+            <div class="preview-mode-title">
+                <i class="fa-solid fa-eye"></i> प्रिव्ह्यू स्क्रीन:
+            </div>
+            <div class="preview-btn-tabs">
+                <button type="button" class="prev-tab-btn active" id="btnPage1View" onclick="setPreviewPage(1)">
+                    <i class="fa-solid fa-file-lines"></i> पान १ (प्रतिज्ञापत्र)
+                </button>
+                <button type="button" class="prev-tab-btn" id="btnPage2View" onclick="setPreviewPage(2)">
+                    <i class="fa-solid fa-sitemap"></i> पान २ (वंशावळ)
+                </button>
+                <button type="button" class="prev-tab-btn" id="btnBothView" onclick="setPreviewPage('both')">
+                    <i class="fa-solid fa-copy"></i> दोन्ही पाने
+                </button>
+            </div>
+            
+            <!-- Zoom & Fit Controls for Full Page View -->
+            <div class="preview-zoom-cluster" title="प्रिव्ह्यू झूम व स्क्रीन फिट नियंत्रण">
+                <button type="button" class="btn-micro" onclick="adjustPreviewZoom(-0.05)" title="झूम लहान करा">➖</button>
+                <span class="zoom-chip" id="previewZoomLabel">100%</span>
+                <button type="button" class="btn-micro" onclick="adjustPreviewZoom(+0.05)" title="झूम मोठे करा">➕</button>
+                <button type="button" class="btn-micro" onclick="setPreviewZoom('fit')" title="स्क्रीननुसार पूर्ण पान फिट करा">📐 स्क्रीन फिट</button>
+            </div>
+
+            <div class="active-page-hint" id="activePageHint">
+                <i class="fa-solid fa-circle-info"></i> सध्या <strong>पान १ (प्रतिज्ञापत्र)</strong> दिसत आहे.
+            </div>
+        </div>
+
+    <!-- =============================================================
+         A4 PRINT PREVIEW CONTAINER
+    ============================================================= -->
+    <div class="preview-container">
+        
+        <!-- PAGE 1: AFFIDAVIT FRONT PAGE -->
+        <div class="a4-sheet" id="page1Sheet">
+            <div class="sheet-border-frame page1-frame">
+                
+                <div class="page1-content-flow">
+                    <!-- Exemption Order Top Header -->
+                    <div class="exemption-header-box">
+                        महाराष्ट्र शासन महसूल व वनविभागाकडील आदेश क्र. <span id="v_exemption_order" style="font-weight: 700;">मुद्रांक २००८/१६३६/ प्र.क्र. ४३६/म-१ दि. १-७-०८</span> अन्वये<br>
+                        जातीचे प्रमाणपत्र/उत्पन्नाचे प्रमाणपत्र/अधिवास दाखला याकरिता करावयाचे प्रतिज्ञापत्राकरिता मुद्रांक शुल्क माफ आहे.
+                    </div>
+
+                    <!-- Title -->
+                    <div class="affidavit-main-title">प्रतिज्ञापत्र</div>
+                    <div class="affidavit-court-title" id="v_court_title">मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे न्यायालयात</div>
+
+                    <!-- Applicant & Vertical Brace -->
+                    <div class="applicant-declaration-row">
+                        <div class="applicant-text-col">
+                            मी <span id="v_app_salutation">श्री.</span> <span id="v_app_name" class="field-fill" style="min-width: 250px;"></span><br>
+                            वय वर्षे <span id="v_app_age" class="field-fill" style="min-width: 45px;"></span>, 
+                            धंदा <span id="v_app_occ" class="field-fill" style="min-width: 90px;"></span>, 
+                            रा. <span id="v_app_village" class="field-fill" style="min-width: 110px;"></span>, 
+                            ता. <span id="v_app_taluka" class="field-fill" style="min-width: 95px;"></span>, 
+                            जि.<span id="v_app_district" style="font-weight: 700;">सिंधुदुर्ग</span>
+                        </div>
+                        <div class="applicant-brace-col">
+                            <span class="large-brace">}</span>
+                            <div class="brace-label">
+                                प्रतिज्ञापत्र<br>करणार
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OATH DECLARATION -->
+                    <div class="aff-p" style="margin-bottom: 10px;">
+                        आज रोजी समक्ष उपस्थित राहून सत्यप्रतिज्ञेवर कथन करतो की,
+                    </div>
+
+                    <!-- PARAGRAPH 1: APPLICATION FOR CASTE CERTIFICATE -->
+                    <div class="aff-p aff-p-indent">
+                        मी <span id="v_ben_relation_phrase" style="font-weight: 700;">माझा मुलगा</span> 
+                        <span id="v_ben_name" class="field-fill" style="min-width: 230px;"></span><br>
+                        <span id="v_ben_pronoun">याला</span> 
+                        <span id="v_caste_name" class="field-fill" style="min-width: 140px;"></span> 
+                        या जातीचे प्रमाणपत्र मिळण्यासाठी मा. उपविभागीय अधिकारी साहेब,<br>
+                        <span id="v_sdo_office" style="font-weight: 700;">कणकवली</span> यांचेकडे अर्ज करणार आहे.
+                    </div>
+
+                    <!-- PARAGRAPH 2: ORIGIN RESIDENCE AND CASTE CATEGORY -->
+                    <div class="aff-p aff-p-indent">
+                        त्या अनुषंगाने <span id="v_ben_rel_possessive" style="font-weight: 700;">माझा मुलगा</span> 
+                        <span id="v_ben_name_repeat" class="field-fill" style="min-width: 220px;"></span> 
+                        <span id="v_ben_possessive_pronoun">याचे</span> रहिवासाचे मुळ/ कायम ठिकाण गांव 
+                        <span id="v_orig_village" class="field-fill" style="min-width: 110px;"></span> 
+                        ता. <span id="v_orig_taluka" class="field-fill" style="min-width: 95px;"></span> 
+                        जिल्हा <span id="v_orig_district" class="field-fill" style="min-width: 85px;"></span> असे आहे. 
+                        <span id="v_ben_possessive_pronoun2">याची</span> जात 
+                        <span id="v_caste_name_repeat" class="field-fill" style="min-width: 110px;"></span> अशी आहे. 
+                        ही जात <span id="v_caste_category" class="field-fill" style="min-width: 140px;"></span> या वर्गात मोडते.
+                    </div>
+
+                    <!-- PARAGRAPH 3: ATTACHED DOCUMENTS -->
+                    <div class="aff-p" style="margin-top: 8px; margin-bottom: 4px;">
+                        मी वर नमूद केलेल्या जात आणि कायम वास्तव्याचे पुरावे म्हणून अर्जासोबत खालील कागदपत्र जोडीत आहे.
+                    </div>
+
+                    <ul class="doc-list-print">
+                        <li>
+                            <span class="doc-sr">१)</span>
+                            <span class="doc-content">
+                                श्री./कुमार <span id="v_doc1_name" class="field-fill" style="min-width: 210px;"></span> यांचा शाळेचा दाखला यात जात <span id="v_doc1_caste" class="field-fill" style="min-width: 130px;"></span> अशी नमूद आहे.
+                            </span>
+                        </li>
+                        <li>
+                            <span class="doc-sr">२)</span>
+                            <span class="doc-content">
+                                श्री./कुमार <span id="v_doc2_name" class="field-fill" style="min-width: 210px;"></span> यांचा जन्म नोंदीचा उतारा यात जात <span id="v_doc2_caste" class="field-fill" style="min-width: 130px;"></span> अशी नमूद आहे.
+                            </span>
+                        </li>
+                        <li>
+                            <span class="doc-sr">३)</span>
+                            <span class="doc-content">
+                                श्री./ श्रीमती <span id="v_doc3_name" class="field-fill" style="min-width: 170px;"></span> रा. <span id="v_doc3_place" class="field-fill" style="min-width: 120px;"></span> यांच्या नावे असलेले रेशन कार्डाचा उतारा त्यात दाखला धारकाचे नांव नमूद आहे.
+                            </span>
+                        </li>
+                        <li>
+                            <span class="doc-sr">४)</span>
+                            <span class="doc-content">
+                                श्री./ श्रीमती <span id="v_doc4_name" class="field-fill" style="min-width: 160px;"></span> रा. <span id="v_doc4_place" class="field-fill" style="min-width: 110px;"></span> यांच्या नावे असलेल्या घरपत्रकाचा उतारा ते नात्याने दाखला धारकाचे <span id="v_doc4_rel" class="field-fill" style="min-width: 80px;"></span> आहेत.
+                            </span>
+                        </li>
+                        <li>
+                            <span class="doc-sr">५)</span>
+                            <span class="doc-content">
+                                जात आणि कायम वास्तव्य नमूद केलेले गावच्या सरपंच /पोलीस पाटील/ तलाठी यांचे दाखले.
+                            </span>
+                        </li>
+                        <li>
+                            <span class="doc-sr">६)</span>
+                            <span class="doc-content">
+                                श्री. <span id="v_doc6_name" class="field-fill" style="min-width: 180px;"></span> यांच्या नावाचे जात नमूद असलेल्या शाळेचा दाखला किंवा जन्म नोंदीचा उतारा ते नात्याने दाखला धारकाचे <span id="v_doc6_rel" class="field-fill" style="min-width: 85px;"></span> आहेत.
+                            </span>
+                        </li>
+                        <li>
+                            <span class="doc-sr">७)</span>
+                            <span class="doc-content">
+                                इतर पुरावे असल्यास (समाजाचा दाखला, सेवा पुस्तकाच्या पहिल्या पानाची छायांकित प्रत वगैरे)
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Bottom Page 1 Indicator -->
+                <div class="page1-bottom-label">
+                    (मागे पहा)
+                </div>
+
+            </div>
+        </div>
+
+        <!-- PAGE 2: VANSHAWAAL & BNS LEGAL DECLARATION (CLEAN LIKE PAPER, NO INNER BOX) -->
+        <div class="a4-sheet preview-hidden" id="page2Sheet">
+            <div class="sheet-border-frame page2-frame">
+                
+                <div class="page2-content-flow">
+                    <!-- Title -->
+                    <div class="p2-header-title">वंशावळ</div>
+
+                    <!-- Family Tree Area (100% BORDERLESS, NO INNER BOX CLUTTER) -->
+                    <div class="vanshawaal-box-container" id="vanshawaalContainer">
+                        
+                        <!-- 1. Interactive Manual Canvas Workspace (Default) -->
+                        <div id="treeManualCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                            <!-- Absolute positioned draggable text, lines, and arrows are appended here -->
+                        </div>
+
+                        <!-- Freehand Canvas layer for pen drawing -->
+                        <canvas id="treeFreehandCanvas"></canvas>
+
+                        <!-- 2. Visual 4-Gen Chart Tree -->
+                        <div id="treeChartDisplay" class="tree-print-view" style="display: none;">
+                            <div class="tree-node-row">
+                                <div class="tree-node-box">
+                                    <span id="vt_g1_name">कै. बाबाजी गणपत राणे</span>
+                                    <span class="tree-node-rel">(खापरपणजोबा / पणजोबा)</span>
+                                </div>
+                            </div>
+                            <div class="tree-connector-v"></div>
+                            <div class="tree-node-row">
+                                <div class="tree-node-box">
+                                    <span id="vt_g2_name">कै. पांडुरंग बाबाजी राणे</span>
+                                    <span class="tree-node-rel">(आजोबा)</span>
+                                </div>
+                            </div>
+                            <div class="tree-connector-v"></div>
+                            <div class="tree-node-row">
+                                <div class="tree-node-box">
+                                    <span id="vt_g3_name">श्री. संतोष पांडुरंग राणे</span>
+                                    <span class="tree-node-rel">(वडील / चुलते)</span>
+                                </div>
+                            </div>
+                            <div class="tree-connector-v"></div>
+                            <div class="tree-node-row">
+                                <div class="tree-node-box">
+                                    <span id="vt_g4_name">कु. साहिल संतोष राणे</span>
+                                    <span class="tree-node-rel">(दाखलाधारक / अर्जदार)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Text List Mode -->
+                        <div id="treeTextDisplay" class="text-tree-display" style="display: none;"></div>
+
+                        <!-- 4. Blank Space Watermark for Screen (Invisible in Print) -->
+                        <div id="treeBlankDisplay" class="vanshawaal-empty-watermark" style="display: none;">
+                            <i class="fa-solid fa-pen-nib"></i> वंशावळ पेनाने हाताने रेखाटण्यासाठी ही जागा कोरी ठेवण्यात आली आहे.
+                        </div>
+
+                    </div>
+
+                    <!-- RESIDENCE & ORIGIN COMPARISON CLAUSE -->
+                    <div class="aff-p aff-p-indent">
+                        <span id="v_p2_relation_phrase" style="font-weight: 700;">मी/ माझा मुलगा</span> 
+                        <span id="v_p2_ben_name" class="field-fill" style="min-width: 240px;"></span> 
+                        <span id="v_p2_pronoun_suffix">हा</span> 
+                        नोकरी /शिक्षण व इतर कारणामुळे सध्या गांव 
+                        <span id="v_curr_village" class="field-fill" style="min-width: 100px;"></span> 
+                        ता. <span id="v_curr_taluka" class="field-fill" style="min-width: 90px;"></span> 
+                        जि. <span id="v_curr_district" class="field-fill" style="min-width: 80px;"></span> येथे राहत असून गांव 
+                        <span id="v_p2_orig_village" class="field-fill" style="min-width: 100px;"></span> 
+                        ता. <span id="v_p2_orig_taluka" class="field-fill" style="min-width: 90px;"></span> 
+                        जि. <span id="v_p2_orig_district" class="field-fill" style="min-width: 80px;"></span> येथील मुळ/कायम रहिवासी आहे.
+                    </div>
+
+                    <!-- CLAUSE 1: NO PREVIOUS CERTIFICATE -->
+                    <div class="aff-p aff-p-indent">
+                        यापूर्वी जाती प्रमाणपत्र घेतलेले नाही किंवा जातीचे प्रमाणपत्र मिळण्यासाठी अन्य कोठेही अर्ज केलेला नाही.
+                    </div>
+
+                    <!-- CLAUSE 2: BNS LEGAL OATH (भारतीय न्याय संहिता) -->
+                    <div class="p2-bns-clause aff-p-indent">
+                        मी भारतीय न्याय संहिता नुसार मी घोषीत करतो की, सदर प्रतिज्ञापत्रातील मजकूर, माहिती खरा व बरोबर आहे, तो 
+                        खोटा आहे असे आढळून आल्यास <strong>भारतीय न्याय संहिता कलम २२९, २३६ व २३७</strong> प्रमाणे होणारे दंडास व शिक्षेस मी पात्र 
+                        राहीन याची मला पूर्ण जाणीव आहे. मी हे प्रतिज्ञापत्र मे. कार्यकारी दंडाधिकारी साहेब यांचेसमोर पूर्ण केले.
+                    </div>
+
+                    <!-- DATE ROW -->
+                    <div class="p2-date-row">
+                        दिनांक:- <span id="v_aff_date_display">____/____/२०____</span>
+                    </div>
+
+                    <!-- SIGNATURES DIRECTLY BELOW DATE WITH 2-LINE SPACING (NOT STUCK AT THE PAGE BOTTOM) -->
+                    <div class="p2-signatures-grid">
+                        <div class="witness-sign-col">
+                            <div style="font-weight: 800; font-size: 1.02em;">ओळख देणाऱ्यांचे</div>
+                            <div style="font-weight: 800; font-size: 1.02em;">नाव, पत्ता व सही :</div>
+                            <div style="margin-top: 6px; line-height: 1.6; font-size: 0.98em;">
+                                <div>नाव : <span id="v_witness_name" class="field-fill" style="min-width: 190px;"></span></div>
+                                <div style="margin-top: 3px;">पत्ता : <span id="v_witness_address" class="field-fill" style="min-width: 210px;"></span></div>
+                            </div>
+                            <!-- Dedicated signature space under witness details -->
+                            <div class="witness-signature-block" style="margin-top: 10px;">
+                                <div style="height: 36px;"></div> <!-- Clear blank area for signature -->
+                                <div style="font-weight: 800;">सही : _______________________</div>
+                            </div>
+                        </div>
+
+                        <div class="applicant-sign-col">
+                            <div style="height: 60px;"></div> <!-- Aligns with witness signature -->
+                            <div style="font-weight: 800;">सही : _______________________</div>
+                            <div style="margin-top: 4px; font-weight: 800;">
+                                नाव : <span id="v_app_sign_name" class="field-fill" style="min-width: 180px;"></span>
+                            </div>
+                            <div style="font-size: 0.88em; font-weight: 700; color: #1e293b; margin-top: 2px;">(प्रतिज्ञापत्र करणारा)</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div> <!-- END PREVIEW CONTAINER -->
+    </div> <!-- END PREVIEW STAGE WRAPPER -->
+    </div> <!-- END MAIN APP CONTAINER -->
+
+    <!-- =============================================================
+         FLOATING POPUP TOOLBOX (NO-PRINT, DOES NOT CLUTTER THE PAGE)
+    ============================================================= -->
+    <div id="treeFloatingPopup" class="tree-floating-popup no-print">
+        <div class="popup-header" id="popupHeader">
+            <div class="popup-title">
+                <i class="fa-solid fa-toolbox"></i> वंशावळ ड्रॉईंग टूलबॉक्स
+            </div>
+            <div class="popup-actions">
+                <button type="button" class="btn-icon" onclick="togglePopupMinimize()" title="लहान / मोठे करा">
+                    <i class="fa-solid fa-minus"></i>
+                </button>
+                <button type="button" class="btn-icon" onclick="toggleTreePopup(false)" title="बंद करा">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="popup-body" id="popupBody">
+            <!-- Main Drawing Elements Grid -->
+            <div class="popup-tools-grid">
+                <button type="button" class="tool-btn tool-btn-primary" onclick="addPersonBox('नवीन व्यक्ती', '(नाते)')" title="नवीन व्यक्तीचे नाव जोडा (बॉर्डरलेस)">
+                    <i class="fa-solid fa-user-plus"></i> ➕ व्यक्ती
+                </button>
+                <button type="button" class="tool-btn" onclick="addVerticalLine()" title="उभी रेषा जोडा">
+                    <i class="fa-solid fa-arrows-up-down"></i> ➕ उभी (|)
+                </button>
+                <button type="button" class="tool-btn" onclick="addHorizontalLine()" title="आडवी शाखा रेषा जोडा">
+                    <i class="fa-solid fa-arrows-left-right"></i> ➕ आडवी (―)
+                </button>
+                <button type="button" class="tool-btn" onclick="addArrowDown()" title="खाली बाण जोडा">
+                    <i class="fa-solid fa-arrow-down"></i> ➕ ॲरो ⬇️
+                </button>
+                <button type="button" class="tool-btn" onclick="addArrowRight()" title="उजवीकडे बाण जोडा">
+                    <i class="fa-solid fa-arrow-right"></i> ➕ ॲरो ➡️
+                </button>
+                <button type="button" class="tool-btn" style="background: #eff6ff; color: #1e40af; border-color: #bfdbfe;" onclick="addTBranchConnector()" title="शाखा जोडणारी 'T' रेषा (┬) जोडा">
+                    <i class="fa-solid fa-diagram-project"></i> ➕ शाखा ┬
+                </button>
+                <button type="button" class="tool-btn" style="background: #eff6ff; color: #1e40af; border-color: #bfdbfe;" onclick="addLBranchConnector()" title="कोपरा जोडणारी 'L' रेषा (┌) जोडा">
+                    <i class="fa-solid fa-turn-down"></i> ➕ कोपरा ┌
+                </button>
+                <button type="button" class="tool-btn" style="background: #ecfdf5; color: #065f46; border-color: #a7f3d0;" onclick="loadExtendedTreePreset()" title="लांबच्या चुलत आजोबा व भावांचा नमुना लोड करा">
+                    <i class="fa-solid fa-code-branch"></i> 📋 लांबचे नाते
+                </button>
+            </div>
+
+            <!-- Quick Action Bar (Undo, Redo, Duplicate, Center, Pen) -->
+            <div style="display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap;">
+                <button type="button" class="tool-btn" style="flex: 1; padding: 4px 6px; font-size: 0.75rem;" onclick="undoManualTree()" title="Ctrl+Z (पूर्ववत करा)">
+                    <i class="fa-solid fa-rotate-left"></i> ↩️ Undo
+                </button>
+                <button type="button" class="tool-btn" style="flex: 1; padding: 4px 6px; font-size: 0.75rem;" onclick="redoManualTree()" title="Ctrl+Y (पुन्हा करा)">
+                    <i class="fa-solid fa-rotate-right"></i> ↪️ Redo
+                </button>
+                <button type="button" class="tool-btn" style="flex: 1; padding: 4px 6px; font-size: 0.75rem;" onclick="duplicateSelected()" title="निवडलेला घटक कॉपी / ड्युप्लिकेट करा">
+                    <i class="fa-solid fa-copy"></i> 📑 ड्युप्लिकेट
+                </button>
+                <button type="button" class="tool-btn" id="btnTogglePenPopup" style="flex: 1; padding: 4px 6px; font-size: 0.75rem;" onclick="toggleFreehandPen()" title="पेनने थेट हाताने रेषा काढा">
+                    <i class="fa-solid fa-pen"></i> ✏️ पेन
+                </button>
+                <button type="button" class="tool-btn" style="flex: 1; padding: 4px 6px; font-size: 0.75rem;" onclick="clearFreehandCanvas()" title="पेनने काढलेल्या रेषा पुसा">
+                    <i class="fa-solid fa-eraser"></i> 🧽 पुसा
+                </button>
+            </div>
+
+            <!-- Selected Element Adjuster Bar (Nudge with buttons or Arrow keys) -->
+            <div id="selectedElementBar" class="selected-element-panel" style="display: none; margin-top: 6px; padding: 6px 8px;">
+                <div class="selected-badge" style="margin-bottom: 4px; font-size: 0.76rem;">
+                    <i class="fa-solid fa-hand-pointer"></i> <span id="selectedItemLabel">घटक निवडला आहे</span>
+                </div>
+                <div class="nudge-controls-row">
+                    <span style="font-size: 0.72rem; font-weight: 700; color: #475569;">हलवा:</span>
+                    <button type="button" class="nudge-btn" onclick="nudgeSelected(0, -4)" title="वर हलवा">⬆️</button>
+                    <button type="button" class="nudge-btn" onclick="nudgeSelected(0, 4)" title="खाली हलवा">⬇️</button>
+                    <button type="button" class="nudge-btn" onclick="nudgeSelected(-4, 0)" title="डावीकडे हलवा">⬅️</button>
+                    <button type="button" class="nudge-btn" onclick="nudgeSelected(4, 0)" title="उजवीकडे हलवा">➡️</button>
+                    
+                    <span style="margin-left: 3px; font-size: 0.72rem; font-weight: 700; color: #475569;">आकार:</span>
+                    <button type="button" class="nudge-btn" onclick="resizeSelected(6)" title="मोठा करा">➕</button>
+                    <button type="button" class="nudge-btn" onclick="resizeSelected(-6)" title="लहान करा">➖</button>
+                    <button type="button" class="nudge-btn" onclick="changeSelectedFont(1)" title="फॉन्ट मोठा">A+</button>
+                    <button type="button" class="nudge-btn" onclick="changeSelectedFont(-1)" title="फॉन्ट लहान">A-</button>
+                    
+                    <button type="button" class="nudge-btn" onclick="centerSelected()" title="मध्यभागी आणा">🎯 सेंटर</button>
+                    <button type="button" class="nudge-btn btn-del-sel" onclick="deleteSelected()" title="घटक डिलीट करा" style="background: #fee2e2; color: #b91c1c;">🗑️</button>
+                </div>
+            </div>
+
+            <!-- Clear Canvas Button -->
+            <div style="margin-top: 6px;">
+                <button type="button" class="tool-btn" style="background: #fef2f2; color: #991b1b; border-color: #fecaca; width: 100%; padding: 4px;" onclick="clearAllManualTree()" title="कॅनव्हासवरील सर्व वंशावळ क्लिअर करा">
+                    <i class="fa-solid fa-trash"></i> 🗑️ सर्व क्लिअर करा
+                </button>
+            </div>
+
+            <div style="font-size: 0.73rem; color: #64748b; margin-top: 6px; line-height: 1.35; border-top: 1px dashed #cbd5e1; padding-top: 4px;">
+                💡 <strong>सोपे मूव्हिंग:</strong> बॉक्सवर कुठेही माउस पकडून सहज ओढा (किंवा वरच्या <strong>'⋮⋮ हलवा'</strong> हँडलने ओढा). कीबोर्डच्या <strong>Arrow Keys (⬆️ ⬇️ ⬅️ ➡️)</strong> नेही हलवू शकता.
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING TRIGGER BUTTON (When popup is closed) -->
+    <button type="button" id="btnOpenTreePopup" class="tree-popup-trigger-btn no-print" onclick="toggleTreePopup(true)">
+        <i class="fa-solid fa-toolbox"></i> वंशावळ टूलबॉक्स
+    </button>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // =============================================================
+        // MASTER DUAL-MODE LAYOUT & 3D REALISTIC SCROLL-SHIFT ENGINE
+        // =============================================================
+        let currentLayoutMode = localStorage.getItem('caste_affidavit_layout_mode') || 'split';
+        let currentPreviewZoom = 1.0;
+
+        function setLayoutMode(mode) {
+            currentLayoutMode = mode;
+            try { localStorage.setItem('caste_affidavit_layout_mode', mode); } catch (e) {}
+
+            const container = document.getElementById('mainAppContainer');
+            const sidebar = document.getElementById('controlsSidebarWrapper');
+            const bSplit = document.getElementById('btnLayoutSplit');
+            const bAuto = document.getElementById('btnLayoutAuto');
+            const bTop = document.getElementById('btnLayoutTop');
+            const dockBadge = document.getElementById('dockIndicator');
+
+            if (bSplit) bSplit.classList.toggle('active', mode === 'split');
+            if (bAuto) bAuto.classList.toggle('active', mode === 'autoshift');
+            if (bTop) bTop.classList.toggle('active', mode === 'top');
+
+            if (mode === 'split') {
+                container.classList.add('layout-split');
+                container.classList.remove('has-docked-left');
+                if (sidebar) sidebar.classList.remove('scrolled-docked-left', 'returning-to-top');
+                if (dockBadge) dockBadge.style.display = 'inline-flex';
+            } else if (mode === 'autoshift') {
+                container.classList.remove('layout-split');
+                if (dockBadge) dockBadge.style.display = 'none';
+                handleScrollAutoShift();
+            } else { // top mode
+                container.classList.remove('layout-split', 'has-docked-left');
+                if (sidebar) sidebar.classList.remove('scrolled-docked-left', 'returning-to-top');
+                if (dockBadge) dockBadge.style.display = 'none';
+            }
+
+            // Auto-adjust preview fit after layout change
+            setTimeout(() => {
+                if (currentPreviewZoom === 'fit') {
+                    setPreviewZoom('fit');
+                }
+            }, 100);
+        }
+
+        function handleScrollAutoShift() {
+            if (currentLayoutMode !== 'autoshift') return;
+            if (window.innerWidth < 1080) return; // Only dock on desktop screens
+
+            const sidebar = document.getElementById('controlsSidebarWrapper');
+            const container = document.getElementById('mainAppContainer');
+            const dockBadge = document.getElementById('dockIndicator');
+            if (!sidebar || !container) return;
+
+            const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollY > 40) {
+                if (!sidebar.classList.contains('scrolled-docked-left')) {
+                    sidebar.classList.remove('returning-to-top');
+                    sidebar.classList.add('scrolled-docked-left');
+                    container.classList.add('has-docked-left');
+                    if (dockBadge) dockBadge.style.display = 'inline-flex';
+                }
+            } else if (scrollY <= 15) {
+                if (sidebar.classList.contains('scrolled-docked-left')) {
+                    sidebar.classList.remove('scrolled-docked-left');
+                    sidebar.classList.add('returning-to-top');
+                    container.classList.remove('has-docked-left');
+                    if (dockBadge) dockBadge.style.display = 'none';
+                    setTimeout(() => {
+                        sidebar.classList.remove('returning-to-top');
+                    }, 400);
+                }
+            }
+        }
+
+        window.addEventListener('scroll', handleScrollAutoShift, { passive: true });
+
+        // Preview Zoom & Full Screen Fit Controller
+        function setPreviewZoom(val) {
+            const sheets = document.querySelectorAll('.a4-sheet');
+            const container = document.querySelector('.preview-container');
+            const stage = document.getElementById('previewStageWrapper');
+            const label = document.getElementById('previewZoomLabel');
+            if (!sheets.length) return;
+
+            let z = 1.0;
+            if (val === 'fit') {
+                const availW = stage ? stage.clientWidth - 40 : 794;
+                const a4W = 794; // approx 210mm in standard screen px
+                z = Math.min(1.05, Math.max(0.6, (availW / a4W)));
+                currentPreviewZoom = 'fit';
+            } else {
+                z = parseFloat(val) || 1.0;
+                z = Math.min(1.3, Math.max(0.55, z));
+                currentPreviewZoom = z;
+            }
+
+            if (label) label.innerText = Math.round(z * 100) + '%';
+
+            sheets.forEach(s => {
+                s.style.transform = `scale(${z})`;
+                s.style.transformOrigin = 'top center';
+            });
+
+            if (container) {
+                container.style.minHeight = Math.round(1123 * z + 30) + 'px';
+            }
+        }
+
+        function adjustPreviewZoom(delta) {
+            let baseZ = (currentPreviewZoom === 'fit') ? 0.9 : currentPreviewZoom;
+            setPreviewZoom(baseZ + delta);
+        }
+
+        let currentPreviewTarget = 1;
+
+        // Preview Page Switching (1, 2, or 'both')
+        function setPreviewPage(target) {
+            currentPreviewTarget = target;
+            const p1 = document.getElementById('page1Sheet');
+            const p2 = document.getElementById('page2Sheet');
+            const b1 = document.getElementById('btnPage1View');
+            const b2 = document.getElementById('btnPage2View');
+            const bb = document.getElementById('btnBothView');
+            const hint = document.getElementById('activePageHint');
+
+            if (b1) b1.classList.remove('active');
+            if (b2) b2.classList.remove('active');
+            if (bb) bb.classList.remove('active');
+
+            if (target === 1) {
+                p1.classList.remove('preview-hidden');
+                p2.classList.add('preview-hidden');
+                if (b1) b1.classList.add('active');
+                if (hint) hint.innerHTML = '<i class="fa-solid fa-circle-info"></i> सध्या <strong>पान १ (प्रतिज्ञापत्र)</strong> प्रिव्ह्यू दिसत आहे.';
+            } else if (target === 2) {
+                p1.classList.add('preview-hidden');
+                p2.classList.remove('preview-hidden');
+                if (b2) b2.classList.add('active');
+                if (hint) hint.innerHTML = '<i class="fa-solid fa-circle-info"></i> सध्या <strong>पान २ (वंशावळ)</strong> प्रिव्ह्यू दिसत आहे.';
+            } else {
+                p1.classList.remove('preview-hidden');
+                p2.classList.remove('preview-hidden');
+                if (bb) bb.classList.add('active');
+                if (hint) hint.innerHTML = '<i class="fa-solid fa-circle-info"></i> सध्या <strong>दोन्ही पाने (पान १ व पान २)</strong> प्रिव्ह्यू दिसत आहेत.';
+            }
+        }
+
+        // Form Collapse / Expand Toggle
+        function toggleFormCollapse() {
+            const container = document.getElementById('formPanesContainer');
+            const icon = document.getElementById('collapseIcon');
+            const text = document.getElementById('collapseText');
+            if (!container) return;
+
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                if (icon) icon.innerText = '▲';
+                if (text) text.innerText = 'फॉर्म लपवा';
+            } else {
+                container.style.display = 'none';
+                if (icon) icon.innerText = '▼';
+                if (text) text.innerText = 'फॉर्म उघडा';
+            }
+        }
+
+        // Tab switching (Auto-switches to matching page)
+        function switchTab(tabId, btn) {
+            const container = document.getElementById('formPanesContainer');
+            if (container && container.style.display === 'none') {
+                container.style.display = 'block';
+                const icon = document.getElementById('collapseIcon');
+                const text = document.getElementById('collapseText');
+                if (icon) icon.innerText = '▲';
+                if (text) text.innerText = 'फॉर्म लपवा';
+            }
+
+            document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const targetPane = document.getElementById(tabId);
+            if (targetPane) targetPane.style.display = 'block';
+            if (btn) btn.classList.add('active');
+
+            // Auto-switch preview page: Tabs 1, 2, 3 -> Page 1; Tabs 4, 5 -> Page 2
+            if (tabId === 'tab-applicant' || tabId === 'tab-caste' || tabId === 'tab-residence') {
+                setPreviewPage(1);
+            } else if (tabId === 'tab-tree' || tabId === 'tab-sign') {
+                setPreviewPage(2);
+            }
+
+            // If user clicked Tab 4, auto open tree popup
+            if (tabId === 'tab-tree') {
+                toggleTreePopup(true);
+            }
+        }
+
+        // Relation change handler (Self / All Relations)
+        function handleRelationChange() {
+            const rel = document.getElementById('inp_ben_relation_type').value;
+            const pronounSel = document.getElementById('inp_ben_pronoun');
+            const appName = document.getElementById('inp_app_name').value.trim();
+            const benInput = document.getElementById('inp_ben_name');
+            const customGrp = document.getElementById('grp_custom_relation');
+
+            if (customGrp) {
+                customGrp.style.display = (rel === 'इतर') ? 'flex' : 'none';
+            }
+
+            const femaleRelations = ['माझी मुलगी', 'माझी आई', 'माझी बहीण', 'माझी पुतणी', 'माझी भाची', 'माझी नात', 'माझी पत्नी', 'माझी काकू', 'माझी आजी'];
+
+            if (rel === 'मला') {
+                pronounSel.value = 'याला';
+                if (!benInput.value.trim() && appName) {
+                    benInput.value = appName;
+                }
+            } else if (femaleRelations.includes(rel)) {
+                pronounSel.value = 'हिला';
+                if (benInput.value === appName) {
+                    benInput.value = '';
+                }
+            } else {
+                pronounSel.value = 'याला';
+                if (benInput.value === appName) {
+                    benInput.value = '';
+                }
+            }
+        }
+
+        // Tree Mode Change
+        function handleTreeModeChange() {
+            const mode = document.getElementById('sel_tree_mode').value;
+            const manualCanvas = document.getElementById('treeManualCanvas');
+            const freehandCanvas = document.getElementById('treeFreehandCanvas');
+            const chartDiv = document.getElementById('treeChartDisplay');
+            const textDiv = document.getElementById('treeTextDisplay');
+            const blankDiv = document.getElementById('treeBlankDisplay');
+            const chartBuilder = document.getElementById('tree_chart_builder');
+            const textBuilder = document.getElementById('tree_text_builder');
+
+            manualCanvas.style.display = 'none';
+            freehandCanvas.style.display = 'none';
+            chartDiv.style.display = 'none';
+            textDiv.style.display = 'none';
+            blankDiv.style.display = 'none';
+            chartBuilder.style.display = 'none';
+            textBuilder.style.display = 'none';
+
+            if (mode === 'manual') {
+                manualCanvas.style.display = 'block';
+                freehandCanvas.style.display = 'block';
+                initFreehandCanvas();
+            } else if (mode === 'chart') {
+                chartDiv.style.display = 'flex';
+                chartBuilder.style.display = 'block';
+                toggleTreePopup(false);
+            } else if (mode === 'text') {
+                textDiv.style.display = 'block';
+                textBuilder.style.display = 'block';
+                toggleTreePopup(false);
+            } else {
+                blankDiv.style.display = 'block';
+                toggleTreePopup(false);
+            }
+        }
+
+        // Fine tuning sliders & line spacing
+        function updateFontSize(val) {
+            val = parseFloat(val) || 11.8;
+            document.getElementById('fontSizeLabel').innerText = val + ' pt';
+            document.documentElement.style.setProperty('--base-font-size', val + 'pt');
+            document.querySelectorAll('.a4-sheet').forEach(sheet => {
+                sheet.style.fontSize = val + 'pt';
+            });
+        }
+
+        function updateLineSpacing(val) {
+            val = parseFloat(val);
+            if (isNaN(val)) val = 1.85;
+            val = Math.max(1.3, Math.min(2.4, val));
+            const slider = document.getElementById('lineSpacingSlider');
+            if (slider) slider.value = val.toFixed(2);
+            const label = document.getElementById('lineSpacingLabel');
+            if (label) label.innerText = val.toFixed(2);
+
+            const paraGap = Math.round(val * 7.5) + 'px';
+            const docGap = Math.round(val * 6) + 'px';
+
+            document.documentElement.style.setProperty('--line-spacing', val);
+            document.documentElement.style.setProperty('--para-gap', paraGap);
+            document.documentElement.style.setProperty('--doc-gap', docGap);
+
+            document.querySelectorAll('.aff-p').forEach(p => {
+                p.style.lineHeight = val;
+                p.style.marginBottom = paraGap;
+            });
+            document.querySelectorAll('.doc-list-print li').forEach(li => {
+                li.style.lineHeight = val;
+                li.style.marginBottom = docGap;
+            });
+            document.querySelectorAll('.applicant-declaration-row').forEach(row => {
+                row.style.lineHeight = val;
+                row.style.marginBottom = paraGap;
+            });
+        }
+
+        function adjustLineSpacing(delta) {
+            const slider = document.getElementById('lineSpacingSlider');
+            const current = slider ? parseFloat(slider.value) || 1.85 : 1.85;
+            updateLineSpacing(current + delta);
+        }
+
+        function autoFitPage1() {
+            // Automatically sets optimal line spacing and font to fill Page 1 cleanly to the bottom
+            updateFontSize(12.0);
+            const fontSlider = document.getElementById('fontSizeSlider');
+            if (fontSlider) fontSlider.value = "12.0";
+            updateLineSpacing(1.90);
+            setPreviewPage(1);
+        }
+
+        function updateTreeHeight(val) {
+            document.getElementById('treeHeightLabel').innerText = val + ' mm';
+            const box = document.getElementById('vanshawaalContainer');
+            box.style.height = val + 'mm';
+            box.style.minHeight = val + 'mm';
+            setTimeout(resizeFreehandCanvas, 50);
+        }
+
+        // Helper to format blank line if empty (SINGLE CLEAN UNDERLINE, ZERO DOUBLE LINES)
+        function formatValue(val) {
+            val = val ? val.trim() : '';
+            if (val) {
+                return val;
+            }
+            const showUnderlines = document.getElementById('chkShowUnderlines') ? document.getElementById('chkShowUnderlines').checked : true;
+            if (showUnderlines) {
+                return '&nbsp;';
+            }
+            return '';
+        }
+
+        // Synchronize all inputs to preview
+        function syncAll() {
+            // Court & Exemption
+            const court = document.getElementById('inp_court_title').value || 'मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे न्यायालयात';
+            document.getElementById('v_court_title').innerText = court;
+            document.getElementById('v_sdo_office').innerText = document.getElementById('inp_sdo_office').value || 'कणकवली';
+            document.getElementById('v_exemption_order').innerText = document.getElementById('inp_exemption_order').value || 'मुद्रांक २००८/१६३६/ प्र.क्र. ४३६/म-१ दि. १-७-०८';
+
+            // Applicant Info
+            const salutation = document.getElementById('inp_app_salutation').value;
+            const appName = document.getElementById('inp_app_name').value;
+            const appAge = document.getElementById('inp_app_age').value;
+            const appOcc = document.getElementById('inp_app_occ').value;
+            const appVillage = document.getElementById('inp_app_village').value;
+            const appTaluka = document.getElementById('inp_app_taluka').value;
+            const appDistrict = document.getElementById('inp_app_district').value || 'सिंधुदुर्ग';
+
+            document.getElementById('v_app_salutation').innerText = salutation;
+            document.getElementById('v_app_name').innerHTML = formatValue(appName);
+            document.getElementById('v_app_age').innerHTML = formatValue(appAge);
+            document.getElementById('v_app_occ').innerHTML = formatValue(appOcc);
+            document.getElementById('v_app_village').innerHTML = formatValue(appVillage);
+            document.getElementById('v_app_taluka').innerHTML = formatValue(appTaluka);
+            document.getElementById('v_app_district').innerText = appDistrict;
+
+            // Beneficiary & Caste
+            let benRel = document.getElementById('inp_ben_relation_type').value;
+            if (benRel === 'इतर') {
+                const customRel = document.getElementById('inp_custom_relation') ? document.getElementById('inp_custom_relation').value.trim() : '';
+                benRel = customRel || 'माझे नातेवाईक';
+            }
+
+            let benName = document.getElementById('inp_ben_name').value;
+            if (benRel === 'मला' && !benName.trim() && appName) {
+                benName = appName;
+            }
+            const benPronoun = document.getElementById('inp_ben_pronoun').value;
+            const casteName = document.getElementById('inp_caste_name').value;
+            
+            const customCat = document.getElementById('inp_custom_category').value.trim();
+            const casteCat = customCat || document.getElementById('inp_caste_category').value;
+
+            document.getElementById('v_ben_relation_phrase').innerText = (benRel === 'मला') ? 'स्वतः' : benRel;
+            document.getElementById('v_ben_name').innerHTML = formatValue(benName);
+            document.getElementById('v_ben_pronoun').innerText = (benRel === 'मला') ? 'मला' : benPronoun;
+            document.getElementById('v_caste_name').innerHTML = formatValue(casteName);
+
+            // Paragraph 2 repeated values & pronouns
+            let relPossessive = 'माझे';
+            let pronPossessive = 'याचे';
+            let pronPossessive2 = 'याची';
+            let pronSuffix = 'हा';
+
+            const femaleRelations = ['माझी मुलगी', 'माझी आई', 'माझी बहीण', 'माझी पुतणी', 'माझी भाची', 'माझी नात', 'माझी पत्नी', 'माझी काकू', 'माझी आजी'];
+
+            if (benRel === 'मला') {
+                relPossessive = 'माझे स्वतःचे';
+                pronPossessive = 'माझे';
+                pronPossessive2 = 'माझी';
+                pronSuffix = 'मी स्वतः';
+            } else if (femaleRelations.includes(benRel) || benPronoun === 'हिला') {
+                relPossessive = benRel;
+                pronPossessive = 'हिचे';
+                pronPossessive2 = 'हिची';
+                pronSuffix = 'ही';
+            } else {
+                relPossessive = benRel;
+                pronPossessive = 'याचे';
+                pronPossessive2 = 'याची';
+                pronSuffix = 'हा';
+            }
+
+            document.getElementById('v_ben_rel_possessive').innerText = relPossessive;
+            document.getElementById('v_ben_name_repeat').innerHTML = formatValue(benName);
+            document.getElementById('v_ben_possessive_pronoun').innerText = pronPossessive;
+            document.getElementById('v_ben_possessive_pronoun2').innerText = pronPossessive2;
+            document.getElementById('v_caste_name_repeat').innerHTML = formatValue(casteName);
+            document.getElementById('v_caste_category').innerHTML = formatValue(casteCat);
+
+            // Residence Details
+            const origVillage = document.getElementById('inp_orig_village').value;
+            const origTaluka = document.getElementById('inp_orig_taluka').value;
+            const origDistrict = document.getElementById('inp_orig_district').value || 'सिंधुदुर्ग';
+
+            const currVillage = document.getElementById('inp_curr_village').value;
+            const currTaluka = document.getElementById('inp_curr_taluka').value;
+            const currDistrict = document.getElementById('inp_curr_district').value || 'सिंधुदुर्ग';
+
+            document.getElementById('v_orig_village').innerHTML = formatValue(origVillage);
+            document.getElementById('v_orig_taluka').innerHTML = formatValue(origTaluka);
+            document.getElementById('v_orig_district').innerHTML = formatValue(origDistrict);
+
+            // Page 2 Residence Clause
+            document.getElementById('v_p2_relation_phrase').innerText = (benRel === 'मला') ? 'मी स्वतः' : benRel;
+            document.getElementById('v_p2_ben_name').innerHTML = formatValue(benName);
+            document.getElementById('v_p2_pronoun_suffix').innerText = pronSuffix;
+
+            document.getElementById('v_curr_village').innerHTML = formatValue(currVillage);
+            document.getElementById('v_curr_taluka').innerHTML = formatValue(currTaluka);
+            document.getElementById('v_curr_district').innerHTML = formatValue(currDistrict);
+
+            document.getElementById('v_p2_orig_village').innerHTML = formatValue(origVillage);
+            document.getElementById('v_p2_orig_taluka').innerHTML = formatValue(origTaluka);
+            document.getElementById('v_p2_orig_district').innerHTML = formatValue(origDistrict);
+
+            // Attached Documents
+            document.getElementById('v_doc1_name').innerHTML = formatValue(document.getElementById('inp_doc1_name').value);
+            document.getElementById('v_doc1_caste').innerHTML = formatValue(document.getElementById('inp_doc1_caste').value);
+
+            document.getElementById('v_doc2_name').innerHTML = formatValue(document.getElementById('inp_doc2_name').value);
+            document.getElementById('v_doc2_caste').innerHTML = formatValue(document.getElementById('inp_doc2_caste').value);
+
+            document.getElementById('v_doc3_name').innerHTML = formatValue(document.getElementById('inp_doc3_name').value);
+            document.getElementById('v_doc3_place').innerHTML = formatValue(document.getElementById('inp_doc3_place').value);
+
+            document.getElementById('v_doc4_name').innerHTML = formatValue(document.getElementById('inp_doc4_name').value);
+            document.getElementById('v_doc4_place').innerHTML = formatValue(document.getElementById('inp_doc4_place').value);
+            document.getElementById('v_doc4_rel').innerHTML = formatValue(document.getElementById('inp_doc4_rel').value);
+
+            document.getElementById('v_doc6_name').innerHTML = formatValue(document.getElementById('inp_doc6_name').value);
+            document.getElementById('v_doc6_rel').innerHTML = formatValue(document.getElementById('inp_doc6_rel').value);
+
+            // Chart Mode Tree Sync
+            const g1 = document.getElementById('inp_tree_g1').value || 'कै. बाबाजी गणपत राणे';
+            const g2 = document.getElementById('inp_tree_g2').value || 'कै. पांडुरंग बाबाजी राणे';
+            const g3 = document.getElementById('inp_tree_g3').value || (appName ? appName + ' (वडील)' : 'श्री. संतोष पांडुरंग राणे');
+            const g4 = document.getElementById('inp_tree_g4').value || (benName ? benName + ' (दाखलाधारक)' : 'कु. साहिल संतोष राणे');
+
+            document.getElementById('vt_g1_name').innerText = g1;
+            document.getElementById('vt_g2_name').innerText = g2;
+            document.getElementById('vt_g3_name').innerText = g3;
+            document.getElementById('vt_g4_name').innerText = g4;
+
+            // Text Tree Mode Sync
+            const customTreeText = document.getElementById('inp_custom_tree_text').value.trim();
+            if (customTreeText) {
+                document.getElementById('treeTextDisplay').innerHTML = customTreeText.replace(/\n/g, '<br>');
+            } else {
+                document.getElementById('treeTextDisplay').innerHTML = `
+                    १. ${g1} (खापरपणजोबा / पणजोबा)<br>
+                    २. ${g2} (आजोबा)<br>
+                    ३. ${g3} (वडील / चुलते)<br>
+                    ४. ${g4} (दाखलाधारक / अर्जदार)
+                `;
+            }
+
+            // Date & Witness
+            const affDate = document.getElementById('inp_aff_date').value.trim();
+            if (affDate) {
+                document.getElementById('v_aff_date_display').innerText = affDate;
+            } else {
+                document.getElementById('v_aff_date_display').innerText = '____/____/२०____';
+            }
+
+            const witnessName = document.getElementById('inp_witness_name') ? document.getElementById('inp_witness_name').value : '';
+            const witnessAddress = document.getElementById('inp_witness_address') ? document.getElementById('inp_witness_address').value : '';
+
+            document.getElementById('v_witness_name').innerHTML = formatValue(witnessName);
+            document.getElementById('v_witness_address').innerHTML = formatValue(witnessAddress);
+
+            // Applicant Signature on Page 2
+            const fullAppSign = appName ? `${salutation} ${appName}` : '';
+            document.getElementById('v_app_sign_name').innerHTML = formatValue(fullAppSign);
+        }
+
+        // Print function
+        function printDocument(mode) {
+            document.body.classList.remove('print-page-1-only', 'print-page-2-only');
+            if (mode === 'p1') {
+                document.body.classList.add('print-page-1-only');
+            } else if (mode === 'p2') {
+                document.body.classList.add('print-page-2-only');
+            }
+            window.print();
+        }
+
+        // =============================================================
+        // POPUP TOOLBOX & ADVANCED SELECTION / MOVING ENGINE
+        // =============================================================
+        const treeCanvasContainer = document.getElementById('treeManualCanvas');
+        const popupEl = document.getElementById('treeFloatingPopup');
+        const popupTriggerBtn = document.getElementById('btnOpenTreePopup');
+        let selectedTreeItem = null;
+
+        function toggleTreePopup(show) {
+            if (show === undefined) {
+                show = popupEl.style.display === 'none';
+            }
+            if (show) {
+                popupEl.style.display = 'block';
+                popupTriggerBtn.style.display = 'none';
+            } else {
+                popupEl.style.display = 'none';
+                popupTriggerBtn.style.display = 'inline-flex';
+            }
+        }
+
+        function togglePopupMinimize() {
+            const body = document.getElementById('popupBody');
+            body.style.display = (body.style.display === 'none') ? 'block' : 'none';
+        }
+
+        // Draggable Popup Window
+        const popupHeader = document.getElementById('popupHeader');
+        let isPopupMoving = false;
+        let popStartX, popStartY, popOrigL, popOrigT;
+
+        popupHeader.addEventListener('mousedown', function(e) {
+            if (e.target.closest('.popup-actions')) return;
+            isPopupMoving = true;
+            popStartX = e.clientX;
+            popStartY = e.clientY;
+            popOrigL = popupEl.offsetLeft;
+            popOrigT = popupEl.offsetTop;
+
+            function onPopMove(ev) {
+                if (!isPopupMoving) return;
+                const dx = ev.clientX - popStartX;
+                const dy = ev.clientY - popStartY;
+                popupEl.style.bottom = 'auto';
+                popupEl.style.right = 'auto';
+                popupEl.style.left = (popOrigL + dx) + 'px';
+                popupEl.style.top = (popOrigT + dy) + 'px';
+            }
+
+            function onPopUp() {
+                isPopupMoving = false;
+                document.removeEventListener('mousemove', onPopMove);
+                document.removeEventListener('mouseup', onPopUp);
+            }
+
+            document.addEventListener('mousemove', onPopMove);
+            document.addEventListener('mouseup', onPopUp);
+        });
+
+        // Select an item on click
+        function selectTreeItem(el) {
+            // Deselect previous
+            if (selectedTreeItem && selectedTreeItem !== el) {
+                selectedTreeItem.classList.remove('tree-selected');
+            }
+            selectedTreeItem = el;
+            el.classList.add('tree-selected');
+
+            // Show selected panel in popup
+            const panel = document.getElementById('selectedElementBar');
+            const label = document.getElementById('selectedItemLabel');
+            panel.style.display = 'block';
+
+            if (el.classList.contains('tree-manual-box')) {
+                const name = el.querySelector('.tbox-name').innerText;
+                label.innerText = 'व्यक्ती: ' + (name || 'नाव');
+            } else if (el.classList.contains('tree-line-v')) {
+                label.innerText = 'उभी रेषा (|)';
+            } else if (el.classList.contains('tree-line-h')) {
+                label.innerText = 'आडवी रेषा (―)';
+            } else if (el.classList.contains('tree-arrow-down')) {
+                label.innerText = 'ॲरो खाली (⬇️)';
+            } else if (el.classList.contains('tree-arrow-right')) {
+                label.innerText = 'ॲरो उजवीकडे (➡️)';
+            } else if (el.classList.contains('tree-branch-t')) {
+                label.innerText = 'शाखा रेषा (┬)';
+            } else if (el.classList.contains('tree-branch-l')) {
+                label.innerText = 'कोपरा रेषा (┌)';
+            }
+        }
+
+        function deselectTreeItem() {
+            if (selectedTreeItem) {
+                selectedTreeItem.classList.remove('tree-selected');
+                selectedTreeItem = null;
+            }
+            document.getElementById('selectedElementBar').style.display = 'none';
+        }
+
+        // Nudge position of selected item
+        function nudgeSelected(dx, dy) {
+            if (!selectedTreeItem) return;
+            const curL = parseInt(selectedTreeItem.style.left) || 0;
+            const curT = parseInt(selectedTreeItem.style.top) || 0;
+            selectedTreeItem.style.left = (curL + dx) + 'px';
+            selectedTreeItem.style.top = (curT + dy) + 'px';
+            saveManualTreeState();
+        }
+
+        // Resize selected item
+        function resizeSelected(delta) {
+            if (!selectedTreeItem) return;
+            if (selectedTreeItem.classList.contains('tree-manual-box')) {
+                const curW = selectedTreeItem.offsetWidth;
+                selectedTreeItem.style.width = Math.max(70, curW + delta) + 'px';
+            } else if (selectedTreeItem.classList.contains('tree-line-v') || selectedTreeItem.classList.contains('tree-arrow-down')) {
+                const curH = selectedTreeItem.offsetHeight;
+                selectedTreeItem.style.height = Math.max(15, curH + delta) + 'px';
+            } else if (selectedTreeItem.classList.contains('tree-line-h') || selectedTreeItem.classList.contains('tree-arrow-right') || selectedTreeItem.classList.contains('tree-branch-t') || selectedTreeItem.classList.contains('tree-branch-l')) {
+                const curW = selectedTreeItem.offsetWidth;
+                selectedTreeItem.style.width = Math.max(30, curW + delta) + 'px';
+            }
+            saveManualTreeState();
+        }
+
+        // Change font size of selected person box
+        function changeSelectedFont(delta) {
+            if (!selectedTreeItem || !selectedTreeItem.classList.contains('tree-manual-box')) return;
+            const nameEl = selectedTreeItem.querySelector('.tbox-name');
+            if (!nameEl) return;
+            let current = parseFloat(window.getComputedStyle(nameEl).fontSize) || 14;
+            let newSize = Math.max(10, Math.min(24, current + delta));
+            nameEl.style.fontSize = newSize + 'px';
+            saveManualTreeState();
+        }
+
+        // Center selected element on canvas
+        function centerSelected() {
+            if (!selectedTreeItem) return;
+            const canvasW = treeCanvasContainer.clientWidth;
+            const itemW = selectedTreeItem.offsetWidth;
+            const newL = Math.max(0, Math.round((canvasW - itemW) / 2));
+            selectedTreeItem.style.left = newL + 'px';
+            saveManualTreeState();
+        }
+
+        // Duplicate selected element
+        function duplicateSelected() {
+            if (!selectedTreeItem) {
+                alert("कृपया आधी कोणताही घटक (व्यक्ती किंवा रेषा) निवडा.");
+                return;
+            }
+            const curL = parseInt(selectedTreeItem.style.left) || 0;
+            const curT = parseInt(selectedTreeItem.style.top) || 0;
+            const curW = selectedTreeItem.offsetWidth;
+            const curH = selectedTreeItem.offsetHeight;
+
+            if (selectedTreeItem.classList.contains('tree-manual-box')) {
+                const name = selectedTreeItem.querySelector('.tbox-name').innerText;
+                const rel = selectedTreeItem.querySelector('.tbox-rel').innerText;
+                addPersonBox(name, rel, curL + 25, curT + 25, curW);
+            } else if (selectedTreeItem.classList.contains('tree-line-v')) {
+                addVerticalLine(curL + 15, curT + 15, curH);
+            } else if (selectedTreeItem.classList.contains('tree-line-h')) {
+                addHorizontalLine(curL + 15, curT + 15, curW);
+            } else if (selectedTreeItem.classList.contains('tree-arrow-down')) {
+                addArrowDown(curL + 15, curT + 15, curH);
+            } else if (selectedTreeItem.classList.contains('tree-arrow-right')) {
+                addArrowRight(curL + 15, curT + 15, curW);
+            } else if (selectedTreeItem.classList.contains('tree-branch-t')) {
+                addTBranchConnector(curL + 20, curT + 20, curW, curH);
+            } else if (selectedTreeItem.classList.contains('tree-branch-l')) {
+                addLBranchConnector(curL + 20, curT + 20, curW, curH);
+            }
+        }
+
+        // Delete selected item
+        function deleteSelected() {
+            if (!selectedTreeItem) return;
+            selectedTreeItem.remove();
+            deselectTreeItem();
+            saveManualTreeState();
+        }
+
+        // Make an element draggable & resizable with click selection
+        // Super Easy Moving Engine: allows dragging from top handle OR anywhere on the box
+        function makeDraggable(el) {
+            let isDragging = false;
+            let startX, startY, origLeft, origTop;
+            let hasMoved = false;
+
+            el.addEventListener('mousedown', function(e) {
+                if (e.target.classList.contains('item-del-btn') || 
+                    e.target.classList.contains('item-resize-handle') || 
+                    e.target.classList.contains('line-resize-h') || 
+                    e.target.classList.contains('line-resize-w')) {
+                    return;
+                }
+
+                selectTreeItem(el);
+
+                const clickedHandle = e.target.closest('.box-drag-handle');
+                const isContentEdit = e.target.isContentEditable;
+
+                isDragging = false;
+                hasMoved = false;
+                startX = e.clientX;
+                startY = e.clientY;
+                origLeft = el.offsetLeft;
+                origTop = el.offsetTop;
+
+                function onMouseMove(ev) {
+                    const dx = ev.clientX - startX;
+                    const dy = ev.clientY - startY;
+
+                    if (!isDragging && (clickedHandle || Math.hypot(dx, dy) > 3)) {
+                        isDragging = true;
+                        hasMoved = true;
+                        el.classList.add('is-dragging');
+                        el.style.zIndex = 1000;
+                        if (document.activeElement && document.activeElement.isContentEditable) {
+                            document.activeElement.blur();
+                        }
+                        window.getSelection()?.removeAllRanges();
+                    }
+
+                    if (isDragging) {
+                        let newL = origLeft + dx;
+                        let newT = origTop + dy;
+
+                        const maxL = treeCanvasContainer.clientWidth - el.offsetWidth;
+                        const maxT = treeCanvasContainer.clientHeight - el.offsetHeight;
+                        newL = Math.max(-10, Math.min(newL, maxL + 10));
+                        newT = Math.max(0, Math.min(newT, maxT + 10));
+
+                        el.style.left = newL + 'px';
+                        el.style.top = newT + 'px';
+                    }
+                }
+
+                function onMouseUp(ev) {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+
+                    if (isDragging) {
+                        isDragging = false;
+                        el.classList.remove('is-dragging');
+                        el.style.zIndex = el.classList.contains('tree-selected') ? 50 : 10;
+                        saveManualTreeState();
+                    } else if (isContentEdit) {
+                        e.target.focus();
+                    }
+                }
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            // Touch support for mobile/tablets
+            el.addEventListener('touchstart', function(e) {
+                if (e.target.classList.contains('item-del-btn') || 
+                    e.target.classList.contains('item-resize-handle') || 
+                    e.target.classList.contains('line-resize-h') || 
+                    e.target.classList.contains('line-resize-w')) {
+                    return;
+                }
+                selectTreeItem(el);
+                const touch = e.touches[0];
+                startX = touch.clientX;
+                startY = touch.clientY;
+                origLeft = el.offsetLeft;
+                origTop = el.offsetTop;
+                isDragging = false;
+
+                function onTouchMove(ev) {
+                    const t = ev.touches[0];
+                    const dx = t.clientX - startX;
+                    const dy = t.clientY - startY;
+
+                    if (!isDragging && Math.hypot(dx, dy) > 4) {
+                        isDragging = true;
+                        el.classList.add('is-dragging');
+                        el.style.zIndex = 1000;
+                    }
+
+                    if (isDragging) {
+                        ev.preventDefault();
+                        el.style.left = (origLeft + dx) + 'px';
+                        el.style.top = (origTop + dy) + 'px';
+                    }
+                }
+
+                function onTouchEnd() {
+                    document.removeEventListener('touchmove', onTouchMove);
+                    document.removeEventListener('touchend', onTouchEnd);
+                    if (isDragging) {
+                        isDragging = false;
+                        el.classList.remove('is-dragging');
+                        el.style.zIndex = el.classList.contains('tree-selected') ? 50 : 10;
+                        saveManualTreeState();
+                    }
+                }
+
+                document.addEventListener('touchmove', onTouchMove, { passive: false });
+                document.addEventListener('touchend', onTouchEnd);
+            });
+        }
+
+        // Global deselect when clicking blank canvas
+        treeCanvasContainer.addEventListener('mousedown', function(e) {
+            if (e.target === treeCanvasContainer) {
+                deselectTreeItem();
+            }
+        });
+
+        // Keyboard Arrow Nudge & Shortcut Support (Ctrl+Z, Ctrl+Y, Ctrl+D)
+        document.addEventListener('keydown', function(e) {
+            if (document.activeElement && document.activeElement.isContentEditable) return;
+            if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
+
+            // Undo (Ctrl+Z)
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+                e.preventDefault();
+                undoManualTree();
+                return;
+            }
+            // Redo (Ctrl+Y or Ctrl+Shift+Z)
+            if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) {
+                e.preventDefault();
+                redoManualTree();
+                return;
+            }
+            // Duplicate (Ctrl+D)
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
+                e.preventDefault();
+                duplicateSelected();
+                return;
+            }
+
+            if (!selectedTreeItem) return;
+
+            const step = e.shiftKey ? 10 : 2;
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                nudgeSelected(0, -step);
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                nudgeSelected(0, step);
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                nudgeSelected(-step, 0);
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                nudgeSelected(step, 0);
+            } else if (e.key === 'Delete' || e.key === 'Backspace') {
+                deleteSelected();
+            }
+        });
+
+        // Add Person Text (100% BORDERLESS with Easy Drag Handle)
+        function addPersonBox(name = 'नवीन व्यक्ती', rel = '(नाते)', x = 40, y = 30, w = 140) {
+            const div = document.createElement('div');
+            div.className = 'tree-item-draggable tree-manual-box';
+            div.style.left = x + 'px';
+            div.style.top = y + 'px';
+            div.style.width = w + 'px';
+
+            div.innerHTML = `
+                <div class="box-drag-handle" title="इथे पकडून कुठेही हलवा (Drag to move)">⋮⋮ हलवा</div>
+                <div class="item-del-btn" title="डिलीट करा" onclick="this.parentElement.remove(); deselectTreeItem(); saveManualTreeState();">×</div>
+                <div class="tbox-name" contenteditable="true" onblur="saveManualTreeState()">${name}</div>
+                <div class="tbox-rel" contenteditable="true" onblur="saveManualTreeState()">${rel}</div>
+                <div class="item-resize-handle" title="आकार बदला"></div>
+            `;
+
+            const resizeHandle = div.querySelector('.item-resize-handle');
+            resizeHandle.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                const startX = e.clientX;
+                const startW = div.offsetWidth;
+                function onMouseMove(ev) {
+                    const nw = Math.max(70, startW + (ev.clientX - startX));
+                    div.style.width = nw + 'px';
+                }
+                function onMouseUp() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    saveManualTreeState();
+                }
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            treeCanvasContainer.appendChild(div);
+            makeDraggable(div);
+            selectTreeItem(div);
+            saveManualTreeState();
+            return div;
+        }
+
+        // Add Vertical Line (|) with wide hit-target
+        function addVerticalLine(x = 100, y = 50, h = 30) {
+            const div = document.createElement('div');
+            div.className = 'tree-item-draggable tree-line-v';
+            div.style.left = x + 'px';
+            div.style.top = y + 'px';
+            div.style.height = h + 'px';
+
+            div.innerHTML = `
+                <div class="item-del-btn" title="डिलीट करा" onclick="this.parentElement.remove(); deselectTreeItem(); saveManualTreeState();">×</div>
+                <div class="line-resize-h" title="उंची कमी-जास्त करा"></div>
+            `;
+
+            const rh = div.querySelector('.line-resize-h');
+            rh.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                const startY = e.clientY;
+                const startH = div.offsetHeight;
+                function onMouseMove(ev) {
+                    const nh = Math.max(12, startH + (ev.clientY - startY));
+                    div.style.height = nh + 'px';
+                }
+                function onMouseUp() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    saveManualTreeState();
+                }
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            treeCanvasContainer.appendChild(div);
+            makeDraggable(div);
+            selectTreeItem(div);
+            saveManualTreeState();
+            return div;
+        }
+
+        // Add Horizontal Line (―) with wide hit-target
+        function addHorizontalLine(x = 80, y = 60, w = 160) {
+            const div = document.createElement('div');
+            div.className = 'tree-item-draggable tree-line-h';
+            div.style.left = x + 'px';
+            div.style.top = y + 'px';
+            div.style.width = w + 'px';
+
+            div.innerHTML = `
+                <div class="item-del-btn" title="डिलीट करा" onclick="this.parentElement.remove(); deselectTreeItem(); saveManualTreeState();">×</div>
+                <div class="line-resize-w" title="लांबी कमी-जास्त करा"></div>
+            `;
+
+            const rw = div.querySelector('.line-resize-w');
+            rw.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                const startX = e.clientX;
+                const startW = div.offsetWidth;
+                function onMouseMove(ev) {
+                    const nw = Math.max(16, startW + (ev.clientX - startX));
+                    div.style.width = nw + 'px';
+                }
+                function onMouseUp() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    saveManualTreeState();
+                }
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            treeCanvasContainer.appendChild(div);
+            makeDraggable(div);
+            selectTreeItem(div);
+            saveManualTreeState();
+            return div;
+        }
+
+        // Add Arrow Down (⬇️) with wide hit-target
+        function addArrowDown(x = 100, y = 50, h = 30) {
+            const div = document.createElement('div');
+            div.className = 'tree-item-draggable tree-arrow-down';
+            div.style.left = x + 'px';
+            div.style.top = y + 'px';
+            div.style.height = h + 'px';
+
+            div.innerHTML = `
+                <div class="item-del-btn" title="डिलीट करा" onclick="this.parentElement.remove(); deselectTreeItem(); saveManualTreeState();">×</div>
+                <div class="line-resize-h" title="उंची कमी-जास्त करा"></div>
+            `;
+
+            const rh = div.querySelector('.line-resize-h');
+            rh.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                const startY = e.clientY;
+                const startH = div.offsetHeight;
+                function onMouseMove(ev) {
+                    const nh = Math.max(16, startH + (ev.clientY - startY));
+                    div.style.height = nh + 'px';
+                }
+                function onMouseUp() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    saveManualTreeState();
+                }
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            treeCanvasContainer.appendChild(div);
+            makeDraggable(div);
+            selectTreeItem(div);
+            saveManualTreeState();
+            return div;
+        }
+
+        // Add Arrow Right (➡️) with wide hit-target
+        function addArrowRight(x = 100, y = 50, w = 40) {
+            const div = document.createElement('div');
+            div.className = 'tree-item-draggable tree-arrow-right';
+            div.style.left = x + 'px';
+            div.style.top = y + 'px';
+            div.style.width = w + 'px';
+
+            div.innerHTML = `
+                <div class="item-del-btn" title="डिलीट करा" onclick="this.parentElement.remove(); deselectTreeItem(); saveManualTreeState();">×</div>
+                <div class="line-resize-w" title="लांबी कमी-जास्त करा"></div>
+            `;
+
+            const rw = div.querySelector('.line-resize-w');
+            rw.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                const startX = e.clientX;
+                const startW = div.offsetWidth;
+                function onMouseMove(ev) {
+                    const nw = Math.max(16, startW + (ev.clientX - startX));
+                    div.style.width = nw + 'px';
+                }
+                function onMouseUp() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    saveManualTreeState();
+                }
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            treeCanvasContainer.appendChild(div);
+            makeDraggable(div);
+            selectTreeItem(div);
+            saveManualTreeState();
+            return div;
+        }
+
+        // Add Branch T-Connector (┬)
+        function addTBranchConnector(x = 120, y = 40, w = 180, h = 30) {
+            const div = document.createElement('div');
+            div.className = 'tree-item-draggable tree-branch-t';
+            div.style.left = x + 'px';
+            div.style.top = y + 'px';
+            div.style.width = w + 'px';
+            div.style.height = h + 'px';
+
+            div.innerHTML = `
+                <div class="t-stem"></div>
+                <div class="t-bar"></div>
+                <div class="t-drop-l"></div>
+                <div class="t-drop-r"></div>
+                <div class="item-del-btn" title="डिलीट करा" onclick="this.parentElement.remove(); deselectTreeItem(); saveManualTreeState();">×</div>
+                <div class="line-resize-w" title="शाखा रुंदी बदला"></div>
+            `;
+
+            const rw = div.querySelector('.line-resize-w');
+            rw.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                const startX = e.clientX;
+                const startW = div.offsetWidth;
+                function onMouseMove(ev) {
+                    const nw = Math.max(40, startW + (ev.clientX - startX));
+                    div.style.width = nw + 'px';
+                }
+                function onMouseUp() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    saveManualTreeState();
+                }
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            treeCanvasContainer.appendChild(div);
+            makeDraggable(div);
+            selectTreeItem(div);
+            saveManualTreeState();
+            return div;
+        }
+
+        // Add Branch L-Connector (┌)
+        function addLBranchConnector(x = 100, y = 40, w = 80, h = 30) {
+            const div = document.createElement('div');
+            div.className = 'tree-item-draggable tree-branch-l';
+            div.style.left = x + 'px';
+            div.style.top = y + 'px';
+            div.style.width = w + 'px';
+            div.style.height = h + 'px';
+
+            div.innerHTML = `
+                <div class="l-v"></div>
+                <div class="l-h"></div>
+                <div class="item-del-btn" title="डिलीट करा" onclick="this.parentElement.remove(); deselectTreeItem(); saveManualTreeState();">×</div>
+                <div class="line-resize-w" title="लांबी बदला"></div>
+            `;
+
+            const rw = div.querySelector('.line-resize-w');
+            rw.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                const startX = e.clientX;
+                const startW = div.offsetWidth;
+                function onMouseMove(ev) {
+                    const nw = Math.max(20, startW + (ev.clientX - startX));
+                    div.style.width = nw + 'px';
+                }
+                function onMouseUp() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    saveManualTreeState();
+                }
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            treeCanvasContainer.appendChild(div);
+            makeDraggable(div);
+            selectTreeItem(div);
+            saveManualTreeState();
+            return div;
+        }
+
+        // Clear all manual tree items
+        function clearAllManualTree() {
+            if (!confirm("वंशावळीतील सर्व नावे व रेषा क्लिअर करायच्या आहेत का?")) return;
+            treeCanvasContainer.innerHTML = '';
+            deselectTreeItem();
+            clearFreehandCanvas();
+            saveManualTreeState();
+        }
+
+        // =============================================================
+        // UNDO / REDO & PERSISTENCE ENGINE
+        // =============================================================
+        let treeHistory = [];
+        let treeHistoryIdx = -1;
+        let isUndoRedoRunning = false;
+
+        function getTreeDataSnapshot() {
+            const items = [];
+            treeCanvasContainer.querySelectorAll('.tree-item-draggable').forEach(el => {
+                const itemData = {
+                    left: el.style.left,
+                    top: el.style.top,
+                    width: el.style.width,
+                    height: el.style.height
+                };
+
+                if (el.classList.contains('tree-manual-box')) {
+                    itemData.type = 'box';
+                    itemData.name = el.querySelector('.tbox-name').innerText;
+                    itemData.rel = el.querySelector('.tbox-rel').innerText;
+                    itemData.fontSize = el.querySelector('.tbox-name').style.fontSize || '';
+                } else if (el.classList.contains('tree-arrow-down')) {
+                    itemData.type = 'arrow-down';
+                } else if (el.classList.contains('tree-arrow-right')) {
+                    itemData.type = 'arrow-right';
+                } else if (el.classList.contains('tree-line-v')) {
+                    itemData.type = 'line-v';
+                } else if (el.classList.contains('tree-line-h')) {
+                    itemData.type = 'line-h';
+                } else if (el.classList.contains('tree-branch-t')) {
+                    itemData.type = 'branch-t';
+                } else if (el.classList.contains('tree-branch-l')) {
+                    itemData.type = 'branch-l';
+                }
+
+                items.push(itemData);
+            });
+            return items;
+        }
+
+        function saveManualTreeState() {
+            const items = getTreeDataSnapshot();
+            localStorage.setItem('caste_affidavit_manual_tree', JSON.stringify(items));
+
+            if (!isUndoRedoRunning) {
+                const json = JSON.stringify(items);
+                if (treeHistoryIdx >= 0 && treeHistory[treeHistoryIdx] === json) return;
+                treeHistory = treeHistory.slice(0, treeHistoryIdx + 1);
+                treeHistory.push(json);
+                if (treeHistory.length > 30) treeHistory.shift();
+                treeHistoryIdx = treeHistory.length - 1;
+            }
+        }
+
+        function undoManualTree() {
+            if (treeHistoryIdx > 0) {
+                treeHistoryIdx--;
+                isUndoRedoRunning = true;
+                applyTreeData(JSON.parse(treeHistory[treeHistoryIdx]));
+                isUndoRedoRunning = false;
+            }
+        }
+
+        function redoManualTree() {
+            if (treeHistoryIdx < treeHistory.length - 1) {
+                treeHistoryIdx++;
+                isUndoRedoRunning = true;
+                applyTreeData(JSON.parse(treeHistory[treeHistoryIdx]));
+                isUndoRedoRunning = false;
+            }
+        }
+
+        function applyTreeData(items) {
+            treeCanvasContainer.innerHTML = '';
+            items.forEach(it => {
+                const x = parseInt(it.left) || 0;
+                const y = parseInt(it.top) || 0;
+                const w = parseInt(it.width) || 120;
+                const h = parseInt(it.height) || 30;
+
+                if (it.type === 'box') {
+                    const b = addPersonBox(it.name, it.rel, x, y, w);
+                    if (it.fontSize) b.querySelector('.tbox-name').style.fontSize = it.fontSize;
+                } else if (it.type === 'arrow-down') {
+                    addArrowDown(x, y, h);
+                } else if (it.type === 'arrow-right') {
+                    addArrowRight(x, y, w);
+                } else if (it.type === 'line-v') {
+                    addVerticalLine(x, y, h);
+                } else if (it.type === 'line-h') {
+                    addHorizontalLine(x, y, w);
+                } else if (it.type === 'branch-t') {
+                    addTBranchConnector(x, y, w, h);
+                } else if (it.type === 'branch-l') {
+                    addLBranchConnector(x, y, w, h);
+                }
+            });
+            deselectTreeItem();
+        }
+
+        function restoreManualTreeState() {
+            const saved = localStorage.getItem('caste_affidavit_manual_tree');
+            if (!saved) {
+                loadExtendedTreePreset();
+                return;
+            }
+
+            try {
+                const items = JSON.parse(saved);
+                applyTreeData(items);
+            } catch (err) {
+                loadExtendedTreePreset();
+            }
+        }
+
+        // Extended Distant Relations Preset (BORDERLESS PLAIN TEXT)
+        function loadExtendedTreePreset() {
+            treeCanvasContainer.innerHTML = '';
+
+            // Level 1: खापरपणजोबा (Center Top)
+            addPersonBox('कै. बाबाजी गणपत राणे', '(खापरपणजोबा)', 250, 6, 170);
+            addArrowDown(335, 42, 20);
+
+            // Level 2: Horizontal Branch connecting 2 Brothers
+            addHorizontalLine(135, 62, 400);
+            addVerticalLine(135, 62, 16);
+            addVerticalLine(535, 62, 16);
+
+            // Level 2 Names:
+            // Left Branch: सख्खे आजोबा
+            addPersonBox('कै. पांडुरंग बाबाजी राणे', '(सख्खे आजोबा)', 50, 78, 170);
+            // Right Branch: चुलत आजोबा (Distant relation with old record)
+            addPersonBox('कै. तुकाराम बाबाजी राणे', '(चुलत आजोबा / जुनी नोंद)', 450, 78, 170);
+
+            // Connectors to Level 3
+            addArrowDown(135, 114, 20);
+            addArrowDown(535, 114, 20);
+
+            // Level 3: Horizontal Branches for Sons
+            addHorizontalLine(65, 134, 140);
+            addVerticalLine(65, 134, 14);
+            addVerticalLine(205, 134, 14);
+
+            addHorizontalLine(465, 134, 140);
+            addVerticalLine(465, 134, 14);
+            addVerticalLine(605, 134, 14);
+
+            // Level 3 Names:
+            addPersonBox('श्री. संतोष पांडुरंग राणे', '(वडील)', 10, 148, 115);
+            addPersonBox('श्री. रवींद्र पांडुरंग राणे', '(सख्खे चुलते)', 150, 148, 115);
+
+            addPersonBox('श्री. प्रमोद तुकाराम राणे', '(चुलत चुलते)', 410, 148, 115);
+            addPersonBox('श्री. दीपक तुकाराम राणे', '(चुलत चुलते)', 550, 148, 115);
+
+            // Connector to Level 4 (Beneficiary / Applicant)
+            addArrowDown(65, 184, 22);
+            addPersonBox('कु. साहिल संतोष राणे', '(दाखलाधारक / अर्जदार)', 10, 206, 145);
+
+            deselectTreeItem();
+            saveManualTreeState();
+        }
+
+        // =============================================================
+        // FREEHAND PEN DRAWING ENGINE
+        // =============================================================
+        let isPenActive = false;
+        let isDrawing = false;
+        let canvas, ctx;
+
+        function initFreehandCanvas() {
+            canvas = document.getElementById('treeFreehandCanvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            resizeFreehandCanvas();
+
+            canvas.onmousedown = function(e) {
+                if (!isPenActive) return;
+                isDrawing = true;
+                ctx.beginPath();
+                ctx.moveTo(e.offsetX, e.offsetY);
+            };
+
+            canvas.onmousemove = function(e) {
+                if (!isPenActive || !isDrawing) return;
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            };
+
+            canvas.onmouseup = function() {
+                isDrawing = false;
+            };
+
+            canvas.ontouchstart = function(e) {
+                if (!isPenActive) return;
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                const touch = e.touches[0];
+                ctx.beginPath();
+                ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            };
+
+            canvas.ontouchmove = function(e) {
+                if (!isPenActive || !isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const touch = e.touches[0];
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                ctx.stroke();
+            };
+
+            canvas.ontouchend = function() {
+                isDrawing = false;
+            };
+        }
+
+        function resizeFreehandCanvas() {
+            if (!canvas) return;
+            const container = document.getElementById('vanshawaalContainer');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+
+        function toggleFreehandPen() {
+            isPenActive = !isPenActive;
+            const btn = document.getElementById('btnTogglePenPopup');
+            const c = document.getElementById('treeFreehandCanvas');
+
+            if (isPenActive) {
+                c.classList.add('pen-active');
+                if (btn) btn.classList.add('tool-btn-active');
+            } else {
+                c.classList.remove('pen-active');
+                if (btn) btn.classList.remove('tool-btn-active');
+            }
+        }
+
+        function clearFreehandCanvas() {
+            if (ctx && canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // =============================================================
+        // SAMPLE DATA & INITIALIZATION
+        // =============================================================
+        function loadSampleData() {
+            document.getElementById('inp_court_title').value = "मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे न्यायालयात";
+            document.getElementById('inp_sdo_office').value = "कणकवली";
+            document.getElementById('inp_exemption_order').value = "मुद्रांक २००८/१६३६/ प्र.क्र. ४३६/म-१ दि. १-७-०८";
+
+            document.getElementById('inp_app_salutation').value = "श्री.";
+            document.getElementById('inp_app_name').value = "संतोष पांडुरंग राणे";
+            document.getElementById('inp_app_age').value = "४८";
+            document.getElementById('inp_app_occ').value = "शेती व व्यवसाय";
+            document.getElementById('inp_app_village').value = "वरवडे";
+            document.getElementById('inp_app_taluka').value = "कणकवली";
+            document.getElementById('inp_app_district').value = "सिंधुदुर्ग";
+
+            document.getElementById('inp_ben_relation_type').value = "माझा मुलगा";
+            document.getElementById('inp_ben_name').value = "कु. साहिल संतोष राणे";
+            document.getElementById('inp_ben_pronoun').value = "याला";
+            document.getElementById('inp_caste_name').value = "कुणबी";
+            document.getElementById('inp_caste_category').value = "इतर मागास प्रवर्ग (OBC)";
+            document.getElementById('inp_custom_category').value = "";
+
+            document.getElementById('inp_orig_village').value = "वरवडे";
+            document.getElementById('inp_orig_taluka').value = "कणकवली";
+            document.getElementById('inp_orig_district').value = "सिंधुदुर्ग";
+
+            document.getElementById('inp_curr_village').value = "वरवडे";
+            document.getElementById('inp_curr_taluka').value = "कणकवली";
+            document.getElementById('inp_curr_district').value = "सिंधुदुर्ग";
+
+            // Documents
+            document.getElementById('inp_doc1_name').value = "संतोष पांडुरंग राणे";
+            document.getElementById('inp_doc1_caste').value = "हिंदू कुणबी";
+
+            document.getElementById('inp_doc2_name').value = "पांडुरंग बाबाजी राणे";
+            document.getElementById('inp_doc2_caste').value = "कुणबी";
+
+            document.getElementById('inp_doc3_name').value = "संतोष पांडुरंग राणे";
+            document.getElementById('inp_doc3_place').value = "वरवडे";
+
+            document.getElementById('inp_doc4_name').value = "पांडुरंग बाबाजी राणे";
+            document.getElementById('inp_doc4_place').value = "वरवडे";
+            document.getElementById('inp_doc4_rel').value = "आजोबा";
+
+            document.getElementById('inp_doc6_name').value = "रवींद्र पांडुरंग राणे";
+            document.getElementById('inp_doc6_rel').value = "चुलते";
+
+            // Date & Witness
+            const d = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            document.getElementById('inp_aff_date').value = `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+            document.getElementById('inp_witness_name').value = "श्री. गणेश विष्णू सावंत";
+            document.getElementById('inp_witness_address').value = "रा. कणकवली, जि. सिंधुदुर्ग";
+
+            loadExtendedTreePreset();
+            syncAll();
+        }
+
+        function resetAllData() {
+            if (!confirm("सर्व माहिती रिकामी करायची आहे का?")) return;
+            document.querySelectorAll('.controls-wrapper input[type="text"], .controls-wrapper textarea').forEach(el => el.value = '');
+            document.getElementById('inp_app_district').value = "सिंधुदुर्ग";
+            document.getElementById('inp_orig_district').value = "सिंधुदुर्ग";
+            document.getElementById('inp_curr_district').value = "सिंधुदुर्ग";
+            document.getElementById('inp_court_title').value = "मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे न्यायालयात";
+            document.getElementById('inp_sdo_office').value = "कणकवली";
+            document.getElementById('inp_exemption_order').value = "मुद्रांक २००८/१६३६/ प्र.क्र. ४३६/म-१ दि. १-७-०८";
+            clearAllManualTree();
+            syncAll();
+        }
+
+        window.onload = function() {
+            const d = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            document.getElementById('inp_aff_date').value = `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+            
+            setLayoutMode(currentLayoutMode);
+            handleTreeModeChange();
+            restoreManualTreeState();
+            setPreviewPage(1);
+            updateLineSpacing(1.85);
+            syncAll();
+            window.addEventListener('resize', () => {
+                resizeFreehandCanvas();
+                if (currentPreviewZoom === 'fit') {
+                    setPreviewZoom('fit');
+                }
+            });
+        };
+    </script>
+
+    <!-- Supabase Cloud DB & Universal Form History Tracker -->
+    <script src="js/supabase-db.js"></script>
+    <script src="js/universal-form-history.js"></script>
+</body>
+</html>
