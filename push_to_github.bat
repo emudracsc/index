@@ -1,9 +1,10 @@
 @echo off
 chcp 65001 >nul
-title GitHub Repo Push - Marathi & English PDF Tool
+title GitHub Repo Sync & Push - eMudra CSC Portal
 echo ======================================================================
-echo 🚀 PDF Tool चे Files तुमच्या GitHub Repo मध्ये Push करत आहे...
+echo 🚀 eMudra CSC Portal & PDF Tools चे सर्व फाइल्स GitHub वर Sync करत आहे...
 echo Target Repo: https://github.com/emudracsc/index.git
+echo Branch: main
 echo ======================================================================
 echo.
 
@@ -14,43 +15,43 @@ if not exist %GIT_CMD% (
     set GIT_CMD=git
 )
 
-echo [1/5] Git Repository Initialize करत आहे...
-%GIT_CMD% init
-%GIT_CMD% branch -M main
-
-echo.
-echo [2/5] Git User Config करत आहे...
+echo [1/4] Git User तपासत आहे...
 %GIT_CMD% config user.name "emudracsc"
 %GIT_CMD% config user.email "emudracsc@users.noreply.github.com"
 
 echo.
-echo [3/5] सर्व Files Add आणि Commit करत आहे...
+echo [2/4] नवीन बदल तपासून Add व Commit करत आहे...
 %GIT_CMD% add .
-%GIT_CMD% commit -m "Marathi & English PDF Replacer with HarfBuzz Shaping & PDF Merger PRO"
+%GIT_CMD% diff --cached --quiet
+if %errorlevel% neq 0 (
+    %GIT_CMD% commit -m "Update portal and tools: %date% %time%"
+) else (
+    echo स्थानिक बदल आधीच Commit झालेले आहेत.
+)
 
 echo.
-echo [4/5] Remote URL सेट करत आहे...
-%GIT_CMD% remote remove origin >nul 2>&1
-%GIT_CMD% remote add origin https://github.com/emudracsc/index.git
+echo [3/4] GitHub वरून Latest बदल Fetch करत आहे...
+%GIT_CMD% fetch origin main
 
 echo.
-echo [5/5] GitHub वर Push करत आहे...
-echo जर तुम्हाला Password किंवा Token विचारले, तर तुमचा GitHub Personal Access Token (PAT) टाका.
+echo [4/4] GitHub वर Push करत आहे...
+echo (जर Browser विंडो किंवा Token विचारले, तर Login / Token टाका)
 echo.
-%GIT_CMD% push -u origin main --force
+%GIT_CMD% push origin main
 
 if %errorlevel% equ 0 (
     echo.
     echo ======================================================================
-    echo ✅ तुमचे सर्व Files GitHub Repo वर यशस्वीरित्या Push झाले आहेत!
+    echo ✅ तुमचे सर्व Files GitHub Repo वर यशस्वीरित्या Sync व Push झाले आहेत!
     echo URL: https://github.com/emudracsc/index.git
     echo ======================================================================
 ) else (
     echo.
     echo ======================================================================
-    echo ⚠️ GitHub Authentication आवश्यक आहे!
-    echo जर Push झाले नसेल तर तुमचा GitHub Token खालीलप्रमाणे टाका:
-    echo https://^<YOUR_TOKEN^>@github.com/emudracsc/index.git
+    echo ⚠️ GitHub Push पूर्ण होऊ शकले नाही!
+    echo जर Authentication त्रुटी असेल, तर तुमचा Personal Access Token (PAT) वापरा.
+    echo उदाहरणार्थ:
+    echo git push https://^<YOUR_GITHUB_TOKEN^>@github.com/emudracsc/index.git main
     echo ======================================================================
 )
 
