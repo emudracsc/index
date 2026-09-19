@@ -1934,6 +1934,40 @@ const DEFAULT_SOFTWARES_DATA = [
     desc_mr: "मायक्रोसॉफ्ट इंडिक इनपुट ३ - शासकीय कार्यालये, आपले सरकार व वर्डमध्ये अचूक देवनागरी व मराठी टायपिंगसाठी अधिकृत ६४-बिट सेटअप.",
     desc_en: "Official Microsoft Indic Input 3 setup for fast Devanagari and Marathi typing on Windows 64-bit.",
     isDefault: true
+  },
+  {
+    id: "soft-pdf-studio-pro",
+    name_mr: "eMudra Advanced PDF Studio Pro (एडिटर व OCR)",
+    name_en: "eMudra Advanced PDF Studio Pro (Editor & OCR)",
+    category: "utility",
+    category_mr: "PDF व OCR टूल्स",
+    category_en: "PDF & OCR Tools",
+    version: "v3.0 Pro",
+    size: "Web Studio",
+    icon: "fa-solid fa-file-pdf",
+    os: "सर्व ब्राउझर्स (Web App)",
+    downloadUrl: "pdf-editor.html",
+    fileName: "pdf-editor.html",
+    desc_mr: "PDF मधील मजकूर एडिट करणे, शोधा व बदला, स्वाक्षरी, Drag & Drop पानांचा क्रम, Merge/Split, मराठी/हिंदी OCR, वॉटरमार्क आणि Redaction.",
+    desc_en: "All-in-one PDF Editor, Search & Replace, Digital Signatures, Page Reordering, Merge/Split, Marathi OCR & Redaction.",
+    isDefault: true
+  },
+  {
+    id: "soft-pdf-compressor-web",
+    name_mr: "शासकीय PDF व इमेज कॉम्प्रेशर Pro (256KB / 500KB)",
+    name_en: "Government PDF & Image Compressor Pro",
+    category: "utility",
+    category_mr: "PDF कॉम्प्रेशर",
+    category_en: "PDF Compressor",
+    version: "v2.5 Pro",
+    size: "Web Studio",
+    icon: "fa-solid fa-file-zipper",
+    os: "सर्व ब्राउझर्स (Web App)",
+    downloadUrl: "pdf-compressor.html",
+    fileName: "pdf-compressor.html",
+    desc_mr: "आपले सरकार २५६ KB, महाडीबीटी ५०० KB, फोटो ५० KB व स्वाक्षरी २० KB साठी सुरक्षितपणे अचूक साईझमध्ये कॉम्प्रेशन करा.",
+    desc_en: "Compress PDF/Images precisely for Aaple Sarkar (256 KB) and MahaDBT (500 KB) portals.",
+    isDefault: true
   }
 ];
 
