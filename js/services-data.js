@@ -1053,6 +1053,18 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "pdf-compressor.html",
     isInternal: true
   },
+  // ⚡ मराठी व इंग्रजी PDF टेक्स्ट रिप्लेसर व PDF मर्जर प्रो (Marathi PDF Replacer & Merger Pro)
+  {
+    id: "link-pdf-replacer",
+    category: "उपयुक्त दस्तऐवज टूल्स",
+    icon: "fa-solid fa-file-pen",
+    title_mr: "⚡ मराठी PDF मजकूर रिप्लेसर व मर्जर Pro",
+    title_en: "Marathi & English PDF Text Replacer & Merger Pro",
+    desc_mr: "PDF मधील मराठी (देवनागरी) व इंग्रजी मजकूर अचूक फॉन्टसह शोधा व बदला (Find & Replace), तसेच अनेक PDF फाईल्स एकत्र (Merge) करा.",
+    desc_en: "Search & replace Marathi/English text with exact HarfBuzz font shaping and merge multiple PDFs seamlessly.",
+    url: "pdf-replacer.html",
+    isInternal: true
+  },
   // 🖼️ A4 ४x६ फोटो प्रिंट स्टुडिओ (A4 4x6 Photo Print Pro)
   {
     id: "link-photo-print-4x6",
@@ -1967,6 +1979,23 @@ const DEFAULT_SOFTWARES_DATA = [
     fileName: "pdf-compressor.html",
     desc_mr: "आपले सरकार २५६ KB, महाडीबीटी ५०० KB, फोटो ५० KB व स्वाक्षरी २० KB साठी सुरक्षितपणे अचूक साईझमध्ये कॉम्प्रेशन करा.",
     desc_en: "Compress PDF/Images precisely for Aaple Sarkar (256 KB) and MahaDBT (500 KB) portals.",
+    isDefault: true
+  },
+  {
+    id: "soft-pdf-replacer-web",
+    name_mr: "मराठी PDF मजकूर रिप्लेसर व मर्जर Pro",
+    name_en: "Marathi & English PDF Text Replacer & Merger Pro",
+    category: "utility",
+    category_mr: "PDF व मजकूर टूल्स",
+    category_en: "PDF & Text Tools",
+    version: "v2.0 Pro",
+    size: "Web Studio",
+    icon: "fa-solid fa-file-pen",
+    os: "सर्व ब्राउझर्स (Web App)",
+    downloadUrl: "pdf-replacer.html",
+    fileName: "pdf-replacer.html",
+    desc_mr: "PDF मधील कोणताही मराठी अथवा इंग्रजी मजकूर (नाव, पत्ता, तारीख, अधिकारी) शोधा व बदला आणि PDF फाइल्स एकत्र (Merge) करा.",
+    desc_en: "Find and replace any Marathi or English text in PDF files with accurate font shaping and merge PDFs.",
     isDefault: true
   }
 ];
