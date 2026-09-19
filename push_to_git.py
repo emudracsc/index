@@ -14,7 +14,9 @@ print("Using Git executable:", git_exe)
 def run_git(args):
     cmd = [git_exe] + args
     print(f"Running: {' '.join(cmd)}")
-    res = subprocess.run(cmd, cwd=base_dir, capture_output=True, text=True, encoding="utf-8", errors="ignore")
+    env = os.environ.copy()
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    res = subprocess.run(cmd, cwd=base_dir, capture_output=True, text=True, encoding="utf-8", errors="ignore", env=env)
     print("STDOUT:", res.stdout.strip())
     if res.stderr.strip():
         print("STDERR:", res.stderr.strip())
