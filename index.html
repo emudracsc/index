@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF मजकूर संपादक व PDF Merger | Marathi & English PDF Tool PRO</title>
+  <meta name="description" content="मोठ्या ५,०००+ पानांच्या PDF फाईल्समधील मराठी व इंग्रजी मजकूर शोधून बदलण्यासाठी आणि अनेक PDF फाईल्स एकत्र (Merge) करण्यासाठी हाय-स्पीड प्रोग्रॅम">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css?v=7.0">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="logo-icon">📄</div>
+        <div class="brand-text">
+          <h1>PDF मजकूर संपादक & Merger <span class="badge-pro">PRO 5000+</span></h1>
+          <p class="tagline">मराठी व इंग्रजी मिश्र PDF Find & Replace + PDF Merger इंजिन</p>
+        </div>
+      </div>
+      
+      <div class="nav-actions">
+        <button id="btnLoadSample" class="btn btn-outline" title="चाचणीसाठी सॅम्पल PDF व नियम लोड करा">
+          <span class="icon">🧪</span> नमुना PDF लोड करा
+        </button>
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span class="status-text">सर्व्हर कनेक्टेड</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top Feature Mode Switcher (Tabs) -->
+  <div class="mode-tabs-wrapper">
+    <div class="mode-tabs-container">
+      <button class="mode-tab-btn active" id="tabReplacerBtn" data-target="viewReplacer">
+        <span class="tab-icon">⚡</span>
+        <span class="tab-title">१. मजकूर संपादक (Text Replacer)</span>
+      </button>
+      <button class="mode-tab-btn" id="tabMergerBtn" data-target="viewMerger">
+        <span class="tab-icon">📑</span>
+        <span class="tab-title">२. PDF एकत्र करा (PDF Merger)</span>
+        <span class="tab-badge">नवीन</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="main-wrapper">
+
+    <!-- ================================================================= -->
+    <!-- VIEW 1: TEXT REPLACER (मजकूर संपादक)                              -->
+    <!-- ================================================================= -->
+    <div class="view-panel active" id="viewReplacer">
+      <div class="app-grid">
+        
+        <!-- Left Column: Inputs, Rules & Settings -->
+        <section class="control-panel">
+          
+          <!-- Step 1: Upload PDF Card -->
+          <div class="card step-card" id="stepUpload">
+            <div class="card-header">
+              <span class="step-num">१</span>
+              <div class="card-title-group">
+                <h2>PDF फाईल निवडा</h2>
+                <p>५०००+ पानांपर्यंतची कोणतीही PDF फाईल अपलोड करा</p>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="dropzone" id="dropzone">
+                <input type="file" id="pdfFileInput" accept=".pdf" class="file-input-hidden">
+                <div class="dropzone-content">
+                  <div class="upload-icon-anim">📥</div>
+                  <h3>PDF फाईल येथे ड्रॅग करून सोडा</h3>
+                  <p class="dropzone-sub">किंवा तुमच्या कॉम्प्युटरमधील फाईल निवडण्यासाठी क्लिक करा</p>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btnBrowseFile">
+                    📂 फाईल निवडा (Browse)
+                  </button>
+                </div>
+              </div>
+
+              <!-- Uploaded File Badge Info -->
+              <div class="file-info-badge hidden" id="fileInfoBadge">
+                <div class="file-info-left">
+                  <span class="file-pdf-icon">📕</span>
+                  <div>
+                    <h4 id="lblFileName">document.pdf</h4>
+                    <span id="lblFileSize">0.0 MB</span>
+                  </div>
+                </div>
+                <button class="btn-icon" id="btnRemoveFile" title="काढून टाका">✕</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Rules Matrix Card -->
+          <div class="card step-card" id="stepRules">
+            <div class="card-header">
+              <span class="step-num">२</span>
+              <div class="card-title-group">
+                <h2>बदलण्याचे शब्द टाका (Find & Replace)</h2>
+                <p>जुना शब्द व नवीन शब्द जोडा किंवा JSON/CSV लोड करा</p>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- Dedicated Officer & Designation Switcher Section -->
+              <div class="officer-designation-box">
+                <div class="box-header">
+                  <span class="box-icon">🏛️</span>
+                  <div>
+                    <h4>अधिकारी पदनाम व नाव बदल (Officer Designation & Name)</h4>
+                    <p>मतदार नोंदणी अधिकारी, तहसीलदार, प्रांत, मुख्याधिकारी इत्यादी पदनाम व नाव थेट बदला</p>
+                  </div>
+                </div>
+
+                <!-- Quick Preset Chips for Designations -->
+                <div class="designation-presets-row">
+                  <span class="preset-label">⚡ प्रमुख पदनाम बदल:</span>
+                  <div class="preset-chips">
+                    <button type="button" class="chip chip-designation" data-from-post="ERO, Kankavli" data-to-post="AERO, Kankavli" title="ERO to AERO (Kankavli)">
+                      🎯 ERO, Kankavli ➔ AERO, Kankavli
+                    </button>
+                    <button type="button" class="chip chip-designation" data-from-post="ERO" data-to-post="AERO" title="ERO to AERO">
+                      ➡️ ERO ➔ AERO
+                    </button>
+                    <button type="button" class="chip chip-designation" data-from-post="मतदार नोंदणी अधिकारी, कणकवली" data-to-post="सहाय्यक मतदार नोंदणी अधिकारी, कणकवली" title="मतदार नोंदणी अधिकारी, कणकवली बदला">
+                      🎯 मतदार नोंदणी अधिकारी, कणकवली ➔ सहाय्यक मतदार नोंदणी अधिकारी, कणकवली
+                    </button>
+                    <button type="button" class="chip chip-designation" data-from-post="मतदार नोंदणी अधिकारी" data-to-post="सहाय्यक मतदार नोंदणी अधिकारी" title="मतदार नोंदणी अधिकारी बदला">
+                      ➡️ मतदार नोंदणी अधिकारी ➔ सहाय्यक मतदार नोंदणी अधिकारी
+                    </button>
+                    <button type="button" class="chip chip-designation" data-from-post="उपविभागीय अधिकारी" data-to-post="तहसीलदार" title="उपविभागीय अधिकारी बदला">
+                      ➡️ उपविभागीय अधिकारी ➔ तहसीलदार
+                    </button>
+                    <button type="button" class="chip chip-designation" data-from-post="तहसीलदार" data-to-post="नायब तहसीलदार" title="तहसीलदार बदला">
+                      ➡️ तहसीलदार ➔ नायब तहसीलदार
+                    </button>
+                    <button type="button" class="chip chip-designation" data-from-post="जिल्हाधिकारी" data-to-post="अपर जिल्हाधिकारी" title="जिल्हाधिकारी बदला">
+                      ➡️ जिल्हाधिकारी ➔ अपर जिल्हाधिकारी
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Designation & Officer Name Input Grid -->
+                <div class="officer-inputs-grid">
+                  <div class="input-field">
+                    <label for="oldPostInput">📌 जुने पद (Old Post):</label>
+                    <input type="text" id="oldPostInput" placeholder="उदा. ERO, Kankavli किंवा मतदार नोंदणी अधिकारी" value="ERO, Kankavli">
+                  </div>
+                  <div class="input-field">
+                    <label for="newPostInput">📌 नवीन पद (New Post):</label>
+                    <input type="text" id="newPostInput" placeholder="उदा. AERO, Kankavli किंवा सहाय्यक मतदार नोंदणी अधिकारी" value="AERO, Kankavli">
+                  </div>
+                  <div class="input-field">
+                    <label for="oldOfficerName">👤 जुने अधिकारी नाव (ऐच्छिक):</label>
+                    <input type="text" id="oldOfficerName" placeholder="उदा. जगदीश नारायण (जुने अधिकारी)">
+                  </div>
+                  <div class="input-field">
+                    <label for="newOfficerName">👤 नवीन अधिकारी नाव (ऐच्छिक):</label>
+                    <input type="text" id="newOfficerName" placeholder="उदा. रमेश कुमार (नवीन अधिकारी)">
+                  </div>
+                </div>
+
+                <div class="officer-action-row">
+                  <button type="button" class="btn btn-primary btn-sm" id="btnApplyOfficerPost">
+                    ➕ अधिकारी व पदनाम नियम जोडा (Apply Designation & Name)
+                  </button>
+                  <span class="officer-hint">टीप: हे नियम खालील मॅपिंग टेबलमध्ये आपोआप जोडले जातील.</span>
+                </div>
+              </div>
+
+              <!-- Quick Presets -->
+              <div class="presets-row">
+                <span class="preset-label">💡 इतर जलद प्रीसेट्स:</span>
+                <div class="preset-chips">
+                  <button type="button" class="chip" data-preset="taluka">📍 कणकवली ➔ कुडाळ</button>
+                  <button type="button" class="chip" data-preset="year">📅 वर्ष २०२६ ➔ २०२७</button>
+                </div>
+              </div>
+
+              <!-- Manual Add Rule Row -->
+              <div class="rule-input-group">
+                <div class="input-field flex-1">
+                  <label for="findInput">🔍 जुना शब्द (Find Text):</label>
+                  <input type="text" id="findInput" placeholder="उदा. ERO, Kankavli किंवा जुना मजकूर">
+                </div>
+                <div class="input-field flex-1">
+                  <label for="replaceInput">✍️ नवीन शब्द (Replace With):</label>
+                  <input type="text" id="replaceInput" placeholder="उदा. AERO, Kankavli किंवा नवीन मजकूर">
+                </div>
+                <div class="input-field-btn">
+                  <button type="button" class="btn btn-primary" id="btnAddRule">
+                    ➕ नियम जोडा
+                  </button>
+                </div>
+              </div>
+
+              <!-- Rule Action Toolbar -->
+              <div class="rules-toolbar">
+                <div class="rules-count-badge">
+                  एकूण नियम: <span id="lblRulesCount">0</span>
+                </div>
+                <div class="toolbar-actions">
+                  <input type="file" id="importRulesInput" accept=".json,.csv" class="file-input-hidden">
+                  <button type="button" class="btn-xs" id="btnImportRules" title="JSON/CSV लोड करा">📥 इंपोर्ट</button>
+                  <button type="button" class="btn-xs" id="btnExportRules" title="JSON सेव्ह करा">💾 एक्सपोर्ट</button>
+                  <button type="button" class="btn-xs btn-danger-text" id="btnClearRules" title="सर्व काढा">🗑️ सर्व साफ करा</button>
+                </div>
+              </div>
+
+              <!-- Rules Table -->
+              <div class="rules-table-wrapper">
+                <table class="rules-table">
+                  <thead>
+                    <tr>
+                      <th width="8%">#</th>
+                      <th width="42%">🔍 जुना शब्द (Find)</th>
+                      <th width="42%">✍️ नवीन शब्द (Replace)</th>
+                      <th width="8%">काढा</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rulesTableBody">
+                    <!-- Populated via JavaScript -->
+                  </tbody>
+                </table>
+                <div class="empty-rules-msg" id="emptyRulesMsg">
+                  कोणताही नियम जोडलेला नाही. वरील बॉक्समध्ये शब्द टाकून 'नियम जोडा' दाबा.
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Step 3: Execution Settings & Action Card -->
+          <div class="card step-card" id="stepExecute">
+            <div class="card-header">
+              <span class="step-num">३</span>
+              <div class="card-title-group">
+                <h2>प्रक्रिया सुरू करा (Actions)</h2>
+                <p>पानांची श्रेणी निवडा आणि बदल सुरू करा</p>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="options-row">
+                <div class="input-field-inline">
+                  <label for="pageRangeInput">📑 पानांची श्रेणी (Pages):</label>
+                  <input type="text" id="pageRangeInput" value="all" placeholder="उदा. all, 1-10, 1,3,5">
+                  <span class="input-hint">('all' किंवा '1-10' किंवा '1,3,5')</span>
+                </div>
+              </div>
+
+              <div class="action-buttons-group">
+                <button type="button" class="btn btn-warning-solid" id="btnScan">
+                  <span class="icon">🔍</span> १. आधी स्कॅन करा (Scan Matches)
+                </button>
+                
+                <button type="button" class="btn btn-success-solid" id="btnReplace">
+                  <span class="icon">⚡</span> २. मजकूर बदला व डाउनलोड करा (Start Replace)
+                </button>
+              </div>
+
+              <!-- Progress Bar with Live Real-time Counters -->
+              <div class="progress-wrapper hidden" id="progressWrapper">
+                <!-- Live Counters Strip -->
+                <div class="live-counter-strip">
+                  <div class="live-counter-item find-counter">
+                    <span class="live-icon">🔍</span>
+                    <div class="live-meta">
+                      <span class="live-label">सापडलेले (Find Count)</span>
+                      <strong class="live-num" id="liveFindCount">0</strong>
+                    </div>
+                  </div>
+
+                  <div class="live-counter-item replace-counter">
+                    <span class="live-icon">⚡</span>
+                    <div class="live-meta">
+                      <span class="live-label">बदललेले (Replace Count)</span>
+                      <strong class="live-num" id="liveReplaceCount">0</strong>
+                    </div>
+                  </div>
+
+                  <div class="live-counter-item page-counter">
+                    <span class="live-icon">📑</span>
+                    <div class="live-meta">
+                      <span class="live-label">चालू पान (Page)</span>
+                      <strong class="live-num" id="livePageNum">0 / 0</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
+                </div>
+                <div class="progress-status-row">
+                  <span id="lblProgressMsg">प्रक्रिया चालू आहे...</span>
+                  <span id="lblProgressPct">0%</span>
+                </div>
+              </div>
+
+              <!-- Step 3 Direct Download Banner (Always visible placeholder -> Active upon finish) -->
+              <div class="download-banner" id="downloadBannerMain" style="margin-top: 1.25rem;">
+                <div class="download-banner-content">
+                  <div class="download-icon" id="iconDownloadMain">⏳</div>
+                  <div>
+                    <h4 id="titleDownloadMain" style="color: var(--text-primary); font-weight: 700; font-size: 1.1rem;">डाऊनलोड विभाग (Download Section)</h4>
+                    <p id="lblDownloadFileNameMain" style="color: var(--text-muted); font-size: 0.9rem;">वरील '२. मजकूर बदला व डाउनलोड करा' बटण दाबताच तुमची नवीन PDF येथे डाऊनलोडसाठी तयार होईल.</p>
+                  </div>
+                </div>
+                <button type="button" id="btnDownloadPDFMain" class="btn btn-success-solid btn-lg" disabled style="display: flex; width: 100%; text-align: center; justify-content: center; font-size: 1.15rem; opacity: 0.6; cursor: not-allowed;">
+                  📥 नवीन PDF डाऊनलोड करा (बदलावर क्लिक करा)
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Right Column: Live Results, Statistics & Download -->
+        <aside class="results-panel">
+          
+          <!-- Results Card -->
+          <div class="card results-card" id="resultsCard">
+            <div class="card-header">
+              <div class="card-title-group">
+                <h3>📊 प्रक्रिया निकाल व आकडेवारी (Live Dashboard)</h3>
+                <p id="lblResultsSubtitle">येथे रिअल-टाइम आकडेवारी थेट अपडेट होत आहे</p>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- Metric Stats Grid with Separate Find & Replace -->
+              <div class="stats-grid">
+                <div class="stat-box">
+                  <span class="stat-label">🔍 सापडलेले शब्द (Find Count)</span>
+                  <span class="stat-value text-warning" id="valTotalFindCount">0</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">⚡ बदललेले शब्द (Replace Count)</span>
+                  <span class="stat-value text-success" id="valTotalReplacements">0</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">📑 बदल झालेली पाने</span>
+                  <span class="stat-value" id="valPagesModified">0</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">⏱️ लागलेला वेळ</span>
+                  <span class="stat-value" id="valTimeTaken">0.0s</span>
+                </div>
+              </div>
+
+              <!-- Download Action Banner (shown when done) -->
+              <div class="download-banner hidden" id="downloadBanner">
+                <div class="download-banner-content">
+                  <div class="download-icon">🎉</div>
+                  <div>
+                    <h4>PDF मजकूर यशस्वीरीत्या बदलला आहे!</h4>
+                    <p id="lblDownloadFileName">नवीन PDF फाईल डाऊनलोडसाठी तयार आहे.</p>
+                  </div>
+                </div>
+                <button type="button" id="btnDownloadPDF" class="btn btn-success-solid btn-lg" style="width: 100%; cursor: pointer;">
+                  📥 नवीन PDF डाऊनलोड करा
+                </button>
+              </div>
+
+              <!-- Keyword match breakdown -->
+              <div class="breakdown-section" id="breakdownSection">
+                <h4>📋 प्रत्येक शब्दाची आकडेवारी:</h4>
+                <div class="breakdown-list" id="breakdownList">
+                  <span class="text-muted">स्कॅन किंवा रिप्लेस केल्यावर तपशील येथे दिसेल.</span>
+                </div>
+              </div>
+
+              <!-- Live Terminal Log -->
+              <div class="terminal-log-wrapper">
+                <div class="terminal-header">
+                  <span>🖥️ लाइव्ह प्रोग्रेस लॉग</span>
+                  <button class="btn-xs" id="btnClearLog">लॉग साफ करा</button>
+                </div>
+                <div class="terminal-body" id="terminalLog">
+                  <div class="log-line info">[प्रणाली] PDF मजकूर संपादक तयार आहे. तुमची PDF फाईल अपलोड करा.</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- VIEW 2: PDF MERGER (PDF एकत्र करा)                               -->
+    <!-- ================================================================= -->
+    <div class="view-panel hidden" id="viewMerger">
+      <div class="merger-container">
+        
+        <div class="card merger-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2>📑 एकापेक्षा जास्त PDF एकत्र करा (Merge Multiple PDFs)</h2>
+              <p>२ किंवा अधिक PDF फाईल्स जोडून एकाच मोठ्या PDF मध्ये सेव्ह करा</p>
+            </div>
+            <div class="merger-header-actions">
+              <button type="button" class="btn btn-outline btn-sm" id="btnClearMergeList">
+                🗑️ सर्व फाईल्स काढा (Clear All)
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <!-- Multi-file dropzone -->
+            <div class="dropzone dropzone-merger" id="dropzoneMerge">
+              <input type="file" id="pdfMergeInput" accept=".pdf" multiple class="file-input-hidden">
+              <div class="dropzone-content">
+                <div class="upload-icon-anim">📚</div>
+                <h3>सर्व PDF फाईल्स येथे ड्रॅग करून सोडा (Multiple PDFs)</h3>
+                <p class="dropzone-sub">किंवा तुमच्या कॉम्प्युटरमधील एकाच वेळी अनेक PDF निवडण्यासाठी क्लिक करा</p>
+                <button type="button" class="btn btn-primary btn-sm" id="btnBrowseMergeFiles">
+                  📂 PDF फाईल्स निवडा (Select Files)
+                </button>
+              </div>
+            </div>
+
+            <!-- Uploaded Files List -->
+            <div class="merge-files-section">
+              <div class="merge-section-header">
+                <h3>📋 एकत्र करावयाच्या PDF फाईल्सची यादी (<span id="lblMergeCount">0</span> फाईल्स)</h3>
+                <span class="text-muted" style="font-size: 0.85rem;">🔼 व 🔽 बटणांचा वापर करून क्रम बदला</span>
+              </div>
+
+              <div class="merge-files-list" id="mergeFilesList">
+                <div class="empty-merge-msg" id="emptyMergeMsg">
+                  <span>📂 अद्याप कोणतीही PDF फाईल जोडलेली नाही. वरून PDF निवडा.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Merge Execution Card -->
+            <div class="merge-action-bar">
+              <div class="merge-action-left">
+                <button type="button" class="btn btn-success-solid btn-lg" id="btnStartMerge">
+                  <span class="icon">📑</span> सर्व PDF एकत्र करा व डाउनलोड करा (Merge & Download)
+                </button>
+              </div>
+              <div class="merge-action-meta" id="lblMergeSummary">
+                किमान २ PDF फाईल्स निवडा.
+              </div>
+            </div>
+
+            <!-- Merge Progress Bar -->
+            <div class="progress-wrapper hidden" id="mergeProgressWrapper">
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="mergeProgressBarFill" style="width: 0%"></div>
+              </div>
+              <div class="progress-status-row">
+                <span id="lblMergeProgressMsg">PDF फाईल्स एकत्र करत आहे...</span>
+                <span id="lblMergeProgressPct">0%</span>
+              </div>
+            </div>
+
+            <!-- Merge Download Banner -->
+            <div class="download-banner hidden" id="mergeDownloadBanner" style="margin-top: 1.5rem;">
+              <div class="download-banner-content">
+                <div class="download-icon">🎉</div>
+                <div>
+                  <h4 style="color: #065F46; font-weight: 700; font-size: 1.2rem;">सर्व PDF यशस्वीरीत्या एकत्र (Merge) झाल्या आहेत!</h4>
+                  <p id="lblMergeDownloadFileName" style="color: #047857; font-size: 0.95rem;">नवीन एकत्र झालेली PDF डाऊनलोडसाठी तयार आहे.</p>
+                </div>
+              </div>
+              <button type="button" id="btnDownloadMergedPDF" class="btn btn-success-solid btn-lg pulse-btn" style="width: 100%; font-size: 1.15rem; cursor: pointer;">
+                📥 एकत्र झालेली PDF डाऊनलोड करा (Download Merged PDF)
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Global Instant Download Modal Notification -->
+  <div class="download-modal-overlay hidden" id="downloadModalOverlay">
+    <div class="download-modal-card">
+      <button class="modal-close-btn" id="btnModalClose">✕</button>
+      <div class="modal-badge-icon">🎉</div>
+      <h3 id="modalTitle">PDF यशस्वीरीत्या तयार झाली!</h3>
+      <p id="modalSub" class="text-muted">खालील बटणावर क्लिक करून तुमची PDF थेट सेव्ह करा.</p>
+      
+      <div class="modal-file-box">
+        <span class="modal-file-icon">📄</span>
+        <div class="modal-file-info">
+          <strong id="modalFileName">document_replaced.pdf</strong>
+          <span id="modalFileStats">१००% अचूक बदल पूर्ण</span>
+        </div>
+      </div>
+
+      <div class="modal-action-buttons">
+        <button type="button" class="btn btn-success-solid btn-lg pulse-btn" id="btnModalDownloadNow" style="width: 100%; cursor: pointer;">
+          📥 आता डाऊनलोड करा (Download Now)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>⚡ Powered by <strong>PyMuPDF & Fast Python Engine</strong> | १००% सुरक्षित व स्थानिक प्रोग्रॅम</p>
+  </footer>
+
+  <script src="app.js?v=7.0"></script>
+</body>
+</html>
