@@ -1,0 +1,2834 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF मजकूर रिप्लेसर व PDF मर्जर PRO | eMudra Hub</title>
+  <meta name="description" content="मराठी जोडाक्षरे (सहाय्यक, अधिकारी) अचूक बसवणारे PDF टेक्स्ट रिप्लेसर व अमर्याद फाईल्स जोडणारे PDF मर्जर PRO टूल.">
+
+  <!-- Google Fonts: Mukta & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/emudra_compressor_icon.png">
+
+  <style>
+    /* eMudra Hub Unified Header & Theme */
+    :root {
+      --hub-navy: #09111e;
+      --hub-navy-light: #0f1c30;
+      --hub-gold: #fbbf24;
+      --hub-gold-hover: #f59e0b;
+    }
+    .hub-header {
+      background: rgba(9, 17, 30, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 0.75rem 1.5rem;
+    }
+    .hub-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .hub-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: #fff;
+    }
+    .hub-brand-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35);
+    }
+    .hub-brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .hub-brand-sub {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    .hub-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .hub-center-tag {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .hub-btn-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .home-btn {
+      background: linear-gradient(135deg, #fbbf24, #d97706);
+      color: #0f172a;
+      border: none;
+    }
+    .home-btn:hover {
+      background: linear-gradient(135deg, #f59e0b, #b45309);
+      transform: translateY(-1px);
+    }
+    .hub-back-btn {
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      color: #c4b5fd;
+    }
+    .hub-back-btn:hover {
+      background: rgba(139, 92, 246, 0.25);
+      color: #fff;
+    }
+
+    /* Server Status Banner */
+    .server-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+    .server-status-pill.offline {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+  </style>
+
+  <style>
+/* -------------------------------------------------------------
+   PDF मजकूर संपादक (Marathi & English PDF Replacer) Stylesheet
+   Modern Glassmorphism + Premium Dashboard Design
+---------------------------------------------------------------- */
+
+:root {
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-light: #EFF6FF;
+  
+  --accent: #0D9488;
+  --accent-hover: #0F766E;
+  --accent-light: #F0FDFA;
+
+  --success: #16A34A;
+  --success-hover: #15803D;
+  --success-light: #DCFCE7;
+
+  --warning: #D97706;
+  --warning-hover: #B45309;
+  --warning-light: #FEF3C7;
+
+  --danger: #DC2626;
+  --danger-hover: #B91C1C;
+  --danger-light: #FEE2E2;
+
+  --bg-main: #0F172A;
+  --bg-app: #F8FAFC;
+  --card-bg: #FFFFFF;
+  --card-border: #E2E8F0;
+
+  --text-main: #0F172A;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --font-sans: 'Plus Jakarta Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Consolas', 'Fira Code', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* -------------------------------------------------------------
+   Navigation Bar
+---------------------------------------------------------------- */
+.navbar {
+  background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 50%, #0F766E 100%);
+  color: #FFFFFF;
+  padding: 1rem 1.5rem;
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-icon {
+  font-size: 2rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.brand-text h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.badge-pro {
+  font-size: 0.7rem;
+  background: linear-gradient(135deg, #F59E0B, #EF4444);
+  color: #FFFFFF;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.tagline {
+  font-size: 0.85rem;
+  color: #E2E8F0;
+  font-weight: 400;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #22C55E;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #22C55E;
+}
+
+/* -------------------------------------------------------------
+   Layout Structure
+---------------------------------------------------------------- */
+.main-wrapper {
+  max-width: 1400px;
+  margin: 1.5rem auto;
+  padding: 0 1.5rem;
+  flex: 1;
+  width: 100%;
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .app-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* -------------------------------------------------------------
+   Cards
+---------------------------------------------------------------- */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #CBD5E1;
+}
+
+.card-header {
+  padding: 1.15rem 1.5rem;
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: #FAFAFC;
+}
+
+.step-num {
+  background: var(--primary);
+  color: #FFFFFF;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.card-title-group h2,
+.card-title-group h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.card-title-group p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.card-body {
+  padding: 1.25rem 1.5rem;
+}
+
+/* -------------------------------------------------------------
+   Step 1: Upload Dropzone
+---------------------------------------------------------------- */
+.dropzone {
+  border: 2px dashed #93C5FD;
+  background: var(--primary-light);
+  border-radius: var(--radius-md);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dropzone:hover,
+.dropzone.dragover {
+  border-color: var(--primary);
+  background: #DBEAFE;
+  transform: translateY(-2px);
+}
+
+.upload-icon-anim {
+  font-size: 2.75rem;
+  margin-bottom: 0.5rem;
+  animation: bounce 2s infinite ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.dropzone h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
+}
+
+.dropzone-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.file-info-badge {
+  margin-top: 1rem;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.file-info-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.file-pdf-icon {
+  font-size: 1.75rem;
+}
+
+.file-info-left h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+  word-break: break-all;
+}
+
+.file-info-left span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* -------------------------------------------------------------
+   Officer & Designation Switcher Box
+---------------------------------------------------------------- */
+.officer-designation-box {
+  background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+  border: 1.5px solid #93C5FD;
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.05);
+}
+
+.box-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.box-icon {
+  font-size: 1.6rem;
+}
+
+.box-header h3 {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #1E40AF;
+}
+
+.box-header p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.designation-presets {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed #BFDBFE;
+}
+
+.chip-designation {
+  background: #FFFFFF;
+  border: 1px solid #93C5FD;
+  color: #1E40AF;
+}
+.chip-designation:hover {
+  background: #DBEAFE;
+  border-color: #2563EB;
+}
+
+.officer-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .officer-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.officer-btn-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-accent-solid {
+  background: var(--accent);
+  color: #FFFFFF;
+}
+.btn-accent-solid:hover {
+  background: var(--accent-hover);
+}
+
+.section-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.25rem 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.section-divider span {
+  padding: 0 0.85rem;
+  background: #FFFFFF;
+}
+
+.preset-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px dashed var(--card-border);
+}
+
+.preset-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.chip {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  color: var(--text-main);
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.rule-input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.85rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  .rule-input-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.input-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.input-field input,
+.input-field-inline input {
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid #CBD5E1;
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-field input:focus,
+.input-field-inline input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.table-container {
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  max-height: 240px;
+  overflow-y: auto;
+  background: #FFFFFF;
+}
+
+.rules-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.rules-table th {
+  background: #F1F5F9;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid var(--card-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.rules-table td {
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid #F1F5F9;
+  color: var(--text-main);
+}
+
+.rules-table tr:last-child td {
+  border-bottom: none;
+}
+
+.rules-table tr:hover {
+  background-color: #F8FAFC;
+}
+
+.empty-table-state {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.rules-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.85rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.rules-count-badge {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.toolbar-btns {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* -------------------------------------------------------------
+   Step 3: Options & Execution Actions
+---------------------------------------------------------------- */
+.options-row {
+  margin-bottom: 1rem;
+}
+
+.input-field-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.input-field-inline label {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.input-field-inline input {
+  width: 130px;
+}
+
+.input-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.action-buttons-group {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .action-buttons-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* -------------------------------------------------------------
+   Buttons
+---------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.btn-lg {
+  padding: 0.85rem 1.5rem;
+  font-size: 1rem;
+  border-radius: var(--radius-md);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #FFFFFF;
+}
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.btn-secondary {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  color: var(--text-main);
+}
+.btn-secondary:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+}
+
+.btn-ghost {
+  background: #F1F5F9;
+  color: var(--text-main);
+  border-color: #E2E8F0;
+}
+.btn-ghost:hover {
+  background: #E2E8F0;
+}
+
+.btn-danger-ghost {
+  background: #FEE2E2;
+  color: var(--danger);
+  border-color: #FECACA;
+}
+.btn-danger-ghost:hover {
+  background: #FCA5A5;
+}
+
+.btn-warning-solid {
+  background: #F59E0B;
+  color: #FFFFFF;
+}
+.btn-warning-solid:hover {
+  background: #D97706;
+}
+
+.btn-success-solid {
+  background: #16A34A;
+  color: #FFFFFF;
+}
+.btn-success-solid:hover {
+  background: #15803D;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+.btn-icon:hover {
+  background: #FEE2E2;
+  color: var(--danger);
+}
+
+.btn-xs {
+  background: #334155;
+  color: #94A3B8;
+  border: none;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.btn-xs:hover {
+  background: #475569;
+  color: #FFFFFF;
+}
+
+/* -------------------------------------------------------------
+   Progress Bar & Live Counters
+---------------------------------------------------------------- */
+.progress-wrapper {
+  margin-top: 1.25rem;
+  background: #F8FAFC;
+  border-radius: var(--radius-md);
+  padding: 1.15rem;
+  border: 1.5px solid #93C5FD;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.08);
+}
+
+.live-counter-strip {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  .live-counter-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+.live-counter-item {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  border: 1px solid #E2E8F0;
+  box-shadow: var(--shadow-sm);
+}
+
+.find-counter {
+  border-left: 4px solid var(--warning);
+  background: #FFFBEB;
+}
+
+.replace-counter {
+  border-left: 4px solid var(--success);
+  background: #F0FDF4;
+}
+
+.page-counter {
+  border-left: 4px solid var(--primary);
+  background: #EFF6FF;
+}
+
+.live-icon {
+  font-size: 1.35rem;
+}
+
+.live-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.live-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+.live-num {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.find-counter .live-num { color: #B45309; }
+.replace-counter .live-num { color: #15803D; }
+.page-counter .live-num { color: #1D4ED8; }
+
+.progress-bar-track {
+  height: 12px;
+  background: #E2E8F0;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: 0.65rem;
+  border: 1px solid #CBD5E1;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #F59E0B, #2563EB, #10B981);
+  border-radius: var(--radius-full);
+  transition: width 0.2s ease;
+  position: relative;
+}
+
+.progress-status-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* -------------------------------------------------------------
+   Right Column: Results Panel
+---------------------------------------------------------------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.stat-box {
+  background: #F8FAFC;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0.35rem;
+}
+
+.stat-value {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.stat-value.text-warning { color: #D97706; }
+.stat-value.text-success { color: #16A34A; }
+
+/* Download Banner */
+.download-banner {
+  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+  border: 2px solid #34D399;
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.download-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.download-icon {
+  font-size: 2.25rem;
+}
+
+.download-banner-content h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #065F46;
+}
+
+.download-banner-content p {
+  font-size: 0.85rem;
+  color: #047857;
+}
+
+/* Breakdown List */
+.breakdown-section {
+  background: #F8FAFC;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.breakdown-section h4 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  color: var(--text-main);
+}
+
+.breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #FFFFFF;
+  padding: 0.4rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid #E2E8F0;
+}
+
+.breakdown-item strong {
+  color: var(--primary);
+}
+
+.breakdown-badge {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+}
+
+/* Terminal Log */
+.terminal-log-wrapper {
+  background: #0F172A;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid #334155;
+}
+
+.terminal-header {
+  background: #1E293B;
+  color: #94A3B8;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.45rem 0.85rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #334155;
+}
+
+.terminal-body {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #38BDF8;
+  padding: 0.75rem;
+  height: 150px;
+  overflow-y: auto;
+  line-height: 1.6;
+}
+
+.log-line.info { color: #38BDF8; }
+.log-line.success { color: #4ADE80; font-weight: 600; }
+.log-line.warning { color: #FBBF24; }
+.log-line.error { color: #F87171; font-weight: 600; }
+
+/* Utilities */
+.hidden { display: none !important; }
+.text-muted { color: var(--text-muted); }
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1.5rem;
+  background: #FFFFFF;
+  border-top: 1px solid var(--card-border);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: auto;
+}
+
+/* -------------------------------------------------------------
+   Mode Tabs (Feature Switcher)
+---------------------------------------------------------------- */
+.mode-tabs-wrapper {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--card-border);
+  padding: 0.75rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 72px;
+  z-index: 90;
+}
+
+.mode-tabs-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.mode-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid transparent;
+  background: #F1F5F9;
+  color: #475569;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-tab-btn:hover {
+  background: #E2E8F0;
+  color: var(--text-main);
+}
+
+.mode-tab-btn.active {
+  background: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  border-color: #1D4ED8;
+}
+
+.tab-icon {
+  font-size: 1.15rem;
+}
+
+.tab-badge {
+  background: #10B981;
+  color: #FFFFFF;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+}
+
+/* -------------------------------------------------------------
+   PDF Merger Styles
+---------------------------------------------------------------- */
+.merger-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.merger-card {
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-lg);
+}
+
+.merger-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropzone-merger {
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.8) 0%, rgba(240, 253, 250, 0.8) 100%);
+  border: 2px dashed #3B82F6;
+  margin-bottom: 1.5rem;
+}
+
+.dropzone-merger:hover {
+  border-color: #1D4ED8;
+  background: #EFF6FF;
+}
+
+.merge-files-section {
+  margin-top: 1.5rem;
+  background: #F8FAFC;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+
+.merge-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.merge-section-header h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.merge-files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-height: 80px;
+}
+
+.empty-merge-msg {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.merge-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.merge-item:hover {
+  border-color: #93C5FD;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.merge-item-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.merge-item-order {
+  background: #1E293B;
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 0.8rem;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.merge-item-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.merge-item-details {
+  min-width: 0;
+}
+
+.merge-item-name {
+  font-weight: 700;
+  color: #0F172A;
+  font-size: 0.92rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.merge-item-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.15rem;
+}
+
+.merge-badge-pages {
+  background: #E0E7FF;
+  color: #3730A3;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-sm);
+}
+
+.merge-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.btn-move {
+  background: #F1F5F9;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+}
+
+.btn-move:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+.btn-move:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.merge-action-bar {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F0FDF4;
+  border: 1.5px solid #86EFAC;
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+}
+
+.merge-action-meta {
+  color: #166534;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+/* -------------------------------------------------------------
+   Global Download Modal Notification
+---------------------------------------------------------------- */
+.download-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1.5rem;
+}
+
+.download-modal-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-width: 500px;
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  animation: modalPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1.5px solid #A7F3D0;
+}
+
+@keyframes modalPopIn {
+  from {
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #F1F5F9;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+.modal-badge-icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+}
+
+.download-modal-card h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #065F46;
+  margin-bottom: 0.35rem;
+}
+
+.modal-file-box {
+  background: #F0FDF4;
+  border: 1px dashed #34D399;
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  margin: 1.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-align: left;
+}
+
+.modal-file-icon {
+  font-size: 2rem;
+}
+
+.modal-file-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.modal-file-info strong {
+  color: #065F46;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-file-info span {
+  font-size: 0.8rem;
+  color: #047857;
+}
+
+.modal-action-buttons {
+  margin-top: 1.25rem;
+}
+
+  </style>
+</head>
+<body class="theme-dark">
+
+  <!-- 🌟 Top eMudra Hub Header -->
+  <header class="hub-header">
+    <div class="hub-header-inner">
+      <a href="emudra-hub.html" class="hub-brand" title="eMudra Hub">
+        <div class="hub-brand-badge">
+          <i class="fa-solid fa-file-pen"></i>
+        </div>
+        <div>
+          <div class="hub-brand-title">
+            <span>eMudra Hub</span>
+            <span style="font-size: 0.85rem; color: #fbbf24; font-weight: 600;">(PDF Replacer & Merger)</span>
+          </div>
+          <div class="hub-brand-sub">आपले सरकार सेवा केंद्र व CSC डिजिटल प्रिंटिंग स्टुडिओ</div>
+        </div>
+      </a>
+
+      <div class="hub-header-actions">
+        <div class="hub-center-tag">
+          <i class="fa-solid fa-id-badge" style="color: #fbbf24;"></i> Center ID: <strong>152153410016</strong>
+        </div>
+        <div class="hub-center-tag">
+          <i class="fa-solid fa-phone" style="color: #34d399;"></i> <strong>9890869793</strong>
+        </div>
+        <a href="emudra-hub.html" class="hub-btn-pill hub-back-btn" title="eMudra Hub वर परत जा">
+          <i class="fa-solid fa-arrow-left"></i> <span>eMudra Hub</span>
+        </a>
+        <a href="index.html" class="hub-btn-pill home-btn" title="मुख्य पोर्टलवर परत जा">
+          <i class="fa-solid fa-house"></i> <span>मुख्यपृष्ठ</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Application Content -->
+  <div class="app-container" style="padding-top: 1.5rem;">
+    
+    <header class="app-header text-center">
+      <div class="brand-badge animate-float">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>eMudra CSC • Pro Suite</span>
+      </div>
+      <h1 class="main-title">
+        PDF मजकूर रिप्लेसर <span class="gradient-text">&amp; PDF मर्जर</span>
+      </h1>
+      <p class="subtitle">
+        मराठी जोडाक्षरे (सहाय्यक, अधिकारी) तंतोतंत जुळवून बदलणे आणि अमर्याद PDF फाइल्स एका क्लिकवर एकत्र जोडणे.
+      </p>
+
+      <!-- Live Server Connection Status -->
+      <div style="display: flex; justify-content: center; margin-top: 0.5rem;">
+        <div id="hubServerStatus" class="server-status-pill">
+          <i class="fa-solid fa-circle-nodes fa-spin"></i>
+          <span>स्थानिक Python सर्व्हर तपासत आहे...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 🔀 Mode Switcher Tabs -->
+    <nav class="mode-navigation" aria-label="टूल मोड निवडा">
+      <div class="mode-tabs-wrap">
+        <button type="button" class="mode-tab-btn active" id="tabReplacer" data-mode="replacer">
+          <div class="tab-icon"><i class="fa-solid fa-file-pen"></i></div>
+          <div class="tab-text">
+            <span class="tab-title">PDF टेक्स्ट रिप्लेसर</span>
+            <span class="tab-desc">मराठी जोडाक्षरे व इंग्रजी मजकूर बदला</span>
+          </div>
+          <span class="tab-badge">सुलभ</span>
+        </button>
+
+        <button type="button" class="mode-tab-btn" id="tabMerger" data-mode="merger">
+          <div class="tab-icon"><i class="fa-solid fa-object-group"></i></div>
+          <div class="tab-text">
+            <span class="tab-title">PDF मर्जर (एकत्र करा)</span>
+            <span class="tab-desc">अमर्याद फाइल्स जोडा व क्रम बदला</span>
+          </div>
+          <span class="tab-badge pro">PRO</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- 📄 SECTION 1: PDF TEXT REPLACER -->
+    <main id="sectionReplacer" class="tool-section active">
+      <div class="grid-2col">
+        <!-- डावा कॉलम: फॉर्म नियंत्रणे -->
+        <div class="card control-card glassmorphism">
+          <h2 class="card-title">
+            <i class="fa-solid fa-sliders"></i> मजकूर बदल नियंत्रणे
+          </h2>
+
+          <!-- पायरी १: PDF फाईल निवडा -->
+          <div class="form-step">
+            <span class="step-num">१</span>
+            <div class="step-body">
+              <label class="step-label">PDF फाईल अपलोड करा</label>
+              <div class="drop-zone" id="replacerDropZone">
+                <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+                <p class="drop-text">PDF ड्रॅग आणि ड्रॉप करा किंवा <span class="highlight">ब्राउझ करा</span></p>
+                <span class="drop-hint">फक्त PDF फाईल्स (कमाल १०० MB)</span>
+                <input type="file" id="replacerFileInput" accept=".pdf" class="file-input-hidden">
+              </div>
+              <div class="file-info-badge hidden" id="replacerFileInfo">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span class="file-name" id="replacerFileName">निवडलेली फाईल</span>
+                <button type="button" class="btn-remove-file" id="btnRemoveReplacerFile" title="काढून टाका">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- पायरी २: शोध व बदल शब्द -->
+          <div class="form-step">
+            <span class="step-num">२</span>
+            <div class="step-body">
+              <label class="step-label">शोध आणि बदल शब्द (Search &amp; Replace)</label>
+              <div class="inputs-grid">
+                <div class="input-group">
+                  <label for="inputSearch"><i class="fa-solid fa-magnifying-glass"></i> शोधायचा शब्द (Old Text)</label>
+                  <input type="text" id="inputSearch" class="form-control" placeholder="उदा. शाळा / नाव / पद">
+                </div>
+                <div class="input-group">
+                  <label for="inputReplace"><i class="fa-solid fa-pen-nib"></i> नवीन शब्द (New Text)</label>
+                  <input type="text" id="inputReplace" class="form-control" placeholder="उदा. सहाय्यक / अधिकारी">
+                </div>
+              </div>
+
+              <!-- प्रगत सेटिंग्ज (फॉन्ट साईझ व पॅडिंग) -->
+              <details class="adv-settings">
+                <summary><i class="fa-solid fa-gear"></i> प्रगत फॉन्ट पर्याय (Optional)</summary>
+                <div class="adv-settings-grid">
+                  <div class="input-group">
+                    <label for="inputFontSize">फॉन्ट साईझ (रिकामे ठेवल्यास मूळ साईझ)</label>
+                    <input type="number" id="inputFontSize" class="form-control" placeholder="Auto" min="6" max="72" step="0.5">
+                  </div>
+                  <div class="input-group">
+                    <label for="inputScaleX">अक्षर रुंदी टक्केवारी (%)</label>
+                    <input type="number" id="inputScaleX" class="form-control" value="100" min="50" max="150" step="5">
+                  </div>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <!-- प्रक्रिया बटण -->
+          <div class="action-footer">
+            <button type="button" class="btn-primary btn-glow" id="btnProcessReplace" disabled>
+              <i class="fa-solid fa-bolt"></i>
+              <span>PDF रिप्लेस करा &amp; तयार करा</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- उजवा कॉलम: प्रिव्ह्यू व डाऊनलोड -->
+        <div class="card preview-card glassmorphism">
+          <h2 class="card-title">
+            <i class="fa-solid fa-eye"></i> थेट प्रिव्ह्यू व परिणाम
+          </h2>
+          
+          <div class="preview-container" id="replacerPreviewContainer">
+            <div class="preview-placeholder">
+              <i class="fa-solid fa-file-invoice preview-icon"></i>
+              <p>PDF अपलोड केल्यावर पानाचा प्रिव्ह्यू येथे दिसेल</p>
+            </div>
+            <div class="preview-viewports hidden" id="previewViewports">
+              <div class="preview-box">
+                <span class="preview-badge before">बदलण्यापूर्वी (Original)</span>
+                <img id="imgPreviewBefore" alt="Before Replace Preview" class="preview-img">
+              </div>
+              <div class="preview-box">
+                <span class="preview-badge after">बदलल्यानंतर (Replaced)</span>
+                <img id="imgPreviewAfter" alt="After Replace Preview" class="preview-img">
+              </div>
+            </div>
+          </div>
+
+          <!-- थेट डाऊनलोड विभाग -->
+          <div class="download-section hidden" id="replacerDownloadSection">
+            <div class="success-banner">
+              <i class="fa-solid fa-circle-check"></i>
+              <div>
+                <strong>PDF यशस्वीरित्या तयार झाली!</strong>
+                <p>मराठी जोडाक्षरे अचूक बसवून नवीन फाईल तयार झाली आहे.</p>
+              </div>
+            </div>
+            <a id="btnDownloadReplaced" class="btn-download btn-glow" href="#" download="replaced.pdf">
+              <i class="fa-solid fa-download"></i>
+              <span>📥 नवीन PDF डाऊनलोड करा</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 📦 SECTION 2: PDF MERGER -->
+    <main id="sectionMerger" class="tool-section">
+      <div class="card merger-card glassmorphism">
+        <h2 class="card-title">
+          <i class="fa-solid fa-object-group"></i> एकाधिक PDF फाइल्स एकत्र जोडा (PDF Merger)
+        </h2>
+        <p class="section-desc">
+          सर्व PDF फाइल्स निवडा, त्यांचा योग्य क्रम लावा आणि 'PDF एकत्र जोडा' बटणावर क्लिक करा.
+        </p>
+
+        <!-- मर्जर ड्रॉप झोन -->
+        <div class="drop-zone" id="mergerDropZone">
+          <i class="fa-solid fa-folder-open drop-icon"></i>
+          <p class="drop-text">एकापेक्षा जास्त PDF फाइल्स ड्रॅग करा किंवा <span class="highlight">ब्राउझ करा</span></p>
+          <span class="drop-hint">एकाच वेळी अनेक PDF फाइल्स निवडू शकता</span>
+          <input type="file" id="mergerFileInput" accept=".pdf" multiple class="file-input-hidden">
+        </div>
+
+        <!-- फाइल्सची यादी व क्रम -->
+        <div class="merger-list-container hidden" id="mergerListContainer">
+          <div class="list-header">
+            <span>निवडलेल्या फाइल्स (<strong id="mergerFileCount">0</strong>)</span>
+            <button type="button" class="btn-text" id="btnClearMergerFiles">
+              <i class="fa-solid fa-trash"></i> सर्व काढून टाका
+            </button>
+          </div>
+          <ul class="merger-file-list" id="mergerFileList">
+            <!-- डायनॅमिक फाइल्स येथे येतील -->
+          </ul>
+        </div>
+
+        <!-- आउटपुट फाईल नाव -->
+        <div class="merger-options-row">
+          <div class="input-group flex-1">
+            <label for="mergerOutputName"><i class="fa-solid fa-tag"></i> तयार होणाऱ्या फाईलचे नाव</label>
+            <input type="text" id="mergerOutputName" class="form-control" value="Merged_Document.pdf">
+          </div>
+          <button type="button" class="btn-primary btn-glow" id="btnProcessMerge" disabled>
+            <i class="fa-solid fa-layer-group"></i>
+            <span>PDF एकत्र जोडा (Merge)</span>
+          </button>
+        </div>
+
+        <!-- मर्जर प्रगती बार -->
+        <div class="progress-wrap hidden" id="mergerProgressWrap">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="mergerProgressBar" style="width: 0%"></div>
+          </div>
+          <span class="progress-text" id="mergerProgressText">एकत्र जोडत आहे...</span>
+        </div>
+
+        <!-- मर्जर डाऊनलोड बॉक्स -->
+        <div class="download-section hidden" id="mergerDownloadSection" style="margin-top: 1.5rem;">
+          <div class="success-banner">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <strong>सर्व PDF फाइल्स यशस्वीरित्या जोडल्या गेल्या!</strong>
+              <p>तुमची एकत्रित फाईल डाऊनलोडसाठी तयार आहे.</p>
+            </div>
+          </div>
+          <a id="btnDownloadMerged" class="btn-download btn-glow" href="#" download="Merged_Document.pdf">
+            <i class="fa-solid fa-download"></i>
+            <span>📥 एकत्रित PDF डाऊनलोड करा</span>
+          </a>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- फुटर -->
+  <footer style="background: var(--hub-navy); color: #cbd5e1; text-align: center; padding: 1.5rem 1rem; border-top: 3px solid var(--hub-gold); margin-top: 3rem; font-size: 0.85rem;">
+    <p><strong>eMudra Hub (ई मुद्रा हब)</strong> • अधिकृत आपले सरकार सेवा केंद्र व CSC डिजिटल दालन</p>
+    <p style="margin-top: 4px; font-size: 0.78rem; color: #94a3b8;">Center ID: 152153410016 • मु. पो. कणकवली, जि. सिंधुदुर्ग • संपर्क: 9890869793</p>
+    <p style="margin-top: 6px; font-size: 0.72rem; color: #64748b;">© 2026 eMudra CSC. सर्व हक्क सुरक्षित. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Server Health Check Script
+    async function checkServer() {
+      const statusEl = document.getElementById('hubServerStatus');
+      const testUrls = ['/api/replace_stream', 'http://localhost:8080/api/replace_stream'];
+      let online = false;
+
+      for (const u of testUrls) {
+        try {
+          const res = await fetch(u, { method: 'OPTIONS', timeout: 2000 }).catch(() => null);
+          if (res && (res.status === 200 || res.status === 405 || res.ok)) {
+            online = true;
+            break;
+          }
+        } catch(e) {}
+      }
+
+      // Also try simple GET to localhost:8080/
+      if (!online) {
+        try {
+          const res = await fetch('http://localhost:8080/', { method: 'GET', mode: 'no-cors' }).catch(() => null);
+          if (res) online = true;
+        } catch(e) {}
+      }
+
+      if (online || window.location.port === '8080') {
+        statusEl.className = 'server-status-pill';
+        statusEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>स्थानिक इंजिन जोडलेले आहे (HarfBuzz Active ✅)</span>';
+      } else {
+        statusEl.className = 'server-status-pill offline';
+        statusEl.innerHTML = '<i class="fa-solid fa-circle-info"></i> <span>मराठी जोडाक्षरांसाठी संगणकावर "start_replacer.bat" सुरू ठेवा</span>';
+      }
+    }
+    checkServer();
+    setInterval(checkServer, 10000);
+  </script>
+
+  <script>
+/**
+ * PDF मजकूर संपादक व PDF Merger (Marathi & English PDF Tool) - Frontend Logic
+ */
+
+document.addEventListener("DOMContentLoaded", () => {
+  // =========================================================================
+  // State
+  // =========================================================================
+  let currentPdfFile = null;
+  let rules = [
+    { find: "ERO, Kankavli", replace: "AERO, Kankavli" },
+    { find: "ERO", replace: "AERO" },
+    { find: "मतदार नोंदणी अधिकारी, कणकवली", replace: "सहाय्यक मतदार नोंदणी अधिकारी, कणकवली" },
+    { find: "मतदार नोंदणी अधिकारी", replace: "सहाय्यक मतदार नोंदणी अधिकारी" },
+    { find: "कणकवली", replace: "कुडाळ" },
+    { find: "Kankavli", replace: "Kudal" }
+  ];
+
+  let mergeFiles = []; // Array of File objects for PDF Merger
+  let lastGeneratedFileName = null;
+
+  // =========================================================================
+  // DOM Elements - Navigation & Modes
+  // =========================================================================
+  const tabReplacerBtn = document.getElementById("tabReplacerBtn");
+  const tabMergerBtn = document.getElementById("tabMergerBtn");
+  const viewReplacer = document.getElementById("viewReplacer");
+  const viewMerger = document.getElementById("viewMerger");
+
+  // DOM Elements - Text Replacer
+  const dropzone = document.getElementById("dropzone");
+  const pdfFileInput = document.getElementById("pdfFileInput");
+  const btnBrowseFile = document.getElementById("btnBrowseFile");
+  const fileInfoBadge = document.getElementById("fileInfoBadge");
+  const lblFileName = document.getElementById("lblFileName");
+  const lblFileSize = document.getElementById("lblFileSize");
+  const btnRemoveFile = document.getElementById("btnRemoveFile");
+
+  const findInput = document.getElementById("findInput");
+  const replaceInput = document.getElementById("replaceInput");
+  const btnAddRule = document.getElementById("btnAddRule");
+  const rulesTableBody = document.getElementById("rulesTableBody");
+  const emptyRulesMsg = document.getElementById("emptyRulesMsg");
+  const lblRulesCount = document.getElementById("lblRulesCount");
+
+  const btnImportRules = document.getElementById("btnImportRules");
+  const importRulesInput = document.getElementById("importRulesInput");
+  const btnExportRules = document.getElementById("btnExportRules");
+  const btnClearRules = document.getElementById("btnClearRules");
+  const btnLoadSample = document.getElementById("btnLoadSample");
+
+  const pageRangeInput = document.getElementById("pageRangeInput");
+  const btnScan = document.getElementById("btnScan");
+  const btnReplace = document.getElementById("btnReplace");
+
+  const progressWrapper = document.getElementById("progressWrapper");
+  const progressBarFill = document.getElementById("progressBarFill");
+  const lblProgressMsg = document.getElementById("lblProgressMsg");
+  const lblProgressPct = document.getElementById("lblProgressPct");
+
+  const valTotalFindCount = document.getElementById("valTotalFindCount");
+  const valTotalReplacements = document.getElementById("valTotalReplacements");
+  const valPagesModified = document.getElementById("valPagesModified");
+  const valTimeTaken = document.getElementById("valTimeTaken");
+  const breakdownList = document.getElementById("breakdownList");
+  
+  const downloadBanner = document.getElementById("downloadBanner");
+  const btnDownloadPDF = document.getElementById("btnDownloadPDF");
+  const lblDownloadFileName = document.getElementById("lblDownloadFileName");
+  
+  const downloadBannerMain = document.getElementById("downloadBannerMain");
+  const btnDownloadPDFMain = document.getElementById("btnDownloadPDFMain");
+  const lblDownloadFileNameMain = document.getElementById("lblDownloadFileNameMain");
+  
+  const terminalLog = document.getElementById("terminalLog");
+  const btnClearLog = document.getElementById("btnClearLog");
+
+  // DOM Elements - PDF Merger
+  const dropzoneMerge = document.getElementById("dropzoneMerge");
+  const pdfMergeInput = document.getElementById("pdfMergeInput");
+  const btnBrowseMergeFiles = document.getElementById("btnBrowseMergeFiles");
+  const mergeFilesList = document.getElementById("mergeFilesList");
+  const emptyMergeMsg = document.getElementById("emptyMergeMsg");
+  const lblMergeCount = document.getElementById("lblMergeCount");
+  const btnClearMergeList = document.getElementById("btnClearMergeList");
+  const btnStartMerge = document.getElementById("btnStartMerge");
+  const lblMergeSummary = document.getElementById("lblMergeSummary");
+  const mergeProgressWrapper = document.getElementById("mergeProgressWrapper");
+  const mergeProgressBarFill = document.getElementById("mergeProgressBarFill");
+  const lblMergeProgressMsg = document.getElementById("lblMergeProgressMsg");
+  const lblMergeProgressPct = document.getElementById("lblMergeProgressPct");
+  const mergeDownloadBanner = document.getElementById("mergeDownloadBanner");
+  const btnDownloadMergedPDF = document.getElementById("btnDownloadMergedPDF");
+  const lblMergeDownloadFileName = document.getElementById("lblMergeDownloadFileName");
+
+  // DOM Elements - Download Modal
+  const downloadModalOverlay = document.getElementById("downloadModalOverlay");
+  const btnModalClose = document.getElementById("btnModalClose");
+  const modalFileName = document.getElementById("modalFileName");
+  const modalFileStats = document.getElementById("modalFileStats");
+  const btnModalDownloadNow = document.getElementById("btnModalDownloadNow");
+
+  // Presets definition
+  const PRESETS = {
+    taluka: [
+      { find: "कणकवली", replace: "कुडाळ" },
+      { find: "Kankavli", replace: "Kudal" },
+      { find: "सिंधुदुर्ग", replace: "रत्नागिरी" }
+    ],
+    year: [
+      { find: "19/09/2026", replace: "25/09/2026" },
+      { find: "२०२६", replace: "२०२७" }
+    ]
+  };
+
+  // =========================================================================
+  // Mode Switcher (Tabs)
+  // =========================================================================
+  tabReplacerBtn.addEventListener("click", () => switchMode("replacer"));
+  tabMergerBtn.addEventListener("click", () => switchMode("merger"));
+
+  function switchMode(mode) {
+    if (mode === "replacer") {
+      tabReplacerBtn.classList.add("active");
+      tabMergerBtn.classList.remove("active");
+      viewReplacer.classList.remove("hidden");
+      viewMerger.classList.add("hidden");
+    } else {
+      tabMergerBtn.classList.add("active");
+      tabReplacerBtn.classList.remove("active");
+      viewMerger.classList.remove("hidden");
+      viewReplacer.classList.add("hidden");
+    }
+  }
+
+  // =========================================================================
+  // Helpers & Logging
+  // =========================================================================
+  function log(msg, type = "info") {
+    const time = new Date().toLocaleTimeString();
+    const line = document.createElement("div");
+    line.className = `log-line ${type}`;
+    line.textContent = `[${time}] ${msg}`;
+    if (terminalLog) {
+      terminalLog.appendChild(line);
+      terminalLog.scrollTop = terminalLog.scrollHeight;
+    }
+  }
+
+  function formatBytes(bytes) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  }
+
+  function escapeHtml(str) {
+    if (!str) return "";
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  // =========================================================================
+  // Robust Universal Direct File Download (Native Fast Stream)
+  // =========================================================================
+  function triggerDirectDownload(fileName, label = "तयार PDF") {
+    if (!fileName) return;
+    lastGeneratedFileName = fileName;
+    const downloadUrl = `/api/download?file=${encodeURIComponent(fileName)}`;
+    log(`📥 डाऊनलोड सुरू करत आहे: ${fileName}...`, "info");
+
+    // 1. Trigger native browser stream download via dynamic link
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = downloadUrl;
+    a.setAttribute("download", fileName);
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      try { document.body.removeChild(a); } catch (e) {}
+    }, 1000);
+
+    // 2. Open Modal for guaranteed 1-click manual download
+    showDownloadModal(fileName, label);
+    log(`✅ डाऊनलोड सुरू झाले: ${fileName}`, "success");
+  }
+
+  function showDownloadModal(fileName, statsText) {
+    lastGeneratedFileName = fileName;
+    if (modalFileName) modalFileName.textContent = fileName;
+    if (modalFileStats) modalFileStats.textContent = statsText || "डाऊनलोडसाठी तयार";
+    if (downloadModalOverlay) downloadModalOverlay.classList.remove("hidden");
+  }
+
+  if (btnModalClose) {
+    btnModalClose.addEventListener("click", () => {
+      if (downloadModalOverlay) downloadModalOverlay.classList.add("hidden");
+    });
+  }
+
+  if (downloadModalOverlay) {
+    downloadModalOverlay.addEventListener("click", (e) => {
+      if (e.target === downloadModalOverlay) {
+        downloadModalOverlay.classList.add("hidden");
+      }
+    });
+  }
+
+  if (btnModalDownloadNow) {
+    btnModalDownloadNow.addEventListener("click", () => {
+      if (lastGeneratedFileName) {
+        window.location.href = `/api/download?file=${encodeURIComponent(lastGeneratedFileName)}`;
+      }
+    });
+  }
+
+  // =========================================================================
+  // Section 1: Text Replacer Logic
+  // =========================================================================
+  btnBrowseFile.addEventListener("click", () => pdfFileInput.click());
+  dropzone.addEventListener("click", () => pdfFileInput.click());
+
+  pdfFileInput.addEventListener("change", (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFileSelected(e.target.files[0]);
+    }
+  });
+
+  dropzone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropzone.classList.add("dragover");
+  });
+
+  dropzone.addEventListener("dragleave", () => {
+    dropzone.classList.remove("dragover");
+  });
+
+  dropzone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropzone.classList.remove("dragover");
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      if (file.name.toLowerCase().endsWith(".pdf")) {
+        handleFileSelected(file);
+      } else {
+        alert("कृपया फक्त .pdf फाईल अपलोड करा.");
+      }
+    }
+  });
+
+  btnRemoveFile.addEventListener("click", () => {
+    currentPdfFile = null;
+    pdfFileInput.value = "";
+    dropzone.classList.remove("hidden");
+    fileInfoBadge.classList.add("hidden");
+    log("PDF फाईल काढून टाकली.", "warning");
+  });
+
+  function handleFileSelected(file) {
+    currentPdfFile = file;
+    lblFileName.textContent = file.name;
+    lblFileSize.textContent = formatBytes(file.size);
+    dropzone.classList.add("hidden");
+    fileInfoBadge.classList.remove("hidden");
+    log(`PDF फाईल निवडली: ${file.name} (${formatBytes(file.size)})`, "success");
+  }
+
+  // Rules Rendering
+  function renderRules() {
+    rulesTableBody.innerHTML = "";
+    if (rules.length === 0) {
+      emptyRulesMsg.classList.remove("hidden");
+    } else {
+      emptyRulesMsg.classList.add("hidden");
+      rules.forEach((rule, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${idx + 1}</strong></td>
+          <td><span style="color: var(--danger); font-weight:600;">${escapeHtml(rule.find)}</span></td>
+          <td><span style="color: var(--success); font-weight:600;">${escapeHtml(rule.replace || "(काढून टाका)")}</span></td>
+          <td>
+            <button class="btn-icon btn-del-rule" data-index="${idx}" title="काढा">🗑️</button>
+          </td>
+        `;
+        rulesTableBody.appendChild(tr);
+      });
+    }
+    lblRulesCount.textContent = rules.length;
+
+    // Attach delete listeners
+    document.querySelectorAll(".btn-del-rule").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const index = parseInt(e.currentTarget.getAttribute("data-index"));
+        const removed = rules.splice(index, 1);
+        renderRules();
+        log(`नियम काढला: '${removed[0].find}'`, "info");
+      });
+    });
+  }
+
+  btnAddRule.addEventListener("click", () => {
+    const findVal = findInput.value.trim();
+    const replaceVal = replaceInput.value.trim();
+
+    if (!findVal) {
+      alert("कृपया 'जुना शब्द (Find Text)' भरा.");
+      findInput.focus();
+      return;
+    }
+
+    const existing = rules.find(r => r.find === findVal);
+    if (existing) {
+      existing.replace = replaceVal;
+      log(`नियम अपडेट केला: '${findVal}' ➔ '${replaceVal}'`, "info");
+    } else {
+      rules.push({ find: findVal, replace: replaceVal });
+      log(`नवीन नियम जोडला: '${findVal}' ➔ '${replaceVal}'`, "success");
+    }
+
+    findInput.value = "";
+    replaceInput.value = "";
+    findInput.focus();
+    renderRules();
+  });
+
+  findInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      replaceInput.focus();
+    }
+  });
+
+  replaceInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      btnAddRule.click();
+    }
+  });
+
+  // Officer Designation Controls
+  const oldPostInput = document.getElementById("oldPostInput");
+  const newPostInput = document.getElementById("newPostInput");
+  const oldOfficerName = document.getElementById("oldOfficerName");
+  const newOfficerName = document.getElementById("newOfficerName");
+  const btnApplyOfficerPost = document.getElementById("btnApplyOfficerPost");
+
+  document.querySelectorAll(".chip-designation").forEach(chip => {
+    chip.addEventListener("click", () => {
+      const fromPost = chip.getAttribute("data-from-post");
+      const toPost = chip.getAttribute("data-to-post");
+      if (oldPostInput && newPostInput) {
+        oldPostInput.value = fromPost;
+        newPostInput.value = toPost;
+        log(`पदनाम निवडले: '${fromPost}' ➔ '${toPost}'`, "info");
+      }
+    });
+  });
+
+  if (btnApplyOfficerPost) {
+    btnApplyOfficerPost.addEventListener("click", () => {
+      const oldPost = oldPostInput ? oldPostInput.value.trim() : "";
+      const newPost = newPostInput ? newPostInput.value.trim() : "";
+      const oldName = oldOfficerName ? oldOfficerName.value.trim() : "";
+      const newName = newOfficerName ? newOfficerName.value.trim() : "";
+
+      if (!oldPost && !oldName) {
+        alert("कृपया किमान जुने पद (Old Post) किंवा जुने नाव (Old Name) भरा.");
+        return;
+      }
+
+      let addedCount = 0;
+      if (oldPost && newPost) {
+        const existing = rules.find(r => r.find === oldPost);
+        if (existing) {
+          existing.replace = newPost;
+        } else {
+          rules.push({ find: oldPost, replace: newPost });
+        }
+        addedCount++;
+        log(`पदनाम नियम जोडला: '${oldPost}' ➔ '${newPost}'`, "success");
+      }
+
+      if (oldName && newName) {
+        const existing = rules.find(r => r.find === oldName);
+        if (existing) {
+          existing.replace = newName;
+        } else {
+          rules.push({ find: oldName, replace: newName });
+        }
+        addedCount++;
+        log(`अधिकारी नाव नियम जोडला: '${oldName}' ➔ '${newName}'`, "success");
+      }
+
+      if (oldName && oldPost && newName && newPost) {
+        const comboOld = `${oldName} (${oldPost})`;
+        const comboNew = `${newName} (${newPost})`;
+        if (!rules.some(r => r.find === comboOld)) {
+          rules.push({ find: comboOld, replace: comboNew });
+        }
+      }
+
+      renderRules();
+      alert(`✅ अधिकारी व पदनाम बदलण्याचे ${addedCount} नियम यशस्वीरीत्या जोडले गेले!`);
+    });
+  }
+
+  // Preset Chips
+  document.querySelectorAll(".chip[data-preset]").forEach(chip => {
+    chip.addEventListener("click", () => {
+      const presetKey = chip.getAttribute("data-preset");
+      const items = PRESETS[presetKey] || [];
+      items.forEach(item => {
+        if (!rules.some(r => r.find === item.find)) {
+          rules.push({ ...item });
+        }
+      });
+      renderRules();
+      log(`प्रीसेट जोडला: ${chip.textContent.trim()}`, "info");
+    });
+  });
+
+  // Import / Export Rules
+  btnImportRules.addEventListener("click", () => importRulesInput.click());
+  importRulesInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const text = event.target.result;
+        let count = 0;
+        if (file.name.endsWith(".json")) {
+          const data = JSON.parse(text);
+          if (Array.isArray(data)) {
+            data.forEach(item => {
+              if (item.find) {
+                rules.push({ find: item.find, replace: item.replace || "" });
+                count++;
+              }
+            });
+          } else {
+            Object.keys(data).forEach(k => {
+              rules.push({ find: k, replace: data[k] || "" });
+              count++;
+            });
+          }
+        } else {
+          const lines = text.split(/\r?\n/);
+          lines.forEach(line => {
+            const parts = line.split(",");
+            if (parts.length >= 2 && parts[0].trim()) {
+              rules.push({ find: parts[0].trim(), replace: parts[1].trim() });
+              count++;
+            }
+          });
+        }
+        renderRules();
+        log(`यशस्वी: ${count} नियम ${file.name} मधून लोड झाले.`, "success");
+        alert(`${count} नियम लोड झाले!`);
+      } catch (err) {
+        log(`त्रुटी: फाईल वाचता आली नाही - ${err.message}`, "error");
+        alert("मॅपिंग फाईल लोड करताना त्रुटी आली.");
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  btnExportRules.addEventListener("click", () => {
+    if (rules.length === 0) {
+      alert("सेव्ह करण्यासाठी नियम नाहीत.");
+      return;
+    }
+    const mapObj = {};
+    rules.forEach(r => { mapObj[r.find] = r.replace; });
+    const blob = new Blob([JSON.stringify(mapObj, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "replacements.json";
+    a.click();
+    URL.revokeObjectURL(url);
+    log("नियम फाईल 'replacements.json' डाऊनलोड झाली.", "success");
+  });
+
+  btnClearRules.addEventListener("click", () => {
+    if (rules.length === 0) return;
+    if (confirm("तुम्हाला सर्व नियम काढून टाकायचे आहेत का?")) {
+      rules = [];
+      renderRules();
+      log("सर्व नियम साफ केले.", "warning");
+    }
+  });
+
+  btnLoadSample.addEventListener("click", async () => {
+    log("नमुना PDF लोड करत आहे...", "info");
+    try {
+      const res = await fetch("/api/sample", { method: "POST" });
+      const data = await res.json();
+      if (data.success && data.download_url) {
+        const pdfRes = await fetch(data.download_url);
+        const blob = await pdfRes.blob();
+        const file = new File([blob], data.file_name, { type: "application/pdf" });
+        handleFileSelected(file);
+        log("✅ नमुना ५-पानांची PDF यशस्वीरीत्या लोड झाली!", "success");
+      }
+    } catch (err) {
+      log(`नमुना लोड करताना त्रुटी: ${err.message}`, "error");
+    }
+  });
+
+  // Stream Consumer Helper
+  async function consumeStream(url, formData, onProgress, onDone, onError) {
+    const resp = await fetch(url, { method: "POST", body: formData });
+    if (!resp.ok) {
+      throw new Error(`सर्व्हर त्रुटी: HTTP ${resp.status}`);
+    }
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let buffer = "";
+    let isTerminated = false;
+
+    function processLines(text) {
+      const lines = text.split("\n");
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+          const data = JSON.parse(line.trim());
+          if (data.type === "progress") {
+            onProgress(data);
+          } else if (data.type === "done") {
+            isTerminated = true;
+            onDone(data);
+            break;
+          } else if (data.type === "error") {
+            isTerminated = true;
+            onError(data.error);
+            break;
+          }
+        } catch (err) {
+          console.error("Stream parse error:", line, err);
+        }
+      }
+    }
+
+    while (!isTerminated) {
+      const { value, done } = await reader.read();
+      if (done) {
+        buffer += decoder.decode();
+        if (buffer.trim()) {
+          processLines(buffer);
+        }
+        break;
+      }
+      buffer += decoder.decode(value, { stream: true });
+      const lastNewline = buffer.lastIndexOf("\n");
+      if (lastNewline !== -1) {
+        const completeChunk = buffer.substring(0, lastNewline);
+        buffer = buffer.substring(lastNewline + 1);
+        processLines(completeChunk);
+      }
+      if (isTerminated) {
+        try { await reader.cancel(); } catch (e) {}
+        break;
+      }
+    }
+  }
+
+  // Scan (Dry Run)
+  btnScan.addEventListener("click", async () => {
+    if (!currentPdfFile) {
+      alert("कृपया आधी PDF फाईल अपलोड करा.");
+      return;
+    }
+    if (rules.length === 0) {
+      alert("कृपया शोधण्यासाठी किमान एक शब्द जोडा.");
+      return;
+    }
+
+    const rulesMap = {};
+    rules.forEach(r => { rulesMap[r.find] = r.replace; });
+
+    const formData = new FormData();
+    formData.append("file", currentPdfFile);
+    formData.append("rules", JSON.stringify(rulesMap));
+    formData.append("pages", pageRangeInput.value.trim() || "all");
+
+    setProcessingState(true, "स्कॅनिंग सुरू होत आहे...");
+    resetLiveCounters();
+    log("🔍 स्कॅन सुरू झाले (ड्राय-रन)...", "info");
+
+    try {
+      await consumeStream(
+        "/api/scan_stream",
+        formData,
+        (data) => {
+          updateLiveCounters(data.find_count || 0, 0, data.page, data.total_doc_pages || data.total, data.pct, data.msg);
+          if (data.keyword_counts) {
+            renderBreakdown(data.keyword_counts, "सापडले");
+          }
+          log(data.msg, "info");
+        },
+        (data) => {
+          const stats = data.stats;
+          valTotalFindCount.textContent = stats.total_matches;
+          valTotalReplacements.textContent = "0 (फक्त स्कॅन)";
+          valPagesModified.textContent = `${Object.keys(stats.page_matches || {}).length} / ${stats.scanned_pages_count}`;
+          valTimeTaken.textContent = "0.8s";
+
+          updateLiveCounters(stats.total_matches, 0, stats.scanned_pages_count, stats.total_doc_pages, 100, "स्कॅन पूर्ण!");
+          renderBreakdown(stats.keyword_counts, "सापडले");
+
+          log(`✅ स्कॅन पूर्ण! एकूण सापडलेले शब्द: ${stats.total_matches}`, "success");
+          alert(`स्कॅन पूर्ण झाले!\n\nएकूण सापडलेले शब्द: ${stats.total_matches}\nडॅशबोर्डवर तपशील पहा.`);
+          setProcessingState(false);
+        },
+        (errMsg) => {
+          log(`त्रुटी: ${errMsg}`, "error");
+          alert("स्कॅन करताना त्रुटी: " + errMsg);
+          setProcessingState(false);
+        }
+      );
+    } catch (err) {
+      log(`सर्व्हर त्रुटी: ${err.message}`, "error");
+      alert("सर्व्हरशी संपर्क होऊ शकला नाही: " + err.message);
+      setProcessingState(false);
+    }
+  });
+
+  // Replace & Download
+  btnReplace.addEventListener("click", async () => {
+    if (!currentPdfFile) {
+      alert("कृपया आधी PDF फाईल अपलोड करा.");
+      return;
+    }
+    if (rules.length === 0) {
+      alert("कृपया बदलण्यासाठी किमान एक शब्द जोडा.");
+      return;
+    }
+
+    const rulesMap = {};
+    rules.forEach(r => { rulesMap[r.find] = r.replace; });
+
+    const formData = new FormData();
+    formData.append("file", currentPdfFile);
+    formData.append("rules", JSON.stringify(rulesMap));
+    formData.append("pages", pageRangeInput.value.trim() || "all");
+
+    setProcessingState(true, "मजकूर बदलण्याची प्रक्रिया सुरू होत आहे...");
+    resetLiveCounters();
+    if (downloadBanner) downloadBanner.classList.add("hidden");
+    if (downloadBannerMain) downloadBannerMain.classList.add("hidden");
+    log("⚡ मजकूर बदलणे सुरू झाले (लाइव्ह रिअल-टाइम)...", "info");
+
+    try {
+      await consumeStream(
+        "/api/replace_stream",
+        formData,
+        (data) => {
+          updateLiveCounters(data.find_count || 0, data.replace_count || 0, data.page, data.total_doc_pages || data.total, data.pct, data.msg);
+          valTotalFindCount.textContent = data.find_count || 0;
+          valTotalReplacements.textContent = data.replace_count || 0;
+          if (data.pages_modified !== undefined) {
+            valPagesModified.textContent = `${data.pages_modified} / ${data.total}`;
+          }
+          if (data.keyword_counts) {
+            renderBreakdown(data.keyword_counts, "बदलले");
+          }
+          log(data.msg, "info");
+        },
+        (data) => {
+          const stats = data.stats;
+          valTotalFindCount.textContent = stats.total_find_count || stats.total_replacements;
+          valTotalReplacements.textContent = stats.total_replacements;
+          valPagesModified.textContent = `${stats.pages_modified} / ${stats.processed_pages_count}`;
+          valTimeTaken.textContent = `${stats.time_taken_seconds}s`;
+
+          updateLiveCounters(stats.total_find_count || stats.total_replacements, stats.total_replacements, stats.processed_pages_count, stats.total_doc_pages, 100, "पूर्ण झाले!");
+          renderBreakdown(stats.keyword_replacements, "बदलले");
+
+          const fileName = data.file_name;
+          lastGeneratedFileName = fileName;
+
+          // 1. Right panel banner
+          if (lblDownloadFileName) lblDownloadFileName.textContent = `तयार फाईल: ${fileName}`;
+          if (downloadBanner) downloadBanner.classList.remove("hidden");
+          if (btnDownloadPDF) {
+            btnDownloadPDF.onclick = () => triggerDirectDownload(fileName, `एकूण बदल: ${stats.total_replacements}`);
+          }
+
+          // 2. Main Step 3 banner activation
+          const iconDownloadMain = document.getElementById("iconDownloadMain");
+          const titleDownloadMain = document.getElementById("titleDownloadMain");
+          if (iconDownloadMain) iconDownloadMain.textContent = "🎉";
+          if (titleDownloadMain) {
+            titleDownloadMain.textContent = "PDF मजकूर १००% अचूक बदलला आहे!";
+            titleDownloadMain.style.color = "#065F46";
+          }
+          if (lblDownloadFileNameMain) {
+            lblDownloadFileNameMain.textContent = `तयार फाईल: ${fileName} (${stats.total_replacements} बदल यशस्वी!)`;
+            lblDownloadFileNameMain.style.color = "#047857";
+          }
+          if (btnDownloadPDFMain) {
+            btnDownloadPDFMain.disabled = false;
+            btnDownloadPDFMain.style.opacity = "1";
+            btnDownloadPDFMain.style.cursor = "pointer";
+            btnDownloadPDFMain.classList.add("pulse-btn");
+            btnDownloadPDFMain.textContent = "📥 नवीन बदललेली PDF डाऊनलोड करा (Download PDF)";
+            btnDownloadPDFMain.onclick = () => triggerDirectDownload(fileName, `एकूण बदल: ${stats.total_replacements}`);
+          }
+          if (downloadBannerMain) {
+            downloadBannerMain.classList.remove("hidden");
+            downloadBannerMain.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+
+          // 3. Trigger robust direct download
+          triggerDirectDownload(fileName, `एकूण बदल: ${stats.total_replacements} (${stats.time_taken_seconds} सेकंद)`);
+
+          log(`🎉 प्रक्रिया यशस्वीरीत्या पूर्ण झाली! एकूण बदल: ${stats.total_replacements}`, "success");
+          setProcessingState(false);
+        },
+        (errMsg) => {
+          log(`त्रुटी: ${errMsg}`, "error");
+          alert("मजकूर बदलताना त्रुटी: " + errMsg);
+          setProcessingState(false);
+        }
+      );
+    } catch (err) {
+      log(`सर्व्हर त्रुटी: ${err.message}`, "error");
+      alert("सर्व्हरशी संपर्क होऊ शकला नाही: " + err.message);
+      setProcessingState(false);
+    }
+  });
+
+  function updateLiveCounters(findCount, replaceCount, currentPage, totalPages, pct, msg) {
+    const liveFindCount = document.getElementById("liveFindCount");
+    const liveReplaceCount = document.getElementById("liveReplaceCount");
+    const livePageNum = document.getElementById("livePageNum");
+
+    if (liveFindCount) liveFindCount.textContent = findCount;
+    if (liveReplaceCount) liveReplaceCount.textContent = replaceCount;
+    if (livePageNum) livePageNum.textContent = `${currentPage || 0} / ${totalPages || 0}`;
+
+    if (progressBarFill) progressBarFill.style.width = `${pct || 0}%`;
+    if (lblProgressPct) lblProgressPct.textContent = `${pct || 0}%`;
+    if (lblProgressMsg) lblProgressMsg.textContent = msg || "प्रक्रिया चालू आहे...";
+  }
+
+  function resetLiveCounters() {
+    updateLiveCounters(0, 0, 0, 0, 0, "सुरू होत आहे...");
+    valTotalFindCount.textContent = "0";
+    valTotalReplacements.textContent = "0";
+    valPagesModified.textContent = "0";
+    valTimeTaken.textContent = "0.0s";
+  }
+
+  function renderBreakdown(keywordCounts, actionLabel = "मॅचेस") {
+    breakdownList.innerHTML = "";
+    const entries = Object.entries(keywordCounts);
+    if (entries.length === 0) {
+      breakdownList.innerHTML = `<span class="text-muted">कोणतेही शब्द सापडले नाहीत.</span>`;
+      return;
+    }
+    entries.forEach(([key, count]) => {
+      const div = document.createElement("div");
+      div.className = "breakdown-item";
+      div.innerHTML = `
+        <span>• <strong>${escapeHtml(key)}</strong></span>
+        <span class="breakdown-badge">${count} ${actionLabel}</span>
+      `;
+      breakdownList.appendChild(div);
+    });
+  }
+
+  function setProcessingState(isProcessing, msg = "") {
+    btnScan.disabled = isProcessing;
+    btnReplace.disabled = isProcessing;
+    if (isProcessing) {
+      progressWrapper.classList.remove("hidden");
+      lblProgressMsg.textContent = msg;
+    } else {
+      setTimeout(() => {
+        progressWrapper.classList.add("hidden");
+      }, 1500);
+    }
+  }
+
+  btnClearLog.addEventListener("click", () => {
+    terminalLog.innerHTML = "";
+    log("लॉग साफ केला.", "info");
+  });
+
+  // =========================================================================
+  // Section 2: PDF Merger Logic
+  // =========================================================================
+  btnBrowseMergeFiles.addEventListener("click", () => pdfMergeInput.click());
+  dropzoneMerge.addEventListener("click", (e) => {
+    if (e.target !== btnBrowseMergeFiles) {
+      pdfMergeInput.click();
+    }
+  });
+
+  pdfMergeInput.addEventListener("change", (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      addMergeFiles(Array.from(e.target.files));
+      pdfMergeInput.value = "";
+    }
+  });
+
+  dropzoneMerge.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropzoneMerge.classList.add("dragover");
+  });
+
+  dropzoneMerge.addEventListener("dragleave", () => {
+    dropzoneMerge.classList.remove("dragover");
+  });
+
+  dropzoneMerge.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropzoneMerge.classList.remove("dragover");
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const droppedPdfs = Array.from(e.dataTransfer.files).filter(f => f.name.toLowerCase().endsWith(".pdf"));
+      if (droppedPdfs.length > 0) {
+        addMergeFiles(droppedPdfs);
+      } else {
+        alert("कृपया फक्त .pdf फाईल्स ड्रॅग करा.");
+      }
+    }
+  });
+
+  function addMergeFiles(newFiles) {
+    newFiles.forEach(file => {
+      // Avoid duplicate by name & size if needed, or allow all
+      mergeFiles.push(file);
+    });
+    renderMergeList();
+    log(`📑 PDF Merger: ${newFiles.length} फाईल्स जोडल्या. (एकूण: ${mergeFiles.length})`, "success");
+  }
+
+  function renderMergeList() {
+    mergeFilesList.innerHTML = "";
+    lblMergeCount.textContent = mergeFiles.length;
+
+    if (mergeFiles.length === 0) {
+      emptyMergeMsg.classList.remove("hidden");
+      mergeFilesList.appendChild(emptyMergeMsg);
+      lblMergeSummary.textContent = "किमान २ PDF फाईल्स निवडा.";
+      btnStartMerge.disabled = true;
+      return;
+    }
+
+    emptyMergeMsg.classList.add("hidden");
+    btnStartMerge.disabled = mergeFiles.length < 2;
+    lblMergeSummary.textContent = `${mergeFiles.length} फाईल्स एकत्र करण्यासाठी तयार आहेत.`;
+
+    mergeFiles.forEach((file, index) => {
+      const item = document.createElement("div");
+      item.className = "merge-item";
+      item.innerHTML = `
+        <div class="merge-item-left">
+          <span class="merge-item-order">${index + 1}</span>
+          <span class="merge-item-icon">📕</span>
+          <div class="merge-item-details">
+            <div class="merge-item-name" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</div>
+            <div class="merge-item-meta">
+              <span>${formatBytes(file.size)}</span>
+            </div>
+          </div>
+        </div>
+        <div class="merge-item-actions">
+          <button type="button" class="btn-move btn-move-up" data-idx="${index}" title="वर घ्या" ${index === 0 ? "disabled" : ""}>🔼</button>
+          <button type="button" class="btn-move btn-move-down" data-idx="${index}" title="खाली घ्या" ${index === mergeFiles.length - 1 ? "disabled" : ""}>🔽</button>
+          <button type="button" class="btn-icon btn-del-merge" data-idx="${index}" title="काढा">🗑️</button>
+        </div>
+      `;
+      mergeFilesList.appendChild(item);
+    });
+
+    // Reorder event listeners
+    document.querySelectorAll(".btn-move-up").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const idx = parseInt(e.currentTarget.getAttribute("data-idx"));
+        if (idx > 0) {
+          const temp = mergeFiles[idx];
+          mergeFiles[idx] = mergeFiles[idx - 1];
+          mergeFiles[idx - 1] = temp;
+          renderMergeList();
+        }
+      });
+    });
+
+    document.querySelectorAll(".btn-move-down").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const idx = parseInt(e.currentTarget.getAttribute("data-idx"));
+        if (idx < mergeFiles.length - 1) {
+          const temp = mergeFiles[idx];
+          mergeFiles[idx] = mergeFiles[idx + 1];
+          mergeFiles[idx + 1] = temp;
+          renderMergeList();
+        }
+      });
+    });
+
+    document.querySelectorAll(".btn-del-merge").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const idx = parseInt(e.currentTarget.getAttribute("data-idx"));
+        const removed = mergeFiles.splice(idx, 1);
+        renderMergeList();
+        log(`PDF फाईल काढली: ${removed[0].name}`, "info");
+      });
+    });
+  }
+
+  btnClearMergeList.addEventListener("click", () => {
+    if (mergeFiles.length === 0) return;
+    if (confirm("तुम्हाला सर्व PDF फाईल्स यादीतून काढून टाकायच्या आहेत का?")) {
+      mergeFiles = [];
+      renderMergeList();
+      if (mergeDownloadBanner) mergeDownloadBanner.classList.add("hidden");
+      log("सर्व फाईल्स यादीतून काढल्या.", "warning");
+    }
+  });
+
+  // Start Merge
+  btnStartMerge.addEventListener("click", async () => {
+    if (mergeFiles.length < 2) {
+      alert("कृपया PDF एकत्र (Merge) करण्यासाठी किमान २ फाईल्स निवडा.");
+      return;
+    }
+
+    const formData = new FormData();
+    mergeFiles.forEach((file) => {
+      formData.append("files", file, file.name);
+    });
+
+    btnStartMerge.disabled = true;
+    if (mergeProgressWrapper) mergeProgressWrapper.classList.remove("hidden");
+    if (mergeDownloadBanner) mergeDownloadBanner.classList.add("hidden");
+    if (lblMergeProgressMsg) lblMergeProgressMsg.textContent = "PDF एकत्र करण्याचे काम सुरू आहे...";
+    if (mergeProgressBarFill) mergeProgressBarFill.style.width = "0%";
+    log(`📑 ${mergeFiles.length} PDF फाईल्स एकत्र (Merge) करण्याचे काम सुरू झाले...`, "info");
+
+    try {
+      await consumeStream(
+        "/api/merge_stream",
+        formData,
+        (data) => {
+          if (mergeProgressBarFill) mergeProgressBarFill.style.width = `${data.pct || 0}%`;
+          if (lblMergeProgressPct) lblMergeProgressPct.textContent = `${data.pct || 0}%`;
+          if (lblMergeProgressMsg) lblMergeProgressMsg.textContent = data.msg;
+          log(data.msg, "info");
+        },
+        (data) => {
+          if (mergeProgressBarFill) mergeProgressBarFill.style.width = "100%";
+          if (lblMergeProgressPct) lblMergeProgressPct.textContent = "100%";
+          if (lblMergeProgressMsg) lblMergeProgressMsg.textContent = "सर्व PDF एकत्र झाल्या!";
+
+          const outName = data.file_name;
+          lastGeneratedFileName = outName;
+
+          if (lblMergeDownloadFileName) {
+            lblMergeDownloadFileName.textContent = `तयार फाईल: ${outName} (एकूण ${data.total_files} फाईल्स, ${data.total_pages} पाने)`;
+          }
+          if (mergeDownloadBanner) {
+            mergeDownloadBanner.classList.remove("hidden");
+            mergeDownloadBanner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+          if (btnDownloadMergedPDF) {
+            btnDownloadMergedPDF.onclick = () => triggerDirectDownload(outName, `एकत्रित: ${data.total_files} फाईल्स, ${data.total_pages} पाने`);
+          }
+
+          // Trigger download
+          triggerDirectDownload(outName, `एकत्रित: ${data.total_files} फाईल्स, ${data.total_pages} पाने`);
+
+          log(`🎉 सर्व PDF यशस्वीरीत्या एकत्र झाल्या! (एकूण पाने: ${data.total_pages})`, "success");
+          btnStartMerge.disabled = false;
+          setTimeout(() => {
+            if (mergeProgressWrapper) mergeProgressWrapper.classList.add("hidden");
+          }, 1500);
+        },
+        (errMsg) => {
+          log(`त्रुटी: ${errMsg}`, "error");
+          alert("PDF एकत्र करताना त्रुटी आली: " + errMsg);
+          btnStartMerge.disabled = false;
+          if (mergeProgressWrapper) mergeProgressWrapper.classList.add("hidden");
+        }
+      );
+    } catch (err) {
+      log(`सर्व्हर त्रुटी: ${err.message}`, "error");
+      alert("सर्व्हरशी संपर्क होऊ शकला नाही: " + err.message);
+      btnStartMerge.disabled = false;
+      if (mergeProgressWrapper) mergeProgressWrapper.classList.add("hidden");
+    }
+  });
+
+  // Initial render
+  renderRules();
+  renderMergeList();
+});
+
+  </script>
+</body>
+</html>
