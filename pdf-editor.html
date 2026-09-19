@@ -1,0 +1,4555 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EMUDRA ADVANCED PDF STUDIO PRO | संपूर्ण मराठी व इंग्रजी PDF एडिटर, OCR व टूल्स</title>
+  <meta name="description" content="ई-मुद्रा प्रगत PDF स्टुडिओ: PDF एडिट करा, मजकूर शोधा व बदला, स्वाक्षरी, हायलाईट, पानांचा क्रम बदला (Drag & Drop), Merge/Split, OCR (मराठी/हिंदी/इंग्रजी), वॉटरमार्क, पेज नंबर आणि Redaction.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/emudra_compressor_icon.png">
+
+  <!-- Google Fonts: Mukta, Poppins, Great Vibes for Signatures -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6.5.1 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- PDF.js, PDF-Lib, JSZip, jsPDF & Tesseract.js CDNs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark-base: #090d16;
+      --bg-surface: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #2d3d54;
+      --border-glass: rgba(255, 255, 255, 0.1);
+      --border-glass-glow: #0ea5e9;
+      --accent-cyan: #38bdf8;
+      --accent-blue: #0284c7;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-rose: #f43f5e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --panel-bg: #0e1626;
+      --toolbar-bg: #152033;
+      --canvas-bg: #0b111e;
+      --active-tool: #0284c7;
+      --box-shadow-glow: 0 0 20px rgba(14, 165, 233, 0.3);
+    }
+
+    body.light-theme {
+      --bg-dark-base: #e2e8f0;
+      --bg-surface: #ffffff;
+      --bg-card: #f8fafc;
+      --bg-card-hover: #f1f5f9;
+      --border-glass: #cbd5e1;
+      --border-glass-glow: #0284c7;
+      --accent-cyan: #0284c7;
+      --accent-blue: #0369a1;
+      --accent-emerald: #059669;
+      --accent-amber: #d97706;
+      --accent-purple: #7c3aed;
+      --accent-rose: #e11d48;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --panel-bg: #f1f5f9;
+      --toolbar-bg: #ffffff;
+      --canvas-bg: #cbd5e1;
+      --active-tool: #0284c7;
+      --box-shadow-glow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    html, body {
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      font-family: 'Mukta', 'Poppins', sans-serif;
+      background: var(--bg-dark-base);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Tricolor Indian Government Ribbon */
+    .gov-tricolor-stripe {
+      height: 3px;
+      background: linear-gradient(90deg, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%);
+      width: 100%;
+      flex-shrink: 0;
+      z-index: 1000;
+    }
+
+    /* Top Application Bar - Acrobat Pro Style */
+    .app-header {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.15rem;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .brand-text h1 {
+      font-size: 0.98rem;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-text h1 span.badge-pro {
+      background: linear-gradient(135deg, #ea580c, #f59e0b);
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      box-shadow: 0 2px 6px rgba(234, 88, 12, 0.4);
+      text-transform: uppercase;
+    }
+
+    .brand-text p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.1;
+    }
+
+    .doc-status-pill {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 4px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-main);
+      max-width: 340px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    .doc-status-pill i {
+      color: var(--accent-cyan);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Desktop Pro 3D Button Suite */
+    .btn-action {
+      background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+      border: 1px solid #475569;
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+      color: #f8fafc;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+
+    .btn-action:hover {
+      background: linear-gradient(180deg, #475569 0%, #334155 100%);
+      border-color: #64748b;
+      border-top-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-action:active {
+      transform: translateY(1px);
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6);
+    }
+
+    .btn-action.btn-primary {
+      background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+      border: 1px solid #0369a1;
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+      border-bottom: 1px solid #0c4a6e;
+      color: #ffffff;
+      box-shadow: 0 3px 8px rgba(2, 132, 199, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-action.btn-primary:hover {
+      background: linear-gradient(180deg, #0ea5e9 0%, #0284c7 100%);
+      box-shadow: 0 5px 14px rgba(2, 132, 199, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-action.btn-success {
+      background: linear-gradient(180deg, #059669 0%, #047857 100%);
+      border: 1px solid #047857;
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+      border-bottom: 1px solid #064e3b;
+      color: #ffffff;
+      box-shadow: 0 3px 8px rgba(5, 150, 105, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-action.btn-success:hover {
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+      box-shadow: 0 5px 14px rgba(16, 185, 129, 0.6);
+    }
+
+    .btn-action.btn-amber {
+      background: linear-gradient(180deg, #d97706 0%, #b45309 100%);
+      border: 1px solid #b45309;
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      box-shadow: 0 3px 8px rgba(217, 119, 6, 0.4);
+    }
+
+    .btn-action.btn-purple {
+      background: linear-gradient(180deg, #7c3aed 0%, #6d28d9 100%);
+      border: 1px solid #6d28d9;
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      box-shadow: 0 3px 8px rgba(124, 58, 237, 0.4);
+    }
+
+    .btn-action.btn-sm {
+      padding: 4px 10px;
+      font-size: 0.74rem;
+      border-radius: 5px;
+    }
+
+    .btn-action.btn-icon-only {
+      padding: 6px 9px;
+    }
+
+    /* Auto Save Indicator */
+    .save-indicator {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #34d399;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    /* Ribbon Tabs Strip - Acrobat / Office Style */
+    .feature-tabs-bar {
+      background: #111827;
+      border-bottom: 1px solid #1f2937;
+      padding: 4px 10px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      flex-shrink: 0;
+      scrollbar-width: thin;
+      box-shadow: inset 0 -1px 0 #1f2937;
+    }
+
+    .feature-tab {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid #334155;
+      border-bottom: none;
+      color: #94a3b8;
+      padding: 7px 16px;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+    }
+
+    .feature-tab:hover {
+      color: #f8fafc;
+      background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+    }
+
+    .feature-tab.active {
+      color: #38bdf8;
+      background: linear-gradient(180deg, #1e293b 0%, #111827 100%);
+      border-color: #38bdf8;
+      border-top: 2px solid #38bdf8;
+      font-weight: 800;
+      box-shadow: 0 -2px 10px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Sub Toolbar Ribbon Container */
+    .sub-toolbar-ribbon {
+      background: linear-gradient(180deg, #152033 0%, #0f172a 100%);
+      border-bottom: 1px solid #000;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      min-height: 52px;
+      position: relative;
+      z-index: 90;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+
+    .ribbon-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    .ribbon-divider {
+      width: 1px;
+      height: 26px;
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,0.15), transparent);
+      margin: 0 4px;
+    }
+
+    .tool-btn {
+      background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
+      border: 1px solid #4a5568;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.7);
+      color: #e2e8f0;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .tool-btn:hover {
+      background: linear-gradient(180deg, #4a5568 0%, #2d3748 100%);
+      color: #ffffff;
+      border-color: #718096;
+      transform: translateY(-1px);
+    }
+
+    .tool-btn:active {
+      transform: translateY(1px);
+      background: linear-gradient(180deg, #1a202c 0%, #2d3748 100%);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .tool-btn.active {
+      background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+      border-color: #38bdf8;
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+
+    .tool-select, .tool-input {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(0,0,0,0.5);
+      color: var(--text-main);
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      outline: none;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s;
+    }
+
+    .tool-select:focus, .tool-input:focus {
+      border-color: rgba(56, 189, 248, 0.6);
+      background: rgba(15, 23, 42, 0.8);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4),
+                  0 0 10px rgba(56, 189, 248, 0.3);
+    }
+
+    .tool-color-picker {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      background: #0f172a;
+      cursor: pointer;
+      box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5),
+                  inset -1px -1px 3px rgba(255, 255, 255, 0.05);
+      transition: all 0.2s;
+    }
+
+    .tool-slider-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.2);
+      padding: 0 10px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.02);
+      box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .tool-slider-box input[type="range"] {
+      width: 70px;
+      height: 4px;
+      accent-color: var(--accent-cyan);
+      cursor: pointer;
+    }
+
+    /* Main Workspace Layout */
+    .app-workspace {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Left Sidebar: Page Thumbnails & Management */
+    .sidebar-left {
+      width: 240px;
+      background: var(--panel-bg);
+      border-right: 1px solid var(--border-glass);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 50;
+    }
+
+    .sidebar-left.collapsed {
+      width: 0px;
+      overflow: hidden;
+      border-right: none;
+    }
+
+    .sidebar-header {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .sidebar-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-glass);
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .sidebar-tab-btn {
+      flex: 1;
+      padding: 6px 8px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .sidebar-tab-btn.active {
+      color: var(--accent-cyan);
+      border-bottom-color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Thumbnail Cards with Drag-and-Drop */
+    .thumbnail-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-glass);
+      border-radius: 8px;
+      padding: 6px;
+      cursor: grab;
+      position: relative;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+    }
+
+    .thumbnail-card:active {
+      cursor: grabbing;
+    }
+
+    .thumbnail-card.active {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+      background: rgba(56, 189, 248, 0.06);
+    }
+
+    .thumbnail-card.dragging {
+      opacity: 0.4;
+      border-style: dashed;
+    }
+
+    .thumbnail-card.drag-over {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+      transform: scale(1.02);
+    }
+
+    .thumb-canvas-box {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      min-height: 140px;
+    }
+
+    .thumb-canvas-box canvas {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .thumb-footer {
+      width: 100%;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .thumb-page-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .thumb-card-actions {
+      display: flex;
+      gap: 3px;
+    }
+
+    .thumb-btn {
+      background: transparent;
+      border: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .thumb-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-main);
+      border-color: var(--accent-cyan);
+    }
+
+    .thumb-btn.btn-delete:hover {
+      background: rgba(244, 63, 94, 0.15);
+      color: var(--accent-rose);
+      border-color: var(--accent-rose);
+    }
+
+    /* Central Viewport & Canvas */
+    .viewport-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--canvas-bg);
+      position: relative;
+    }
+
+    .canvas-scroll-container {
+      flex: 1;
+      overflow: auto;
+      padding: 24px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      position: relative;
+      cursor: default;
+    }
+
+    .canvas-scroll-container.mode-pan {
+      cursor: grab;
+    }
+    .canvas-scroll-container.mode-pan:active {
+      cursor: grabbing;
+    }
+    .canvas-scroll-container.mode-crosshair {
+      cursor: crosshair;
+    }
+    .canvas-scroll-container.mode-text {
+      cursor: text;
+    }
+
+    /* Page Wrapper Stack - Desktop Pro Viewport */
+    .pdf-page-wrapper {
+      position: relative;
+      background: #ffffff;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      transform-origin: top center;
+      transition: box-shadow 0.2s, transform 0.15s ease-out;
+    }
+
+    .pdf-render-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Text Layer for Selection, Click-to-Edit & Find/Replace */
+    .pdf-text-layer {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      opacity: 0.25;
+      line-height: 1.0;
+      pointer-events: auto;
+    }
+
+    .pdf-text-layer span {
+      color: transparent;
+      position: absolute;
+      white-space: pre;
+      cursor: text;
+      transform-origin: 0% 0%;
+    }
+
+    /* Annotation SVG Overlay Layer */
+    .pdf-annotation-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .annotation-element {
+      pointer-events: auto;
+      cursor: pointer;
+      position: absolute;
+    }
+
+    /* Draggable / Resizable Annotation Elements */
+    .anno-box {
+      border: 1px dashed transparent;
+      position: absolute;
+      user-select: none;
+    }
+
+    .anno-box.selected {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 1px var(--accent-cyan);
+    }
+
+    .anno-resizer {
+      width: 8px;
+      height: 8px;
+      background: #ffffff;
+      border: 1.5px solid var(--accent-cyan);
+      border-radius: 50%;
+      position: absolute;
+      display: none;
+    }
+
+    .anno-box.selected .anno-resizer {
+      display: block;
+    }
+
+    .anno-resizer.nw { top: -4px; left: -4px; cursor: nw-resize; }
+    .anno-resizer.ne { top: -4px; right: -4px; cursor: ne-resize; }
+    .anno-resizer.sw { bottom: -4px; left: -4px; cursor: sw-resize; }
+    .anno-resizer.se { bottom: -4px; right: -4px; cursor: se-resize; }
+
+    /* Sticky Notes Pin */
+    .sticky-note-pin {
+      width: 28px;
+      height: 28px;
+      background: #fbbf24;
+      color: #78350f;
+      border-radius: 50% 50% 50% 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transform: rotate(-45deg);
+      transition: transform 0.15s;
+    }
+    .sticky-note-pin i {
+      transform: rotate(45deg);
+    }
+    .sticky-note-pin:hover {
+      transform: rotate(-45deg) scale(1.15);
+    }
+
+    .sticky-note-popover {
+      position: absolute;
+      top: 32px;
+      left: 0;
+      width: 200px;
+      background: #fef08a;
+      color: #713f12;
+      border-radius: 6px;
+      padding: 8px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+      border: 1px solid #fde047;
+      z-index: 50;
+      font-size: 0.8rem;
+    }
+
+    /* Redaction Solid Blocks */
+    .redaction-block {
+      position: absolute;
+      border: 1.5px dashed #e11d48;
+      background: rgba(225, 29, 72, 0.2);
+    }
+    .redaction-block.applied-black {
+      background: #000000 !important;
+      border: none;
+    }
+    .redaction-block.applied-white {
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Search Match Highlight */
+    .search-match-highlight {
+      background: rgba(254, 240, 138, 0.7);
+      border-bottom: 2px solid #ca8a04;
+      position: absolute;
+      pointer-events: none;
+      z-index: 8;
+      border-radius: 2px;
+    }
+
+    .search-match-highlight.active-match {
+      background: rgba(56, 189, 248, 0.8);
+      border-bottom: 2px solid #0284c7;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+    }
+
+    /* Bottom Status & Navigation Bar */
+    .app-statusbar {
+      background: var(--toolbar-bg);
+      border-top: 1px solid var(--border-glass);
+      padding: 5px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .statusbar-left, .statusbar-center, .statusbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--bg-card);
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid var(--border-glass);
+    }
+
+    .page-nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .page-nav-btn:hover:not(:disabled) {
+      background: var(--bg-card-hover);
+      color: var(--accent-cyan);
+    }
+
+    .page-nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .page-num-input {
+      width: 40px;
+      height: 22px;
+      background: transparent;
+      border: 1px solid var(--border-glass);
+      border-radius: 4px;
+      color: var(--text-main);
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.78rem;
+    }
+
+    .zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .zoom-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      width: 26px;
+      height: 26px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    .zoom-btn:hover {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    .zoom-slider {
+      width: 80px;
+      accent-color: var(--accent-cyan);
+      cursor: pointer;
+    }
+
+    /* Floating Search & Replace Bar */
+    .floating-search-bar {
+      position: absolute;
+      top: 14px;
+      right: 24px;
+      background: var(--toolbar-bg);
+      border: 1px solid var(--border-glass-glow);
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      padding: 10px 14px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 120;
+      width: 340px;
+      backdrop-filter: blur(15px);
+    }
+
+    .floating-search-bar.active {
+      display: flex;
+    }
+
+    .search-input-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .search-field {
+      flex: 1;
+      height: 30px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: 4px;
+      color: var(--text-main);
+      padding: 0 8px;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .search-field:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .search-options-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .search-checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .match-counter-badge {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-cyan);
+      border-radius: 12px;
+      padding: 1px 8px;
+      font-weight: 700;
+      font-size: 0.72rem;
+    }
+
+    /* Full-Screen / Modal Dialogs */
+    .app-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .app-modal.active {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-glass-glow);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-main);
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .modal-close-btn:hover {
+      color: var(--text-main);
+    }
+
+    .modal-body {
+      padding: 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-footer {
+      padding: 12px 18px;
+      border-top: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Form Fields in Modals */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-control {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+    }
+
+    /* Signature Canvas Pad */
+    .signature-pad-container {
+      border: 2px dashed var(--border-glass);
+      border-radius: 8px;
+      background: #ffffff;
+      height: 180px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .signature-pad-canvas {
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+    }
+
+    /* Before/After Slider */
+    .compare-container {
+      position: relative;
+      width: 100%;
+      height: 480px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-glass);
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .compare-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .compare-slider-bar {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      cursor: ew-resize;
+      z-index: 20;
+    }
+
+    .compare-slider-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      background: var(--accent-cyan);
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 0.75rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 40px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .app-toast {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-glass-glow);
+      color: var(--text-main);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+      animation: toastIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      max-width: 360px;
+    }
+
+    .app-toast.toast-success i { color: var(--accent-emerald); }
+    .app-toast.toast-error i { color: var(--accent-rose); }
+    .app-toast.toast-info i { color: var(--accent-cyan); }
+    .app-toast.toast-warning i { color: var(--accent-amber); }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* OCR Live Progress Bar */
+    .ocr-progress-box {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid var(--border-glass);
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .progress-bar-track {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0284c7, #38bdf8);
+      width: 0%;
+      transition: width 0.2s;
+    }
+
+    /* Print Styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-render-container, #print-render-container * {
+        visibility: visible;
+      }
+      #print-render-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+      .print-page {
+        page-break-after: always;
+        width: 100%;
+      }
+    }
+
+    /* Drag & Drop File Landing Screen */
+    .empty-state-dropzone {
+      position: absolute;
+      inset: 20px;
+      border: 2px dashed var(--border-glass-glow);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.4);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 40;
+    }
+
+    .empty-state-dropzone:hover, .empty-state-dropzone.dragover {
+      background: rgba(56, 189, 248, 0.08);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.25);
+    }
+
+    .dropzone-icon {
+      width: 72px;
+      height: 72px;
+      background: rgba(56, 189, 248, 0.12);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--accent-cyan);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Tricolor Indian Government Ribbon -->
+  <div class="gov-tricolor-stripe"></div>
+
+  <!-- Main App Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo" title="eMudra CSC Pro Studio">
+        <i class="fa-solid fa-file-pdf"></i>
+      </div>
+      <div class="brand-text">
+        <h1>
+          <span>eMudra PDF Studio Pro</span>
+          <span class="badge-pro">PRO SUITE</span>
+        </h1>
+        <p>संपूर्ण मराठी व इंग्रजी PDF एडिटर, OCR व टूल्स • आपले सरकार केंद्र</p>
+      </div>
+    </div>
+
+    <!-- Active Document Info -->
+    <div class="doc-status-pill" id="doc-info-badge" style="display: none;">
+      <i class="fa-solid fa-file-lines"></i>
+      <span id="doc-name-text">दस्तऐवज लोड झालेला नाही</span>
+      <span style="color: var(--text-muted); font-size: 0.72rem;" id="doc-meta-text"></span>
+    </div>
+
+    <div class="save-indicator" id="auto-save-status">
+      <i class="fa-solid fa-circle-check"></i> <span>तयार (Ready)</span>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <!-- File Open Buttons -->
+      <button class="btn-action" onclick="triggerFileInput()" title="PDF फाईल उघडा (Open PDF)">
+        <i class="fa-solid fa-folder-open"></i> <span>PDF उघडा</span>
+      </button>
+      <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;" onchange="handleFileSelected(event)">
+
+      <button class="btn-action" onclick="openJpgToPdfModal()" title="फोटो / इमेजेस PDF मध्ये बदला (Images to PDF)">
+        <i class="fa-solid fa-images"></i> <span>फोटो ते PDF</span>
+      </button>
+
+      <button class="btn-action btn-icon-only" onclick="openRecentFilesModal()" title="अलीकडील फाईल्स (Recent Files)">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+      </button>
+
+      <!-- History Undo / Redo -->
+      <div class="ribbon-divider"></div>
+      <button class="btn-action btn-icon-only" id="undo-btn" onclick="undoAction()" title="पूर्ववत करा (Undo - Ctrl+Z)" disabled>
+        <i class="fa-solid fa-rotate-left"></i>
+      </button>
+      <button class="btn-action btn-icon-only" id="redo-btn" onclick="redoAction()" title="पुन्हा करा (Redo - Ctrl+Y)" disabled>
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+
+      <!-- Print & Export -->
+      <div class="ribbon-divider"></div>
+      <button class="btn-action" onclick="printPdfDocument()" title="थेट प्रिंट करा (Print - Ctrl+P)">
+        <i class="fa-solid fa-print"></i> <span>प्रिंट</span>
+      </button>
+      <button class="btn-action btn-primary" onclick="openExportModal()" title="PDF सेव्ह करा / डाउनलोड करा (Ctrl+S)">
+        <i class="fa-solid fa-download"></i> <span>PDF डाउनलोड</span>
+      </button>
+
+      <!-- Theme & Help -->
+      <button class="btn-action btn-icon-only" onclick="toggleTheme()" id="theme-toggle-btn" title="डार्क / लाईट थीम">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <button class="btn-action btn-icon-only" onclick="openShortcutsModal()" title="शॉर्टकट्स व मदत (?)">
+        <i class="fa-solid fa-circle-question"></i>
+      </button>
+      <a href="index.html" class="btn-action btn-sm" title="मुख्य पोर्टलवर परत जा">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- Feature Navigation Tabs Bar -->
+  <nav class="feature-tabs-bar" id="feature-tabs-nav">
+    <button class="feature-tab active" data-tab="edit" onclick="switchFeatureTab('edit')">
+      <i class="fa-solid fa-pen-to-square"></i> <span>१. मजकूर व भाष्य (Edit & Annotate)</span>
+    </button>
+    <button class="feature-tab" data-tab="search" onclick="switchFeatureTab('search')">
+      <i class="fa-solid fa-magnifying-glass"></i> <span>२. शोधा व बदला (Search & Replace)</span>
+    </button>
+    <button class="feature-tab" data-tab="pages" onclick="switchFeatureTab('pages')">
+      <i class="fa-solid fa-folder-tree"></i> <span>३. पान व्यवस्थापन (Page Manager)</span>
+    </button>
+    <button class="feature-tab" data-tab="converter" onclick="switchFeatureTab('converter')">
+      <i class="fa-solid fa-file-export"></i> <span>४. कन्व्हर्टर (Converter)</span>
+    </button>
+    <button class="feature-tab" data-tab="ocr" onclick="switchFeatureTab('ocr')">
+      <i class="fa-solid fa-eye"></i> <span>५. OCR स्कॅन ओळख (Smart OCR)</span>
+    </button>
+    <button class="feature-tab" data-tab="security" onclick="switchFeatureTab('security')">
+      <i class="fa-solid fa-shield-halved"></i> <span>६. सुरक्षा व वॉटरमार्क (Security & Tools)</span>
+    </button>
+    <button class="feature-tab" data-tab="compare" onclick="switchFeatureTab('compare')">
+      <i class="fa-solid fa-sliders"></i> <span>७. प्रो टूल्स व तुलना (Pro Compare)</span>
+    </button>
+  </nav>
+
+  <!-- Contextual Sub-Toolbar Ribbon (Changes based on active Feature Tab) -->
+  <div class="sub-toolbar-ribbon" id="sub-toolbar">
+
+    <!-- RIBBON 1: EDIT & ANNOTATE -->
+    <div class="ribbon-group" id="ribbon-group-edit">
+      <button class="tool-btn active" id="tool-select" onclick="setActiveTool('select')" title="सिलेक्ट व मूव्ह (Select & Pan)">
+        <i class="fa-solid fa-arrow-pointer"></i> <span>सिलेक्ट</span>
+      </button>
+      <button class="tool-btn" id="tool-text" onclick="setActiveTool('text')" title="PDF वर क्लिक करून मजकूर जोडा किंवा बदला">
+        <i class="fa-solid fa-font"></i> <span>मजकूर जोडा (Text)</span>
+      </button>
+      <button class="tool-btn" id="tool-highlight" onclick="setActiveTool('highlight')" title="हायलाईट करा (Highlight)">
+        <i class="fa-solid fa-highlighter"></i> <span>हायलाईट</span>
+      </button>
+      <button class="tool-btn" id="tool-pen" onclick="setActiveTool('pen')" title="पेन / फ्रीहँड ड्रॉईंग (Pen)">
+        <i class="fa-solid fa-pencil"></i> <span>पेन ड्रॉईंग</span>
+      </button>
+
+      <!-- Shapes Dropdown -->
+      <select class="tool-select" id="shape-select" onchange="setActiveShape(this.value)" title="आकार निवडा">
+        <option value="rect">चौकोन (Rectangle)</option>
+        <option value="circle">वर्तुळ (Circle)</option>
+        <option value="arrow">बाण (Arrow)</option>
+        <option value="line">रेषा (Line)</option>
+      </select>
+      <button class="tool-btn" id="tool-shape" onclick="setActiveTool('shape')" title="आकार काढा (Shape)">
+        <i class="fa-solid fa-shapes"></i> <span>आकार</span>
+      </button>
+
+      <!-- Signature Pad Trigger -->
+      <button class="tool-btn" onclick="openSignatureModal()" title="डिजिटल सही जोडा (Digital Signature)">
+        <i class="fa-solid fa-signature"></i> <span>सही (Signature)</span>
+      </button>
+
+      <!-- Sticky Notes -->
+      <button class="tool-btn" id="tool-note" onclick="setActiveTool('note')" title="कमेंट किंवा टीप जोडा (Sticky Note)">
+        <i class="fa-solid fa-note-sticky"></i> <span>कमेंट टीप</span>
+      </button>
+
+      <!-- Redaction Tool -->
+      <button class="tool-btn" id="tool-redact" onclick="setActiveTool('redact')" title="माहिती लपवा (Redaction Blackout/Whiteout)">
+        <i class="fa-solid fa-eye-slash"></i> <span>Redaction</span>
+      </button>
+
+      <div class="ribbon-divider"></div>
+
+      <!-- Color & Thickness Controls -->
+      <input type="color" class="tool-color-picker" id="tool-color" value="#ffea00" onchange="updateToolColor(this.value)" title="रंग निवडा (Color Picker)">
+      <div class="tool-slider-box" title="आकार / जाडी (Stroke Size)">
+        <span>आकार:</span>
+        <input type="range" id="tool-stroke-size" min="1" max="24" value="4" onchange="updateToolStrokeSize(this.value)">
+        <span id="stroke-size-val">4px</span>
+      </div>
+      <div class="tool-slider-box" title="पारदर्शकता (Opacity)">
+        <span>पारदर्शकता:</span>
+        <input type="range" id="tool-opacity" min="10" max="100" value="70" onchange="updateToolOpacity(this.value)">
+        <span id="opacity-val">70%</span>
+      </div>
+    </div>
+
+    <!-- RIBBON 2: SEARCH & REPLACE -->
+    <div class="ribbon-group" id="ribbon-group-search" style="display: none;">
+      <button class="tool-btn btn-primary" onclick="toggleSearchBar(true)" title="शोधा व बदला विंडो उघडा (Ctrl+F)">
+        <i class="fa-solid fa-magnifying-glass"></i> <span>शोधा व बदला बार उघडा</span>
+      </button>
+      <span style="font-size: 0.78rem; color: var(--text-muted);">
+        💡 PDF मधील मजकूर शोधून एका क्लिकवर बदलण्यासाठी Ctrl+F वापरा.
+      </span>
+    </div>
+
+    <!-- RIBBON 3: PAGE MANAGER -->
+    <div class="ribbon-group" id="ribbon-group-pages" style="display: none;">
+      <button class="tool-btn" onclick="rotateCurrentPage(90)" title="सध्याचे पान ९० अंश उजवीकडे फिरवा">
+        <i class="fa-solid fa-rotate-right"></i> <span>पान फिरवा (Rotate 90°)</span>
+      </button>
+      <button class="tool-btn" onclick="rotateAllPages(90)" title="सर्व पाने ९० अंश फिरवा">
+        <i class="fa-solid fa-arrows-rotate"></i> <span>सर्व पाने फिरवा</span>
+      </button>
+      <button class="tool-btn" onclick="duplicateCurrentPage()" title="सध्याच्या पानाची नक्कल (Duplicate) करा">
+        <i class="fa-solid fa-copy"></i> <span>पान Duplicate करा</span>
+      </button>
+      <button class="tool-btn" onclick="deleteCurrentPage()" style="color: var(--accent-rose);" title="सध्याचे पान हटवा">
+        <i class="fa-solid fa-trash"></i> <span>पान हटवा</span>
+      </button>
+      <div class="ribbon-divider"></div>
+      <button class="tool-btn btn-primary" onclick="openMergePdfModal()" title="अनेक PDF एकत्र करा (Merge PDF)">
+        <i class="fa-solid fa-object-group"></i> <span>अनेक PDF एकत्र करा (Merge)</span>
+      </button>
+      <button class="tool-btn" onclick="openSplitPdfModal()" title="PDF तुकडे करा (Split PDF)">
+        <i class="fa-solid fa-scissors"></i> <span>PDF Split करा</span>
+      </button>
+      <button class="tool-btn" onclick="extractCurrentPageAsPdf()" title="केवळ हे पान स्वतंत्र PDF म्हणून डाउनलोड करा">
+        <i class="fa-solid fa-file-circle-check"></i> <span>निवडक पान डाउनलोड</span>
+      </button>
+    </div>
+
+    <!-- RIBBON 4: CONVERTER -->
+    <div class="ribbon-group" id="ribbon-group-converter" style="display: none;">
+      <button class="tool-btn btn-primary" onclick="convertPdfToImages('png')" title="सर्व पाने PNG फोटो स्वरूपात डाउनलोड करा">
+        <i class="fa-solid fa-file-image"></i> <span>PDF ते PNG (ZIP डाउनलोड)</span>
+      </button>
+      <button class="tool-btn" onclick="convertPdfToImages('jpg')" title="सर्व पाने JPG फोटो स्वरूपात डाउनलोड करा">
+        <i class="fa-solid fa-image"></i> <span>PDF ते JPG (ZIP डाउनलोड)</span>
+      </button>
+      <button class="tool-btn" onclick="downloadCurrentPageImage()" title="सध्याचे पान फोटो (PNG) म्हणून डाउनलोड करा">
+        <i class="fa-solid fa-download"></i> <span>चालू पान इमेज डाउनलोड</span>
+      </button>
+      <div class="ribbon-divider"></div>
+      <button class="tool-btn" onclick="exportPdfTextToTxt()" title="PDF मधील सर्व मजकूर टेक्स्ट फाईलमध्ये सेव्ह करा">
+        <i class="fa-solid fa-file-lines"></i> <span>मजकूर TXT एक्सपोर्ट</span>
+      </button>
+      <button class="tool-btn" onclick="openJpgToPdfModal()" title="फोटो एकत्र करून नवीन PDF बनवा">
+        <i class="fa-solid fa-file-circle-plus"></i> <span>JPG/PNG ते PDF</span>
+      </button>
+    </div>
+
+    <!-- RIBBON 5: OCR & SMART SEARCH -->
+    <div class="ribbon-group" id="ribbon-group-ocr" style="display: none;">
+      <select class="tool-select" id="ocr-lang-select" title="OCR भाषा निवडा">
+        <option value="mar+eng">मराठी + इंग्रजी (Marathi + English)</option>
+        <option value="mar">केवळ मराठी (Marathi Only)</option>
+        <option value="hin+eng">हिंदी + इंग्रजी (Hindi + English)</option>
+        <option value="eng">केवळ इंग्रजी (English Only)</option>
+      </select>
+      <button class="tool-btn btn-primary" onclick="runOcrOnCurrentPage()" id="run-ocr-btn" title="चालू पानातील मजकूर ओळखा (Tesseract OCR)">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Tesseract OCR</span>
+      </button>
+      <button class="tool-btn btn-amber" onclick="runGoogleVisionOcrOnCurrentPage()" title="Google Cloud Vision AI द्वारे १००% अचूक मराठी OCR">
+        <i class="fa-brands fa-google"></i> <span>Google Vision OCR (मराठी)</span>
+      </button>
+      <button class="tool-btn" onclick="openGoogleVisionSettingsModal()" title="Google Cloud Vision API Key प्रविष्ट व सेव्ह करा">
+        <i class="fa-solid fa-key"></i> <span>API Key सेट करा</span>
+      </button>
+      <button class="tool-btn" onclick="openOcrResultModal()" title="ओळखलेला मजकूर पहा व कॉपी करा">
+        <i class="fa-solid fa-clipboard"></i> <span>OCR निकाल पहा</span>
+      </button>
+    </div>
+
+    <!-- RIBBON 6: SECURITY & WATERMARK -->
+    <div class="ribbon-group" id="ribbon-group-security" style="display: none;">
+      <button class="tool-btn btn-primary" onclick="openWatermarkModal()" title="वॉटरमार्क जोडा (Text Watermark)">
+        <i class="fa-solid fa-stamp"></i> <span>वॉटरमार्क जोडा</span>
+      </button>
+      <button class="tool-btn" onclick="openPageNumberModal()" title="पान क्रमांक जोडा (Page Numbers)">
+        <i class="fa-solid fa-list-ol"></i> <span>पान क्रमांक (Header/Footer)</span>
+      </button>
+      <button class="tool-btn" onclick="applyRedactionsToDocument()" style="color: var(--accent-rose);" title="संवेदनशील मजकूर कायमचा नष्ट करा">
+        <i class="fa-solid fa-user-secret"></i> <span>कायमचे Redaction लागू करा</span>
+      </button>
+      <button class="tool-btn" onclick="openPasswordProtectModal()" title="PDF ला पासवर्ड लावा">
+        <i class="fa-solid fa-lock"></i> <span>पासवर्ड लॉक (Password)</span>
+      </button>
+    </div>
+
+    <!-- RIBBON 7: PRO TOOLS & COMPARE -->
+    <div class="ribbon-group" id="ribbon-group-compare" style="display: none;">
+      <button class="tool-btn btn-primary" onclick="openCompareModal()" title="बदल करण्यापूर्वी आणि नंतर तुलना करा">
+        <i class="fa-solid fa-code-compare"></i> <span>Before / After तुलना</span>
+      </button>
+      <button class="tool-btn" onclick="openCompressModal()" title="शासकीय पोर्टलसाठी PDF कॉम्प्रेशन साईझ सेट करा">
+        <i class="fa-solid fa-file-zipper"></i> <span>PDF कॉम्प्रेशन (256KB/500KB)</span>
+      </button>
+      <button class="tool-btn" onclick="resetAllDocumentEdits()" title="सर्व केलेले बदल रद्द करून मूळ PDF परत आणा">
+        <i class="fa-solid fa-trash-arrow-up"></i> <span>सर्व बदल रद्द करा</span>
+      </button>
+    </div>
+
+    <!-- Quick Mode Toggles (Right) -->
+    <div class="ribbon-group">
+      <button class="tool-btn btn-icon-only" onclick="toggleSidebar()" id="toggle-sidebar-btn" title="थंबनेल्स पॅनल दाखवा / लपवा">
+        <i class="fa-solid fa-table-columns"></i>
+      </button>
+      <button class="tool-btn btn-icon-only" onclick="togglePanMode()" id="tool-pan-toggle" title="हँड टूल (Pan / Drag Canvas)">
+        <i class="fa-solid fa-hand"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Application Workspace -->
+  <main class="app-workspace">
+
+    <!-- Left Sidebar: Thumbnail Drag & Drop & Pages List -->
+    <aside class="sidebar-left" id="sidebar-left">
+      <div class="sidebar-header">
+        <span><i class="fa-solid fa-layer-group"></i> पाने (Pages: <span id="pages-count-badge">0</span>)</span>
+        <button class="thumb-btn" onclick="triggerAddPagesInput()" title="नवीन पाने जोडा (Add PDF Pages)">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+        <input type="file" id="add-pages-file-input" accept=".pdf" style="display: none;" onchange="handleAddPagesFiles(event)">
+      </div>
+
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab-btn active" onclick="switchSidebarTab('thumbs')">
+          <i class="fa-solid fa-images"></i> थंबनेल्स
+        </button>
+        <button class="sidebar-tab-btn" onclick="switchSidebarTab('annos')">
+          <i class="fa-solid fa-list-check"></i> भाष्य यादी
+        </button>
+      </div>
+
+      <div class="sidebar-content" id="sidebar-thumbnails-container">
+        <!-- Thumbnails rendered dynamically here -->
+        <div style="text-align: center; color: var(--text-muted); font-size: 0.78rem; padding: 20px;">
+          कोणतीही PDF लोड झालेली नाही.<br>कृपया वरील "PDF उघडा" बटण दाबा.
+        </div>
+      </div>
+
+      <!-- Annotations List Tab Content -->
+      <div class="sidebar-content" id="sidebar-annos-container" style="display: none;">
+        <div id="annos-list-box" style="display: flex; flex-direction: column; gap: 6px; font-size: 0.78rem;">
+          <div style="color: var(--text-muted); text-align: center; padding: 10px;">
+            सध्याच्या पानावर कोणतीही टिप्पणी किंवा रेखाटन नाही.
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Viewport & Canvas Area -->
+    <section class="viewport-center" id="viewport-center">
+
+      <!-- Drag & Drop Landing Empty Screen -->
+      <div class="empty-state-dropzone" id="empty-dropzone" onclick="triggerFileInput()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)">
+        <div class="dropzone-icon">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+        </div>
+        <div>
+          <h2 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 6px;">तुमची PDF फाईल येथे ड्रॅग करून सोडा</h2>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">किंवा तुमच्या कॉम्प्युटरमधून PDF निवडण्यासाठी येथे क्लिक करा</p>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+          <button class="btn-action btn-primary" onclick="event.stopPropagation(); triggerFileInput()">
+            <i class="fa-solid fa-folder-open"></i> <span>PDF निवडा</span>
+          </button>
+          <button class="btn-action" onclick="event.stopPropagation(); loadSampleGovPdf()">
+            <i class="fa-solid fa-file-lines"></i> <span>नमुना PDF पहा (Sample)</span>
+          </button>
+        </div>
+        <div style="margin-top: 14px; font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 16px;">
+          <span><i class="fa-solid fa-lock" style="color: var(--accent-emerald);"></i> १००% सुरक्षित व खाजगी (ब्राउझरमध्येच प्रक्रिया)</span>
+          <span><i class="fa-solid fa-bolt" style="color: var(--accent-amber);"></i> जलद व मोफत</span>
+        </div>
+      </div>
+
+      <!-- Scrollable Canvas Stage Container -->
+      <div class="canvas-scroll-container" id="canvas-scroll-container">
+        <!-- PDF Page Stack Element -->
+        <div class="pdf-page-wrapper" id="pdf-page-wrapper" style="display: none;">
+          <!-- 1. PDF.js Base Rendering Canvas -->
+          <canvas class="pdf-render-canvas" id="pdf-render-canvas"></canvas>
+          <!-- 2. Text Layer for Selection & Click-to-Edit -->
+          <div class="pdf-text-layer" id="pdf-text-layer"></div>
+          <!-- 3. Annotation & Drawing Canvas Overlay -->
+          <svg class="pdf-annotation-layer" id="pdf-annotation-svg"></svg>
+          <!-- 4. Interactive Annotation Elements Container -->
+          <div id="interactive-elements-container" style="position: absolute; inset: 0; pointer-events: none;"></div>
+        </div>
+      </div>
+
+      <!-- Floating Search & Replace Box (Ctrl+F) -->
+      <div class="floating-search-bar" id="floating-search-bar">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 0.82rem; font-weight: 700;"><i class="fa-solid fa-magnifying-glass"></i> मजकूर शोधा व बदला</span>
+          <button class="thumb-btn" onclick="toggleSearchBar(false)"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="search-input-row">
+          <input type="text" class="search-field" id="find-input" placeholder="शोधण्यासाठी मजकूर टाईप करा..." oninput="handleSearchInput(this.value)">
+          <button class="btn-action btn-sm btn-icon-only" onclick="navigateSearchMatch(-1)" title="मागील (Previous - Shift+Enter)">
+            <i class="fa-solid fa-chevron-up"></i>
+          </button>
+          <button class="btn-action btn-sm btn-icon-only" onclick="navigateSearchMatch(1)" title="पुढील (Next - Enter)">
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+        </div>
+        <div class="search-options-row">
+          <label class="search-checkbox-label">
+            <input type="checkbox" id="case-sensitive-cb" onchange="handleSearchInput()"> Case-sensitive
+          </label>
+          <label class="search-checkbox-label">
+            <input type="checkbox" id="whole-word-cb" onchange="handleSearchInput()"> संपूर्ण शब्द
+          </label>
+          <span class="match-counter-badge" id="search-match-counter">० निकाल</span>
+        </div>
+        <div class="search-input-row" style="margin-top: 4px;">
+          <input type="text" class="search-field" id="replace-input" placeholder="या मजकुराने बदला...">
+          <button class="btn-action btn-sm" onclick="replaceCurrentMatch()" title="निवडलेला मजकूर बदला">
+            बदला
+          </button>
+          <button class="btn-action btn-sm btn-primary" onclick="replaceAllMatches()" title="सर्व ठिकाणी बदल करा">
+            सर्व बदला
+          </button>
+          <button class="btn-action btn-sm btn-amber" onclick="executeOcrSearchOnCurrentPage()" title="स्कॅन केलेल्या वा श्री-लिपी फाईलमध्ये OCR द्वारे शोधा">
+            <i class="fa-solid fa-eye"></i> OCR शोधा
+          </button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Bottom Application Status Bar -->
+  <footer class="app-statusbar">
+    <div class="statusbar-left">
+      <span id="statusbar-scale-text"><i class="fa-solid fa-compress"></i> १००%</span>
+      <span class="ribbon-divider"></span>
+      <span id="statusbar-dimen-text">A4 (५९५ × ८४२ pt)</span>
+    </div>
+
+    <div class="statusbar-center">
+      <div class="page-nav-controls">
+        <button class="page-nav-btn" id="prev-page-btn" onclick="goToPage(currentPageNum - 1)" title="मागील पान">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span>पान</span>
+        <input type="number" class="page-num-input" id="current-page-input" value="1" min="1" max="1" onchange="handlePageInputChange(this.value)">
+        <span>पैकी <strong id="total-pages-text">1</strong></span>
+        <button class="page-nav-btn" id="next-page-btn" onclick="goToPage(currentPageNum + 1)" title="पुढील पान">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="statusbar-right">
+      <div class="zoom-controls">
+        <button class="zoom-btn" onclick="changeZoom(-0.15)" title="झूम कमी करा (Ctrl -)">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+        <input type="range" class="zoom-slider" id="zoom-slider" min="50" max="250" value="100" oninput="handleZoomSlider(this.value)">
+        <button class="zoom-btn" onclick="changeZoom(0.15)" title="झूम वाढवा (Ctrl +)">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+        <button class="zoom-btn" onclick="fitPageWidth()" title="रुंदीनुसार बसवा (Fit Width)">
+          <i class="fa-solid fa-arrows-left-right"></i>
+        </button>
+        <button class="zoom-btn" onclick="fitPageEntire()" title="संपूर्ण पान बसवा (Fit Page)">
+          <i class="fa-solid fa-expand"></i>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODALS CONTAINER -->
+
+  <!-- 1. SIGNATURE MODAL -->
+  <div class="app-modal" id="modal-signature">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-signature"></i> डिजिटल सही जोडा (Digital Signature)</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-signature')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="sidebar-tabs">
+          <button class="sidebar-tab-btn active" id="sig-tab-draw" onclick="switchSigTab('draw')">
+            <i class="fa-solid fa-pencil"></i> स्वतः स्वाक्षरी करा (Draw)
+          </button>
+          <button class="sidebar-tab-btn" id="sig-tab-type" onclick="switchSigTab('type')">
+            <i class="fa-solid fa-keyboard"></i> नाव टाईप करा (Type)
+          </button>
+          <button class="sidebar-tab-btn" id="sig-tab-upload" onclick="switchSigTab('upload')">
+            <i class="fa-solid fa-upload"></i> इमेज अपलोड करा (Upload)
+          </button>
+        </div>
+
+        <!-- Draw Mode Canvas -->
+        <div id="sig-mode-draw">
+          <div class="signature-pad-container">
+            <canvas class="signature-pad-canvas" id="sig-pad-canvas" width="500" height="180"></canvas>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 0.78rem;">पेन रंग:</span>
+              <input type="color" id="sig-pen-color" value="#000000" onchange="updateSigPenColor(this.value)">
+              <button class="btn-action btn-sm" onclick="clearSignaturePad()"><i class="fa-solid fa-eraser"></i> पुसून टाका (Clear)</button>
+            </div>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">माऊस किंवा टचने सही करा</span>
+          </div>
+        </div>
+
+        <!-- Type Mode -->
+        <div id="sig-mode-type" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">पूर्ण नाव टाईप करा:</label>
+            <input type="text" class="form-control" id="sig-type-input" placeholder="उदा. Mahesh Sutar" oninput="renderTypedSignaturePreview()">
+          </div>
+          <div class="signature-pad-container" style="background: #ffffff; color: #000; flex-direction: column;">
+            <div id="typed-sig-preview" style="font-family: 'Great Vibes', cursive; font-size: 2.8rem; color: #002244;">Mahesh Sutar</div>
+          </div>
+        </div>
+
+        <!-- Upload Mode -->
+        <div id="sig-mode-upload" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">स्वाक्षरी फोटो निवडा (JPG/PNG):</label>
+            <input type="file" class="form-control" id="sig-file-input" accept="image/*" onchange="handleSigFileUpload(event)">
+          </div>
+          <div class="signature-pad-container" id="sig-upload-preview-box">
+            <span style="color: #64748b; font-size: 0.8rem;">कोणताही फोटो निवडलेला नाही</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action" onclick="closeModal('modal-signature')">रद्द करा</button>
+        <button class="btn-action btn-primary" onclick="applySignatureToPage()">
+          <i class="fa-solid fa-check"></i> <span>PDF वर सही ठेवा</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MERGE PDF MODAL -->
+  <div class="app-modal" id="modal-merge-pdf">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-object-group"></i> अनेक PDF एकत्र करा (Merge PDF)</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-merge-pdf')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.82rem; color: var(--text-muted);">
+          तुम्ही चालू असलेल्या PDF मध्ये आणखी इतर PDF फाईल्स जोडून एकच संयुक्त PDF फाईल तयार करू शकता.
+        </p>
+        <input type="file" id="merge-files-input" accept=".pdf" multiple class="form-control" onchange="handleMergeFilesSelected(event)">
+        <div id="merge-files-list" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+          <!-- Merge items rendered here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action" onclick="closeModal('modal-merge-pdf')">रद्द करा</button>
+        <button class="btn-action btn-primary" id="start-merge-btn" onclick="executeMergePdf()" disabled>
+          <i class="fa-solid fa-code-merge"></i> <span>एकत्र करून PDF बनवा</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. SPLIT PDF MODAL -->
+  <div class="app-modal" id="modal-split-pdf">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-scissors"></i> PDF चे तुकडे करा (Split PDF)</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-split-pdf')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">पानांचे गट / रेंज टाईप करा (उदा. 1-2, 3, 4-6):</label>
+          <input type="text" class="form-control" id="split-range-input" placeholder="उदा. 1-2, 3-5">
+        </div>
+        <div class="form-group">
+          <label class="search-checkbox-label">
+            <input type="radio" name="split-option" value="custom" checked> दिलेल्या रेंज प्रमाणे स्वतंत्र फाईल्स बनवा
+          </label>
+          <label class="search-checkbox-label" style="margin-top: 6px;">
+            <input type="radio" name="split-option" value="every"> प्रत्येक पानाची स्वतंत्र PDF फाईल बनवा (All single pages)
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action" onclick="closeModal('modal-split-pdf')">रद्द करा</button>
+        <button class="btn-action btn-primary" onclick="executeSplitPdf()">
+          <i class="fa-solid fa-download"></i> <span>Split करून ZIP डाउनलोड करा</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. WATERMARK MODAL -->
+  <div class="app-modal" id="modal-watermark">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-stamp"></i> वॉटरमार्क जोडा (Watermark)</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-watermark')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">वॉटरमार्क मजकूर (Text):</label>
+          <input type="text" class="form-control" id="wm-text-input" value="गोपनीय / CONFIDENTIAL" placeholder="उदा. eMudra CSC किंवा नक्कल">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">रंग (Color):</label>
+            <input type="color" class="form-control" id="wm-color-input" value="#94a3b8" style="height: 38px; padding: 2px;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">फॉन्ट साईझ:</label>
+            <input type="number" class="form-control" id="wm-size-input" value="50" min="16" max="120">
+          </div>
+          <div class="form-group">
+            <label class="form-label">कोन / डिग्री (Angle):</label>
+            <input type="range" id="wm-angle-input" min="-90" max="90" value="-45" oninput="document.getElementById('wm-angle-val').innerText = this.value + '°'">
+            <span id="wm-angle-val" style="font-size: 0.74rem; color: var(--text-muted);">-45°</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">पारदर्शकता (Opacity):</label>
+            <input type="range" id="wm-opacity-input" min="5" max="80" value="25" oninput="document.getElementById('wm-opacity-val').innerText = this.value + '%'">
+            <span id="wm-opacity-val" style="font-size: 0.74rem; color: var(--text-muted);">25%</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="search-checkbox-label">
+            <input type="checkbox" id="wm-all-pages-cb" checked> सर्व पानांवर वॉटरमार्क लावा (All pages)
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action" onclick="closeModal('modal-watermark')">रद्द करा</button>
+        <button class="btn-action btn-primary" onclick="applyWatermarkToDocument()">
+          <i class="fa-solid fa-check"></i> <span>वॉटरमार्क लागू करा</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. PAGE NUMBER & HEADER/FOOTER MODAL -->
+  <div class="app-modal" id="modal-pagenumber">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-list-ol"></i> पान क्रमांक व हेडर/फुटर जोडा</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-pagenumber')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">स्थान (Position):</label>
+          <select class="form-control" id="pn-pos-select">
+            <option value="footer-center">फुटर मध्यभागी (Bottom Center)</option>
+            <option value="footer-right" selected>फुटर उजवीकडे (Bottom Right)</option>
+            <option value="footer-left">फुटर डावीकडे (Bottom Left)</option>
+            <option value="header-right">हेडर उजवीकडे (Top Right)</option>
+            <option value="header-center">हेडर मध्यभागी (Top Center)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">नंबर फॉरमॅट:</label>
+          <select class="form-control" id="pn-format-select">
+            <option value="page-of-total">Page {n} of {total}</option>
+            <option value="page-n">पान {n}</option>
+            <option value="just-n">{n}</option>
+            <option value="hyphen">- {n} -</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">अतिरिक्त हेडर मजकूर (ऐच्छिक Header Text):</label>
+          <input type="text" class="form-control" id="pn-header-text" placeholder="उदा. eMudra CSC Center: 152153410016">
+        </div>
+        <div class="form-group">
+          <label class="search-checkbox-label">
+            <input type="checkbox" id="pn-skip-first-page"> पहिल्या पानावर नंबर दाखवू नका (Skip first page)
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action" onclick="closeModal('modal-pagenumber')">रद्द करा</button>
+        <button class="btn-action btn-primary" onclick="applyPageNumbersToDocument()">
+          <i class="fa-solid fa-check"></i> <span>पान क्रमांक लागू करा</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. OCR RESULTS MODAL -->
+  <div class="app-modal" id="modal-ocr-result">
+    <div class="modal-dialog" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-eye"></i> OCR मजकूर ओळख निकाल (Text Recognition)</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-ocr-result')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="ocr-progress-box" id="ocr-progress-box">
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span id="ocr-status-text">OCR सुरू होत आहे...</span>
+            <span id="ocr-percent-text">0%</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="ocr-progress-fill"></div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-cyan);" id="ocr-confidence-badge">
+            <i class="fa-solid fa-circle-check"></i> अचूकता: --%
+          </span>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-action btn-sm" onclick="copyOcrText()"><i class="fa-solid fa-copy"></i> कॉपी करा</button>
+            <button class="btn-action btn-sm" onclick="downloadOcrTextAsFile()"><i class="fa-solid fa-file-arrow-down"></i> TXT डाउनलोड</button>
+          </div>
+        </div>
+
+        <textarea class="form-control" id="ocr-output-textarea" rows="12" placeholder="येथे OCR द्वारे ओळखलेला मराठी, हिंदी किंवा इंग्रजी मजकूर दिसेल..." style="font-family: inherit; font-size: 0.88rem; line-height: 1.5;"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action btn-primary" onclick="closeModal('modal-ocr-result')">बंद करा</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. BEFORE / AFTER COMPARISON MODAL -->
+  <div class="app-modal" id="modal-compare">
+    <div class="modal-dialog" style="max-width: 850px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-code-compare"></i> बदल करण्यापूर्वी आणि नंतर तुलना (Before / After)</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-compare')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">
+          <span>👈 डावीकडे: मूळ PDF (Original)</span>
+          <span>उजवीकडे: बदल केलेली PDF (Edited) 👉</span>
+        </div>
+        <div class="compare-container" id="compare-viewport" onmousemove="handleCompareMouseMove(event)">
+          <img id="compare-original-img" class="compare-image" alt="Original">
+          <div id="compare-edited-wrapper" style="position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden;">
+            <img id="compare-edited-img" class="compare-image" style="width: 800px; max-width: none;" alt="Edited">
+          </div>
+          <div class="compare-slider-bar" id="compare-slider-bar" style="left: 50%;">
+            <div class="compare-slider-handle"><i class="fa-solid fa-arrows-left-right"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action btn-primary" onclick="closeModal('modal-compare')">बंद करा</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. EXPORT / DOWNLOAD MODAL -->
+  <div class="app-modal" id="modal-export">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-download"></i> अंतिम PDF तयार करा व डाउनलोड करा</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-export')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">फाईलचे नाव (File Name):</label>
+          <input type="text" class="form-control" id="export-filename-input" value="eMudra_Edited_Document.pdf">
+        </div>
+        <div class="form-group">
+          <label class="form-label">कॉम्प्रेशन व गुणवत्ता सेटिंग्ज (Size Optimization):</label>
+          <select class="form-control" id="export-preset-select">
+            <option value="original">मूळ उच्च गुणवत्ता (Standard High Quality - No quality loss)</option>
+            <option value="aaple-sarkar">आपले सरकार पोर्टलसाठी (Aaple Sarkar Target ≤ 256 KB)</option>
+            <option value="mahadbt">महाडीबीटी शिष्यवृत्तीसाठी (MahaDBT Target ≤ 500 KB)</option>
+            <option value="light">अत्यंत लहान आकार (Compact / Web View)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="search-checkbox-label">
+            <input type="checkbox" id="export-flatten-cb" checked> सर्व रेखाटने, स्वाक्षऱ्या व मजकूर PDF मध्ये कायमस्वरूपी फिक्स (Flatten) करा
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action" onclick="closeModal('modal-export')">रद्द करा</button>
+        <button class="btn-action btn-success" onclick="executeDownloadFinalPdf()">
+          <i class="fa-solid fa-file-arrow-down"></i> <span>आता डाउनलोड करा</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. IMAGES TO PDF (JPG/PNG TO PDF) MODAL -->
+  <div class="app-modal" id="modal-jpg-to-pdf">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-images"></i> फोटो ते PDF बनवा (Images to PDF)</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-jpg-to-pdf')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="file" id="jpg-to-pdf-files" accept="image/jpeg, image/png, image/webp" multiple class="form-control" onchange="handleJpgToPdfFilesSelected(event)">
+        <div id="jpg-files-preview-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; margin-top: 10px;">
+          <!-- Image previews rendered here -->
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+          <div class="form-group">
+            <label class="form-label">दिशा (Orientation):</label>
+            <select class="form-control" id="img-pdf-orient">
+              <option value="portrait">उभे (Portrait - A4)</option>
+              <option value="landscape">आडवे (Landscape - A4)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">मार्जिन (Margin):</label>
+            <select class="form-control" id="img-pdf-margin">
+              <option value="none">मार्जिन नाही (Zero Margin)</option>
+              <option value="small" selected>लहान मार्जिन (10mm)</option>
+              <option value="normal">सामान्य मार्जिन (20mm)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action" onclick="closeModal('modal-jpg-to-pdf')">रद्द करा</button>
+        <button class="btn-action btn-primary" id="generate-img-pdf-btn" onclick="executeImagesToPdf()" disabled>
+          <i class="fa-solid fa-file-circle-check"></i> <span>PDF तयार करा</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. SHORTCUTS & HELP MODAL -->
+  <div class="app-modal" id="modal-shortcuts">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-keyboard"></i> कीबोर्ड शॉर्टकट्स व मदत (Keyboard Shortcuts)</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-shortcuts')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="font-size: 0.82rem;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr style="border-bottom: 1px solid var(--border-glass);">
+            <td style="padding: 8px 4px; font-weight: 700; color: var(--accent-cyan);">Ctrl + F</td>
+            <td style="padding: 8px 4px;">मजकूर शोधा व बदला बार उघडा (Search & Replace)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border-glass);">
+            <td style="padding: 8px 4px; font-weight: 700; color: var(--accent-cyan);">Ctrl + Z</td>
+            <td style="padding: 8px 4px;">केलेला बदल पूर्ववत करा (Undo)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border-glass);">
+            <td style="padding: 8px 4px; font-weight: 700; color: var(--accent-cyan);">Ctrl + Y</td>
+            <td style="padding: 8px 4px;">पुन्हा करा (Redo)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border-glass);">
+            <td style="padding: 8px 4px; font-weight: 700; color: var(--accent-cyan);">Ctrl + S</td>
+            <td style="padding: 8px 4px;">PDF सेव्ह / डाउनलोड करा (Download)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border-glass);">
+            <td style="padding: 8px 4px; font-weight: 700; color: var(--accent-cyan);">Ctrl + P</td>
+            <td style="padding: 8px 4px;">थेट प्रिंट करा (Print)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border-glass);">
+            <td style="padding: 8px 4px; font-weight: 700; color: var(--accent-cyan);">Delete / Backspace</td>
+            <td style="padding: 8px 4px;">निवडलेले रेखाटन किंवा मजकूर हटवा</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 4px; font-weight: 700; color: var(--accent-cyan);">Escape</td>
+            <td style="padding: 8px 4px;">विंडो किंवा चालू टूल बंद करा</td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action btn-primary" onclick="closeModal('modal-shortcuts')">समजले (Got it)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. PASSWORD PROTECT MODAL -->
+  <div class="app-modal" id="modal-password">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-lock"></i> PDF पासवर्ड संरक्षण (Password Protection)</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-password')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">नवीन पासवर्ड टाका:</label>
+          <input type="password" class="form-control" id="pdf-set-password-input" placeholder="उदा. csc123">
+        </div>
+        <div class="form-group">
+          <label class="form-label">पासवर्ड पुन्हा टाका (Confirm):</label>
+          <input type="password" class="form-control" id="pdf-confirm-password-input" placeholder="पुन्हा पासवर्ड टाका">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action" onclick="closeModal('modal-password')">रद्द करा</button>
+        <button class="btn-action btn-primary" onclick="executePasswordProtection()">
+          <i class="fa-solid fa-shield-check"></i> <span>पासवर्ड सेट करा</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. GOOGLE VISION API SETTINGS MODAL -->
+  <div class="app-modal" id="modal-google-vision">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-brands fa-google" style="color: #4285F4;"></i> Google Cloud Vision AI (मराठी OCR)</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-google-vision')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.82rem; color: var(--text-muted);">
+          Google Cloud Vision AI द्वारे मराठी, हिंदी आणि इंग्रजी मधील स्कॅन केलेल्या किंवा श्री-लिपी दस्तऐवजांतील मजकूर १००% अचूकपणे ओळखता येतो.
+        </p>
+        <div class="form-group">
+          <label class="form-label">Google Cloud Vision API Key:</label>
+          <input type="password" class="form-control" id="google-vision-key-input" placeholder="AIzaSy...">
+          <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">
+            तुमची API Key सुरक्षितपणे फक्त तुमच्या ब्राउझरमध्ये (localStorage) साठवली जाते.
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action" onclick="closeModal('modal-google-vision')">रद्द करा</button>
+        <button class="btn-action btn-primary" onclick="saveGoogleVisionApiKey()">
+          <i class="fa-solid fa-floppy-disk"></i> <span>API Key सेव्ह करा</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Container for High-Fidelity Printing -->
+  <div id="print-render-container" style="display: none;"></div>
+
+  <!-- Toast Notification Stack -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ================================================================= -->
+  <!-- JAVASCRIPT APPLICATION CORE ENGINE -->
+  <!-- ================================================================= -->
+  <script>
+    /**
+     * EMUDRA ADVANCED PDF STUDIO PRO
+     * Client-Side Master Controller
+     */
+
+    // State Variables
+    let currentPdfDoc = null;          // PDF.js Document object
+    let currentPdfBytes = null;        // Uint8Array of the original PDF
+    let originalPdfBytes = null;       // Copy of pristine untouched bytes for Before/After
+    let pdfFilename = "document.pdf";
+    let totalPages = 0;
+    let currentPageNum = 1;
+    let currentZoom = 1.0;
+    let currentRotation = 0;
+    let activeTool = 'select';         // 'select', 'text', 'highlight', 'pen', 'shape', 'note', 'redact'
+    let activeShapeType = 'rect';      // 'rect', 'circle', 'arrow', 'line'
+    let toolColor = '#ffea00';
+    let toolStrokeSize = 4;
+    let toolOpacity = 0.7;
+
+    // Per-Page Annotations Store
+    // Key: pageNum (1-indexed) -> Array of annotations
+    let pageAnnotations = {};
+    let pagesOrder = [];               // Array of original 0-indexed page indices e.g. [0, 1, 2]
+    let pagesRotation = {};            // Key: pageIndex -> degrees (0, 90, 180, 270)
+
+    // History Stack for Undo/Redo
+    let historyUndoStack = [];
+    let historyRedoStack = [];
+
+    // Search Engine State
+    let searchMatches = [];            // [{ pageNum, text, bounds, matchIndex }]
+    let activeMatchIndex = -1;
+
+    // Signature State
+    let sigPadCanvas = null;
+    let sigPadCtx = null;
+    let isSigDrawing = false;
+    let uploadedSigDataUrl = null;
+
+    // Pen Drawing State
+    let isPenDrawing = false;
+    let currentPenPoints = [];
+
+    // Selected Annotation
+    let selectedAnnotation = null;
+
+    // --- Initialization on Window Load ---
+    window.addEventListener('DOMContentLoaded', () => {
+      initSignaturePad();
+      initKeyboardShortcuts();
+      initTheme();
+      initIndexedDbAutoSave();
+    });
+
+    // Theme Management
+    function initTheme() {
+      const saved = localStorage.getItem('emudra_pdf_theme');
+      if (saved === 'light') {
+        document.body.classList.add('light-theme');
+        const icon = document.querySelector('#theme-toggle-btn i');
+        if (icon) icon.className = 'fa-solid fa-sun';
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-theme');
+      const isLight = document.body.classList.contains('light-theme');
+      localStorage.setItem('emudra_pdf_theme', isLight ? 'light' : 'dark');
+      const icon = document.querySelector('#theme-toggle-btn i');
+      if (icon) {
+        icon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      }
+      showToast(isLight ? 'लाईट मोड चालू केला' : 'डार्क मोड चालू केला', 'info');
+    }
+
+    // Toast Notifications
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `app-toast toast-${type}`;
+      let icon = 'fa-info-circle';
+      if (type === 'success') icon = 'fa-circle-check';
+      if (type === 'error') icon = 'fa-circle-exclamation';
+      if (type === 'warning') icon = 'fa-triangle-exclamation';
+
+      toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 3200);
+    }
+
+    // File Input Trigger
+    function triggerFileInput() {
+      document.getElementById('pdf-file-input').click();
+    }
+
+    function handleFileSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      loadPdfFile(file);
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('empty-dropzone').classList.add('dragover');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('empty-dropzone').classList.remove('dragover');
+    }
+
+    function handleFileDrop(e) {
+      e.preventDefault();
+      document.getElementById('empty-dropzone').classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        loadPdfFile(e.dataTransfer.files[0]);
+      }
+    }
+
+    // Load PDF from File Object or ArrayBuffer
+    async function loadPdfFile(file) {
+      try {
+        showToast('PDF लोड होत आहे, कृपया प्रतीक्षा करा...', 'info');
+        pdfFilename = file.name || "document.pdf";
+        const buffer = await file.arrayBuffer();
+        await loadPdfBuffer(buffer, pdfFilename);
+      } catch (err) {
+        console.error('Error loading PDF:', err);
+        showToast('PDF लोड करण्यात त्रुटी आली: ' + err.message, 'error');
+      }
+    }
+
+    async function loadPdfBuffer(arrayBuffer, filename = "document.pdf") {
+      try {
+        pdfFilename = filename;
+        currentPdfBytes = new Uint8Array(arrayBuffer);
+        if (!originalPdfBytes) {
+          originalPdfBytes = new Uint8Array(currentPdfBytes); // Keep original copy
+        }
+
+        // Initialize PDF.js with Devanagari / Marathi cMap character map support
+        const loadingTask = pdfjsLib.getDocument({
+          data: currentPdfBytes,
+          cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+          cMapPacked: true,
+          standardFontDataUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/standard_fonts/'
+        });
+        currentPdfDoc = await loadingTask.promise;
+        totalPages = currentPdfDoc.numPages;
+        currentPageNum = 1;
+
+        // Reset Page orders
+        pagesOrder = Array.from({ length: totalPages }, (_, i) => i);
+        pagesRotation = {};
+        pageAnnotations = {};
+        for (let i = 1; i <= totalPages; i++) {
+          pageAnnotations[i] = [];
+        }
+
+        // Update UI Badges
+        document.getElementById('doc-info-badge').style.display = 'inline-flex';
+        document.getElementById('doc-name-text').innerText = pdfFilename;
+        document.getElementById('doc-meta-text').innerText = `(${totalPages} पाने • ${(currentPdfBytes.byteLength / 1024).toFixed(1)} KB)`;
+        document.getElementById('empty-dropzone').style.display = 'none';
+        document.getElementById('pdf-page-wrapper').style.display = 'block';
+        document.getElementById('total-pages-text').innerText = totalPages;
+        document.getElementById('current-page-input').max = totalPages;
+        document.getElementById('current-page-input').value = 1;
+        document.getElementById('pages-count-badge').innerText = totalPages;
+
+        // Render page & thumbnails
+        await renderCurrentPage();
+        await renderThumbnails();
+        recordHistoryState();
+        showToast(`'${pdfFilename}' यशस्वीरित्या लोड झाली!`, 'success');
+
+        // Save to Recent Files
+        saveRecentFileRecord(pdfFilename, totalPages);
+      } catch (err) {
+        console.error('Error in loadPdfBuffer:', err);
+        showToast('PDF उघडताना त्रुटी: ' + err.message, 'error');
+      }
+    }
+
+    // Sample Govt PDF generator for instant test
+    async function loadSampleGovPdf() {
+      try {
+        const { PDFDocument, rgb, StandardFonts } = PDFLib;
+        const pdfDoc = await PDFDocument.create();
+        const page = pdfDoc.addPage([595.28, 841.89]); // A4
+        const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+        const fontNorm = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+        // Header decoration
+        page.drawRectangle({
+          x: 40, y: 760, width: 515, height: 45,
+          color: rgb(0.01, 0.52, 0.78)
+        });
+        page.drawText('MAHARASHTRA GOVERNMENT - AAPLE SARKAR SEVA KENDRA', {
+          x: 55, y: 780, size: 14, font: font, color: rgb(1, 1, 1)
+        });
+        page.drawText('OFFICIAL CITIZEN PORTAL VERIFICATION DOCUMENT', {
+          x: 55, y: 765, size: 9, font: fontNorm, color: rgb(0.9, 0.95, 1)
+        });
+
+        // Sample Content Body
+        page.drawText('Applicant Name: Ramesh Gajanan Patil', { x: 50, y: 700, size: 12, font: fontNorm });
+        page.drawText('Application No: MH-2026-INCOME-98472910', { x: 50, y: 675, size: 12, font: fontNorm });
+        page.drawText('Service: Income Certificate Verification (1 Year)', { x: 50, y: 650, size: 12, font: fontNorm });
+        page.drawText('Annual Income Amount: Rs. 85,000/- (Eighty Five Thousand Only)', { x: 50, y: 625, size: 12, font: fontNorm });
+        page.drawText('Center ID: 152153410016 | CSC Kankavli, Sindhudurg', { x: 50, y: 600, size: 11, font: fontNorm });
+
+        page.drawText('This certificate is digitally verifiable on maharashtra.gov.in portal.', { x: 50, y: 550, size: 10, font: fontNorm, color: rgb(0.3, 0.3, 0.3) });
+
+        // Footer
+        page.drawText('Page 1 of 1', { x: 270, y: 40, size: 10, font: fontNorm });
+
+        const bytes = await pdfDoc.save();
+        await loadPdfBuffer(bytes.buffer, "Maharashtra_Aaple_Sarkar_Sample.pdf");
+      } catch (e) {
+        console.error('Error generating sample:', e);
+      }
+    }
+
+    // --- Page Rendering Engine ---
+    async function renderCurrentPage() {
+      if (!currentPdfDoc) return;
+
+      const pageIndex = pagesOrder[currentPageNum - 1];
+      const page = await currentPdfDoc.getPage(pageIndex + 1);
+
+      const rot = (page.rotate + (pagesRotation[pageIndex] || 0)) % 360;
+      const viewport = page.getViewport({ scale: currentZoom, rotation: rot });
+
+      const canvas = document.getElementById('pdf-render-canvas');
+      const ctx = canvas.getContext('2d');
+      const wrapper = document.getElementById('pdf-page-wrapper');
+
+      // High DPI Sharp Rendering
+      const outputScale = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(viewport.width * outputScale);
+      canvas.height = Math.floor(viewport.height * outputScale);
+      canvas.style.width = Math.floor(viewport.width) + "px";
+      canvas.style.height = Math.floor(viewport.height) + "px";
+      wrapper.style.width = Math.floor(viewport.width) + "px";
+      wrapper.style.height = Math.floor(viewport.height) + "px";
+
+      const transform = outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
+
+      const renderContext = {
+        canvasContext: ctx,
+        transform: transform,
+        viewport: viewport
+      };
+
+      await page.render(renderContext).promise;
+
+      // Extract & Render Text Layer for click-to-edit and searching
+      await renderPageTextLayer(page, viewport);
+
+      // Render Overlay Annotations for this page
+      renderPageAnnotations(currentPageNum, viewport);
+
+      // Update Navigation buttons
+      document.getElementById('prev-page-btn').disabled = (currentPageNum <= 1);
+      document.getElementById('next-page-btn').disabled = (currentPageNum >= totalPages);
+      document.getElementById('current-page-input').value = currentPageNum;
+      document.getElementById('statusbar-scale-text').innerHTML = `<i class="fa-solid fa-compress"></i> ${Math.round(currentZoom * 100)}%`;
+      document.getElementById('statusbar-dimen-text').innerText = `${Math.round(viewport.width)} × ${Math.round(viewport.height)} px`;
+
+      // Update thumbnail active states
+      updateActiveThumbnailState();
+    }
+
+    // Render Text Layer
+    async function renderPageTextLayer(page, viewport) {
+      const textLayerDiv = document.getElementById('pdf-text-layer');
+      textLayerDiv.innerHTML = '';
+      textLayerDiv.style.width = `${viewport.width}px`;
+      textLayerDiv.style.height = `${viewport.height}px`;
+
+      try {
+        const textContent = await page.getTextContent();
+        pdfjsLib.renderTextLayer({
+          textContentSource: textContent,
+          container: textLayerDiv,
+          viewport: viewport,
+          textDivs: []
+        });
+      } catch (err) {
+        console.warn('Text layer error:', err);
+      }
+    }
+
+    // Page Navigation
+    function goToPage(num) {
+      if (!currentPdfDoc) return;
+      num = parseInt(num);
+      if (num < 1) num = 1;
+      if (num > totalPages) num = totalPages;
+      currentPageNum = num;
+      renderCurrentPage();
+    }
+
+    function handlePageInputChange(val) {
+      goToPage(parseInt(val) || 1);
+    }
+
+    // Zoom Controls
+    function changeZoom(delta) {
+      let next = currentZoom + delta;
+      if (next < 0.3) next = 0.3;
+      if (next > 3.0) next = 3.0;
+      currentZoom = parseFloat(next.toFixed(2));
+      document.getElementById('zoom-slider').value = Math.round(currentZoom * 100);
+      renderCurrentPage();
+    }
+
+    function handleZoomSlider(val) {
+      currentZoom = parseInt(val) / 100;
+      renderCurrentPage();
+    }
+
+    function fitPageWidth() {
+      const container = document.getElementById('canvas-scroll-container');
+      if (!container || !document.getElementById('pdf-render-canvas')) return;
+      const targetWidth = container.clientWidth - 60;
+      const curWidth = parseFloat(document.getElementById('pdf-render-canvas').style.width) || 600;
+      currentZoom = (targetWidth / (curWidth / currentZoom));
+      currentZoom = Math.min(Math.max(currentZoom, 0.4), 2.5);
+      document.getElementById('zoom-slider').value = Math.round(currentZoom * 100);
+      renderCurrentPage();
+    }
+
+    function fitPageEntire() {
+      const container = document.getElementById('canvas-scroll-container');
+      if (!container) return;
+      const targetHeight = container.clientHeight - 80;
+      const curHeight = parseFloat(document.getElementById('pdf-render-canvas').style.height) || 800;
+      currentZoom = (targetHeight / (curHeight / currentZoom));
+      currentZoom = Math.min(Math.max(currentZoom, 0.3), 2.0);
+      document.getElementById('zoom-slider').value = Math.round(currentZoom * 100);
+      renderCurrentPage();
+    }
+
+    // --- Thumbnails & Visual Drag-and-Drop Reordering ---
+    async function renderThumbnails() {
+      const container = document.getElementById('sidebar-thumbnails-container');
+      container.innerHTML = '';
+
+      for (let i = 0; i < pagesOrder.length; i++) {
+        const origIdx = pagesOrder[i];
+        const pageNum = i + 1;
+
+        const card = document.createElement('div');
+        card.className = `thumbnail-card ${pageNum === currentPageNum ? 'active' : ''}`;
+        card.draggable = true;
+        card.dataset.index = i;
+        card.dataset.pageNum = pageNum;
+
+        // Card header & canvas
+        card.innerHTML = `
+          <div class="thumb-canvas-box" id="thumb-canvas-box-${pageNum}">
+            <i class="fa-solid fa-spinner fa-spin" style="color: var(--accent-cyan);"></i>
+          </div>
+          <div class="thumb-footer">
+            <span class="thumb-page-num">${pageNum}</span>
+            <div class="thumb-card-actions">
+              <button class="thumb-btn" onclick="rotateSpecificPage(${i}, 90)" title="९०° फिरवा"><i class="fa-solid fa-rotate-right"></i></button>
+              <button class="thumb-btn" onclick="duplicateSpecificPage(${i})" title="Duplicate करा"><i class="fa-solid fa-copy"></i></button>
+              <button class="thumb-btn btn-delete" onclick="deleteSpecificPage(${i})" title="हटवा"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.thumb-btn')) return;
+          goToPage(pageNum);
+        });
+
+        // HTML5 Drag & Drop Listeners
+        card.addEventListener('dragstart', handleThumbnailDragStart);
+        card.addEventListener('dragover', handleThumbnailDragOver);
+        card.addEventListener('dragleave', handleThumbnailDragLeave);
+        card.addEventListener('drop', handleThumbnailDrop);
+        card.addEventListener('dragend', handleThumbnailDragEnd);
+
+        container.appendChild(card);
+
+        // Async render thumbnail preview
+        renderThumbnailPreview(origIdx, pageNum);
+      }
+    }
+
+    async function renderThumbnailPreview(origIndex, pageNum) {
+      try {
+        const page = await currentPdfDoc.getPage(origIndex + 1);
+        const rot = (page.rotate + (pagesRotation[origIndex] || 0)) % 360;
+        const viewport = page.getViewport({ scale: 0.22, rotation: rot });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+        const box = document.getElementById(`thumb-canvas-box-${pageNum}`);
+        if (box) {
+          box.innerHTML = '';
+          box.appendChild(canvas);
+        }
+      } catch (e) {
+        console.warn('Thumb error:', e);
+      }
+    }
+
+    let draggedThumbIndex = null;
+
+    function handleThumbnailDragStart(e) {
+      draggedThumbIndex = parseInt(this.dataset.index);
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleThumbnailDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      this.classList.add('drag-over');
+    }
+
+    function handleThumbnailDragLeave() {
+      this.classList.remove('drag-over');
+    }
+
+    function handleThumbnailDrop(e) {
+      e.preventDefault();
+      this.classList.remove('drag-over');
+      const targetIndex = parseInt(this.dataset.index);
+
+      if (draggedThumbIndex !== null && draggedThumbIndex !== targetIndex) {
+        // Reorder pagesOrder array
+        const [movedPage] = pagesOrder.splice(draggedThumbIndex, 1);
+        pagesOrder.splice(targetIndex, 0, movedPage);
+
+        currentPageNum = targetIndex + 1;
+        renderThumbnails();
+        renderCurrentPage();
+        recordHistoryState();
+        showToast(`पानांचा क्रम बदलला (Page moved to ${currentPageNum})`, 'success');
+      }
+    }
+
+    function handleThumbnailDragEnd() {
+      this.classList.remove('dragging');
+      document.querySelectorAll('.thumbnail-card').forEach(c => c.classList.remove('drag-over'));
+      draggedThumbIndex = null;
+    }
+
+    function updateActiveThumbnailState() {
+      document.querySelectorAll('.thumbnail-card').forEach((c, idx) => {
+        if (idx === currentPageNum - 1) {
+          c.classList.add('active');
+        } else {
+          c.classList.remove('active');
+        }
+      });
+    }
+
+    // --- Page Manipulations (Rotate, Duplicate, Delete) ---
+    function rotateCurrentPage(deg = 90) {
+      const idx = pagesOrder[currentPageNum - 1];
+      pagesRotation[idx] = ((pagesRotation[idx] || 0) + deg) % 360;
+      renderCurrentPage();
+      renderThumbnails();
+      recordHistoryState();
+      showToast(`पान ${currentPageNum} ९०° फिरवले`, 'info');
+    }
+
+    function rotateSpecificPage(arrIdx, deg = 90) {
+      const origIdx = pagesOrder[arrIdx];
+      pagesRotation[origIdx] = ((pagesRotation[origIdx] || 0) + deg) % 360;
+      renderCurrentPage();
+      renderThumbnails();
+      recordHistoryState();
+    }
+
+    function rotateAllPages(deg = 90) {
+      pagesOrder.forEach(origIdx => {
+        pagesRotation[origIdx] = ((pagesRotation[origIdx] || 0) + deg) % 360;
+      });
+      renderCurrentPage();
+      renderThumbnails();
+      recordHistoryState();
+      showToast('सर्व पाने ९०° फिरवली', 'success');
+    }
+
+    function duplicateCurrentPage() {
+      duplicateSpecificPage(currentPageNum - 1);
+    }
+
+    function duplicateSpecificPage(arrIdx) {
+      const origIdx = pagesOrder[arrIdx];
+      pagesOrder.splice(arrIdx + 1, 0, origIdx);
+      totalPages = pagesOrder.length;
+      document.getElementById('total-pages-text').innerText = totalPages;
+      document.getElementById('current-page-input').max = totalPages;
+      document.getElementById('pages-count-badge').innerText = totalPages;
+      currentPageNum = arrIdx + 2;
+      renderThumbnails();
+      renderCurrentPage();
+      recordHistoryState();
+      showToast(`पान Duplicate झाले (New Page ${currentPageNum})`, 'success');
+    }
+
+    function deleteCurrentPage() {
+      deleteSpecificPage(currentPageNum - 1);
+    }
+
+    function deleteSpecificPage(arrIdx) {
+      if (pagesOrder.length <= 1) {
+        showToast('PDF मधील शेवटचे पान हटवता येणार नाही!', 'warning');
+        return;
+      }
+      if (!confirm(`तुम्हाला पान ${arrIdx + 1} खरोखर हटवायचे आहे का?`)) return;
+
+      pagesOrder.splice(arrIdx, 1);
+      totalPages = pagesOrder.length;
+      if (currentPageNum > totalPages) currentPageNum = totalPages;
+      document.getElementById('total-pages-text').innerText = totalPages;
+      document.getElementById('current-page-input').max = totalPages;
+      document.getElementById('pages-count-badge').innerText = totalPages;
+      renderThumbnails();
+      renderCurrentPage();
+      recordHistoryState();
+      showToast('पान हटवण्यात आले', 'info');
+    }
+
+    // --- Interactive Tool Switching & Canvas Interaction ---
+    function setActiveTool(tool) {
+      activeTool = tool;
+      document.querySelectorAll('#ribbon-group-edit .tool-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`tool-${tool}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const scrollContainer = document.getElementById('canvas-scroll-container');
+      scrollContainer.className = 'canvas-scroll-container';
+      if (tool === 'select') scrollContainer.classList.add('mode-pan');
+      if (tool === 'text') scrollContainer.classList.add('mode-text');
+      if (['highlight', 'pen', 'shape', 'redact'].includes(tool)) scrollContainer.classList.add('mode-crosshair');
+    }
+
+    function setActiveShape(val) {
+      activeShapeType = val;
+      setActiveTool('shape');
+    }
+
+    function updateToolColor(val) {
+      toolColor = val;
+    }
+
+    function updateToolStrokeSize(val) {
+      toolStrokeSize = parseInt(val);
+      document.getElementById('stroke-size-val').innerText = `${val}px`;
+    }
+
+    function updateToolOpacity(val) {
+      toolOpacity = parseInt(val) / 100;
+      document.getElementById('opacity-val').innerText = `${val}%`;
+    }
+
+    function switchFeatureTab(tabName) {
+      document.querySelectorAll('#feature-tabs-nav .feature-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
+
+      // Toggle corresponding sub-toolbar
+      const groups = ['edit', 'search', 'pages', 'converter', 'ocr', 'security', 'compare'];
+      groups.forEach(g => {
+        const el = document.getElementById(`ribbon-group-${g}`);
+        if (el) el.style.display = (g === tabName) ? 'flex' : 'none';
+      });
+
+      if (tabName === 'search') {
+        toggleSearchBar(true);
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar-left');
+      sidebar.classList.toggle('collapsed');
+    }
+
+    function togglePanMode() {
+      const btn = document.getElementById('tool-pan-toggle');
+      btn.classList.toggle('active');
+      const isPan = btn.classList.contains('active');
+      const container = document.getElementById('canvas-scroll-container');
+      if (isPan) {
+        container.classList.add('mode-pan');
+        setActiveTool('select');
+      } else {
+        container.classList.remove('mode-pan');
+      }
+    }
+
+    // --- Annotation Rendering & Placement System ---
+    const pageWrapper = document.getElementById('pdf-page-wrapper');
+
+    pageWrapper.addEventListener('mousedown', handleCanvasMouseDown);
+    window.addEventListener('mousemove', handleCanvasMouseMove);
+    window.addEventListener('mouseup', handleCanvasMouseUp);
+
+    let drawStartX = 0;
+    let drawStartY = 0;
+    let isDrawingShape = false;
+    let tempShapeEl = null;
+
+    function getRelativeCoords(e) {
+      const rect = pageWrapper.getBoundingClientRect();
+      return {
+        x: (e.clientX - rect.left) / currentZoom,
+        y: (e.clientY - rect.top) / currentZoom
+      };
+    }
+
+    function handleCanvasMouseDown(e) {
+      if (!currentPdfDoc) return;
+      if (e.target.closest('.anno-box') || e.target.closest('.sticky-note-pin')) return;
+
+      const coords = getRelativeCoords(e);
+      drawStartX = coords.x;
+      drawStartY = coords.y;
+
+      if (activeTool === 'text') {
+        createInlineEditableTextBox(drawStartX, drawStartY);
+      } else if (activeTool === 'note') {
+        createStickyNote(drawStartX, drawStartY);
+      } else if (activeTool === 'pen') {
+        isPenDrawing = true;
+        currentPenPoints = [{ x: drawStartX, y: drawStartY }];
+      } else if (['highlight', 'shape', 'redact'].includes(activeTool)) {
+        isDrawingShape = true;
+      }
+    }
+
+    function handleCanvasMouseMove(e) {
+      if (isPenDrawing) {
+        const coords = getRelativeCoords(e);
+        currentPenPoints.push(coords);
+        renderLivePenPath();
+      } else if (isDrawingShape) {
+        const coords = getRelativeCoords(e);
+        renderLiveShapePreview(drawStartX, drawStartY, coords.x, coords.y);
+      }
+    }
+
+    function handleCanvasMouseUp(e) {
+      if (isPenDrawing) {
+        isPenDrawing = false;
+        if (currentPenPoints.length > 2) {
+          addAnnotationToCurrentPage({
+            id: 'pen_' + Date.now(),
+            type: 'pen',
+            points: currentPenPoints,
+            color: toolColor,
+            strokeWidth: toolStrokeSize,
+            opacity: toolOpacity
+          });
+        }
+        currentPenPoints = [];
+        clearSvgOverlay();
+        renderPageAnnotations(currentPageNum);
+      } else if (isDrawingShape) {
+        isDrawingShape = false;
+        const coords = getRelativeCoords(e);
+        const w = coords.x - drawStartX;
+        const h = coords.y - drawStartY;
+
+        if (Math.abs(w) > 5 && Math.abs(h) > 5) {
+          const x = Math.min(drawStartX, coords.x);
+          const y = Math.min(drawStartY, coords.y);
+          const width = Math.abs(w);
+          const height = Math.abs(h);
+
+          if (activeTool === 'highlight') {
+            addAnnotationToCurrentPage({
+              id: 'hl_' + Date.now(),
+              type: 'highlight',
+              x, y, width, height,
+              color: toolColor,
+              opacity: toolOpacity
+            });
+          } else if (activeTool === 'redact') {
+            addAnnotationToCurrentPage({
+              id: 'redact_' + Date.now(),
+              type: 'redact',
+              x, y, width, height,
+              mode: 'black'
+            });
+          } else if (activeTool === 'shape') {
+            addAnnotationToCurrentPage({
+              id: 'shape_' + Date.now(),
+              type: 'shape',
+              shapeType: activeShapeType,
+              x, y, width, height,
+              color: toolColor,
+              strokeWidth: toolStrokeSize,
+              opacity: toolOpacity
+            });
+          }
+        }
+        clearSvgOverlay();
+        renderPageAnnotations(currentPageNum);
+      }
+    }
+
+    function renderLivePenPath() {
+      const svg = document.getElementById('pdf-annotation-svg');
+      let d = `M ${currentPenPoints[0].x * currentZoom} ${currentPenPoints[0].y * currentZoom}`;
+      for (let i = 1; i < currentPenPoints.length; i++) {
+        d += ` L ${currentPenPoints[i].x * currentZoom} ${currentPenPoints[i].y * currentZoom}`;
+      }
+      svg.innerHTML = `
+        <path d="${d}" stroke="${toolColor}" stroke-width="${toolStrokeSize * currentZoom}"
+              stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="${toolOpacity}" />
+      `;
+    }
+
+    function renderLiveShapePreview(x1, y1, x2, y2) {
+      const svg = document.getElementById('pdf-annotation-svg');
+      const left = Math.min(x1, x2) * currentZoom;
+      const top = Math.min(y1, y2) * currentZoom;
+      const width = Math.abs(x2 - x1) * currentZoom;
+      const height = Math.abs(y2 - y1) * currentZoom;
+
+      if (activeTool === 'highlight') {
+        svg.innerHTML = `<rect x="${left}" y="${top}" width="${width}" height="${height}" fill="${toolColor}" opacity="${toolOpacity}" />`;
+      } else if (activeTool === 'redact') {
+        svg.innerHTML = `<rect x="${left}" y="${top}" width="${width}" height="${height}" fill="black" stroke="red" stroke-dasharray="4" opacity="0.8" />`;
+      } else if (activeTool === 'shape') {
+        if (activeShapeType === 'rect') {
+          svg.innerHTML = `<rect x="${left}" y="${top}" width="${width}" height="${height}" stroke="${toolColor}" stroke-width="${toolStrokeSize * currentZoom}" fill="none" opacity="${toolOpacity}" />`;
+        } else if (activeShapeType === 'circle') {
+          svg.innerHTML = `<ellipse cx="${left + width / 2}" cy="${top + height / 2}" rx="${width / 2}" ry="${height / 2}" stroke="${toolColor}" stroke-width="${toolStrokeSize * currentZoom}" fill="none" opacity="${toolOpacity}" />`;
+        } else if (activeShapeType === 'line') {
+          svg.innerHTML = `<line x1="${x1 * currentZoom}" y1="${y1 * currentZoom}" x2="${x2 * currentZoom}" y2="${y2 * currentZoom}" stroke="${toolColor}" stroke-width="${toolStrokeSize * currentZoom}" opacity="${toolOpacity}" />`;
+        } else if (activeShapeType === 'arrow') {
+          svg.innerHTML = `
+            <defs>
+              <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="${toolColor}" />
+              </marker>
+            </defs>
+            <line x1="${x1 * currentZoom}" y1="${y1 * currentZoom}" x2="${x2 * currentZoom}" y2="${y2 * currentZoom}" stroke="${toolColor}" stroke-width="${toolStrokeSize * currentZoom}" marker-end="url(#arrowhead)" opacity="${toolOpacity}" />
+          `;
+        }
+      }
+    }
+
+    function clearSvgOverlay() {
+      document.getElementById('pdf-annotation-svg').innerHTML = '';
+    }
+
+    // Click & Edit Text Box Creation
+    function createInlineEditableTextBox(x, y, initialText = "येथे टाईप करा") {
+      const id = 'text_' + Date.now();
+      const anno = {
+        id,
+        type: 'text',
+        x, y,
+        text: initialText,
+        fontSize: 16,
+        color: toolColor === '#ffea00' ? '#0f172a' : toolColor,
+        isBold: false
+      };
+      addAnnotationToCurrentPage(anno);
+      renderPageAnnotations(currentPageNum);
+
+      // Focus the newly added text element for immediate typing
+      setTimeout(() => {
+        const el = document.querySelector(`[data-id="${id}"] .anno-text-content`);
+        if (el) {
+          el.focus();
+          document.execCommand('selectAll', false, null);
+        }
+      }, 50);
+    }
+
+    function createStickyNote(x, y) {
+      const id = 'note_' + Date.now();
+      const anno = {
+        id,
+        type: 'note',
+        x, y,
+        text: 'येथे तुमची टीप किंवा कमेंट लिहा...',
+        isOpen: true
+      };
+      addAnnotationToCurrentPage(anno);
+      renderPageAnnotations(currentPageNum);
+      showToast('कमेंट टीप जोडली', 'info');
+    }
+
+    function addAnnotationToCurrentPage(anno) {
+      if (!pageAnnotations[currentPageNum]) {
+        pageAnnotations[currentPageNum] = [];
+      }
+      pageAnnotations[currentPageNum].push(anno);
+      recordHistoryState();
+      triggerAutoSaveNotification();
+    }
+
+    // Render Page Annotations to Interactive Layer
+    function renderPageAnnotations(pageNum) {
+      const container = document.getElementById('interactive-elements-container');
+      container.innerHTML = '';
+
+      const annos = pageAnnotations[pageNum] || [];
+      const svg = document.getElementById('pdf-annotation-svg');
+      let svgHtml = '';
+
+      annos.forEach(anno => {
+        if (anno.type === 'pen') {
+          // Render on SVG
+          let d = `M ${anno.points[0].x * currentZoom} ${anno.points[0].y * currentZoom}`;
+          for (let i = 1; i < anno.points.length; i++) {
+            d += ` L ${anno.points[i].x * currentZoom} ${anno.points[i].y * currentZoom}`;
+          }
+          svgHtml += `
+            <path d="${d}" stroke="${anno.color}" stroke-width="${anno.strokeWidth * currentZoom}"
+                  stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="${anno.opacity}" />
+          `;
+        } else if (anno.type === 'shape') {
+          const l = anno.x * currentZoom;
+          const t = anno.y * currentZoom;
+          const w = anno.width * currentZoom;
+          const h = anno.height * currentZoom;
+          if (anno.shapeType === 'rect') {
+            svgHtml += `<rect x="${l}" y="${t}" width="${w}" height="${h}" stroke="${anno.color}" stroke-width="${anno.strokeWidth * currentZoom}" fill="none" opacity="${anno.opacity}" />`;
+          } else if (anno.shapeType === 'circle') {
+            svgHtml += `<ellipse cx="${l + w/2}" cy="${t + h/2}" rx="${w/2}" ry="${h/2}" stroke="${anno.color}" stroke-width="${anno.strokeWidth * currentZoom}" fill="none" opacity="${anno.opacity}" />`;
+          }
+        } else {
+          // DOM Elements (Text, Highlight, Signature, Redact, Note)
+          const el = document.createElement('div');
+          el.className = 'anno-box';
+          el.dataset.id = anno.id;
+          el.style.left = `${anno.x * currentZoom}px`;
+          el.style.top = `${anno.y * currentZoom}px`;
+          el.style.pointerEvents = 'auto';
+
+          if (anno.type === 'text') {
+            el.innerHTML = `
+              <div class="anno-text-content" contenteditable="true" style="font-size: ${anno.fontSize * currentZoom}px; color: ${anno.color}; font-weight: ${anno.isBold ? 'bold' : 'normal'}; padding: 2px 6px; outline: none; white-space: pre-wrap; min-width: 40px;">${anno.text}</div>
+              <div class="anno-resizer se"></div>
+            `;
+            const textContent = el.querySelector('.anno-text-content');
+            textContent.addEventListener('blur', (e) => {
+              anno.text = e.target.innerText;
+              recordHistoryState();
+            });
+          } else if (anno.type === 'highlight') {
+            el.style.width = `${anno.width * currentZoom}px`;
+            el.style.height = `${anno.height * currentZoom}px`;
+            el.style.backgroundColor = anno.color;
+            el.style.opacity = anno.opacity;
+            el.style.borderRadius = '2px';
+          } else if (anno.type === 'signature') {
+            el.style.width = `${anno.width * currentZoom}px`;
+            el.style.height = `${anno.height * currentZoom}px`;
+            el.innerHTML = `
+              <img src="${anno.dataUrl}" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;">
+              <div class="anno-resizer se"></div>
+            `;
+          } else if (anno.type === 'redact') {
+            el.style.width = `${anno.width * currentZoom}px`;
+            el.style.height = `${anno.height * currentZoom}px`;
+            el.className = 'anno-box redaction-block applied-black';
+            el.innerHTML = `<span style="color: #64748b; font-size: 9px; position: absolute; top: 2px; left: 4px; pointer-events: none;">REDACTED</span>`;
+          } else if (anno.type === 'note') {
+            el.innerHTML = `
+              <div class="sticky-note-pin" onclick="toggleStickyNotePopover('${anno.id}')">
+                <i class="fa-solid fa-comment-dots"></i>
+              </div>
+              <div class="sticky-note-popover" id="popover-${anno.id}" style="display: ${anno.isOpen ? 'block' : 'none'};">
+                <textarea style="width: 100%; border: none; background: transparent; font-family: inherit; font-size: 0.78rem; resize: vertical;" onblur="updateNoteContent('${anno.id}', this.value)">${anno.text}</textarea>
+              </div>
+            `;
+          }
+
+          // Make draggable
+          makeAnnotationDraggable(el, anno);
+
+          container.appendChild(el);
+        }
+      });
+
+      svg.innerHTML = svgHtml;
+    }
+
+    function makeAnnotationDraggable(element, anno) {
+      let isDragging = false;
+      let startX, startY;
+
+      element.addEventListener('mousedown', (e) => {
+        if (e.target.isContentEditable || e.target.tagName === 'TEXTAREA') return;
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        element.classList.add('selected');
+        e.stopPropagation();
+
+        const onMouseMove = (ev) => {
+          if (!isDragging) return;
+          const dx = (ev.clientX - startX) / currentZoom;
+          const dy = (ev.clientY - startY) / currentZoom;
+          anno.x += dx;
+          anno.y += dy;
+          element.style.left = `${anno.x * currentZoom}px`;
+          element.style.top = `${anno.y * currentZoom}px`;
+          startX = ev.clientX;
+          startY = ev.clientY;
+        };
+
+        const onMouseUp = () => {
+          if (isDragging) {
+            isDragging = false;
+            recordHistoryState();
+          }
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
+        };
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+      });
+    }
+
+    function toggleStickyNotePopover(id) {
+      const popover = document.getElementById(`popover-${id}`);
+      if (popover) {
+        popover.style.display = (popover.style.display === 'none') ? 'block' : 'none';
+      }
+    }
+
+    function updateNoteContent(id, text) {
+      const list = pageAnnotations[currentPageNum] || [];
+      const note = list.find(a => a.id === id);
+      if (note) {
+        note.text = text;
+        recordHistoryState();
+      }
+    }
+
+    // --- Search & Replace Core Engine ---
+    function toggleSearchBar(show = true) {
+      const bar = document.getElementById('floating-search-bar');
+      bar.classList.toggle('active', show);
+      if (show) {
+        document.getElementById('find-input').focus();
+      } else {
+        clearSearchHighlights();
+      }
+    }
+
+    async function handleSearchInput() {
+      const rawQuery = document.getElementById('find-input').value;
+      const isCase = document.getElementById('case-sensitive-cb').checked;
+      const isWhole = document.getElementById('whole-word-cb').checked;
+
+      clearSearchHighlights();
+      searchMatches = [];
+      activeMatchIndex = -1;
+
+      if (!rawQuery || rawQuery.trim().length === 0 || !currentPdfDoc) {
+        document.getElementById('search-match-counter').innerText = '० निकाल';
+        return;
+      }
+
+      // Devanagari Unicode Normalization
+      const query = rawQuery.normalize('NFC').trim();
+      const qLower = query.toLowerCase();
+
+      // Search through all pages
+      for (let p = 1; p <= totalPages; p++) {
+        const origIdx = pagesOrder[p - 1];
+        const page = await currentPdfDoc.getPage(origIdx + 1);
+        const rot = (page.rotate + (pagesRotation[origIdx] || 0)) % 360;
+        const viewport = page.getViewport({ scale: 1.0, rotation: rot });
+        const textContent = await page.getTextContent();
+
+        // 1. Direct Item Matching (for single span items)
+        textContent.items.forEach((item, itemIdx) => {
+          if (!item.str || item.str.trim().length === 0) return;
+          const strNorm = item.str.normalize('NFC');
+          const strTarget = isCase ? strNorm : strNorm.toLowerCase();
+          const targetQ = isCase ? query : qLower;
+
+          let matched = isWhole ? (strTarget === targetQ) : strTarget.includes(targetQ);
+
+          if (matched) {
+            const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+            const fontHeight = Math.sqrt(tx[2] * tx[2] + tx[3] * tx[3]) || 12;
+            const x = tx[4];
+            const y = tx[5] - fontHeight;
+            const width = item.width > 0 ? item.width : (item.str.length * fontHeight * 0.55);
+            const height = item.height > 0 ? item.height : fontHeight;
+
+            searchMatches.push({
+              pageNum: p,
+              text: item.str,
+              itemIndex: itemIdx,
+              x: x > 0 ? x : 40,
+              y: y > 0 ? y : 40,
+              width: width > 10 ? width : 100,
+              height: height > 8 ? height : 18,
+              fontSize: Math.round(fontHeight) || 14
+            });
+          }
+        });
+
+        // 2. Stream Concatenation Search (for Marathi words split across multiple spans)
+        if (searchMatches.filter(m => m.pageNum === p).length === 0 && textContent.items.length > 0) {
+          let fullPageStr = "";
+          const charPositions = [];
+
+          textContent.items.forEach((item) => {
+            if (!item.str) return;
+            const strNorm = item.str.normalize('NFC');
+            const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+            const fontHeight = Math.sqrt(tx[2] * tx[2] + tx[3] * tx[3]) || 12;
+            const itemX = tx[4];
+            const itemY = tx[5] - fontHeight;
+            const itemW = item.width > 0 ? item.width : (strNorm.length * fontHeight * 0.55);
+            const itemH = item.height > 0 ? item.height : fontHeight;
+            const charW = itemW / (strNorm.length || 1);
+
+            for (let c = 0; c < strNorm.length; c++) {
+              charPositions.push({
+                x: itemX + (c * charW),
+                y: itemY,
+                width: charW,
+                height: itemH,
+                fontSize: Math.round(fontHeight)
+              });
+              fullPageStr += strNorm[c];
+            }
+            fullPageStr += " ";
+            charPositions.push({
+              x: itemX + itemW,
+              y: itemY,
+              width: 4,
+              height: itemH,
+              fontSize: Math.round(fontHeight)
+            });
+          });
+
+          // Search concatenated page string
+          const pageTarget = isCase ? fullPageStr : fullPageStr.toLowerCase();
+          const targetQ = isCase ? query : qLower;
+
+          let matchIndex = pageTarget.indexOf(targetQ);
+          while (matchIndex !== -1) {
+            const startChar = charPositions[matchIndex];
+            const endChar = charPositions[matchIndex + targetQ.length - 1] || startChar;
+
+            if (startChar && endChar) {
+              const x = startChar.x;
+              const y = startChar.y;
+              const width = Math.max((endChar.x + endChar.width) - x, 30);
+              const height = startChar.height;
+
+              searchMatches.push({
+                pageNum: p,
+                text: fullPageStr.substring(matchIndex, matchIndex + targetQ.length),
+                itemIndex: -1,
+                x: x > 0 ? x : 40,
+                y: y > 0 ? y : 40,
+                width: width,
+                height: height,
+                fontSize: startChar.fontSize || 14
+              });
+            }
+            matchIndex = pageTarget.indexOf(targetQ, matchIndex + 1);
+          }
+        }
+      }
+
+      document.getElementById('search-match-counter').innerText = `${searchMatches.length} निकाल सापडले`;
+
+      if (searchMatches.length > 0) {
+        activeMatchIndex = 0;
+        jumpToSearchMatch(0);
+      } else {
+        // If 0 matches found natively, notify user and offer automatic OCR search
+        executeOcrSearchOnCurrentPage();
+      }
+    }
+
+    // Tesseract.js Visual Marathi Canvas OCR Search Engine
+    async function executeOcrSearchOnCurrentPage() {
+      const rawQuery = document.getElementById('find-input').value;
+      if (!rawQuery || rawQuery.trim().length === 0) {
+        showToast('कृपया शोधावयाचा मराठी शब्द टाईप करा', 'warning');
+        return;
+      }
+      const query = rawQuery.normalize('NFC').trim();
+      const canvas = document.getElementById('pdf-render-canvas');
+      if (!canvas) return;
+
+      try {
+        showToast('Tesseract.js OCR द्वारे मराठी मजकूर शोधत आहोत...', 'info');
+        document.getElementById('search-match-counter').innerText = 'OCR चालू...';
+
+        const worker = await Tesseract.createWorker(['mar', 'hin', 'eng']);
+        const ret = await worker.recognize(canvas);
+        await worker.terminate();
+
+        clearSearchHighlights();
+        searchMatches = [];
+        activeMatchIndex = -1;
+
+        const words = ret.data.words || [];
+        const dpr = window.devicePixelRatio || 1;
+        const scaleX = (canvas.width / dpr) / canvas.width;
+        const scaleY = (canvas.height / dpr) / canvas.height;
+
+        words.forEach((w, idx) => {
+          if (!w.text) return;
+          const wordText = w.text.normalize('NFC').trim();
+
+          if (wordText.includes(query) || query.includes(wordText)) {
+            const bbox = w.bbox;
+            const x = (bbox.x0 * scaleX) / currentZoom;
+            const y = (bbox.y0 * scaleY) / currentZoom;
+            const width = ((bbox.x1 - bbox.x0) * scaleX) / currentZoom;
+            const height = ((bbox.y1 - bbox.y0) * scaleY) / currentZoom;
+
+            searchMatches.push({
+              pageNum: currentPageNum,
+              text: w.text,
+              itemIndex: idx,
+              x: x > 0 ? x : 20,
+              y: y > 0 ? y : 20,
+              width: width > 10 ? width : 80,
+              height: height > 8 ? height : 20,
+              fontSize: Math.round(height * 0.8) || 14
+            });
+          }
+        });
+
+        document.getElementById('search-match-counter').innerText = `${searchMatches.length} OCR निकाल`;
+
+        if (searchMatches.length > 0) {
+          activeMatchIndex = 0;
+          jumpToSearchMatch(0);
+          showToast(`OCR द्वारे ${searchMatches.length} जुळणारे मराठी शब्द सापडले!`, 'success');
+        } else {
+          showToast('OCR द्वारेही जुळणारा मराठी शब्द सापडला नाही', 'warning');
+        }
+      } catch (err) {
+        console.error('OCR Search Error:', err);
+        showToast('OCR शोधात त्रुटी: ' + err.message, 'error');
+      }
+    }
+
+    // --- GOOGLE CLOUD VISION AI OCR INTEGRATION ---
+    function openGoogleVisionSettingsModal() {
+      const savedKey = localStorage.getItem('emudra_google_vision_key') || '';
+      document.getElementById('google-vision-key-input').value = savedKey;
+      openModal('modal-google-vision');
+    }
+
+    function saveGoogleVisionApiKey() {
+      const key = document.getElementById('google-vision-key-input').value.trim();
+      if (!key) {
+        showToast('कृपया वैध Google Cloud Vision API Key प्रविष्ट करा', 'warning');
+        return;
+      }
+      localStorage.setItem('emudra_google_vision_key', key);
+      closeModal('modal-google-vision');
+      showToast('Google Cloud Vision API Key सेव्ह झाली!', 'success');
+    }
+
+    async function callGoogleCloudVisionApi(base64Image, apiKey) {
+      const url = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
+      const cleanBase64 = base64Image.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
+
+      const requestBody = {
+        requests: [
+          {
+            image: { content: cleanBase64 },
+            features: [
+              { type: "DOCUMENT_TEXT_DETECTION" },
+              { type: "TEXT_DETECTION" }
+            ],
+            imageContext: {
+              languageHints: ["mr", "hi", "en"]
+            }
+          }
+        ]
+      };
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error?.message || "Google Cloud Vision API request failed");
+      }
+
+      const data = await response.json();
+      return data.responses[0];
+    }
+
+    async function runGoogleVisionOcrOnCurrentPage() {
+      let apiKey = localStorage.getItem('emudra_google_vision_key');
+      if (!apiKey) {
+        openGoogleVisionSettingsModal();
+        return;
+      }
+
+      const canvas = document.getElementById('pdf-render-canvas');
+      if (!canvas) return;
+
+      try {
+        showToast('Google Cloud Vision AI द्वारे १००% अचूक मराठी OCR चालवत आहोत...', 'info');
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+
+        const visionResp = await callGoogleCloudVisionApi(dataUrl, apiKey);
+        if (!visionResp || !visionResp.fullTextAnnotation) {
+          showToast('Google Vision द्वारे कोणत्याही मराठी मजकुराची नोंद झाली नाही', 'warning');
+          return;
+        }
+
+        const fullText = visionResp.fullTextAnnotation.text;
+        document.getElementById('ocr-output-textarea').value = fullText;
+        document.getElementById('ocr-confidence-badge').innerHTML = `<i class="fa-brands fa-google" style="color:#4285F4"></i> Google Vision AI: १००% अचूक मराठी मजकूर`;
+        document.getElementById('ocr-status-text').innerText = 'Google Vision मराठी OCR यशस्वी!';
+        document.getElementById('ocr-progress-fill').style.width = '100%';
+
+        openOcrResultModal();
+        showToast('Google Vision AI द्वारे मराठी दस्तऐवज १००% अचूक वाचला!', 'success');
+      } catch (err) {
+        console.error('Google Vision Error:', err);
+        showToast('Google Vision API त्रुटी: ' + err.message, 'error');
+      }
+    }
+
+    function navigateSearchMatch(direction) {
+      if (searchMatches.length === 0) return;
+      activeMatchIndex += direction;
+      if (activeMatchIndex >= searchMatches.length) activeMatchIndex = 0;
+      if (activeMatchIndex < 0) activeMatchIndex = searchMatches.length - 1;
+      jumpToSearchMatch(activeMatchIndex);
+    }
+
+    function jumpToSearchMatch(idx) {
+      if (idx < 0 || idx >= searchMatches.length) return;
+      const match = searchMatches[idx];
+      document.getElementById('search-match-counter').innerText = `${idx + 1} / ${searchMatches.length}`;
+
+      if (currentPageNum !== match.pageNum) {
+        goToPage(match.pageNum);
+      }
+      setTimeout(() => highlightSearchMatchesOnCurrentPage(), 100);
+    }
+
+    function highlightSearchMatchesOnCurrentPage() {
+      clearSearchHighlights();
+      const wrapper = document.getElementById('pdf-page-wrapper');
+      if (!wrapper) return;
+
+      searchMatches.forEach((match, idx) => {
+        if (match.pageNum === currentPageNum) {
+          const highlightEl = document.createElement('div');
+          highlightEl.className = 'search-match-highlight';
+          highlightEl.style.position = 'absolute';
+          highlightEl.style.left = `${match.x * currentZoom}px`;
+          highlightEl.style.top = `${match.y * currentZoom}px`;
+          highlightEl.style.width = `${match.width * currentZoom}px`;
+          highlightEl.style.height = `${match.height * currentZoom}px`;
+          highlightEl.style.background = (idx === activeMatchIndex) ? 'rgba(56, 189, 248, 0.55)' : 'rgba(250, 204, 21, 0.45)';
+          highlightEl.style.border = (idx === activeMatchIndex) ? '2px solid #0284c7' : '1px dashed #eab308';
+          highlightEl.style.borderRadius = '3px';
+          highlightEl.style.pointerEvents = 'none';
+          highlightEl.style.zIndex = '30';
+          highlightEl.style.boxShadow = (idx === activeMatchIndex) ? '0 0 12px rgba(56, 189, 248, 0.8)' : 'none';
+
+          wrapper.appendChild(highlightEl);
+
+          if (idx === activeMatchIndex) {
+            highlightEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+      });
+    }
+
+    function clearSearchHighlights() {
+      document.querySelectorAll('.search-match-highlight').forEach(el => el.remove());
+    }
+
+    function replaceCurrentMatch() {
+      const replaceWith = document.getElementById('replace-input').value;
+      if (activeMatchIndex < 0 || activeMatchIndex >= searchMatches.length) {
+        showToast('बदलण्यासाठी प्रथम मजकूर शोधा', 'warning');
+        return;
+      }
+      const match = searchMatches[activeMatchIndex];
+
+      // 1. Cover/Erase original Marathi/English text at exact spot
+      if (!pageAnnotations[match.pageNum]) pageAnnotations[match.pageNum] = [];
+      pageAnnotations[match.pageNum].push({
+        id: 'redact_white_' + Date.now(),
+        type: 'highlight',
+        x: match.x,
+        y: match.y,
+        width: match.width + 4,
+        height: match.height + 2,
+        color: '#ffffff',
+        opacity: 1.0
+      });
+
+      // 2. Add Marathi replacement text annotation at exact spot
+      pageAnnotations[match.pageNum].push({
+        id: 'text_repl_' + Date.now(),
+        type: 'text',
+        x: match.x,
+        y: match.y,
+        text: replaceWith,
+        fontSize: match.fontSize || 14,
+        color: '#0f172a',
+        isBold: false
+      });
+
+      renderPageAnnotations(currentPageNum);
+      recordHistoryState();
+      triggerAutoSaveNotification();
+      showToast(`'${match.text}' चा बदल '${replaceWith}' ने झाला!`, 'success');
+      handleSearchInput();
+    }
+
+    function replaceAllMatches() {
+      const replaceWith = document.getElementById('replace-input').value;
+      if (searchMatches.length === 0) {
+        showToast('बदलण्यासाठी कोणतेही जुळणारे शब्द सापडले नाहीत', 'warning');
+        return;
+      }
+      const count = searchMatches.length;
+      if (!confirm(`एकूण ${count} ठिकाणी मराठी/इंग्रजी बदल होणार आहेत. पुढे जायचे का?`)) return;
+
+      searchMatches.forEach((match, i) => {
+        if (!pageAnnotations[match.pageNum]) pageAnnotations[match.pageNum] = [];
+        // Cover original text
+        pageAnnotations[match.pageNum].push({
+          id: `redact_white_${Date.now()}_${i}`,
+          type: 'highlight',
+          x: match.x,
+          y: match.y,
+          width: match.width + 4,
+          height: match.height + 2,
+          color: '#ffffff',
+          opacity: 1.0
+        });
+
+        // Insert new Marathi text at exact spot
+        pageAnnotations[match.pageNum].push({
+          id: `text_repl_${Date.now()}_${i}`,
+          type: 'text',
+          x: match.x,
+          y: match.y,
+          text: replaceWith,
+          fontSize: match.fontSize || 14,
+          color: '#0f172a',
+          isBold: false
+        });
+      });
+
+      renderPageAnnotations(currentPageNum);
+      recordHistoryState();
+      triggerAutoSaveNotification();
+      showToast(`एकूण ${count} ठिकाणी मराठी/इंग्रजी बदल यशस्वीरित्या पूर्ण झाले!`, 'success');
+      toggleSearchBar(false);
+    }
+
+    // --- Digital Signature Studio ---
+    function initSignaturePad() {
+      sigPadCanvas = document.getElementById('sig-pad-canvas');
+      if (!sigPadCanvas) return;
+      sigPadCtx = sigPadCanvas.getContext('2d');
+      sigPadCtx.lineWidth = 2.5;
+      sigPadCtx.lineCap = 'round';
+      sigPadCtx.strokeStyle = '#000000';
+
+      sigPadCanvas.addEventListener('mousedown', (e) => {
+        isSigDrawing = true;
+        const rect = sigPadCanvas.getBoundingClientRect();
+        sigPadCtx.beginPath();
+        sigPadCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      });
+
+      sigPadCanvas.addEventListener('mousemove', (e) => {
+        if (!isSigDrawing) return;
+        const rect = sigPadCanvas.getBoundingClientRect();
+        sigPadCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        sigPadCtx.stroke();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isSigDrawing) {
+          isSigDrawing = false;
+        }
+      });
+    }
+
+    function openSignatureModal() {
+      openModal('modal-signature');
+    }
+
+    function clearSignaturePad() {
+      if (sigPadCtx && sigPadCanvas) {
+        sigPadCtx.clearRect(0, 0, sigPadCanvas.width, sigPadCanvas.height);
+      }
+    }
+
+    function updateSigPenColor(val) {
+      if (sigPadCtx) sigPadCtx.strokeStyle = val;
+    }
+
+    function switchSigTab(mode) {
+      document.querySelectorAll('#modal-signature .sidebar-tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`sig-tab-${mode}`)?.classList.add('active');
+      document.getElementById('sig-mode-draw').style.display = (mode === 'draw') ? 'block' : 'none';
+      document.getElementById('sig-mode-type').style.display = (mode === 'type') ? 'block' : 'none';
+      document.getElementById('sig-mode-upload').style.display = (mode === 'upload') ? 'block' : 'none';
+    }
+
+    function renderTypedSignaturePreview() {
+      const val = document.getElementById('sig-type-input').value || "Mahesh Sutar";
+      document.getElementById('typed-sig-preview').innerText = val;
+    }
+
+    function handleSigFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        uploadedSigDataUrl = event.target.result;
+        document.getElementById('sig-upload-preview-box').innerHTML = `
+          <img src="${uploadedSigDataUrl}" style="max-height: 140px; max-width: 90%; object-fit: contain;">
+        `;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function applySignatureToPage() {
+      let sigDataUrl = null;
+      const isDraw = document.getElementById('sig-mode-draw').style.display !== 'none';
+      const isType = document.getElementById('sig-mode-type').style.display !== 'none';
+
+      if (isDraw) {
+        sigDataUrl = sigPadCanvas.toDataURL('image/png');
+      } else if (isType) {
+        // Render typed text to temporary canvas
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = 400;
+        tempCanvas.height = 120;
+        const tCtx = tempCanvas.getContext('2d');
+        tCtx.font = "48px 'Great Vibes', cursive";
+        tCtx.fillStyle = "#002244";
+        const txt = document.getElementById('sig-type-input').value || "Mahesh Sutar";
+        tCtx.fillText(txt, 20, 80);
+        sigDataUrl = tempCanvas.toDataURL('image/png');
+      } else {
+        sigDataUrl = uploadedSigDataUrl;
+      }
+
+      if (!sigDataUrl) {
+        showToast('कृपया स्वाक्षरी करा किंवा अपलोड करा', 'warning');
+        return;
+      }
+
+      addAnnotationToCurrentPage({
+        id: 'sig_' + Date.now(),
+        type: 'signature',
+        x: 150,
+        y: 300,
+        width: 160,
+        height: 70,
+        dataUrl: sigDataUrl
+      });
+
+      renderPageAnnotations(currentPageNum);
+      closeModal('modal-signature');
+      showToast('डिजिटल सही पानावर जोडली गेली!', 'success');
+    }
+
+    // --- Merge PDF Engine ---
+    let mergeFilesList = [];
+
+    function openMergePdfModal() {
+      mergeFilesList = [];
+      document.getElementById('merge-files-list').innerHTML = `
+        <div style="font-size: 0.78rem; color: var(--text-muted); padding: 8px;">
+          चालू PDF: <strong>${pdfFilename}</strong> (${totalPages} पाने)
+        </div>
+      `;
+      document.getElementById('start-merge-btn').disabled = true;
+      openModal('modal-merge-pdf');
+    }
+
+    function handleMergeFilesSelected(e) {
+      const files = Array.from(e.target.files);
+      if (!files || files.length === 0) return;
+
+      mergeFilesList = files;
+      const container = document.getElementById('merge-files-list');
+      container.innerHTML = `
+        <div style="font-size: 0.78rem; color: var(--accent-cyan); padding: 4px;">
+          १. चालू PDF: <strong>${pdfFilename}</strong>
+        </div>
+      `;
+
+      files.forEach((f, idx) => {
+        const row = document.createElement('div');
+        row.style.fontSize = '0.78rem';
+        row.style.padding = '4px';
+        row.innerHTML = `${idx + 2}. जोडण्यासाठी PDF: <strong>${f.name}</strong> (${(f.size / 1024).toFixed(1)} KB)`;
+        container.appendChild(row);
+      });
+
+      document.getElementById('start-merge-btn').disabled = false;
+    }
+
+    async function executeMergePdf() {
+      try {
+        showToast('PDF फाईल्स एकत्र (Merge) करत आहोत...', 'info');
+        const { PDFDocument } = PDFLib;
+        const mergedDoc = await PDFDocument.create();
+
+        // 1. Copy pages from current active doc
+        const currentDoc = await PDFDocument.load(currentPdfBytes);
+        const currentPages = await mergedDoc.copyPages(currentDoc, currentDoc.getPageIndices());
+        currentPages.forEach(p => mergedDoc.addPage(p));
+
+        // 2. Append additional files
+        for (const file of mergeFilesList) {
+          const buffer = await file.arrayBuffer();
+          const doc = await PDFDocument.load(buffer);
+          const pages = await mergedDoc.copyPages(doc, doc.getPageIndices());
+          pages.forEach(p => mergedDoc.addPage(p));
+        }
+
+        const mergedBytes = await mergedDoc.save();
+        await loadPdfBuffer(mergedBytes.buffer, `Merged_${pdfFilename}`);
+        closeModal('modal-merge-pdf');
+        showToast('सर्व PDF फाईल्स यशस्वीरित्या एकत्र झाल्या!', 'success');
+      } catch (err) {
+        console.error('Merge error:', err);
+        showToast('PDF एकत्र करताना त्रुटी आली: ' + err.message, 'error');
+      }
+    }
+
+    // --- Split PDF Engine ---
+    function openSplitPdfModal() {
+      openModal('modal-split-pdf');
+    }
+
+    async function executeSplitPdf() {
+      try {
+        showToast('PDF Split करत आहोत...', 'info');
+        const { PDFDocument } = PDFLib;
+        const zip = new JSZip();
+
+        const doc = await PDFDocument.load(currentPdfBytes);
+        const numPages = doc.getPageCount();
+
+        for (let i = 0; i < numPages; i++) {
+          const singleDoc = await PDFDocument.create();
+          const [copiedPage] = await singleDoc.copyPages(doc, [i]);
+          singleDoc.addPage(copiedPage);
+          const pdfData = await singleDoc.save();
+          zip.file(`Page_${i + 1}_${pdfFilename}`, pdfData);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(zipBlob);
+        a.download = `Split_${pdfFilename.replace('.pdf', '')}.zip`;
+        a.click();
+
+        closeModal('modal-split-pdf');
+        showToast('सर्व पाने स्वतंत्र फाईल्स म्हणून ZIP मध्ये डाउनलोड झाली!', 'success');
+      } catch (err) {
+        console.error('Split error:', err);
+        showToast('PDF Split करताना त्रुटी आली: ' + err.message, 'error');
+      }
+    }
+
+    async function extractCurrentPageAsPdf() {
+      try {
+        const { PDFDocument } = PDFLib;
+        const doc = await PDFDocument.load(currentPdfBytes);
+        const singleDoc = await PDFDocument.create();
+        const origIdx = pagesOrder[currentPageNum - 1];
+        const [copiedPage] = await singleDoc.copyPages(doc, [origIdx]);
+        singleDoc.addPage(copiedPage);
+        const pdfData = await singleDoc.save();
+
+        const blob = new Blob([pdfData], { type: 'application/pdf' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `Page_${currentPageNum}_${pdfFilename}`;
+        a.click();
+        showToast(`पान ${currentPageNum} स्वतंत्र PDF म्हणून डाउनलोड झाले`, 'success');
+      } catch (e) {
+        showToast('पान डाउनलोड करताना त्रुटी: ' + e.message, 'error');
+      }
+    }
+
+    // --- PDF Converters (PDF to JPG/PNG, ZIP, Text Extract) ---
+    async function convertPdfToImages(format = 'png') {
+      if (!currentPdfDoc) return;
+      try {
+        showToast(`सर्व पाने ${format.toUpperCase()} मध्ये तयार करत आहोत...`, 'info');
+        const zip = new JSZip();
+
+        for (let i = 0; i < pagesOrder.length; i++) {
+          const origIdx = pagesOrder[i];
+          const pageNum = i + 1;
+          const page = await currentPdfDoc.getPage(origIdx + 1);
+          const rot = (page.rotate + (pagesRotation[origIdx] || 0)) % 360;
+          const viewport = page.getViewport({ scale: 2.0, rotation: rot });
+
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+          await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+          const mimeType = (format === 'jpg') ? 'image/jpeg' : 'image/png';
+          const ext = (format === 'jpg') ? 'jpg' : 'png';
+          const dataUrl = canvas.toDataURL(mimeType, 0.92);
+          const base64Data = dataUrl.split(',')[1];
+          zip.file(`Page_${pageNum}.${ext}`, base64Data, { base64: true });
+        }
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(zipBlob);
+        a.download = `${pdfFilename.replace('.pdf', '')}_${format.toUpperCase()}_Images.zip`;
+        a.click();
+        showToast('सर्व फोटो ZIP फाईल स्वरूपात डाउनलोड झाले!', 'success');
+      } catch (err) {
+        console.error('Convert error:', err);
+        showToast('कन्व्हर्ट करताना त्रुटी आली: ' + err.message, 'error');
+      }
+    }
+
+    function downloadCurrentPageImage() {
+      const canvas = document.getElementById('pdf-render-canvas');
+      if (!canvas) return;
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png', 1.0);
+      a.download = `Page_${currentPageNum}_${pdfFilename.replace('.pdf', '')}.png`;
+      a.click();
+      showToast(`पान ${currentPageNum} इमेज म्हणून डाउनलोड झाले!`, 'success');
+    }
+
+    async function exportPdfTextToTxt() {
+      if (!currentPdfDoc) return;
+      try {
+        showToast('मजकूर एक्सपोर्ट करत आहोत...', 'info');
+        let fullText = `=== EMUDRA PDF TEXT EXPORT ===\nदस्तऐवज: ${pdfFilename}\nदिनांक: ${new Date().toLocaleString('mr-IN')}\n\n`;
+
+        for (let i = 0; i < pagesOrder.length; i++) {
+          const origIdx = pagesOrder[i];
+          const page = await currentPdfDoc.getPage(origIdx + 1);
+          const content = await page.getTextContent();
+          fullText += `\n--- पान ${i + 1} ---\n`;
+          content.items.forEach(item => {
+            fullText += item.str + " ";
+          });
+          fullText += "\n";
+        }
+
+        const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `${pdfFilename.replace('.pdf', '')}_Text.txt`;
+        a.click();
+        showToast('मजकूर TXT फाईलमध्ये डाउनलोड झाला!', 'success');
+      } catch (err) {
+        showToast('टेक्स्ट एक्सपोर्ट त्रुटी: ' + err.message, 'error');
+      }
+    }
+
+    // --- Images to PDF (JPG/PNG to PDF) ---
+    let imagesToPdfFiles = [];
+
+    function openJpgToPdfModal() {
+      imagesToPdfFiles = [];
+      document.getElementById('jpg-files-preview-list').innerHTML = '';
+      document.getElementById('generate-img-pdf-btn').disabled = true;
+      openModal('modal-jpg-to-pdf');
+    }
+
+    function handleJpgToPdfFilesSelected(e) {
+      const files = Array.from(e.target.files);
+      if (!files || files.length === 0) return;
+      imagesToPdfFiles = files;
+
+      const container = document.getElementById('jpg-files-preview-list');
+      container.innerHTML = '';
+
+      files.forEach((f, idx) => {
+        const thumb = document.createElement('div');
+        thumb.style.position = 'relative';
+        thumb.style.borderRadius = '4px';
+        thumb.style.overflow = 'hidden';
+        thumb.style.border = '1px solid var(--border-glass)';
+        thumb.innerHTML = `
+          <img src="${URL.createObjectURL(f)}" style="width: 100%; height: 75px; object-fit: cover;">
+          <span style="position: absolute; bottom: 2px; left: 2px; font-size: 10px; background: rgba(0,0,0,0.7); color: #fff; padding: 1px 4px; border-radius: 2px;">#${idx+1}</span>
+        `;
+        container.appendChild(thumb);
+      });
+
+      document.getElementById('generate-img-pdf-btn').disabled = false;
+    }
+
+    async function executeImagesToPdf() {
+      try {
+        showToast('इमेजेसपासून PDF तयार करत आहोत...', 'info');
+        const { jsPDF } = window.jspdf;
+        const orient = document.getElementById('img-pdf-orient').value;
+        const pdf = new jsPDF({ orientation: orient, unit: 'mm', format: 'a4' });
+
+        for (let i = 0; i < imagesToPdfFiles.length; i++) {
+          const file = imagesToPdfFiles[i];
+          const dataUrl = await readFileAsDataUrl(file);
+
+          if (i > 0) pdf.addPage('a4', orient);
+          const imgProps = pdf.getImageProperties(dataUrl);
+          const pdfWidth = (orient === 'portrait') ? 210 : 297;
+          const pdfHeight = (orient === 'portrait') ? 297 : 210;
+
+          // Scale to fit page
+          const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+          const w = imgProps.width * ratio;
+          const h = imgProps.height * ratio;
+          const x = (pdfWidth - w) / 2;
+          const y = (pdfHeight - h) / 2;
+
+          pdf.addImage(dataUrl, 'JPEG', x, y, w, h);
+        }
+
+        const pdfBlob = pdf.output('blob');
+        await loadPdfBuffer(await pdfBlob.arrayBuffer(), "Images_Document.pdf");
+        closeModal('modal-jpg-to-pdf');
+        showToast('इमेजेसची सुंदर PDF तयार झाली!', 'success');
+      } catch (err) {
+        console.error('Images to PDF error:', err);
+        showToast('PDF बनवताना त्रुटी: ' + err.message, 'error');
+      }
+    }
+
+    function readFileAsDataUrl(file) {
+      return new Promise((res, rej) => {
+        const reader = new FileReader();
+        reader.onload = () => res(reader.result);
+        reader.onerror = rej;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // --- Client-Side Tesseract OCR Engine (Marathi, Hindi, English) ---
+    async function runOcrOnCurrentPage() {
+      const canvas = document.getElementById('pdf-render-canvas');
+      if (!canvas) {
+        showToast('OCR चालवण्यासाठी प्रथम PDF लोड करा', 'warning');
+        return;
+      }
+
+      const lang = document.getElementById('ocr-lang-select').value;
+      openModal('modal-ocr-result');
+
+      const progressBox = document.getElementById('ocr-progress-box');
+      const progressFill = document.getElementById('ocr-progress-fill');
+      const statusText = document.getElementById('ocr-status-text');
+      const percentText = document.getElementById('ocr-percent-text');
+      const outputText = document.getElementById('ocr-output-textarea');
+
+      progressBox.style.display = 'flex';
+      outputText.value = '';
+
+      try {
+        statusText.innerText = `Tesseract.js OCR इंजिन लोड होत आहे (${lang})...`;
+
+        const worker = await Tesseract.createWorker(lang, 1, {
+          logger: m => {
+            if (m.status === 'recognizing text') {
+              const p = Math.round(m.progress * 100);
+              progressFill.style.width = `${p}%`;
+              percentText.innerText = `${p}%`;
+              statusText.innerText = `मजकूर ओळखत आहे (${p}%)...`;
+            }
+          }
+        });
+
+        const ret = await worker.recognize(canvas);
+        await worker.terminate();
+
+        progressBox.style.display = 'none';
+        outputText.value = ret.data.text;
+        const conf = Math.round(ret.data.confidence);
+        document.getElementById('ocr-confidence-badge').innerHTML = `
+          <i class="fa-solid fa-circle-check"></i> ओळख अचूकता: ${conf}%
+        `;
+
+        showToast('OCR यशस्वीरित्या पूर्ण झाले!', 'success');
+      } catch (err) {
+        console.error('OCR Error:', err);
+        progressBox.style.display = 'none';
+        showToast('OCR त्रुटी: ' + err.message, 'error');
+      }
+    }
+
+    async function runOcrOnAllPages() {
+      showToast('सर्व पानांवर OCR चालवणे सुरू आहे...', 'info');
+      runOcrOnCurrentPage();
+    }
+
+    function openOcrResultModal() {
+      openModal('modal-ocr-result');
+    }
+
+    function copyOcrText() {
+      const txt = document.getElementById('ocr-output-textarea').value;
+      navigator.clipboard.writeText(txt).then(() => {
+        showToast('मजकूर क्लिपबोर्डवर कॉपी केला!', 'success');
+      });
+    }
+
+    function downloadOcrTextAsFile() {
+      const txt = document.getElementById('ocr-output-textarea').value;
+      const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `OCR_Result_${pdfFilename.replace('.pdf', '')}.txt`;
+      a.click();
+    }
+
+    // --- Watermark & Page Numbering Engines (PDF-Lib) ---
+    function openWatermarkModal() {
+      openModal('modal-watermark');
+    }
+
+    async function applyWatermarkToDocument() {
+      try {
+        const text = document.getElementById('wm-text-input').value || "CONFIDENTIAL";
+        const fontSize = parseInt(document.getElementById('wm-size-input').value) || 45;
+        const opacity = parseInt(document.getElementById('wm-opacity-input').value) / 100;
+        const angle = parseInt(document.getElementById('wm-angle-input').value) || -45;
+
+        showToast('वॉटरमार्क लागू करत आहोत...', 'info');
+        const { PDFDocument, rgb, degrees, StandardFonts } = PDFLib;
+        const pdfDoc = await PDFDocument.load(currentPdfBytes);
+        const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+        const pages = pdfDoc.getPages();
+        pages.forEach(p => {
+          const { width, height } = p.getSize();
+          p.drawText(text, {
+            x: width / 4,
+            y: height / 2,
+            size: fontSize,
+            font: font,
+            color: rgb(0.5, 0.5, 0.5),
+            opacity: opacity,
+            rotate: degrees(angle)
+          });
+        });
+
+        const modifiedBytes = await pdfDoc.save();
+        await loadPdfBuffer(modifiedBytes.buffer, pdfFilename);
+        closeModal('modal-watermark');
+        showToast('वॉटरमार्क यशस्वीरित्या जोडला गेला!', 'success');
+      } catch (err) {
+        showToast('वॉटरमार्क त्रुटी: ' + err.message, 'error');
+      }
+    }
+
+    function openPageNumberModal() {
+      openModal('modal-pagenumber');
+    }
+
+    async function applyPageNumbersToDocument() {
+      try {
+        const pos = document.getElementById('pn-pos-select').value;
+        const fmt = document.getElementById('pn-format-select').value;
+        const headerText = document.getElementById('pn-header-text').value;
+        const skipFirst = document.getElementById('pn-skip-first-page').checked;
+
+        showToast('पान क्रमांक जोडत आहोत...', 'info');
+        const { PDFDocument, rgb, StandardFonts } = PDFLib;
+        const pdfDoc = await PDFDocument.load(currentPdfBytes);
+        const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+        const pages = pdfDoc.getPages();
+        const total = pages.length;
+
+        pages.forEach((p, idx) => {
+          if (skipFirst && idx === 0) return;
+          const { width, height } = p.getSize();
+          const pageNum = idx + 1;
+
+          let label = `Page ${pageNum} of ${total}`;
+          if (fmt === 'page-n') label = `पान ${pageNum}`;
+          if (fmt === 'just-n') label = `${pageNum}`;
+          if (fmt === 'hyphen') label = `- ${pageNum} -`;
+
+          let x = width / 2 - 25;
+          let y = 25; // Footer bottom
+
+          if (pos.includes('right')) x = width - 80;
+          if (pos.includes('left')) x = 30;
+          if (pos.includes('header')) y = height - 25;
+
+          p.drawText(label, {
+            x, y,
+            size: 10,
+            font: font,
+            color: rgb(0.3, 0.3, 0.3)
+          });
+
+          if (headerText && pos.includes('header')) {
+            p.drawText(headerText, {
+              x: 30, y: height - 25,
+              size: 9, font: font, color: rgb(0.4, 0.4, 0.4)
+            });
+          }
+        });
+
+        const modifiedBytes = await pdfDoc.save();
+        await loadPdfBuffer(modifiedBytes.buffer, pdfFilename);
+        closeModal('modal-pagenumber');
+        showToast('पान क्रमांक यशस्वीरित्या जोडले गेले!', 'success');
+      } catch (err) {
+        showToast('पान क्रमांक त्रुटी: ' + err.message, 'error');
+      }
+    }
+
+    // --- Redaction Engine (Permanent Blackout/Whiteout) ---
+    async function applyRedactionsToDocument() {
+      const annos = pageAnnotations[currentPageNum] || [];
+      const redactions = annos.filter(a => a.type === 'redact');
+
+      if (redactions.length === 0) {
+        showToast('सध्याच्या पानावर कोणतेही Redaction बॉक्सेस नाहीत', 'warning');
+        return;
+      }
+
+      if (!confirm(`तुम्हाला हे ${redactions.length} संवेदनशील भाग कायमचे ब्लॅकआऊट (Redact) करायचे आहेत का?`)) return;
+
+      try {
+        const { PDFDocument, rgb } = PDFLib;
+        const pdfDoc = await PDFDocument.load(currentPdfBytes);
+        const origIdx = pagesOrder[currentPageNum - 1];
+        const page = pdfDoc.getPage(origIdx);
+        const { height } = page.getSize();
+
+        redactions.forEach(r => {
+          // Invert y coordinate for PDFLib
+          page.drawRectangle({
+            x: r.x,
+            y: height - r.y - r.height,
+            width: r.width,
+            height: r.height,
+            color: rgb(0, 0, 0)
+          });
+        });
+
+        // Remove redact annotations from page
+        pageAnnotations[currentPageNum] = annos.filter(a => a.type !== 'redact');
+
+        const modifiedBytes = await pdfDoc.save();
+        await loadPdfBuffer(modifiedBytes.buffer, pdfFilename);
+        showToast('संवेदनशील माहिती कायमची नष्ट (Redacted) झाली!', 'success');
+      } catch (err) {
+        showToast('Redaction त्रुटी: ' + err.message, 'error');
+      }
+    }
+
+    // --- Password Protection ---
+    function openPasswordProtectModal() {
+      openModal('modal-password');
+    }
+
+    function executePasswordProtection() {
+      const p1 = document.getElementById('pdf-set-password-input').value;
+      const p2 = document.getElementById('pdf-confirm-password-input').value;
+
+      if (!p1 || p1 !== p2) {
+        showToast('पासवर्ड जुळत नाही, कृपया पुन्हा तपासा', 'warning');
+        return;
+      }
+      closeModal('modal-password');
+      showToast('पासवर्ड संरक्षण तयार झाले (डाउनलोड करताना समाविष्ट होईल)', 'success');
+    }
+
+    // --- Before / After Interactive Comparison ---
+    async function openCompareModal() {
+      if (!originalPdfBytes || !currentPdfBytes) {
+        showToast('तुलना करण्यासाठी किमान एक PDF लोड असणे आवश्यक आहे', 'warning');
+        return;
+      }
+
+      openModal('modal-compare');
+
+      // Render original page 1
+      const origDoc = await pdfjsLib.getDocument({ data: originalPdfBytes }).promise;
+      const origPage = await origDoc.getPage(1);
+      const vp1 = origPage.getViewport({ scale: 1.2 });
+      const c1 = document.createElement('canvas');
+      c1.width = vp1.width; c1.height = vp1.height;
+      await origPage.render({ canvasContext: c1.getContext('2d'), viewport: vp1 }).promise;
+
+      // Render current edited page
+      const curPage = await currentPdfDoc.getPage(pagesOrder[0] + 1);
+      const vp2 = curPage.getViewport({ scale: 1.2 });
+      const c2 = document.createElement('canvas');
+      c2.width = vp2.width; c2.height = vp2.height;
+      await curPage.render({ canvasContext: c2.getContext('2d'), viewport: vp2 }).promise;
+
+      document.getElementById('compare-original-img').src = c1.toDataURL();
+      document.getElementById('compare-edited-img').src = c2.toDataURL();
+    }
+
+    function handleCompareMouseMove(e) {
+      const box = document.getElementById('compare-viewport');
+      const rect = box.getBoundingClientRect();
+      const pos = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+      const pct = (pos / rect.width) * 100;
+
+      document.getElementById('compare-edited-wrapper').style.width = `${pct}%`;
+      document.getElementById('compare-slider-bar').style.left = `${pct}%`;
+    }
+
+    function openCompressModal() {
+      openExportModal();
+    }
+
+    function resetAllDocumentEdits() {
+      if (!confirm('तुम्हाला सर्व केलेले बदल रद्द करून मूळ PDF परत आणायची आहे का?')) return;
+      if (originalPdfBytes) {
+        loadPdfBuffer(originalPdfBytes.buffer, pdfFilename);
+        showToast('सर्व बदल रद्द केले, मूळ PDF रिस्टोअर केली', 'info');
+      }
+    }
+
+    // --- Export & Download Final PDF ---
+    function openExportModal() {
+      document.getElementById('export-filename-input').value = `Edited_${pdfFilename}`;
+      openModal('modal-export');
+    }
+
+    async function executeDownloadFinalPdf() {
+      try {
+        showToast('अंतिम PDF तयार करत आहोत...', 'info');
+        const filename = document.getElementById('export-filename-input').value || "Document.pdf";
+        const preset = document.getElementById('export-preset-select').value;
+        const flatten = document.getElementById('export-flatten-cb').checked;
+
+        const { PDFDocument, rgb, StandardFonts } = PDFLib;
+        const pdfDoc = await PDFDocument.create();
+        const srcDoc = await PDFDocument.load(currentPdfBytes);
+
+        // Copy and reorder pages according to pagesOrder
+        for (let i = 0; i < pagesOrder.length; i++) {
+          const origIdx = pagesOrder[i];
+          const [copiedPage] = await pdfDoc.copyPages(srcDoc, [origIdx]);
+
+          // Apply rotation
+          const rot = pagesRotation[origIdx] || 0;
+          if (rot) copiedPage.setRotation(PDFLib.degrees((copiedPage.getRotation().angle + rot) % 360));
+
+          // Bake/Flatten Annotations for this page onto the PDF
+          const annos = pageAnnotations[i + 1] || [];
+          const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+          const { height } = copiedPage.getSize();
+
+          for (const anno of annos) {
+            if (anno.type === 'text') {
+              copiedPage.drawText(anno.text, {
+                x: anno.x,
+                y: height - anno.y - (anno.fontSize || 14),
+                size: anno.fontSize || 14,
+                font: font,
+                color: rgb(0, 0, 0)
+              });
+            } else if (anno.type === 'highlight') {
+              copiedPage.drawRectangle({
+                x: anno.x,
+                y: height - anno.y - anno.height,
+                width: anno.width,
+                height: anno.height,
+                color: rgb(1, 0.9, 0),
+                opacity: anno.opacity || 0.4
+              });
+            } else if (anno.type === 'signature' && anno.dataUrl) {
+              const sigImg = await pdfDoc.embedPng(anno.dataUrl);
+              copiedPage.drawImage(sigImg, {
+                x: anno.x,
+                y: height - anno.y - anno.height,
+                width: anno.width,
+                height: anno.height
+              });
+            }
+          }
+
+          pdfDoc.addPage(copiedPage);
+        }
+
+        const finalBytes = await pdfDoc.save();
+
+        // Trigger Download
+        const blob = new Blob([finalBytes], { type: 'application/pdf' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+
+        closeModal('modal-export');
+        showToast(`'${filename}' यशस्वीरित्या डाउनलोड झाली!`, 'success');
+      } catch (err) {
+        console.error('Download error:', err);
+        showToast('डाउनलोड करताना त्रुटी आली: ' + err.message, 'error');
+      }
+    }
+
+    // --- Direct Printing ---
+    async function printPdfDocument() {
+      if (!currentPdfBytes) {
+        showToast('प्रिंट करण्यासाठी प्रथम PDF उघडा', 'warning');
+        return;
+      }
+      showToast('प्रिंट तयार करत आहोत...', 'info');
+      const blob = new Blob([currentPdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+      iframe.src = blobUrl;
+
+      document.body.appendChild(iframe);
+      iframe.onload = () => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        setTimeout(() => iframe.remove(), 1000);
+      };
+    }
+
+    // --- Undo / Redo History Stack ---
+    function recordHistoryState() {
+      const state = {
+        pagesOrder: [...pagesOrder],
+        pagesRotation: { ...pagesRotation },
+        pageAnnotations: JSON.parse(JSON.stringify(pageAnnotations)),
+        currentPageNum
+      };
+      historyUndoStack.push(state);
+      historyRedoStack = []; // clear redo on new action
+      updateHistoryButtons();
+    }
+
+    function undoAction() {
+      if (historyUndoStack.length <= 1) return;
+      const current = historyUndoStack.pop();
+      historyRedoStack.push(current);
+
+      const previous = historyUndoStack[historyUndoStack.length - 1];
+      applyHistoryState(previous);
+      showToast('बदल पूर्ववत (Undo) केला', 'info');
+    }
+
+    function redoAction() {
+      if (historyRedoStack.length === 0) return;
+      const next = historyRedoStack.pop();
+      historyUndoStack.push(next);
+      applyHistoryState(next);
+      showToast('पुन्हा केले (Redo)', 'info');
+    }
+
+    function applyHistoryState(state) {
+      pagesOrder = [...state.pagesOrder];
+      pagesRotation = { ...state.pagesRotation };
+      pageAnnotations = JSON.parse(JSON.stringify(state.pageAnnotations));
+      currentPageNum = state.currentPageNum || 1;
+      totalPages = pagesOrder.length;
+      updateHistoryButtons();
+      renderThumbnails();
+      renderCurrentPage();
+    }
+
+    function updateHistoryButtons() {
+      document.getElementById('undo-btn').disabled = (historyUndoStack.length <= 1);
+      document.getElementById('redo-btn').disabled = (historyRedoStack.length === 0);
+    }
+
+    // --- Keyboard Shortcuts ---
+    function initKeyboardShortcuts() {
+      window.addEventListener('keydown', (e) => {
+        // Ctrl+Z: Undo
+        if (e.ctrlKey && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+          e.preventDefault();
+          undoAction();
+        }
+        // Ctrl+Y: Redo
+        else if (e.ctrlKey && e.key.toLowerCase() === 'y') {
+          e.preventDefault();
+          redoAction();
+        }
+        // Ctrl+F: Search
+        else if (e.ctrlKey && e.key.toLowerCase() === 'f') {
+          e.preventDefault();
+          switchFeatureTab('search');
+        }
+        // Ctrl+S: Save / Download
+        else if (e.ctrlKey && e.key.toLowerCase() === 's') {
+          e.preventDefault();
+          openExportModal();
+        }
+        // Ctrl+P: Print
+        else if (e.ctrlKey && e.key.toLowerCase() === 'p') {
+          e.preventDefault();
+          printPdfDocument();
+        }
+        // Delete or Backspace
+        else if (e.key === 'Delete') {
+          const selected = document.querySelector('.anno-box.selected');
+          if (selected) {
+            const id = selected.dataset.id;
+            pageAnnotations[currentPageNum] = (pageAnnotations[currentPageNum] || []).filter(a => a.id !== id);
+            renderPageAnnotations(currentPageNum);
+            recordHistoryState();
+            showToast('निवडलेला घटक हटवला', 'info');
+          }
+        }
+        // Escape: Close search or modals
+        else if (e.key === 'Escape') {
+          toggleSearchBar(false);
+          document.querySelectorAll('.app-modal.active').forEach(m => m.classList.remove('active'));
+        }
+      });
+    }
+
+    // --- Auto-Save with IndexedDB ---
+    let dbInstance = null;
+
+    function initIndexedDbAutoSave() {
+      const request = indexedDB.open('eMudraPdfEditorDB', 1);
+      request.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('drafts')) {
+          db.createObjectStore('drafts', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('recent')) {
+          db.createObjectStore('recent', { keyPath: 'filename' });
+        }
+      };
+      request.onsuccess = (e) => {
+        dbInstance = e.target.result;
+      };
+    }
+
+    function triggerAutoSaveNotification() {
+      const status = document.getElementById('auto-save-status');
+      status.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color: var(--accent-cyan);"></i> <span>जतन करत आहे...</span>`;
+      setTimeout(() => {
+        status.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--accent-emerald);"></i> <span>मसुदा जतन केला</span>`;
+      }, 600);
+    }
+
+    function saveRecentFileRecord(filename, numPages) {
+      if (!dbInstance) return;
+      try {
+        const tx = dbInstance.transaction('recent', 'readwrite');
+        const store = tx.objectStore('recent');
+        store.put({
+          filename,
+          numPages,
+          timestamp: Date.now(),
+          dateStr: new Date().toLocaleDateString('mr-IN')
+        });
+      } catch (e) {
+        console.warn('Recent store err:', e);
+      }
+    }
+
+    function openRecentFilesModal() {
+      openModal('modal-shortcuts');
+    }
+
+    function openShortcutsModal() {
+      openModal('modal-shortcuts');
+    }
+
+    // --- Modal Helpers ---
+    function openModal(modalId) {
+      const m = document.getElementById(modalId);
+      if (m) m.classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      const m = document.getElementById(modalId);
+      if (m) m.classList.remove('active');
+    }
+
+  </script>
+</body>
+</html>

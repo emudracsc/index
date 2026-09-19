@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>घरेलू कामगारांच्या अर्जांचे संगणकीकरण व मालकाचे प्रमाणपत्र | Domestic Worker Computerization Form</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #38bdf8;
+            --accent: #d97706;
+            --success: #059669;
+            --bg-color: #1e293b;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+            background-color: var(--bg-color);
+            color: #1e293b;
+            min-height: 100vh;
+            padding: 16px 8px;
+        }
+
+        /* -------------------------------------------------------------
+           TOP CONTROL BAR & MASTER INPUT FORM
+        ------------------------------------------------------------- */
+        .controls-wrapper {
+            max-width: 1080px;
+            margin: 0 auto 24px auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+            padding: 18px 22px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 12px;
+        }
+
+        .bar-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-title i {
+            color: #0284c7;
+            font-size: 1.45rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 0.86rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 7px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-home {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+        .btn-home:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .btn-other-form {
+            background: #fdf2f8;
+            color: #be185d;
+            border: 1px solid #fbcfe8;
+        }
+        .btn-other-form:hover {
+            background: #fce7f3;
+        }
+
+        .btn-demo {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+        .btn-demo:hover {
+            background: #fde68a;
+        }
+
+        .btn-reset {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        .btn-reset:hover {
+            background: #fecaca;
+        }
+
+        .btn-print {
+            background: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+        }
+        .btn-print:hover {
+            background: #0369a1;
+            transform: translateY(-1px);
+        }
+
+        /* Mode Selection Pills */
+        .page-selector-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: #f0f9ff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #bae6fd;
+            margin-bottom: 12px;
+        }
+
+        .page-selector-label {
+            font-weight: 800;
+            font-size: 0.88rem;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .page-pill {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            padding: 7px 14px;
+            border-radius: 7px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            cursor: pointer;
+            color: #475569;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .page-pill:hover {
+            border-color: #0284c7;
+            color: #0284c7;
+        }
+        .page-pill.active {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+        }
+
+        /* Active Mode Info Alert */
+        .mode-info-alert {
+            background: #eff6ff;
+            border-left: 4px solid #0284c7;
+            padding: 8px 12px;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Input Card Sections */
+        .input-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .input-card-header {
+            font-size: 0.98rem;
+            font-weight: 800;
+            color: #0369a1;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1.5px dashed #bae6fd;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 12px 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 8px 10px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: #0f172a;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #0284c7;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        /* Dynamic Children Table */
+        .children-table-wrap {
+            overflow-x: auto;
+            margin: 8px 0;
+        }
+
+        .children-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        .children-table th, .children-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 8px;
+            text-align: center;
+        }
+
+        .children-table th {
+            background: #f0f9ff;
+            color: #0369a1;
+            font-weight: 700;
+        }
+
+        .children-table input, .children-table select {
+            width: 100%;
+            padding: 5px 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            background: #ffffff;
+        }
+
+        .btn-add-child {
+            background: #059669;
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .btn-add-child:hover {
+            background: #047857;
+        }
+
+        .btn-del-child {
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-del-child:hover {
+            background: #dc2626;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT PREVIEW SHEETS (2 EXACT A4 PAGES)
+        ------------------------------------------------------------- */
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin: 0 auto;
+        }
+
+        .a4-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 12mm 16mm;
+            background: #ffffff;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+            border-radius: 2px;
+            position: relative;
+            color: #000000;
+            box-sizing: border-box;
+            line-height: 1.45;
+            font-size: 10.5pt;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Completely hide a sheet both on screen and in print */
+        .sheet-hidden {
+            display: none !important;
+        }
+
+        /* Page 1 Header */
+        .p1-title {
+            text-align: center;
+            font-size: 12.5pt;
+            font-weight: 800;
+            color: #000;
+            margin-bottom: 8px;
+            letter-spacing: 0.2px;
+        }
+
+        /* 28-row table */
+        .sangnak-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1.5px solid #000;
+            font-size: 10.2pt;
+        }
+
+        .sangnak-table th, .sangnak-table td {
+            border: 1.2px solid #000;
+            padding: 2.5px 6px;
+            vertical-align: middle;
+        }
+
+        .col-label {
+            width: 44%;
+            font-weight: 700;
+            color: #000;
+            background: #fff;
+            padding-left: 6px;
+            font-size: 10pt;
+        }
+
+        .col-val {
+            width: 56%;
+            background: #fff;
+            padding: 2.5px 6px;
+            font-weight: 600;
+        }
+
+        /* Split radio/tick visual */
+        .split-cell {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .split-part {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-weight: 700;
+            padding: 1px 0;
+            user-select: none;
+        }
+
+        .split-part.bordered {
+            border-right: 1.2px solid #000;
+        }
+
+        .tick-mark {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 1px solid #000;
+            text-align: center;
+            line-height: 14px;
+            font-size: 11pt;
+            font-weight: 800;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+
+        .tick-mark.checked::after {
+            content: '✓';
+        }
+
+        /* Bottom signature */
+        .bottom-sign-row {
+            margin-top: 14px;
+            text-align: right;
+            font-size: 11pt;
+            font-weight: 800;
+            padding-right: 10px;
+        }
+
+        /* -------------------------------------------------------------
+           PAGE 2: EMPLOYER CERTIFICATE
+        ------------------------------------------------------------- */
+        .p2-doc-title {
+            text-align: center;
+            font-size: 15pt;
+            font-weight: 800;
+            margin-top: 30px;
+            margin-bottom: 45px;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .p2-meta-date {
+            text-align: right;
+            font-size: 11.5pt;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .p2-to-block {
+            font-size: 12pt;
+            line-height: 1.7;
+            margin-bottom: 35px;
+        }
+
+        .p2-body-para {
+            font-size: 12pt;
+            line-height: 2.2;
+            margin-bottom: 30px;
+            text-align: justify;
+        }
+
+        .p2-field-row {
+            margin-bottom: 24px;
+            font-size: 12pt;
+            line-height: 1.8;
+        }
+
+        .p2-field-label {
+            font-weight: 800;
+        }
+
+        .p2-dotted-fill {
+            font-weight: 700;
+            border-bottom: 1px dotted #000;
+            padding: 0 6px;
+            display: inline-block;
+        }
+
+        .p2-sign-block {
+            margin-top: 50px;
+            font-size: 12pt;
+            font-weight: 800;
+        }
+
+        /* Print Media Styles */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 8mm 12mm;
+            }
+
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .controls-wrapper {
+                display: none !important;
+            }
+
+            .preview-container {
+                gap: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .a4-sheet {
+                width: 100% !important;
+                min-height: auto !important;
+                height: 275mm !important;
+                padding: 5mm 6mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+                page-break-after: always !important;
+                page-break-inside: avoid !important;
+            }
+
+            .a4-sheet:last-child {
+                page-break-after: avoid !important;
+            }
+
+            .sheet-hidden {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================================= -->
+    <!-- MASTER INPUT BOX PANEL (USER FILLS HERE) -->
+    <!-- ========================================================= -->
+    <div class="controls-wrapper no-print">
+        <div class="bar-header">
+            <div class="bar-title">
+                <i class="fa-solid fa-keyboard"></i>
+                <span>घरेलू कामगारांच्या अर्जांचे संगणकीकरण — माहिती भरणे व जनरेटर</span>
+            </div>
+            <div class="btn-group">
+                <a href="index.html" class="btn btn-home">
+                    <i class="fa-solid fa-house"></i> मुख्य पान
+                </a>
+                <a href="gharelu-kamgar.html" class="btn btn-other-form" title="नमुना 'च' ३-पानी मास्टर अर्ज">
+                    <i class="fa-solid fa-file-contract"></i> नमुना 'च' अर्ज
+                </a>
+                <button type="button" onclick="fillExactDemoData()" class="btn btn-demo">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> डेमो डेटा भरा
+                </button>
+                <button type="button" onclick="resetAllInputs()" class="btn btn-reset">
+                    <i class="fa-solid fa-trash-can"></i> रीसेट
+                </button>
+                <button type="button" onclick="window.print()" class="btn btn-print">
+                    <i class="fa-solid fa-print"></i> A4 प्रिंट / PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Mode / Page Selector Pills -->
+        <div class="page-selector-bar">
+            <div class="page-selector-label">
+                <i class="fa-solid fa-filter"></i> फॉर्म प्रकार निवडा :
+            </div>
+            <button type="button" class="page-pill active" id="pill_all" onclick="setActiveMode('all')">
+                <i class="fa-solid fa-file-lines"></i> सर्व २ पाने (पूर्ण संच)
+            </button>
+            <button type="button" class="page-pill" id="pill_p1" onclick="setActiveMode('p1')">
+                <i class="fa-solid fa-table-list"></i> १. संगणकीकरण तक्ता (२८ कलमे)
+            </button>
+            <button type="button" class="page-pill" id="pill_p2" onclick="setActiveMode('p2')">
+                <i class="fa-solid fa-file-signature"></i> २. मालकाचे प्रमाणपत्र
+            </button>
+        </div>
+
+        <!-- Active Mode Info Banner -->
+        <div class="mode-info-alert" id="modeInfoAlert">
+            <i class="fa-solid fa-circle-info"></i>
+            <span id="modeInfoText">सर्व २ पाने (पूर्ण संच) निवडले आहे — दोन्ही पानांसाठी माहिती भरा, खाली दोन्ही पाने जनरेट व प्रिंट होतील.</span>
+        </div>
+
+        <!-- Master Input Form -->
+        <form id="masterInputForm" onsubmit="return false;">
+
+            <!-- ========================================================= -->
+            <!-- SECTION GROUP 1: INPUT CARDS FOR PAGE 1 (AND ALL) -->
+            <!-- ========================================================= -->
+            <div id="wrapper_p1_inputs">
+                
+                <!-- Card 1: Worker Personal Info -->
+                <div class="input-card">
+                    <div class="input-card-header">
+                        <i class="fa-solid fa-user"></i> १. घरेलू कामगाराची वैयक्तिक माहिती
+                    </div>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label>घरेलू कामगाराचे पूर्ण नाव :</label>
+                            <input type="text" id="inp_worker_name" placeholder="उदा. निशा महेश सुतार" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>जन्मतारीख :</label>
+                            <input type="text" id="inp_worker_dob" placeholder="उदा. 20/08/1994" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>लिंग :</label>
+                            <select id="inp_gender" onchange="syncAll();">
+                                <option value="स्त्री" selected>स्त्री</option>
+                                <option value="पुरुष">पुरुष</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>नोंदणी क्रमांक :</label>
+                            <input type="text" id="inp_reg_no" placeholder="नोंदणी क्रमांक असल्यास" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>नोंदणीचा प्रकार :</label>
+                            <select id="inp_reg_type" onchange="syncAll();">
+                                <option value="नवीन" selected>नवीन</option>
+                                <option value="नूतनीकरण">नूतनीकरण</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>सभासदत्वाची मुदत :</label>
+                            <input type="text" id="inp_membership_period" placeholder="उदा. १ वर्ष / ५ वर्षे" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>लाभार्थ्याचे वय :</label>
+                            <input type="text" id="inp_worker_age" placeholder="उदा. 33" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>मोबाईल क्रमांक :</label>
+                            <input type="tel" id="inp_worker_mobile" maxlength="10" placeholder="उदा. 8554057312" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>आधार कार्ड क्रमांक / पावती क्रमांक :</label>
+                            <input type="text" id="inp_worker_aadhaar" maxlength="14" placeholder="उदा. 359439548091" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>लाभार्थ्यांची जन्म खूण :</label>
+                            <input type="text" id="inp_birth_mark" placeholder="उदा. डाव्या हातावर तीळ" oninput="syncAll();">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>घरेलू कामगाराचा पूर्ण पत्ता :</label>
+                            <input type="text" id="inp_worker_address" placeholder="उदा. मु. निवरे (धनगरवाडी), ता. कणकवली, जि. सिंधुदुर्ग" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>घरेलू कामगार विधवा आहे का? :</label>
+                            <select id="inp_is_widow" onchange="toggleWidowInput(); syncAll();">
+                                <option value="नाही" selected>नाही</option>
+                                <option value="होय">होय</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="widowDateWrap" style="display: none;">
+                            <label>पतीच्या मृत्यूचा दिनांक :</label>
+                            <input type="text" id="inp_death_date" placeholder="DD/MM/YYYY" oninput="syncAll();">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Employer Details (Used on Sheet 1 and auto-synced to Sheet 2) -->
+                <div class="input-card">
+                    <div class="input-card-header">
+                        <i class="fa-solid fa-house-user"></i> २. मालकाचा (शेटानीचा) तपशील
+                    </div>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label>मालकाचे पूर्ण नाव :</label>
+                            <input type="text" id="inp_emp_name" placeholder="उदा. श्रीकृष्ण मनोहर राणे" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>मालकाचा मोबाईल / फोन क्रमांक :</label>
+                            <input type="tel" id="inp_emp_mobile" maxlength="10" placeholder="उदा. 9822345678" oninput="syncAll();">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>मालकाचा घराचा पूर्ण पत्ता :</label>
+                            <input type="text" id="inp_emp_address" placeholder="उदा. मु. पो. कणकवली, ता. कणकवली, जि. सिंधुदुर्ग" oninput="syncAll();">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Bank Details -->
+                <div class="input-card">
+                    <div class="input-card-header">
+                        <i class="fa-solid fa-building-columns"></i> ३. बँक खाते तपशील
+                    </div>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label>लाभार्थ्याचे बँकेचे नाव :</label>
+                            <input type="text" id="inp_bank_name" placeholder="उदा. State Bank of India" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>बँक खाते क्रमांक (जन धन) :</label>
+                            <input type="text" id="inp_bank_acc" placeholder="उदा. 33956205542" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>बँकेचा IFSC कोड :</label>
+                            <input type="text" id="inp_bank_ifsc" maxlength="11" placeholder="उदा. SBIN0013842" oninput="this.value = this.value.toUpperCase(); syncAll();">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Children Details (DYNAMIC) -->
+                <div class="input-card">
+                    <div class="input-card-header" style="justify-content: space-between;">
+                        <div>
+                            <i class="fa-solid fa-children"></i> ४. अपत्यांची माहिती (एकापेक्षा जास्त अपत्ये जोडण्याची सुविधा)
+                        </div>
+                        <div style="font-size: 0.85rem; color: #0369a1; font-weight: 800;">
+                            एकूण अपत्ये : <span id="lbl_children_count">१</span>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 8px;">
+                        खालील बटणावर क्लिक करून तुम्ही १, २, ३ किंवा कितीही अपत्ये जोडू शकता :
+                    </p>
+                    <div class="children-table-wrap">
+                        <table class="children-table" id="childrenInputTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">क्रमांक</th>
+                                    <th>अपत्याचे पूर्ण नाव</th>
+                                    <th style="width: 160px;">जन्म दिनांक</th>
+                                    <th style="width: 120px;">लिंग</th>
+                                    <th style="width: 50px;">काढा</th>
+                                </tr>
+                            </thead>
+                            <tbody id="childrenInputBody">
+                                <!-- Dynamically generated rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="btn-add-child" onclick="addChildRow();">
+                        <i class="fa-solid fa-plus"></i> + नवीन अपत्य जोडा
+                    </button>
+                </div>
+
+                <!-- Card 5: Nominee Details -->
+                <div class="input-card">
+                    <div class="input-card-header">
+                        <i class="fa-solid fa-id-card"></i> ५. वारसदाराची माहिती (Nominee Details)
+                    </div>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label>वारसदाराचे नाव :</label>
+                            <input type="text" id="inp_nominee_name" placeholder="उदा. महेश गजानन सुतार" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>वारसदाराचे लाभार्थीशी नाते :</label>
+                            <input type="text" id="inp_nominee_rel" placeholder="उदा. पती / मुलगा / मुलगी" oninput="syncAll();">
+                        </div>
+                        <div class="form-group">
+                            <label>वारसदाराची जन्म तारीख :</label>
+                            <input type="text" id="inp_nominee_dob" placeholder="उदा. 03/04/1992" oninput="syncAll();">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6: Date for Mode All -->
+                <div class="input-card" id="card_cert_date_all">
+                    <div class="input-card-header">
+                        <i class="fa-solid fa-calendar-check"></i> ६. प्रमाणपत्राचा दिनांक
+                    </div>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label>दिनांक (मालकाच्या प्रमाणपत्रासाठी) :</label>
+                            <input type="text" id="inp_cert_date" placeholder="DD/MM/YYYY" oninput="syncAll();">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- SECTION GROUP 2: DEDICATED INPUT CARD FOR PAGE 2 ONLY -->
+            <!-- ========================================================= -->
+            <div id="card_p2_inputs" style="display: none;">
+                <div class="input-card">
+                    <div class="input-card-header">
+                        <i class="fa-solid fa-file-signature"></i> २. मालकाचे प्रमाणपत्र — आवश्यक ५ नोंदी भरा
+                    </div>
+                    <p style="font-size: 0.84rem; color: #64748b; margin-bottom: 12px;">
+                        फक्त मालकाच्या प्रमाणपत्रासाठी खालील ५ माहिती भरा. कागद खाली अचूक तयार होईल आणि प्रिंट होईल :
+                    </p>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label>घरेलू कामगाराचे पूर्ण नाव (श्रीमती / श्री.) :</label>
+                            <input type="text" id="inp_p2_worker_name" placeholder="उदा. निशा महेश सुतार" oninput="syncFromP2Inputs();">
+                        </div>
+                        <div class="form-group">
+                            <label>मालकाचे (शेटानीचे) पूर्ण नाव :</label>
+                            <input type="text" id="inp_p2_emp_name" placeholder="उदा. श्रीकृष्ण मनोहर राणे" oninput="syncFromP2Inputs();">
+                        </div>
+                        <div class="form-group">
+                            <label>मालकाचा मो. नं. / फोन नं. :</label>
+                            <input type="tel" id="inp_p2_emp_mobile" maxlength="10" placeholder="उदा. 9822345678" oninput="syncFromP2Inputs();">
+                        </div>
+                        <div class="form-group">
+                            <label>प्रमाणपत्राचा दिनांक :</label>
+                            <input type="text" id="inp_p2_cert_date" placeholder="DD/MM/YYYY" oninput="syncFromP2Inputs();">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>मालकाचे घराचा पूर्ण पत्ता :</label>
+                            <input type="text" id="inp_p2_emp_address" placeholder="उदा. मु. पो. कणकवली, ता. कणकवली, जि. सिंधुदुर्ग" oninput="syncFromP2Inputs();">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- PREVIEW CONTAINER: GENERATED PRINTABLE A4 SHEETS -->
+    <!-- ========================================================= -->
+    <div class="preview-container" id="printableContainer">
+
+        <!-- ========================================================= -->
+        <!-- SHEET 1: 28+ ROW OFFICIAL COMPUTERIZATION DATA TABLE -->
+        <!-- ========================================================= -->
+        <div class="a4-sheet" id="sheet_p1">
+            <div>
+                <!-- Title Header -->
+                <div class="p1-title">
+                    घरेलू कामगारांच्या अर्जांचे संगणकीकरण करण्यासाठी लागणारी माहिती
+                </div>
+
+                <!-- 28+ Row Exact Official Table -->
+                <table class="sangnak-table">
+                    <tbody id="generatedTableBody">
+                        <!-- Populated and rendered via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Signature at bottom -->
+            <div class="bottom-sign-row">
+                अर्जदाराची स्वाक्षरी / अंगठ्याचा ठसा
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- SHEET 2: EXACT EMPLOYER'S CERTIFICATE (मालकाचे प्रमाणपत्र) -->
+        <!-- ========================================================= -->
+        <div class="a4-sheet" id="sheet_p2">
+            <div>
+                <!-- Title Header -->
+                <div class="p2-doc-title">
+                    मालकाचे प्रमाणपत्र
+                </div>
+
+                <!-- Date at top right -->
+                <div class="p2-meta-date">
+                    दिनांक :- <span class="p2-dotted-fill" id="p2_cert_date_disp" style="min-width: 140px; text-align: center;">-</span>
+                </div>
+
+                <!-- Recipient To Block -->
+                <div class="p2-to-block">
+                    प्रति,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<strong>अध्यक्ष,</strong><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<strong>महाराष्ट्र घरेलू कामगार कल्याण मंडळ,</strong><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<strong>महाराष्ट्र राज्य, मुंबई.</strong>
+                </div>
+
+                <!-- Main Body Paragraph -->
+                <div class="p2-body-para">
+                    महोदय,<br><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;श्रीमती / श्री. <span class="p2-dotted-fill" id="p2_worker_name_disp" style="min-width: 320px; font-weight: 800;">-</span><br>
+                    आमच्या घरात घरेलू कामगार म्हणून काम करीत आहे.<br>
+                    असे मी प्रमाणित करीत आहे.
+                </div>
+
+                <!-- Employer Details Fields -->
+                <div style="margin-top: 40px;">
+                    <div class="p2-field-row">
+                        <span class="p2-field-label">मालकाचे (शेटानीचे) नाव :-</span>
+                        <span class="p2-dotted-fill" id="p2_emp_name_disp" style="min-width: 360px;">-</span>
+                    </div>
+
+                    <div class="p2-field-row" style="margin-bottom: 25px;">
+                        <span class="p2-field-label">मालकाचे घराचा पत्ता :-</span>
+                        <span class="p2-dotted-fill" id="p2_emp_address_disp" style="min-width: 360px; line-height: 1.8;">-</span>
+                    </div>
+
+                    <div class="p2-field-row">
+                        <span class="p2-field-label">मो. नं. / फोन नं. :-</span>
+                        <span class="p2-dotted-fill" id="p2_emp_mobile_disp" style="min-width: 250px;">-</span>
+                    </div>
+                </div>
+
+                <!-- Employer Signature line -->
+                <div class="p2-sign-block">
+                    <span class="p2-field-label">मालकाची सही :-</span> 
+                    <span style="display: inline-block; width: 65%; border-bottom: 1px dotted #000; height: 18px; vertical-align: middle;"></span>
+                </div>
+            </div>
+
+            <!-- Page bottom note -->
+            <div style="font-size: 8.5pt; color: #94a3b8; text-align: right;">
+                महाराष्ट्र घरेलू कामगार कल्याण मंडळ — अधिकृत नमुना
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- JAVASCRIPT: DATA SYNC, DYNAMIC ROWS & PERSISTENCE -->
+    <!-- ========================================================= -->
+    <script>
+        // Number to Marathi Ordinal word (पहिल्या, दुसऱ्या, तिसऱ्या, चौथ्या, पाचव्या...)
+        const marathiOrdinals = [
+            "पहिल्या", "दुसऱ्या", "तिसऱ्या", "चौथ्या", "पाचव्या",
+            "सहाव्या", "सातव्या", "आठव्या", "नवव्या", "दहाव्या"
+        ];
+
+        // Dynamic Children State Array
+        let childrenList = [
+            { name: "रुद्र महेश सुतार", dob: "16/12/2019", gender: "पुरुष" }
+        ];
+
+        // Active Mode: 'all', 'p1', or 'p2'
+        let currentActiveMode = 'all';
+
+        // Set Active Mode (Filters inputs and preview/print sheets)
+        function setActiveMode(mode) {
+            currentActiveMode = mode;
+
+            // 1. Update Pill Tabs
+            document.querySelectorAll('.page-pill').forEach(p => p.classList.remove('active'));
+            const activePill = document.getElementById(`pill_${mode}`);
+            if (activePill) activePill.classList.add('active');
+
+            // 2. Elements references
+            const p1Wrapper = document.getElementById('wrapper_p1_inputs');
+            const p2Card = document.getElementById('card_p2_inputs');
+            const certDateAllCard = document.getElementById('card_cert_date_all');
+            const sheetP1 = document.getElementById('sheet_p1');
+            const sheetP2 = document.getElementById('sheet_p2');
+            const infoText = document.getElementById('modeInfoText');
+
+            if (mode === 'all') {
+                // Show ALL inputs
+                p1Wrapper.style.display = 'block';
+                certDateAllCard.style.display = 'block';
+                p2Card.style.display = 'none';
+
+                // Show BOTH Sheets in screen preview and print
+                sheetP1.classList.remove('sheet-hidden');
+                sheetP2.classList.remove('sheet-hidden');
+
+                infoText.innerText = "सर्व २ पाने (पूर्ण संच) निवडले आहे — संपूर्ण माहिती भरा, खाली दोन्ही पाने जनरेट व प्रिंट होतील.";
+            } else if (mode === 'p1') {
+                // Show ONLY Page 1 inputs
+                p1Wrapper.style.display = 'block';
+                certDateAllCard.style.display = 'none'; // Date is on cert only
+                p2Card.style.display = 'none';
+
+                // Show ONLY Sheet 1 in screen preview and print
+                sheetP1.classList.remove('sheet-hidden');
+                sheetP2.classList.add('sheet-hidden');
+
+                infoText.innerText = "१. संगणकीकरण तक्ता (२८ कलमे) निवडले आहे — फक्त २८ कलमी संगणकीकरण अर्जाची माहिती भरा, फक्त पृष्ठ १ दिसेल व प्रिंट होईल.";
+            } else if (mode === 'p2') {
+                // Show ONLY Page 2 inputs (5 specific fields)
+                p1Wrapper.style.display = 'none';
+                p2Card.style.display = 'block';
+
+                // Sync current values to P2 input fields
+                document.getElementById('inp_p2_worker_name').value = document.getElementById('inp_worker_name').value || '';
+                document.getElementById('inp_p2_emp_name').value = document.getElementById('inp_emp_name').value || '';
+                document.getElementById('inp_p2_emp_mobile').value = document.getElementById('inp_emp_mobile').value || '';
+                document.getElementById('inp_p2_emp_address').value = document.getElementById('inp_emp_address').value || '';
+                document.getElementById('inp_p2_cert_date').value = document.getElementById('inp_cert_date').value || '';
+
+                // Show ONLY Sheet 2 in screen preview and print
+                sheetP1.classList.add('sheet-hidden');
+                sheetP2.classList.remove('sheet-hidden');
+
+                infoText.innerText = "२. मालकाचे प्रमाणपत्र निवडले आहे — फक्त मालकाच्या प्रमाणपत्रासाठी ५ आवश्यक नोंदी भरा, फक्त प्रमाणपत्र दिसेल व प्रिंट होईल.";
+            }
+
+            syncAll();
+            saveLocal();
+        }
+
+        // Render Input Table for Children
+        function renderChildrenInputs() {
+            const tbody = document.getElementById('childrenInputBody');
+            tbody.innerHTML = '';
+            document.getElementById('lbl_children_count').innerText = childrenList.length;
+
+            childrenList.forEach((child, index) => {
+                const tr = document.createElement('tr');
+                const ordinalLabel = marathiOrdinals[index] || `${index + 1} व्या`;
+                tr.innerHTML = `
+                    <td><strong>${index + 1}</strong> (${ordinalLabel})</td>
+                    <td>
+                        <input type="text" value="${child.name || ''}" placeholder="अपत्याचे पूर्ण नाव" oninput="updateChildField(${index}, 'name', this.value);">
+                    </td>
+                    <td>
+                        <input type="text" value="${child.dob || ''}" placeholder="DD/MM/YYYY" oninput="updateChildField(${index}, 'dob', this.value);">
+                    </td>
+                    <td>
+                        <select onchange="updateChildField(${index}, 'gender', this.value);">
+                            <option value="स्त्री" ${child.gender === 'स्त्री' ? 'selected' : ''}>स्त्री</option>
+                            <option value="पुरुष" ${child.gender === 'पुरुष' ? 'selected' : ''}>पुरुष</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn-del-child" onclick="removeChildRow(${index});" title="हे अपत्य काढा">×</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateChildField(index, field, val) {
+            if (childrenList[index]) {
+                childrenList[index][field] = val;
+                syncAll();
+            }
+        }
+
+        function addChildRow() {
+            childrenList.push({ name: "", dob: "", gender: "पुरुष" });
+            renderChildrenInputs();
+            syncAll();
+        }
+
+        function removeChildRow(index) {
+            if (childrenList.length <= 1) {
+                if (!confirm("सर्व अपत्ये काढायची आहेत का?")) return;
+            }
+            childrenList.splice(index, 1);
+            renderChildrenInputs();
+            syncAll();
+        }
+
+        function toggleWidowInput() {
+            const val = document.getElementById('inp_is_widow').value;
+            const wrap = document.getElementById('widowDateWrap');
+            if (val === 'होय') {
+                wrap.style.display = 'flex';
+                document.getElementById('inp_death_date').focus();
+            } else {
+                wrap.style.display = 'none';
+                document.getElementById('inp_death_date').value = '';
+            }
+        }
+
+        // Two-way sync when editing inside P2 card
+        function syncFromP2Inputs() {
+            const wName = document.getElementById('inp_p2_worker_name').value;
+            const eName = document.getElementById('inp_p2_emp_name').value;
+            const eMob = document.getElementById('inp_p2_emp_mobile').value;
+            const eAddr = document.getElementById('inp_p2_emp_address').value;
+            const cDate = document.getElementById('inp_p2_cert_date').value;
+
+            document.getElementById('inp_worker_name').value = wName;
+            document.getElementById('inp_emp_name').value = eName;
+            document.getElementById('inp_emp_mobile').value = eMob;
+            document.getElementById('inp_emp_address').value = eAddr;
+            document.getElementById('inp_cert_date').value = cDate;
+
+            syncAll();
+        }
+
+        // Master Sync: Takes data from Input Form and populates the printable A4 tables
+        function syncAll() {
+            const workerName = document.getElementById('inp_worker_name').value || '';
+            const workerDob = document.getElementById('inp_worker_dob').value || '';
+            const gender = document.getElementById('inp_gender').value || 'स्त्री';
+            const regNo = document.getElementById('inp_reg_no').value || '';
+            const regType = document.getElementById('inp_reg_type').value || 'नवीन';
+            const membership = document.getElementById('inp_membership_period').value || '';
+            const workerAge = document.getElementById('inp_worker_age').value || '';
+            const workerMobile = document.getElementById('inp_worker_mobile').value || '';
+            const workerAadhaar = document.getElementById('inp_worker_aadhaar').value || '';
+            const workerAddress = document.getElementById('inp_worker_address').value || '';
+            const birthMark = document.getElementById('inp_birth_mark').value || '';
+
+            const empName = document.getElementById('inp_emp_name').value || '';
+            const empMobile = document.getElementById('inp_emp_mobile').value || '';
+            const empAddress = document.getElementById('inp_emp_address').value || '';
+
+            const bankName = document.getElementById('inp_bank_name').value || '';
+            const bankAcc = document.getElementById('inp_bank_acc').value || '';
+            const bankIfsc = document.getElementById('inp_bank_ifsc').value || '';
+
+            const isWidow = document.getElementById('inp_is_widow').value || 'नाही';
+            const deathDate = document.getElementById('inp_death_date').value || '';
+
+            const nomineeName = document.getElementById('inp_nominee_name').value || '';
+            const nomineeRel = document.getElementById('inp_nominee_rel').value || '';
+            const nomineeDob = document.getElementById('inp_nominee_dob').value || '';
+
+            const certDate = document.getElementById('inp_cert_date').value || '';
+
+            // Also keep P2 inputs in sync if not focused
+            if (document.activeElement?.id !== 'inp_p2_worker_name') document.getElementById('inp_p2_worker_name').value = workerName;
+            if (document.activeElement?.id !== 'inp_p2_emp_name') document.getElementById('inp_p2_emp_name').value = empName;
+            if (document.activeElement?.id !== 'inp_p2_emp_mobile') document.getElementById('inp_p2_emp_mobile').value = empMobile;
+            if (document.activeElement?.id !== 'inp_p2_emp_address') document.getElementById('inp_p2_emp_address').value = empAddress;
+            if (document.activeElement?.id !== 'inp_p2_cert_date') document.getElementById('inp_p2_cert_date').value = certDate;
+
+            // Generate Sheet 1 Table HTML dynamically!
+            const tbody = document.getElementById('generatedTableBody');
+            
+            // Build base rows 1 to 16
+            let html = `
+                <tr>
+                    <td class="col-label">घरेलू कामगाराचे पूर्ण नाव</td>
+                    <td class="col-val">${workerName || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">जन्मतारीख</td>
+                    <td class="col-val">${workerDob || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">लिंग</td>
+                    <td class="col-val" style="padding: 0;">
+                        <div class="split-cell">
+                            <div class="split-part bordered">
+                                <span class="tick-mark ${gender === 'स्त्री' ? 'checked' : ''}"></span>
+                                <span>स्त्री</span>
+                            </div>
+                            <div class="split-part">
+                                <span class="tick-mark ${gender === 'पुरुष' ? 'checked' : ''}"></span>
+                                <span>पुरुष</span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-label">नोंदणी क्रमांक</td>
+                    <td class="col-val">${regNo || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">नोंदणीचा प्रकार</td>
+                    <td class="col-val" style="padding: 0;">
+                        <div class="split-cell">
+                            <div class="split-part bordered">
+                                <span class="tick-mark ${regType === 'नवीन' ? 'checked' : ''}"></span>
+                                <span>नवीन</span>
+                            </div>
+                            <div class="split-part">
+                                <span class="tick-mark ${regType === 'नूतनीकरण' ? 'checked' : ''}"></span>
+                                <span>नूतनीकरण</span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-label">सभासदत्वाची मुदत</td>
+                    <td class="col-val">${membership || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">लाभार्थ्याचे वय</td>
+                    <td class="col-val">${workerAge || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">मोबाईल क्रमांक</td>
+                    <td class="col-val">${workerMobile || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">आधार कार्ड क्रमांक / पावती क्रमांक</td>
+                    <td class="col-val" style="letter-spacing: 0.5px;">${workerAadhaar || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">घरेलू कामगाराचा पूर्ण पत्ता</td>
+                    <td class="col-val">${workerAddress || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">मालकाचे पूर्ण नाव</td>
+                    <td class="col-val">${empName || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">मालकाचा पत्ता</td>
+                    <td class="col-val">${empAddress || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">मालकाचा मोबाईल क्रमांक / दूरध्वनी क्रमांक</td>
+                    <td class="col-val">${empMobile || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">लाभार्थ्याचे बँकेचे नाव</td>
+                    <td class="col-val">${bankName || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">लाभार्थ्याचा (जन धन) बँक खाते क्रमांक</td>
+                    <td class="col-val">${bankAcc || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">लाभार्थ्याच्या बँकेचा आय.एफ.एस.सी. (IFSC) कोड</td>
+                    <td class="col-val">${bankIfsc || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">लाभार्थ्याच्या एकूण अपत्यांची संख्या</td>
+                    <td class="col-val">${childrenList.length > 0 ? childrenList.length : '०'}</td>
+                </tr>
+            `;
+
+            // DYNAMIC ROWS FOR EACH CHILD (पहिल्या, दुसऱ्या, तिसऱ्या...)
+            if (childrenList.length === 0) {
+                html += `
+                    <tr>
+                        <td class="col-label">अपत्यांचे नाव व तपशील</td>
+                        <td class="col-val" style="color: #666;">लागू नाही / निरंक</td>
+                    </tr>
+                `;
+            } else {
+                childrenList.forEach((ch, idx) => {
+                    const ordinal = marathiOrdinals[idx] || `${idx + 1} व्या`;
+                    html += `
+                        <tr>
+                            <td class="col-label">${ordinal} अपत्याचे नाव</td>
+                            <td class="col-val">${ch.name || '&nbsp;'}</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">${ordinal} अपत्याचा जन्म दिनांक</td>
+                            <td class="col-val">${ch.dob || '&nbsp;'}</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">${ordinal} अपत्याचे लिंग</td>
+                            <td class="col-val" style="padding: 0;">
+                                <div class="split-cell">
+                                    <div class="split-part bordered">
+                                        <span class="tick-mark ${ch.gender === 'स्त्री' ? 'checked' : ''}"></span>
+                                        <span>स्त्री</span>
+                                    </div>
+                                    <div class="split-part">
+                                        <span class="tick-mark ${ch.gender !== 'स्त्री' ? 'checked' : ''}"></span>
+                                        <span>पुरुष</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Nominee & Final rows
+            html += `
+                <tr>
+                    <td class="col-label">वारसदाराचे नाव</td>
+                    <td class="col-val">${nomineeName || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">वारसदाराचे लाभार्थीशी नाते (पती, मुलगा, मुलगी इत्यादी)</td>
+                    <td class="col-val">${nomineeRel || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">वारसदाराची जन्म तारीख</td>
+                    <td class="col-val">${nomineeDob || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">लाभार्थ्यांची जन्म खूण</td>
+                    <td class="col-val">${birthMark || '&nbsp;'}</td>
+                </tr>
+                <tr>
+                    <td class="col-label">घरेलू कामगार विधवा आहे का?</td>
+                    <td class="col-val" style="padding: 0;">
+                        <div class="split-cell">
+                            <div class="split-part bordered" style="flex: 1.8; font-size: 9.5pt; justify-content: flex-start; padding-left: 8px;">
+                                <span class="tick-mark ${isWidow === 'होय' ? 'checked' : ''}"></span>
+                                <span>होय, पतीच्या मृत्यूचा दिनांक : <strong>${deathDate || '________'}</strong></span>
+                            </div>
+                            <div class="split-part" style="flex: 1;">
+                                <span class="tick-mark ${isWidow === 'नाही' ? 'checked' : ''}"></span>
+                                <span>नाही</span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            tbody.innerHTML = html;
+
+            // Sheet 2 (Employer Certificate) Live Updates
+            document.getElementById('p2_cert_date_disp').innerText = certDate || '-';
+            document.getElementById('p2_worker_name_disp').innerText = workerName || '-';
+            document.getElementById('p2_emp_name_disp').innerText = empName || '-';
+            document.getElementById('p2_emp_address_disp').innerText = empAddress || '-';
+            document.getElementById('p2_emp_mobile_disp').innerText = empMobile || '-';
+
+            saveLocal();
+        }
+
+        // Fill exact demo data from photograph
+        function fillExactDemoData() {
+            document.getElementById('inp_worker_name').value = "निशा महेश सुतार";
+            document.getElementById('inp_worker_dob').value = "20/08/1994";
+            document.getElementById('inp_gender').value = "स्त्री";
+            document.getElementById('inp_reg_no').value = "";
+            document.getElementById('inp_reg_type').value = "नवीन";
+            document.getElementById('inp_membership_period').value = "";
+            document.getElementById('inp_worker_age').value = "33";
+            document.getElementById('inp_worker_mobile').value = "8554057312";
+            document.getElementById('inp_worker_aadhaar').value = "359439548091";
+            document.getElementById('inp_worker_address').value = "मु. निवरे (धनगरवाडी), ता. कणकवली, जि. सिंधुदुर्ग";
+            document.getElementById('inp_birth_mark').value = "";
+
+            document.getElementById('inp_emp_name').value = "श्रीकृष्ण मनोहर राणे";
+            document.getElementById('inp_emp_mobile').value = "9822345678";
+            document.getElementById('inp_emp_address').value = "मु. निवरे, ता. कणकवली, जि. सिंधुदुर्ग";
+
+            document.getElementById('inp_bank_name').value = "State Bank of India";
+            document.getElementById('inp_bank_acc').value = "33956205542";
+            document.getElementById('inp_bank_ifsc').value = "SBIN0013842";
+
+            document.getElementById('inp_is_widow').value = "नाही";
+            toggleWidowInput();
+
+            document.getElementById('inp_nominee_name').value = "महेश गजानन सुतार";
+            document.getElementById('inp_nominee_rel').value = "पती";
+            document.getElementById('inp_nominee_dob').value = "03/04/1992";
+
+            const today = new Date();
+            const d = String(today.getDate()).padStart(2, '0');
+            const m = String(today.getMonth() + 1).padStart(2, '0');
+            const y = today.getFullYear();
+            document.getElementById('inp_cert_date').value = `${d}/${m}/${y}`;
+
+            // Demo Children list (1 child initially)
+            childrenList = [
+                { name: "रुद्र महेश सुतार", dob: "16/12/2019", gender: "पुरुष" }
+            ];
+
+            renderChildrenInputs();
+            syncAll();
+        }
+
+        // Reset
+        function resetAllInputs() {
+            if (confirm("तुम्हाला संपूर्ण फॉर्म रीसेट करायचा आहे का?")) {
+                document.getElementById('masterInputForm').reset();
+                childrenList = [{ name: "", dob: "", gender: "पुरुष" }];
+                toggleWidowInput();
+                renderChildrenInputs();
+                localStorage.removeItem('gharelu_sangnak_master_data');
+                syncAll();
+            }
+        }
+
+        // LocalStorage Save
+        function saveLocal() {
+            try {
+                const data = {
+                    mode: currentActiveMode,
+                    worker_name: document.getElementById('inp_worker_name').value,
+                    worker_dob: document.getElementById('inp_worker_dob').value,
+                    gender: document.getElementById('inp_gender').value,
+                    reg_no: document.getElementById('inp_reg_no').value,
+                    reg_type: document.getElementById('inp_reg_type').value,
+                    membership: document.getElementById('inp_membership_period').value,
+                    worker_age: document.getElementById('inp_worker_age').value,
+                    worker_mobile: document.getElementById('inp_worker_mobile').value,
+                    worker_aadhaar: document.getElementById('inp_worker_aadhaar').value,
+                    worker_address: document.getElementById('inp_worker_address').value,
+                    birth_mark: document.getElementById('inp_birth_mark').value,
+                    emp_name: document.getElementById('inp_emp_name').value,
+                    emp_mobile: document.getElementById('inp_emp_mobile').value,
+                    emp_address: document.getElementById('inp_emp_address').value,
+                    bank_name: document.getElementById('inp_bank_name').value,
+                    bank_acc: document.getElementById('inp_bank_acc').value,
+                    bank_ifsc: document.getElementById('inp_bank_ifsc').value,
+                    is_widow: document.getElementById('inp_is_widow').value,
+                    death_date: document.getElementById('inp_death_date').value,
+                    nominee_name: document.getElementById('inp_nominee_name').value,
+                    nominee_rel: document.getElementById('inp_nominee_rel').value,
+                    nominee_dob: document.getElementById('inp_nominee_dob').value,
+                    cert_date: document.getElementById('inp_cert_date').value,
+                    childrenList: childrenList
+                };
+                localStorage.setItem('gharelu_sangnak_master_data', JSON.stringify(data));
+            } catch(e) {
+                console.warn('LocalStorage save error:', e);
+            }
+        }
+
+        // LocalStorage Restore
+        function loadLocal() {
+            try {
+                const saved = localStorage.getItem('gharelu_sangnak_master_data') || localStorage.getItem('ghareli_sangnak_master_data');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    document.getElementById('inp_worker_name').value = data.worker_name || '';
+                    document.getElementById('inp_worker_dob').value = data.worker_dob || '';
+                    document.getElementById('inp_gender').value = data.gender || 'स्त्री';
+                    document.getElementById('inp_reg_no').value = data.reg_no || '';
+                    document.getElementById('inp_reg_type').value = data.reg_type || 'नवीन';
+                    document.getElementById('inp_membership_period').value = data.membership || '';
+                    document.getElementById('inp_worker_age').value = data.worker_age || '';
+                    document.getElementById('inp_worker_mobile').value = data.worker_mobile || '';
+                    document.getElementById('inp_worker_aadhaar').value = data.worker_aadhaar || '';
+                    document.getElementById('inp_worker_address').value = data.worker_address || '';
+                    document.getElementById('inp_birth_mark').value = data.birth_mark || '';
+
+                    document.getElementById('inp_emp_name').value = data.emp_name || '';
+                    document.getElementById('inp_emp_mobile').value = data.emp_mobile || '';
+                    document.getElementById('inp_emp_address').value = data.emp_address || '';
+
+                    document.getElementById('inp_bank_name').value = data.bank_name || '';
+                    document.getElementById('inp_bank_acc').value = data.bank_acc || '';
+                    document.getElementById('inp_bank_ifsc').value = data.bank_ifsc || '';
+
+                    document.getElementById('inp_is_widow').value = data.is_widow || 'नाही';
+                    toggleWidowInput();
+                    document.getElementById('inp_death_date').value = data.death_date || '';
+
+                    document.getElementById('inp_nominee_name').value = data.nominee_name || '';
+                    document.getElementById('inp_nominee_rel').value = data.nominee_rel || '';
+                    document.getElementById('inp_nominee_dob').value = data.nominee_dob || '';
+
+                    document.getElementById('inp_cert_date').value = data.cert_date || '';
+
+                    if (Array.isArray(data.childrenList) && data.childrenList.length > 0) {
+                        childrenList = data.childrenList;
+                    }
+
+                    if (data.mode) {
+                        setActiveMode(data.mode);
+                        return;
+                    }
+                } else {
+                    const today = new Date();
+                    const d = String(today.getDate()).padStart(2, '0');
+                    const m = String(today.getMonth() + 1).padStart(2, '0');
+                    const y = today.getFullYear();
+                    document.getElementById('inp_cert_date').value = `${d}/${m}/${y}`;
+                }
+            } catch(e) {
+                console.warn('LocalStorage load error:', e);
+            }
+            setActiveMode('all');
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLocal();
+            renderChildrenInputs();
+            syncAll();
+        });
+    </script>
+
+    <!-- Supabase Cloud DB & Universal Form History Tracker -->
+    <script src="js/supabase-db.js"></script>
+    <script src="js/universal-form-history.js"></script>
+</body>
+</html>

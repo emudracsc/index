@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>त्रिभाषी वृत्तपत्र दालन | ई-मुद्रा आपले सरकार व आधार सेवा केंद्र</title>
+  <meta name="description" content="ई-मुद्रा आपले सरकार केंद्र - त्रिभाषी वृत्तपत्र पोर्टल (मराठी, हिंदी, इंग्रजी)" />
+  <link rel="stylesheet" href="dalan-styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Ambient Glow Elements -->
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+  <div class="glow-orb glow-orb-3"></div>
+
+  <!-- Top Info Bar -->
+  <div class="top-info-bar">
+    <div class="top-info-left">
+      <span class="gov-badge">
+        <i class="fas fa-landmark"></i> महाराष्ट्र शासन • ई-मुद्रा आपले सरकार केंद्र
+      </span>
+      <span class="live-clock-badge">
+        <i class="far fa-clock"></i> <span id="live-clock-text">--:--:--</span>
+      </span>
+    </div>
+    <div class="top-info-right">
+      <span id="live-greeting-text" style="color: #fed7aa; font-weight: 600; font-size: 0.85rem;">नमस्कार!</span>
+      <button id="audio-toggle-btn" class="audio-toggle-btn" onclick="toggleAudioFeedback()">
+        <i class="fas fa-volume-up"></i> ध्वनी
+      </button>
+    </div>
+  </div>
+
+  <!-- Master Header -->
+  <header class="main-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-wrapper">
+        <div class="emblem-icon">
+          🏛️
+        </div>
+        <div class="brand-text">
+          <h1>सर्व शासकीय व ई-मुद्रा सेवा एकाच छताखाली!</h1>
+          <p>त्रिभाषी वृत्तपत्र दालन (Newspaper Portal)</p>
+        </div>
+      </a>
+
+      <button id="mobile-nav-toggle" class="nav-toggle" aria-label="Toggle Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <ul id="main-nav-links" class="nav-links">
+        <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> मुख्य दालन</a></li>
+        <li><a href="digital-wall.html" class="nav-link"><i class="fas fa-tv"></i> डिजिटल वॉल</a></li>
+        <li><a href="logo-wall.html" class="nav-link"><i class="fas fa-qrcode"></i> महसूल ई-सेवा</a></li>
+        <li><a href="book-wall.html" class="nav-link"><i class="fas fa-book-open"></i> ई-पुस्तके</a></li>
+        <li><a href="news_paper.html" class="nav-link active"><i class="fas fa-newspaper"></i> वृत्तपत्रे</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="hero-section" style="padding-bottom: 20px;">
+      <div class="hero-pill">
+        <i class="fas fa-newspaper"></i> ई-वृत्तपत्र दालन
+      </div>
+      <h2 class="hero-title">
+        त्रिभाषी वृत्तपत्र महादालन
+      </h2>
+      <p class="hero-subtitle">
+        मराठी, हिंदी आणि इंग्रजी भाषेतील सर्व अग्रगण्य वर्तमानपत्रे आता एकाच ठिकाणी थेट वाचा.
+      </p>
+    </section>
+
+    <!-- Search & Filter Controls -->
+    <section class="controls-wrapper">
+      <div class="search-filter-box">
+        <div class="search-input-wrapper">
+          <input 
+            type="text" 
+            id="portal-search-input" 
+            class="search-input" 
+            placeholder="वृत्तपत्राचे नाव शोधा (उदा. लोकसत्ता, सकाळ, पुढारी, दैनिक जागरण, Times of India...)" 
+          />
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="filter-pills-row">
+          <button class="filter-pill active" data-category="all">सर्व भाषा (All)</button>
+          <button class="filter-pill" data-category="marathi">मराठी वृत्तपत्रे</button>
+          <button class="filter-pill" data-category="hindi">हिंदी वृत्तपत्रे</button>
+          <button class="filter-pill" data-category="english">English Newspapers</button>
+          <span id="results-count-badge" class="results-count-badge">२०+ वृत्तपत्रे उपलब्ध</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- News Cards Grid -->
+    <section class="news-portal-container">
+      <div class="news-grid-section">
+        
+        <!-- MARATHI PAPERS -->
+        <a href="https://www.loksatta.com/" target="_blank" class="news-card-link marathi searchable-item" data-category="marathi" data-title="लोकसत्ता loksatta marathi" data-desc="मराठी वृत्तपत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #e11d48; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">लोकसत्ता</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://epaper.sakal.com/" target="_blank" class="news-card-link marathi searchable-item" data-category="marathi" data-title="सकाळ sakal epaper marathi" data-desc="मराठी वृत्तपत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #e11d48; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">सकाळ</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.pudhari.com/" target="_blank" class="news-card-link marathi searchable-item" data-category="marathi" data-title="पुढारी pudhari daily marathi" data-desc="मराठी वृत्तपत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #e11d48; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">पुढारी</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://maharashtratimes.indiatimes.com/" target="_blank" class="news-card-link marathi searchable-item" data-category="marathi" data-title="महाराष्ट्र टाइम्स maharashtra times marathi" data-desc="मराठी वृत्तपत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #e11d48; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">महाराष्ट्र टाइम्स</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.kesari.in/" target="_blank" class="news-card-link marathi searchable-item" data-category="marathi" data-title="केसरी दैनिक kesari marathi" data-desc="मराठी वृत्तपत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #e11d48; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">केसरी</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.lokmat.com/" target="_blank" class="news-card-link marathi searchable-item" data-category="marathi" data-title="लोकमत lokmat daily marathi" data-desc="मराठी वृत्तपत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #e11d48; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">लोकमत</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.praharnews.in/" target="_blank" class="news-card-link marathi searchable-item" data-category="marathi" data-title="प्रहार prahar daily marathi" data-desc="मराठी वृत्तपत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #e11d48; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">प्रहार</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.tarunbharat.com/" target="_blank" class="news-card-link marathi searchable-item" data-category="marathi" data-title="तरुण भारत tarun bharat marathi" data-desc="मराठी वृत्तपत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #e11d48; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">तरुण भारत</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <!-- HINDI PAPERS -->
+        <a href="https://www.jagran.com/" target="_blank" class="news-card-link hindi searchable-item" data-category="hindi" data-title="दैनिक जागरण dainik jagran hindi" data-desc="हिंदी समाचार पत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #2563eb; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">दैनिक जागरण</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.bhaskar.com/" target="_blank" class="news-card-link hindi searchable-item" data-category="hindi" data-title="दैनिक भास्कर dainik bhaskar hindi" data-desc="हिंदी समाचार पत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #2563eb; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">दैनिक भास्कर</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.amarujala.com/" target="_blank" class="news-card-link hindi searchable-item" data-category="hindi" data-title="अमर उजाला amar ujala hindi" data-desc="हिंदी समाचार पत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #2563eb; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">अमर उजाला</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.patrika.com/" target="_blank" class="news-card-link hindi searchable-item" data-category="hindi" data-title="राजस्थान पत्रिका rajasthan patrika hindi" data-desc="हिंदी समाचार पत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #2563eb; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">राजस्थान पत्रिका</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.livehindustan.com/" target="_blank" class="news-card-link hindi searchable-item" data-category="hindi" data-title="हिंदुस्तान live hindustan hindi" data-desc="हिंदी समाचार पत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #2563eb; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">हिंदुस्तान</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://navbharattimes.indiatimes.com/" target="_blank" class="news-card-link hindi searchable-item" data-category="hindi" data-title="नवभारत टाइम्स navbharat times hindi" data-desc="हिंदी समाचार पत्र">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #2563eb; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">नवभारत टाइम्स</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <!-- ENGLISH PAPERS -->
+        <a href="https://timesofindia.indiatimes.com/" target="_blank" class="news-card-link english searchable-item" data-category="english" data-title="Times of India TOI english newspaper" data-desc="English Newspaper">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #059669; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">Times of India</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.thehindu.com/" target="_blank" class="news-card-link english searchable-item" data-category="english" data-title="The Hindu english daily national" data-desc="English Newspaper">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #059669; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">The Hindu</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://indianexpress.com/" target="_blank" class="news-card-link english searchable-item" data-category="english" data-title="Indian Express daily english" data-desc="English Newspaper">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #059669; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">Indian Express</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.hindustantimes.com/" target="_blank" class="news-card-link english searchable-item" data-category="english" data-title="Hindustan Times HT english national" data-desc="English Newspaper">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #059669; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">Hindustan Times</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.telegraphindia.com/" target="_blank" class="news-card-link english searchable-item" data-category="english" data-title="The Telegraph english daily news" data-desc="English Newspaper">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #059669; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">The Telegraph</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+        <a href="https://www.mid-day.com/" target="_blank" class="news-card-link english searchable-item" data-category="english" data-title="Mid-Day Mumbai english daily" data-desc="English Newspaper">
+          <div class="news-icon-circle">
+            <i class="fas fa-newspaper" style="color: #059669; font-size: 1.3rem;"></i>
+          </div>
+          <span class="news-name-text">Mid-Day</span>
+          <i class="fas fa-chevron-right news-arrow-icon"></i>
+        </a>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Master Footer -->
+  <footer class="main-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">🏛️ ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र</div>
+      <div class="footer-nav">
+        <a href="index.html">मुख्य दालन</a>
+        <a href="digital-wall.html">डिजिटल वॉल</a>
+        <a href="logo-wall.html">महसूल ई-सेवा</a>
+        <a href="book-wall.html">ई-पुस्तके</a>
+        <a href="news_paper.html">वृत्तपत्रे</a>
+      </div>
+      <p class="footer-copy">
+        © 2026 ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र. सर्व हक्क राखीव.
+      </p>
+    </div>
+  </footer>
+
+  <script src="dalan-script.js"></script>
+</body>
+</html>

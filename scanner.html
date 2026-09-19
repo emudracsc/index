@@ -1,0 +1,3641 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EMUDRA UNIVERSAL WEB SCANNER PRO | शासकीय हार्डवेअर स्कॅनर स्टुडिओ</title>
+  <meta name="description" content="Canon, HP, Epson, Brother सह सर्व स्कॅनर्सना थेट ब्राऊझरमधून एका क्लिकवर स्कॅन करा. आपले सरकार २५० KB, महाडीबीटी ५०० KB PDF, पासपोर्ट फोटो व स्वाक्षरी क्रॉप.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/emudra_compressor_icon.png">
+
+  <!-- Google Fonts: Mukta & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6.5.1 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- jsPDF, JSZip & PDF.js for in-browser PDF generation and import -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark-base: #060913;
+      --bg-surface: rgba(15, 23, 42, 0.88);
+      --bg-surface-card: rgba(22, 33, 58, 0.72);
+      --border-glass: rgba(56, 189, 248, 0.2);
+      --border-glass-glow: rgba(56, 189, 248, 0.45);
+      --accent-cyan: #38bdf8;
+      --accent-blue: #0284c7;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-purple: #8b5cf6;
+      --glow-cyan: 0 0 24px rgba(56, 189, 248, 0.35);
+      --glow-emerald: 0 0 24px rgba(16, 185, 129, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100vh;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* No page scrollbars - Single Screen Fit */
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-dark-base);
+      background-image:
+        radial-gradient(circle at 10% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 90% 85%, rgba(16, 185, 129, 0.10) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 60%);
+      color: #f8fafc;
+      font-family: 'Mukta', 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
+
+    /* Government Tricolor Top Ribbon */
+    .gov-tricolor-stripe {
+      height: 3px;
+      background: linear-gradient(90deg, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%);
+      width: 100%;
+      flex-shrink: 0;
+      z-index: 1000;
+    }
+
+    /* Top Navigation Bar */
+    .top-navbar {
+      background: rgba(10, 15, 29, 0.95);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+      backdrop-filter: blur(12px);
+      padding: 5px 14px;
+      flex-shrink: 0;
+      z-index: 999;
+    }
+
+    .navbar-content {
+      max-width: 100%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 1.05rem;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.4);
+    }
+
+    .brand-text-title {
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      line-height: 1.15;
+    }
+
+    .brand-text-sub {
+      color: var(--accent-cyan);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    /* Live Bridge Status Indicator Pill */
+    .bridge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+    }
+
+    .bridge-pill.connected {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.45);
+      color: #34d399;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .bridge-pill.disconnected {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.45);
+      color: #fb7185;
+      box-shadow: 0 0 12px rgba(244, 63, 94, 0.25);
+    }
+
+    .bridge-pill.checking {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.45);
+      color: #fbbf24;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .status-dot.connected {
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulseGreen 2s infinite;
+    }
+
+    .status-dot.disconnected {
+      background: #f43f5e;
+      box-shadow: 0 0 8px #f43f5e;
+    }
+
+    .status-dot.checking {
+      background: #f59e0b;
+      animation: pulseYellow 1s infinite;
+    }
+
+    @keyframes pulseGreen {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+
+    @keyframes pulseYellow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-nav {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-cyan);
+      font-weight: 700;
+      font-size: 0.82rem;
+      padding: 5px 12px;
+      border-radius: 7px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-nav:hover {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Main Container */
+    .studio-container {
+      max-width: 100%;
+      width: 100%;
+      margin: 0 auto;
+      padding: 6px 12px 8px 12px;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    /* Top Hardware Control Bar */
+    .control-deck {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-glass);
+      border-radius: 10px;
+      padding: 5px 12px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .deck-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+    }
+
+    .control-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .control-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .control-select {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #ffffff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      min-width: 110px;
+      height: 30px;
+    }
+
+    .control-select:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Big Scan Button */
+    .btn-scan-main {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border: 1px solid rgba(110, 231, 183, 0.4);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.92rem;
+      padding: 6px 16px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--glow-emerald);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      height: 32px;
+    }
+
+    .btn-scan-main:hover {
+      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+    }
+
+    .btn-scan-main:active {
+      transform: translateY(0);
+    }
+
+    .btn-scan-main:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-test-scan {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px dashed rgba(56, 189, 248, 0.5);
+      color: #7dd3fc;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 5px 12px;
+      border-radius: 7px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      height: 32px;
+    }
+    .btn-test-scan:hover {
+      background: rgba(56, 189, 248, 0.25);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+    }
+
+    /* Workspace Studio Grid */
+    .studio-workspace {
+      display: grid;
+      grid-template-columns: 215px 1fr 285px;
+      gap: 8px;
+      flex: 1;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    @media (max-width: 1100px) {
+      .studio-workspace {
+        grid-template-columns: 190px 1fr 260px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      html, body {
+        overflow: auto;
+      }
+      .studio-workspace {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+      .control-deck, .navbar-content {
+        flex-wrap: wrap;
+      }
+      .deck-group {
+        flex-wrap: wrap;
+      }
+    }
+
+    /* Generic Panel Card */
+    .studio-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-glass);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+
+    .panel-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .panel-badge {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-cyan);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    /* Thumbnails Column (Left) */
+    .thumbs-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      flex: 1;
+      min-height: 0;
+      padding-right: 2px;
+    }
+
+    .thumbs-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .thumbs-container::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.3);
+      border-radius: 3px;
+    }
+
+    .thumb-card {
+      background: var(--bg-surface-card);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .thumb-card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(30, 41, 59, 0.85);
+      transform: translateY(-1px);
+    }
+
+    .thumb-card.active {
+      border-color: var(--accent-cyan);
+      background: rgba(14, 116, 144, 0.25);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
+
+    .thumb-img-wrap {
+      width: 100%;
+      height: 80px;
+      background: #0b1120;
+      border-radius: 5px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .thumb-img-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: transform 0.2s;
+    }
+
+    .thumb-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+
+    .thumb-actions {
+      display: flex;
+      gap: 3px;
+    }
+
+    .btn-thumb-action {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-thumb-action:hover {
+      background: rgba(56, 189, 248, 0.25);
+      color: #ffffff;
+      border-color: var(--accent-cyan);
+    }
+
+    .btn-thumb-action.delete:hover {
+      background: rgba(244, 63, 94, 0.3);
+      color: #f43f5e;
+      border-color: #f43f5e;
+    }
+
+    /* Main Viewer (Center) */
+    .panel-viewer {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .viewer-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 6px;
+      background: rgba(10, 15, 30, 0.6);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      flex-shrink: 0;
+    }
+
+    .viewer-tools-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-tool {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e2e8f0;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.18s ease;
+    }
+
+    .btn-tool:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+    }
+
+    .btn-tool.active {
+      background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Viewer Stage Area */
+    .viewer-stage {
+      flex: 1;
+      min-height: 0;
+      height: 100%;
+      background: #070b16;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+
+    /* Interactive Canvas Crop Container */
+    .canvas-crop-wrapper {
+      position: relative;
+      display: inline-block;
+      line-height: 0;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      border-radius: 4px;
+      user-select: none;
+      transition: transform 0.2s ease;
+      margin: auto;
+      max-width: 100%;
+      max-height: 100%;
+      transform-origin: center center;
+    }
+
+    #mainCanvas {
+      max-width: 100%;
+      max-height: calc(100vh - 165px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 4px;
+      background: #ffffff;
+      display: block;
+    }
+
+    /* Crop Overlay Layer */
+    .crop-overlay-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 20;
+    }
+
+    .crop-box-interactive {
+      position: absolute;
+      border: 2px solid var(--accent-cyan);
+      box-shadow: 0 0 0 9999px rgba(3, 7, 18, 0.72);
+      cursor: move;
+      pointer-events: auto;
+      touch-action: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .crop-grid-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+    }
+
+    .crop-grid-cell {
+      border: 1px dashed rgba(56, 189, 248, 0.25);
+    }
+
+    /* 4 Corner Resize Handles */
+    .crop-handle {
+      width: 16px;
+      height: 16px;
+      background: #38bdf8;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      position: absolute;
+      pointer-events: auto;
+      z-index: 30;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .crop-handle:hover {
+      transform: scale(1.3);
+      background: #10b981;
+    }
+
+    .crop-handle.tl { top: -8px; left: -8px; cursor: nwse-resize; }
+    .crop-handle.tr { top: -8px; right: -8px; cursor: nesw-resize; }
+    .crop-handle.bl { bottom: -8px; left: -8px; cursor: nesw-resize; }
+    .crop-handle.br { bottom: -8px; right: -8px; cursor: nwse-resize; }
+
+    /* Crop Tag Badge */
+    .crop-badge-pill {
+      position: absolute;
+      top: -28px;
+      left: 0;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid var(--accent-cyan);
+      color: #67e8f9;
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      line-height: 1.4;
+    }
+
+    /* Floating Crop Quick Actions */
+    .crop-quick-bar {
+      position: absolute;
+      bottom: -38px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 35;
+      pointer-events: auto;
+      white-space: nowrap;
+    }
+
+    .btn-crop-action {
+      background: #10b981;
+      border: none;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.74rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+      line-height: 1.4;
+      transition: all 0.15s ease;
+    }
+    .btn-crop-action:hover {
+      background: #059669;
+      transform: translateY(-1px);
+    }
+    .btn-crop-action.cancel {
+      background: #ef4444;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+    }
+    .btn-crop-action.cancel:hover {
+      background: #dc2626;
+    }
+    .btn-crop-action.direct {
+      background: #0284c7;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+    }
+    .btn-crop-action.direct:hover {
+      background: #0369a1;
+    }
+
+    /* Top Crop Mode Banner */
+    .crop-mode-banner {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--accent-cyan);
+      border-radius: 8px;
+      padding: 4px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      margin-bottom: 3px;
+      flex-shrink: 0;
+      flex-wrap: nowrap;
+    }
+
+    /* Empty State View */
+    .empty-viewer {
+      text-align: center;
+      color: #64748b;
+      max-width: 360px;
+      padding: 16px;
+      margin: auto;
+    }
+
+    .empty-icon {
+      font-size: 2.8rem;
+      color: rgba(56, 189, 248, 0.25);
+      margin-bottom: 8px;
+      animation: floatIcon 3s ease-in-out infinite;
+    }
+
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* Scanning Progress Overlay */
+    .scan-loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(6, 9, 19, 0.88);
+      backdrop-filter: blur(8px);
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      gap: 16px;
+    }
+
+    .scan-beam-loader {
+      width: 180px;
+      height: 120px;
+      border: 2px solid var(--accent-cyan);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .scan-beam-line {
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #38bdf8, #10b981, #38bdf8, transparent);
+      box-shadow: 0 0 16px #38bdf8;
+      position: absolute;
+      top: 0;
+      left: 0;
+      animation: scanBeam 1.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes scanBeam {
+      0% { top: 2px; }
+      100% { top: calc(100% - 6px); }
+    }
+
+    /* Right Panel (Enhancements & Government Export) */
+    .panel-export {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-height: 0;
+      height: 100%;
+      padding: 6px 8px;
+    }
+
+    .panel-export::-webkit-scrollbar {
+      width: 4px;
+    }
+    .panel-export::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.25);
+      border-radius: 4px;
+    }
+
+    .section-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Filters Pill Buttons */
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+
+    .btn-filter {
+      background: var(--bg-surface-card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-filter:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+    }
+
+    .btn-filter.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(2, 132, 199, 0.35));
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Government Export Action Cards */
+    .gov-export-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 8px;
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: all 0.2s ease;
+    }
+
+    .gov-export-card.dbt {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+
+    .gov-export-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    .gov-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .gov-card-title {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .gov-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .gov-badge.blue {
+      background: rgba(56, 189, 248, 0.2);
+      color: #67e8f9;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .gov-desc {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    .btn-gov-download {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border: none;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.78rem;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 2px;
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35);
+      transition: all 0.2s;
+    }
+
+    .btn-gov-download.blue {
+      background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    .btn-gov-download:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    /* Custom Target Size Chips */
+    .chip-kb {
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      color: #d8b4fe;
+      font-weight: 700;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .chip-kb:hover {
+      background: rgba(168, 85, 247, 0.35);
+      border-color: #c084fc;
+      color: #ffffff;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1050;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: #0f172a;
+      border: 1px solid var(--accent-cyan);
+      border-radius: 14px;
+      max-width: 580px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-modal-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+    .btn-modal-close:hover {
+      color: #ffffff;
+    }
+
+    .setup-step {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .step-number {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0284c7, #0891b2);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Toast Notification */
+    .toast-popup {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      border: 1px solid var(--accent-cyan);
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 2000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toast-popup.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+  <style>
+    /* ==========================================================================
+       NEXT-GEN CYBER-GLASS DESIGN SYSTEM (PRO HARDWARE SCANNER STUDIO)
+       ========================================================================== */
+
+    /* Root Colors & Atmospheric Glow */
+    :root {
+      --bg-dark-base: #030712;
+      --bg-surface: rgba(11, 19, 38, 0.78);
+      --bg-surface-card: rgba(17, 28, 54, 0.65);
+      --border-glass: rgba(56, 189, 248, 0.22);
+      --border-glass-glow: rgba(56, 189, 248, 0.55);
+      --neon-cyan: #38bdf8;
+      --neon-emerald: #10b981;
+      --neon-purple: #a855f7;
+      --neon-amber: #f59e0b;
+      --glow-emerald-deep: 0 0 30px rgba(16, 185, 129, 0.55);
+      --glow-cyan-deep: 0 0 30px rgba(56, 189, 248, 0.45);
+    }
+
+    /* 1. Dynamic Aurora Ambient Background */
+    @keyframes auroraShift {
+      0% {
+        background-position: 0% 50%, 100% 50%, 50% 0%;
+      }
+      50% {
+        background-position: 100% 50%, 0% 50%, 50% 100%;
+      }
+      100% {
+        background-position: 0% 50%, 100% 50%, 50% 0%;
+      }
+    }
+
+    html, body {
+      background-color: #030712 !important;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 20% -20%, rgba(14, 165, 233, 0.22), transparent 70%),
+        radial-gradient(ellipse 60% 50% at 80% 120%, rgba(16, 185, 129, 0.18), transparent 70%),
+        radial-gradient(circle at 50% 50%, rgba(147, 51, 234, 0.12), transparent 75%) !important;
+      background-size: 200% 200% !important;
+      animation: auroraShift 20s ease infinite alternate !important;
+      font-family: 'Poppins', 'Mukta', sans-serif !important;
+      color: #f1f5f9 !important;
+    }
+
+    /* 2. Top Tricolor Ribbon with Radiant Neon Line */
+    .gov-tricolor-stripe {
+      height: 3px !important;
+      background: linear-gradient(90deg, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%) !important;
+      box-shadow: 0 0 12px rgba(255, 153, 51, 0.6), 0 0 12px rgba(19, 136, 8, 0.6) !important;
+    }
+
+    /* 3. Top Navigation Bar */
+    .top-navbar {
+      background: rgba(3, 7, 18, 0.85) !important;
+      backdrop-filter: blur(20px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2) !important;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    .brand-icon {
+      background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #10b981 100%) !important;
+      box-shadow: 0 0 16px rgba(14, 165, 233, 0.6) !important;
+      border: 1px solid rgba(255, 255, 255, 0.3) !important;
+      border-radius: 10px !important;
+      transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    }
+    .brand-group:hover .brand-icon {
+      transform: scale(1.08) rotate(5deg) !important;
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.8) !important;
+    }
+
+    .brand-text-title {
+      background: linear-gradient(90deg, #ffffff, #e0f2fe, #bae6fd) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      letter-spacing: 0.5px !important;
+      font-weight: 800 !important;
+    }
+
+    /* Live Bridge Radar Pill */
+    .bridge-pill {
+      border-radius: 30px !important;
+      backdrop-filter: blur(10px) !important;
+      padding: 6px 16px !important;
+      font-size: 0.82rem !important;
+      letter-spacing: 0.3px !important;
+      position: relative !important;
+      overflow: hidden !important;
+      border-width: 1.5px !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .bridge-pill.connected {
+      background: rgba(16, 185, 129, 0.12) !important;
+      border-color: rgba(16, 185, 129, 0.5) !important;
+      color: #6ee7b7 !important;
+      box-shadow: 0 0 18px rgba(16, 185, 129, 0.3), inset 0 0 12px rgba(16, 185, 129, 0.15) !important;
+    }
+
+    .bridge-pill.disconnected {
+      background: rgba(244, 63, 94, 0.12) !important;
+      border-color: rgba(244, 63, 94, 0.5) !important;
+      color: #fda4af !important;
+      box-shadow: 0 0 18px rgba(244, 63, 94, 0.3) !important;
+    }
+
+    .btn-nav {
+      background: rgba(15, 23, 42, 0.6) !important;
+      backdrop-filter: blur(8px) !important;
+      border: 1px solid rgba(56, 189, 248, 0.25) !important;
+      border-radius: 9px !important;
+      transition: all 0.25s ease !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    }
+    .btn-nav:hover {
+      background: rgba(56, 189, 248, 0.18) !important;
+      border-color: rgba(56, 189, 248, 0.6) !important;
+      color: #ffffff !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 18px rgba(56, 189, 248, 0.3) !important;
+    }
+
+    /* 4. Top Hardware Control Deck */
+    .control-deck {
+      background: rgba(10, 18, 38, 0.85) !important;
+      backdrop-filter: blur(20px) saturate(170%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(170%) !important;
+      border: 1px solid rgba(56, 189, 248, 0.25) !important;
+      border-radius: 14px !important;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+      position: relative !important;
+    }
+
+    .control-deck::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.8), rgba(16, 185, 129, 0.8), transparent);
+      pointer-events: none;
+    }
+
+    .control-label {
+      color: #94a3b8 !important;
+      font-size: 0.72rem !important;
+      letter-spacing: 0.8px !important;
+      font-weight: 700 !important;
+    }
+    .control-label i {
+      color: var(--neon-cyan) !important;
+    }
+
+    .control-select {
+      background: rgba(15, 23, 42, 0.85) !important;
+      border: 1px solid rgba(56, 189, 248, 0.3) !important;
+      border-radius: 8px !important;
+      color: #e2e8f0 !important;
+      font-weight: 600 !important;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+      transition: all 0.2s ease !important;
+    }
+    .control-select:focus, .control-select:hover {
+      border-color: var(--neon-cyan) !important;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    /* 5. MEGA SCAN BUTTON - STANDOUT VISUAL HERO */
+    @keyframes scanButtonShimmer {
+      0% { transform: translateX(-150%) rotate(30deg); }
+      100% { transform: translateX(250%) rotate(30deg); }
+    }
+    @keyframes pulseGlowEmerald {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.5), 0 0 40px rgba(16, 185, 129, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 35px rgba(16, 185, 129, 0.85), 0 0 60px rgba(16, 185, 129, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    .btn-scan-main {
+      background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+      border-radius: 10px !important;
+      font-size: 0.96rem !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.5px !important;
+      padding: 7px 22px !important;
+      animation: pulseGlowEmerald 2.5s infinite !important;
+      position: relative !important;
+      overflow: hidden !important;
+      cursor: pointer !important;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      height: 36px !important;
+    }
+
+    .btn-scan-main::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 0;
+      width: 40px;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.4);
+      filter: blur(4px);
+      animation: scanButtonShimmer 3.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .btn-scan-main:hover {
+      transform: translateY(-2px) scale(1.03) !important;
+      background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%) !important;
+      box-shadow: 0 0 45px rgba(16, 185, 129, 1), 0 0 80px rgba(16, 185, 129, 0.5) !important;
+    }
+
+    .btn-test-scan {
+      background: rgba(14, 165, 233, 0.12) !important;
+      border: 1.5px dashed rgba(56, 189, 248, 0.6) !important;
+      border-radius: 9px !important;
+      color: #7dd3fc !important;
+      font-weight: 700 !important;
+      font-size: 0.82rem !important;
+      padding: 6px 14px !important;
+      height: 36px !important;
+      transition: all 0.2s ease !important;
+    }
+    .btn-test-scan:hover {
+      background: rgba(14, 165, 233, 0.25) !important;
+      border-color: #38bdf8 !important;
+      color: #ffffff !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4) !important;
+    }
+
+    /* 6. Studio Workspace & Cards */
+    .studio-panel {
+      background: rgba(10, 18, 38, 0.75) !important;
+      backdrop-filter: blur(20px) saturate(160%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+      border: 1px solid rgba(56, 189, 248, 0.18) !important;
+      border-radius: 14px !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+    }
+    .studio-panel:hover {
+      border-color: rgba(56, 189, 248, 0.35) !important;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55), 0 0 25px rgba(56, 189, 248, 0.1) !important;
+    }
+
+    .panel-header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+      padding-bottom: 8px !important;
+    }
+    .panel-title {
+      font-weight: 800 !important;
+      letter-spacing: 0.5px !important;
+      font-size: 0.94rem !important;
+    }
+    .panel-title i {
+      color: var(--neon-cyan) !important;
+      filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+    }
+    .panel-badge {
+      background: rgba(56, 189, 248, 0.15) !important;
+      border: 1px solid rgba(56, 189, 248, 0.4) !important;
+      color: #38bdf8 !important;
+      border-radius: 20px !important;
+      padding: 3px 10px !important;
+      font-weight: 700 !important;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2) !important;
+    }
+
+    /* 7. Center Viewer Stage with Cyber HUD Accents */
+    .viewer-stage {
+      background: #020617 !important;
+      background-image: 
+        radial-gradient(circle at center, rgba(14, 165, 233, 0.08) 0%, transparent 70%),
+        linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px) !important;
+      background-size: 100% 100%, 24px 24px, 24px 24px !important;
+      border: 1.5px solid rgba(56, 189, 248, 0.25) !important;
+      border-radius: 12px !important;
+      box-shadow: inset 0 0 45px rgba(0, 0, 0, 0.8), 0 8px 30px rgba(0, 0, 0, 0.6) !important;
+      position: relative !important;
+    }
+
+    /* Viewfinder HUD Corner Accents */
+    .hud-corner {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-color: var(--neon-cyan);
+      border-style: solid;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0.75;
+      filter: drop-shadow(0 0 6px var(--neon-cyan));
+    }
+    .hud-corner.tl { top: 10px; left: 10px; border-width: 2.5px 0 0 2.5px; }
+    .hud-corner.tr { top: 10px; right: 10px; border-width: 2.5px 2.5px 0 0; }
+    .hud-corner.bl { bottom: 10px; left: 10px; border-width: 0 0 2.5px 2.5px; }
+    .hud-corner.br { bottom: 10px; right: 10px; border-width: 0 2.5px 2.5px 0; }
+
+    /* Holographic Laser Animation for Empty Stage */
+    @keyframes laserSweep {
+      0% { top: 10%; opacity: 0.3; }
+      50% { top: 85%; opacity: 1; filter: drop-shadow(0 0 12px #10b981); }
+      100% { top: 10%; opacity: 0.3; }
+    }
+    @keyframes hologramPulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.3)); }
+      50% { transform: scale(1.02); filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.6)); }
+    }
+
+    .hologram-scanner-box {
+      width: 260px;
+      height: 170px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 2px solid rgba(56, 189, 248, 0.4);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto 16px auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(56, 189, 248, 0.1);
+      animation: hologramPulse 4s ease-in-out infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hologram-laser-beam {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #10b981, #38bdf8, #10b981, transparent);
+      box-shadow: 0 0 15px #10b981, 0 0 25px #38bdf8;
+      animation: laserSweep 3s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    .hologram-doc-icon {
+      font-size: 3.5rem;
+      color: rgba(56, 189, 248, 0.35);
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+
+    /* Quick Action Tiles in Empty Stage */
+    .quick-start-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .quick-tile {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 10px 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .quick-tile:hover {
+      transform: translateY(-3px);
+      border-color: var(--neon-cyan);
+      background: rgba(56, 189, 248, 0.15);
+      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.25);
+    }
+    .quick-tile i {
+      font-size: 1.3rem;
+      color: var(--neon-cyan);
+    }
+    .quick-tile.emerald i { color: #34d399; }
+    .quick-tile.amber i { color: #fbbf24; }
+    .quick-tile span {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    /* 8. Thumbnails List (Left Panel) */
+    .thumb-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 10px !important;
+      padding: 6px !important;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .thumb-card:hover {
+      border-color: rgba(56, 189, 248, 0.5) !important;
+      background: rgba(30, 41, 59, 0.9) !important;
+      transform: translateY(-3px) scale(1.02) !important;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5), 0 0 18px rgba(56, 189, 248, 0.3) !important;
+    }
+    .thumb-card.active {
+      border-color: var(--neon-cyan) !important;
+      background: rgba(14, 116, 144, 0.25) !important;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.45) !important;
+    }
+
+    /* 9. Smart Filters & Quick Crops (Right Panel) */
+    .btn-filter {
+      background: rgba(15, 23, 42, 0.7) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 8px !important;
+      font-weight: 700 !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .btn-filter:hover {
+      background: rgba(56, 189, 248, 0.18) !important;
+      border-color: var(--neon-cyan) !important;
+      transform: translateY(-1.5px) !important;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3) !important;
+      color: #ffffff !important;
+    }
+    .btn-filter.active {
+      background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%) !important;
+      border-color: var(--neon-cyan) !important;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.5) !important;
+      color: #ffffff !important;
+    }
+
+    /* 10. Government Export Cards */
+    .gov-export-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0.85) 100%) !important;
+      border: 1px solid rgba(16, 185, 129, 0.4) !important;
+      border-radius: 10px !important;
+      padding: 8px 10px !important;
+      transition: all 0.25s ease !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+    }
+    .gov-export-card:hover {
+      border-color: #34d399 !important;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35) !important;
+      transform: translateY(-2px) !important;
+    }
+
+    .gov-export-card.dbt {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.14) 0%, rgba(15, 23, 42, 0.85) 100%) !important;
+      border-color: rgba(56, 189, 248, 0.45) !important;
+    }
+    .gov-export-card.dbt:hover {
+      border-color: #38bdf8 !important;
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35) !important;
+    }
+
+    .gov-export-card.custom {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(15, 23, 42, 0.85) 100%) !important;
+      border-color: rgba(168, 85, 247, 0.45) !important;
+    }
+    .gov-export-card.custom:hover {
+      border-color: #c084fc !important;
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35) !important;
+    }
+
+    .btn-gov-download {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      border-radius: 7px !important;
+      font-weight: 800 !important;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+      transition: all 0.2s ease !important;
+    }
+    .btn-gov-download:hover {
+      transform: translateY(-1.5px) !important;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.65) !important;
+    }
+    .btn-gov-download.blue {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4) !important;
+    }
+    .btn-gov-download.blue:hover {
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.65) !important;
+    }
+
+    .chip-kb {
+      background: rgba(168, 85, 247, 0.2) !important;
+      border: 1px solid rgba(168, 85, 247, 0.4) !important;
+      color: #d8b4fe !important;
+      font-weight: 700 !important;
+      border-radius: 5px !important;
+      transition: all 0.2s ease !important;
+    }
+    .chip-kb:hover {
+      background: #9333ea !important;
+      color: #ffffff !important;
+      transform: scale(1.08) !important;
+      box-shadow: 0 0 10px rgba(147, 51, 234, 0.6) !important;
+    }
+
+    /* 11. Custom Smooth Scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(3, 7, 18, 0.4);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #0ea5e9, #10b981);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-tricolor-stripe"></div>
+
+  <!-- Top Navigation Bar -->
+  <nav class="top-navbar">
+    <div class="navbar-content">
+      <a href="index.html" class="brand-group">
+        <div class="brand-icon">
+          <i class="fa-solid fa-print"></i>
+        </div>
+        <div>
+          <div class="brand-text-title">ई-मुद्रा सेवा केंद्र</div>
+          <div class="brand-text-sub">UNIVERSAL WEB SCANNER PRO • हार्डवेअर स्टुडिओ</div>
+        </div>
+      </a>
+
+      <!-- Live Bridge Status Pill -->
+      <div id="bridgePill" class="bridge-pill checking" onclick="openBridgeHelpModal()">
+        <span id="bridgeDot" class="status-dot checking"></span>
+        <span id="bridgeText">लोकल सर्व्हिस तपासत आहे...</span>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-nav" onclick="openCameraModal()">
+          <i class="fa-solid fa-camera"></i> <span>कॅमेरा स्कॅन</span>
+        </button>
+        <label class="btn-nav" style="cursor: pointer;">
+          <i class="fa-solid fa-file-import"></i> <span>इमेज/PDF जोडा</span>
+          <input type="file" id="fileImportInput" accept="image/*,application/pdf" multiple style="display: none;" onchange="handleFileImport(event)">
+        </label>
+        <a href="pdf-compressor.html" class="btn-nav" style="border-color: rgba(245, 158, 11, 0.4); color: #fbbf24;">
+          <i class="fa-solid fa-file-zipper"></i> <span>PDF Compressor</span>
+        </a>
+        <a href="index.html" class="btn-nav">
+          <i class="fa-solid fa-house"></i> <span>मुख्य पृष्ठ</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Scanner Studio Container -->
+  <main class="studio-container">
+
+    <!-- Top Hardware Control Deck -->
+    <section class="control-deck">
+      <div class="deck-group">
+        <!-- Scanner Selector -->
+        <div class="control-item">
+          <span class="control-label"><i class="fa-solid fa-microchip"></i> स्कॅनर निवडा</span>
+          <select id="scannerSelect" class="control-select">
+            <option value="AUTO">सर्व स्कॅनर आपोआप (Auto Detect)</option>
+          </select>
+        </div>
+
+        <!-- DPI Selector -->
+        <div class="control-item">
+          <span class="control-label"><i class="fa-solid fa-sliders"></i> DPI</span>
+          <select id="dpiSelect" class="control-select" style="min-width: 110px;">
+            <option value="100">100 DPI</option>
+            <option value="150">150 DPI</option>
+            <option value="200" selected>200 DPI (शासकीय)</option>
+            <option value="300">300 DPI</option>
+          </select>
+        </div>
+
+        <!-- Color Mode -->
+        <div class="control-item">
+          <span class="control-label"><i class="fa-solid fa-palette"></i> कलर</span>
+          <select id="colorModeSelect" class="control-select" style="min-width: 95px;">
+            <option value="color" selected>Color</option>
+            <option value="grayscale">Grayscale</option>
+            <option value="bw">B&W</option>
+          </select>
+        </div>
+
+        <!-- Windows Native Dialog Checkbox -->
+        <div class="control-item">
+          <label style="font-size: 0.74rem; font-weight: 600; color: #cbd5e1; display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap; margin: 0;">
+            <input type="checkbox" id="nativeDialogCheck" style="accent-color: var(--accent-cyan); width: 15px; height: 15px;">
+            <span>विंडोज डायलॉग</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="deck-group">
+        <!-- Test Mock Scan Button -->
+        <button class="btn-test-scan" onclick="triggerTestScan()" title="स्कॅनर प्रत्यक्ष नसताना टेस्टिंगसाठी नमुना स्कॅन करा">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> <span>नमुना टेस्ट पहा</span>
+        </button>
+
+        <!-- Big Scan Button -->
+        <button id="btnMainScan" class="btn-scan-main" onclick="triggerHardwareScan()" title="स्कॅनरवरून थेट कागद स्कॅन करा">
+          <i class="fa-solid fa-bolt" style="font-size: 1.15rem; color: #fef08a;"></i>
+          <span>कागद स्कॅन करा (SCAN NOW)</span>
+          <span style="background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.25); padding: 2px 7px; border-radius: 5px; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.5px; color: #a7f3d0;">SPACE</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Workspace Grid -->
+    <div class="studio-workspace">
+
+      <!-- Left Column: Thumbnails List -->
+      <aside class="studio-panel panel-thumbs">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fa-solid fa-layer-group text-cyan"></i>
+            <span>स्कॅन पाने</span>
+          </div>
+          <span id="pageCountBadge" class="panel-badge">० पाने</span>
+        </div>
+
+        <div id="thumbsContainer" class="thumbs-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <div style="margin-top: auto; display: flex; gap: 6px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06);">
+          <button class="btn-tool" style="flex: 1; justify-content: center;" onclick="clearAllPages()">
+            <i class="fa-solid fa-trash-can"></i> <span>सर्व हटवा</span>
+          </button>
+          <button class="btn-tool" style="flex: 1; justify-content: center;" onclick="addNewBlankPage()">
+            <i class="fa-solid fa-plus"></i> <span>नवीन पान</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Center Column: Live Document Stage & Viewer -->
+      <section class="studio-panel panel-viewer">
+        <div class="viewer-toolbar">
+          <div class="viewer-tools-group">
+            <button class="btn-tool" onclick="rotateCurrentPage(-90)" title="डावीकडे ९०° फिरवा">
+              <i class="fa-solid fa-rotate-left"></i> <span>डावीकडे</span>
+            </button>
+            <button class="btn-tool" onclick="rotateCurrentPage(90)" title="उजवीकडे ९०° फिरवा">
+              <i class="fa-solid fa-rotate-right"></i> <span>उजवीकडे</span>
+            </button>
+            <button class="btn-tool" onclick="rotateCurrentPage(180)" title="१८०° उलटा">
+              <i class="fa-solid fa-arrows-rotate"></i> <span>उलटा</span>
+            </button>
+          </div>
+
+          <div class="viewer-tools-group">
+            <span id="pageInfoTag" style="font-size: 0.8rem; font-weight: 700; color: #94a3b8; padding: 0 8px;">
+              कागदपत्र निवडा
+            </span>
+          </div>
+
+          <div class="viewer-tools-group">
+            <button class="btn-tool" onclick="zoomCanvas(0.15)" title="मोठे करा">
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </button>
+            <button class="btn-tool" onclick="zoomCanvas(-0.15)" title="लहान करा">
+              <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </button>
+            <button class="btn-tool" onclick="resetCanvasZoom()" title="मूळ आकार">
+              <i class="fa-solid fa-compress"></i> <span>Fit</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Top Crop Mode Active Notification Bar -->
+        <div id="cropModeBanner" class="crop-mode-banner" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 0.88rem; color: #38bdf8;">
+            <i class="fa-solid fa-crop-simple"></i>
+            <span id="cropBannerTitle">पासपोर्ट फोटो क्रॉप मोड: बॉक्स फिरवून फोटो सिलेक्ट करा</span>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-crop-action" onclick="applyCropSelection('add_page')">
+              <i class="fa-solid fa-check"></i> <span>क्रॉप करा</span>
+            </button>
+            <button class="btn-crop-action direct" onclick="applyCropSelection('download_direct')">
+              <i class="fa-solid fa-download"></i> <span>JPG सेव्ह</span>
+            </button>
+            <button class="btn-crop-action cancel" onclick="cancelCropMode()">
+              <i class="fa-solid fa-xmark"></i> <span>रद्द</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Stage Viewport -->
+        <div class="viewer-stage" id="viewerStage">
+
+          <!-- Viewfinder HUD Corner Accents -->
+          <div class="hud-corner tl"></div>
+          <div class="hud-corner tr"></div>
+          <div class="hud-corner bl"></div>
+          <div class="hud-corner br"></div>
+
+          <!-- Empty State -->
+          <div id="emptyStage" class="empty-viewer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; max-width: 520px; padding: 12px; z-index: 2;">
+            
+            <!-- Holographic Laser Scanner Animation Box -->
+            <div class="hologram-scanner-box">
+              <div class="hologram-laser-beam"></div>
+              <i class="fa-solid fa-file-shield hologram-doc-icon"></i>
+              <div style="position: absolute; bottom: 8px; font-size: 0.68rem; font-weight: 800; color: #38bdf8; letter-spacing: 1px; text-transform: uppercase;">
+                <i class="fa-solid fa-radar fa-spin" style="--fa-animation-duration: 4s;"></i> LASER SCANNER READY
+              </div>
+            </div>
+
+            <!-- Status Indicator Chip -->
+            <div style="display: inline-flex; align-items: center; gap: 7px; background: rgba(16, 185, 129, 0.14); border: 1px solid rgba(16, 185, 129, 0.45); padding: 4px 14px; border-radius: 20px; font-size: 0.76rem; color: #6ee7b7; font-weight: 700; margin-bottom: 8px; box-shadow: 0 0 14px rgba(16, 185, 129, 0.2);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; display: inline-block; animation: pulseGreen 1.5s infinite;"></span>
+              <span>हार्डवेअर स्कॅनर स्टुडिओ • कनेक्टेड</span>
+            </div>
+
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: #ffffff; margin: 0 0 6px 0; text-shadow: 0 0 15px rgba(255,255,255,0.25);">
+              कागदपत्र स्कॅन करण्यासाठी सज्ज
+            </h3>
+            <p style="font-size: 0.82rem; color: #94a3b8; line-height: 1.4; margin: 0 0 10px 0; max-width: 440px;">
+              खालील पर्यायांपैकी एक निवडा किंवा थेट वरील <strong>"कागद स्कॅन करा (Scan Now)"</strong> बटण दाबा.
+            </p>
+
+            <!-- 3 Quick Action Studio Tiles -->
+            <div class="quick-start-grid">
+              <div class="quick-tile emerald" onclick="triggerHardwareScan()" title="स्कॅनरवरून थेट स्कॅन करा (Shortcut: SPACE)">
+                <i class="fa-solid fa-bolt"></i>
+                <span>थेट स्कॅन करा</span>
+                <small style="font-size: 0.65rem; color: #6ee7b7;">[SPACE key]</small>
+              </div>
+
+              <div class="quick-tile" onclick="triggerTestScan()" title="स्कॅनर प्रत्यक्ष नसताना टेस्टिंगसाठी नमुना स्कॅन करा">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>टेस्ट नमुना पहा</span>
+                <small style="font-size: 0.65rem; color: #7dd3fc;">नमुना कागद</small>
+              </div>
+
+              <div class="quick-tile amber" onclick="document.getElementById('fileImportInput').click()" title="आधीचे फोटो किंवा PDF फाइल जोडा">
+                <i class="fa-solid fa-file-arrow-up"></i>
+                <span>इमेज / PDF जोडा</span>
+                <small style="font-size: 0.65rem; color: #fde68a;">PC वरून निवडा</small>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Active Canvas with Interactive Crop Layer -->
+          <div id="canvasCropContainer" class="canvas-crop-wrapper" style="display: none;">
+            <canvas id="mainCanvas"></canvas>
+
+            <!-- Crop Overlay Layer -->
+            <div id="cropOverlay" class="crop-overlay-layer" style="display: none;">
+              <div id="cropBox" class="crop-box-interactive">
+                <div class="crop-grid-lines">
+                  <div class="crop-grid-cell"></div><div class="crop-grid-cell"></div><div class="crop-grid-cell"></div>
+                  <div class="crop-grid-cell"></div><div class="crop-grid-cell"></div><div class="crop-grid-cell"></div>
+                  <div class="crop-grid-cell"></div><div class="crop-grid-cell"></div><div class="crop-grid-cell"></div>
+                </div>
+
+                <!-- 4 Resize Handles -->
+                <div class="crop-handle tl" data-handle="tl"></div>
+                <div class="crop-handle tr" data-handle="tr"></div>
+                <div class="crop-handle bl" data-handle="bl"></div>
+                <div class="crop-handle br" data-handle="br"></div>
+
+                <!-- Dimension Badge -->
+                <div id="cropBadge" class="crop-badge-pill">
+                  १६० × २१२ px (पासपोर्ट) • < ५० KB
+                </div>
+
+                <!-- Floating Quick Action Buttons -->
+                <div class="crop-quick-bar">
+                  <button class="btn-crop-action" onclick="applyCropSelection('add_page')">
+                    <i class="fa-solid fa-check"></i> <span>क्रॉप करा</span>
+                  </button>
+                  <button class="btn-crop-action direct" onclick="applyCropSelection('download_direct')">
+                    <i class="fa-solid fa-download"></i> <span>थेट JPG</span>
+                  </button>
+                  <button class="btn-crop-action cancel" onclick="cancelCropMode()">
+                    <i class="fa-solid fa-xmark"></i> <span>रद्द करा</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scanning Overlay Beam -->
+          <div id="scanOverlay" class="scan-loading-overlay">
+            <div class="scan-beam-loader">
+              <div class="scan-beam-line"></div>
+            </div>
+            <div style="text-align: center;">
+              <div id="scanStatusTitle" style="font-size: 1.05rem; font-weight: 800; color: #38bdf8;">स्कॅनर कागद स्कॅन करत आहे...</div>
+              <div style="font-size: 0.82rem; color: #94a3b8; margin-top: 4px;">Canon / HP / Epson हार्डवेअर चालू आहे, कृपया थांबा</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Document Enhancements & Government Presets -->
+      <aside class="studio-panel panel-export">
+        <!-- Smart Document Filters -->
+        <div>
+          <div class="section-title">
+            <i class="fa-solid fa-wand-magic-sparkles text-cyan"></i>
+            <span>डॉक्युमेंट स्मार्ट फिल्टर्स</span>
+          </div>
+          <div class="filters-grid">
+            <button id="filter-original" class="btn-filter active" onclick="applyFilter('original')">
+              <i class="fa-solid fa-image"></i> <span>ओरिजिनल</span>
+            </button>
+            <button id="filter-magic" class="btn-filter" onclick="applyFilter('magic_clean')" title="पांढरी पार्श्वभूमी व ठळक काळी शाई">
+              <i class="fa-solid fa-broom"></i> <span>Magic Clean</span>
+            </button>
+            <button id="filter-gray" class="btn-filter" onclick="applyFilter('grayscale')">
+              <i class="fa-solid fa-circle-half-stroke"></i> <span>Grayscale</span>
+            </button>
+            <button id="filter-contrast" class="btn-filter" onclick="applyFilter('boost_contrast')" title="अंधुक स्वाक्षरी व स्टॅम्प ठळक करा">
+              <i class="fa-solid fa-bolt"></i> <span>ठळक अक्षरे</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Crop Tools -->
+        <div>
+          <div class="section-title">
+            <i class="fa-solid fa-crop text-amber"></i>
+            <span>शासकीय फोटो व स्वाक्षरी सिलेक्ट व क्रॉप</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button id="btnCropPassport" class="btn-filter" onclick="startCropMode('passport')" style="width: 100%; justify-content: space-between; border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.12);">
+              <span><i class="fa-solid fa-user text-cyan"></i> <strong>पासपोर्ट फोटो सिलेक्ट व क्रॉप</strong></span>
+              <span style="font-size: 0.72rem; color: #34d399; font-weight: 800;">160×212 px (< 50 KB)</span>
+            </button>
+            <button id="btnCropSignature" class="btn-filter" onclick="startCropMode('signature')" style="width: 100%; justify-content: space-between;">
+              <span><i class="fa-solid fa-signature text-emerald"></i> <strong>स्वाक्षरी सिलेक्ट व क्रॉप</strong></span>
+              <span style="font-size: 0.72rem; color: #34d399; font-weight: 800;">256×64 px (< 20 KB)</span>
+            </button>
+            <button id="btnCropFree" class="btn-filter" onclick="startCropMode('free')" style="width: 100%; justify-content: space-between;">
+              <span><i class="fa-solid fa-vector-square text-amber"></i> <strong>सानुकूल / फ्री क्रॉप (Custom)</strong></span>
+              <span style="font-size: 0.72rem; color: #94a3b8;">मर्जीनुसार साईझ</span>
+            </button>
+            <div style="background: rgba(56, 189, 248, 0.08); border: 1px dashed rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 6px 10px; font-size: 0.75rem; color: #94a3b8; line-height: 1.4;">
+              💡 <strong>कसे वापरावे:</strong> वरील बटण दाबून कागदावर येणारा निळा बॉक्स फोटोभोवती ड्रॅग करा, कोपऱ्यातून साईझ ॲडजस्ट करा आणि 'क्रॉप करा' दाबा.
+            </div>
+          </div>
+        </div>
+
+        <!-- Government PDF Exports -->
+        <div>
+          <div class="section-title">
+            <i class="fa-solid fa-file-pdf text-emerald"></i>
+            <span>थेट शासकीय PDF एक्सपोर्ट</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            
+            <!-- Aaple Sarkar Card -->
+            <div class="gov-export-card">
+              <div class="gov-card-head">
+                <span class="gov-card-title">आपले सरकार PDF</span>
+                <span class="gov-badge">< २५० KB (हार्ड लॉक)</span>
+              </div>
+              <div class="gov-desc">
+                तहसील, जात, उत्पन्न व रहिवासी दाखल्यासाठी अचूक २५० KB च्या आत सेव्ह होते.
+              </div>
+              <button class="btn-gov-download" onclick="exportGovernmentPdf(250)">
+                <i class="fa-solid fa-download"></i> <span>आपले सरकार PDF डाऊनलोड</span>
+              </button>
+            </div>
+
+            <!-- MahaDBT Card -->
+            <div class="gov-export-card dbt">
+              <div class="gov-card-head">
+                <span class="gov-card-title">महाडीबीटी PDF</span>
+                <span class="gov-badge blue">< ५०० KB (हार्ड लॉक)</span>
+              </div>
+              <div class="gov-desc">
+                महाडीबीटी स्कॉलरशिप व शेतकरी योजनांसाठी ५०० KB मल्टिपेज PDF.
+              </div>
+              <button class="btn-gov-download blue" onclick="exportGovernmentPdf(500)">
+                <i class="fa-solid fa-download"></i> <span>महाडीबीटी PDF डाऊनलोड</span>
+              </button>
+            </div>
+
+            <!-- Manual Target Size Compressor Card -->
+            <div class="gov-export-card custom" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(15, 23, 42, 0.85) 100%); border: 1px solid rgba(168, 85, 247, 0.45); border-radius: 8px; padding: 6px 10px; display: flex; flex-direction: column; gap: 3px;">
+              <div class="gov-card-head">
+                <span class="gov-card-title" style="color: #c084fc;">
+                  <i class="fa-solid fa-bullseye" style="color: #a855f7;"></i> मॅन्युअल साईझ (Custom KB)
+                </span>
+                <span class="gov-badge" style="background: rgba(168, 85, 247, 0.2); color: #d8b4fe; border-color: rgba(168, 85, 247, 0.4);">
+                  हवी ती साईझ
+                </span>
+              </div>
+              <div class="gov-desc">
+                हवी ती साईझ KB मध्ये टाका व अचूक त्या मर्यादेत कम्प्रेश करा:
+              </div>
+              <div style="display: flex; gap: 4px; align-items: center; margin-top: 2px;">
+                <div style="position: relative; flex: 1; display: flex; align-items: center;">
+                  <input type="number" id="customTargetKbInput" value="200" min="15" max="10000" step="5" placeholder="200" 
+                    style="width: 100%; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(168, 85, 247, 0.4); color: #ffffff; padding: 4px 30px 4px 8px; border-radius: 5px; font-size: 0.8rem; font-weight: 700; outline: none;">
+                  <span style="position: absolute; right: 6px; font-size: 0.68rem; font-weight: 800; color: #c084fc; pointer-events: none;">KB</span>
+                </div>
+                <button type="button" class="chip-kb" onclick="setCustomTargetKb(100)">100</button>
+                <button type="button" class="chip-kb" onclick="setCustomTargetKb(200)">200</button>
+                <button type="button" class="chip-kb" onclick="setCustomTargetKb(300)">300</button>
+                <button type="button" class="chip-kb" onclick="setCustomTargetKb(500)">500</button>
+              </div>
+              <div style="display: flex; gap: 5px; margin-top: 3px;">
+                <button class="btn-gov-download" style="flex: 1; background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); box-shadow: 0 3px 10px rgba(147, 51, 234, 0.35);" onclick="exportCustomTargetPdf()">
+                  <i class="fa-solid fa-file-pdf"></i> <span>हार्ड कम्प्रेश PDF डाऊनलोड</span>
+                </button>
+                <button class="btn-tool" style="padding: 4px 8px; font-size: 0.74rem;" onclick="exportCustomTargetJpg()" title="चालू पानाचा JPG या साईझमध्ये सेव्ह करा">
+                  <i class="fa-solid fa-file-image"></i> <span>JPG</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Standard Download Options -->
+            <div style="display: flex; gap: 6px; margin-top: 2px;">
+              <button class="btn-tool" style="flex: 1; justify-content: center;" onclick="exportOriginalPdf()">
+                <i class="fa-solid fa-file-pdf"></i> <span>HQ PDF</span>
+              </button>
+              <button class="btn-tool" style="flex: 1; justify-content: center;" onclick="downloadCurrentImage()">
+                <i class="fa-solid fa-file-image"></i> <span>JPG सेव्ह</span>
+              </button>
+              <button class="btn-tool" style="flex: 1; justify-content: center;" onclick="downloadAllAsZip()">
+                <i class="fa-solid fa-file-zipper"></i> <span>ZIP</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+  <!-- Bridge Setup / Help Modal -->
+  <div id="bridgeModal" class="modal-overlay" onclick="closeModalOnOverlay(event, 'bridgeModal')">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-title">
+          <i class="fa-solid fa-microchip text-cyan"></i>
+          <span>हार्डवेअर स्कॅनर लोकल ब्रिज मार्गदर्शन</span>
+        </div>
+        <button class="btn-modal-close" onclick="closeModal('bridgeModal')">&times;</button>
+      </div>
+
+      <div style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.5;">
+        ब्राउझरमधून थेट Canon, HP, Epson किंवा Brother स्कॅनर चालवण्यासाठी संगणकावर लहान <strong>लोकल ब्रिज सर्व्हिस</strong> चालू असावी लागते.
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div class="setup-step">
+          <div class="step-number">१</div>
+          <div>
+            <div style="font-weight: 700; color: #ffffff;">'Start_Scanner_Bridge.bat' सुरू करा</div>
+            <div style="font-size: 0.8rem; color: #94a3b8;">प्रोजेक्ट फोल्डरमधील <code>Start_Scanner_Bridge.bat</code> फाईलवर डबल-क्लिक करा.</div>
+          </div>
+        </div>
+
+        <div class="setup-step">
+          <div class="step-number">२</div>
+          <div>
+            <div style="font-weight: 700; color: #ffffff;">स्कॅनर USB किंवा Wi-Fi ने जोडा</div>
+            <div style="font-size: 0.8rem; color: #94a3b8;">तुमचा Canon, HP, Epson प्रिंटर चालू असल्याची खात्री करा.</div>
+          </div>
+        </div>
+
+        <div class="setup-step">
+          <div class="step-number">३</div>
+          <div>
+            <div style="font-weight: 700; color: #ffffff;">'कागद स्कॅन करा' बटण दाबा</div>
+            <div style="font-size: 0.8rem; color: #94a3b8;">स्कॅन झालेला कागद एका सेकंदात थेट ब्राऊझर स्क्रीनवर लोड होईल!</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px;">
+        <button class="btn-test-scan" onclick="checkBridgeConnection(true)">
+          <i class="fa-solid fa-arrows-rotate"></i> <span>पुन्हा तपासा (Retry)</span>
+        </button>
+        <button class="btn-scan-main" style="padding: 8px 18px; font-size: 0.9rem;" onclick="closeModal('bridgeModal')">
+          <span>समजले</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Camera Scanner Modal -->
+  <div id="cameraModal" class="modal-overlay" onclick="closeModalOnOverlay(event, 'cameraModal')">
+    <div class="modal-box" style="max-width: 640px;">
+      <div class="modal-head">
+        <div class="modal-title">
+          <i class="fa-solid fa-camera text-cyan"></i>
+          <span>कॅमेरा डॉक्युमेंट स्कॅनर</span>
+        </div>
+        <button class="btn-modal-close" onclick="closeCameraModal()">&times;</button>
+      </div>
+
+      <div style="position: relative; width: 100%; height: 360px; background: #000; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+        <video id="cameraVideo" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+        <!-- Document Guide Box -->
+        <div style="position: absolute; width: 85%; height: 85%; border: 2px dashed rgba(56, 189, 248, 0.7); border-radius: 8px; pointer-events: none; box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.35);"></div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <button class="btn-tool" onclick="switchCamera()">
+          <i class="fa-solid fa-camera-rotate"></i> <span>कॅमेरा बदला</span>
+        </button>
+        <button class="btn-scan-main" onclick="captureCameraPhoto()">
+          <i class="fa-solid fa-circle-dot"></i> <span>फोटो कॅप्चर करा</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Box -->
+  <div id="toastPopup" class="toast-popup">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-emerald"></i>
+    <span id="toastMsg">ऑपरेशन यशस्वी</span>
+  </div>
+
+  <!-- Audio Chime Generator using Web Audio API -->
+  <script>
+    // Web Audio Synthesizer for Scanners
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(type = 'start') {
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'start') {
+          osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.15);
+        } else if (type === 'success') {
+          osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+          osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.12);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.28);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.28);
+        } else if (type === 'error') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+          osc.frequency.setValueAtTime(160, audioCtx.currentTime + 0.15);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.25);
+        }
+      } catch (e) {
+        // Audio policy ignore
+      }
+    }
+  </script>
+
+  <!-- Core Studio Application Logic -->
+  <script>
+    const BRIDGE_URL = "http://127.0.0.1:8989";
+    
+    // Application State
+    let state = {
+      isBridgeConnected: false,
+      detectedScanners: [],
+      pages: [],          // Array of { rawImage: Image, currentCanvas: Canvas, rotation: 0, filter: 'original' }
+      activePageIndex: -1,
+      zoomLevel: 1.0,
+      isScanning: false,
+      currentFilter: 'original',
+      cameraStream: null,
+      facingMode: 'environment'
+    };
+
+    // DOM Elements
+    const bridgePill = document.getElementById('bridgePill');
+    const bridgeDot = document.getElementById('bridgeDot');
+    const bridgeText = document.getElementById('bridgeText');
+    const scannerSelect = document.getElementById('scannerSelect');
+    const thumbsContainer = document.getElementById('thumbsContainer');
+    const pageCountBadge = document.getElementById('pageCountBadge');
+    const emptyStage = document.getElementById('emptyStage');
+    const mainCanvas = document.getElementById('mainCanvas');
+    const scanOverlay = document.getElementById('scanOverlay');
+    const scanStatusTitle = document.getElementById('scanStatusTitle');
+    const pageInfoTag = document.getElementById('pageInfoTag');
+    const btnMainScan = document.getElementById('btnMainScan');
+
+    // Interactive Crop DOM Elements
+    const canvasCropContainer = document.getElementById('canvasCropContainer');
+    const cropOverlay = document.getElementById('cropOverlay');
+    const cropBox = document.getElementById('cropBox');
+    const cropBadge = document.getElementById('cropBadge');
+    const cropModeBanner = document.getElementById('cropModeBanner');
+    const cropBannerTitle = document.getElementById('cropBannerTitle');
+    const btnCropPassport = document.getElementById('btnCropPassport');
+    const btnCropSignature = document.getElementById('btnCropSignature');
+    const btnCropFree = document.getElementById('btnCropFree');
+
+    // =========================================================================
+    // 1. LOCAL BRIDGE COMMUNICATION & SCANNER DETECTION
+    // =========================================================================
+
+    async function checkBridgeConnection(showToastAlert = false) {
+      bridgePill.className = "bridge-pill checking";
+      bridgeDot.className = "status-dot checking";
+      bridgeText.textContent = "लोकल सर्व्हिस तपासत आहे...";
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+        const res = await fetch(`${BRIDGE_URL}/api/status`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          state.isBridgeConnected = true;
+          bridgePill.className = "bridge-pill connected";
+          bridgeDot.className = "status-dot connected";
+          bridgeText.textContent = "हार्डवेअर ब्रिज सज्ज (WIA 🟢)";
+          if (showToastAlert) showToast("लोकल स्कॅनर ब्रिज कनेक्ट झाला!", "success");
+          
+          // Refresh connected hardware scanners
+          await fetchConnectedScanners();
+          return true;
+        }
+      } catch (err) {
+        state.isBridgeConnected = false;
+        bridgePill.className = "bridge-pill disconnected";
+        bridgeDot.className = "status-dot disconnected";
+        bridgeText.textContent = "ब्रिज डिस्कनेक्टेड (मदत पहा)";
+        if (showToastAlert) showToast("लोकल ब्रिज सापडला नाही. कृपया Start_Scanner_Bridge.bat सुरू करा.", "error");
+      }
+      return false;
+    }
+
+    async function fetchConnectedScanners() {
+      try {
+        const res = await fetch(`${BRIDGE_URL}/api/scanners`);
+        if (res.ok) {
+          const data = await res.json();
+          state.detectedScanners = data.scanners || [];
+          
+          // Populate Scanner Dropdown
+          scannerSelect.innerHTML = `<option value="AUTO">सर्व स्कॅनर आपोआप (Auto Detect)</option>`;
+          if (state.detectedScanners.length > 0) {
+            state.detectedScanners.forEach(s => {
+              const opt = document.createElement('option');
+              opt.value = s.id;
+              opt.textContent = `🖨️ ${s.name}`;
+              scannerSelect.appendChild(opt);
+            });
+            showToast(`${state.detectedScanners.length} हार्डवेअर स्कॅनर डिटेक्ट झाले!`, "success");
+          }
+        }
+      } catch (e) {
+        console.warn("Error listing scanners:", e);
+      }
+    }
+
+    // =========================================================================
+    // 2. HARDWARE & TEST SCANNING
+    // =========================================================================
+
+    async function triggerHardwareScan() {
+      if (state.isScanning) return;
+
+      // If bridge is not connected, notify user
+      if (!state.isBridgeConnected) {
+        const connectedNow = await checkBridgeConnection(false);
+        if (!connectedNow) {
+          openBridgeHelpModal();
+          showToast("कृपया प्रथम Start_Scanner_Bridge.bat सुरू करा!", "error");
+          return;
+        }
+      }
+
+      const deviceId = scannerSelect.value;
+      const dpi = parseInt(document.getElementById('dpiSelect').value, 10);
+      const colorMode = document.getElementById('colorModeSelect').value;
+      const useNativeDialog = document.getElementById('nativeDialogCheck').checked;
+
+      startScanAnimation("स्कॅनर कागद स्कॅन करत आहे... कृपया थांबा");
+      playBeep('start');
+
+      try {
+        const res = await fetch(`${BRIDGE_URL}/api/scan`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            device_id: deviceId,
+            dpi: dpi,
+            color_mode: colorMode,
+            use_native_dialog: useNativeDialog
+          })
+        });
+
+        const data = await res.json();
+        stopScanAnimation();
+
+        if (data.cancelled) {
+          showToast("स्कॅनिंग युझरने रद्द केले.", "info");
+          return;
+        }
+
+        if (data.success && data.image_data) {
+          await addScannedPageFromDataUrl(data.image_data);
+          playBeep('success');
+          showToast(`कागद यशस्वीरीत्या स्कॅन झाला! (${data.width}×${data.height} px)`, "success");
+        } else {
+          playBeep('error');
+          showToast(data.error || "स्कॅनिंग अयशस्वी. स्कॅनर चालू असल्याची खात्री करा.", "error");
+        }
+      } catch (err) {
+        stopScanAnimation();
+        playBeep('error');
+        showToast("स्कॅनरशी संपर्क तुटला: " + err.message, "error");
+      }
+    }
+
+    async function triggerTestScan() {
+      if (state.isScanning) return;
+      startScanAnimation("नमुना टेस्ट स्कॅन लोड होत आहे...");
+      playBeep('start');
+
+      const dpi = parseInt(document.getElementById('dpiSelect').value, 10);
+      const pageNum = state.pages.length + 1;
+
+      // If local bridge is connected, fetch simulated scan from bridge
+      if (state.isBridgeConnected) {
+        try {
+          const res = await fetch(`${BRIDGE_URL}/api/test_scan?dpi=${dpi}&page=${pageNum}`);
+          if (res.ok) {
+            const data = await res.json();
+            stopScanAnimation();
+            if (data.success && data.image_data) {
+              await addScannedPageFromDataUrl(data.image_data);
+              playBeep('success');
+              showToast(`शासकीय नमुना पान ${pageNum} यशस्वीपणे लोड झाले!`, "success");
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn("Bridge test scan fallback to client canvas:", e);
+        }
+      }
+
+      // In-browser fallback test page generator (zero dependency!)
+      setTimeout(async () => {
+        const testDataUrl = generateInBrowserTestDoc(pageNum, dpi);
+        stopScanAnimation();
+        await addScannedPageFromDataUrl(testDataUrl);
+        playBeep('success');
+        showToast(`शासकीय नमुना टेस्ट पान ${pageNum} लोड झाले!`, "success");
+      }, 600);
+    }
+
+    function generateInBrowserTestDoc(pageNumber, dpi) {
+      const w = Math.round(8.27 * dpi);
+      const h = Math.round(11.69 * dpi);
+      const c = document.createElement('canvas');
+      c.width = w;
+      c.height = h;
+      const ctx = c.getContext('2d');
+
+      // Paper background with faint texture
+      ctx.fillStyle = '#fdfefe';
+      ctx.fillRect(0, 0, w, h);
+
+      // Border lines
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#0f172a';
+      ctx.strokeRect(30, 30, w - 60, h - 60);
+
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#38bdf8';
+      ctx.strokeRect(38, 38, w - 76, h - 76);
+
+      // Header Box
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(45, 45, w - 90, 100);
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = `bold ${Math.round(20 * (dpi / 150))}px 'Mukta', sans-serif`;
+      ctx.fillText(`ई-मुद्रा सेवा केंद्र • शासकीय कागदपत्र स्कॅन (पान क्र. ${pageNumber})`, 65, 85);
+
+      ctx.fillStyle = '#0284c7';
+      ctx.font = `500 ${Math.round(13 * (dpi / 150))}px 'Mukta', sans-serif`;
+      ctx.fillText(`रिझोल्युशन: ${dpi} DPI • आपले सरकार व महाडीबीटीसाठी ऑप्टिमाइझ्ड`, 65, 120);
+
+      // Body lines
+      ctx.fillStyle = '#334155';
+      ctx.font = `${Math.round(14 * (dpi / 150))}px 'Mukta', sans-serif`;
+      let y = 190;
+      for (let i = 1; i <= 10; i++) {
+        ctx.fillText(`शासकीय नोंद क्र. ${pageNumber}-${i} : अर्जदार पडताळणी, आधार व रहिवासी माहिती तपासली...`, 65, y);
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(65, y + 15);
+        ctx.lineTo(w - 70, y + 15);
+        ctx.stroke();
+        y += 50 * (dpi / 150);
+      }
+
+      // Passport Photo Box Placeholder
+      const photoW = Math.round(160 * (dpi / 150));
+      const photoH = Math.round(212 * (dpi / 150));
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(w - photoW - 65, 180, photoW, photoH);
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(w - photoW - 63, 182, photoW - 4, photoH - 4);
+      ctx.fillStyle = '#64748b';
+      ctx.font = `${Math.round(12 * (dpi / 150))}px 'Mukta', sans-serif`;
+      ctx.fillText("पासपोर्ट फोटो", w - photoW - 35, 280);
+      ctx.fillText("(160x212)", w - photoW - 30, 305);
+
+      // Bottom Stamp Box
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(65, h - 160, 220, 90);
+      ctx.fillStyle = '#059669';
+      ctx.font = `bold ${Math.round(13 * (dpi / 150))}px 'Mukta', sans-serif`;
+      ctx.fillText("ई-मुद्रा डिजिटल स्कॅन", 85, h - 120);
+      ctx.font = `600 ${Math.round(11 * (dpi / 150))}px 'Mukta', sans-serif`;
+      ctx.fillText("प्रमाणित शासकीय प्रत", 95, h - 95);
+
+      return c.toDataURL('image/jpeg', 0.9);
+    }
+
+    function startScanAnimation(msg) {
+      state.isScanning = true;
+      scanStatusTitle.textContent = msg;
+      scanOverlay.style.display = 'flex';
+      btnMainScan.disabled = true;
+    }
+
+    function stopScanAnimation() {
+      state.isScanning = false;
+      scanOverlay.style.display = 'none';
+      btnMainScan.disabled = false;
+    }
+
+    // =========================================================================
+    // 3. PAGE MANAGEMENT & RENDERING
+    // =========================================================================
+
+    function addScannedPageFromDataUrl(dataUrl) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const pageObj = {
+            rawImage: img,
+            dataUrl: dataUrl,
+            rotation: 0,
+            filter: 'original',
+            width: img.width,
+            height: img.height
+          };
+          state.pages.push(pageObj);
+          renderThumbnails();
+          selectPage(state.pages.length - 1);
+          resolve();
+        };
+        img.src = dataUrl;
+      });
+    }
+
+    function renderThumbnails() {
+      thumbsContainer.innerHTML = '';
+      pageCountBadge.textContent = `${state.pages.length} पाने`;
+
+      if (state.pages.length === 0) {
+        thumbsContainer.innerHTML = `
+          <div style="text-align: center; color: #64748b; font-size: 0.8rem; padding: 20px 8px;">
+            <i class="fa-regular fa-images" style="font-size: 2rem; opacity: 0.4; margin-bottom: 8px;"></i>
+            <div>अद्याप कोणतीही पाने नाहीत</div>
+          </div>
+        `;
+        emptyStage.style.display = 'block';
+        mainCanvas.style.display = 'none';
+        pageInfoTag.textContent = 'कागदपत्र निवडा';
+        return;
+      }
+
+      state.pages.forEach((page, idx) => {
+        const card = document.createElement('div');
+        card.className = `thumb-card ${idx === state.activePageIndex ? 'active' : ''}`;
+        card.onclick = () => selectPage(idx);
+
+        card.innerHTML = `
+          <div class="thumb-img-wrap">
+            <img src="${page.dataUrl}" style="transform: rotate(${page.rotation}deg);" alt="Page ${idx + 1}">
+          </div>
+          <div class="thumb-meta">
+            <span style="font-weight: 700; color: #f1f5f9;">पान ${idx + 1}</span>
+            <div class="thumb-actions" onclick="event.stopPropagation()">
+              <button class="btn-thumb-action" onclick="movePage(${idx}, -1)" title="मागे घ्या">
+                <i class="fa-solid fa-arrow-up"></i>
+              </button>
+              <button class="btn-thumb-action" onclick="movePage(${idx}, 1)" title="पुढे घ्या">
+                <i class="fa-solid fa-arrow-down"></i>
+              </button>
+              <button class="btn-thumb-action delete" onclick="deletePage(${idx})" title="हटवा">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        thumbsContainer.appendChild(card);
+      });
+    }
+
+    function selectPage(index) {
+      if (index < 0 || index >= state.pages.length) return;
+      state.activePageIndex = index;
+      renderThumbnails();
+      renderActivePageToCanvas();
+      resetCanvasZoom();
+    }
+
+    function renderActivePageToCanvas() {
+      if (state.activePageIndex < 0 || state.activePageIndex >= state.pages.length) {
+        emptyStage.style.display = 'block';
+        if (canvasCropContainer) canvasCropContainer.style.display = 'none';
+        mainCanvas.style.display = 'none';
+        cancelCropMode();
+        return;
+      }
+
+      emptyStage.style.display = 'none';
+      if (canvasCropContainer) canvasCropContainer.style.display = 'inline-block';
+      mainCanvas.style.display = 'block';
+
+      const page = state.pages[state.activePageIndex];
+      pageInfoTag.textContent = `पान ${state.activePageIndex + 1} / ${state.pages.length} (${page.width}×${page.height} px • ${page.filter.toUpperCase()})`;
+
+      // Sync active filter button UI
+      document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`filter-${page.filter === 'magic_clean' ? 'magic' : page.filter === 'boost_contrast' ? 'contrast' : page.filter === 'grayscale' ? 'gray' : 'original'}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const ctx = mainCanvas.getContext('2d');
+      const rot = page.rotation % 360;
+
+      // Set canvas dimension based on rotation
+      if (rot === 90 || rot === 270) {
+        mainCanvas.width = page.rawImage.height;
+        mainCanvas.height = page.rawImage.width;
+      } else {
+        mainCanvas.width = page.rawImage.width;
+        mainCanvas.height = page.rawImage.height;
+      }
+
+      ctx.save();
+      // Handle Rotation
+      ctx.translate(mainCanvas.width / 2, mainCanvas.height / 2);
+      ctx.rotate((rot * Math.PI) / 180);
+      ctx.drawImage(page.rawImage, -page.rawImage.width / 2, -page.rawImage.height / 2);
+      ctx.restore();
+
+      // Apply In-Browser Filters (Pixel manipulation on Canvas)
+      applyCanvasFilterEffects(ctx, mainCanvas.width, mainCanvas.height, page.filter);
+
+      // If crop mode is currently active, ensure crop box stays inside canvas bounds
+      if (cropState.isActive) {
+        const cW = canvasCropContainer.clientWidth || mainCanvas.offsetWidth;
+        const cH = canvasCropContainer.clientHeight || mainCanvas.offsetHeight;
+        if (cropState.boxX + cropState.boxW > cW) cropState.boxX = Math.max(0, cW - cropState.boxW);
+        if (cropState.boxY + cropState.boxH > cH) cropState.boxY = Math.max(0, cH - cropState.boxH);
+        updateCropBoxDOM();
+      }
+    }
+
+    // =========================================================================
+    // 4. SMART DOCUMENT FILTERS (CANVAS PIXEL PROCESSING)
+    // =========================================================================
+
+    function applyFilter(filterName) {
+      if (state.activePageIndex < 0) return;
+      state.pages[state.activePageIndex].filter = filterName;
+      renderActivePageToCanvas();
+      showToast(`फिल्टर लागू केला: ${filterName.toUpperCase()}`, "info");
+    }
+
+    function applyCanvasFilterEffects(ctx, w, h, filter) {
+      if (filter === 'original') return;
+
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const data = imgData.data;
+
+      if (filter === 'grayscale') {
+        for (let i = 0; i < data.length; i += 4) {
+          const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+          data[i] = gray;
+          data[i + 1] = gray;
+          data[i + 2] = gray;
+        }
+      } else if (filter === 'boost_contrast') {
+        // High Contrast & Ink Darkener
+        const factor = (259 * (60 + 255)) / (255 * (259 - 60));
+        for (let i = 0; i < data.length; i += 4) {
+          let r = factor * (data[i] - 128) + 128;
+          let g = factor * (data[i + 1] - 128) + 128;
+          let b = factor * (data[i + 2] - 128) + 128;
+          data[i] = Math.min(255, Math.max(0, r));
+          data[i + 1] = Math.min(255, Math.max(0, g));
+          data[i + 2] = Math.min(255, Math.max(0, b));
+        }
+      } else if (filter === 'magic_clean') {
+        // Document Whitening: Cleans gray/yellow paper tints, pushes background to pure white, deepens text
+        for (let i = 0; i < data.length; i += 4) {
+          const lum = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+          if (lum > 165) {
+            // Whitening threshold
+            data[i] = 255;
+            data[i + 1] = 255;
+            data[i + 2] = 255;
+          } else {
+            // Darken ink
+            const darkened = Math.max(0, lum * 0.7);
+            data[i] = darkened;
+            data[i + 1] = darkened;
+            data[i + 2] = darkened;
+          }
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    // =========================================================================
+    // 5. INTERACTIVE CROP ENGINE (PASSPORT PHOTO, SIGNATURE & CUSTOM CROP)
+    // =========================================================================
+
+    let cropState = {
+      isActive: false,
+      mode: 'passport',        // 'passport', 'signature', 'free'
+      aspectRatio: 160 / 212, // width / height
+      targetW: 160,
+      targetH: 212,
+      maxKb: 48,
+      boxX: 40,
+      boxY: 40,
+      boxW: 130,
+      boxH: 172,
+      isDragging: false,
+      isResizing: false,
+      activeHandle: null,
+      dragStartX: 0,
+      dragStartY: 0,
+      initialBoxX: 0,
+      initialBoxY: 0,
+      initialBoxW: 0,
+      initialBoxH: 0
+    };
+
+    function startCropMode(mode = 'passport') {
+      if (state.activePageIndex < 0 || state.pages.length === 0) {
+        showToast("कृपया आधी कोणतेही पान स्कॅन किंवा सिलेक्ट करा!", "error");
+        return;
+      }
+
+      resetCanvasZoom();
+
+      cropState.isActive = true;
+      cropState.mode = mode;
+
+      // Configure preset parameters
+      if (mode === 'passport') {
+        cropState.aspectRatio = 160 / 212; // ~0.7547
+        cropState.targetW = 160;
+        cropState.targetH = 212;
+        cropState.maxKb = 48;
+        if (cropBannerTitle) {
+          cropBannerTitle.innerHTML = `<i class="fa-solid fa-user"></i> <span>पासपोर्ट फोटो क्रॉप मोड: निळा बॉक्स फोटोवर ड्रॅग करा (१६० × २१२ px • < ५० KB)</span>`;
+        }
+      } else if (mode === 'signature') {
+        cropState.aspectRatio = 256 / 64;  // 4.0
+        cropState.targetW = 256;
+        cropState.targetH = 64;
+        cropState.maxKb = 19;
+        if (cropBannerTitle) {
+          cropBannerTitle.innerHTML = `<i class="fa-solid fa-signature"></i> <span>स्वाक्षरी क्रॉप मोड: निळा बॉक्स स्वाक्षरीवर ड्रॅग करा (२५६ × ६४ px • < २० KB)</span>`;
+        }
+      } else {
+        cropState.aspectRatio = null;      // Free crop
+        cropState.targetW = 0;
+        cropState.targetH = 0;
+        cropState.maxKb = 100;
+        if (cropBannerTitle) {
+          cropBannerTitle.innerHTML = `<i class="fa-solid fa-vector-square"></i> <span>सानुकूल / फ्री क्रॉप मोड: हवा तो भाग सिलेक्ट करा</span>`;
+        }
+      }
+
+      // Sync button styles in right panel
+      [btnCropPassport, btnCropSignature, btnCropFree].forEach(b => {
+        if (b) {
+          b.classList.remove('active');
+          b.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+        }
+      });
+      const activeBtn = mode === 'passport' ? btnCropPassport : mode === 'signature' ? btnCropSignature : btnCropFree;
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.borderColor = 'var(--accent-cyan)';
+      }
+
+      // Compute initial box dimensions based on displayed canvas size
+      const containerW = (canvasCropContainer && canvasCropContainer.clientWidth) || mainCanvas.offsetWidth || 300;
+      const containerH = (canvasCropContainer && canvasCropContainer.clientHeight) || mainCanvas.offsetHeight || 420;
+
+      let initW, initH, initX, initY;
+
+      if (mode === 'passport') {
+        initW = Math.max(100, Math.min(Math.round(containerW * 0.32), 220));
+        initH = Math.round(initW / cropState.aspectRatio);
+        // Default to top-right where passport photos usually reside on forms
+        initX = Math.max(10, containerW - initW - 24);
+        initY = 30;
+      } else if (mode === 'signature') {
+        initW = Math.max(140, Math.min(Math.round(containerW * 0.5), 280));
+        initH = Math.round(initW / cropState.aspectRatio);
+        initX = 30;
+        initY = Math.max(10, containerH - initH - 40);
+      } else {
+        initW = Math.round(containerW * 0.5);
+        initH = Math.round(containerH * 0.5);
+        initX = Math.round((containerW - initW) / 2);
+        initY = Math.round((containerH - initH) / 2);
+      }
+
+      // Ensure fits in container
+      if (initX + initW > containerW) initX = Math.max(0, containerW - initW);
+      if (initY + initH > containerH) initY = Math.max(0, containerH - initH);
+
+      cropState.boxX = initX;
+      cropState.boxY = initY;
+      cropState.boxW = initW;
+      cropState.boxH = initH;
+
+      if (cropOverlay) cropOverlay.style.display = 'block';
+      if (cropModeBanner) cropModeBanner.style.display = 'flex';
+      updateCropBoxDOM();
+
+      playBeep('start');
+      showToast("कागदावरील फोटोभोवती निळा बॉक्स ड्रॅग करा आणि 'क्रॉप करा' दाबा.", "info");
+    }
+
+    function cancelCropMode() {
+      cropState.isActive = false;
+      cropState.isDragging = false;
+      cropState.isResizing = false;
+      if (cropOverlay) cropOverlay.style.display = 'none';
+      if (cropModeBanner) cropModeBanner.style.display = 'none';
+
+      [btnCropPassport, btnCropSignature, btnCropFree].forEach(b => {
+        if (b) {
+          b.classList.remove('active');
+          b.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+        }
+      });
+    }
+
+    function updateCropBoxDOM() {
+      if (!cropBox) return;
+      cropBox.style.left = `${cropState.boxX}px`;
+      cropBox.style.top = `${cropState.boxY}px`;
+      cropBox.style.width = `${cropState.boxW}px`;
+      cropBox.style.height = `${cropState.boxH}px`;
+
+      if (cropBadge) {
+        if (cropState.mode === 'passport') {
+          cropBadge.innerHTML = `<i class="fa-solid fa-user"></i> १६० × २१२ px (पासपोर्ट) • < ५० KB`;
+        } else if (cropState.mode === 'signature') {
+          cropBadge.innerHTML = `<i class="fa-solid fa-signature"></i> २५६ × ६४ px (स्वाक्षरी) • < २० KB`;
+        } else {
+          cropBadge.innerHTML = `<i class="fa-solid fa-crop"></i> ${cropState.boxW} × ${cropState.boxH} px`;
+        }
+      }
+    }
+
+    function applyCropSelection(action = 'add_page') {
+      if (!cropState.isActive || state.activePageIndex < 0) return;
+
+      const displayedW = mainCanvas.offsetWidth || mainCanvas.clientWidth;
+      const displayedH = mainCanvas.offsetHeight || mainCanvas.clientHeight;
+      const actualW = mainCanvas.width;
+      const actualH = mainCanvas.height;
+
+      if (!displayedW || !displayedH) {
+        showToast("क्रॉप करण्यात त्रुटी: कॅनव्हास लोड झाला नाही.", "error");
+        return;
+      }
+
+      const scaleX = actualW / displayedW;
+      const scaleY = actualH / displayedH;
+
+      const realCropX = Math.max(0, Math.round(cropState.boxX * scaleX));
+      const realCropY = Math.max(0, Math.round(cropState.boxY * scaleY));
+      const realCropW = Math.min(actualW - realCropX, Math.round(cropState.boxW * scaleX));
+      const realCropH = Math.min(actualH - realCropY, Math.round(cropState.boxH * scaleY));
+
+      const targetW = cropState.targetW > 0 ? cropState.targetW : realCropW;
+      const targetH = cropState.targetH > 0 ? cropState.targetH : realCropH;
+
+      const outCanvas = document.createElement('canvas');
+      outCanvas.width = targetW;
+      outCanvas.height = targetH;
+      const outCtx = outCanvas.getContext('2d');
+      outCtx.imageSmoothingEnabled = true;
+      outCtx.imageSmoothingQuality = 'high';
+
+      // Draw clipped region from mainCanvas
+      outCtx.drawImage(
+        mainCanvas,
+        realCropX, realCropY, realCropW, realCropH,
+        0, 0, targetW, targetH
+      );
+
+      // Iterative Compression to guarantee Government file size (< 50 KB / < 20 KB)
+      let quality = 0.92;
+      let dataUrl = outCanvas.toDataURL('image/jpeg', quality);
+      const maxBytes = cropState.maxKb * 1024;
+      let currentBytes = Math.round((dataUrl.length - 22) * 3 / 4);
+
+      while (currentBytes > maxBytes && quality > 0.35) {
+        quality -= 0.08;
+        dataUrl = outCanvas.toDataURL('image/jpeg', quality);
+        currentBytes = Math.round((dataUrl.length - 22) * 3 / 4);
+      }
+
+      const actualKb = (currentBytes / 1024).toFixed(1);
+      const savedMode = cropState.mode;
+      const maxLimit = cropState.maxKb;
+
+      cancelCropMode();
+
+      if (action === 'download_direct') {
+        const link = document.createElement('a');
+        link.download = savedMode === 'passport'
+          ? `Passport_Photo_160x212_${actualKb}KB.jpg`
+          : savedMode === 'signature'
+            ? `Signature_256x64_${actualKb}KB.jpg`
+            : `Cropped_${actualKb}KB.jpg`;
+        link.href = dataUrl;
+        link.click();
+        playBeep('success');
+        showToast(`फोटो थेट डाऊनलोड झाला! साईझ: ${actualKb} KB (< ${maxLimit} KB)`, "success");
+      } else {
+        addScannedPageFromDataUrl(dataUrl);
+        playBeep('success');
+        showToast(`${savedMode === 'passport' ? 'पासपोर्ट फोटो (160×212 px)' : savedMode === 'signature' ? 'स्वाक्षरी (256×64 px)' : 'क्रॉप्ड फोटो'} नवीन पान म्हणून जोडले! (${actualKb} KB)`, "success");
+      }
+    }
+
+    // Pointer Drag & Resize Handlers
+    function initCropInteractions() {
+      if (!cropBox) return;
+
+      cropBox.addEventListener('mousedown', onPointerDown);
+      cropBox.addEventListener('touchstart', onPointerDown, { passive: false });
+
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('touchmove', onPointerMove, { passive: false });
+
+      window.addEventListener('mouseup', onPointerUp);
+      window.addEventListener('touchend', onPointerUp);
+    }
+
+    function onPointerDown(e) {
+      if (!cropState.isActive) return;
+      const handle = e.target.closest('.crop-handle');
+      const box = e.target.closest('#cropBox');
+      const actionBtn = e.target.closest('.btn-crop-action');
+      if (actionBtn) return; // Allow button clicks
+      if (!handle && !box) return;
+
+      e.preventDefault();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      cropState.dragStartX = clientX;
+      cropState.dragStartY = clientY;
+      cropState.initialBoxX = cropState.boxX;
+      cropState.initialBoxY = cropState.boxY;
+      cropState.initialBoxW = cropState.boxW;
+      cropState.initialBoxH = cropState.boxH;
+
+      if (handle) {
+        cropState.isResizing = true;
+        cropState.activeHandle = handle.dataset.handle;
+      } else {
+        cropState.isDragging = true;
+      }
+    }
+
+    function onPointerMove(e) {
+      if (!cropState.isActive || (!cropState.isDragging && !cropState.isResizing)) return;
+      e.preventDefault();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const dx = clientX - cropState.dragStartX;
+      const dy = clientY - cropState.dragStartY;
+
+      const containerW = (canvasCropContainer && canvasCropContainer.clientWidth) || mainCanvas.offsetWidth;
+      const containerH = (canvasCropContainer && canvasCropContainer.clientHeight) || mainCanvas.offsetHeight;
+
+      if (cropState.isDragging) {
+        let newX = cropState.initialBoxX + dx;
+        let newY = cropState.initialBoxY + dy;
+        newX = Math.max(0, Math.min(containerW - cropState.boxW, newX));
+        newY = Math.max(0, Math.min(containerH - cropState.boxH, newY));
+        cropState.boxX = Math.round(newX);
+        cropState.boxY = Math.round(newY);
+      } else if (cropState.isResizing) {
+        const handle = cropState.activeHandle;
+        let newW = cropState.initialBoxW;
+        let newH = cropState.initialBoxH;
+        let newX = cropState.initialBoxX;
+        let newY = cropState.initialBoxY;
+
+        if (handle === 'br') {
+          newW = cropState.initialBoxW + dx;
+          newH = cropState.aspectRatio ? (newW / cropState.aspectRatio) : (cropState.initialBoxH + dy);
+        } else if (handle === 'bl') {
+          newW = cropState.initialBoxW - dx;
+          newH = cropState.aspectRatio ? (newW / cropState.aspectRatio) : (cropState.initialBoxH + dy);
+          newX = cropState.initialBoxX + (cropState.initialBoxW - newW);
+        } else if (handle === 'tr') {
+          newW = cropState.initialBoxW + dx;
+          newH = cropState.aspectRatio ? (newW / cropState.aspectRatio) : (cropState.initialBoxH - dy);
+          newY = cropState.initialBoxY + (cropState.initialBoxH - newH);
+        } else if (handle === 'tl') {
+          newW = cropState.initialBoxW - dx;
+          newH = cropState.aspectRatio ? (newW / cropState.aspectRatio) : (cropState.initialBoxH - dy);
+          newX = cropState.initialBoxX + (cropState.initialBoxW - newW);
+          newY = cropState.initialBoxY + (cropState.initialBoxH - newH);
+        }
+
+        // Constraints
+        if (newW >= 45 && newH >= 35 && newX >= 0 && newY >= 0 && (newX + newW <= containerW) && (newY + newH <= containerH)) {
+          cropState.boxW = Math.round(newW);
+          cropState.boxH = Math.round(newH);
+          cropState.boxX = Math.round(newX);
+          cropState.boxY = Math.round(newY);
+        }
+      }
+      updateCropBoxDOM();
+    }
+
+    function onPointerUp() {
+      cropState.isDragging = false;
+      cropState.isResizing = false;
+      cropState.activeHandle = null;
+    }
+
+    // =========================================================================
+    // 6. PAGE OPERATIONS: ROTATION, REORDER, DELETE
+    // =========================================================================
+
+    function rotateCurrentPage(deg) {
+      if (state.activePageIndex < 0) return;
+      state.pages[state.activePageIndex].rotation = (state.pages[state.activePageIndex].rotation + deg + 360) % 360;
+      renderThumbnails();
+      renderActivePageToCanvas();
+    }
+
+    function movePage(index, dir) {
+      const target = index + dir;
+      if (target < 0 || target >= state.pages.length) return;
+      const temp = state.pages[index];
+      state.pages[index] = state.pages[target];
+      state.pages[target] = temp;
+      state.activePageIndex = target;
+      renderThumbnails();
+      renderActivePageToCanvas();
+    }
+
+    function deletePage(index) {
+      state.pages.splice(index, 1);
+      if (state.activePageIndex >= state.pages.length) {
+        state.activePageIndex = state.pages.length - 1;
+      }
+      renderThumbnails();
+      renderActivePageToCanvas();
+      showToast("पान हटवले.", "info");
+    }
+
+    function clearAllPages() {
+      if (state.pages.length === 0) return;
+      if (confirm("सर्व स्कॅन झालेली पाने हटवायची आहेत का?")) {
+        state.pages = [];
+        state.activePageIndex = -1;
+        renderThumbnails();
+        renderActivePageToCanvas();
+        showToast("सर्व पाने साफ केली.", "info");
+      }
+    }
+
+    function addNewBlankPage() {
+      const dataUrl = generateInBrowserTestDoc(state.pages.length + 1, 150);
+      addScannedPageFromDataUrl(dataUrl);
+    }
+
+    function zoomCanvas(delta) {
+      state.zoomLevel = Math.max(0.3, Math.min(3.0, +(state.zoomLevel + delta).toFixed(2)));
+      applyStageZoom();
+    }
+
+    function resetCanvasZoom() {
+      state.zoomLevel = 1.0;
+      applyStageZoom();
+      const stage = document.getElementById('viewerStage');
+      if (stage) {
+        stage.scrollTop = 0;
+        stage.scrollLeft = 0;
+        stage.style.overflow = 'hidden';
+      }
+    }
+
+    function applyStageZoom() {
+      const stage = document.getElementById('viewerStage');
+      if (stage) {
+        stage.style.overflow = (state.zoomLevel > 1.0) ? 'auto' : 'hidden';
+      }
+      const target = canvasCropContainer || mainCanvas;
+      if (target) {
+        target.style.transform = `scale(${state.zoomLevel})`;
+        target.style.transformOrigin = (state.zoomLevel > 1.0) ? 'center top' : 'center center';
+      }
+    }
+
+    // =========================================================================
+    // 7. FILE IMPORT (IMAGES & PDFS)
+    // =========================================================================
+
+    async function handleFileImport(e) {
+      const files = Array.from(e.target.files);
+      if (!files.length) return;
+
+      for (const file of files) {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = async (ev) => {
+            await addScannedPageFromDataUrl(ev.target.result);
+          };
+          reader.readAsDataURL(file);
+        } else if (file.type === 'application/pdf') {
+          await importPdfFile(file);
+        }
+      }
+      e.target.value = '';
+      showToast(`${files.length} फाईल्स जोडल्या.`, "success");
+    }
+
+    async function importPdfFile(file) {
+      try {
+        const arrayBuf = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuf }).promise;
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 1.5 });
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+          await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+          await addScannedPageFromDataUrl(canvas.toDataURL('image/jpeg', 0.88));
+        }
+      } catch (e) {
+        showToast("PDF इम्पोर्ट करण्यात त्रुटी: " + e.message, "error");
+      }
+    }
+
+    // =========================================================================
+    // 8. GOVERNMENT & CUSTOM TARGET SIZE PDF/JPG EXPORT ENGINE (HARD COMPRESS)
+    // =========================================================================
+
+    function renderPageToOffscreenCanvas(page) {
+      const offCanvas = document.createElement('canvas');
+      const rot = page.rotation % 360;
+
+      if (rot === 90 || rot === 270) {
+        offCanvas.width = page.rawImage.height;
+        offCanvas.height = page.rawImage.width;
+      } else {
+        offCanvas.width = page.rawImage.width;
+        offCanvas.height = page.rawImage.height;
+      }
+
+      const offCtx = offCanvas.getContext('2d');
+      offCtx.save();
+      offCtx.translate(offCanvas.width / 2, offCanvas.height / 2);
+      offCtx.rotate((rot * Math.PI) / 180);
+      offCtx.drawImage(page.rawImage, -page.rawImage.width / 2, -page.rawImage.height / 2);
+      offCtx.restore();
+
+      applyCanvasFilterEffects(offCtx, offCanvas.width, offCanvas.height, page.filter);
+      return offCanvas;
+    }
+
+    // Helper: Enhance canvas contrast & clarity (Zero Blur मजकूर व स्वाक्षरी)
+    function enhanceCanvasForClarity(sourceCanvas) {
+      const outCanvas = document.createElement('canvas');
+      outCanvas.width = sourceCanvas.width;
+      outCanvas.height = sourceCanvas.height;
+      const ctx = outCanvas.getContext('2d', { alpha: false });
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+      // High contrast + mild saturation makes text bold & readable, cleans paper noise
+      ctx.filter = 'contrast(1.15) brightness(1.02) saturate(1.03)';
+      ctx.drawImage(sourceCanvas, 0, 0);
+      return outCanvas;
+    }
+
+    // Helper: Compile jsPDF from pagesData array with exact padding support
+    function compileJsPdf(pagesData, paddingChars = 0) {
+      const { jsPDF } = window.jspdf;
+      let doc = null;
+      for (let i = 0; i < pagesData.length; i++) {
+        const p = pagesData[i];
+        if (i === 0) {
+          doc = new jsPDF({
+            orientation: p.orientation,
+            unit: 'pt',
+            format: [p.ptW, p.ptH],
+            compress: true
+          });
+          if (paddingChars > 0) {
+            doc.setProperties({
+              keywords: '0'.repeat(paddingChars)
+            });
+          }
+          doc.addImage(p.imgData, 'JPEG', 0, 0, p.ptW, p.ptH, undefined, 'FAST');
+        } else {
+          doc.addPage([p.ptW, p.ptH], p.orientation);
+          doc.addImage(p.imgData, 'JPEG', 0, 0, p.ptW, p.ptH, undefined, 'FAST');
+        }
+      }
+      return doc.output('blob');
+    }
+
+    // Helper: Exact JPEG COM (0xFF 0xFE) marker padding (४ ते ५ KB अचूक फरक हमी)
+    async function padJpegBlob(jpegBlob, targetBytes, marginKb = 4.5) {
+      const buffer = await jpegBlob.arrayBuffer();
+      const u8 = new Uint8Array(buffer);
+      const currentBytes = u8.length;
+
+      let marginBytes = Math.round(marginKb * 1024);
+      if (targetBytes <= 35 * 1024) marginBytes = Math.min(1536, Math.round(targetBytes * 0.08));
+      else if (targetBytes <= 75 * 1024) marginBytes = Math.min(3072, Math.round(targetBytes * 0.06));
+      else if (targetBytes <= 150 * 1024) marginBytes = 4096;
+      else marginBytes = Math.min(5120, Math.max(4096, Math.round(targetBytes * 0.01)));
+
+      const desiredBytes = targetBytes - marginBytes;
+      const neededPad = desiredBytes - currentBytes;
+
+      if (neededPad <= 5 || u8[0] !== 0xFF || u8[1] !== 0xD8) {
+        const finalGapKb = Math.max(0, (targetBytes - currentBytes) / 1024).toFixed(1);
+        return { blob: jpegBlob, bytes: currentBytes, gapKb: finalGapKb };
+      }
+
+      const parts = [];
+      parts.push(u8.subarray(0, 2));
+
+      let remaining = neededPad;
+      while (remaining >= 5) {
+        const chunk = Math.min(remaining - 4, 65530);
+        const markerLen = chunk + 2;
+        const header = new Uint8Array(4);
+        header[0] = 0xFF;
+        header[1] = 0xFE;
+        header[2] = (markerLen >> 8) & 0xFF;
+        header[3] = markerLen & 0xFF;
+        parts.push(header);
+
+        const payload = new Uint8Array(chunk);
+        payload.fill(0x20);
+        parts.push(payload);
+
+        remaining -= (chunk + 4);
+      }
+
+      parts.push(u8.subarray(2));
+      const paddedBlob = new Blob(parts, { type: 'image/jpeg' });
+      const finalGapKb = Math.max(0, (targetBytes - paddedBlob.size) / 1024).toFixed(1);
+      return { blob: paddedBlob, bytes: paddedBlob.size, gapKb: finalGapKb };
+    }
+
+    // Helper: Enforce exact hard size on PDF (जास्तीत जास्त मजकूर स्पष्टता + अचूक ४ ते ५ KB फरक)
+    async function enforceExactPdfTargetSize(pagesData, targetBytes, marginKb = 4.5, onProgress = null) {
+      let marginBytes = Math.round(marginKb * 1024);
+      if (targetBytes <= 35 * 1024) marginBytes = Math.min(1536, Math.round(targetBytes * 0.08));
+      else if (targetBytes <= 75 * 1024) marginBytes = Math.min(3072, Math.round(targetBytes * 0.06));
+      else if (targetBytes <= 150 * 1024) marginBytes = 4096;
+      else marginBytes = Math.min(5120, Math.max(4096, Math.round(targetBytes * 0.01)));
+
+      const desiredBytes = targetBytes - marginBytes;
+      let blob = compileJsPdf(pagesData, 0);
+
+      // १) जर PDF टार्गेटपेक्षा मोठी असेल तर क्लॅरिटी संतुलित ठेवून क्वालिटी कमी करणे
+      let pass = 0;
+      while (blob.size > desiredBytes && pass < 8) {
+        pass++;
+        if (onProgress) onProgress(`अचूक साईझ कॅलिब्रेशन (फेरी ${pass})...`);
+        const reductionRatio = (desiredBytes * 0.985) / blob.size;
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          p.quality = Math.max(0.12, p.quality * reductionRatio);
+          if (pass >= 3 && p.quality <= 0.28) {
+            // Multi-page dimensional downscale if extreme compression required
+            const down = document.createElement('canvas');
+            down.width = Math.round(p.canvas.width * 0.82);
+            down.height = Math.round(p.canvas.height * 0.82);
+            const dCtx = down.getContext('2d', { alpha: false });
+            dCtx.fillStyle = '#FFFFFF';
+            dCtx.fillRect(0, 0, down.width, down.height);
+            dCtx.drawImage(p.canvas, 0, 0, down.width, down.height);
+            p.canvas = down;
+            p.quality = 0.45;
+          }
+          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+        }
+        blob = compileJsPdf(pagesData, 0);
+      }
+
+      // २) जर PDF खूप लहान असेल तर रिझोल्युशन व क्लॅरिटी कमाल ९७% पर्यंत वाढवणे
+      let upPass = 0;
+      while (blob.size < desiredBytes * 0.88 && upPass < 5) {
+        upPass++;
+        let canBoost = false;
+        const boostRatio = Math.min(1.30, Math.sqrt(desiredBytes / Math.max(blob.size, 1024)));
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          if (p.quality < 0.96) {
+            p.quality = Math.min(0.97, p.quality * boostRatio);
+            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+            canBoost = true;
+          }
+        }
+        if (!canBoost) break;
+        const candidate = compileJsPdf(pagesData, 0);
+        if (candidate.size <= desiredBytes) {
+          blob = candidate;
+        } else {
+          for (let i = 0; i < pagesData.length; i++) {
+            const p = pagesData[i];
+            p.quality = Math.max(0.12, p.quality * (desiredBytes / candidate.size));
+            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+          }
+          blob = compileJsPdf(pagesData, 0);
+          break;
+        }
+      }
+
+      // ३) हार्ड साईझ टार्गेट लॉक पॅडिंग (अचूक ४ ते ५ KB फरक हमी)
+      const currentBytes = blob.size;
+      const neededPad = desiredBytes - currentBytes;
+      if (neededPad > 20) {
+        const neededChars = Math.max(1, neededPad - 13);
+        blob = compileJsPdf(pagesData, neededChars);
+      }
+
+      // ४) सुरक्षा नियम: फाईल साईझ कधीही targetBytes पेक्षा जास्त होणार नाही
+      if (blob.size > targetBytes) {
+        const safetyRatio = (targetBytes * 0.98) / blob.size;
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          p.quality = Math.max(0.10, p.quality * safetyRatio);
+          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+        }
+        blob = compileJsPdf(pagesData, 0);
+      }
+
+      const finalBytes = blob.size;
+      const gapBytes = targetBytes - finalBytes;
+      const gapKb = Math.max(0, gapBytes / 1024).toFixed(1);
+
+      return {
+        blob: blob,
+        bytes: finalBytes,
+        gapKb: gapKb
+      };
+    }
+
+    async function compressDocumentToTarget(maxTargetKb, format = 'pdf', customPrefix = '') {
+      if (state.pages.length === 0) {
+        showToast("PDF/इमेज बनवण्यासाठी आधी पाने स्कॅन किंवा ॲड करा!", "error");
+        return;
+      }
+
+      const targetBytes = maxTargetKb * 1024;
+      showToast(`अचूक < ${maxTargetKb} KB हार्ड कम्प्रेशन सुरू आहे...`, "info");
+      playBeep('start');
+
+      if (format === 'jpg') {
+        const page = state.pages[state.activePageIndex >= 0 ? state.activePageIndex : 0];
+        const offCanvas = renderPageToOffscreenCanvas(page);
+        const cleanCanvas = enhanceCanvasForClarity(offCanvas);
+
+        let lowQ = 0.1, highQ = 0.98, bestBlob = null;
+        let finalCanvas = cleanCanvas;
+
+        if (maxTargetKb < 70 && (cleanCanvas.width > 1200 || cleanCanvas.height > 1600)) {
+          const scale = Math.min(1000 / cleanCanvas.width, 1400 / cleanCanvas.height);
+          finalCanvas = document.createElement('canvas');
+          finalCanvas.width = Math.round(cleanCanvas.width * scale);
+          finalCanvas.height = Math.round(cleanCanvas.height * scale);
+          finalCanvas.getContext('2d').drawImage(cleanCanvas, 0, 0, finalCanvas.width, finalCanvas.height);
+        }
+
+        for (let iter = 0; iter < 6; iter++) {
+          const midQ = +((lowQ + highQ) / 2).toFixed(2);
+          const blob = await new Promise(res => finalCanvas.toBlob(res, 'image/jpeg', midQ));
+          if (blob.size <= targetBytes - 4500) {
+            bestBlob = blob;
+            lowQ = midQ;
+          } else {
+            highQ = midQ;
+          }
+          if (highQ - lowQ < 0.05) break;
+        }
+
+        if (!bestBlob) {
+          bestBlob = await new Promise(res => finalCanvas.toBlob(res, 'image/jpeg', 0.2));
+        }
+
+        const paddedResult = await padJpegBlob(bestBlob, targetBytes, 4.5);
+        const actualKb = (paddedResult.bytes / 1024).toFixed(1);
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(paddedResult.blob);
+        link.download = `EMUDRA_SCAN_${actualKb}KB.jpg`;
+        link.click();
+        playBeep('success');
+        showToast(`JPG तयार झाली! फाईल साईझ: ${actualKb} KB (गॅप: ${paddedResult.gapKb} KB, लक्ष्य: < ${maxTargetKb} KB)`, "success");
+        return;
+      }
+
+      // Hard Compress PDF Engine (Exact Target Hard-Lock from PDF Compressor Pro)
+      const numPages = state.pages.length;
+      const targetBytesPerPage = Math.floor(targetBytes / numPages);
+      let targetMaxDim = 1500;
+      if (targetBytesPerPage >= 350 * 1024) targetMaxDim = 2400;
+      else if (targetBytesPerPage >= 200 * 1024) targetMaxDim = 1900;
+      else if (targetBytesPerPage >= 100 * 1024) targetMaxDim = 1500;
+      else if (targetBytesPerPage >= 50 * 1024) targetMaxDim = 1200;
+      else targetMaxDim = 900;
+
+      const pagesData = [];
+      for (let pIdx = 0; pIdx < numPages; pIdx++) {
+        const page = state.pages[pIdx];
+        const offCanvas = renderPageToOffscreenCanvas(page);
+        const cleanCanvas = enhanceCanvasForClarity(offCanvas);
+
+        const isLandscape = cleanCanvas.width > cleanCanvas.height;
+        const ptW = isLandscape ? 841.89 : 595.28;
+        const ptH = isLandscape ? 595.28 : 841.89;
+
+        let currCanvas = cleanCanvas;
+        const maxDim = Math.max(cleanCanvas.width, cleanCanvas.height);
+        if (maxDim > targetMaxDim) {
+          const scale = targetMaxDim / maxDim;
+          const sc = document.createElement('canvas');
+          sc.width = Math.round(cleanCanvas.width * scale);
+          sc.height = Math.round(cleanCanvas.height * scale);
+          const sCtx = sc.getContext('2d', { alpha: false });
+          sCtx.fillStyle = '#FFFFFF';
+          sCtx.fillRect(0, 0, sc.width, sc.height);
+          sCtx.drawImage(cleanCanvas, 0, 0, sc.width, sc.height);
+          currCanvas = sc;
+        }
+
+        const initialQuality = targetBytesPerPage >= 350 * 1024 ? 0.88 : (targetBytesPerPage >= 180 * 1024 ? 0.80 : (targetBytesPerPage >= 90 * 1024 ? 0.70 : (targetBytesPerPage >= 45 * 1024 ? 0.60 : 0.48)));
+
+        pagesData.push({
+          canvas: currCanvas,
+          imgData: currCanvas.toDataURL('image/jpeg', initialQuality),
+          quality: initialQuality,
+          ptW: ptW,
+          ptH: ptH,
+          orientation: isLandscape ? 'landscape' : 'portrait'
+        });
+      }
+
+      const exactRes = await enforceExactPdfTargetSize(pagesData, targetBytes, 4.5, (msg) => {
+        showToast(msg, "info");
+      });
+
+      const actualKb = (exactRes.bytes / 1024).toFixed(1);
+      let fileName = `EMUDRA_SCAN_${actualKb}KB.pdf`;
+      if (customPrefix === 'AAPLE_SARKAR') {
+        fileName = `Aaple_Sarkar_${actualKb}KB.pdf`;
+      } else if (customPrefix === 'MAHADBT') {
+        fileName = `MahaDBT_${actualKb}KB.pdf`;
+      } else if (customPrefix === 'CUSTOM') {
+        fileName = `EMUDRA_Custom_${maxTargetKb}KB_Actual_${actualKb}KB.pdf`;
+      }
+
+      const url = URL.createObjectURL(exactRes.blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+
+      playBeep('success');
+      showToast(`PDF तयार झाली! फाईल साईझ: ${actualKb} KB (हार्ड लॉक गॅप: ${exactRes.gapKb} KB, लक्ष्य: < ${maxTargetKb} KB) - Zero Blur!`, "success");
+    }
+
+    async function exportGovernmentPdf(maxTargetKb = 250) {
+      const prefix = maxTargetKb <= 256 ? 'AAPLE_SARKAR' : 'MAHADBT';
+      await compressDocumentToTarget(maxTargetKb, 'pdf', prefix);
+    }
+
+    async function exportCustomTargetPdf() {
+      const val = parseInt(document.getElementById('customTargetKbInput').value, 10);
+      if (!val || val < 10) {
+        showToast("कृपया वैध साईझ (उदा. 150 KB) टाका!", "error");
+        return;
+      }
+      await compressDocumentToTarget(val, 'pdf', 'CUSTOM');
+    }
+
+    async function exportCustomTargetJpg() {
+      const val = parseInt(document.getElementById('customTargetKbInput').value, 10);
+      if (!val || val < 10) {
+        showToast("कृपया वैध साईझ (उदा. 150 KB) टाका!", "error");
+        return;
+      }
+      await compressDocumentToTarget(val, 'jpg', 'CUSTOM');
+    }
+
+    function setCustomTargetKb(kb) {
+      const inp = document.getElementById('customTargetKbInput');
+      if (inp) {
+        inp.value = kb;
+        inp.focus();
+        showToast(`लक्ष्य साईझ ${kb} KB सेट केली!`, "info");
+      }
+    }
+
+    function exportOriginalPdf() {
+      if (state.pages.length === 0) return;
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+      state.pages.forEach((page, i) => {
+        if (i > 0) pdf.addPage('a4', 'portrait');
+        pdf.addImage(page.dataUrl, 'JPEG', 0, 0, 210, 297, undefined, 'SLOW');
+      });
+
+      pdf.save("EMUDRA_SCAN_HQ.pdf");
+      showToast("मूळ हाय-क्वालिटी PDF डाऊनलोड केली.", "success");
+    }
+
+    function downloadCurrentImage() {
+      if (state.activePageIndex < 0) return;
+      const link = document.createElement('a');
+      link.download = `EMUDRA_PAGE_${state.activePageIndex + 1}.jpg`;
+      link.href = mainCanvas.toDataURL('image/jpeg', 0.95);
+      link.click();
+      showToast("इमेज डाऊनलोड झाली.", "success");
+    }
+
+    async function downloadAllAsZip() {
+      if (state.pages.length === 0) return;
+      showToast("झिप (ZIP) तयार करत आहे...", "info");
+      const zip = new JSZip();
+
+      state.pages.forEach((page, idx) => {
+        const b64 = page.dataUrl.split(',')[1];
+        zip.file(`Page_${idx + 1}.jpg`, b64, { base64: true });
+      });
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const link = document.createElement('a');
+      link.download = `EMUDRA_SCANNED_PAGES_${state.pages.length}.zip`;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      showToast("सर्व पाने ZIP स्वरूपात डाऊनलोड झाली!", "success");
+    }
+
+    // =========================================================================
+    // 9. WEBCAM / MOBILE CAMERA SCANNER
+    // =========================================================================
+
+    async function openCameraModal() {
+      const modal = document.getElementById('cameraModal');
+      const video = document.getElementById('cameraVideo');
+      modal.style.display = 'flex';
+
+      try {
+        if (state.cameraStream) {
+          state.cameraStream.getTracks().forEach(t => t.stop());
+        }
+        state.cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: state.facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } }
+        });
+        video.srcObject = state.cameraStream;
+      } catch (err) {
+        showToast("कॅमेरा ॲक्सेस अयशस्वी: " + err.message, "error");
+        closeCameraModal();
+      }
+    }
+
+    function closeCameraModal() {
+      const modal = document.getElementById('cameraModal');
+      modal.style.display = 'none';
+      if (state.cameraStream) {
+        state.cameraStream.getTracks().forEach(t => t.stop());
+        state.cameraStream = null;
+      }
+    }
+
+    async function switchCamera() {
+      state.facingMode = state.facingMode === 'environment' ? 'user' : 'environment';
+      await openCameraModal();
+    }
+
+    function captureCameraPhoto() {
+      const video = document.getElementById('cameraVideo');
+      if (!video || !video.videoWidth) return;
+
+      const c = document.createElement('canvas');
+      c.width = video.videoWidth;
+      c.height = video.videoHeight;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(video, 0, 0);
+
+      const capturedUrl = c.toDataURL('image/jpeg', 0.92);
+      closeCameraModal();
+      addScannedPageFromDataUrl(capturedUrl);
+      playBeep('success');
+      showToast("कॅमेरा फोटो यशस्वीरित्या जोडला!", "success");
+    }
+
+    // =========================================================================
+    // 10. MODAL & TOAST HELPERS
+    // =========================================================================
+
+    function openBridgeHelpModal() {
+      document.getElementById('bridgeModal').style.display = 'flex';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function closeModalOnOverlay(e, id) {
+      if (e.target.id === id) closeModal(id);
+    }
+
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toastPopup');
+      const toastMsg = document.getElementById('toastMsg');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastMsg.textContent = msg;
+      if (type === 'success') {
+        toastIcon.className = "fa-solid fa-circle-check text-emerald";
+        toastIcon.style.color = "#10b981";
+      } else if (type === 'error') {
+        toastIcon.className = "fa-solid fa-circle-exclamation text-rose";
+        toastIcon.style.color = "#f43f5e";
+      } else {
+        toastIcon.className = "fa-solid fa-circle-info text-cyan";
+        toastIcon.style.color = "#38bdf8";
+      }
+
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      initCropInteractions();
+      checkBridgeConnection(false);
+      // Auto-retry polling frequently when disconnected, less when connected
+      setInterval(() => {
+        if (!state.isBridgeConnected) {
+          checkBridgeConnection(false);
+        }
+      }, 2500);
+    });
+  </script>
+</body>
+</html>

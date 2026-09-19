@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>आधार फॉर्म (Direct Online Filing)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- PDF.js and PDF Viewer styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css">
+    
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.js"></script>
+    <script>
+        // PDF.js v3.11 bugfix: AnnotationEditorLayerBuilder.cancel() crashes with
+        // "Cannot read properties of null (reading 'destroy')" when cancelling rendering.
+        if (window.pdfjsViewer && window.pdfjsViewer.PDFPageView) {
+            const origCancelRendering = pdfjsViewer.PDFPageView.prototype.cancelRendering;
+            pdfjsViewer.PDFPageView.prototype.cancelRendering = function(options) {
+                try {
+                    if (this.annotationEditorLayer) {
+                        if (!this.annotationEditorLayer.annotationEditorLayer || typeof this.annotationEditorLayer.annotationEditorLayer.destroy !== 'function') {
+                            this.annotationEditorLayer.annotationEditorLayer = { destroy: function() {} };
+                        }
+                        const proto = Object.getPrototypeOf(this.annotationEditorLayer);
+                        if (proto && !proto.__safeDestroyPatched) {
+                            proto.__safeDestroyPatched = true;
+                            proto.cancel = function() {
+                                this._cancelled = true;
+                                if (!this.div) return;
+                                this.pageDiv = null;
+                                if (this.annotationEditorLayer && typeof this.annotationEditorLayer.destroy === 'function') {
+                                    try { this.annotationEditorLayer.destroy(); } catch (e) {}
+                                }
+                                if (this.div && typeof this.div.remove === 'function') {
+                                    try { this.div.remove(); } catch (e) {}
+                                }
+                            };
+                        }
+                    }
+                } catch (patchErr) {
+                    console.warn("Patch error:", patchErr);
+                }
+                try {
+                    return origCancelRendering.call(this, options);
+                } catch (renderErr) {
+                    console.warn("Handled cancelRendering error:", renderErr);
+                }
+            };
+        }
+    </script>
+    
+    <!-- PDF-Lib for flattening -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+    <!-- Embedded Offline/Local PDF Data for file:/// and instant loading -->
+    <script src="js/aadhaar-pdf-data.js"></script>
+
+    <!-- Supabase Database Integration for Form History -->
+    <script src="js/supabase-db.js"></script>
+    <script src="js/user-auth.js"></script>
+    <script src="js/universal-form-history.js"></script>
+
+    <style>
+        :root {
+            --primary-navy: #0d1b2a;
+            --primary-dark: #091322;
+            --primary-blue: #1e3a8a;
+            --primary-cyan: #3b82f6;
+            --saffron-orange: #fb923c;
+            --saffron-glow: rgba(251, 146, 60, 0.4);
+            --gov-gold: #fbbf24;
+            --bg-viewer: #0f172a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mukta', 'Poppins', sans-serif;
+            background-color: var(--bg-viewer);
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Top Government Tricolor Glow Stripe */
+        .gov-tricolor-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, #ff7700 0%, #ff7700 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%);
+            width: 100%;
+            box-shadow: 0 0 10px rgba(255, 119, 0, 0.5);
+            z-index: 20;
+        }
+
+        /* Glamorous Glassmorphism Top Navbar */
+        .top-navbar {
+            background: linear-gradient(135deg, rgba(11, 37, 69, 0.95) 0%, rgba(7, 25, 46, 0.98) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #ffffff;
+            padding: 0.75rem 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 25px rgba(2, 132, 199, 0.15);
+            z-index: 10;
+        }
+
+        .back-btn {
+            color: #ffffff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.45rem 1rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, rgba(2, 132, 199, 0.35) 0%, rgba(56, 189, 248, 0.2) 100%);
+            color: #ffffff;
+            border-color: var(--primary-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+        }
+
+        .brand-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.3px;
+        }
+
+        .brand-heading i {
+            color: #ef4444;
+            font-size: 1.4rem;
+            filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+        }
+
+        .page-badge {
+            background: linear-gradient(135deg, rgba(255, 119, 0, 0.25) 0%, rgba(251, 191, 36, 0.25) 100%);
+            color: #fef08a;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
+        }
+
+        .page-badge::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+            display: inline-block;
+        }
+
+        .action-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+
+        /* PDF Viewer Container Wrapper */
+        .pdf-wrapper {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* The container passed to pdfViewer must be absolutely positioned */
+        .pdf-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: auto;
+            background: radial-gradient(circle at center, #1e293b 0%, #0b1329 100%);
+        }
+
+        /* Customizing the viewer page to look centered like a standard viewer */
+        .pdfViewer .page {
+            margin: 24px auto;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+
+        /* Ensure crisp, uniform appearance in browser interactive viewer */
+        .annotationLayer input,
+        .annotationLayer textarea {
+            text-transform: uppercase;
+            font-weight: 600 !important;
+        }
+
+        .annotationLayer .textWidgetAnnotation input.comb {
+            font-family: 'Poppins', 'Courier New', monospace !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+        }
+        
+        /* Glamorous Glass Loading Overlay */
+        #loading-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(11, 25, 46, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffffff;
+            z-index: 50;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        .glamour-spinner {
+            width: 52px;
+            height: 52px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--saffron-orange);
+            border-right: 4px solid var(--primary-cyan);
+            border-radius: 50%;
+            animation: spinGlamour 0.9s linear infinite;
+            box-shadow: 0 0 20px rgba(255, 119, 0, 0.4);
+        }
+
+        @keyframes spinGlamour {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Glamorous Glowing Download Button */
+        .btn-download-glamour {
+            background: linear-gradient(135deg, #ff7700 0%, #d95300 50%, #b43e00 100%);
+            color: #ffffff !important;
+            padding: 0.6rem 1.4rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-weight: 800;
+            font-size: 0.96rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Mukta', sans-serif;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 119, 0, 0.45), 0 0 20px rgba(255, 119, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-download-glamour::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 40%;
+            height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+            transform: rotate(25deg);
+            animation: shineGlamour 4s infinite;
+        }
+
+        @keyframes shineGlamour {
+            0%, 60% { left: -60%; }
+            100% { left: 140%; }
+        }
+
+        .btn-download-glamour:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(255, 119, 0, 0.6), 0 0 30px rgba(255, 119, 0, 0.4);
+            border-color: #fef08a;
+        }
+
+        .btn-download-glamour:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* 💾 Save Draft & Status Pill Styles */
+        .btn-save-draft {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #ffffff !important;
+            padding: 0.6rem 1.15rem;
+            border-radius: 8px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            font-weight: 700;
+            font-size: 0.92rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.25s ease;
+            font-family: 'Mukta', sans-serif;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+        }
+
+        .btn-save-draft:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+            transform: translateY(-1.5px);
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5);
+            border-color: #38bdf8;
+        }
+
+        .save-status-pill {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+
+        /* ✏️ Top Edit Mode Banner */
+        .edit-mode-strip {
+            background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+            border-bottom: 2px solid #10b981;
+            color: #f8fafc;
+            padding: 8px 20px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+            z-index: 40;
+        }
+
+        /* 🎛️ Form Switcher Bar Styles */
+        .form-switcher-bar {
+            background: linear-gradient(180deg, rgba(13, 27, 42, 0.98) 0%, rgba(9, 19, 34, 0.98) 100%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.55rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        .form-switcher-container {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .switcher-title {
+            color: #94a3b8;
+            font-size: 0.88rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            white-space: nowrap;
+        }
+
+        .switcher-title i {
+            color: #fbbf24;
+            font-size: 1rem;
+        }
+
+        .switcher-buttons {
+            display: inline-flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .form-select-btn {
+            background: rgba(255, 255, 255, 0.06);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            padding: 0.45rem 1.05rem;
+            border-radius: 8px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .form-select-btn:hover {
+            background: rgba(59, 130, 246, 0.22);
+            color: #ffffff;
+            border-color: rgba(96, 165, 250, 0.6);
+            transform: translateY(-1.5px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .form-select-btn.active {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            color: #ffffff;
+            border-color: #93c5fd;
+            box-shadow: 0 0 16px rgba(37, 99, 235, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+
+        .form-select-btn.active i {
+            color: #fef08a;
+            filter: drop-shadow(0 0 6px rgba(254, 240, 138, 0.8));
+        }
+
+        @media (max-width: 768px) {
+            .form-switcher-bar {
+                padding: 0.5rem 0.75rem;
+            }
+            .form-select-btn {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.75rem;
+            }
+        }
+
+        /* 💳 UPI PAYMENT MODAL STYLES */
+        .payment-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10, 18, 30, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.25s ease-in-out;
+        }
+
+        .payment-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .payment-modal-card {
+            background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 35px rgba(37, 99, 235, 0.25);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 440px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: modalPopIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        @keyframes modalPopIn {
+            from {
+                transform: scale(0.9) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .payment-modal-header {
+            padding: 1.1rem 1.4rem;
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .payment-header-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .payment-header-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+
+        .payment-header-text h3 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .payment-header-text p {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .payment-close-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #cbd5e1;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .payment-close-btn:hover {
+            background: rgba(239, 68, 68, 0.25);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .payment-modal-body {
+            padding: 1.25rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.9rem;
+            text-align: center;
+        }
+
+        .payment-fee-badge {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            border-radius: 12px;
+            padding: 0.55rem 1.2rem;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-fee-label {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .payment-fee-amount {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #fbbf24;
+            letter-spacing: 0.5px;
+        }
+
+        .qr-code-box {
+            background: #ffffff;
+            padding: 0.75rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(59, 130, 246, 0.3);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .qr-code-box img {
+            width: 190px;
+            height: 190px;
+            display: block;
+            border-radius: 6px;
+        }
+
+        .qr-scan-hint {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #0369a1;
+            margin-top: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .upi-copy-pill {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px dashed rgba(56, 189, 248, 0.5);
+            color: #38bdf8;
+            padding: 0.4rem 0.9rem;
+            border-radius: 25px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .upi-copy-pill:hover {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: #38bdf8;
+            transform: translateY(-1px);
+        }
+
+        /* Mobile Intent Apps */
+        .mobile-upi-strip {
+            display: flex;
+            gap: 0.5rem;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .upi-intent-btn {
+            flex: 1;
+            min-width: 78px;
+            padding: 0.45rem 0.4rem;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            color: #ffffff;
+        }
+
+        .upi-intent-btn.gpay {
+            background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
+        }
+        .upi-intent-btn.phonepe {
+            background: linear-gradient(135deg, #5f259f 0%, #471a79 100%);
+        }
+        .upi-intent-btn.paytm {
+            background: linear-gradient(135deg, #00b9f1 0%, #008fbc 100%);
+        }
+        .upi-intent-btn.bhim {
+            background: linear-gradient(135deg, #008853 0%, #005f3a 100%);
+        }
+
+        .upi-intent-btn:hover {
+            transform: translateY(-1.5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Verification Form */
+        .payment-verify-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+            margin-top: 0.2rem;
+        }
+
+        .utr-text-input {
+            width: 100%;
+            padding: 0.55rem 0.85rem;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+            font-size: 0.82rem;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .utr-text-input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-confirm-pay {
+            width: 100%;
+            padding: 0.65rem 1rem;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            border: none;
+            font-size: 0.92rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+            transition: all 0.2s;
+        }
+
+        .btn-confirm-pay:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-1.5px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-skip-direct {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 0.78rem;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0.2rem;
+            transition: color 0.2s;
+        }
+
+        .btn-skip-direct:hover {
+            color: #f1f5f9;
+        }
+
+        /* Success screen */
+        .pay-success-screen {
+            display: none;
+            padding: 2.2rem 1.4rem;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .success-tick-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #ffffff;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+            animation: bounceIn 0.5s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gov-tricolor-stripe"></div>
+
+    <!-- ✏️ Active Edit Mode Banner -->
+    <div id="emudra-edit-banner" class="edit-mode-strip">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <i class="fa-solid fa-pen-to-square" style="color:#34d399;font-size:1.05rem;"></i>
+            <span>अर्ज संपादन मोड: अर्ज क्र. <strong id="edit-banner-app-id" style="color:#6ee7b7;">ADH-XXXXXX</strong> (<span id="edit-banner-name">अर्जदार</span>) - बदल करून पुन्हा डाऊनलोड करा.</span>
+        </div>
+        <a href="dashboard.html" style="color:#38bdf8;text-decoration:none;font-size:0.82rem;display:inline-flex;align-items:center;gap:6px;background:rgba(56,189,248,0.12);padding:4px 12px;border-radius:6px;border:1px solid rgba(56,189,248,0.3);">
+            <i class="fa-solid fa-arrow-left"></i> डॅशबोर्डला परत जा
+        </a>
+    </div>
+
+    <nav class="top-navbar">
+        <a href="index.html" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>मागे जा (Back)</span>
+        </a>
+        
+        <div class="brand-heading">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span>आधार फॉर्म फिलर</span>
+            <span class="page-badge" id="active-form-badge">Standard Form</span>
+        </div>
+
+        <div class="action-group">
+            <span id="save-status-pill" class="save-status-pill" style="display: none;">
+                <i class="fa-solid fa-check"></i> <span id="save-status-text">सेव्ह झाले</span>
+            </span>
+            <button type="button" id="btn-save-draft" class="btn-save-draft" onclick="saveAadhaarApplicationState(false)" title="माहिती सर्व्हरवर सेव्ह करा">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>अर्ज सेव्ह करा</span>
+            </button>
+            <button type="button" id="btn-download" class="btn-download-glamour" onclick="handleDownloadTrigger()">
+                <i class="fa-solid fa-download"></i>
+                <span id="btn-download-text">फॉर्म डाऊनलोड करा (₹१०)</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 🎛️ MULTI-FORM SELECTOR STRIP -->
+    <div class="form-switcher-bar">
+        <div class="form-switcher-container">
+            <span class="switcher-title"><i class="fa-solid fa-layer-group"></i> फॉर्म निवडा:</span>
+            <div class="switcher-buttons">
+                <button type="button" class="form-select-btn active" id="btn-form-standard" onclick="selectForm('standard')">
+                    <i class="fa-solid fa-file-shield"></i>
+                    <span>१. सामान्य आधार प्रमाणपत्र (Standard)</span>
+                </button>
+                <button type="button" class="form-select-btn" id="btn-form-destitute" onclick="selectForm('destitute')">
+                    <i class="fa-solid fa-wheelchair"></i>
+                    <span>२. निराधार/दिव्यांग व्यक्ती (१८+ वर्षे)</span>
+                </button>
+                <button type="button" class="form-select-btn" id="btn-form-childcare" onclick="selectForm('childcare')">
+                    <i class="fa-solid fa-child-reaching"></i>
+                    <span>३. बालगृह बालके (DCPO Form)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="pdf-wrapper">
+        <div id="loading-overlay">
+            <div class="glamour-spinner"></div>
+            <span>PDF लोड होत आहे... कृपया थांबा.</span>
+        </div>
+        <div id="viewerContainer" class="pdf-container">
+            <div id="viewer" class="pdfViewer"></div>
+        </div>
+    </div>
+
+    <!-- 💳 SECURE UPI PAYMENT MODAL -->
+    <div class="payment-modal-overlay" id="payment-modal" onclick="handleBackdropClick(event)">
+        <div class="payment-modal-card" id="payment-card">
+            <div class="payment-modal-header">
+                <div class="payment-header-info">
+                    <div class="payment-header-icon" style="background: linear-gradient(135deg, #5f259f 0%, #7c3aed 100%);">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+                    <div class="payment-header-text">
+                        <h3>PhonePe / UPI सुरक्षित पेमेंट</h3>
+                        <p>आपले सरकार सेवा केंद्र (12-Digit UTR व्हेरिफिकेशन)</p>
+                    </div>
+                </div>
+                <button type="button" class="payment-close-btn" onclick="closePaymentModal()" title="बंद करा">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Default Payment Form View -->
+            <div class="payment-modal-body" id="payment-view-default">
+                <div class="payment-fee-badge">
+                    <span class="payment-fee-label">
+                        <i class="fa-solid fa-file-invoice-dollar" style="color: #fbbf24;"></i>
+                        <span>नाममात्र सेवा शुल्क:</span>
+                    </span>
+                    <span class="payment-fee-amount">₹१०.००</span>
+                </div>
+
+                <!-- ℹ️ PhonePe / UPI Step Banner -->
+                <div style="background: rgba(95, 37, 159, 0.22); border: 1px solid rgba(168, 85, 247, 0.45); border-radius: 10px; padding: 0.55rem 0.85rem; width: 100%; text-align: left; font-size: 0.78rem; color: #f3e8ff; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-shield-check" style="color: #c084fc; font-size: 1.15rem; flex-shrink: 0;"></i>
+                    <span>QR स्कॅन करून PhonePe/GPay वरून ₹१० भरा. पेमेंट झाल्यावर आलेला <strong>१२-अंकी UTR (UPI Ref No)</strong> खाली टाका.</span>
+                </div>
+
+                <div class="qr-code-box">
+                    <img id="upi-qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=upi%3A%2F%2Fpay%3Fpa%3D9890869793%40mbk%26pn%3DAaple%2520Sarkar%2520Seva%2520Kendra%26am%3D10.00%26cu%3DINR%26tn%3DAadhaar_Certificate_Form_Download&margin=1" alt="UPI QR Code">
+                    <div class="qr-scan-hint">
+                        <i class="fa-solid fa-qrcode"></i> PhonePe, GPay किंवा कोणत्याही UPI ॲपने स्कॅन करा
+                    </div>
+                </div>
+
+                <div class="upi-copy-pill" onclick="copyUpiId()" title="UPI ID कॉपी करा">
+                    <i class="fa-regular fa-copy"></i>
+                    <span id="display-upi-id">9890869793@mbk</span>
+                </div>
+
+                <!-- Mobile Quick Pay Apps -->
+                <div class="mobile-upi-strip">
+                    <a id="btn-phonepe" href="upi://pay?pa=9890869793@mbk&pn=Aaple%20Sarkar%20Seva%20Kendra&am=10.00&cu=INR&tn=Aadhaar_Certificate_Form_Download" class="upi-intent-btn phonepe" target="_blank">
+                        <i class="fa-solid fa-mobile-screen"></i> PhonePe
+                    </a>
+                    <a id="btn-gpay" href="upi://pay?pa=9890869793@mbk&pn=Aaple%20Sarkar%20Seva%20Kendra&am=10.00&cu=INR&tn=Aadhaar_Certificate_Form_Download" class="upi-intent-btn gpay" target="_blank">
+                        <i class="fa-brands fa-google-pay"></i> GPay
+                    </a>
+                    <a id="btn-paytm" href="upi://pay?pa=9890869793@mbk&pn=Aaple%20Sarkar%20Seva%20Kendra&am=10.00&cu=INR&tn=Aadhaar_Certificate_Form_Download" class="upi-intent-btn paytm" target="_blank">
+                        <i class="fa-solid fa-wallet"></i> Paytm
+                    </a>
+                    <a id="btn-bhim" href="upi://pay?pa=9890869793@mbk&pn=Aaple%20Sarkar%20Seva%20Kendra&am=10.00&cu=INR&tn=Aadhaar_Certificate_Form_Download" class="upi-intent-btn bhim" target="_blank">
+                        <i class="fa-solid fa-qrcode"></i> Any UPI
+                    </a>
+                </div>
+
+                <!-- Verification and Actions with Strict 12-Digit UTR -->
+                <div class="payment-verify-form">
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: #cbd5e1; font-weight: 700; width: 100%;">
+                        <span><i class="fa-solid fa-receipt" style="color: #fbbf24;"></i> १२-अंकी UTR / Ref No. टाका *</span>
+                        <span id="utr-digit-counter" style="color: #94a3b8; font-family: monospace;">0/12 अंक</span>
+                    </div>
+                    <input type="text" id="utr-number-input" class="utr-text-input" placeholder="उदा. 424589123456" maxlength="12" oninput="formatUtrInput(this)" autocomplete="off">
+                    <div id="utr-error-msg" style="color: #f87171; font-size: 0.78rem; display: none; font-weight: 700; text-align: left; padding-left: 2px;"></div>
+
+                    <button type="button" class="btn-confirm-pay" onclick="verifyAndDownload()">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>UTR व्हेरिफाय व डाऊनलोड करा (Download PDF)</span>
+                    </button>
+                    <button type="button" class="btn-skip-direct" onclick="directDownloadWithoutPay()" title="सेवा केंद्र ऑपरेटरसाठी थेट डाऊनलोड">
+                        <i class="fa-solid fa-user-shield"></i> ऑपरेटर थेट डाऊनलोड (Skip Payment)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Success Screen View -->
+            <div class="pay-success-screen" id="payment-view-success">
+                <div class="success-tick-icon">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3 style="font-size: 1.25rem; color: #4ade80; font-weight: 800; margin: 0;">पेमेंट UTR स्वीकारले! (₹१०.००)</h3>
+                <p style="font-size: 0.85rem; color: #cbd5e1; margin: 0;">तुमचा आधार फॉर्म Flatten (सुरक्षित) करून डाऊनलोड होत आहे...</p>
+                <div style="font-size: 0.78rem; color: #cbd5e1; background: rgba(255,255,255,0.08); padding: 0.35rem 0.8rem; border-radius: 6px; font-family: monospace;">
+                    नोंदणीकृत UTR: <span id="display-verified-utr" style="color: #4ade80; font-weight: bold;">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Forms Configuration for all 3 Aadhaar Enrolment Forms
+        const AADHAAR_FORMS = {
+            standard: {
+                id: 'standard',
+                name: '१. सामान्य आधार प्रमाणपत्र (Standard)',
+                badge: 'General Enrolment / Update',
+                fileName: 'aadhaar_original.pdf',
+                base64Key: 'AADHAAR_ORIGINAL_PDF_BASE64',
+                downloadName: 'Aadhaar_Standard_Enrolment_Certificate_Filled.pdf'
+            },
+            destitute: {
+                id: 'destitute',
+                name: '२. निराधार/दिव्यांग व्यक्ती (१८+ वर्षे)',
+                badge: 'Destitute with Disability (18+)',
+                fileName: 'aadhaar_destitute.pdf',
+                base64Key: 'AADHAAR_DESTITUTE_PDF_BASE64',
+                downloadName: 'Aadhaar_Certificate_Destitute_Disability_Filled.pdf'
+            },
+            childcare: {
+                id: 'childcare',
+                name: '३. बालगृह बालके (DCPO Form)',
+                badge: 'Children in CCI (DCPO)',
+                fileName: 'aadhaar_child_care.pdf',
+                base64Key: 'AADHAAR_CHILD_CARE_PDF_BASE64',
+                downloadName: 'Aadhaar_Certificate_Child_Care_DCPO_Filled.pdf'
+            }
+        };
+
+        // State Tracking
+        let currentFormKey = 'standard';
+        let currentPdfDocument = null;
+        let pdfViewer = null;
+        let linkService = null;
+        let eventBus = null;
+        let isEditMode = false;
+        let currentSessionAppId = null;
+        let activeFormValues = {};
+        let autoSaveTimer = null;
+        let isPaymentVerified = false;
+
+        // Set pdf.js worker path
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // Helper: Convert Base64 string to Uint8Array for offline/local file:/// loading
+        function base64ToUint8Array(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes;
+        }
+
+        // Helper: Compute clean, uniform and perfectly proportioned font size for fields
+        function getOptimalFieldFontSize(field) {
+            try {
+                const widgets = field.acroField.getWidgets();
+                const rect = widgets && widgets[0] ? widgets[0].getRectangle() : null;
+                const isCombed = typeof field.isCombed === 'function' && field.isCombed();
+                const maxLen = (typeof field.getMaxLength === 'function' ? field.getMaxLength() : 0) || 1;
+                const width = rect ? rect.width : 200;
+                const height = rect ? rect.height : 14;
+                const cellW = width / maxLen;
+
+                if (isCombed) {
+                    // For dense/narrow comb cells (like Designation / Office Address with 40 cells ~10.6pt wide)
+                    if (cellW < 12) return 10;
+                    // Standard comb cells (Aadhaar Number 12 cells, Names 32 cells, House No, PIN, etc.)
+                    return 11;
+                }
+                // Single-line non-combed fields with standard box height ~14-16pt
+                if (height <= 18) {
+                    return 10.5;
+                }
+                return 11;
+            } catch (e) {
+                return 10.5;
+            }
+        }
+
+        // Helper: Clean and format field values (Block Letters, spacing, length safety)
+        function cleanFieldValue(name, val, field) {
+            let textVal = String(val).trim();
+            const lowerName = (name || '').toLowerCase();
+            if (lowerName.includes('aadhaar') || lowerName.includes('uid')) {
+                textVal = textVal.replace(/\D/g, '').slice(0, 12);
+            } else if (lowerName.includes('pin') || lowerName === 'undefined_8') {
+                textVal = textVal.replace(/\D/g, '').slice(0, 6);
+            } else if (lowerName.includes('contact') || (lowerName.includes('mobile') && !lowerName.includes('email'))) {
+                textVal = textVal.replace(/\D/g, '').slice(0, 10);
+            } else if (!lowerName.includes('email') && !lowerName.includes('mail')) {
+                textVal = textVal.toUpperCase();
+            }
+
+            if (field) {
+                const isCombed = typeof field.isCombed === 'function' && field.isCombed();
+                const maxLen = (typeof field.getMaxLength === 'function' ? field.getMaxLength() : 0) || 0;
+                if (isCombed && maxLen > 0 && textVal.length > maxLen) {
+                    textVal = textVal.slice(0, maxLen);
+                }
+            }
+            return textVal;
+        }
+
+        // Cleanly initialize/render PDF in viewer container without dirty state collisions
+        function renderDocumentInViewer(pdfDoc, fieldValuesToApply = null) {
+            const container = document.getElementById('viewerContainer');
+            // Cleanly reset viewer DOM
+            container.scrollTop = 0;
+            container.innerHTML = '<div id="viewer" class="pdfViewer"></div>';
+
+            eventBus = new pdfjsViewer.EventBus();
+            linkService = new pdfjsViewer.PDFLinkService({ eventBus: eventBus });
+
+            pdfViewer = new pdfjsViewer.PDFViewer({
+                container: container,
+                eventBus: eventBus,
+                linkService: linkService,
+                renderInteractiveForms: true
+            });
+
+            linkService.setViewer(pdfViewer);
+
+            eventBus.on('pagesinit', function () {
+                pdfViewer.currentScaleValue = 'page-width';
+            });
+
+            // Ensure rendered DOM input fields reflect active values immediately
+            eventBus.on('annotationlayerrendered', function (event) {
+                const targetValues = fieldValuesToApply || activeFormValues;
+                if (!targetValues || Object.keys(targetValues).length === 0) return;
+                const pageDiv = event.source && event.source.div;
+                if (!pageDiv) return;
+                const inputs = pageDiv.querySelectorAll('input, textarea, select');
+                inputs.forEach(inp => {
+                    const name = inp.name;
+                    if (name && targetValues[name] !== undefined) {
+                        const val = targetValues[name];
+                        if (inp.type === 'checkbox') {
+                            inp.checked = (val === true || val === 'true' || val === 'on' || val === 'Yes' || val === 1);
+                        } else if (inp.type === 'radio') {
+                            inp.checked = (inp.value === String(val));
+                        } else {
+                            inp.value = String(val);
+                        }
+                    }
+                });
+            });
+
+            pdfViewer.setDocument(pdfDoc);
+            linkService.setDocument(pdfDoc, null);
+        }
+
+        // Manual PDF file selection fallback handler
+        function handleManualPdfUpload(input) {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const typedarray = new Uint8Array(e.target.result);
+                    const loadingTask = pdfjsLib.getDocument({ data: typedarray });
+                    currentPdfDocument = await loadingTask.promise;
+                    renderDocumentInViewer(currentPdfDocument);
+                    const loadingOverlay = document.getElementById('loading-overlay');
+                    if (loadingOverlay) loadingOverlay.style.display = 'none';
+                } catch (err) {
+                    alert("निवडलेली PDF लोड करता आली नाही: " + err.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Select & Switch Aadhaar Form dynamically with field pre-population support
+        async function selectForm(formKey, fieldValuesToApply = null) {
+            if (!AADHAAR_FORMS[formKey]) return;
+            currentFormKey = formKey;
+            const config = AADHAAR_FORMS[formKey];
+
+            // If no explicit fieldValuesToApply passed, retain whatever user already typed
+            if (!fieldValuesToApply && Object.keys(activeFormValues).length > 0) {
+                fieldValuesToApply = activeFormValues;
+            } else if (fieldValuesToApply) {
+                Object.assign(activeFormValues, fieldValuesToApply);
+            }
+
+            // 1. Update button active states
+            document.querySelectorAll('.form-select-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById('btn-form-' + formKey);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            // 2. Update page badge
+            const badge = document.getElementById('active-form-badge');
+            if (badge) badge.textContent = config.badge;
+
+            // 3. Show loading overlay
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.innerHTML = `
+                    <div class="glamour-spinner"></div>
+                    <span>${config.name} लोड होत आहे... कृपया थांबा.</span>
+                `;
+            }
+
+            try {
+                let loadingTask = null;
+                currentPdfDocument = null;
+
+                const isFileProtocol = window.location.protocol === 'file:';
+                let pdfBytes = null;
+
+                // Open server's original fillable PDF file AS-IS with its native filling settings
+                if (!isFileProtocol) {
+                    try {
+                        const pdfUrl = config.fileName + '?v=' + Date.now();
+                        const resp = await fetch(pdfUrl);
+                        if (!resp.ok) throw new Error("HTTP " + resp.status);
+                        pdfBytes = new Uint8Array(await resp.arrayBuffer());
+                    } catch (fetchErr) {
+                        console.warn("Direct fetch notice, using fallback data:", fetchErr);
+                        const base64Data = window[config.base64Key];
+                        if (base64Data) pdfBytes = base64ToUint8Array(base64Data);
+                    }
+                } else {
+                    const base64Data = window[config.base64Key];
+                    if (base64Data) pdfBytes = base64ToUint8Array(base64Data);
+                }
+
+                if (!pdfBytes) throw new Error("PDF डेटा उपलब्ध नाही.");
+
+                // If existing saved values need to be pre-populated (Edit mode or tab switch)
+                if (fieldValuesToApply && Object.keys(fieldValuesToApply).length > 0) {
+                    try {
+                        const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+                        const form = pdfDoc.getForm();
+                        
+                        for (const [name, val] of Object.entries(fieldValuesToApply)) {
+                            if (!name || name.startsWith('_')) continue;
+                            if (val === undefined || val === null || val === '') continue;
+                            try {
+                                const field = form.getField(name);
+                                if (!field) continue;
+                                if (typeof field.setText === 'function') {
+                                    const fontSize = getOptimalFieldFontSize(field);
+                                    field.setFontSize(fontSize);
+                                    const cleanVal = cleanFieldValue(name, val, field);
+                                    field.setText(cleanVal);
+                                } else if (typeof field.check === 'function') {
+                                    if (val === true || val === 'true' || val === 'on' || val === 'Yes' || val === 1) {
+                                        field.check();
+                                    } else {
+                                        field.uncheck();
+                                    }
+                                } else if (typeof field.select === 'function') {
+                                    field.select(String(val));
+                                }
+                            } catch (fErr) {}
+                        }
+                        // Save without flattening: AcroForm remains interactive with field values set
+                        pdfBytes = await pdfDoc.save();
+                    } catch (prefillErr) {
+                        console.warn("Pre-population note:", prefillErr);
+                    }
+                }
+
+                loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
+                currentPdfDocument = await loadingTask.promise;
+
+                // Render PDF cleanly in viewer
+                renderDocumentInViewer(currentPdfDocument, fieldValuesToApply);
+
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+            } catch (error) {
+                console.error("Error loading PDF for " + formKey + ":", error);
+                if (loadingOverlay) {
+                    loadingOverlay.innerHTML = `
+                        <div style="text-align: center; color: #fca5a5; max-width: 520px; padding: 2rem; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.5rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                            <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #fff;">फॉर्म लोड करताना एरर आली</h3>
+                            <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1.2rem; word-break: break-all;">${error.message || 'फाइल उघडता आली नाही.'}</p>
+                            <div style="display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap;">
+                                <button onclick="selectForm('${formKey}')" style="background: #3b82f6; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.9rem;">
+                                    <i class="fa-solid fa-rotate-right"></i> पुन्हा प्रयत्न करा (Retry)
+                                </button>
+                                <label style="display: inline-flex; align-items: center; gap: 0.4rem; background: #16a34a; color: white; padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.9rem;">
+                                    <i class="fa-solid fa-folder-open"></i> मॅन्युअली PDF निवडा
+                                    <input type="file" accept="application/pdf" style="display:none;" onchange="handleManualPdfUpload(this)">
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Collect all currently typed/selected values from PDF DOM inputs and memory
+        function collectCurrentPdfFormValues() {
+            const values = Object.assign({}, activeFormValues);
+            const container = document.getElementById('viewerContainer');
+            if (container) {
+                const inputs = container.querySelectorAll('input, textarea, select');
+                inputs.forEach(inp => {
+                    if (!inp.name) return;
+                    if (inp.type === 'checkbox') {
+                        values[inp.name] = inp.checked;
+                    } else if (inp.type === 'radio') {
+                        if (inp.checked) values[inp.name] = inp.value;
+                    } else {
+                        values[inp.name] = inp.value;
+                    }
+                });
+            }
+            return values;
+        }
+
+        function showSaveToast(msg) {
+            let toast = document.getElementById('emudra-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'emudra-toast';
+                toast.style.cssText = 'position:fixed;top:20px;right:20px;z-index:999999;background:linear-gradient(135deg,#059669 0%,#047857 100%);color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 8px 25px rgba(0,0,0,0.35);font-family:sans-serif;font-size:0.9rem;font-weight:700;display:flex;align-items:center;gap:10px;transition:all 0.3s ease;';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = '<i class="fa-solid fa-circle-check" style="font-size:1.2rem;"></i> <span>' + msg + '</span>';
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+            }, 3500);
+        }
+
+        // Auto-save application data reliably to Supabase and LocalStorage
+        async function saveAadhaarApplicationState(silent = false) {
+            const config = AADHAAR_FORMS[currentFormKey] || AADHAAR_FORMS.standard;
+            const values = collectCurrentPdfFormValues();
+            Object.assign(activeFormValues, values);
+
+            let applicantName = "";
+            let mobile = "";
+            let aadhaar = "";
+
+            for (const [name, val] of Object.entries(values)) {
+                if (!val || typeof val !== 'string') continue;
+                const str = val.trim();
+                const lower = name.toLowerCase();
+                if (!applicantName && (lower.includes('name') || lower.includes('resident') || lower.includes('नाव') || lower.includes('text1'))) {
+                    applicantName = str;
+                }
+                if (!mobile && (lower.includes('mobile') || lower.includes('phone') || lower.includes('contact') || /^[6-9]\d{9}$/.test(str))) {
+                    mobile = str;
+                }
+                if (!aadhaar && (lower.includes('aadhaar') || lower.includes('uid') || /^\d{4}\s?\d{4}\s?\d{4}$/.test(str) || /^\d{12}$/.test(str))) {
+                    aadhaar = str;
+                }
+            }
+
+            const loggedInUser = (typeof UserAuth !== 'undefined' && typeof UserAuth.getCurrentUser === 'function') 
+                ? UserAuth.getCurrentUser() : null;
+            const userMobile = loggedInUser ? loggedInUser.mobile : (mobile || "");
+            const userName = loggedInUser ? loggedInUser.name : (applicantName || "");
+
+            if (!currentSessionAppId) {
+                const urlParams = new URLSearchParams(window.location.search);
+                currentSessionAppId = urlParams.get('edit_app_id') || ("ADH-" + Math.floor(100000 + Math.random() * 900000));
+            }
+
+            const formRecord = {
+                appId: currentSessionAppId,
+                prefix: "ADH",
+                formType: "aadhaar-certificate",
+                formKey: currentFormKey,
+                formTitle: "आधार प्रमाणपत्र (" + (config.name || "Aadhaar") + ")",
+                applicantName: applicantName || userName || "आधार नोंदणी अर्जदार",
+                fullName: applicantName || userName || "आधार नोंदणी अर्जदार",
+                mobile: mobile || userMobile,
+                userMobile: userMobile,
+                userName: userName,
+                aadhaar: aadhaar || "",
+                purpose: "आधार नोंदणी व सुधारणा",
+                formData: values,
+                status: isPaymentVerified ? "paid" : "draft"
+            };
+
+            try {
+                // 1. emudra_form_history (LocalStorage - Always save first!)
+                const key = "emudra_form_history";
+                const list = JSON.parse(localStorage.getItem(key) || "[]");
+                const idx = list.findIndex(item => item.appId === formRecord.appId);
+                if (idx >= 0) list[idx] = formRecord;
+                else list.unshift(formRecord);
+                localStorage.setItem(key, JSON.stringify(list));
+
+                // 2. emudra_csc_applications (LocalStorage)
+                const cscKey = "emudra_csc_applications";
+                const cscList = JSON.parse(localStorage.getItem(cscKey) || "[]");
+                const cscIdx = cscList.findIndex(item => (item.appId || item.id) === formRecord.appId);
+                const cscRecord = {
+                    appId: formRecord.appId,
+                    id: formRecord.appId,
+                    serviceId: "aadhaar-certificate",
+                    serviceName: formRecord.formTitle,
+                    fullName: formRecord.applicantName,
+                    mobile: formRecord.mobile,
+                    aadhaar: formRecord.aadhaar,
+                    date: new Date().toISOString().split('T')[0],
+                    submittedAt: new Date().toISOString(),
+                    status: formRecord.status,
+                    isFormHistory: true
+                };
+                if (cscIdx >= 0) cscList[cscIdx] = cscRecord;
+                else cscList.unshift(cscRecord);
+                localStorage.setItem(cscKey, JSON.stringify(cscList));
+
+                // 3. Supabase Cloud DB (safe sync)
+                if (typeof DB !== 'undefined' && typeof DB.saveFormHistory === 'function') {
+                    try {
+                        await DB.saveFormHistory(formRecord);
+                    } catch(dbErr) {
+                        console.warn("Cloud DB save note:", dbErr);
+                    }
+                }
+
+                // Update UI status pill
+                const pill = document.getElementById('save-status-pill');
+                const pillText = document.getElementById('save-status-text');
+                if (pill) pill.style.display = 'inline-flex';
+                if (pillText) pillText.textContent = "✅ सेव्ह झाले (" + currentSessionAppId + ")";
+
+                if (!silent) {
+                    showSaveToast("✅ आधार अर्ज " + currentSessionAppId + " सर्व्हरवर सेव्ह झाला!");
+                }
+            } catch (err) {
+                console.warn("Save aadhaar form warning:", err);
+            }
+
+            return formRecord;
+        }
+
+        // Live auto-save on viewer input/change
+        function setupLiveAutoSave() {
+            const container = document.getElementById('viewerContainer');
+            if (!container) return;
+
+            const onFieldInput = function(e) {
+                const target = e.target;
+                if (target && target.name) {
+                    activeFormValues[target.name] = (target.type === 'checkbox') ? target.checked : target.value;
+                }
+                clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(() => {
+                    saveAadhaarApplicationState(true);
+                }, 1000);
+            };
+
+            container.addEventListener('input', onFieldInput, true);
+            container.addEventListener('change', onFieldInput, true);
+        }
+
+        // PDF Viewer Initialization & Edit Mode Auto-Loading
+        async function initViewer() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const editId = urlParams.get('edit_app_id');
+                const hash = window.location.hash ? window.location.hash.replace('#', '').toLowerCase() : '';
+
+                if (editId) {
+                    isEditMode = true;
+                    currentSessionAppId = editId;
+
+                    let app = null;
+                    try {
+                        if (typeof window.DB !== 'undefined' && typeof window.DB.getFormById === 'function') {
+                            app = await window.DB.getFormById(editId);
+                        }
+                        if (!app) {
+                            const list = JSON.parse(localStorage.getItem('emudra_form_history') || '[]');
+                            app = list.find(a => a.appId === editId);
+                        }
+                        if (!app) {
+                            const cscList = JSON.parse(localStorage.getItem('emudra_csc_applications') || '[]');
+                            app = cscList.find(a => (a.appId || a.id) === editId);
+                        }
+                    } catch (e) {
+                        console.warn("Fetch edit app error:", e);
+                    }
+
+                    let savedValues = {};
+                    let targetForm = AADHAAR_FORMS[hash] ? hash : 'standard';
+
+                    if (app) {
+                        const rawData = app.formData || app.fieldValues || app.docs || {};
+                        savedValues = (rawData && rawData.fieldValues) ? rawData.fieldValues : rawData;
+                        activeFormValues = Object.assign({}, savedValues);
+
+                        if (app.formKey && AADHAAR_FORMS[app.formKey]) {
+                            targetForm = app.formKey;
+                        } else if (savedValues && savedValues._formKey && AADHAAR_FORMS[savedValues._formKey]) {
+                            targetForm = savedValues._formKey;
+                        } else if ((app.formTitle || '').includes('निराधार') || (app.formTitle || '').toLowerCase().includes('destitute')) {
+                            targetForm = 'destitute';
+                        } else if ((app.formTitle || '').includes('बालगृह') || (app.formTitle || '').toLowerCase().includes('childcare')) {
+                            targetForm = 'childcare';
+                        }
+
+                        // Display top edit banner
+                        const banner = document.getElementById('emudra-edit-banner');
+                        if (banner) {
+                            banner.style.display = 'flex';
+                            const idEl = document.getElementById('edit-banner-app-id');
+                            const nameEl = document.getElementById('edit-banner-name');
+                            if (idEl) idEl.textContent = editId;
+                            if (nameEl) nameEl.textContent = app.applicantName || app.fullName || 'अर्जदार';
+                        }
+                    }
+
+                    // In Edit Mode, user already created/paid this application: exempt payment
+                    isPaymentVerified = true;
+                    const downloadBtn = document.getElementById('btn-download');
+                    const downloadBtnText = document.getElementById('btn-download-text');
+                    if (downloadBtn) {
+                        downloadBtn.style.background = 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
+                        downloadBtn.style.boxShadow = '0 4px 15px rgba(22, 163, 74, 0.45)';
+                    }
+                    if (downloadBtnText) {
+                        downloadBtnText.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#4ade80;"></i> बदल सेव्ह & डाऊनलोड करा (सुरक्षित PDF)';
+                    }
+
+                    await selectForm(targetForm, savedValues);
+                } else {
+                    currentSessionAppId = "ADH-" + Math.floor(100000 + Math.random() * 900000);
+                    const initialForm = AADHAAR_FORMS[hash] ? hash : 'standard';
+                    await selectForm(initialForm);
+                }
+
+                // Setup live auto-saving
+                setupLiveAutoSave();
+            } catch (error) {
+                console.error("Error initializing viewer:", error);
+            }
+        }
+
+        // Flatten & Download Core Logic
+        async function downloadFlattenedPDF() {
+            const btn = document.getElementById('btn-download');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> PDF तयार होत आहे...';
+            btn.disabled = true;
+
+            try {
+                if (!currentPdfDocument) throw new Error("PDF लोड झालेली नाही.");
+                const config = AADHAAR_FORMS[currentFormKey] || AADHAAR_FORMS.standard;
+
+                // 1. Collect latest values from viewer DOM inputs and memory
+                const currentValues = collectCurrentPdfFormValues();
+                Object.assign(activeFormValues, currentValues);
+
+                // 2. Load fresh base PDF template to ensure clean font and layout rendering
+                const isFileProtocol = window.location.protocol === 'file:';
+                let rawBytes = null;
+                if (!isFileProtocol) {
+                    try {
+                        const r = await fetch(config.fileName + '?v=' + Date.now());
+                        if (r.ok) rawBytes = new Uint8Array(await r.arrayBuffer());
+                    } catch (fetchErr) {
+                        console.warn("Direct fetch fallback notice:", fetchErr);
+                    }
+                }
+                if (!rawBytes) {
+                    const base64Data = window[config.base64Key];
+                    if (base64Data) rawBytes = base64ToUint8Array(base64Data);
+                }
+                if (!rawBytes) throw new Error("PDF डेटा उपलब्ध नाही.");
+
+                const pdfDoc = await PDFLib.PDFDocument.load(rawBytes);
+                const form = pdfDoc.getForm();
+
+                // 3. Populate all fields with fixed, uniform font sizes
+                for (const [name, val] of Object.entries(activeFormValues)) {
+                    if (!name || name.startsWith('_')) continue;
+                    if (val === undefined || val === null || val === '') continue;
+                    try {
+                        const field = form.getField(name);
+                        if (!field) continue;
+                        if (typeof field.setText === 'function') {
+                            const fontSize = getOptimalFieldFontSize(field);
+                            field.setFontSize(fontSize);
+                            const textVal = cleanFieldValue(name, val, field);
+                            field.setText(textVal);
+                        } else if (typeof field.check === 'function') {
+                            if (val === true || val === 'true' || val === 'on' || val === 'Yes' || val === 1) {
+                                field.check();
+                            } else {
+                                field.uncheck();
+                            }
+                        } else if (typeof field.select === 'function') {
+                            field.select(String(val));
+                        }
+                    } catch (fErr) {
+                        console.warn("Field setting note for " + name + ":", fErr);
+                    }
+                }
+
+                // 4. Save application state to DB / LocalStorage
+                await saveAadhaarApplicationState(true);
+
+                // 5. Flatten form fields (locks input into static document)
+                try {
+                    form.flatten();
+                } catch (flattenErr) {
+                    console.warn("Flatten note:", flattenErr);
+                }
+
+                // 6. Clean up any leftover widget annotation references and set XObject Subtype to Form
+                const pages = pdfDoc.getPages();
+                for (const page of pages) {
+                    try {
+                        page.node.delete(PDFLib.PDFName.of('Annots'));
+                    } catch (e) {}
+
+                    const xObjectDict = page.node.Resources()?.lookup(PDFLib.PDFName.of('XObject'));
+                    if (xObjectDict instanceof PDFLib.PDFDict) {
+                        for (const [key, ref] of xObjectDict.entries()) {
+                            try {
+                                const xobj = pdfDoc.context.lookup(ref);
+                                if (xobj instanceof PDFLib.PDFStream && !xobj.dict.has(PDFLib.PDFName.of('Subtype'))) {
+                                    xobj.dict.set(PDFLib.PDFName.of('Subtype'), PDFLib.PDFName.of('Form'));
+                                }
+                            } catch (e) {}
+                        }
+                    }
+                }
+                
+                // 7. Save and trigger clean download
+                const flattenedBytes = await pdfDoc.save();
+                const blob = new Blob([flattenedBytes], { type: 'application/pdf' });
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = config.downloadName;
+                document.body.appendChild(a);
+                a.click();
+                
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+
+            } catch (error) {
+                console.error("Error flattening PDF:", error);
+                alert("PDF डाऊनलोड करताना एरर आली: " + error.message);
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
+        // Configuration: UPI Gateway Settings
+        const UPI_CONFIG = {
+            upiId: "9890869793@mbk",
+            payeeName: "Aaple Sarkar Seva Kendra",
+            amount: "10.00",
+            currency: "INR",
+            note: "Aadhaar_Certificate_Form_Download"
+        };
+
+        function handleDownloadTrigger() {
+            if (isPaymentVerified || isEditMode) {
+                downloadFlattenedPDF();
+            } else {
+                openPaymentModal();
+            }
+        }
+
+        function openPaymentModal() {
+            document.getElementById('payment-view-default').style.display = 'flex';
+            document.getElementById('payment-view-success').style.display = 'none';
+            document.getElementById('payment-modal').classList.add('active');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').classList.remove('active');
+        }
+
+        function handleBackdropClick(event) {
+            if (event.target && event.target.id === 'payment-modal') {
+                closePaymentModal();
+            }
+        }
+
+        function copyUpiId() {
+            navigator.clipboard.writeText(UPI_CONFIG.upiId).then(() => {
+                const el = document.getElementById('display-upi-id');
+                const original = el.innerText;
+                el.innerText = "Copied! (कॉपी झाले)";
+                setTimeout(() => { el.innerText = original; }, 2000);
+            }).catch(() => {
+                alert("UPI ID: " + UPI_CONFIG.upiId);
+            });
+        }
+
+        // Live UTR input formatter and counter
+        function formatUtrInput(el) {
+            el.value = el.value.replace(/\D/g, '').slice(0, 12);
+            const counter = document.getElementById('utr-digit-counter');
+            if (counter) {
+                counter.innerText = el.value.length + "/12 अंक";
+                if (el.value.length === 12) {
+                    counter.style.color = "#4ade80";
+                    counter.style.fontWeight = "bold";
+                } else {
+                    counter.style.color = "#94a3b8";
+                    counter.style.fontWeight = "normal";
+                }
+            }
+            const errorMsg = document.getElementById('utr-error-msg');
+            if (errorMsg && el.value.length > 0) {
+                errorMsg.style.display = 'none';
+            }
+        }
+
+        function showUtrError(msg) {
+            const errorMsg = document.getElementById('utr-error-msg');
+            if (errorMsg) {
+                errorMsg.innerText = msg;
+                errorMsg.style.display = 'block';
+            }
+            const utrInput = document.getElementById('utr-number-input');
+            if (utrInput) {
+                utrInput.style.borderColor = '#ef4444';
+                utrInput.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+                setTimeout(() => {
+                    utrInput.style.borderColor = '';
+                    utrInput.style.boxShadow = '';
+                }, 3000);
+            }
+        }
+
+        // Strict 12-Digit Verification & Download
+        function verifyAndDownload() {
+            const utrInput = document.getElementById('utr-number-input');
+            const rawUtr = (utrInput?.value || '').trim().replace(/\s+/g, '');
+
+            // 1. Check if empty
+            if (!rawUtr) {
+                showUtrError("⚠️ कृपया पेमेंट ॲपमधील (PhonePe/GPay) १२-अंकी UTR नंबर टाका!");
+                utrInput.focus();
+                return;
+            }
+
+            // 2. Check 12 numeric digits regex
+            const isValid12Digits = /^\d{12}$/.test(rawUtr);
+            if (!isValid12Digits) {
+                showUtrError("⚠️ चुकीचा UTR! UTR नेमका १२ आकडी (Digits) असणे आवश्यक आहे.");
+                utrInput.focus();
+                return;
+            }
+
+            // 3. Reject fake / dummy sequences
+            const isRepeated = /^(\d)\1{11}$/.test(rawUtr);
+            const isSequential = rawUtr === "123456789012" || rawUtr === "012345678901" || rawUtr === "987654321098";
+            if (isRepeated || isSequential) {
+                showUtrError("⚠️ अवैध (Fake) UTR नंबर स्वीकारला जाणार नाही. खरा UTR टाका!");
+                utrInput.focus();
+                return;
+            }
+
+            // 4. Record transaction in Local Storage for Operator Audit Log
+            try {
+                const logKey = "aadhaar_verified_payments";
+                const currentLogs = JSON.parse(localStorage.getItem(logKey) || "[]");
+                currentLogs.unshift({
+                    utr: rawUtr,
+                    amount: "₹10.00",
+                    form: currentFormKey,
+                    date: new Date().toLocaleString('mr-IN'),
+                    status: "VERIFIED"
+                });
+                localStorage.setItem(logKey, JSON.stringify(currentLogs.slice(0, 50)));
+            } catch (e) {
+                console.warn("Storage log error:", e);
+            }
+
+            // 5. Success state
+            isPaymentVerified = true;
+            document.getElementById('display-verified-utr').innerText = rawUtr;
+            document.getElementById('payment-view-default').style.display = 'none';
+            document.getElementById('payment-view-success').style.display = 'flex';
+
+            const downloadBtn = document.getElementById('btn-download');
+            if (downloadBtn) {
+                downloadBtn.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #4ade80;"></i> <span>फॉर्म डाऊनलोड (Paid ✓)</span>';
+                downloadBtn.style.background = 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
+            }
+
+            setTimeout(() => {
+                closePaymentModal();
+                downloadFlattenedPDF();
+            }, 1400);
+        }
+
+        function directDownloadWithoutPay() {
+            closePaymentModal();
+            downloadFlattenedPDF();
+        }
+
+        // Global APIs for Universal Form History integration
+        window.getAadhaarCurrentFormData = function() {
+            return collectCurrentPdfFormValues();
+        };
+
+        window.populateAadhaarForm = function(formData) {
+            if (!formData) return;
+            const values = (formData && formData.fieldValues) ? formData.fieldValues : formData;
+            Object.assign(activeFormValues, values);
+            selectForm(currentFormKey, values);
+        };
+
+        window.addEventListener("DOMContentLoaded", initViewer);
+    </script>
+</body>
+</html>

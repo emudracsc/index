@@ -1,0 +1,4667 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EMUDRA PDF COMPRESSOR PRO | शासकीय PDF व इमेज कॉम्प्रेशर</title>
+  <meta name="description" content="शासकीय कागदपत्रे (PDF व इमेजेस) आपले सरकार २५६ KB, महाडीबीटी ५०० KB, फोटो ५० KB व स्वाक्षरी २० KB साठी सुरक्षितपणे अचूक साईझमध्ये कॉम्प्रेस करा, मल्टिपल PDF/इमेज एकत्र करा किंवा झिप (ZIP) डाउनलोड करा.">
+  
+  <!-- Google Fonts: Mukta & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/emudra_compressor_icon.png">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- PDF.js, jsPDF & JSZip CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <style>
+    :root {
+      --primary-navy: #080d1a;
+      --bg-dark-base: #060913;
+      --bg-surface: rgba(13, 21, 38, 0.85);
+      --bg-card: rgba(15, 23, 42, 0.75);
+      --bg-card-hover: rgba(22, 33, 58, 0.85);
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-rose: #f43f5e;
+      --accent-teal: #14b8a6;
+      --border-glass: rgba(56, 189, 248, 0.22);
+      --border-glass-glow: rgba(56, 189, 248, 0.5);
+      --glow-cyan: 0 0 25px rgba(56, 189, 248, 0.35);
+      --glow-emerald: 0 0 25px rgba(16, 185, 129, 0.35);
+      --glow-amber: 0 0 25px rgba(245, 158, 11, 0.35);
+      --glow-blue: 0 0 25px rgba(2, 132, 199, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background: var(--bg-dark-base);
+      background-image: 
+        radial-gradient(ellipse at 15% 0%, rgba(2, 132, 199, 0.16) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 100%, rgba(16, 185, 129, 0.12) 0%, transparent 55%),
+        radial-gradient(circle at 50% 40%, rgba(139, 92, 246, 0.08) 0%, transparent 65%),
+        radial-gradient(circle at 85% 20%, rgba(56, 189, 248, 0.07) 0%, transparent 50%);
+      color: #f8fafc;
+      font-family: 'Mukta', 'Poppins', -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background 0.3s ease;
+    }
+
+    /* Top Tricolor Indian Government Ribbon */
+    .gov-tricolor-stripe {
+      height: 3px;
+      background: linear-gradient(90deg, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%);
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Modern Pro Top Navbar */
+    .top-navbar {
+      background: rgba(9, 14, 28, 0.92);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.18);
+      backdrop-filter: blur(20px) saturate(180%);
+      position: sticky;
+      top: 3px;
+      z-index: 999;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .compressor-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 14px 18px 28px 18px;
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* =========================================================================
+       Window Controls & Header Bar (Pro Graphic Titlebar / Windows & Mac Look)
+       ========================================================================= */
+    .window-controls-bar {
+      background: linear-gradient(90deg, rgba(13, 21, 38, 0.95), rgba(24, 34, 56, 0.85));
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 12px;
+      padding: 7px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .win-controls-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .win-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+      font-size: 0.74rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .win-btn:hover {
+      transform: translateY(-1px);
+    }
+    .win-btn.win-min {
+      background: rgba(245, 158, 11, 0.18);
+      border-color: rgba(245, 158, 11, 0.45);
+      color: #fbbf24;
+    }
+    .win-btn.win-min:hover {
+      background: #f59e0b;
+      color: #000;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.7);
+    }
+    .win-btn.win-max {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.45);
+      color: #34d399;
+    }
+    .win-btn.win-max:hover {
+      background: #10b981;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.7);
+    }
+    .win-btn.win-reset {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.45);
+      color: #fca5a5;
+    }
+    .win-btn.win-reset:hover {
+      background: #ef4444;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.7);
+    }
+    .win-bar-divider {
+      height: 18px;
+      width: 1px;
+      background: rgba(255, 255, 255, 0.18);
+      margin: 0 5px;
+    }
+    .win-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      letter-spacing: 0.2px;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+      animation: pulseGlow 1.8s infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+    .win-controls-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-compact-toggle {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(56, 189, 248, 0.15));
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: #7dd3fc;
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.25);
+    }
+    .btn-compact-toggle:hover {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #fff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+      transform: translateY(-1px);
+    }
+    .privacy-shield-tag {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+      border-radius: 7px;
+      padding: 4px 10px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Single View Header */
+    .single-view-header {
+      margin-bottom: 14px;
+    }
+    .single-view-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .compact-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin: 0;
+      background: linear-gradient(135deg, #ffffff 0%, #7dd3fc 50%, #34d399 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-shadow: 0 0 30px rgba(56, 189, 248, 0.25);
+    }
+    .active-mode-tag-pill {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #7dd3fc;
+      border-radius: 9px;
+      padding: 5px 14px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-download-app, .btn-download-offline {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.82rem;
+      padding: 0.4rem 0.95rem;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 3px 12px rgba(2, 132, 199, 0.4);
+      transition: all 0.2s ease;
+    }
+    .btn-download-app:hover, .btn-download-offline:hover {
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
+      color: #ffffff;
+    }
+
+    /* =========================================================================
+       Mode Tabs: High-Tech Graphical 6-Card Grid (Software Toolstrip Design)
+       ========================================================================= */
+    .mode-tabs-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      background: rgba(11, 18, 33, 0.88);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 14px;
+      padding: 6px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+    @media (max-width: 990px) {
+      .mode-tabs-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 540px) {
+      .mode-tabs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .mode-tab-btn {
+      background: rgba(24, 34, 56, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 8px 10px;
+      color: #cbd5e1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      text-align: left;
+      font-family: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+    .mode-tab-btn:hover {
+      background: rgba(56, 189, 248, 0.14);
+      border-color: rgba(56, 189, 248, 0.45);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+    .mode-tab-btn.active {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.38) 0%, rgba(14, 165, 233, 0.18) 100%);
+      border-color: #38bdf8;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+    .mode-tab-btn.active::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 15%;
+      right: 15%;
+      height: 2.5px;
+      background: #38bdf8;
+      border-radius: 3px 3px 0 0;
+      box-shadow: 0 0 8px #38bdf8;
+    }
+    .mode-tab-icon-wrap {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+      background: rgba(11, 18, 33, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: all 0.2s ease;
+    }
+    .mode-tab-btn:hover .mode-tab-icon-wrap {
+      transform: scale(1.08);
+    }
+    .mode-tab-icon-wrap.cyan { color: #38bdf8; border-color: rgba(56, 189, 248, 0.45); box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
+    .mode-tab-icon-wrap.emerald { color: #34d399; border-color: rgba(52, 211, 153, 0.45); box-shadow: 0 0 10px rgba(52, 211, 153, 0.2); }
+    .mode-tab-icon-wrap.amber { color: #fbbf24; border-color: rgba(251, 191, 36, 0.45); box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
+    .mode-tab-icon-wrap.pink { color: #f472b6; border-color: rgba(244, 114, 182, 0.45); box-shadow: 0 0 10px rgba(244, 114, 182, 0.2); }
+    .mode-tab-icon-wrap.purple { color: #c084fc; border-color: rgba(192, 132, 252, 0.45); box-shadow: 0 0 10px rgba(192, 132, 252, 0.2); }
+    .mode-tab-icon-wrap.teal { color: #2dd4bf; border-color: rgba(45, 212, 191, 0.45); box-shadow: 0 0 10px rgba(45, 212, 191, 0.2); }
+
+    .mode-tab-texts {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      line-height: 1.2;
+    }
+    .mode-name {
+      font-size: 0.84rem;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #f1f5f9;
+    }
+    .mode-subtag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      white-space: nowrap;
+      opacity: 0.9;
+    }
+    .mode-subtag.cyan { color: #7dd3fc; }
+    .mode-subtag.emerald { color: #a7f3d0; }
+    .mode-subtag.amber { color: #fde68a; }
+    .mode-subtag.pink { color: #fbcfe8; }
+    .mode-subtag.purple { color: #e9d5ff; }
+    .mode-subtag.teal { color: #99f6e4; }
+
+    /* =========================================================================
+       2-Column Workspace Grid & Glass Cards
+       ========================================================================= */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.08fr;
+      gap: 16px;
+      align-items: stretch;
+      flex: 1;
+    }
+    @media (max-width: 890px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .glass-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      padding: 16px 18px;
+      backdrop-filter: blur(20px) saturate(180%);
+      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.06) inset, 0 0 20px rgba(56, 189, 248, 0.08);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.25s ease;
+    }
+    .glass-card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 24px 50px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.09) inset, 0 0 25px rgba(56, 189, 248, 0.12);
+    }
+
+    .col-card-header {
+      margin-bottom: 12px;
+      padding-bottom: 9px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .col-card-title {
+      font-size: 0.94rem;
+      font-weight: 800;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.2px;
+    }
+    .btn-card-collapse {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+    .btn-card-collapse:hover {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    /* =========================================================================
+       Holographic Upload Dropzone
+       ========================================================================= */
+    .upload-dropzone {
+      border: 2px dashed rgba(56, 189, 248, 0.4);
+      border-radius: 14px;
+      padding: 26px 18px;
+      text-align: center;
+      cursor: pointer;
+      background: radial-gradient(circle at 50% 45%, rgba(56, 189, 248, 0.08) 0%, rgba(13, 21, 38, 0.5) 100%);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      min-height: 205px;
+      position: relative;
+      overflow: hidden;
+    }
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+      border-color: #38bdf8;
+      background: radial-gradient(circle at 50% 45%, rgba(56, 189, 248, 0.18) 0%, rgba(15, 23, 42, 0.8) 100%);
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.38);
+      transform: scale(1.006);
+    }
+    .upload-icon-circle {
+      width: 58px;
+      height: 58px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.3), rgba(2, 132, 199, 0.4));
+      border: 2px solid rgba(56, 189, 248, 0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      font-size: 1.55rem;
+      color: #38bdf8;
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.35);
+      position: relative;
+      transition: all 0.25s ease;
+    }
+    .upload-dropzone:hover .upload-icon-circle {
+      transform: scale(1.1) rotate(6deg);
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.6);
+    }
+    .upload-dropzone h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .format-pills-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .fmt-pill {
+      background: rgba(30, 41, 59, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #94a3b8;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .fmt-pill.pdf { border-color: rgba(56, 189, 248, 0.45); color: #7dd3fc; }
+    .fmt-pill.jpg { border-color: rgba(244, 114, 182, 0.45); color: #f472b6; }
+    .fmt-pill.png { border-color: rgba(52, 211, 153, 0.45); color: #6ee7b7; }
+
+    /* Luminous Primary Select File Button */
+    .btn-select-file {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #fff;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      padding: 9px 20px;
+      border-radius: 9px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-select-file:hover {
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    }
+
+    /* File List Controls & Items */
+    .file-summary-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 9px;
+      background: rgba(30, 41, 59, 0.65);
+      padding: 7px 14px;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .btn-ctrl-sm {
+      padding: 4px 10px;
+      border-radius: 7px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.18s;
+    }
+    .btn-ctrl-sm.add {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+    }
+    .btn-ctrl-sm.add:hover {
+      background: rgba(56, 189, 248, 0.35);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .btn-ctrl-sm.danger {
+      background: rgba(239, 68, 68, 0.16);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    .btn-ctrl-sm.danger:hover {
+      background: rgba(239, 68, 68, 0.35);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .file-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+    .file-item-card {
+      background: rgba(24, 34, 56, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: all 0.2s;
+    }
+    .file-item-card:hover {
+      border-color: rgba(56, 189, 248, 0.45);
+      background: rgba(28, 40, 68, 0.9);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+    .file-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+    .file-item-icon {
+      font-size: 1.35rem;
+      color: #38bdf8;
+    }
+    .file-item-thumb {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .file-item-title {
+      font-weight: 700;
+      color: #f1f5f9;
+      font-size: 0.88rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-item-sub {
+      font-size: 0.74rem;
+      color: #94a3b8;
+    }
+    .file-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-item-ctrl {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      border-radius: 6px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 0.74rem;
+      transition: all 0.15s;
+    }
+    .btn-item-ctrl:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: rgba(239, 68, 68, 0.55);
+      color: #fca5a5;
+    }
+
+    /* =========================================================================
+       Target Size Controller & Super Minimise Button
+       ========================================================================= */
+    .target-size-box {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.09) 0%, rgba(13, 21, 38, 0.88) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      border-radius: 12px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+    .target-size-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 9px;
+    }
+    .target-size-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    /* High-End Luminous Golden-Amber Super Minimise Button */
+    .btn-super-minimise {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+      border: 1px solid rgba(251, 191, 36, 0.7);
+      color: #ffffff;
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 3px 14px rgba(245, 158, 11, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    }
+    .btn-super-minimise:hover {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+      box-shadow: 0 6px 24px rgba(245, 158, 11, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+      transform: translateY(-2px);
+    }
+    .btn-super-minimise:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+    .badge-mini-tag {
+      background: rgba(0, 0, 0, 0.38);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      border: 0.5px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .target-input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 9px;
+    }
+    .custom-kb-input-wrap {
+      display: inline-flex;
+      align-items: center;
+      background: #040813;
+      border: 2px solid #38bdf8;
+      border-radius: 9px;
+      padding: 4px 10px;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.32);
+    }
+    .custom-kb-input-wrap input {
+      background: transparent;
+      border: none;
+      color: #38bdf8;
+      font-size: 1.3rem;
+      font-weight: 800;
+      width: 78px;
+      text-align: center;
+      outline: none;
+      font-family: 'Poppins', monospace;
+    }
+    .kb-unit-tag {
+      color: #94a3b8;
+      font-weight: 800;
+      font-size: 0.92rem;
+      padding-right: 2px;
+      user-select: none;
+    }
+
+    /* Range Slider Styling */
+    .slider-wrap {
+      width: 100%;
+      margin: 8px 0 10px 0;
+    }
+    .neon-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 7px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #10b981 0%, #38bdf8 50%, #8b5cf6 100%);
+      outline: none;
+      cursor: pointer;
+    }
+    .neon-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2.5px solid #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.85);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .neon-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.22);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 1);
+    }
+
+    /* Quick Size Chips */
+    .quick-size-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .size-chip {
+      background: rgba(24, 35, 60, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #cbd5e1;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .size-chip:hover {
+      border-color: #38bdf8;
+      color: #ffffff;
+      background: rgba(56, 189, 248, 0.18);
+      transform: translateY(-1px);
+    }
+    .size-chip.active {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    /* Dimension Chips */
+    .dimension-chips-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .dim-chip {
+      background: rgba(26, 38, 64, 0.65);
+      border: 1px solid rgba(236, 72, 153, 0.35);
+      color: #f1f5f9;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .dim-chip:hover {
+      border-color: #f472b6;
+      background: rgba(236, 72, 153, 0.2);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .dim-chip.active {
+      background: linear-gradient(135deg, #db2777 0%, #9d174d 100%);
+      border-color: #f472b6;
+      color: #fff;
+      box-shadow: 0 0 14px rgba(236, 72, 153, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    /* Compact Features Strip */
+    .compact-features-strip {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .feature-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 7px;
+      padding: 4px 10px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #94a3b8;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .text-sky { color: #38bdf8; }
+    .text-emerald { color: #34d399; }
+    .text-amber { color: #fbbf24; }
+
+    /* =========================================================================
+       HERO PRIMARY ACTION BUTTON (COMPRESS START) - Luminous Sheen & 3D Depth
+       ========================================================================= */
+    .btn-compress-action {
+      width: 100%;
+      background: linear-gradient(135deg, #059669 0%, #0d9488 45%, #0284c7 100%);
+      color: #fff;
+      border: 1px solid rgba(52, 211, 153, 0.55);
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 0.98rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 25px rgba(5, 150, 105, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.3px;
+    }
+    .btn-compress-action::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 40%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+      transform: rotate(25deg);
+      transition: all 0.75s ease;
+    }
+    .btn-compress-action:hover::after {
+      left: 125%;
+    }
+    .btn-compress-action:hover:not(:disabled) {
+      background: linear-gradient(135deg, #10b981 0%, #059669 45%, #0369a1 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 35px rgba(16, 185, 129, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    }
+    .btn-compress-action:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: 0 4px 16px rgba(5, 150, 105, 0.4);
+    }
+    .btn-compress-action:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Progress Section */
+    .progress-section {
+      display: none;
+      margin-top: 10px;
+      background: rgba(22, 33, 56, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 9px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 7px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #10b981);
+      border-radius: 5px;
+      transition: width 0.18s ease;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+    }
+
+    /* =========================================================================
+       Visual Comparison Dashboard & Radial Meter (Results Card)
+       ========================================================================= */
+    .result-section {
+      display: none;
+      margin-top: 12px;
+      animation: fadeIn 0.25s ease;
+    }
+    .result-success-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
+    }
+
+    .visual-comparison-dashboard {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 12px;
+      background: rgba(13, 21, 38, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      align-items: center;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+    @media (max-width: 520px) {
+      .visual-comparison-dashboard {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    /* Radial SVG Gauge */
+    .radial-gauge-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+    .radial-gauge-svg-wrap {
+      width: 95px;
+      height: 95px;
+      position: relative;
+    }
+    .radial-gauge-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .gauge-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.1);
+      stroke-width: 8;
+    }
+    .gauge-fill {
+      fill: none;
+      stroke: url(#gaugeGrad);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 264;
+      stroke-dashoffset: 264;
+      transition: stroke-dashoffset 0.8s ease;
+    }
+    .gauge-center-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.1;
+    }
+    .gauge-percent {
+      font-size: 1.22rem;
+      font-weight: 800;
+      color: #34d399;
+      font-family: 'Poppins', monospace;
+    }
+    .gauge-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+    .gauge-footer-text {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #7dd3fc;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Before vs After Bars */
+    .size-bars-card {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .size-bar-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .size-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+    .bar-tag.orig { color: #fca5a5; }
+    .bar-tag.comp { color: #6ee7b7; }
+    .bar-track {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .bar-fill.orig {
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #f97316);
+      border-radius: 5px;
+      transition: width 0.4s ease;
+    }
+    .bar-fill.comp {
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #10b981);
+      border-radius: 5px;
+      transition: width 0.4s ease;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+    }
+    .savings-difference-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 3px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .diff-badge {
+      background: rgba(56, 189, 248, 0.16);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #7dd3fc;
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+    .clarity-seal {
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .comparison-stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+    .stat-box {
+      background: rgba(24, 34, 56, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 9px;
+      padding: 8px;
+      text-align: center;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      margin-bottom: 3px;
+    }
+    .stat-value {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .stat-box.success {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.1);
+    }
+    .stat-box.success .stat-value {
+      color: #34d399;
+    }
+
+    /* Result Action Buttons */
+    .result-actions-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .btn-download-result {
+      background: linear-gradient(135deg, #2563eb 0%, #0284c7 50%, #06b6d4 100%);
+      color: #fff;
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      padding: 10px 18px;
+      border-radius: 9px;
+      font-size: 0.94rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      flex: 1;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-download-result:hover {
+      background: linear-gradient(135deg, #38bdf8 0%, #2563eb 60%, #0284c7 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(56, 189, 248, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+    }
+    .btn-secondary-action {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 0.86rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.18s;
+    }
+    .btn-secondary-action:hover {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: #38bdf8;
+      color: #38bdf8;
+      transform: translateY(-1px);
+    }
+    .btn-reset-action {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #fca5a5;
+      padding: 10px 14px;
+      border-radius: 9px;
+      font-weight: 600;
+      font-size: 0.84rem;
+      cursor: pointer;
+      transition: all 0.18s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-reset-action:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .thumbnails-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+      gap: 7px;
+      max-height: 125px;
+      overflow-y: auto;
+      padding: 6px;
+      background: rgba(9, 14, 28, 0.45);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .thumb-card {
+      background: #1a253c;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      padding: 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .thumb-card:hover {
+      border-color: #38bdf8;
+      transform: scale(1.04);
+    }
+    .thumb-card img {
+      width: 100%;
+      height: 62px;
+      object-fit: contain;
+      border-radius: 4px;
+      display: block;
+    }
+    .thumb-page-num {
+      font-size: 0.68rem;
+      color: #94a3b8;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* =========================================================================
+       MINIMISE / COMPACT MODE STYLES (कमी जागा व्यापणारा फ्लोटिंग व्ह्यू)
+       ========================================================================= */
+    body.compact-mode .top-navbar {
+      display: none;
+    }
+    body.compact-mode .gov-tricolor-stripe {
+      height: 2px;
+    }
+    body.compact-mode .compressor-container {
+      max-width: 940px;
+      padding: 6px 12px;
+    }
+    body.compact-mode .window-controls-bar {
+      margin-bottom: 6px;
+      padding: 4px 10px;
+    }
+    body.compact-mode .single-view-header {
+      margin-bottom: 6px;
+    }
+    body.compact-mode .single-view-title-row {
+      margin-bottom: 4px;
+    }
+    body.compact-mode .compact-title {
+      font-size: 1rem;
+    }
+    body.compact-mode .mode-tabs-grid {
+      padding: 3px;
+      gap: 4px;
+    }
+    body.compact-mode .mode-tab-btn {
+      padding: 4px 6px;
+    }
+    body.compact-mode .mode-tab-icon-wrap {
+      width: 24px;
+      height: 24px;
+      font-size: 0.8rem;
+    }
+    body.compact-mode .mode-subtag {
+      display: none;
+    }
+    body.compact-mode .workspace-grid {
+      gap: 8px;
+    }
+    body.compact-mode .glass-card {
+      padding: 10px 12px;
+      border-radius: 10px;
+    }
+    body.compact-mode .upload-dropzone {
+      min-height: 100px;
+      padding: 12px 10px;
+    }
+    body.compact-mode .upload-icon-circle {
+      width: 36px;
+      height: 36px;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+    body.compact-mode .upload-dropzone h3 {
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+    }
+    body.compact-mode .format-pills-row {
+      display: none;
+    }
+    body.compact-mode .btn-select-file {
+      padding: 5px 12px;
+      font-size: 0.78rem;
+    }
+    body.compact-mode .target-size-box {
+      padding: 6px 9px;
+      margin-bottom: 6px;
+    }
+    body.compact-mode .compact-features-strip {
+      display: none;
+    }
+    body.compact-mode .btn-compress-action {
+      padding: 8px 12px;
+      font-size: 0.86rem;
+    }
+    body.compact-mode .visual-comparison-dashboard {
+      grid-template-columns: 90px 1fr;
+      padding: 6px;
+      margin-bottom: 6px;
+    }
+    body.compact-mode .radial-gauge-svg-wrap {
+      width: 70px;
+      height: 70px;
+    }
+    body.compact-mode .gauge-percent {
+      font-size: 0.95rem;
+    }
+
+    /* Cropper Modal & Workspace Styles */
+    .crop-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 8, 18, 0.88);
+      backdrop-filter: blur(14px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    .crop-modal-container {
+      background: #0f172a;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 740px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(56, 189, 248, 0.25);
+      overflow: hidden;
+      animation: fadeIn 0.2s ease;
+    }
+    .crop-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: rgba(15, 23, 42, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .crop-modal-close {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .crop-modal-close:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+    .crop-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      background: rgba(24, 34, 56, 0.65);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+      flex-wrap: wrap;
+    }
+    .crop-preset-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .crop-preset-btn {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .crop-preset-btn:hover {
+      border-color: #38bdf8;
+      color: #fff;
+    }
+    .crop-preset-btn.active {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      border-color: #38bdf8;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+    .crop-tool-btn {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .crop-tool-btn:hover {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+    .crop-workspace-viewport {
+      flex: 1;
+      min-height: 280px;
+      max-height: 440px;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+    #crop-canvas {
+      display: block;
+      max-width: 100%;
+      max-height: 440px;
+      box-shadow: 0 0 18px rgba(0, 0, 0, 0.7);
+    }
+    .crop-box-element {
+      position: absolute;
+      border: 2px solid #38bdf8;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.68), 0 0 14px rgba(56, 189, 248, 0.65);
+      cursor: move;
+      box-sizing: border-box;
+    }
+    .crop-grid-line {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.35);
+      pointer-events: none;
+    }
+    .crop-grid-line.h1 { top: 33.33%; left: 0; right: 0; height: 1px; }
+    .crop-grid-line.h2 { top: 66.66%; left: 0; right: 0; height: 1px; }
+    .crop-grid-line.v1 { left: 33.33%; top: 0; bottom: 0; width: 1px; }
+    .crop-grid-line.v2 { left: 66.66%; top: 0; bottom: 0; width: 1px; }
+    .crop-handle {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: #38bdf8;
+      border: 2px solid #ffffff;
+      border-radius: 3px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.6);
+    }
+    .crop-handle.nw { top: -7px; left: -7px; cursor: nwse-resize; }
+    .crop-handle.ne { top: -7px; right: -7px; cursor: nesw-resize; }
+    .crop-handle.sw { bottom: -7px; left: -7px; cursor: nesw-resize; }
+    .crop-handle.se { bottom: -7px; right: -7px; cursor: nwse-resize; }
+    .crop-dimension-badge {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: #38bdf8;
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 5px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .crop-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(15, 23, 42, 0.96);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-tricolor-stripe"></div>
+
+  <!-- Top Navigation Bar -->
+  <nav class="top-navbar">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 14px;">
+      <a href="index.html" class="brand-link" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+        <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #0284c7, #0369a1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1rem;">
+          <i class="fa-solid fa-file-zipper"></i>
+        </div>
+        <div>
+          <div style="color: #fff; font-weight: 800; font-size: 0.92rem; line-height: 1.2;">ई-मुद्रा सेवा केंद्र</div>
+          <div style="color: #38bdf8; font-size: 0.72rem; font-weight: 600;">शासकीय PDF & Image Suite Pro</div>
+        </div>
+      </a>
+
+      <div class="nav-actions-cluster" style="display: flex; align-items: center; gap: 8px;">
+        <a href="softwares/EMUDRA_PDF_COMPRESSOR_Setup.exe" download="EMUDRA_PDF_COMPRESSOR_Setup.exe" class="btn-download-app" title="Windows PC वर इन्स्टॉल करण्यासाठी EMUDRA PDF COMPRESSOR सेटअप डाउनलोड करा">
+          <img src="images/emudra_compressor_icon.png" alt="icon" style="width: 20px; height: 20px; border-radius: 4px; box-shadow: 0 0 6px rgba(56,189,248,0.6);">
+          <span>EMUDRA PDF COMPRESSOR (Setup.exe)</span>
+        </a>
+        <a href="index.html" class="btn-nav" title="मुख्य डॅशबोर्डवर जा" style="background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.3); color: #38bdf8; font-weight: 700; font-size: 0.8rem; padding: 0.3rem 0.75rem; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+          <i class="fa-solid fa-house"></i> <span>मुख्य पृष्ठ</span>
+        </a>
+        <div class="citizen-auth-slot" id="citizen-auth-slot"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container: Single View -->
+  <main class="compressor-container">
+    
+    <!-- SVG Defs for Radial Gauge Gradient -->
+    <svg width="0" height="0" style="position: absolute;">
+      <defs>
+        <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#38bdf8" />
+          <stop offset="100%" stop-color="#10b981" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <!-- Pro Window Controls Bar (Mac/Windows Style with Minimise / Compact Toggle) -->
+    <div class="window-controls-bar" id="window-controls-bar">
+      <div class="win-controls-left">
+        <button type="button" class="win-btn win-min" title="मिनिमाइज व्ह्यू (Compact Mode)" onclick="toggleCompactMinimiseMode()">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+        <button type="button" class="win-btn win-max" title="विस्तृत व्ह्यू (Fullscreen/Expanded)" onclick="toggleFullscreenView()">
+          <i class="fa-solid fa-expand"></i>
+        </button>
+        <button type="button" class="win-btn win-reset" title="सर्व क्लिअर करा (Reset)" onclick="resetMasterUploader()">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+        <span class="win-bar-divider"></span>
+        <div class="win-status-badge">
+          <span class="pulse-dot"></span>
+          <span class="win-status-text">AI Precision Engine v3.2 • Zero Blur Hard-Lock</span>
+        </div>
+      </div>
+      <div class="win-controls-right">
+        <button type="button" class="btn-compact-toggle" id="btn-compact-toggle" onclick="toggleCompactMinimiseMode()" title="स्क्रीनवर कमी जागा व्यापण्यासाठी कॉम्पॅक्ट मोड टॉगल करा">
+          <i class="fa-solid fa-compress" id="compact-toggle-icon"></i>
+          <span id="compact-toggle-label">मिनिमाइज व्ह्यू (Compact)</span>
+        </button>
+        <span class="privacy-shield-tag"><i class="fa-solid fa-shield-halved"></i> १००% सुरक्षित (Client-Side)</span>
+      </div>
+    </div>
+
+    <!-- Compact Header & 1-Row Mode Tabs -->
+    <div class="single-view-header">
+      <div class="single-view-title-row">
+        <h1 class="compact-title">
+          <i class="fa-solid fa-file-zipper text-sky"></i>
+          <span>शासकीय PDF & इमेज Compressor Pro</span>
+        </h1>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <div class="active-mode-tag-pill" id="active-mode-title">
+            <i class="fa-solid fa-file-pdf" style="color: #38bdf8;"></i>
+            <span>सिंगल PDF कॉम्प्रेसर</span>
+          </div>
+        </div>
+        <div id="active-mode-badge" style="display: none;">१ फाईल ➔ अचूक टार्गेट साईझ</div>
+      </div>
+
+      <!-- Mode Selector Tabs Bar with Rich Graphical Badges -->
+      <div class="mode-tabs-grid" id="mode-tabs-bar">
+        <button type="button" class="mode-tab-btn active" data-mode="single-pdf" onclick="switchToolMode('single-pdf')">
+          <div class="mode-tab-icon-wrap cyan"><i class="fa-solid fa-file-pdf"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">१. सिंगल PDF / डॉक</span>
+            <span class="mode-subtag cyan">⚡ PDF किंवा इमेज ➔ PDF</span>
+          </div>
+        </button>
+        <button type="button" class="mode-tab-btn" data-mode="merge-pdf" onclick="switchToolMode('merge-pdf')">
+          <div class="mode-tab-icon-wrap emerald"><i class="fa-solid fa-copy"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">२. मल्टिपल PDF ➔ १</span>
+            <span class="mode-subtag emerald">📄 एकत्र जोडा</span>
+          </div>
+        </button>
+        <button type="button" class="mode-tab-btn" data-mode="batch-pdf" onclick="switchToolMode('batch-pdf')">
+          <div class="mode-tab-icon-wrap amber"><i class="fa-solid fa-file-zipper"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">३. बॅच PDF (ZIP)</span>
+            <span class="mode-subtag amber">📦 सर्व स्वतंत्र झिप</span>
+          </div>
+        </button>
+        <button type="button" class="mode-tab-btn" data-mode="single-img" onclick="switchToolMode('single-img')">
+          <div class="mode-tab-icon-wrap pink"><i class="fa-solid fa-image"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">४. सिंगल इमेज</span>
+            <span class="mode-subtag pink">👤 फोटो / सही / PDF</span>
+          </div>
+        </button>
+        <button type="button" class="mode-tab-btn" data-mode="img-to-pdf" onclick="switchToolMode('img-to-pdf')">
+          <div class="mode-tab-icon-wrap purple"><i class="fa-solid fa-file-pdf"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">५. इमेज ➔ PDF</span>
+            <span class="mode-subtag purple">📑 सिंगल किंवा मल्टिपल</span>
+          </div>
+        </button>
+        <button type="button" class="mode-tab-btn" data-mode="batch-img" onclick="switchToolMode('batch-img')">
+          <div class="mode-tab-icon-wrap teal"><i class="fa-solid fa-folder-archive"></i></div>
+          <div class="mode-tab-texts">
+            <span class="mode-name">६. बॅच इमेजेस</span>
+            <span class="mode-subtag teal">🗂️ बल्क रीसाईझ</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- 2-Column Single View Workspace Grid -->
+    <div class="workspace-grid" id="main-working-card">
+      
+      <!-- Left Column: File Drop & Selection Card -->
+      <div class="glass-card" id="upload-card">
+        <div class="col-card-header">
+          <div class="col-card-title">
+            <i class="fa-solid fa-file-arrow-up text-sky"></i>
+            <span>कागदपत्र / फाईल अपलोड</span>
+          </div>
+          <button type="button" class="btn-card-collapse" onclick="toggleCardCollapse('upload-card')" title="पॅनेल मिनिमाइज/एक्सपँड करा">
+            <i class="fa-solid fa-chevron-up"></i>
+          </button>
+        </div>
+
+        <div class="card-collapsible-body" id="upload-card-body">
+          <!-- Holographic Dropzone -->
+          <div class="upload-dropzone" id="dropzone" onclick="triggerFileInput()">
+            <input type="file" id="master-file-input" style="display: none;">
+            <div class="upload-icon-circle" id="dropzone-icon">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <h3 id="dropzone-title">आपली फाईल येथे निवडा किंवा ड्रॅग करा</h3>
+            
+            <div class="format-pills-row">
+              <span class="fmt-pill pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span>
+              <span class="fmt-pill jpg"><i class="fa-solid fa-file-image"></i> JPG</span>
+              <span class="fmt-pill png"><i class="fa-solid fa-file-image"></i> PNG</span>
+              <span class="fmt-pill"><i class="fa-solid fa-file"></i> WEBP</span>
+            </div>
+
+            <p id="dropzone-desc" style="display: none;"></p>
+            <button type="button" class="btn-select-file" onclick="event.stopPropagation(); triggerFileInput();">
+              <i class="fa-solid fa-folder-open"></i> <span id="btn-browse-text">फाईल निवडा (Browse)</span>
+            </button>
+          </div>
+
+          <!-- File List Section -->
+          <div id="file-list-section" style="display: none; flex: 1;">
+            <div class="file-summary-bar">
+              <div id="file-count-summary" style="font-size: 0.82rem; font-weight: 700; color: #cbd5e1;">१ फाईल निवडली</div>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" onclick="triggerFileInput()" class="btn-ctrl-sm add">
+                  <i class="fa-solid fa-plus"></i> आणखी जोडा
+                </button>
+                <button type="button" onclick="resetMasterUploader()" class="btn-ctrl-sm danger">
+                  <i class="fa-solid fa-trash"></i> क्लिअर
+                </button>
+              </div>
+            </div>
+            <div class="file-items-list" id="file-items-container"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Settings, Action & Results -->
+      <div class="glass-card" id="settings-card">
+        <div class="col-card-header">
+          <div class="col-card-title">
+            <i class="fa-solid fa-sliders text-sky"></i>
+            <span>टार्गेट साईझ व कॉम्प्रेशन</span>
+          </div>
+          <button type="button" class="btn-card-collapse" onclick="toggleCardCollapse('settings-card')" title="पॅनेल मिनिमाइज/एक्सपँड करा">
+            <i class="fa-solid fa-chevron-up"></i>
+          </button>
+        </div>
+
+        <div class="card-collapsible-body" id="settings-card-body">
+          <!-- Settings Section -->
+          <div id="settings-section">
+            
+            <!-- Mode 5 Output Type Selector (Separate Single PDFs vs 1 Combined PDF) -->
+            <div id="img-to-pdf-output-mode-card" style="display: none; margin-bottom: 8px; background: rgba(30, 41, 59, 0.45); padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.25);">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #cbd5e1;"><i class="fa-solid fa-file-export text-sky"></i> PDF आउटपुट प्रकार:</span>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                  <button type="button" class="dim-chip active" id="btn-pdf-mode-separate" onclick="setPdfOutputMode('separate')" title="प्रत्येक फोटोची स्वतंत्र सिंगल-पेज PDF बनेल व प्रत्येकी स्वतंत्र साईझ मेंशन करता येईल">
+                    <i class="fa-solid fa-copy text-sky"></i> 📄 प्रत्येक फोटोची स्वतंत्र सिंगल PDF (Bulk)
+                  </button>
+                  <button type="button" class="dim-chip" id="btn-pdf-mode-combined" onclick="setPdfOutputMode('combined')" title="सर्व फोटो जोडून एकच एकत्रित मल्टी-पेज PDF बनेल">
+                    <i class="fa-solid fa-layer-group text-purple"></i> 📚 सर्व फोटो जोडून १ एकत्रित PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mode 4 Output Format Selector (JPG vs Single Page PDF) -->
+            <div id="image-output-format-card" style="display: none; margin-bottom: 8px; background: rgba(30, 41, 59, 0.45); padding: 7px 10px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.25);">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #cbd5e1;"><i class="fa-solid fa-file-export text-sky"></i> आउटपुट फॉरमॅट:</span>
+                <div style="display: flex; gap: 6px;">
+                  <button type="button" class="dim-chip active" id="btn-img-fmt-jpg" onclick="setImageOutputFormat('jpg')">
+                    <i class="fa-solid fa-image"></i> 🖼️ JPG इमेज
+                  </button>
+                  <button type="button" class="dim-chip" id="btn-img-fmt-pdf" onclick="setImageOutputFormat('pdf')">
+                    <i class="fa-solid fa-file-pdf text-rose"></i> 📑 सिंगल पेज PDF (A4)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Image Presets Card (Image modes only) -->
+            <div id="image-presets-control-card" style="display: none; margin-bottom: 8px;">
+              <div class="dimension-chips-row">
+                <button type="button" class="dim-chip active" id="dim-btn-photo" onclick="setImageDimensionPreset('photo')">
+                  <i class="fa-solid fa-user"></i> 👤 फोटो (160×210 px)
+                </button>
+                <button type="button" class="dim-chip" id="dim-btn-signature" onclick="setImageDimensionPreset('signature')">
+                  <i class="fa-solid fa-pen-nib"></i> ✍️ सही (256×64 px)
+                </button>
+                <button type="button" class="dim-chip" id="dim-btn-original" onclick="setImageDimensionPreset('original')">
+                  <i class="fa-solid fa-expand"></i> मूळ आकार
+                </button>
+                <button type="button" class="dim-chip" id="dim-btn-document" onclick="setImageDimensionPreset('document')">
+                  <i class="fa-solid fa-file-image"></i> 📄 कागदपत्र
+                </button>
+                <button type="button" class="dim-chip" id="dim-btn-custom" onclick="setImageDimensionPreset('custom')">
+                  <i class="fa-solid fa-sliders"></i> मॅन्युअल पिक्सेल
+                </button>
+              </div>
+
+              <!-- Manual Pixel Input & Crop Tool Row -->
+              <div class="manual-dim-row" id="manual-dim-row" style="display: flex; align-items: center; gap: 7px; margin-top: 7px; flex-wrap: wrap; background: rgba(30, 41, 59, 0.45); padding: 5px 9px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.08);">
+                <span style="font-size: 0.76rem; color: #94a3b8; font-weight: 700;"><i class="fa-solid fa-ruler-combined text-sky"></i> पिक्सेल (Px):</span>
+                <div style="display: flex; align-items: center; gap: 3px;">
+                  <span style="font-size: 0.74rem; color: #cbd5e1;">रुंदी:</span>
+                  <input type="number" id="custom-dim-w" value="160" min="10" max="5000" oninput="onCustomDimInputChanged()" style="width: 58px; background: rgba(15,23,42,0.85); border: 1px solid rgba(56,189,248,0.35); border-radius: 4px; color: #fff; padding: 2px 4px; font-weight: 700; font-size: 0.78rem; text-align: center;">
+                  <span style="font-size: 0.7rem; color: #64748b;">px</span>
+                </div>
+                <span style="color: #64748b; font-weight: bold;">×</span>
+                <div style="display: flex; align-items: center; gap: 3px;">
+                  <span style="font-size: 0.74rem; color: #cbd5e1;">उंची:</span>
+                  <input type="number" id="custom-dim-h" value="210" min="10" max="5000" oninput="onCustomDimInputChanged()" style="width: 58px; background: rgba(15,23,42,0.85); border: 1px solid rgba(56,189,248,0.35); border-radius: 4px; color: #fff; padding: 2px 4px; font-weight: 700; font-size: 0.78rem; text-align: center;">
+                  <span style="font-size: 0.7rem; color: #64748b;">px</span>
+                </div>
+                <button type="button" class="dim-chip" id="btn-open-cropper" onclick="openImageCropperModal()" style="margin-left: auto; border-color: #38bdf8; background: linear-gradient(135deg, rgba(2,132,199,0.35), rgba(56,189,248,0.2)); color: #38bdf8; font-weight: 700; padding: 3px 9px; font-size: 0.74rem; box-shadow: 0 0 10px rgba(56,189,248,0.25);">
+                  <i class="fa-solid fa-crop-simple"></i> ✂️ क्रॉप टूल (Crop Tool)
+                </button>
+              </div>
+
+              <span id="dimension-hint-text" style="display: none;"></span>
+            </div>
+
+            <!-- Image to PDF Page Controls Card (Orientation & Fit) -->
+            <div id="img-to-pdf-controls-card" style="display: none; margin-bottom: 8px; background: rgba(30, 41, 59, 0.45); padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.25);">
+              <div style="font-size: 0.78rem; font-weight: 800; color: #7dd3fc; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-file-pdf text-sky"></i> <span>इमेज ➔ सिंगल पेज PDF मांडणी (A4 Layout):</span>
+              </div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                <button type="button" class="dim-chip active" id="btn-orient-auto" onclick="setImgToPdfOrientation('auto')">
+                  <i class="fa-solid fa-wand-magic-sparkles text-amber"></i> ⚡ ऑटो-डिटेक्ट
+                </button>
+                <button type="button" class="dim-chip" id="btn-orient-portrait" onclick="setImgToPdfOrientation('portrait')">
+                  <i class="fa-solid fa-file"></i> 📄 उभा (Portrait A4)
+                </button>
+                <button type="button" class="dim-chip" id="btn-orient-landscape" onclick="setImgToPdfOrientation('landscape')">
+                  <i class="fa-solid fa-image"></i> 🔄 आडवा (Landscape A4)
+                </button>
+              </div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button type="button" class="dim-chip active" id="btn-fit-margin" onclick="setImgToPdfFit('margin')" title="कागदपत्राचा मजकूर न कापता स्वच्छ मार्जिनसह A4 पानावर फिट">
+                  <i class="fa-solid fa-expand text-emerald"></i> 📐 A4 मार्जिनसह फिट (शासकीय मानक)
+                </button>
+                <button type="button" class="dim-chip" id="btn-fit-full" onclick="setImgToPdfFit('full')" title="संपूर्ण पानावर पसरून फिट">
+                  <i class="fa-solid fa-maximize"></i> 🖼️ संपूर्ण पान (Full Bleed)
+                </button>
+              </div>
+            </div>
+
+            <!-- Target Size Box with Super Minimise & Interactive Slider -->
+            <div class="target-size-box">
+              <div class="target-size-header">
+                <span class="target-size-title" id="target-size-label-text">
+                  <i class="fa-solid fa-bullseye text-sky"></i> हवी असलेली अचूक साईझ (Target KB):
+                </span>
+                
+                <!-- Super Minimise Button -->
+                <button type="button" class="btn-super-minimise" id="btn-super-minimise" onclick="applySuperMinimise()" title="कमाल कॉम्प्रेशन: किमान सुरक्षित साईझ एका क्लिकवर सेट करा">
+                  <i class="fa-solid fa-bolt-lightning text-amber"></i>
+                  <span>⚡ सुपर मिनिमाइज</span>
+                  <span class="badge-mini-tag">किमान KB</span>
+                </button>
+              </div>
+
+              <div class="target-input-row">
+                <div class="custom-kb-input-wrap">
+                  <input type="number" id="target-kb-input" value="200" min="10" max="5000" step="5" oninput="handleTargetKbInputChange(this.value)">
+                  <span class="kb-unit-tag">KB</span>
+                </div>
+
+                <div class="quick-size-chips" id="quick-chips-container">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+
+              <!-- Visual Range Slider -->
+              <div class="slider-wrap">
+                <input type="range" class="neon-slider" id="target-kb-slider" min="10" max="1000" step="5" value="200" oninput="handleSliderChange(this.value)" title="स्लायडर ड्रॅग करून हवी ती साईझ निवडा">
+              </div>
+
+              <span id="target-hint-text" style="display: none;"></span>
+            </div>
+
+            <!-- Compact Status Strip -->
+            <div class="compact-features-strip">
+              <span class="feature-chip"><i class="fa-solid fa-crosshairs text-sky"></i> हार्ड साईझ लॉक (±४ KB)</span>
+              <span class="feature-chip"><i class="fa-solid fa-eye text-emerald"></i> Ultra-Clarity (Zero Blur)</span>
+              <span class="feature-chip"><i class="fa-solid fa-microchip text-amber"></i> Multi-Pass Auto Calibration</span>
+            </div>
+
+            <!-- Start Compression Button -->
+            <button type="button" class="btn-compress-action" id="btn-start-compress" onclick="executeCurrentModeAction()">
+              <i class="fa-solid fa-bolt"></i> <span id="btn-action-text">आता अचूक साईझमध्ये कॉम्प्रेस करा (Start)</span>
+            </button>
+
+            <!-- Progress Section -->
+            <div class="progress-section" id="progress-section">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; color: #cbd5e1; font-weight: 600;">
+                <span id="progress-status-text">प्रोसेसिंग सुरू होत आहे...</span>
+                <span id="progress-percent-text" style="font-weight: 800; color: #38bdf8;">0%</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Result Section with Visual Comparison Dashboard & Radial Meter -->
+          <div class="result-section" id="result-card">
+            <div class="result-success-banner">
+              <i class="fa-solid fa-circle-check text-emerald" style="font-size: 1.35rem;"></i>
+              <div>
+                <div id="result-success-title" style="font-weight: 800; font-size: 0.94rem; color: #f8fafc;">कॉम्प्रेशन यशस्वी झाले!</div>
+                <div id="gov-compliance-badge" style="font-size: 0.76rem; color: #a7f3d0;">पोर्टल अपलोडसाठी १००% योग्य</div>
+              </div>
+            </div>
+
+            <!-- Visual Comparison Dashboard (Radial Meter + Before/After Bars) -->
+            <div class="visual-comparison-dashboard">
+              <!-- Radial SVG Reduction Gauge -->
+              <div class="radial-gauge-card">
+                <div class="radial-gauge-svg-wrap">
+                  <svg class="radial-gauge-svg" viewBox="0 0 100 100">
+                    <circle class="gauge-bg" cx="50" cy="50" r="42"></circle>
+                    <circle class="gauge-fill" id="gauge-fill-circle" cx="50" cy="50" r="42"></circle>
+                  </svg>
+                  <div class="gauge-center-content">
+                    <div class="gauge-percent" id="gauge-percent-display">-0%</div>
+                    <div class="gauge-label">बचत (Saved)</div>
+                  </div>
+                </div>
+                <div class="gauge-footer-text">
+                  <i class="fa-solid fa-crosshairs text-sky"></i>
+                  <span>हार्ड साईझ लॉक</span>
+                </div>
+              </div>
+
+              <!-- Side-by-side Comparative Bars -->
+              <div class="size-bars-card">
+                <div class="size-bar-group">
+                  <div class="size-bar-labels">
+                    <span class="bar-tag orig"><i class="fa-solid fa-file"></i> मूळ साईझ</span>
+                    <span class="bar-val" id="bar-orig-size">० KB</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill orig" id="bar-orig-fill" style="width: 100%;"></div>
+                  </div>
+                </div>
+                
+                <div class="size-bar-group">
+                  <div class="size-bar-labels">
+                    <span class="bar-tag comp"><i class="fa-solid fa-circle-check text-emerald"></i> नवीन कॉम्प्रेस साईझ</span>
+                    <span class="bar-val text-emerald" id="bar-comp-size">० KB</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill comp" id="bar-comp-fill" style="width: 25%;"></div>
+                  </div>
+                </div>
+
+                <div class="savings-difference-strip">
+                  <div class="diff-badge"><i class="fa-solid fa-arrow-trend-down"></i> <span id="diff-kb-saved">० KB बचत</span></div>
+                  <div class="clarity-seal"><i class="fa-solid fa-shield-check text-emerald"></i> Zero Blur Shield</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats Comparison Row -->
+            <div class="comparison-stats-row">
+              <div class="stat-box">
+                <div class="stat-label">मूळ साईझ</div>
+                <div class="stat-value" id="stat-orig-size">० MB</div>
+              </div>
+              <div class="stat-box success">
+                <div class="stat-label">कॉम्प्रेस साईझ</div>
+                <div class="stat-value" id="stat-comp-size">० KB</div>
+              </div>
+              <div class="stat-box" id="stat-gap-box">
+                <div class="stat-label">फरक</div>
+                <div class="stat-value" id="stat-gap-val" style="color: #38bdf8;">-४.५ KB</div>
+              </div>
+              <div class="stat-box success">
+                <div class="stat-label">बचत</div>
+                <div class="stat-value" id="stat-savings-pct">०%</div>
+              </div>
+              <div class="stat-box" id="stat-dim-box" style="display: none;">
+                <div class="stat-label">आकार</div>
+                <div class="stat-value" id="stat-dim-val">१६०×२१० px</div>
+              </div>
+            </div>
+
+            <!-- Result Actions -->
+            <div class="result-actions-row">
+              <button type="button" class="btn-download-result" id="btn-download-primary" onclick="downloadCurrentResult()">
+                <i class="fa-solid fa-download"></i> <span id="download-btn-text">डाउनलोड करा</span>
+              </button>
+              <button type="button" id="btn-preview-result" onclick="previewCurrentResult()" class="btn-secondary-action">
+                <i class="fa-solid fa-eye"></i> प्रीव्ह्यू
+              </button>
+              <button type="button" onclick="resetMasterUploader()" class="btn-reset-action">
+                <i class="fa-solid fa-arrow-rotate-right"></i> नवीन फाईल
+              </button>
+            </div>
+
+            <!-- Thumbnails Preview Strip -->
+            <div id="thumbnails-preview-section" style="display: none;">
+              <div class="thumbnails-preview-grid" id="thumbnails-container"></div>
+            </div>
+
+            <!-- Separate Single PDFs Results List (प्रत्येक सिंगल फाईल थेट डाउनलोड व प्रीव्ह्यू) -->
+            <div id="separate-pdfs-results-section" style="display: none; margin-top: 12px; border-top: 1px solid rgba(56, 189, 248, 0.25); padding-top: 10px;">
+              <div style="font-size: 0.82rem; font-weight: 800; color: #7dd3fc; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <span><i class="fa-solid fa-folder-open text-sky"></i> स्वतंत्र सिंगल-पेज PDFs यादी:</span>
+                <span id="separate-pdfs-count-badge" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; padding: 2px 7px; border-radius: 5px; font-size: 0.72rem;"></span>
+              </div>
+              <div id="separate-pdfs-items-list" style="display: flex; flex-direction: column; gap: 7px; max-height: 280px; overflow-y: auto;"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- JavaScript Modules -->
+  <script src="js/services-data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/supabase-db.js"></script>
+  <script src="js/user-auth.js"></script>
+
+  <script>
+    // Initialize PDF.js Worker
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    // ==========================================
+    // State Management
+    // ==========================================
+    let currentMode = 'single-pdf'; // 'single-pdf' | 'merge-pdf' | 'batch-pdf' | 'single-img' | 'img-to-pdf' | 'batch-img'
+    let currentImageDimensionPreset = 'photo'; // 'original' | 'photo' | 'signature' | 'document'
+    let currentImgToPdfOrientation = 'auto'; // 'auto' | 'portrait' | 'landscape'
+    let currentImgToPdfFit = 'margin'; // 'margin' | 'full'
+    let currentSingleImgOutputFormat = 'jpg'; // 'jpg' | 'pdf'
+    let currentPdfOutputMode = 'separate'; // 'separate' | 'combined'
+    let generatedSinglePdfs = []; // Array of { id, name, origName, origSize, compSize, gapKb, targetKb, blob, url, thumbUrl }
+
+    function setPdfOutputMode(mode) {
+      currentPdfOutputMode = mode;
+      const btnSep = document.getElementById('btn-pdf-mode-separate');
+      const btnComb = document.getElementById('btn-pdf-mode-combined');
+      if (btnSep) btnSep.classList.toggle('active', mode === 'separate');
+      if (btnComb) btnComb.classList.toggle('active', mode === 'combined');
+
+      const btnAction = document.getElementById('btn-action-text');
+      const targetLabel = document.getElementById('target-size-label-text');
+
+      if (mode === 'separate') {
+        if (btnAction) btnAction.textContent = selectedFiles.length > 0 
+          ? `सर्व ${selectedFiles.length} फोटो स्वतंत्र सिंगल-पेज PDF मध्ये रूपांतरित करा (Start)` 
+          : 'सर्व फोटो स्वतंत्र सिंगल-पेज PDF मध्ये रूपांतरित करा (Start)';
+        if (targetLabel) targetLabel.innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> प्रत्येक सिंगल-पेज PDF ची मास्टर साईझ (Target KB):';
+      } else {
+        if (btnAction) btnAction.textContent = selectedFiles.length > 0 
+          ? `सर्व ${selectedFiles.length} फोटो जोडून १ एकत्रित PDF बनवा (Start)` 
+          : 'सर्व फोटो जोडून १ एकत्रित PDF बनवा (Start)';
+        if (targetLabel) targetLabel.innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> एकत्रित PDF ची साईझ (Target KB):';
+      }
+      updateFilesUI();
+    }
+
+    let selectedFiles = []; // Array of File objects
+    let loadedPdfDocs = []; // Array of PDFDocumentProxy
+    let finalResultBlob = null;
+    let finalResultUrl = null;
+    let finalResultType = 'pdf'; // 'pdf' | 'image' | 'zip' | 'separate-pdfs'
+    let finalResultFilename = 'document.pdf';
+    let finalResultDimensions = ''; // e.g. '160 x 200 px'
+    let renderedThumbnails = [];
+
+    function setImgToPdfOrientation(orient) {
+      currentImgToPdfOrientation = orient;
+      ['auto', 'portrait', 'landscape'].forEach(o => {
+        const btn = document.getElementById(`btn-orient-${o}`);
+        if (btn) btn.classList.toggle('active', o === orient);
+      });
+    }
+
+    function setImgToPdfFit(fit) {
+      currentImgToPdfFit = fit;
+      ['margin', 'full'].forEach(f => {
+        const btn = document.getElementById(`btn-fit-${f}`);
+        if (btn) btn.classList.toggle('active', f === fit);
+      });
+    }
+
+    function setImageOutputFormat(fmt, autoSyncChips = true) {
+      currentSingleImgOutputFormat = fmt;
+      const btnJpg = document.getElementById('btn-img-fmt-jpg');
+      const btnPdf = document.getElementById('btn-img-fmt-pdf');
+      if (btnJpg) btnJpg.classList.toggle('active', fmt === 'jpg');
+      if (btnPdf) btnPdf.classList.toggle('active', fmt === 'pdf');
+
+      const imgToPdfCard = document.getElementById('img-to-pdf-controls-card');
+      const imgPresetCard = document.getElementById('image-presets-control-card');
+      const targetLabel = document.getElementById('target-size-label-text');
+      const btnAction = document.getElementById('btn-action-text');
+
+      if (fmt === 'pdf') {
+        if (imgToPdfCard) imgToPdfCard.style.display = 'block';
+        if (imgPresetCard) imgPresetCard.style.display = 'none';
+        if (targetLabel) targetLabel.innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> तयार होणाऱ्या सिंगल पेज PDF ची साईझ (Target KB):';
+        if (btnAction) btnAction.textContent = 'आता इमेज ➔ सिंगल पेज PDF बनवा (Start)';
+        if (autoSyncChips) {
+          const pdfChips = [
+            { kb: 100, label: '⚡ १०० KB' },
+            { kb: 150, label: '🎯 १५० KB' },
+            { kb: 200, label: '🎯 २०० KB' },
+            { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
+            { kb: 300, label: '📄 ३०० KB' },
+            { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
+          ];
+          renderQuickChips(pdfChips, 200);
+          document.getElementById('target-kb-input').value = 200;
+          syncSizeUI(200);
+        }
+      } else {
+        if (imgToPdfCard) imgToPdfCard.style.display = 'none';
+        if (imgPresetCard) imgPresetCard.style.display = 'block';
+        if (targetLabel) targetLabel.innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> हवी असलेली इमेज साईझ (Target KB):';
+        if (btnAction) btnAction.textContent = 'आता इमेज अचूक KB मध्ये कॉम्प्रेस करा';
+        if (autoSyncChips) {
+          renderQuickChips(MODE_CONFIGS['single-img'].chips, 50);
+          document.getElementById('target-kb-input').value = 50;
+          syncSizeUI(50);
+        }
+      }
+    }
+
+    // ==========================================
+    // Minimise / Compact View & Window Controls
+    // ==========================================
+    let isCompactMode = false;
+    let isFullscreenMode = false;
+
+    function toggleCompactMinimiseMode(forceState) {
+      if (typeof forceState === 'boolean') {
+        isCompactMode = forceState;
+      } else {
+        isCompactMode = !isCompactMode;
+      }
+      document.body.classList.toggle('compact-mode', isCompactMode);
+      
+      const lbl = document.getElementById('compact-toggle-label');
+      const ico = document.getElementById('compact-toggle-icon');
+      if (lbl) {
+        lbl.textContent = isCompactMode ? 'विस्तृत व्ह्यू (Expand)' : 'मिनिमाइज व्ह्यू (Compact)';
+      }
+      if (ico) {
+        ico.className = isCompactMode ? 'fa-solid fa-expand' : 'fa-solid fa-compress';
+      }
+      const winMinBtn = document.querySelector('.win-btn.win-min');
+      if (winMinBtn) {
+        winMinBtn.title = isCompactMode ? 'विस्तृत व्ह्यू (Restore)' : 'मिनिमाइज व्ह्यू (Compact)';
+      }
+    }
+
+    function toggleFullscreenView() {
+      isFullscreenMode = !isFullscreenMode;
+      const container = document.querySelector('.compressor-container');
+      if (container) {
+        container.style.maxWidth = isFullscreenMode ? '100%' : '1220px';
+      }
+      const winMaxBtn = document.querySelector('.win-btn.win-max i');
+      if (winMaxBtn) {
+        winMaxBtn.className = isFullscreenMode ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+      }
+    }
+
+    function toggleCardCollapse(cardId) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      const body = card.querySelector('.card-collapsible-body');
+      const icon = card.querySelector('.btn-card-collapse i');
+      if (!body) return;
+      if (body.style.display === 'none') {
+        body.style.display = 'block';
+        if (icon) icon.className = 'fa-solid fa-chevron-up';
+      } else {
+        body.style.display = 'none';
+        if (icon) icon.className = 'fa-solid fa-chevron-down';
+      }
+    }
+
+    // Range Slider Handler
+    function handleSliderChange(val) {
+      const kb = parseInt(val, 10);
+      if (!isNaN(kb)) {
+        document.getElementById('target-kb-input').value = kb;
+        handleTargetKbInputChange(kb);
+      }
+    }
+
+    // Super Minimise (किमान शक्य साईझ) Handler
+    function applySuperMinimise() {
+      let miniKb = 100;
+      if (currentMode === 'single-img' || currentMode === 'batch-img') {
+        if (currentImageDimensionPreset === 'signature') miniKb = 15;
+        else if (currentImageDimensionPreset === 'photo') miniKb = 35;
+        else if (currentImageDimensionPreset === 'document') miniKb = 60;
+        else miniKb = 40;
+      } else if (currentMode === 'single-pdf') {
+        miniKb = 80;
+      } else if (currentMode === 'merge-pdf') {
+        miniKb = 150;
+      } else if (currentMode === 'batch-pdf') {
+        miniKb = 100;
+      } else if (currentMode === 'img-to-pdf') {
+        miniKb = 150;
+      }
+
+      document.getElementById('target-kb-input').value = miniKb;
+      const slider = document.getElementById('target-kb-slider');
+      if (slider) slider.value = miniKb;
+      syncSizeUI(miniKb);
+
+      // Flash feedback
+      const btn = document.getElementById('btn-super-minimise');
+      if (btn) {
+        btn.style.boxShadow = '0 0 25px rgba(245, 158, 11, 1)';
+        setTimeout(() => {
+          btn.style.boxShadow = '';
+        }, 500);
+      }
+    }
+
+
+    // Mode Configuration Definitions
+    const MODE_CONFIGS = {
+      'single-pdf': {
+        title: '१. सिंगल PDF / डॉक',
+        badge: '१ फाईल',
+        accept: '.pdf,application/pdf,image/jpeg,image/png,image/webp,image/jpg',
+        multiple: false,
+        dropTitle: 'आपली PDF किंवा इमेज फाईल निवडा किंवा ड्रॅग करा',
+        dropDesc: 'PDF असल्यास कॉम्प्रेस होईल किंवा फोटो असल्यास सिंगल पेज PDF तयार होईल',
+        btnBrowse: 'PDF किंवा इमेज निवडा',
+        defaultKb: 200,
+        targetLabel: 'हवी असलेली PDF साईझ (Target KB):',
+        targetHint: '',
+        chips: [
+          { kb: 100, label: '⚡ १०० KB' },
+          { kb: 150, label: '🎯 १५० KB' },
+          { kb: 200, label: '🎯 २०० KB' },
+          { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
+          { kb: 300, label: '📄 ३०० KB' },
+          { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
+        ],
+        btnAction: 'आता अचूक साईझमध्ये PDF बनवा'
+      },
+      'merge-pdf': {
+        title: '२. मल्टिपल PDF ➔ १',
+        badge: 'अनेक PDF ➔ १',
+        accept: '.pdf,application/pdf',
+        multiple: true,
+        dropTitle: 'सर्व PDF फाईल्स निवडा किंवा ड्रॅग करा',
+        dropDesc: '',
+        btnBrowse: 'मल्टिपल PDF निवडा',
+        defaultKb: 250,
+        targetLabel: 'एकत्रित PDF साईझ (Target KB):',
+        targetHint: '',
+        chips: [
+          { kb: 100, label: '⚡ १०० KB' },
+          { kb: 200, label: '🎯 २०० KB' },
+          { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
+          { kb: 300, label: '📄 ३०० KB' },
+          { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
+        ],
+        btnAction: 'सर्व PDF एकत्र करून कॉम्प्रेस करा'
+      },
+      'batch-pdf': {
+        title: '३. बॅच PDF (ZIP)',
+        badge: 'स्वतंत्र PDF ➔ १ ZIP',
+        accept: '.pdf,application/pdf',
+        multiple: true,
+        dropTitle: 'सर्व PDF फाईल्स निवडा किंवा ड्रॅग करा',
+        dropDesc: '',
+        btnBrowse: 'सर्व PDF निवडा',
+        defaultKb: 200,
+        targetLabel: 'प्रत्येक PDF ची साईझ (Target KB):',
+        targetHint: '',
+        chips: [
+          { kb: 100, label: '⚡ १०० KB' },
+          { kb: 200, label: '🎯 २०० KB' },
+          { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
+          { kb: 300, label: '📄 ३०० KB' },
+          { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
+        ],
+        btnAction: 'सर्व PDF कॉम्प्रेस करा व ZIP डाउनलोड करा'
+      },
+      'single-img': {
+        title: '४. सिंगल इमेज',
+        badge: '१ फोटो/स्वाक्षरी',
+        accept: 'image/jpeg,image/png,image/webp,image/jpg',
+        multiple: false,
+        dropTitle: 'फोटो किंवा स्वाक्षरी निवडा किंवा ड्रॅग करा',
+        dropDesc: '',
+        btnBrowse: 'इमेज निवडा',
+        defaultKb: 50,
+        targetLabel: 'हवी असलेली इमेज साईझ (Target KB):',
+        targetHint: '',
+        chips: [
+          { kb: 10, label: '⚡ १० KB' },
+          { kb: 20, label: '✍️ २० KB (स्वाक्षरी)' },
+          { kb: 50, label: '👤 ५० KB (फोटो)' },
+          { kb: 100, label: '📄 १०० KB' },
+          { kb: 200, label: '📦 २०० KB' }
+        ],
+        btnAction: 'आता इमेज अचूक KB मध्ये कॉम्प्रेस करा'
+      },
+      'img-to-pdf': {
+        title: '५. इमेज ➔ PDF (स्वतंत्र / एकत्रित)',
+        badge: 'फोटो ➔ सिंगल PDFs (Bulk)',
+        accept: 'image/jpeg,image/png,image/webp,image/jpg',
+        multiple: true,
+        dropTitle: '१ किंवा अनेक फोटो निवडा किंवा ड्रॅग करा',
+        dropDesc: 'प्रत्येक फोटोची स्वतंत्र सिंगल-पेज PDF (Bulk) किंवा सर्व फोटो जोडून १ एकत्रित PDF बनवा',
+        btnBrowse: 'फोटो निवडा (Select Photos)',
+        defaultKb: 250,
+        targetLabel: 'प्रत्येक सिंगल-पेज PDF ची साईझ (Target KB):',
+        targetHint: '',
+        chips: [
+          { kb: 100, label: '⚡ १०० KB' },
+          { kb: 150, label: '🎯 १५० KB' },
+          { kb: 200, label: '🎯 २०० KB' },
+          { kb: 250, label: '🏛️ २५० KB (आपले सरकार)' },
+          { kb: 300, label: '📄 ३०० KB' },
+          { kb: 500, label: '🎓 ५०० KB (महाडीबीटी)' }
+        ],
+        btnAction: 'सर्व फोटो स्वतंत्र सिंगल-पेज PDF मध्ये रूपांतरित करा'
+      },
+      'batch-img': {
+        title: '६. बॅच इमेजेस (ZIP)',
+        badge: 'स्वतंत्र फोटो ➔ १ ZIP',
+        accept: 'image/jpeg,image/png,image/webp,image/jpg',
+        multiple: true,
+        dropTitle: 'सर्व इमेजेस निवडा किंवा ड्रॅग करा',
+        dropDesc: '',
+        btnBrowse: 'सर्व इमेजेस निवडा',
+        defaultKb: 50,
+        targetLabel: 'प्रत्येक इमेजची साईझ (Target KB):',
+        targetHint: '',
+        chips: [
+          { kb: 10, label: '⚡ १० KB' },
+          { kb: 20, label: '✍️ २० KB (स्वाक्षरी)' },
+          { kb: 50, label: '👤 ५० KB (फोटो)' },
+          { kb: 100, label: '📄 १०० KB' },
+          { kb: 200, label: '📦 २०० KB' }
+        ],
+        btnAction: 'सर्व इमेजेस कॉम्प्रेस करा व ZIP डाउनलोड करा'
+      }
+    };
+
+    // ==========================================
+    // Mode Switching Logic
+    // ==========================================
+    function switchToolMode(mode) {
+      if (!MODE_CONFIGS[mode]) return;
+      currentMode = mode;
+
+      // Update Tab Buttons
+      document.querySelectorAll('.mode-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
+      });
+
+      const conf = MODE_CONFIGS[mode];
+
+      // Update Banner Info
+      document.getElementById('active-mode-title').innerHTML = `<i class="fa-solid fa-${getModeIcon(mode)}" style="color: #38bdf8;"></i> <span>${conf.title}</span>`;
+      document.getElementById('active-mode-badge').textContent = conf.badge;
+
+      // Update Dropzone
+      document.getElementById('dropzone-title').textContent = conf.dropTitle;
+      document.getElementById('dropzone-desc').textContent = conf.dropDesc;
+      document.getElementById('btn-browse-text').textContent = conf.btnBrowse;
+
+      // Update Master File Input
+      const fileInput = document.getElementById('master-file-input');
+      fileInput.accept = conf.accept;
+      fileInput.multiple = conf.multiple;
+      fileInput.value = '';
+
+      // Manage Image Dimension Preset Card visibility
+      const imgPresetCard = document.getElementById('image-presets-control-card');
+      const imgOutputFmtCard = document.getElementById('image-output-format-card');
+      const imgToPdfCard = document.getElementById('img-to-pdf-controls-card');
+
+      if (imgPresetCard) {
+        if (mode === 'single-img' || mode === 'batch-img') {
+          imgPresetCard.style.display = 'block';
+          setImageDimensionPreset(mode === 'single-img' ? 'photo' : 'original', false);
+        } else {
+          imgPresetCard.style.display = 'none';
+        }
+      }
+
+      if (imgOutputFmtCard) {
+        imgOutputFmtCard.style.display = (mode === 'single-img') ? 'block' : 'none';
+        if (mode === 'single-img') {
+          setImageOutputFormat('jpg', false);
+        }
+      }
+
+      const imgOutputModeCard = document.getElementById('img-to-pdf-output-mode-card');
+      if (imgOutputModeCard) {
+        imgOutputModeCard.style.display = (mode === 'img-to-pdf') ? 'block' : 'none';
+        if (mode === 'img-to-pdf') {
+          setPdfOutputMode('separate');
+        }
+      }
+
+      if (imgToPdfCard) {
+        imgToPdfCard.style.display = (mode === 'img-to-pdf') ? 'block' : 'none';
+      }
+
+      // Update Target Input & Label
+      document.getElementById('target-size-label-text').textContent = conf.targetLabel;
+      document.getElementById('target-hint-text').innerHTML = conf.targetHint;
+      document.getElementById('target-kb-input').value = conf.defaultKb;
+      const slider = document.getElementById('target-kb-slider');
+      if (slider) {
+        if (mode === 'single-img' || mode === 'batch-img') {
+          slider.min = 10;
+          slider.max = 500;
+        } else {
+          slider.min = 30;
+          slider.max = 1200;
+        }
+        slider.value = conf.defaultKb;
+      }
+
+      // Render Chips
+      renderQuickChips(conf.chips, conf.defaultKb);
+
+      // Update Action Button
+      document.getElementById('btn-action-text').textContent = conf.btnAction;
+
+      // Reset State
+      resetMasterUploader(false);
+    }
+
+    function setImageDimensionPreset(preset, autoSetKb = true) {
+      currentImageDimensionPreset = preset;
+      ['original', 'photo', 'signature', 'document', 'custom'].forEach(p => {
+        const btn = document.getElementById(`dim-btn-${p}`);
+        if (btn) btn.classList.toggle('active', p === preset);
+      });
+
+      const hint = document.getElementById('dimension-hint-text');
+      const wInput = document.getElementById('custom-dim-w');
+      const hInput = document.getElementById('custom-dim-h');
+
+      if (preset === 'photo') {
+        if (wInput) wInput.value = 160;
+        if (hInput) hInput.value = 210;
+        if (autoSetKb) {
+          document.getElementById('target-kb-input').value = 50;
+          syncSizeUI(50);
+        }
+        if (hint) hint.innerHTML = '👤 <strong>पासपोर्ट फोटो:</strong> १६० × २१० px रिझोल्युशन व ५० KB साईझ (आपले सरकार, महाडीबीटी, MPSC व पोलीस भरतीसाठी १००% योग्य).';
+      } else if (preset === 'signature') {
+        if (wInput) wInput.value = 256;
+        if (hInput) hInput.value = 64;
+        if (autoSetKb) {
+          document.getElementById('target-kb-input').value = 20;
+          syncSizeUI(20);
+        }
+        if (hint) hint.innerHTML = '✍️ <strong>स्वाक्षरी (Signature):</strong> २५६ × ६४ px रिझोल्युशन व कमाल २० KB साईझ (शासकीय पोर्टल नियम).';
+      } else if (preset === 'custom') {
+        const cw = (wInput && parseInt(wInput.value, 10)) || 160;
+        const ch = (hInput && parseInt(hInput.value, 10)) || 210;
+        if (hint) hint.innerHTML = `⚙️ <strong>मॅन्युअल पिक्सेल:</strong> ${cw} × ${ch} px रिझोल्युशनवर अचूक रीसाईझ व कॉम्प्रेस.`;
+      } else if (preset === 'document') {
+        if (autoSetKb) {
+          document.getElementById('target-kb-input').value = 100;
+          syncSizeUI(100);
+        }
+        if (hint) hint.innerHTML = '📄 <strong>कागदपत्र / स्कॅन:</strong> रुंदी कमाल १२०० px ठेवून कागदपत्र स्वच्छ व वाचण्याजोगे केले जाईल.';
+      } else {
+        if (hint) hint.innerHTML = '🔄 <strong>मूळ आकार (Original):</strong> मूळ अस्पेक्ट रेशो कायम ठेवून फाईल टार्गेट KB मध्ये हार्ड कॉम्प्रेस केली जाईल.';
+      }
+    }
+
+    function onCustomDimInputChanged() {
+      setImageDimensionPreset('custom', false);
+    }
+
+    function getModeIcon(mode) {
+      switch(mode) {
+        case 'single-pdf': return 'file-pdf';
+        case 'merge-pdf': return 'copy';
+        case 'batch-pdf': return 'file-zipper';
+        case 'single-img': return 'image';
+        case 'img-to-pdf': return 'images';
+        case 'batch-img': return 'folder-archive';
+        default: return 'gear';
+      }
+    }
+
+    function renderQuickChips(chips, activeKb) {
+      const container = document.getElementById('quick-chips-container');
+      container.innerHTML = '';
+      chips.forEach(chip => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `size-chip ${chip.kb === activeKb ? 'active' : ''}`;
+        btn.setAttribute('data-kb', chip.kb);
+        btn.innerHTML = chip.label;
+        btn.onclick = () => setQuickSize(chip.kb);
+        container.appendChild(btn);
+      });
+    }
+
+    function onFileCustomTargetInput(idx, val) {
+      const kb = parseInt(val, 10);
+      if (!isNaN(kb) && kb > 0 && selectedFiles[idx]) {
+        selectedFiles[idx].customTargetKb = kb;
+        selectedFiles[idx].hasManualOverride = true;
+      }
+    }
+
+    function setQuickSize(kb) {
+      document.getElementById('target-kb-input').value = kb;
+      syncSizeUI(kb);
+
+      if (currentMode === 'img-to-pdf' && currentPdfOutputMode === 'separate') {
+        selectedFiles.forEach((f, idx) => {
+          if (!f.hasManualOverride) {
+            f.customTargetKb = kb;
+            const inp = document.getElementById(`file-custom-kb-${idx}`);
+            if (inp) inp.value = kb;
+          }
+        });
+      }
+
+      // Auto link quick KB to dimension presets in image mode
+      if (currentMode === 'single-img' || currentMode === 'batch-img') {
+        if (kb === 20) setImageDimensionPreset('signature', false);
+        else if (kb === 50) setImageDimensionPreset('photo', false);
+        else if (kb >= 100 && currentImageDimensionPreset === 'signature') setImageDimensionPreset('document', false);
+      }
+    }
+
+    function handleTargetKbInputChange(val) {
+      const kb = parseInt(val, 10);
+      if (!isNaN(kb)) {
+        syncSizeUI(kb);
+        if (currentMode === 'img-to-pdf' && currentPdfOutputMode === 'separate') {
+          selectedFiles.forEach((f, idx) => {
+            if (!f.hasManualOverride) {
+              f.customTargetKb = kb;
+              const inp = document.getElementById(`file-custom-kb-${idx}`);
+              if (inp) inp.value = kb;
+            }
+          });
+        }
+        if (currentMode === 'single-img' || currentMode === 'batch-img') {
+          if (kb === 20) setImageDimensionPreset('signature', false);
+          else if (kb === 50) setImageDimensionPreset('photo', false);
+        }
+      }
+    }
+
+    function syncSizeUI(kb) {
+      document.querySelectorAll('.size-chip').forEach(chip => {
+        const chipKb = parseInt(chip.getAttribute('data-kb'), 10);
+        chip.classList.toggle('active', chipKb === kb);
+      });
+      const slider = document.getElementById('target-kb-slider');
+      if (slider && !isNaN(kb)) {
+        slider.value = Math.min(parseInt(slider.max, 10), Math.max(parseInt(slider.min, 10), kb));
+      }
+    }
+
+    // ==========================================
+    // File Input & Drag & Drop Handling
+    // ==========================================
+    const dropzone = document.getElementById('dropzone');
+    const masterFileInput = document.getElementById('master-file-input');
+
+    function triggerFileInput() {
+      masterFileInput.click();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add('dragover');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove('dragover');
+      }, false);
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files && files.length > 0) {
+        handleFilesSelected(Array.from(files));
+      }
+    });
+
+    masterFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        handleFilesSelected(Array.from(e.target.files));
+      }
+    });
+
+    function handleFilesSelected(newFiles) {
+      const conf = MODE_CONFIGS[currentMode];
+
+      // Filter valid files
+      let filtered;
+      if (currentMode === 'single-pdf') {
+        filtered = newFiles.filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf') || f.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(f.name));
+      } else if (currentMode === 'merge-pdf' || currentMode === 'batch-pdf') {
+        filtered = newFiles.filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+      } else {
+        filtered = newFiles.filter(f => f.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(f.name));
+      }
+
+      if (filtered.length === 0) {
+        if (currentMode === 'single-pdf') {
+          alert('कृपया वैध PDF किंवा इमेज (JPG/PNG/WEBP) फाईल निवडा.');
+        } else if (currentMode.includes('pdf')) {
+          alert('कृपया वैध PDF फाईल निवडा.');
+        } else {
+          alert('कृपया वैध इमेज फाईल (JPG/PNG/WEBP) निवडा.');
+        }
+        return;
+      }
+
+      if (!conf.multiple && filtered.length > 1) {
+        if (filtered.every(f => f.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(f.name))) {
+          switchToolMode('img-to-pdf');
+          selectedFiles = filtered;
+          updateFilesUI();
+          return;
+        }
+      }
+
+      if (conf.multiple) {
+        // Append
+        selectedFiles = selectedFiles.concat(filtered);
+      } else {
+        // Replace
+        selectedFiles = [filtered[0]];
+      }
+
+      updateFilesUI();
+    }
+
+    function removeFileAtIndex(idx) {
+      selectedFiles.splice(idx, 1);
+      if (selectedFiles.length === 0) {
+        resetMasterUploader();
+      } else {
+        updateFilesUI();
+      }
+    }
+
+    function moveFile(idx, direction) {
+      const newIdx = idx + direction;
+      if (newIdx < 0 || newIdx >= selectedFiles.length) return;
+      const temp = selectedFiles[idx];
+      selectedFiles[idx] = selectedFiles[newIdx];
+      selectedFiles[newIdx] = temp;
+      updateFilesUI();
+    }
+
+    function updateFilesUI() {
+      if (selectedFiles.length === 0) {
+        resetMasterUploader();
+        return;
+      }
+
+      const conf = MODE_CONFIGS[currentMode];
+      const listContainer = document.getElementById('file-items-container');
+      listContainer.innerHTML = '';
+
+      const masterTargetKb = parseInt(document.getElementById('target-kb-input')?.value, 10) || conf.defaultKb;
+
+      let totalBytes = 0;
+      selectedFiles.forEach((file, idx) => {
+        totalBytes += file.size;
+        if (!file.customTargetKb) {
+          file.customTargetKb = masterTargetKb;
+        }
+
+        const card = document.createElement('div');
+        card.className = 'file-item-card';
+
+        let leftVisual = '';
+        if (file.type.startsWith('image/')) {
+          const objectUrl = URL.createObjectURL(file);
+          leftVisual = `<img src="${objectUrl}" class="file-item-thumb" alt="thumb">`;
+        } else {
+          leftVisual = `<div class="file-item-icon"><i class="fa-solid fa-file-pdf"></i></div>`;
+        }
+
+        let reorderButtons = '';
+        if (conf.multiple && selectedFiles.length > 1) {
+          reorderButtons = `
+            <button type="button" class="btn-item-ctrl reorder" title="वर घ्या" onclick="moveFile(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.3"' : ''}>
+              <i class="fa-solid fa-arrow-up"></i>
+            </button>
+            <button type="button" class="btn-item-ctrl reorder" title="खाली घ्या" onclick="moveFile(${idx}, 1)" ${idx === selectedFiles.length - 1 ? 'disabled style="opacity:0.3"' : ''}>
+              <i class="fa-solid fa-arrow-down"></i>
+            </button>
+          `;
+        }
+
+        let formatNote = '';
+        let targetMentionHtml = '';
+
+        if (file.type.startsWith('image/')) {
+          if (currentMode === 'single-pdf' || (currentMode === 'single-img' && currentSingleImgOutputFormat === 'pdf')) {
+            formatNote = ' • <span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-file-pdf"></i> सिंगल पेज PDF बनेल</span>';
+          } else if (currentMode === 'img-to-pdf') {
+            if (selectedFiles.length === 1) {
+              formatNote = ' • <span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-file-pdf"></i> सिंगल पेज PDF बनेल</span>';
+            } else if (currentPdfOutputMode === 'separate') {
+              formatNote = ' • <span style="color:#34d399; font-weight:700;"><i class="fa-solid fa-file-pdf"></i> स्वतंत्र सिंगल PDF</span>';
+              targetMentionHtml = `
+                <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap;">
+                  <span style="font-size: 0.72rem; color: #7dd3fc; font-weight: 700;"><i class="fa-solid fa-bullseye text-sky"></i> टार्गेट साईझ:</span>
+                  <div style="display: inline-flex; align-items: center; background: #060a14; border: 1.5px solid #38bdf8; border-radius: 5px; padding: 1px 6px;">
+                    <input type="number" id="file-custom-kb-${idx}" value="${file.customTargetKb}" min="10" max="2000" step="5" oninput="onFileCustomTargetInput(${idx}, this.value)" style="width: 52px; background: transparent; border: none; color: #38bdf8; font-weight: 800; font-size: 0.82rem; text-align: center; outline: none; font-family: 'Poppins', monospace;">
+                    <span style="font-size: 0.68rem; color: #94a3b8; font-weight: 800;">KB</span>
+                  </div>
+                  <span style="font-size: 0.68rem; color: #94a3b8;">(शासकीय मानक २५६ / ५०० KB)</span>
+                </div>
+              `;
+            } else {
+              formatNote = ' • <span style="color:#c084fc; font-weight:700;"><i class="fa-solid fa-file-pdf"></i> एकत्रित PDF चे पान</span>';
+            }
+          }
+        }
+
+        card.innerHTML = `
+          <div class="file-item-left">
+            ${leftVisual}
+            <div style="min-width: 0; flex: 1;">
+              <div class="file-item-title">${file.name}</div>
+              <div class="file-item-sub">मूळ साईझ: ${formatBytes(file.size)}${formatNote}</div>
+              ${targetMentionHtml}
+            </div>
+          </div>
+          <div class="file-item-actions">
+            ${reorderButtons}
+            <button type="button" class="btn-item-ctrl" title="काढून टाका" onclick="removeFileAtIndex(${idx})">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        `;
+        listContainer.appendChild(card);
+      });
+
+      document.getElementById('file-count-summary').textContent = `एकूण फाईल्स: ${selectedFiles.length} • एकूण साईझ: ${formatBytes(totalBytes)}`;
+
+      document.getElementById('file-list-section').style.display = 'block';
+      document.getElementById('settings-section').style.display = 'block';
+      document.getElementById('result-card').style.display = 'none';
+      document.getElementById('btn-start-compress').disabled = false;
+
+      // Manage Mode 5 output selector card
+      const imgOutputModeCard = document.getElementById('img-to-pdf-output-mode-card');
+      if (imgOutputModeCard) {
+        imgOutputModeCard.style.display = (currentMode === 'img-to-pdf' && selectedFiles.length > 1) ? 'block' : 'none';
+      }
+
+      // Check if uploaded file is an image in single-pdf or single-img or img-to-pdf mode
+      const isImgInPdfMode = (currentMode === 'single-pdf' && selectedFiles.length > 0 && (selectedFiles[0].type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(selectedFiles[0].name)));
+      const imgToPdfCard = document.getElementById('img-to-pdf-controls-card');
+      if (imgToPdfCard) {
+        if (currentMode === 'img-to-pdf' || isImgInPdfMode || (currentMode === 'single-img' && currentSingleImgOutputFormat === 'pdf')) {
+          imgToPdfCard.style.display = 'block';
+        } else {
+          imgToPdfCard.style.display = 'none';
+        }
+      }
+
+      if (isImgInPdfMode) {
+        document.getElementById('btn-action-text').textContent = 'आता इमेज ➔ सिंगल पेज PDF बनवा (Start)';
+        document.getElementById('target-size-label-text').innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> तयार होणाऱ्या सिंगल पेज PDF ची साईझ (Target KB):';
+      } else if (currentMode === 'img-to-pdf') {
+        if (selectedFiles.length === 1) {
+          document.getElementById('btn-action-text').textContent = 'आता इमेज ➔ सिंगल पेज PDF बनवा (Start)';
+          document.getElementById('target-size-label-text').innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> तयार होणाऱ्या सिंगल पेज PDF ची साईझ (Target KB):';
+        } else if (currentPdfOutputMode === 'separate') {
+          document.getElementById('btn-action-text').textContent = `सर्व ${selectedFiles.length} फोटो स्वतंत्र सिंगल-पेज PDF मध्ये रूपांतरित करा (Start)`;
+          document.getElementById('target-size-label-text').innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> प्रत्येक सिंगल PDF ची मास्टर साईझ (Target KB):';
+        } else {
+          document.getElementById('btn-action-text').textContent = `सर्व ${selectedFiles.length} फोटो जोडून १ एकत्रित PDF बनवा (Start)`;
+          document.getElementById('target-size-label-text').innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> एकत्रित PDF ची साईझ (Target KB):';
+        }
+      } else {
+        document.getElementById('btn-action-text').textContent = MODE_CONFIGS[currentMode].btnAction;
+      }
+
+      // If single mode, collapse dropzone
+      if (!conf.multiple) {
+        document.getElementById('dropzone').style.display = 'none';
+      }
+    }
+
+    function resetMasterUploader(fullReset = true) {
+      selectedFiles = [];
+      loadedPdfDocs = [];
+      if (finalResultUrl) {
+        URL.revokeObjectURL(finalResultUrl);
+        finalResultUrl = null;
+      }
+      finalResultBlob = null;
+      if (generatedSinglePdfs && generatedSinglePdfs.length > 0) {
+        generatedSinglePdfs.forEach(item => {
+          if (item.url) URL.revokeObjectURL(item.url);
+        });
+        generatedSinglePdfs = [];
+      }
+      const sepSection = document.getElementById('separate-pdfs-results-section');
+      if (sepSection) sepSection.style.display = 'none';
+
+      renderedThumbnails = [];
+      masterFileInput.value = '';
+
+      document.getElementById('dropzone').style.display = 'flex';
+      document.getElementById('file-list-section').style.display = 'none';
+      document.getElementById('settings-section').style.display = 'block';
+      document.getElementById('result-card').style.display = 'none';
+      document.getElementById('progress-section').style.display = 'none';
+      document.getElementById('btn-start-compress').disabled = true;
+      document.getElementById('btn-action-text').textContent = 'प्रथम फाईल निवडा';
+
+      if (fullReset) {
+        // Keeps current mode
+      }
+    }
+
+    // =========================================================================
+    // Core Engine: High-Precision Image & PDF Compression with Zero Blur
+    // =========================================================================
+
+    // Smart Text & Contrast Enhancer (cleans dirty gray scanner background, deepens ink)
+    function enhanceCanvasForClarity(sourceCanvas) {
+      const outCanvas = document.createElement('canvas');
+      outCanvas.width = sourceCanvas.width;
+      outCanvas.height = sourceCanvas.height;
+      const ctx = outCanvas.getContext('2d', { alpha: false });
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+      // High contrast + mild saturation makes text bold & readable, cleans paper noise
+      ctx.filter = 'contrast(1.16) brightness(1.02) saturate(1.04)';
+      ctx.drawImage(sourceCanvas, 0, 0);
+      return outCanvas;
+    }
+
+    // Compress Single Image to Exact Target Bytes with Portal Dimensions & Zero Blur (९७% ते १००% Exact Hard Size: उदा. ५०० KB साठी ४८५ ते ५०० KB)
+    async function compressImageToTargetBytes(file, targetBytes, dimensionMode = 'original') {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          let origW = img.naturalWidth || img.width;
+          let origH = img.naturalHeight || img.height;
+          let targetW, targetH;
+
+          if (dimensionMode === 'photo') {
+            // Official Government Standard Passport Photo: 160 x 210 px
+            targetW = 160;
+            targetH = 210;
+          } else if (dimensionMode === 'signature') {
+            // Official Government Standard Signature: 256 x 64 px
+            targetW = 256;
+            targetH = 64;
+          } else if (dimensionMode === 'custom') {
+            const cw = parseInt(document.getElementById('custom-dim-w')?.value, 10);
+            const ch = parseInt(document.getElementById('custom-dim-h')?.value, 10);
+            targetW = (cw && cw > 10) ? cw : 160;
+            targetH = (ch && ch > 10) ? ch : 210;
+          } else if (dimensionMode === 'document') {
+            // Document Scan: keep aspect ratio, max 1600 px
+            const maxD = targetBytes >= 300 * 1024 ? 2000 : 1400;
+            const scale = Math.min(1.0, maxD / Math.max(origW, origH));
+            targetW = Math.max(300, Math.round(origW * scale));
+            targetH = Math.max(300, Math.round(origH * scale));
+          } else {
+            // Original aspect ratio: calibrate max dimension based on target bytes
+            let maxDim = 1250;
+            if (targetBytes >= 400 * 1024) maxDim = 2800;
+            else if (targetBytes >= 200 * 1024) maxDim = 2200;
+            else if (targetBytes >= 90 * 1024) maxDim = 1500;
+            else if (targetBytes >= 40 * 1024) maxDim = 1100;
+            else maxDim = 850;
+
+            let scale = Math.min(1.0, maxDim / Math.max(origW, origH));
+            targetW = Math.round(origW * scale);
+            targetH = Math.round(origH * scale);
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = targetW;
+          canvas.height = targetH;
+          const ctx = canvas.getContext('2d', { alpha: false });
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, targetW, targetH);
+
+          if (dimensionMode === 'photo' || dimensionMode === 'signature' || dimensionMode === 'custom') {
+            // Clean aspect cover & center
+            const hRatio = targetW / origW;
+            const vRatio = targetH / origH;
+            const coverRatio = Math.max(hRatio, vRatio);
+            const drawW = Math.round(origW * coverRatio);
+            const drawH = Math.round(origH * coverRatio);
+            const offsetX = Math.round((targetW - drawW) / 2);
+            const offsetY = Math.round((targetH - drawH) / 2);
+            ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+          } else {
+            ctx.drawImage(img, 0, 0, targetW, targetH);
+          }
+
+          const cleanCanvas = enhanceCanvasForClarity(canvas);
+
+          // टार्गेट साईझ मर्यादा (९७% ते १००% अचूक ब्रॅकेट - Exact Hard Size)
+          const targetMinBytes = Math.round(targetBytes * 0.97);
+          const targetSweetBytes = Math.round(targetBytes * 0.985);
+
+          // Calibrate initial quality factor
+          let q = 0.88;
+          if (targetBytes < 25 * 1024) q = 0.52;
+          else if (targetBytes < 55 * 1024) q = 0.65;
+          else if (targetBytes < 120 * 1024) q = 0.76;
+          else if (targetBytes < 300 * 1024) q = 0.82;
+
+          let currCanvas = cleanCanvas;
+          let bestDataUrl = null;
+          let bestBytes = 0;
+
+          // द्वि-दिश अचूक कॅलिब्रेशन लूप (Bi-directional Precision Convergence Loop)
+          for (let attempt = 0; attempt < 8; attempt++) {
+            const dataUrl = currCanvas.toDataURL('image/jpeg', q);
+            const byteSize = Math.round((dataUrl.length - 22) * 0.75);
+
+            if (byteSize <= targetBytes) {
+              if (byteSize > bestBytes) {
+                bestBytes = byteSize;
+                bestDataUrl = dataUrl;
+              }
+              // ९७% ते १००% च्या परिपूर्ण ब्रॅकेटमध्ये आले तर लगेच बाहेर पडा
+              if (byteSize >= targetMinBytes) {
+                break;
+              }
+              // ९०% पेक्षा लहान असल्यास क्वालिटी वाढवा (Upward Calibration)
+              const boost = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(byteSize, 1024)));
+              const nextQ = Math.min(0.98, q * boost);
+              if (Math.abs(nextQ - q) < 0.01) {
+                // क्वालिटी कमाल ०.९८ वर पोहोचल्यावर गरज असल्यास कॅनव्हास रिझोल्युशन मूळ आकाराकडे वाढवा
+                if ((dimensionMode === 'original' || dimensionMode === 'document') && (currCanvas.width < origW || currCanvas.height < origH)) {
+                  const upFactor = Math.min(1.35, Math.sqrt(targetSweetBytes / Math.max(byteSize, 1024)));
+                  const nw = Math.min(origW, Math.round(currCanvas.width * upFactor));
+                  const nh = Math.min(origH, Math.round(currCanvas.height * upFactor));
+                  if (nw > currCanvas.width || nh > currCanvas.height) {
+                    const upCanvas = document.createElement('canvas');
+                    upCanvas.width = nw;
+                    upCanvas.height = nh;
+                    const uCtx = upCanvas.getContext('2d', { alpha: false });
+                    uCtx.drawImage(img, 0, 0, nw, nh);
+                    currCanvas = enhanceCanvasForClarity(upCanvas);
+                    q = 0.85;
+                    continue;
+                  }
+                }
+                break;
+              }
+              q = nextQ;
+            } else {
+              // टार्गेटपेक्षा जास्त असल्यास अचूक प्रमाणानुसार क्वालिटी कमी करा
+              const reduc = (targetSweetBytes / byteSize) * 0.98;
+              q = Math.max(0.12, q * reduc);
+              if (q <= 0.28 && byteSize > targetBytes && (dimensionMode === 'original' || dimensionMode === 'document')) {
+                const down = document.createElement('canvas');
+                down.width = Math.max(100, Math.round(currCanvas.width * 0.84));
+                down.height = Math.max(100, Math.round(currCanvas.height * 0.84));
+                const dCtx = down.getContext('2d', { alpha: false });
+                dCtx.drawImage(currCanvas, 0, 0, down.width, down.height);
+                currCanvas = down;
+                q = 0.45;
+              }
+            }
+          }
+
+          if (!bestDataUrl) {
+            bestDataUrl = currCanvas.toDataURL('image/jpeg', 0.22);
+          }
+          let finalDataUrl = bestDataUrl;
+          let finalByteSize = Math.round((finalDataUrl.length - 22) * 0.75);
+
+          // Strict guarantee pass: Ensure file NEVER exceeds targetBytes
+          if (finalByteSize > targetBytes) {
+            q = Math.max(0.08, q * (targetBytes / finalByteSize) * 0.95);
+            finalDataUrl = currCanvas.toDataURL('image/jpeg', q);
+          }
+
+          // Convert dataURL to Blob
+          const arr = finalDataUrl.split(',');
+          const mime = arr[0].match(/:(.*?);/)[1];
+          const bstr = atob(arr[1]);
+          let n = bstr.length;
+          const u8arr = new Uint8Array(n);
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+          }
+          const blob = new Blob([u8arr], { type: mime });
+
+          resolve({
+            blob: blob,
+            dataUrl: finalDataUrl,
+            canvas: currCanvas,
+            width: currCanvas.width,
+            height: currCanvas.height,
+            bytes: blob.size
+          });
+        };
+        img.onerror = reject;
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    // Helper: Compile jsPDF from pagesData array with exact padding support
+    function compileJsPdf(pagesData, paddingChars = 0) {
+      const { jsPDF } = window.jspdf;
+      let doc = null;
+      for (let i = 0; i < pagesData.length; i++) {
+        const p = pagesData[i];
+        const dx = (p.drawX !== undefined) ? p.drawX : 0;
+        const dy = (p.drawY !== undefined) ? p.drawY : 0;
+        const dw = (p.drawW !== undefined) ? p.drawW : p.ptW;
+        const dh = (p.drawH !== undefined) ? p.drawH : p.ptH;
+
+        if (i === 0) {
+          doc = new jsPDF({
+            orientation: p.orientation,
+            unit: 'pt',
+            format: [p.ptW, p.ptH],
+            compress: true
+          });
+          if (paddingChars > 0) {
+            doc.setProperties({
+              keywords: '0'.repeat(paddingChars)
+            });
+          }
+          doc.addImage(p.imgData, 'JPEG', dx, dy, dw, dh, undefined, 'FAST');
+        } else {
+          doc.addPage([p.ptW, p.ptH], p.orientation);
+          doc.addImage(p.imgData, 'JPEG', dx, dy, dw, dh, undefined, 'FAST');
+        }
+      }
+      return doc.output('blob');
+    }
+
+    // Helper: Exact JPEG COM (0xFF 0xFE) marker padding (४ ते ५ KB अचूक फरक हमी)
+    async function padJpegBlob(jpegBlob, targetBytes, marginKb = 4.5) {
+      const buffer = await jpegBlob.arrayBuffer();
+      const u8 = new Uint8Array(buffer);
+      const currentBytes = u8.length;
+
+      let marginBytes = Math.round(marginKb * 1024);
+      if (targetBytes <= 35 * 1024) marginBytes = Math.min(1536, Math.round(targetBytes * 0.08));
+      else if (targetBytes <= 75 * 1024) marginBytes = Math.min(3072, Math.round(targetBytes * 0.06));
+      else if (targetBytes <= 150 * 1024) marginBytes = 4096;
+      else marginBytes = Math.min(5120, Math.max(4096, Math.round(targetBytes * 0.01))); // ~4.5 KB for 500 KB
+
+      const desiredBytes = targetBytes - marginBytes;
+      const neededPad = desiredBytes - currentBytes;
+
+      if (neededPad <= 5 || u8[0] !== 0xFF || u8[1] !== 0xD8) {
+        const finalGapKb = Math.max(0, (targetBytes - currentBytes) / 1024).toFixed(1);
+        return { blob: jpegBlob, bytes: currentBytes, gapKb: finalGapKb };
+      }
+
+      const parts = [];
+      parts.push(u8.subarray(0, 2)); // 0xFF, 0xD8
+
+      let remaining = neededPad;
+      while (remaining >= 5) {
+        const chunk = Math.min(remaining - 4, 65530);
+        const markerLen = chunk + 2;
+        const header = new Uint8Array(4);
+        header[0] = 0xFF;
+        header[1] = 0xFE;
+        header[2] = (markerLen >> 8) & 0xFF;
+        header[3] = markerLen & 0xFF;
+        parts.push(header);
+
+        const payload = new Uint8Array(chunk);
+        payload.fill(0x20); // space payload
+        parts.push(payload);
+
+        remaining -= (chunk + 4);
+      }
+
+      parts.push(u8.subarray(2));
+      const paddedBlob = new Blob(parts, { type: 'image/jpeg' });
+      const finalGapKb = Math.max(0, (targetBytes - paddedBlob.size) / 1024).toFixed(1);
+      return { blob: paddedBlob, bytes: paddedBlob.size, gapKb: finalGapKb };
+    }
+
+    // Helper: Enforce exact hard size on PDF (जास्तीत जास्त मजकूर स्पष्टता + अचूक ४ ते ५ KB फरक)
+    async function enforceExactPdfTargetSize(pagesData, targetBytes, marginKb = 4.5, onProgress = null) {
+      let marginBytes = Math.round(marginKb * 1024);
+      if (targetBytes <= 35 * 1024) marginBytes = Math.min(1536, Math.round(targetBytes * 0.08));
+      else if (targetBytes <= 75 * 1024) marginBytes = Math.min(3072, Math.round(targetBytes * 0.06));
+      else if (targetBytes <= 150 * 1024) marginBytes = 4096;
+      else marginBytes = Math.min(5120, Math.max(4096, Math.round(targetBytes * 0.01))); // ~4.5 KB for 500 KB
+
+      const desiredBytes = targetBytes - marginBytes;
+      let blob = compileJsPdf(pagesData, 0);
+
+      // १) जर PDF टार्गेटपेक्षा मोठी असेल तर क्लॅरिटी संतुलित ठेवून क्वालिटी कमी करणे
+      let pass = 0;
+      while (blob.size > desiredBytes && pass < 8) {
+        pass++;
+        if (onProgress) onProgress(`अचूक साईझ कॅलिब्रेशन (फेरी ${pass})...`);
+        const reductionRatio = (desiredBytes * 0.985) / blob.size;
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          p.quality = Math.max(0.12, p.quality * reductionRatio);
+          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+        }
+        blob = compileJsPdf(pagesData, 0);
+      }
+
+      // २) जर PDF खूप लहान असेल तर रिझोल्युशन व क्लॅरिटी कमाल ९७% पर्यंत वाढवणे
+      let upPass = 0;
+      while (blob.size < desiredBytes * 0.88 && upPass < 5) {
+        upPass++;
+        let canBoost = false;
+        const boostRatio = Math.min(1.30, Math.sqrt(desiredBytes / Math.max(blob.size, 1024)));
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          if (p.quality < 0.96) {
+            p.quality = Math.min(0.97, p.quality * boostRatio);
+            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+            canBoost = true;
+          }
+        }
+        if (!canBoost) break;
+        const candidate = compileJsPdf(pagesData, 0);
+        if (candidate.size <= desiredBytes) {
+          blob = candidate;
+        } else {
+          for (let i = 0; i < pagesData.length; i++) {
+            const p = pagesData[i];
+            p.quality = Math.max(0.12, p.quality * (desiredBytes / candidate.size));
+            p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+          }
+          blob = compileJsPdf(pagesData, 0);
+          break;
+        }
+      }
+
+      // ३) हार्ड साईझ टार्गेट लॉक पॅडिंग (अचूक ४ ते ५ KB फरक हमी)
+      const currentBytes = blob.size;
+      const neededPad = desiredBytes - currentBytes;
+      if (neededPad > 20) {
+        const neededChars = Math.max(1, neededPad - 13);
+        blob = compileJsPdf(pagesData, neededChars);
+      }
+
+      // ४) सुरक्षा नियम: फाईल साईझ कधीही targetBytes पेक्षा जास्त होणार नाही
+      if (blob.size > targetBytes) {
+        const safetyRatio = (targetBytes * 0.98) / blob.size;
+        for (let i = 0; i < pagesData.length; i++) {
+          const p = pagesData[i];
+          p.quality = Math.max(0.10, p.quality * safetyRatio);
+          p.imgData = p.canvas.toDataURL('image/jpeg', p.quality);
+        }
+        blob = compileJsPdf(pagesData, 0);
+      }
+
+      const finalBytes = blob.size;
+      const gapBytes = targetBytes - finalBytes;
+      const gapKb = Math.max(0, gapBytes / 1024).toFixed(1);
+
+      return {
+        blob: blob,
+        bytes: finalBytes,
+        gapKb: gapKb
+      };
+    }
+
+    // Master Action Execution Router
+    async function executeCurrentModeAction() {
+      if (selectedFiles.length === 0) return;
+
+      const targetInp = document.getElementById('target-kb-input');
+      let targetKb = parseInt(targetInp.value, 10);
+      if (isNaN(targetKb) || targetKb < 10) {
+        targetKb = 200;
+        targetInp.value = '200';
+      }
+
+      const btn = document.getElementById('btn-start-compress');
+      const progressSec = document.getElementById('progress-section');
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progressStatus = document.getElementById('progress-status-text');
+      const progressPct = document.getElementById('progress-percent-text');
+
+      btn.disabled = true;
+      progressSec.style.display = 'block';
+      document.getElementById('result-card').style.display = 'none';
+      renderedThumbnails = [];
+
+      try {
+        if (currentMode === 'single-pdf') {
+          if (selectedFiles.length > 1 && selectedFiles.every(f => f.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(f.name))) {
+            await processBulkImagesToSeparatePdfs(selectedFiles, targetKb);
+          } else {
+            await processSinglePdfMode(selectedFiles[0], targetKb);
+          }
+        } else if (currentMode === 'merge-pdf') {
+          await processMergePdfMode(selectedFiles, targetKb);
+        } else if (currentMode === 'batch-pdf') {
+          await processBatchPdfMode(selectedFiles, targetKb);
+        } else if (currentMode === 'single-img') {
+          if (currentSingleImgOutputFormat === 'pdf') {
+            await processSingleImageToPdf(selectedFiles[0], targetKb);
+          } else {
+            await processSingleImageMode(selectedFiles[0], targetKb);
+          }
+        } else if (currentMode === 'img-to-pdf') {
+          if (selectedFiles.length === 1) {
+            await processSingleImageToPdf(selectedFiles[0], targetKb);
+          } else {
+            if (currentPdfOutputMode === 'separate') {
+              await processBulkImagesToSeparatePdfs(selectedFiles, targetKb);
+            } else {
+              await processImagesToPdfMode(selectedFiles, targetKb);
+            }
+          }
+        } else if (currentMode === 'batch-img') {
+          await processBatchImagesMode(selectedFiles, targetKb);
+        }
+
+        setTimeout(() => {
+          progressSec.style.display = 'none';
+          btn.disabled = false;
+          renderResultsUI(targetKb);
+        }, 300);
+
+      } catch (err) {
+        console.error('Execution Error:', err);
+        alert('प्रोसेसिंग दरम्यान त्रुटी आली: ' + (err.message || err));
+        progressSec.style.display = 'none';
+        btn.disabled = false;
+      }
+    }
+
+    // Helper: Create High-Quality A4 Single-Page PDF from Image File
+    async function createSinglePagePdfFromFile(file, targetKb, onProgress = null) {
+      const targetBytes = targetKb * 1024;
+      const overhead = 3800; // Single page PDF structure overhead
+      const usableBytes = Math.max(8192, targetBytes - overhead);
+
+      // Compress and clarify image
+      const res = await compressImageToTargetBytes(file, usableBytes, 'document');
+
+      // Orientation: auto, portrait, or landscape
+      let isLandscape = false;
+      if (currentImgToPdfOrientation === 'portrait') {
+        isLandscape = false;
+      } else if (currentImgToPdfOrientation === 'landscape') {
+        isLandscape = true;
+      } else {
+        isLandscape = res.width > res.height;
+      }
+
+      // Standard A4 points (Portrait: 595.28 x 841.89, Landscape: 841.89 x 595.28)
+      const pageW = isLandscape ? 841.89 : 595.28;
+      const pageH = isLandscape ? 595.28 : 841.89;
+
+      let drawW, drawH, drawX, drawY;
+      if (currentImgToPdfFit === 'full') {
+        drawW = pageW;
+        drawH = pageH;
+        drawX = 0;
+        drawY = 0;
+      } else {
+        const margin = 18;
+        const availW = pageW - (margin * 2);
+        const availH = pageH - (margin * 2);
+        const imgRatio = res.width / res.height;
+        const pageRatio = availW / availH;
+
+        if (imgRatio > pageRatio) {
+          drawW = availW;
+          drawH = availW / imgRatio;
+        } else {
+          drawH = availH;
+          drawW = availH * imgRatio;
+        }
+        drawX = margin + ((availW - drawW) / 2);
+        drawY = margin + ((availH - drawH) / 2);
+      }
+
+      const pagesData = [{
+        canvas: res.canvas,
+        imgData: res.dataUrl,
+        quality: 0.88,
+        ptW: pageW,
+        ptH: pageH,
+        drawX: drawX,
+        drawY: drawY,
+        drawW: drawW,
+        drawH: drawH,
+        orientation: isLandscape ? 'landscape' : 'portrait'
+      }];
+
+      const exactRes = await enforceExactPdfTargetSize(pagesData, targetBytes, 4.5, onProgress);
+
+      return {
+        blob: exactRes.blob,
+        gapKb: exactRes.gapKb,
+        thumbUrl: res.dataUrl,
+        dimensions: `${res.width}×${res.height} px ➔ A4 PDF`,
+        isLandscape: isLandscape
+      };
+    }
+
+    // -------------------------------------------------------------------------
+    // Dedicated Engine: Single Image to Crisp Single-Page PDF (Exact Target KB)
+    // -------------------------------------------------------------------------
+    async function processSingleImageToPdf(file, targetKb) {
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progressStatus = document.getElementById('progress-status-text');
+      const progressPct = document.getElementById('progress-percent-text');
+
+      progressFill.style.width = '25%';
+      progressPct.textContent = '25%';
+      progressStatus.textContent = 'इमेज विश्लेषण व स्पष्टता ऑप्टिमायझेशन सुरू...';
+
+      const res = await createSinglePagePdfFromFile(file, targetKb, (msg) => {
+        progressStatus.textContent = msg;
+      });
+
+      progressFill.style.width = '100%';
+      progressPct.textContent = '100%';
+      progressStatus.textContent = 'सिंगल पेज PDF तयार झाली!';
+
+      renderedThumbnails = [{
+        dataUrl: res.thumbUrl,
+        title: `सिंगल पेज PDF (${res.isLandscape ? 'लँडस्केप A4' : 'पोर्ट्रेट A4'})`
+      }];
+
+      finalResultDimensions = res.dimensions;
+      finalResultBlob = res.blob;
+      finalResultGapKb = res.gapKb;
+      finalResultType = 'pdf';
+      finalResultFilename = file.name.replace(/\.[^/.]+$/, "") + `_single_page_${targetKb}KB.pdf`;
+      if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
+      finalResultUrl = URL.createObjectURL(finalResultBlob);
+    }
+
+    // -------------------------------------------------------------------------
+    // Dedicated Engine: Bulk Images to Separate Single PDFs (Each with Target Size)
+    // -------------------------------------------------------------------------
+    async function processBulkImagesToSeparatePdfs(files, masterTargetKb) {
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progressStatus = document.getElementById('progress-status-text');
+      const progressPct = document.getElementById('progress-percent-text');
+
+      const zip = new JSZip();
+      if (generatedSinglePdfs && generatedSinglePdfs.length > 0) {
+        generatedSinglePdfs.forEach(item => {
+          if (item.url) URL.revokeObjectURL(item.url);
+        });
+      }
+      generatedSinglePdfs = [];
+      renderedThumbnails = [];
+
+      let totalCompBytes = 0;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileTargetKb = file.customTargetKb || masterTargetKb;
+        const pct = Math.round((i / files.length) * 88);
+        progressFill.style.width = `${pct}%`;
+        progressPct.textContent = `${pct}%`;
+        progressStatus.textContent = `फोटो ${i + 1}/${files.length} ➔ सिंगल-पेज PDF बनवत आहे (${fileTargetKb} KB): ${file.name}...`;
+
+        const pdfResult = await createSinglePagePdfFromFile(file, fileTargetKb, (msg) => {
+          progressStatus.textContent = `फोटो ${i + 1}/${files.length}: ${msg}`;
+        });
+
+        totalCompBytes += pdfResult.blob.size;
+
+        const cleanBaseName = file.name.replace(/\.[^/.]+$/, "");
+        const outPdfName = `${cleanBaseName}_single_${fileTargetKb}KB.pdf`;
+        zip.file(outPdfName, pdfResult.blob);
+
+        const pdfUrl = URL.createObjectURL(pdfResult.blob);
+        generatedSinglePdfs.push({
+          id: i,
+          name: outPdfName,
+          origName: file.name,
+          origSize: file.size,
+          compSize: pdfResult.blob.size,
+          targetKb: fileTargetKb,
+          gapKb: pdfResult.gapKb,
+          blob: pdfResult.blob,
+          url: pdfUrl,
+          thumbUrl: pdfResult.thumbUrl
+        });
+
+        renderedThumbnails.push({
+          dataUrl: pdfResult.thumbUrl,
+          title: `${cleanBaseName.substring(0, 10)}.. (${formatBytes(pdfResult.blob.size)})`
+        });
+      }
+
+      progressFill.style.width = '95%';
+      progressPct.textContent = '95%';
+      progressStatus.textContent = 'सर्व सिंगल PDFs झिप (ZIP) आर्काइव्हमध्ये पॅक करत आहे...';
+
+      finalResultBlob = await zip.generateAsync({ type: 'blob' });
+      finalResultType = 'separate-pdfs';
+      finalResultFilename = `Single_PDFs_${masterTargetKb}KB.zip`;
+      if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
+      finalResultUrl = URL.createObjectURL(finalResultBlob);
+    }
+
+    // Single PDF Preview & Download Helpers
+    function previewSinglePdf(id) {
+      const item = generatedSinglePdfs.find(p => p.id === id);
+      if (item && item.url) {
+        window.open(item.url, '_blank');
+      }
+    }
+
+    function downloadSinglePdf(id) {
+      const item = generatedSinglePdfs.find(p => p.id === id);
+      if (item && item.url) {
+        const link = document.createElement('a');
+        link.href = item.url;
+        link.download = item.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        if (typeof showToast === 'function') {
+          showToast(`${item.name} डाउनलोड झाली!`, 'success');
+        }
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Mode 1: Single PDF Compressor
+    // -------------------------------------------------------------------------
+    async function processSinglePdfMode(file, targetKb) {
+      if (file.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(file.name)) {
+        await processSingleImageToPdf(file, targetKb);
+        return;
+      }
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progressStatus = document.getElementById('progress-status-text');
+      const progressPct = document.getElementById('progress-percent-text');
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const numPages = pdfDoc.numPages;
+
+      const targetBytes = targetKb * 1024;
+      const overhead = Math.min(22000, 4000 + (numPages * 1200));
+      const usableBytes = Math.max(8192, targetBytes - overhead);
+      const targetBytesPerPage = Math.floor(usableBytes / numPages);
+
+      let targetMaxDim = 1150;
+      if (targetBytesPerPage >= 350 * 1024) targetMaxDim = 2400;
+      else if (targetBytesPerPage >= 200 * 1024) targetMaxDim = 1900;
+      else if (targetBytesPerPage >= 100 * 1024) targetMaxDim = 1450;
+      else if (targetBytesPerPage >= 50 * 1024) targetMaxDim = 1150;
+      else targetMaxDim = 850;
+
+      let initialQuality = targetBytesPerPage >= 350 * 1024 ? 0.88 : (targetBytesPerPage >= 180 * 1024 ? 0.78 : (targetBytesPerPage >= 90 * 1024 ? 0.68 : (targetBytesPerPage >= 45 * 1024 ? 0.58 : 0.46)));
+      const pagesData = [];
+
+      for (let i = 1; i <= numPages; i++) {
+        const pct = Math.round(((i - 1) / numPages) * 75);
+        progressFill.style.width = `${pct}%`;
+        progressPct.textContent = `${pct}%`;
+        progressStatus.textContent = `पान ${i}/${numPages} अचूक ऑप्टिमाईज होत आहे...`;
+
+        const page = await pdfDoc.getPage(i);
+        const origViewport = page.getViewport({ scale: 1.0 });
+        const maxOrigDim = Math.max(origViewport.width, origViewport.height);
+
+        let scale = Math.min(2.0, Math.max(0.18, targetMaxDim / maxOrigDim));
+        const viewport = page.getViewport({ scale: scale });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(viewport.width);
+        canvas.height = Math.round(viewport.height);
+        const ctx = canvas.getContext('2d', { alpha: false });
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+        const cleanCanvas = enhanceCanvasForClarity(canvas);
+
+        let q = initialQuality;
+        let currCanvas = cleanCanvas;
+        let imgData = currCanvas.toDataURL('image/jpeg', q);
+        let approxBytes = Math.round((imgData.length - 22) * 0.75);
+
+        let attempts = 0;
+        while (approxBytes > targetBytesPerPage && attempts < 4) {
+          attempts++;
+          const ratio = targetBytesPerPage / approxBytes;
+          q = Math.max(0.18, q * ratio * 0.94);
+          if (q <= 0.32 && approxBytes > targetBytesPerPage) {
+            const down = document.createElement('canvas');
+            down.width = Math.round(currCanvas.width * 0.82);
+            down.height = Math.round(currCanvas.height * 0.82);
+            const dCtx = down.getContext('2d', { alpha: false });
+            dCtx.drawImage(currCanvas, 0, 0, down.width, down.height);
+            currCanvas = down;
+            q = 0.42;
+          }
+          imgData = currCanvas.toDataURL('image/jpeg', q);
+          approxBytes = Math.round((imgData.length - 22) * 0.75);
+        }
+
+        let upAttempts = 0;
+        while (approxBytes < targetBytesPerPage * 0.96 && q < 0.97 && upAttempts < 5) {
+          upAttempts++;
+          const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.985) / Math.max(approxBytes, 1024)));
+          q = Math.min(0.97, q * boost);
+          imgData = currCanvas.toDataURL('image/jpeg', q);
+          approxBytes = Math.round((imgData.length - 22) * 0.75);
+        }
+
+        pagesData.push({
+          canvas: currCanvas,
+          imgData: imgData,
+          quality: q,
+          ptW: origViewport.width,
+          ptH: origViewport.height,
+          orientation: origViewport.width > origViewport.height ? 'landscape' : 'portrait'
+        });
+
+        renderedThumbnails.push({ dataUrl: imgData, title: `पान ${i}` });
+      }
+
+      progressFill.style.width = '88%';
+      progressPct.textContent = '88%';
+      progressStatus.textContent = 'टार्गेट साईझ अचूक कॅलिब्रेशन (हार्ड लॉक: ४ ते ५ KB फरक)...';
+
+      const exactRes = await enforceExactPdfTargetSize(pagesData, targetBytes, 4.5, (msg) => {
+        progressStatus.textContent = msg;
+      });
+
+      progressFill.style.width = '100%';
+      progressPct.textContent = '100%';
+      progressStatus.textContent = 'कॉम्प्रेशन १००% यशस्वी!';
+
+      finalResultBlob = exactRes.blob;
+      finalResultGapKb = exactRes.gapKb;
+      finalResultType = 'pdf';
+      finalResultFilename = file.name.replace(/\.pdf$/i, '') + `_compressed_${targetKb}KB.pdf`;
+      if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
+      finalResultUrl = URL.createObjectURL(finalResultBlob);
+    }
+
+    // -------------------------------------------------------------------------
+    // Mode 2: Merge Multiple PDFs into 1 Target-Size Compressed PDF
+    // -------------------------------------------------------------------------
+    async function processMergePdfMode(files, targetKb) {
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progressStatus = document.getElementById('progress-status-text');
+      const progressPct = document.getElementById('progress-percent-text');
+
+      progressStatus.textContent = 'सर्व PDF फाईल्स वाचत आहे...';
+      progressFill.style.width = '10%';
+      progressPct.textContent = '10%';
+
+      // 1. Load all PDFs and collect page counts
+      const pdfEntries = [];
+      let totalPagesAll = 0;
+
+      for (let fIdx = 0; fIdx < files.length; fIdx++) {
+        const file = files[fIdx];
+        const ab = await file.arrayBuffer();
+        const doc = await pdfjsLib.getDocument({ data: ab }).promise;
+        pdfEntries.push({ file: file, doc: doc, count: doc.numPages });
+        totalPagesAll += doc.numPages;
+      }
+
+      const targetBytes = targetKb * 1024;
+      const overhead = Math.min(25000, 5000 + (totalPagesAll * 1200));
+      const usableBytes = Math.max(8192, targetBytes - overhead);
+      const targetBytesPerPage = Math.floor(usableBytes / totalPagesAll);
+
+      let targetMaxDim = targetBytesPerPage >= 300 * 1024 ? 2200 : (targetBytesPerPage >= 150 * 1024 ? 1600 : (targetBytesPerPage >= 80 * 1024 ? 1250 : 900));
+      let initialQuality = targetBytesPerPage >= 300 * 1024 ? 0.86 : (targetBytesPerPage >= 150 * 1024 ? 0.76 : 0.65);
+
+      const allMergedPages = [];
+      let globalPageNum = 0;
+
+      for (let fIdx = 0; fIdx < pdfEntries.length; fIdx++) {
+        const entry = pdfEntries[fIdx];
+        for (let pIdx = 1; pIdx <= entry.count; pIdx++) {
+          globalPageNum++;
+          const pct = 10 + Math.round((globalPageNum / totalPagesAll) * 70);
+          progressFill.style.width = `${pct}%`;
+          progressPct.textContent = `${pct}%`;
+          progressStatus.textContent = `फाईल ${fIdx + 1}/${files.length} • पान ${pIdx}/${entry.count} जोडत आहे...`;
+
+          const page = await entry.doc.getPage(pIdx);
+          const origViewport = page.getViewport({ scale: 1.0 });
+          const maxOrigDim = Math.max(origViewport.width, origViewport.height);
+
+          let scale = Math.min(2.0, Math.max(0.18, targetMaxDim / maxOrigDim));
+          const viewport = page.getViewport({ scale: scale });
+
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(viewport.width);
+          canvas.height = Math.round(viewport.height);
+          const ctx = canvas.getContext('2d', { alpha: false });
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+          const cleanCanvas = enhanceCanvasForClarity(canvas);
+
+          let q = initialQuality;
+          let currCanvas = cleanCanvas;
+          let imgData = currCanvas.toDataURL('image/jpeg', q);
+          let approxBytes = Math.round((imgData.length - 22) * 0.75);
+
+          let attempts = 0;
+          while (approxBytes > targetBytesPerPage && attempts < 4) {
+            attempts++;
+            const ratio = targetBytesPerPage / approxBytes;
+            q = Math.max(0.18, q * ratio * 0.94);
+            if (q <= 0.32 && approxBytes > targetBytesPerPage) {
+              const down = document.createElement('canvas');
+              down.width = Math.round(currCanvas.width * 0.82);
+              down.height = Math.round(currCanvas.height * 0.82);
+              const dCtx = down.getContext('2d', { alpha: false });
+              dCtx.drawImage(currCanvas, 0, 0, down.width, down.height);
+              currCanvas = down;
+              q = 0.42;
+            }
+            imgData = currCanvas.toDataURL('image/jpeg', q);
+            approxBytes = Math.round((imgData.length - 22) * 0.75);
+          }
+
+          let upAttempts = 0;
+          while (approxBytes < targetBytesPerPage * 0.96 && q < 0.96 && upAttempts < 5) {
+            upAttempts++;
+            const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.985) / Math.max(approxBytes, 1024)));
+            q = Math.min(0.97, q * boost);
+            imgData = currCanvas.toDataURL('image/jpeg', q);
+            approxBytes = Math.round((imgData.length - 22) * 0.75);
+          }
+
+          allMergedPages.push({
+            canvas: currCanvas,
+            imgData: imgData,
+            quality: q,
+            ptW: origViewport.width,
+            ptH: origViewport.height,
+            orientation: origViewport.width > origViewport.height ? 'landscape' : 'portrait'
+          });
+
+          renderedThumbnails.push({ dataUrl: imgData, title: `${entry.file.name.substring(0, 10)}.. (पान ${pIdx})` });
+        }
+      }
+
+      progressFill.style.width = '88%';
+      progressPct.textContent = '88%';
+      progressStatus.textContent = 'एकत्रित PDF अचूक टार्गेट कॅलिब्रेशन (हार्ड लॉक: ४ ते ५ KB फरक)...';
+
+      const exactRes = await enforceExactPdfTargetSize(allMergedPages, targetBytes, 4.5, (msg) => {
+        progressStatus.textContent = msg;
+      });
+
+      progressFill.style.width = '100%';
+      progressPct.textContent = '100%';
+      progressStatus.textContent = 'सर्व PDF यशस्वीरीत्या एकत्र झाल्या!';
+
+      finalResultBlob = exactRes.blob;
+      finalResultGapKb = exactRes.gapKb;
+      finalResultType = 'pdf';
+      finalResultFilename = `Merged_Documents_${targetKb}KB.pdf`;
+      if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
+      finalResultUrl = URL.createObjectURL(finalResultBlob);
+    }
+
+    // -------------------------------------------------------------------------
+    // Mode 3: Batch PDF Compression to ZIP
+    // -------------------------------------------------------------------------
+    async function processBatchPdfMode(files, targetKb) {
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progressStatus = document.getElementById('progress-status-text');
+      const progressPct = document.getElementById('progress-percent-text');
+
+      const zip = new JSZip();
+      const targetBytes = targetKb * 1024;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const pct = Math.round((i / files.length) * 90);
+        progressFill.style.width = `${pct}%`;
+        progressPct.textContent = `${pct}%`;
+        progressStatus.textContent = `PDF फाईल ${i + 1}/${files.length} कॉम्प्रेस होत आहे: ${file.name}...`;
+
+        const ab = await file.arrayBuffer();
+        const doc = await pdfjsLib.getDocument({ data: ab }).promise;
+        const numPages = doc.numPages;
+
+        const overhead = Math.min(22000, 4000 + (numPages * 1200));
+        const usableBytes = Math.max(8192, targetBytes - overhead);
+        const targetBytesPerPage = Math.floor(usableBytes / numPages);
+
+        let targetMaxDim = targetBytesPerPage >= 300 * 1024 ? 2200 : (targetBytesPerPage >= 150 * 1024 ? 1600 : (targetBytesPerPage >= 80 * 1024 ? 1250 : 900));
+        let initialQuality = targetBytesPerPage >= 300 * 1024 ? 0.85 : (targetBytesPerPage >= 150 * 1024 ? 0.75 : 0.65);
+        const pagesData = [];
+
+        for (let p = 1; p <= numPages; p++) {
+          const page = await doc.getPage(p);
+          const origViewport = page.getViewport({ scale: 1.0 });
+          const maxOrigDim = Math.max(origViewport.width, origViewport.height);
+          let scale = Math.min(2.0, Math.max(0.18, targetMaxDim / maxOrigDim));
+          const viewport = page.getViewport({ scale: scale });
+
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(viewport.width);
+          canvas.height = Math.round(viewport.height);
+          const ctx = canvas.getContext('2d', { alpha: false });
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+          const cleanCanvas = enhanceCanvasForClarity(canvas);
+          let q = initialQuality;
+          let currCanvas = cleanCanvas;
+          let imgData = currCanvas.toDataURL('image/jpeg', q);
+          let byteSize = Math.round((imgData.length - 22) * 0.75);
+
+          let attempts = 0;
+          while (byteSize > targetBytesPerPage && attempts < 4) {
+            attempts++;
+            q = Math.max(0.18, q * (targetBytesPerPage / byteSize) * 0.94);
+            imgData = currCanvas.toDataURL('image/jpeg', q);
+            byteSize = Math.round((imgData.length - 22) * 0.75);
+          }
+
+          let upAttempts = 0;
+          while (byteSize < targetBytesPerPage * 0.96 && q < 0.96 && upAttempts < 5) {
+            upAttempts++;
+            const boost = Math.min(1.30, Math.sqrt((targetBytesPerPage * 0.985) / Math.max(byteSize, 1024)));
+            q = Math.min(0.97, q * boost);
+            imgData = currCanvas.toDataURL('image/jpeg', q);
+            byteSize = Math.round((imgData.length - 22) * 0.75);
+          }
+
+          pagesData.push({
+            canvas: currCanvas,
+            imgData: imgData,
+            quality: q,
+            ptW: origViewport.width,
+            ptH: origViewport.height,
+            orientation: origViewport.width > origViewport.height ? 'landscape' : 'portrait'
+          });
+
+          if (i === 0) {
+            renderedThumbnails.push({ dataUrl: imgData, title: `${file.name.substring(0, 8)}.. P${p}` });
+          }
+        }
+
+        const exactRes = await enforceExactPdfTargetSize(pagesData, targetBytes, 4.5);
+        const outName = file.name.replace(/\.pdf$/i, '') + `_compressed_${targetKb}KB.pdf`;
+        zip.file(outName, exactRes.blob);
+      }
+
+      progressFill.style.width = '95%';
+      progressPct.textContent = '95%';
+      progressStatus.textContent = 'झिप (ZIP) आर्काइव्ह तयार होत आहे...';
+
+      finalResultBlob = await zip.generateAsync({ type: 'blob' });
+      finalResultType = 'zip';
+      finalResultFilename = `All_Compressed_PDFs_${targetKb}KB.zip`;
+      if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
+      finalResultUrl = URL.createObjectURL(finalResultBlob);
+    }
+
+    // -------------------------------------------------------------------------
+    // Mode 4: Single Image Compressor (JPG/PNG/WebP to exact KB)
+    // -------------------------------------------------------------------------
+    async function processSingleImageMode(file, targetKb) {
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progressStatus = document.getElementById('progress-status-text');
+      const progressPct = document.getElementById('progress-percent-text');
+
+      progressFill.style.width = '30%';
+      progressPct.textContent = '30%';
+      progressStatus.textContent = 'इमेज वाचत आहे व शार्पनेस वाढवत आहे...';
+
+      const targetBytes = targetKb * 1024;
+      const res = await compressImageToTargetBytes(file, targetBytes, currentImageDimensionPreset);
+
+      // Apply Exact Hard Size Pad (अचूक ४ ते ५ KB फरक हमी)
+      progressFill.style.width = '80%';
+      progressPct.textContent = '80%';
+      progressStatus.textContent = 'हार्ड साईझ टार्गेट लॉक कॅलिब्रेशन (४ ते ५ KB फरक)...';
+
+      const exactRes = await padJpegBlob(res.blob, targetBytes, 4.5);
+
+      progressFill.style.width = '100%';
+      progressPct.textContent = '100%';
+      progressStatus.textContent = 'इमेज कॉम्प्रेशन १००% यशस्वी!';
+
+      finalResultDimensions = `${res.width} × ${res.height} px`;
+      renderedThumbnails.push({ dataUrl: res.dataUrl, title: `${res.width} × ${res.height} px (${formatBytes(exactRes.bytes)})` });
+
+      finalResultBlob = exactRes.blob;
+      finalResultGapKb = exactRes.gapKb;
+      finalResultType = 'image';
+      finalResultFilename = file.name.replace(/\.[^/.]+$/, "") + `_compressed_${targetKb}KB.jpg`;
+      if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
+      finalResultUrl = URL.createObjectURL(finalResultBlob);
+    }
+
+    // -------------------------------------------------------------------------
+    // Mode 5: Images to 1 Combined PDF
+    // -------------------------------------------------------------------------
+    async function processImagesToPdfMode(files, targetKb) {
+      if (files.length === 1) {
+        await processSingleImageToPdf(files[0], targetKb);
+        return;
+      }
+
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progressStatus = document.getElementById('progress-status-text');
+      const progressPct = document.getElementById('progress-percent-text');
+
+      const targetBytes = targetKb * 1024;
+      const overhead = Math.min(22000, 4000 + (files.length * 1200));
+      const usableBytes = Math.max(8192, targetBytes - overhead);
+      const targetBytesPerPage = Math.floor(usableBytes / files.length);
+
+      const pagesData = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const pct = Math.round(((i + 1) / files.length) * 85);
+        progressFill.style.width = `${pct}%`;
+        progressPct.textContent = `${pct}%`;
+        progressStatus.textContent = `फोटो ${i + 1}/${files.length} PDF मध्ये रूपांतरित होत आहे...`;
+
+        const res = await compressImageToTargetBytes(file, targetBytesPerPage, 'document');
+
+        let isLandscape = false;
+        if (currentImgToPdfOrientation === 'portrait') isLandscape = false;
+        else if (currentImgToPdfOrientation === 'landscape') isLandscape = true;
+        else isLandscape = res.width > res.height;
+
+        const pageW = isLandscape ? 841.89 : 595.28;
+        const pageH = isLandscape ? 595.28 : 841.89;
+
+        let drawW, drawH, drawX, drawY;
+        if (currentImgToPdfFit === 'full') {
+          drawW = pageW;
+          drawH = pageH;
+          drawX = 0;
+          drawY = 0;
+        } else {
+          const margin = 18;
+          const availW = pageW - (margin * 2);
+          const availH = pageH - (margin * 2);
+          const imgRatio = res.width / res.height;
+          const pageRatio = availW / availH;
+
+          if (imgRatio > pageRatio) {
+            drawW = availW;
+            drawH = availW / imgRatio;
+          } else {
+            drawH = availH;
+            drawW = availH * imgRatio;
+          }
+          drawX = margin + ((availW - drawW) / 2);
+          drawY = margin + ((availH - drawH) / 2);
+        }
+
+        pagesData.push({
+          canvas: res.canvas,
+          imgData: res.dataUrl,
+          quality: 0.82,
+          ptW: pageW,
+          ptH: pageH,
+          drawX: drawX,
+          drawY: drawY,
+          drawW: drawW,
+          drawH: drawH,
+          orientation: isLandscape ? 'landscape' : 'portrait'
+        });
+
+        renderedThumbnails.push({ dataUrl: res.dataUrl, title: `फोटो ${i + 1} (${res.width}×${res.height})` });
+      }
+
+      progressFill.style.width = '92%';
+      progressPct.textContent = '92%';
+      progressStatus.textContent = 'सर्व फोटो जोडून PDF अचूक टार्गेटमध्ये बसवत आहे (४ ते ५ KB फरक)...';
+
+      const exactRes = await enforceExactPdfTargetSize(pagesData, targetBytes, 4.5, (msg) => {
+        progressStatus.textContent = msg;
+      });
+
+      progressFill.style.width = '100%';
+      progressPct.textContent = '100%';
+      progressStatus.textContent = 'PDF तयार झाली!';
+
+      finalResultDimensions = '';
+      finalResultBlob = exactRes.blob;
+      finalResultGapKb = exactRes.gapKb;
+      finalResultType = 'pdf';
+      finalResultFilename = `Images_Combined_${targetKb}KB.pdf`;
+      if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
+      finalResultUrl = URL.createObjectURL(finalResultBlob);
+    }
+
+    // -------------------------------------------------------------------------
+    // Mode 6: Batch Images Compression to ZIP
+    // -------------------------------------------------------------------------
+    async function processBatchImagesMode(files, targetKb) {
+      const progressFill = document.getElementById('progress-bar-fill');
+      const progressStatus = document.getElementById('progress-status-text');
+      const progressPct = document.getElementById('progress-percent-text');
+
+      const zip = new JSZip();
+      const targetBytes = targetKb * 1024;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const pct = Math.round((i / files.length) * 90);
+        progressFill.style.width = `${pct}%`;
+        progressPct.textContent = `${pct}%`;
+        progressStatus.textContent = `इमेज ${i + 1}/${files.length} कॉम्प्रेस होत आहे: ${file.name}...`;
+
+        const res = await compressImageToTargetBytes(file, targetBytes, currentImageDimensionPreset);
+        const exactRes = await padJpegBlob(res.blob, targetBytes, 4.5);
+        const outName = file.name.replace(/\.[^/.]+$/, "") + `_compressed_${targetKb}KB.jpg`;
+        zip.file(outName, exactRes.blob);
+
+        renderedThumbnails.push({ dataUrl: res.dataUrl, title: `${file.name.substring(0, 10)}.. (${res.width}×${res.height})` });
+      }
+
+      progressFill.style.width = '95%';
+      progressPct.textContent = '95%';
+      progressStatus.textContent = 'झिप (ZIP) आर्काइव्ह तयार होत आहे...';
+
+      finalResultDimensions = '';
+      finalResultBlob = await zip.generateAsync({ type: 'blob' });
+      finalResultType = 'zip';
+      finalResultFilename = `All_Compressed_Images_${targetKb}KB.zip`;
+      if (finalResultUrl) URL.revokeObjectURL(finalResultUrl);
+      finalResultUrl = URL.createObjectURL(finalResultBlob);
+    }
+
+    // ==========================================
+    // Results Card Display
+    // ==========================================
+    function renderResultsUI(targetKb) {
+      let origTotalBytes = 0;
+      selectedFiles.forEach(f => origTotalBytes += f.size);
+      const compBytes = finalResultBlob ? finalResultBlob.size : 0;
+      const compKb = compBytes / 1024;
+
+      const savingsPct = origTotalBytes > 0 ? Math.round(((origTotalBytes - compBytes) / origTotalBytes) * 100) : 0;
+
+      document.getElementById('stat-orig-size').textContent = formatBytes(origTotalBytes);
+      document.getElementById('stat-comp-size').textContent = formatBytes(compBytes);
+      document.getElementById('stat-savings-pct').textContent = savingsPct > 0 ? `-${savingsPct}%` : '०%';
+
+      // Update Visual Comparison Dashboard (SVG Radial Meter & Before/After Bars)
+      const gaugePercent = document.getElementById('gauge-percent-display');
+      const gaugeCircle = document.getElementById('gauge-fill-circle');
+      if (gaugePercent) gaugePercent.textContent = savingsPct > 0 ? `-${savingsPct}%` : '०%';
+      if (gaugeCircle) {
+        // Circumference for r=42 is 263.89
+        const circumference = 263.89;
+        const offset = circumference - (circumference * Math.min(100, Math.max(0, savingsPct)) / 100);
+        gaugeCircle.style.strokeDashoffset = offset;
+      }
+
+      const barOrigSize = document.getElementById('bar-orig-size');
+      const barCompSize = document.getElementById('bar-comp-size');
+      const barCompFill = document.getElementById('bar-comp-fill');
+      const diffKbSaved = document.getElementById('diff-kb-saved');
+
+      if (barOrigSize) barOrigSize.textContent = formatBytes(origTotalBytes);
+      if (barCompSize) barCompSize.textContent = formatBytes(compBytes);
+      if (barCompFill) {
+        const fillPct = origTotalBytes > 0 ? Math.max(10, Math.min(100, Math.round((compBytes / origTotalBytes) * 100))) : 20;
+        barCompFill.style.width = `${fillPct}%`;
+      }
+      if (diffKbSaved) {
+        const savedBytes = Math.max(0, origTotalBytes - compBytes);
+        diffKbSaved.textContent = `${formatBytes(savedBytes)} बचत`;
+      }
+
+      const gapBox = document.getElementById('stat-gap-box');
+      const gapVal = document.getElementById('stat-gap-val');
+      const gapKb = Math.max(0, (targetKb - compKb)).toFixed(1);
+      if (gapBox && gapVal) {
+        gapVal.textContent = `-${gapKb} KB`;
+        gapBox.style.display = 'block';
+      }
+
+      const dimBox = document.getElementById('stat-dim-box');
+      const dimVal = document.getElementById('stat-dim-val');
+      if (finalResultType === 'image' && finalResultDimensions) {
+        if (dimBox && dimVal) {
+          dimVal.textContent = finalResultDimensions;
+          dimBox.style.display = 'block';
+        }
+      } else {
+        if (dimBox) dimBox.style.display = 'none';
+      }
+
+      const badge = document.getElementById('gov-compliance-badge');
+      const dlBtnText = document.getElementById('download-btn-text');
+      const sepSection = document.getElementById('separate-pdfs-results-section');
+      const sepList = document.getElementById('separate-pdfs-items-list');
+      const sepCount = document.getElementById('separate-pdfs-count-badge');
+
+      if (finalResultType === 'separate-pdfs') {
+        badge.innerHTML = `<i class="fa-solid fa-copy" style="color:#38bdf8;"></i> <strong>🎯 ${generatedSinglePdfs.length} स्वतंत्र सिंगल-पेज PDFs तयार!</strong> (प्रत्येक फोटोची स्वतंत्र A4 PDF • अचूक टार्गेट KB मध्ये हार्ड लॉक)`;
+        dlBtnText.textContent = `सर्व सिंगल PDFs झिप (ZIP) डाउनलोड करा (${formatBytes(compBytes)})`;
+        document.getElementById('btn-preview-result').style.display = 'none';
+
+        if (sepSection && sepList) {
+          sepCount.textContent = `${generatedSinglePdfs.length} फाईल्स`;
+          sepList.innerHTML = generatedSinglePdfs.map(item => `
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.22); border-radius: 8px; padding: 7px 10px; transition: all 0.2s;">
+              <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+                <img src="${item.thumbUrl}" style="width: 36px; height: 36px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;" alt="Thumb">
+                <div style="min-width: 0;">
+                  <div style="font-weight: 700; font-size: 0.82rem; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</div>
+                  <div style="font-size: 0.72rem; color: #94a3b8;">
+                    मूळ: ${formatBytes(item.origSize)} ➔ <strong style="color: #34d399;">${formatBytes(item.compSize)}</strong>
+                    <span style="color: #7dd3fc; font-weight: 700;">(टार्गेट: ${item.targetKb} KB • फरक: -${item.gapKb} KB)</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+                <button type="button" class="btn-ctrl-sm" onclick="previewSinglePdf(${item.id})" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.35); color: #38bdf8;" title="PDF उघडून पहा">
+                  <i class="fa-solid fa-eye"></i> पहा
+                </button>
+                <button type="button" class="btn-ctrl-sm" onclick="downloadSinglePdf(${item.id})" style="background: linear-gradient(135deg, #0284c7, #0369a1); border-color: #38bdf8; color: #fff; font-weight: 800;" title="स्वतंत्र सिंगल PDF डाउनलोड करा">
+                  <i class="fa-solid fa-download"></i> PDF
+                </button>
+              </div>
+            </div>
+          `).join('');
+          sepSection.style.display = 'block';
+        }
+      } else {
+        if (sepSection) sepSection.style.display = 'none';
+        if (finalResultType === 'zip') {
+          badge.innerHTML = `<i class="fa-solid fa-file-zipper" style="color:#38bdf8;"></i> <strong>सर्व फाईल्स झिप (ZIP) मध्ये पॅक केल्या आहेत</strong> (${selectedFiles.length} फाईल्स • प्रत्येक फाईल ${targetKb} KB च्या आत, हार्ड साईझ लॉक सक्रिय)`;
+          dlBtnText.textContent = `झिप फाईल डाउनलोड करा (${formatBytes(compBytes)})`;
+          document.getElementById('btn-preview-result').style.display = 'none';
+        } else {
+          document.getElementById('btn-preview-result').style.display = 'inline-flex';
+          if (finalResultType === 'image') {
+            badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#34d399;"></i> <strong>🎯 अचूक हार्ड साईझ इमेज साध्य!</strong> (टार्गेट: ${targetKb} KB • प्रत्यक्षात: ${formatBytes(compBytes)} • फरक: केवळ -${gapKb} KB • आकार: ${finalResultDimensions || 'कन्व्हर्टेड'}) - फोटो व मजकूर १००% स्पष्ट!`;
+            dlBtnText.textContent = `इमेज डाउनलोड करा (${formatBytes(compBytes)})`;
+          } else {
+            badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#34d399;"></i> <strong>🎯 अचूक हार्ड साईझ PDF साध्य!</strong> (टार्गेट: ${targetKb} KB • प्रत्यक्षात: ${formatBytes(compBytes)} • फरक: केवळ -${gapKb} KB) - शासकीय पोर्टल अपलोडसाठी १००% योग्य!`;
+            dlBtnText.textContent = `PDF डाउनलोड करा (${formatBytes(compBytes)})`;
+          }
+        }
+      }
+
+      // Render Thumbnails
+      const thumbSec = document.getElementById('thumbnails-preview-section');
+      const thumbContainer = document.getElementById('thumbnails-container');
+      thumbContainer.innerHTML = '';
+
+      if (renderedThumbnails.length > 0) {
+        renderedThumbnails.forEach((item, idx) => {
+          const thumb = document.createElement('div');
+          thumb.className = 'thumb-card';
+          thumb.title = `${item.title} - झूम करण्यासाठी क्लिक करा`;
+          thumb.onclick = () => window.open(item.dataUrl, '_blank');
+          thumb.innerHTML = `
+            <img src="${item.dataUrl}" alt="Thumb ${idx + 1}">
+            <div class="thumb-page-num">${item.title}</div>
+          `;
+          thumbContainer.appendChild(thumb);
+        });
+        thumbSec.style.display = 'block';
+      } else {
+        thumbSec.style.display = 'none';
+      }
+
+      document.getElementById('result-card').style.display = 'block';
+      document.getElementById('result-card').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Download Handler
+    function downloadCurrentResult() {
+      if (!finalResultBlob || !finalResultUrl) return;
+
+      const link = document.createElement('a');
+      link.href = finalResultUrl;
+      link.download = finalResultFilename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      if (typeof showToast === 'function') {
+        showToast('फाईल डाउनलोड झाली!', 'success');
+      }
+    }
+
+    // Preview Handler
+    function previewCurrentResult() {
+      if (finalResultUrl) {
+        window.open(finalResultUrl, '_blank');
+      }
+    }
+
+    // Format Bytes
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      if (bytes < k) return bytes + ' B';
+      const kb = bytes / k;
+      if (kb < 1024) return kb.toFixed(1) + ' KB';
+      const mb = kb / 1024;
+      return mb.toFixed(2) + ' MB';
+    }
+
+    // Initialize default mode
+    switchToolMode('single-pdf');
+  </script>
+
+
+  <!-- Interactive Image Crop Tool Modal -->
+  <div id="crop-modal" class="crop-modal-overlay" style="display: none;">
+    <div class="crop-modal-container">
+      <div class="crop-modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-crop-simple text-sky" style="font-size: 1.1rem;"></i>
+          <h3 style="margin: 0; font-size: 0.98rem; font-weight: 800; color: #fff;">फोटो व इमेज क्रॉप टूल (160×210 px & Custom)</h3>
+        </div>
+        <button type="button" class="crop-modal-close" onclick="closeImageCropperModal()" title="बंद करा">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Quick Aspect Presets & Controls -->
+      <div class="crop-toolbar">
+        <div class="crop-preset-group">
+          <button type="button" class="crop-preset-btn active" id="crop-preset-160-210" onclick="setCropRatio(160, 210, '160-210')">
+            👤 फोटो (160×210)
+          </button>
+          <button type="button" class="crop-preset-btn" id="crop-preset-256-64" onclick="setCropRatio(256, 64, '256-64')">
+            ✍️ सही (256×64)
+          </button>
+          <button type="button" class="crop-preset-btn" id="crop-preset-1-1" onclick="setCropRatio(1, 1, '1-1')">
+            ⏹️ 1:1 चौरस
+          </button>
+          <button type="button" class="crop-preset-btn" id="crop-preset-free" onclick="setCropRatio(0, 0, 'free')">
+            📐 Free Crop (मुक्त)
+          </button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+          <button type="button" class="crop-tool-btn" onclick="rotateCropper(90)" title="९० अंश फिरवा">
+            <i class="fa-solid fa-rotate-right"></i> फिरवा
+          </button>
+          <button type="button" class="crop-tool-btn" onclick="resetCropBox()" title="रिसेट करा">
+            <i class="fa-solid fa-arrows-rotate"></i> रिसेट
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Cropper Area -->
+      <div class="crop-workspace-viewport" id="crop-viewport">
+        <canvas id="crop-canvas"></canvas>
+        <div id="crop-box" class="crop-box-element">
+          <div class="crop-grid-line h1"></div>
+          <div class="crop-grid-line h2"></div>
+          <div class="crop-grid-line v1"></div>
+          <div class="crop-grid-line v2"></div>
+          <div class="crop-handle nw" data-handle="nw"></div>
+          <div class="crop-handle ne" data-handle="ne"></div>
+          <div class="crop-handle sw" data-handle="sw"></div>
+          <div class="crop-handle se" data-handle="se"></div>
+          <div class="crop-dimension-badge" id="crop-box-dim-badge">160 × 210 px</div>
+        </div>
+      </div>
+
+      <!-- Modal Footer Actions -->
+      <div class="crop-modal-footer">
+        <div style="font-size: 0.76rem; color: #94a3b8;">
+          <i class="fa-solid fa-circle-info text-sky"></i> क्रॉप बॉक्स हलवून फोटो व्यवस्थित सेट करा.
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn-ctrl-sm danger" onclick="closeImageCropperModal()" style="padding: 5px 12px; font-size: 0.82rem;">
+            रद्द करा
+          </button>
+          <button type="button" class="btn-select-file" onclick="applyCropAndSave()" style="padding: 5px 14px; font-size: 0.82rem; background: linear-gradient(135deg, #10b981, #059669);">
+            <i class="fa-solid fa-check"></i> ✂️ क्रॉप लागू करा (Apply)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // Interactive Canvas Cropper Engine
+    // =========================================================================
+    let cropperImage = null;
+    let cropperRotation = 0;
+    let cropRatioW = 160;
+    let cropRatioH = 210;
+    let cropRatioMode = '160-210';
+    let cropperScale = 1;
+    let canvasOffsetLeft = 0;
+    let canvasOffsetTop = 0;
+
+    let cropBoxState = {
+      x: 0,
+      y: 0,
+      w: 160,
+      h: 210
+    };
+
+    let isDraggingCropBox = false;
+    let isResizingCropBox = false;
+    let activeResizeHandle = null;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let initialBoxState = { x: 0, y: 0, w: 0, h: 0 };
+
+    function openImageCropperModal() {
+      // If current mode is not image mode, switch to single-img
+      if (!currentMode.includes('img')) {
+        switchToolMode('single-img');
+      }
+
+      // Check if image file exists
+      const imgFile = selectedFiles.find(f => f.type && f.type.startsWith('image/'));
+      if (!imgFile) {
+        alert('कृपया प्रथम क्रॉप करण्यासाठी इमेज / फोटो निवडा.');
+        triggerFileInput();
+        return;
+      }
+
+      cropperRotation = 0;
+      const img = new Image();
+      img.onload = () => {
+        cropperImage = img;
+        const modal = document.getElementById('crop-modal');
+        modal.style.display = 'flex';
+        setTimeout(() => {
+          initCropperCanvas();
+        }, 50);
+      };
+      img.src = URL.createObjectURL(imgFile);
+    }
+
+    function closeImageCropperModal() {
+      const modal = document.getElementById('crop-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function setCropRatio(w, h, modeKey) {
+      cropRatioW = w;
+      cropRatioH = h;
+      cropRatioMode = modeKey;
+
+      document.querySelectorAll('.crop-preset-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `crop-preset-${modeKey}`);
+      });
+
+      // Update manual inputs if predefined
+      if (w > 0 && h > 0) {
+        const cwInput = document.getElementById('custom-dim-w');
+        const chInput = document.getElementById('custom-dim-h');
+        if (cwInput) cwInput.value = w;
+        if (chInput) chInput.value = h;
+      }
+
+      resetCropBox();
+    }
+
+    function rotateCropper(deg) {
+      cropperRotation = (cropperRotation + deg) % 360;
+      initCropperCanvas();
+    }
+
+    function initCropperCanvas() {
+      if (!cropperImage) return;
+
+      const viewport = document.getElementById('crop-viewport');
+      const canvas = document.getElementById('crop-canvas');
+      const ctx = canvas.getContext('2d');
+
+      const isRotated90 = (cropperRotation === 90 || cropperRotation === 270);
+      const natW = isRotated90 ? cropperImage.naturalHeight : cropperImage.naturalWidth;
+      const natH = isRotated90 ? cropperImage.naturalWidth : cropperImage.naturalHeight;
+
+      const maxViewW = Math.min(viewport.clientWidth - 20, 680);
+      const maxViewH = Math.min(viewport.clientHeight - 20, 420);
+
+      const scale = Math.min(maxViewW / natW, maxViewH / natH, 1.0);
+      cropperScale = scale;
+
+      const dispW = Math.max(100, Math.round(natW * scale));
+      const dispH = Math.max(100, Math.round(natH * scale));
+
+      canvas.width = dispW;
+      canvas.height = dispH;
+      canvas.style.width = dispW + 'px';
+      canvas.style.height = dispH + 'px';
+
+      ctx.save();
+      ctx.translate(dispW / 2, dispH / 2);
+      ctx.rotate((cropperRotation * Math.PI) / 180);
+      if (isRotated90) {
+        ctx.drawImage(cropperImage, -dispH / 2, -dispW / 2, dispH, dispW);
+      } else {
+        ctx.drawImage(cropperImage, -dispW / 2, -dispH / 2, dispW, dispH);
+      }
+      ctx.restore();
+
+      // Viewport offsets
+      const vpRect = viewport.getBoundingClientRect();
+      const cvRect = canvas.getBoundingClientRect();
+      canvasOffsetLeft = cvRect.left - vpRect.left;
+      canvasOffsetTop = cvRect.top - vpRect.top;
+
+      resetCropBox();
+    }
+
+    function resetCropBox() {
+      const canvas = document.getElementById('crop-canvas');
+      const dispW = canvas.width;
+      const dispH = canvas.height;
+
+      let targetW, targetH;
+      if (cropRatioW > 0 && cropRatioH > 0) {
+        const ratio = cropRatioW / cropRatioH;
+        if (ratio >= 1) {
+          targetW = Math.round(dispW * 0.75);
+          targetH = Math.round(targetW / ratio);
+          if (targetH > dispH * 0.9) {
+            targetH = Math.round(dispH * 0.9);
+            targetW = Math.round(targetH * ratio);
+          }
+        } else {
+          targetH = Math.round(dispH * 0.85);
+          targetW = Math.round(targetH * ratio);
+          if (targetW > dispW * 0.9) {
+            targetW = Math.round(dispW * 0.9);
+            targetH = Math.round(targetW / ratio);
+          }
+        }
+      } else {
+        // Free Crop default 80%
+        targetW = Math.round(dispW * 0.8);
+        targetH = Math.round(dispH * 0.8);
+      }
+
+      cropBoxState.w = Math.max(40, targetW);
+      cropBoxState.h = Math.max(40, targetH);
+      cropBoxState.x = Math.round((dispW - cropBoxState.w) / 2);
+      cropBoxState.y = Math.round((dispH - cropBoxState.h) / 2);
+
+      updateCropBoxDOM();
+    }
+
+    function updateCropBoxDOM() {
+      const box = document.getElementById('crop-box');
+      const badge = document.getElementById('crop-box-dim-badge');
+      if (!box) return;
+
+      const left = canvasOffsetLeft + cropBoxState.x;
+      const top = canvasOffsetTop + cropBoxState.y;
+
+      box.style.left = left + 'px';
+      box.style.top = top + 'px';
+      box.style.width = cropBoxState.w + 'px';
+      box.style.height = cropBoxState.h + 'px';
+
+      let labelText = `${cropBoxState.w} × ${cropBoxState.h} px`;
+      if (cropRatioMode === '160-210') labelText = '160 × 210 px (फोटो)';
+      else if (cropRatioMode === '256-64') labelText = '256 × 64 px (सही)';
+      else if (cropRatioMode === '1-1') labelText = '1:1 Square';
+      else labelText = `${Math.round(cropBoxState.w / cropperScale)} × ${Math.round(cropBoxState.h / cropperScale)} px`;
+
+      if (badge) badge.textContent = labelText;
+    }
+
+    // Bind cropper pointer events
+    (function setupCropperEvents() {
+      const viewport = document.getElementById('crop-viewport');
+      const box = document.getElementById('crop-box');
+      if (!viewport || !box) return;
+
+      function onPointerDown(e) {
+        if (!cropperImage) return;
+        const handle = e.target.getAttribute('data-handle');
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+        dragStartX = clientX;
+        dragStartY = clientY;
+        initialBoxState = { ...cropBoxState };
+
+        if (handle) {
+          isResizingCropBox = true;
+          activeResizeHandle = handle;
+          e.stopPropagation();
+          e.preventDefault();
+        } else if (e.target === box || box.contains(e.target)) {
+          isDraggingCropBox = true;
+          e.preventDefault();
+        }
+      }
+
+      function onPointerMove(e) {
+        if (!isDraggingCropBox && !isResizingCropBox) return;
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        const dx = clientX - dragStartX;
+        const dy = clientY - dragStartY;
+
+        const canvas = document.getElementById('crop-canvas');
+        const maxW = canvas.width;
+        const maxH = canvas.height;
+
+        if (isDraggingCropBox) {
+          let nx = initialBoxState.x + dx;
+          let ny = initialBoxState.y + dy;
+          nx = Math.max(0, Math.min(maxW - cropBoxState.w, nx));
+          ny = Math.max(0, Math.min(maxH - cropBoxState.h, ny));
+          cropBoxState.x = nx;
+          cropBoxState.y = ny;
+          updateCropBoxDOM();
+        } else if (isResizingCropBox) {
+          const ratio = (cropRatioW > 0 && cropRatioH > 0) ? (cropRatioW / cropRatioH) : null;
+          let nx = initialBoxState.x;
+          let ny = initialBoxState.y;
+          let nw = initialBoxState.w;
+          let nh = initialBoxState.h;
+
+          if (activeResizeHandle === 'se') {
+            nw = Math.max(30, initialBoxState.w + dx);
+            if (ratio) nh = Math.round(nw / ratio);
+            else nh = Math.max(30, initialBoxState.h + dy);
+          } else if (activeResizeHandle === 'sw') {
+            nw = Math.max(30, initialBoxState.w - dx);
+            if (ratio) {
+              nh = Math.round(nw / ratio);
+              nx = initialBoxState.x + (initialBoxState.w - nw);
+            } else {
+              nh = Math.max(30, initialBoxState.h + dy);
+              nx = initialBoxState.x + (initialBoxState.w - nw);
+            }
+          } else if (activeResizeHandle === 'ne') {
+            nw = Math.max(30, initialBoxState.w + dx);
+            if (ratio) {
+              nh = Math.round(nw / ratio);
+              ny = initialBoxState.y + (initialBoxState.h - nh);
+            } else {
+              nh = Math.max(30, initialBoxState.h - dy);
+              ny = initialBoxState.y + (initialBoxState.h - nh);
+            }
+          } else if (activeResizeHandle === 'nw') {
+            nw = Math.max(30, initialBoxState.w - dx);
+            if (ratio) {
+              nh = Math.round(nw / ratio);
+              nx = initialBoxState.x + (initialBoxState.w - nw);
+              ny = initialBoxState.y + (initialBoxState.h - nh);
+            } else {
+              nh = Math.max(30, initialBoxState.h - dy);
+              nx = initialBoxState.x + (initialBoxState.w - nw);
+              ny = initialBoxState.y + (initialBoxState.h - nh);
+            }
+          }
+
+          // Bounds clamp
+          if (nx < 0) { nw += nx; nx = 0; if (ratio) nh = Math.round(nw / ratio); }
+          if (ny < 0) { nh += ny; ny = 0; if (ratio) nw = Math.round(nh * ratio); }
+          if (nx + nw > maxW) { nw = maxW - nx; if (ratio) nh = Math.round(nw / ratio); }
+          if (ny + nh > maxH) { nh = maxH - ny; if (ratio) nw = Math.round(nh * ratio); }
+
+          cropBoxState.x = Math.round(nx);
+          cropBoxState.y = Math.round(ny);
+          cropBoxState.w = Math.max(30, Math.round(nw));
+          cropBoxState.h = Math.max(30, Math.round(nh));
+          updateCropBoxDOM();
+        }
+      }
+
+      function onPointerUp() {
+        isDraggingCropBox = false;
+        isResizingCropBox = false;
+        activeResizeHandle = null;
+      }
+
+      viewport.addEventListener('mousedown', onPointerDown);
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+
+      viewport.addEventListener('touchstart', onPointerDown, { passive: false });
+      window.addEventListener('touchmove', onPointerMove, { passive: false });
+      window.addEventListener('touchend', onPointerUp);
+    })();
+
+    async function applyCropAndSave() {
+      if (!cropperImage) return;
+
+      const isRotated90 = (cropperRotation === 90 || cropperRotation === 270);
+
+      // Create an unscaled rotated canvas to extract pristine pixels
+      const fullCanvas = document.createElement('canvas');
+      const natW = isRotated90 ? cropperImage.naturalHeight : cropperImage.naturalWidth;
+      const natH = isRotated90 ? cropperImage.naturalWidth : cropperImage.naturalHeight;
+      fullCanvas.width = natW;
+      fullCanvas.height = natH;
+      const fCtx = fullCanvas.getContext('2d');
+
+      fCtx.save();
+      fCtx.translate(natW / 2, natH / 2);
+      fCtx.rotate((cropperRotation * Math.PI) / 180);
+      if (isRotated90) {
+        fCtx.drawImage(cropperImage, -natH / 2, -natW / 2, natH, natW);
+      } else {
+        fCtx.drawImage(cropperImage, -natW / 2, -natH / 2, natW, natH);
+      }
+      fCtx.restore();
+
+      // Convert display crop box to natural source coordinates
+      const invScale = 1.0 / cropperScale;
+      const srcX = Math.max(0, Math.round(cropBoxState.x * invScale));
+      const srcY = Math.max(0, Math.round(cropBoxState.y * invScale));
+      const srcW = Math.min(natW - srcX, Math.round(cropBoxState.w * invScale));
+      const srcH = Math.min(natH - srcY, Math.round(cropBoxState.h * invScale));
+
+      // Determine output target dimensions
+      let outW, outH;
+      if (cropRatioMode === '160-210') {
+        outW = 160;
+        outH = 210;
+        setImageDimensionPreset('photo', false);
+      } else if (cropRatioMode === '256-64') {
+        outW = 256;
+        outH = 64;
+        setImageDimensionPreset('signature', false);
+      } else {
+        const cw = parseInt(document.getElementById('custom-dim-w')?.value, 10);
+        const ch = parseInt(document.getElementById('custom-dim-h')?.value, 10);
+        if (cw && ch && cw > 10 && ch > 10) {
+          outW = cw;
+          outH = ch;
+          setImageDimensionPreset('custom', false);
+        } else {
+          outW = srcW;
+          outH = srcH;
+          setImageDimensionPreset('original', false);
+        }
+      }
+
+      // Render cropped result
+      const outCanvas = document.createElement('canvas');
+      outCanvas.width = outW;
+      outCanvas.height = outH;
+      const oCtx = outCanvas.getContext('2d', { alpha: false });
+      oCtx.fillStyle = '#FFFFFF';
+      oCtx.fillRect(0, 0, outW, outH);
+      oCtx.drawImage(fullCanvas, srcX, srcY, srcW, srcH, 0, 0, outW, outH);
+
+      outCanvas.toBlob(blob => {
+        if (!blob) {
+          alert('क्रॉपिंग अयशस्वी झाले.');
+          return;
+        }
+        const origFile = selectedFiles[0] || { name: 'photo.jpg' };
+        const croppedFile = new File([blob], 'cropped_' + origFile.name, {
+          type: 'image/jpeg',
+          lastModified: Date.now()
+        });
+
+        selectedFiles[0] = croppedFile;
+        updateFilesUI();
+        closeImageCropperModal();
+
+        // Update stats and trigger instant feedback
+        const dimBox = document.getElementById('stat-dim-box');
+        const dimVal = document.getElementById('stat-dim-val');
+        if (dimBox) dimBox.style.display = 'block';
+        if (dimVal) dimVal.textContent = `${outW}×${outH} px`;
+
+        // Switch to single-img mode if not already
+        if (currentMode !== 'single-img') {
+          switchToolMode('single-img');
+        }
+
+        console.log(`Cropped successfully to ${outW}x${outH} px`);
+      }, 'image/jpeg', 0.95);
+    }
+  </script>
+
+</body>
+</html>

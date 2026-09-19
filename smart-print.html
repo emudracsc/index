@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>स्मार्ट QR स्कॅन & प्रिंट हब | Smart QR Scan & Print Station - आपले सरकार सेवा केंद्र</title>
+  <meta name="description" content="मोबाईलवरून QR कोड स्कॅन करा, डॉक्युमेंट्स अपलोड करा, प्रिंट सेटिंग्ज निवडा, UPI द्वारे पेमेंट करा आणि काउंटरवरून तात्काळ प्रिंट मिळवा.">
+
+  <!-- Google Fonts: Poppins & Mukta -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6.5.1 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- PDF.js for Instant Multi-Page PDF Inspection & Rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <!-- Optional Supabase and Storage Integrations -->
+  <script src="js/storage.js"></script>
+  <script src="js/supabase-db.js"></script>
+  <script src="js/user-auth.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #070b16;
+      --bg-card: rgba(15, 23, 42, 0.88);
+      --bg-card-hover: rgba(30, 41, 59, 0.95);
+      --border-glass: rgba(56, 189, 248, 0.22);
+      --border-glow: rgba(56, 189, 248, 0.6);
+      --accent-cyan: #38bdf8;
+      --accent-blue: #0284c7;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #a855f7;
+      --accent-rose: #f43f5e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --saffron: #ff7700;
+      --card-radius: 16px;
+      --glow-cyan: 0 0 25px rgba(56, 189, 248, 0.35);
+      --glow-emerald: 0 0 25px rgba(16, 185, 129, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.1) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.06) 0%, transparent 55%);
+      color: var(--text-main);
+      font-family: 'Poppins', 'Mukta', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Top Tricolor Strip */
+    .gov-tricolor-stripe {
+      height: 4px;
+      background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%);
+      width: 100%;
+      z-index: 100;
+    }
+
+    /* Header Navbar */
+    .top-navbar {
+      background: rgba(11, 25, 46, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-glass);
+      padding: 0.7rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0284c7 0%, #a855f7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      color: #ffffff;
+      box-shadow: var(--glow-cyan);
+    }
+
+    .brand-title h1 {
+      font-size: 1.12rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title p {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-nav-mode {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.45rem 0.95rem;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+
+    .btn-nav-mode:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-cyan);
+      transform: translateY(-1.5px);
+    }
+
+    .btn-operator-toggle {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.35);
+    }
+
+    .badge-queue-count {
+      background: #ef4444;
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 800;
+      min-width: 18px;
+      text-align: center;
+    }
+
+    /* Main Container */
+    .app-main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    /* Section Tabs / View Modes */
+    .view-section {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =========================================================================
+       CUSTOMER INTERFACE (ग्राहक पोर्टल)
+       ========================================================================= */
+    .customer-hero-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.85) 100%);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--card-radius);
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .customer-hero-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .customer-hero-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.3px;
+    }
+
+    .customer-hero-sub {
+      font-size: 0.88rem;
+      color: #94a3b8;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    /* Step Cards Layout */
+    .step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--card-radius);
+      padding: 1.4rem;
+      margin-bottom: 1.3rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: border-color 0.25s ease;
+    }
+
+    .step-card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+      flex-shrink: 0;
+    }
+
+    .step-title h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    .step-title p {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* Upload Dropzone */
+    .upload-dropzone {
+      border: 2px dashed rgba(56, 189, 248, 0.45);
+      background: rgba(30, 41, 59, 0.4);
+      border-radius: 14px;
+      padding: 2.2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+      border-color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.1);
+      transform: translateY(-2px);
+      box-shadow: var(--glow-cyan);
+    }
+
+    .dropzone-icon {
+      font-size: 2.8rem;
+      color: var(--accent-cyan);
+      margin-bottom: 0.8rem;
+      animation: floatIcon 3s ease-in-out infinite;
+    }
+
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .dropzone-text h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.3rem;
+    }
+
+    .dropzone-text p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .file-input-hidden {
+      display: none;
+    }
+
+    /* Selected File Preview Box */
+    .file-preview-strip {
+      display: none;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 12px;
+      padding: 0.9rem 1.1rem;
+      margin-top: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
+    }
+
+    .file-meta-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 220px;
+    }
+
+    .file-type-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .file-name-text {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #ffffff;
+      word-break: break-all;
+    }
+
+    .file-sub-meta {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-count-pill {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.76rem;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-remove-file {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #f87171;
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-remove-file:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #ffffff;
+    }
+
+    /* Print Customization Controls */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.1rem;
+    }
+
+    .setting-box {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .setting-label {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .option-cards-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .option-card {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 10px;
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .option-card:hover {
+      border-color: var(--accent-cyan);
+      transform: translateY(-1.5px);
+    }
+
+    .option-card.active {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.3) 0%, rgba(56, 189, 248, 0.2) 100%);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
+    }
+
+    .option-card i {
+      font-size: 1.3rem;
+      margin-bottom: 0.3rem;
+      display: block;
+      color: var(--accent-cyan);
+    }
+
+    .option-card.active i {
+      color: #fbbf24;
+    }
+
+    .option-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: block;
+    }
+
+    .option-card-price {
+      font-size: 0.72rem;
+      color: #34d399;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    /* Counter Stepper */
+    .counter-group {
+      display: flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 10px;
+      overflow: hidden;
+      max-width: 170px;
+    }
+
+    .counter-btn {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      width: 44px;
+      height: 40px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .counter-btn:hover {
+      background: rgba(56, 189, 248, 0.25);
+    }
+
+    .counter-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 800;
+      outline: none;
+      width: 50px;
+    }
+
+    /* Form Fields */
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .input-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    .text-input-field {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+      color: #ffffff;
+      font-size: 0.88rem;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .text-input-field:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Bill Summary & Sticky Checkout Bar */
+    .bill-summary-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: var(--card-radius);
+      padding: 1.3rem;
+      margin-top: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(251, 191, 36, 0.1);
+    }
+
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 0;
+      font-size: 0.86rem;
+      color: #cbd5e1;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .bill-row.total-row {
+      border-bottom: none;
+      padding-top: 0.8rem;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .bill-total-price {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fbbf24;
+      text-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+    }
+
+    /* Glamour Action Button */
+    .btn-submit-order {
+      width: 100%;
+      background: linear-gradient(135deg, #ff7700 0%, #d95300 100%);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      padding: 0.85rem 1.2rem;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 1.2rem;
+      box-shadow: 0 6px 20px rgba(255, 119, 0, 0.45);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-family: inherit;
+    }
+
+    .btn-submit-order:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 10px 30px rgba(255, 119, 0, 0.6);
+      border-color: #fef08a;
+    }
+
+    /* Order Tracking State Screen */
+    .order-success-screen {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: var(--card-radius);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+      max-width: 680px;
+      margin: 1.5rem auto;
+    }
+
+    .success-icon-badge {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      font-size: 2.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.2rem;
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+      animation: bounceSuccess 0.6s ease-out;
+    }
+
+    @keyframes bounceSuccess {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .token-display-box {
+      background: rgba(30, 41, 59, 0.8);
+      border: 2px dashed #fbbf24;
+      border-radius: 14px;
+      padding: 1rem 1.5rem;
+      display: inline-block;
+      margin: 1rem 0;
+    }
+
+    .token-label {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .token-code {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fbbf24;
+      font-family: monospace;
+      letter-spacing: 2px;
+    }
+
+    /* Live Progress Stepper */
+    .progress-stepper {
+      display: flex;
+      justify-content: space-between;
+      margin: 2rem 0;
+      position: relative;
+    }
+
+    .progress-stepper::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 15%;
+      right: 15%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.15);
+      z-index: 1;
+    }
+
+    .step-node {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .node-bubble {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #1e293b;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: all 0.3s;
+    }
+
+    .step-node.completed .node-bubble {
+      background: #10b981;
+      border-color: #34d399;
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.5);
+    }
+
+    .step-node.active .node-bubble {
+      background: #0284c7;
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.6);
+      animation: pulseActiveNode 1.5s infinite;
+    }
+
+    @keyframes pulseActiveNode {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .node-text {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-align: center;
+    }
+
+    .step-node.active .node-text,
+    .step-node.completed .node-text {
+      color: #ffffff;
+    }
+
+    /* =========================================================================
+       OPERATOR CONSOLE (ऑपरेटर डॅशबोर्ड)
+       ========================================================================= */
+    .operator-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 1.4rem;
+      flex-wrap: wrap;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--card-radius);
+      padding: 1rem 1.4rem;
+    }
+
+    .op-stat-pills {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .op-stat-pill {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .op-stat-pill.active-jobs {
+      border-color: rgba(56, 189, 248, 0.5);
+      color: #38bdf8;
+    }
+
+    .op-stat-pill.paid-revenue {
+      border-color: rgba(16, 185, 129, 0.5);
+      color: #34d399;
+    }
+
+    .op-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-op-action {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-op-action:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-cyan);
+    }
+
+    /* Queue Cards */
+    .queue-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .queue-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--card-radius);
+      padding: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .queue-card:hover {
+      border-color: rgba(56, 189, 248, 0.45);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .queue-card.status-ready {
+      border-left: 5px solid #10b981;
+    }
+
+    .queue-card.status-printing {
+      border-left: 5px solid #0284c7;
+    }
+
+    .queue-card.status-pending {
+      border-left: 5px solid #f59e0b;
+    }
+
+    .order-info-cluster {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      min-width: 260px;
+    }
+
+    .order-token-badge {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid #fbbf24;
+      color: #fbbf24;
+      padding: 0.5rem 0.8rem;
+      border-radius: 10px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      font-family: monospace;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(251, 191, 36, 0.2);
+    }
+
+    .order-details-text h4 {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .order-sub-specs {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .spec-pill {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .spec-pill.color-bw {
+      color: #e2e8f0;
+    }
+
+    .spec-pill.color-rgb {
+      color: #f43f5e;
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .spec-pill.payment-paid {
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .spec-pill.payment-cash {
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .queue-action-cluster {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-direct-print {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.65rem 1.25rem;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+      transition: all 0.2s;
+    }
+
+    .btn-direct-print:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+    }
+
+    .btn-whatsapp-notify {
+      background: #25d366;
+      color: #ffffff;
+      border: none;
+      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-whatsapp-notify:hover {
+      background: #1eb956;
+      transform: translateY(-1.5px);
+    }
+
+    /* Standee Modal / Printable Sheet */
+    .standee-card-preview {
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 16px;
+      padding: 2.2rem 1.8rem;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+      max-width: 440px;
+      margin: 0 auto;
+      border: 3px solid #ff7700;
+      position: relative;
+    }
+
+    .standee-tricolor {
+      height: 6px;
+      background: linear-gradient(90deg, #ff9933 0%, #ffffff 50%, #138808 100%);
+      margin-bottom: 1.2rem;
+      border-radius: 3px;
+    }
+
+    .standee-qr-frame {
+      background: #f8fafc;
+      padding: 12px;
+      border: 3px solid #0284c7;
+      border-radius: 16px;
+      display: inline-block;
+      margin: 1.2rem 0;
+      box-shadow: 0 8px 25px rgba(2, 132, 199, 0.25);
+    }
+
+    .standee-qr-frame img {
+      width: 220px;
+      height: 220px;
+      display: block;
+    }
+
+    /* Modal Overlay */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(7, 11, 22, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--card-radius);
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    .modal-header {
+      padding: 1rem 1.4rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 1.1rem;
+      color: #fff;
+      margin: 0;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 1.4rem;
+    }
+
+    /* Printable Stylesheet for Standee & Direct Print */
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #printable-standee-zone, #printable-standee-zone * {
+        visibility: visible !important;
+      }
+      #printable-standee-zone {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 20mm !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="gov-tricolor-stripe"></div>
+
+  <!-- Header Navbar -->
+  <nav class="top-navbar">
+    <div class="brand-group">
+      <a href="index.html" class="btn-nav-mode" title="मुख्यपृष्ठावर परत जा">
+        <i class="fa-solid fa-arrow-left"></i> <span>मागे</span>
+      </a>
+      <div class="brand-icon">
+        <i class="fa-solid fa-qrcode"></i>
+      </div>
+      <div class="brand-title">
+        <h1>
+          <span>स्मार्ट QR प्रिंट स्टेशन</span>
+          <span style="font-size: 0.75rem; background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 2px 8px; border-radius: 12px; font-weight: 700;">PRO</span>
+        </h1>
+        <p id="nav-shop-name">आपले सरकार सेवा केंद्र (Quick Scan & Print Hub)</p>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <!-- Mode Toggle: Customer vs Operator -->
+      <button type="button" class="btn-nav-mode" id="btn-view-customer" onclick="switchMainView('customer')">
+        <i class="fa-solid fa-mobile-screen"></i> <span>ग्राहक मोड (Customer)</span>
+      </button>
+
+      <button type="button" class="btn-nav-mode btn-operator-toggle" id="btn-view-operator" onclick="promptOperatorAccess()">
+        <i class="fa-solid fa-user-shield"></i> <span>ऑपरेटर कन्सोल</span>
+        <span class="badge-queue-count" id="nav-queue-count">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Body Content -->
+  <main class="app-main">
+
+    <!-- =========================================================================
+         VIEW 1: CUSTOMER MOBILE INTERFACE
+         ========================================================================= -->
+    <div id="view-customer" class="view-section active">
+      
+      <!-- Welcome Hero Banner -->
+      <div class="customer-hero-card">
+        <h2 class="customer-hero-title">🖨️ त्वरित डॉक्युमेंट प्रिंटिंग सेवा</h2>
+        <p class="customer-hero-sub">
+          मोबाईलवरून फाईल अपलोड करा, कलर किंवा कृष्णधवल निवडा, फोनपे/गुगलपे द्वारे पेमेंट करा आणि काउंटरवरून तात्काळ प्रिंट मिळवा!
+        </p>
+      </div>
+
+      <!-- Step 1: Upload File -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num">१</div>
+          <div class="step-title">
+            <h3>डॉक्युमेंट निवडा किंवा अपलोड करा</h3>
+            <p>PDF, फोटो (JPG, PNG) किंवा Word फाईल अपलोड करा</p>
+          </div>
+        </div>
+
+        <div class="upload-dropzone" id="upload-dropzone" onclick="triggerFileSelect()">
+          <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+          <div class="dropzone-text">
+            <h4>येथे फाईल निवडा किंवा ड्रॅग & ड्रॉप करा</h4>
+            <p>PDF, JPG, PNG, WEBP, DOCX (कमाल फाईल मर्यादा: २५ MB)</p>
+          </div>
+          <input type="file" id="customer-file-input" class="file-input-hidden" accept=".pdf,image/jpeg,image/png,image/webp,.doc,.docx" onchange="handleCustomerFileSelect(this)">
+        </div>
+
+        <!-- Selected File Status Strip -->
+        <div class="file-preview-strip" id="file-preview-strip">
+          <div class="file-meta-box">
+            <div class="file-type-badge" id="preview-type-badge">
+              <i class="fa-solid fa-file-pdf"></i>
+            </div>
+            <div>
+              <div class="file-name-text" id="preview-file-name">document.pdf</div>
+              <div class="file-sub-meta">
+                <span id="preview-file-size">0 KB</span>
+                <span class="page-count-pill" id="preview-page-pill"><i class="fa-solid fa-layer-group"></i> <span id="preview-page-count">१</span> पान</span>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn-remove-file" onclick="clearSelectedFile()">
+            <i class="fa-solid fa-trash"></i> बदला
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Customization Settings -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num">२</div>
+          <div class="step-title">
+            <h3>प्रिंट प्रकार व कस्टमायझेशन</h3>
+            <p>रंगीत / कृष्णधवल, प्रतींची संख्या व इतर पर्याय निवडा</p>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <!-- Color Mode -->
+          <div class="setting-box">
+            <label class="setting-label"><i class="fa-solid fa-palette" style="color: #38bdf8;"></i> कलर पर्याय (Color Mode):</label>
+            <div class="option-cards-row">
+              <div class="option-card active" id="opt-color-bw" onclick="setColorMode('bw')">
+                <i class="fa-solid fa-circle-half-stroke"></i>
+                <span class="option-card-title">कृष्णधवल (B&W)</span>
+                <span class="option-card-price" id="label-price-bw">₹३ / पान</span>
+              </div>
+              <div class="option-card" id="opt-color-color" onclick="setColorMode('color')">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span class="option-card-title">रंगीत (Color)</span>
+                <span class="option-card-price" id="label-price-color">₹१० / पान</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sides / Duplex -->
+          <div class="setting-box">
+            <label class="setting-label"><i class="fa-solid fa-file-lines" style="color: #10b981;"></i> प्रिंट बाजू (Sides):</label>
+            <div class="option-cards-row">
+              <div class="option-card active" id="opt-side-single" onclick="setSidesMode('single')">
+                <i class="fa-regular fa-file"></i>
+                <span class="option-card-title">एका बाजूने (Single)</span>
+                <span class="option-card-price">नियमित दर</span>
+              </div>
+              <div class="option-card" id="opt-side-double" onclick="setSidesMode('double')">
+                <i class="fa-solid fa-book-open"></i>
+                <span class="option-card-title">मागे-पुढे दुतर्फा (Both)</span>
+                <span class="option-card-price" id="label-price-duplex">₹५ / शीट</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Number of Copies -->
+          <div class="setting-box">
+            <label class="setting-label"><i class="fa-solid fa-copy" style="color: #fbbf24;"></i> प्रिंट प्रती (Copies):</label>
+            <div class="counter-group">
+              <button type="button" class="counter-btn" onclick="adjustCopies(-1)"><i class="fa-solid fa-minus"></i></button>
+              <input type="number" id="input-copies" class="counter-input" value="1" min="1" max="99" onchange="calculateBill()">
+              <button type="button" class="counter-btn" onclick="adjustCopies(1)"><i class="fa-solid fa-plus"></i></button>
+            </div>
+          </div>
+
+          <!-- Specific Pages -->
+          <div class="setting-box">
+            <label class="setting-label"><i class="fa-solid fa-filter" style="color: #a855f7;"></i> पाने निवडा (Page Range):</label>
+            <input type="text" id="input-page-range" class="text-input-field" placeholder="उदा. सर्व किंवा 1-3, 5" oninput="calculateBill()">
+          </div>
+        </div>
+
+        <!-- Optional Special Notes -->
+        <div style="margin-top: 1rem;">
+          <label class="input-label"><i class="fa-solid fa-pen-nib" style="color:#38bdf8;"></i> विशेष सूचना (उदा. लॅमिनेशन, जाड कागद, स्पायरल बाईंडिंग):</label>
+          <input type="text" id="input-special-note" class="text-input-field" placeholder="काही विशेष सूचना असल्यास येथे लिहा...">
+        </div>
+      </div>
+
+      <!-- Step 3: Customer Details & Contact -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num">३</div>
+          <div class="step-title">
+            <h3>तुमची माहिती (Customer Details)</h3>
+            <p>प्रिंट तयार झाल्यावर संपर्क साधण्यासाठी नाव व मोबाईल टाका</p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="input-wrapper">
+            <label class="input-label">पूर्ण नाव (Full Name) *</label>
+            <input type="text" id="cust-name" class="text-input-field" placeholder="उदा. राहुल पाटील" required>
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label">मोबाईल / व्हॉट्सॲप नंबर (Mobile No) *</label>
+            <input type="tel" id="cust-mobile" class="text-input-field" placeholder="उदा. 9876543210" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Bill Summary & Payment Trigger -->
+      <div class="bill-summary-card">
+        <div class="bill-row">
+          <span>एकूण पाने (Pages) × प्रती (Copies):</span>
+          <span id="bill-pages-calc">१ पान × १ प्रत</span>
+        </div>
+        <div class="bill-row">
+          <span>निवडलेला प्रिंट मोड:</span>
+          <span id="bill-mode-text">कृष्णधवल (₹३/पान)</span>
+        </div>
+        <div class="bill-row total-row">
+          <span>देय एकूण रक्कम (Total Amount):</span>
+          <span class="bill-total-price" id="bill-total-amount">₹३.००</span>
+        </div>
+
+        <button type="button" class="btn-submit-order" onclick="openPaymentDrawer()">
+          <i class="fa-solid fa-qrcode"></i>
+          <span>पेमेंट करा व प्रिंट ऑर्डर सबमिट करा (Pay & Submit)</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Order Submitted / Tracking Screen -->
+    <div id="customer-order-tracker" class="order-success-screen">
+      <div class="success-icon-badge">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <h2 style="font-size: 1.45rem; font-weight: 800; color: #ffffff; margin-bottom: 0.3rem;">प्रिंट ऑर्डर यशस्वीरीत्या प्राप्त झाली!</h2>
+      <p style="font-size: 0.85rem; color: #cbd5e1;">आपले डॉक्युमेंट ऑपरेटरच्या प्रिंटर कन्सोलला पाठवण्यात आले आहे.</p>
+
+      <div class="token-display-box">
+        <div class="token-label">तुमचा प्रिंट टोकन क्रमांक (Print Token)</div>
+        <div class="token-code" id="track-token-id">PRN-1001</div>
+      </div>
+
+      <!-- Live Stepper -->
+      <div class="progress-stepper">
+        <div class="step-node completed" id="step-node-1">
+          <div class="node-bubble"><i class="fa-solid fa-inbox"></i></div>
+          <span class="node-text">ऑर्डर स्वीकारली</span>
+        </div>
+        <div class="step-node active" id="step-node-2">
+          <div class="node-bubble"><i class="fa-solid fa-clock"></i></div>
+          <span class="node-text">प्रिंटिंग रांगेत</span>
+        </div>
+        <div class="step-node" id="step-node-3">
+          <div class="node-bubble"><i class="fa-solid fa-print"></i></div>
+          <span class="node-text">प्रिंटिंग सुरू</span>
+        </div>
+        <div class="step-node" id="step-node-4">
+          <div class="node-bubble"><i class="fa-solid fa-circle-check"></i></div>
+          <span class="node-text">काउंटरवर तयार</span>
+        </div>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.06); padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; text-align: left; font-size: 0.84rem; color: #cbd5e1;">
+        <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
+          <span>अर्जदार नाव:</span> <strong id="track-cust-name" style="color:#fff;">-</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
+          <span>फाईल नाव:</span> <strong id="track-file-name" style="color:#38bdf8;">-</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>एकूण बिल रक्कम:</span> <strong id="track-total-fee" style="color:#fbbf24;">₹०.००</strong>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button type="button" class="btn-nav-mode" onclick="resetCustomerForm()">
+          <i class="fa-solid fa-rotate-right"></i> <span>अजून एक नवीन प्रिंट द्या</span>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- =========================================================================
+         VIEW 2: OPERATOR LIVE CONSOLE (ऑपरेटर कन्सोल)
+         ========================================================================= -->
+    <div id="view-operator" class="view-section">
+      
+      <!-- Operator Top Control Bar -->
+      <div class="operator-header-bar">
+        <div class="op-stat-pills">
+          <div class="op-stat-pill active-jobs">
+            <i class="fa-solid fa-hourglass-half"></i> प्रलंबित प्रिंट्स: <strong id="op-stat-pending">0</strong>
+          </div>
+          <div class="op-stat-pill paid-revenue">
+            <i class="fa-solid fa-indian-rupee-sign"></i> आजचे संकलन: <strong id="op-stat-revenue">₹0</strong>
+          </div>
+          <div class="op-stat-pill">
+            <i class="fa-solid fa-check-double"></i> पूर्ण झालेले: <strong id="op-stat-completed">0</strong>
+          </div>
+        </div>
+
+        <div class="op-controls">
+          <button type="button" class="btn-op-action" onclick="toggleAudioChime()" id="btn-audio-toggle">
+            <i class="fa-solid fa-volume-high" id="icon-audio"></i> <span>ऑडिओ अलर्ट: चालू</span>
+          </button>
+          <button type="button" class="btn-op-action" onclick="openStandeeModal()">
+            <i class="fa-solid fa-qrcode"></i> <span>दुकान QR स्टँडी (Print Standee)</span>
+          </button>
+          <button type="button" class="btn-op-action" onclick="openRatesModal()">
+            <i class="fa-solid fa-gear"></i> <span>दर व सेटिंग्ज</span>
+          </button>
+          <button type="button" class="btn-op-action" onclick="refreshOperatorQueue()">
+            <i class="fa-solid fa-rotate"></i> <span>रिफ्रेश</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Queue List Container -->
+      <div class="queue-grid" id="operator-queue-container">
+        <!-- Dynamic Orders populated by JS -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="operator-empty-state" style="display: none; text-align: center; padding: 4rem 1rem; color: #94a3b8;">
+        <i class="fa-solid fa-inbox" style="font-size: 3rem; color: rgba(255,255,255,0.15); margin-bottom: 1rem;"></i>
+        <h3 style="color: #fff; font-size: 1.15rem;">सध्या कोणतीही प्रलंबित प्रिंट ऑर्डर नाही</h3>
+        <p style="font-size: 0.85rem;">ग्राहकाने दुकानाचा QR कोड स्कॅन करून ऑर्डर दिली की ती तात्काळ येथे दिसेल.</p>
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================================================================
+       MODAL: SECURE UPI PAYMENT DRAWER
+       ========================================================================= -->
+  <div class="modal-backdrop" id="modal-payment" onclick="handleBackdrop(event, 'modal-payment')">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-mobile-screen-button" style="color: #a855f7;"></i> UPI द्वारे सुरक्षित पेमेंट</h3>
+        <button type="button" class="modal-close" onclick="closeModal('modal-payment')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        
+        <div style="background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.35); padding: 0.6rem 1rem; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <span style="font-size: 0.86rem; color: #cbd5e1;">एकूण प्रिंट बिल:</span>
+          <span style="font-size: 1.45rem; font-weight: 800; color: #fbbf24;" id="pay-modal-amount">₹३.००</span>
+        </div>
+
+        <!-- Dynamic QR Code Frame -->
+        <div style="background: #ffffff; padding: 10px; border-radius: 16px; display: inline-block; box-shadow: 0 8px 25px rgba(0,0,0,0.5);">
+          <img id="pay-qr-img" src="" alt="UPI QR Code" style="width: 210px; height: 210px; display: block; border-radius: 8px;">
+          <div style="font-size: 0.72rem; color: #0284c7; font-weight: 700; margin-top: 6px;">
+            <i class="fa-solid fa-qrcode"></i> PhonePe, GPay किंवा कोणत्याही ॲपने स्कॅन करा
+          </div>
+        </div>
+
+        <!-- Copy UPI ID Pill -->
+        <div style="margin: 0.9rem auto 0.7rem;">
+          <button type="button" onclick="copyShopUpiId()" style="background: rgba(255,255,255,0.08); border: 1px dashed rgba(56,189,248,0.5); color: #38bdf8; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fa-regular fa-copy"></i> <span id="display-shop-upi">9890869793@mbk</span>
+          </button>
+        </div>
+
+        <!-- Mobile 1-Click Intent Apps -->
+        <div style="display: flex; gap: 6px; justify-content: center; margin-bottom: 1.1rem; flex-wrap: wrap;">
+          <a id="intent-phonepe" href="#" class="btn-nav-mode" style="background: #5f259f; font-size: 0.76rem; padding: 0.4rem 0.75rem;">PhonePe</a>
+          <a id="intent-gpay" href="#" class="btn-nav-mode" style="background: #1a73e8; font-size: 0.76rem; padding: 0.4rem 0.75rem;">GPay</a>
+          <a id="intent-paytm" href="#" class="btn-nav-mode" style="background: #00b9f1; font-size: 0.76rem; padding: 0.4rem 0.75rem;">Paytm</a>
+          <a id="intent-any" href="#" class="btn-nav-mode" style="background: #10b981; font-size: 0.76rem; padding: 0.4rem 0.75rem;">Any UPI</a>
+        </div>
+
+        <!-- 12-Digit UTR Input Form -->
+        <div style="text-align: left; background: rgba(30, 41, 59, 0.6); padding: 0.85rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: #cbd5e1; margin-bottom: 4px;">
+            <span>१२-अंकी UTR / Ref No टाका:</span>
+            <span id="utr-counter" style="color: #94a3b8;">0/12</span>
+          </div>
+          <input type="text" id="cust-utr-input" class="text-input-field" placeholder="उदा. 424589123456" maxlength="12" oninput="formatUtrField(this)">
+          <div id="utr-error" style="color: #f87171; font-size: 0.74rem; font-weight: 700; margin-top: 4px; display: none;"></div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 1rem;">
+          <button type="button" class="btn-submit-order" style="margin-top: 0; background: linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="confirmPaymentAndSubmit(false)">
+            <i class="fa-solid fa-circle-check"></i> <span>पेमेंट पूर्ण झाले (Submit Order)</span>
+          </button>
+          
+          <button type="button" onclick="confirmPaymentAndSubmit(true)" style="background: transparent; border: none; color: #94a3b8; font-size: 0.8rem; cursor: pointer; text-decoration: underline; padding: 0.3rem;">
+            <i class="fa-solid fa-hand-holding-dollar"></i> काउंटरवर रोख पैसे द्या (Pay Cash on Counter)
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================================================================
+       MODAL: PRINTABLE SHOP QR STANDEE DESIGNER
+       ========================================================================= -->
+  <div class="modal-backdrop" id="modal-standee" onclick="handleBackdrop(event, 'modal-standee')">
+    <div class="modal-dialog" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-print" style="color: #fbbf24;"></i> काउंटर QR स्टँडी (Print Standee)</h3>
+        <button type="button" class="modal-close" onclick="closeModal('modal-standee')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Standee Card to be printed -->
+        <div id="printable-standee-zone" class="standee-card-preview">
+          <div class="standee-tricolor"></div>
+          <h2 style="font-size: 1.45rem; font-weight: 800; color: #0f172a; margin-bottom: 2px;" id="standee-disp-name">आपले सरकार सेवा केंद्र</h2>
+          <p style="font-size: 0.82rem; color: #475569; font-weight: 600;">डॉक्युमेंट झेरॉक्स & प्रिंट स्टेशन</p>
+
+          <div class="standee-qr-frame">
+            <img id="standee-qr-image" src="" alt="Shop Scan QR">
+          </div>
+
+          <h3 style="font-size: 1.15rem; font-weight: 800; color: #d95300; margin-bottom: 4px;">
+            📲 मोबाईलने QR स्कॅन करा & थेट प्रिंट काढा!
+          </h3>
+          <p style="font-size: 0.78rem; color: #334155; line-height: 1.4; margin-bottom: 1rem;">
+            कोणत्याही WhatsApp वर न पाठवता किंवा पेनड्राइव्ह न लावता तुमची फाईल सुरक्षितपणे अपलोड करा.
+          </p>
+
+          <div style="display: flex; justify-content: space-around; background: #f1f5f9; padding: 8px; border-radius: 8px; font-size: 0.74rem; font-weight: 700; color: #0f172a;">
+            <div>१. QR स्कॅन करा</div>
+            <div>२. फाईल निवडा</div>
+            <div>३. प्रिंट मिळवा</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 1.2rem;">
+          <button type="button" class="btn-direct-print" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> <span>स्टँडी प्रिंट करा (Print A4)</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================================================================
+       MODAL: RATES & SETTINGS
+       ========================================================================= -->
+  <div class="modal-backdrop" id="modal-rates" onclick="handleBackdrop(event, 'modal-rates')">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-gear" style="color: #38bdf8;"></i> दर व केंद्र सेटिंग्ज (Rates & Config)</h3>
+        <button type="button" class="modal-close" onclick="closeModal('modal-rates')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="input-wrapper" style="margin-bottom: 0.85rem;">
+          <label class="input-label">केंद्राचे नाव (Shop Name):</label>
+          <input type="text" id="cfg-shop-name" class="text-input-field" value="आपले सरकार सेवा केंद्र">
+        </div>
+
+        <div class="input-wrapper" style="margin-bottom: 0.85rem;">
+          <label class="input-label">दुकानदाराचा UPI ID (PhonePe / GPay):</label>
+          <input type="text" id="cfg-upi-id" class="text-input-field" value="9890869793@mbk">
+        </div>
+
+        <div class="field-row" style="margin-bottom: 0.85rem;">
+          <div class="input-wrapper">
+            <label class="input-label">B&W दर (₹ / पान):</label>
+            <input type="number" id="cfg-rate-bw" class="text-input-field" value="3" min="1" step="0.5">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label">Color दर (₹ / पान):</label>
+            <input type="number" id="cfg-rate-color" class="text-input-field" value="10" min="1" step="1">
+          </div>
+        </div>
+
+        <div class="field-row" style="margin-bottom: 1.2rem;">
+          <div class="input-wrapper">
+            <label class="input-label">दुतर्फा (Back-to-Back) दर (₹ / शीट):</label>
+            <input type="number" id="cfg-rate-duplex" class="text-input-field" value="5" min="1" step="0.5">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label">ऑपरेटर 4-Digit PIN:</label>
+            <input type="password" id="cfg-op-pin" class="text-input-field" value="1234" maxlength="4">
+          </div>
+        </div>
+
+        <button type="button" class="btn-submit-order" style="margin-top: 0; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);" onclick="saveKendraSettings()">
+          <i class="fa-solid fa-floppy-disk"></i> <span>सेटिंग्ज सेव्ह करा (Save)</span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Initialize PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    // App State
+    let currentConfig = {
+      shopName: "आपले सरकार सेवा केंद्र",
+      upiId: "9890869793@mbk",
+      rateBW: 3.00,
+      rateColor: 10.00,
+      rateDuplex: 5.00,
+      operatorPin: "1234"
+    };
+
+    let selectedFile = null;
+    let fileMeta = {
+      name: "",
+      sizeText: "",
+      type: "",
+      totalPages: 1,
+      dataUrl: null
+    };
+
+    let customerPrintSettings = {
+      colorMode: 'bw', // 'bw' or 'color'
+      sidesMode: 'single', // 'single' or 'double'
+      copies: 1,
+      pageRange: 'सर्व',
+      specialNote: ''
+    };
+
+    let calculatedTotal = 3.00;
+    let audioChimeEnabled = true;
+    let operatorAuthenticated = false;
+    let currentPollingTimer = null;
+
+    // Load saved rates / settings from localStorage
+    function loadSavedSettings() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("emudra_print_settings") || "{}");
+        Object.assign(currentConfig, saved);
+      } catch (e) {}
+
+      // Update UI labels
+      document.getElementById('nav-shop-name').innerText = currentConfig.shopName + " (Quick Scan & Print Hub)";
+      document.getElementById('standee-disp-name').innerText = currentConfig.shopName;
+      document.getElementById('display-shop-upi').innerText = currentConfig.upiId;
+      document.getElementById('label-price-bw').innerText = '₹' + currentConfig.rateBW + ' / पान';
+      document.getElementById('label-price-color').innerText = '₹' + currentConfig.rateColor + ' / पान';
+      document.getElementById('label-price-duplex').innerText = '₹' + currentConfig.rateDuplex + ' / शीट';
+
+      document.getElementById('cfg-shop-name').value = currentConfig.shopName;
+      document.getElementById('cfg-upi-id').value = currentConfig.upiId;
+      document.getElementById('cfg-rate-bw').value = currentConfig.rateBW;
+      document.getElementById('cfg-rate-color').value = currentConfig.rateColor;
+      document.getElementById('cfg-rate-duplex').value = currentConfig.rateDuplex;
+      document.getElementById('cfg-op-pin').value = currentConfig.operatorPin;
+    }
+
+    function saveKendraSettings() {
+      currentConfig.shopName = document.getElementById('cfg-shop-name').value.trim() || "आपले सरकार सेवा केंद्र";
+      currentConfig.upiId = document.getElementById('cfg-upi-id').value.trim() || "9890869793@mbk";
+      currentConfig.rateBW = parseFloat(document.getElementById('cfg-rate-bw').value) || 3.00;
+      currentConfig.rateColor = parseFloat(document.getElementById('cfg-rate-color').value) || 10.00;
+      currentConfig.rateDuplex = parseFloat(document.getElementById('cfg-rate-duplex').value) || 5.00;
+      currentConfig.operatorPin = document.getElementById('cfg-op-pin').value.trim() || "1234";
+
+      localStorage.setItem("emudra_print_settings", JSON.stringify(currentConfig));
+      loadSavedSettings();
+      calculateBill();
+      closeModal('modal-rates');
+      alert("✅ सेटिंग्ज व दर यशस्वीरीत्या सेव्ह झाले!");
+    }
+
+    // Switch between Customer and Operator Views
+    function switchMainView(viewName) {
+      document.getElementById('view-customer').classList.toggle('active', viewName === 'customer');
+      document.getElementById('view-operator').classList.toggle('active', viewName === 'operator');
+
+      document.getElementById('btn-view-customer').classList.toggle('active', viewName === 'customer');
+      document.getElementById('btn-view-operator').classList.toggle('active', viewName === 'operator');
+
+      if (viewName === 'operator') {
+        refreshOperatorQueue();
+      }
+    }
+
+    function promptOperatorAccess() {
+      if (operatorAuthenticated) {
+        switchMainView('operator');
+        return;
+      }
+      const entered = prompt("🔑 कृपया ४-अंकी ऑपरेटर पिन टाका (Default PIN: 1234):", "");
+      if (entered === currentConfig.operatorPin) {
+        operatorAuthenticated = true;
+        switchMainView('operator');
+      } else if (entered !== null) {
+        alert("⚠️ चुकीचा ऑपरेटर पिन!");
+      }
+    }
+
+    // Trigger File Upload
+    function triggerFileSelect() {
+      document.getElementById('customer-file-input').click();
+    }
+
+    // Drag and Drop listeners
+    const dropzone = document.getElementById('upload-dropzone');
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+      }, false);
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files && files.length > 0) {
+        processCustomerFile(files[0]);
+      }
+    });
+
+    function handleCustomerFileSelect(input) {
+      if (input.files && input.files[0]) {
+        processCustomerFile(input.files[0]);
+      }
+    }
+
+    // Analyze selected document & compute pages automatically
+    async function processCustomerFile(file) {
+      selectedFile = file;
+      fileMeta.name = file.name;
+      fileMeta.sizeText = (file.size / 1024).toFixed(1) + ' KB';
+      if (file.size > 1024 * 1024) {
+        fileMeta.sizeText = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+      }
+      fileMeta.type = file.type || '';
+      fileMeta.totalPages = 1;
+
+      document.getElementById('preview-file-name').innerText = file.name;
+      document.getElementById('preview-file-size').innerText = fileMeta.sizeText;
+      document.getElementById('file-preview-strip').style.display = 'flex';
+
+      // Read file into Data URL
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        fileMeta.dataUrl = e.target.result;
+
+        // If PDF file, inspect actual pages count using PDF.js
+        if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+          document.getElementById('preview-type-badge').innerHTML = '<i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i>';
+          try {
+            const typedarray = new Uint8Array(e.target.result);
+            const loadingTask = pdfjsLib.getDocument({ data: typedarray });
+            const pdfDoc = await loadingTask.promise;
+            fileMeta.totalPages = pdfDoc.numPages || 1;
+          } catch (err) {
+            console.warn("PDF page count check fallback:", err);
+            fileMeta.totalPages = 1;
+          }
+        } else {
+          document.getElementById('preview-type-badge').innerHTML = '<i class="fa-solid fa-file-image" style="color:#10b981;"></i>';
+          fileMeta.totalPages = 1;
+        }
+
+        document.getElementById('preview-page-count').innerText = fileMeta.totalPages;
+        calculateBill();
+      };
+
+      if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+        reader.readAsArrayBuffer(file);
+      } else {
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearSelectedFile() {
+      selectedFile = null;
+      fileMeta.name = "";
+      fileMeta.dataUrl = null;
+      fileMeta.totalPages = 1;
+      document.getElementById('customer-file-input').value = "";
+      document.getElementById('file-preview-strip').style.display = 'none';
+      calculateBill();
+    }
+
+    // Print Options Configuration
+    function setColorMode(mode) {
+      customerPrintSettings.colorMode = mode;
+      document.getElementById('opt-color-bw').classList.toggle('active', mode === 'bw');
+      document.getElementById('opt-color-color').classList.toggle('active', mode === 'color');
+      calculateBill();
+    }
+
+    function setSidesMode(mode) {
+      customerPrintSettings.sidesMode = mode;
+      document.getElementById('opt-side-single').classList.toggle('active', mode === 'single');
+      document.getElementById('opt-side-double').classList.toggle('active', mode === 'double');
+      calculateBill();
+    }
+
+    function adjustCopies(delta) {
+      const input = document.getElementById('input-copies');
+      let val = parseInt(input.value) || 1;
+      val = Math.max(1, Math.min(99, val + delta));
+      input.value = val;
+      calculateBill();
+    }
+
+    // Calculate Real-Time Price
+    function calculateBill() {
+      const copies = parseInt(document.getElementById('input-copies').value) || 1;
+      let pages = fileMeta.totalPages || 1;
+
+      // Check if custom page range is entered
+      const pageRangeStr = document.getElementById('input-page-range').value.trim();
+      if (pageRangeStr && pageRangeStr !== 'सर्व' && pageRangeStr !== 'All') {
+        const count = parsePageRangeCount(pageRangeStr);
+        if (count > 0 && count <= pages) {
+          pages = count;
+        }
+      }
+
+      let unitRate = currentConfig.rateBW;
+      if (customerPrintSettings.colorMode === 'color') {
+        unitRate = currentConfig.rateColor;
+      } else if (customerPrintSettings.sidesMode === 'double' && pages > 1) {
+        // Back-to-Back rate calculation (sheets based)
+        const sheets = Math.ceil(pages / 2);
+        calculatedTotal = (sheets * currentConfig.rateDuplex * copies);
+        updateBillDisplay(pages, copies, `दुतर्फा B&W (₹${currentConfig.rateDuplex}/शीट)`);
+        return;
+      }
+
+      calculatedTotal = (pages * unitRate * copies);
+      const modeDesc = (customerPrintSettings.colorMode === 'color') 
+        ? `रंगीत (₹${currentConfig.rateColor}/पान)` 
+        : `कृष्णधवल (₹${currentConfig.rateBW}/पान)`;
+
+      updateBillDisplay(pages, copies, modeDesc);
+    }
+
+    function parsePageRangeCount(rangeStr) {
+      try {
+        let count = 0;
+        const parts = rangeStr.split(',');
+        parts.forEach(p => {
+          p = p.trim();
+          if (p.includes('-')) {
+            const [start, end] = p.split('-').map(Number);
+            if (!isNaN(start) && !isNaN(end) && end >= start) {
+              count += (end - start + 1);
+            }
+          } else if (!isNaN(Number(p)) && Number(p) > 0) {
+            count += 1;
+          }
+        });
+        return count;
+      } catch (e) {
+        return 0;
+      }
+    }
+
+    function updateBillDisplay(pages, copies, modeText) {
+      document.getElementById('bill-pages-calc').innerText = `${pages} पाने × ${copies} ${copies > 1 ? 'प्रती' : 'प्रत'}`;
+      document.getElementById('bill-mode-text').innerText = modeText;
+      document.getElementById('bill-total-amount').innerText = '₹' + calculatedTotal.toFixed(2);
+      document.getElementById('pay-modal-amount').innerText = '₹' + calculatedTotal.toFixed(2);
+    }
+
+    // Modal Control Helpers
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function handleBackdrop(e, id) {
+      if (e.target && e.target.id === id) {
+        closeModal(id);
+      }
+    }
+
+    // Open Payment Modal
+    function openPaymentDrawer() {
+      if (!selectedFile) {
+        alert("⚠️ कृपया आधी प्रिंट करण्यासाठी डॉक्युमेंट (PDF / फोटो) अपलोड करा!");
+        triggerFileSelect();
+        return;
+      }
+
+      const name = document.getElementById('cust-name').value.trim();
+      const mobile = document.getElementById('cust-mobile').value.trim();
+
+      if (!name) {
+        alert("⚠️ कृपया आपले पूर्ण नाव टाका!");
+        document.getElementById('cust-name').focus();
+        return;
+      }
+      if (!mobile || mobile.length !== 10) {
+        alert("⚠️ कृपया १०-अंकी वैध मोबाईल नंबर टाका!");
+        document.getElementById('cust-mobile').focus();
+        return;
+      }
+
+      // Generate Dynamic QR Code URL for UPI payment
+      const upiUrl = `upi://pay?pa=${encodeURIComponent(currentConfig.upiId)}&pn=${encodeURIComponent(currentConfig.shopName)}&am=${calculatedTotal.toFixed(2)}&cu=INR&tn=${encodeURIComponent('Print_Order_' + name)}`;
+      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUrl)}&margin=1`;
+      document.getElementById('pay-qr-img').src = qrApi;
+
+      // Setup Mobile 1-click intent buttons
+      document.getElementById('intent-phonepe').href = upiUrl;
+      document.getElementById('intent-gpay').href = upiUrl;
+      document.getElementById('intent-paytm').href = upiUrl;
+      document.getElementById('intent-any').href = upiUrl;
+
+      // Reset UTR field
+      document.getElementById('cust-utr-input').value = "";
+      document.getElementById('utr-counter').innerText = "0/12";
+      document.getElementById('utr-error').style.display = "none";
+
+      openModal('modal-payment');
+    }
+
+    function copyShopUpiId() {
+      navigator.clipboard.writeText(currentConfig.upiId).then(() => {
+        alert("✅ UPI ID कॉपी झाला: " + currentConfig.upiId);
+      }).catch(() => {
+        prompt("UPI ID कॉपी करा:", currentConfig.upiId);
+      });
+    }
+
+    function formatUtrField(input) {
+      input.value = input.value.replace(/\D/g, '').slice(0, 12);
+      document.getElementById('utr-counter').innerText = input.value.length + "/12";
+      document.getElementById('utr-error').style.display = "none";
+    }
+
+    // Confirm Payment and Submit Order
+    async function confirmPaymentAndSubmit(isCash = false) {
+      let utr = "";
+      if (!isCash) {
+        const utrInput = document.getElementById('cust-utr-input');
+        utr = utrInput.value.trim();
+        if (utr.length !== 12) {
+          document.getElementById('utr-error').innerText = "⚠️ कृपया पेमेंट ॲपमधील १२-अंकी UTR / Ref No. टाका!";
+          document.getElementById('utr-error').style.display = "block";
+          utrInput.focus();
+          return;
+        }
+      }
+
+      closeModal('modal-payment');
+
+      // Generate unique token ID
+      const tokenId = "PRN-" + Math.floor(1000 + Math.random() * 9000);
+      const name = document.getElementById('cust-name').value.trim();
+      const mobile = document.getElementById('cust-mobile').value.trim();
+      const copies = parseInt(document.getElementById('input-copies').value) || 1;
+      const range = document.getElementById('input-page-range').value.trim() || "सर्व";
+      const note = document.getElementById('input-special-note').value.trim() || "";
+
+      const orderData = {
+        id: tokenId,
+        tokenId: tokenId,
+        name: name,
+        mobile: mobile,
+        fileName: fileMeta.name,
+        fileType: fileMeta.type,
+        fileSize: fileMeta.sizeText,
+        fileData: fileMeta.dataUrl, // Data URL
+        pages: fileMeta.totalPages || 1,
+        copies: copies,
+        pageRange: range,
+        colorMode: customerPrintSettings.colorMode,
+        sidesMode: customerPrintSettings.sidesMode,
+        specialNote: note,
+        totalAmount: calculatedTotal,
+        paymentStatus: isCash ? 'cash_counter' : 'paid_upi',
+        utrNumber: utr,
+        orderStatus: 'pending', // pending -> printing -> ready -> completed
+        createdAt: new Date().toISOString(),
+        timeFormatted: new Date().toLocaleTimeString('mr-IN', { hour: '2-digit', minute: '2-digit' })
+      };
+
+      // 1. Save to Local Print Queue
+      saveOrderToLocalQueue(orderData);
+
+      // 2. Play Audio chime for operator
+      playNotificationChime();
+
+      // 3. Save to Supabase Cloud DB (if available)
+      try {
+        if (typeof window.DB !== 'undefined' && typeof window.DB.saveApplication === 'function') {
+          window.DB.saveApplication({
+            appId: tokenId,
+            serviceId: "scan-and-print",
+            serviceName: "स्मार्ट QR प्रिंट सेवा (" + tokenId + ")",
+            fullName: name,
+            mobile: mobile,
+            purpose: `${orderData.pages} पाने × ${copies} प्रती (${orderData.colorMode.toUpperCase()})`,
+            docs: { order: orderData }
+          });
+        }
+      } catch (cloudErr) {
+        console.warn("Cloud sync note:", cloudErr);
+      }
+
+      // Display Tracking Screen
+      document.getElementById('view-customer').style.display = 'none';
+      document.getElementById('customer-order-tracker').style.display = 'block';
+
+      document.getElementById('track-token-id').innerText = tokenId;
+      document.getElementById('track-cust-name').innerText = name;
+      document.getElementById('track-file-name').innerText = fileMeta.name;
+      document.getElementById('track-total-fee').innerText = '₹' + calculatedTotal.toFixed(2);
+
+      // Start live status polling for this order
+      pollOrderStatus(tokenId);
+    }
+
+    function saveOrderToLocalQueue(order) {
+      try {
+        const queue = JSON.parse(localStorage.getItem("emudra_print_queue") || "[]");
+        queue.unshift(order);
+        localStorage.setItem("emudra_print_queue", JSON.stringify(queue.slice(0, 100)));
+        updateNavQueueCount();
+      } catch (e) {
+        console.warn("Storage warning:", e);
+      }
+    }
+
+    function resetCustomerForm() {
+      document.getElementById('view-customer').style.display = 'block';
+      document.getElementById('customer-order-tracker').style.display = 'none';
+      clearSelectedFile();
+      document.getElementById('cust-name').value = "";
+      document.getElementById('cust-mobile').value = "";
+      document.getElementById('input-special-note').value = "";
+      document.getElementById('input-page-range').value = "";
+      document.getElementById('input-copies').value = 1;
+      setColorMode('bw');
+      setSidesMode('single');
+      clearInterval(currentPollingTimer);
+    }
+
+    // Live Polling for customer tracker
+    function pollOrderStatus(tokenId) {
+      clearInterval(currentPollingTimer);
+      currentPollingTimer = setInterval(() => {
+        try {
+          const queue = JSON.parse(localStorage.getItem("emudra_print_queue") || "[]");
+          const order = queue.find(o => o.tokenId === tokenId);
+          if (order) {
+            updateStepperUI(order.orderStatus);
+          }
+        } catch (e) {}
+      }, 3000);
+    }
+
+    function updateStepperUI(status) {
+      const s1 = document.getElementById('step-node-1');
+      const s2 = document.getElementById('step-node-2');
+      const s3 = document.getElementById('step-node-3');
+      const s4 = document.getElementById('step-node-4');
+
+      [s1, s2, s3, s4].forEach(n => { n.classList.remove('active', 'completed'); });
+
+      s1.classList.add('completed');
+      if (status === 'pending') {
+        s2.classList.add('active');
+      } else if (status === 'printing') {
+        s2.classList.add('completed');
+        s3.classList.add('active');
+      } else if (status === 'ready' || status === 'completed') {
+        s2.classList.add('completed');
+        s3.classList.add('completed');
+        s4.classList.add('completed');
+      }
+    }
+
+    // =========================================================================
+    // OPERATOR CONSOLE LOGIC
+    // =========================================================================
+    function refreshOperatorQueue() {
+      const container = document.getElementById('operator-queue-container');
+      const emptyState = document.getElementById('operator-empty-state');
+      const queue = JSON.parse(localStorage.getItem("emudra_print_queue") || "[]");
+
+      updateNavQueueCount();
+
+      // Calculate statistics
+      let pendingCount = 0;
+      let completedCount = 0;
+      let revenue = 0;
+
+      queue.forEach(item => {
+        if (item.orderStatus === 'completed') completedCount++;
+        else pendingCount++;
+        revenue += (parseFloat(item.totalAmount) || 0);
+      });
+
+      document.getElementById('op-stat-pending').innerText = pendingCount;
+      document.getElementById('op-stat-completed').innerText = completedCount;
+      document.getElementById('op-stat-revenue').innerText = '₹' + revenue.toFixed(0);
+
+      if (queue.length === 0) {
+        container.innerHTML = "";
+        emptyState.style.display = "block";
+        return;
+      }
+
+      emptyState.style.display = "none";
+      container.innerHTML = "";
+
+      queue.forEach(order => {
+        const card = document.createElement('div');
+        card.className = `queue-card status-${order.orderStatus}`;
+
+        const isColor = order.colorMode === 'color';
+        const isPaidUpi = order.paymentStatus === 'paid_upi';
+
+        const whatsappText = encodeURIComponent(`नमस्कार ${order.name},\nआपली प्रिंट ऑर्डर (टोकन: ${order.tokenId}) तयार आहे!\nकृपया आपले सरकार सेवा केंद्रावरून घेऊन जावे.\n- ${currentConfig.shopName}`);
+        const waLink = `https://wa.me/91${order.mobile}?text=${whatsappText}`;
+
+        card.innerHTML = `
+          <div class="order-info-cluster">
+            <div class="order-token-badge">${order.tokenId}</div>
+            <div class="order-details-text">
+              <h4>
+                <span>${escapeHtml(order.name)}</span>
+                <a href="tel:${order.mobile}" style="color:#38bdf8; font-size:0.85rem; text-decoration:none;"><i class="fa-solid fa-phone"></i> ${order.mobile}</a>
+              </h4>
+              <div class="order-sub-specs">
+                <span class="spec-pill"><i class="fa-solid fa-file"></i> ${escapeHtml(order.fileName)}</span>
+                <span class="spec-pill ${isColor ? 'color-rgb' : 'color-bw'}">${isColor ? '🌈 रंगीत (Color)' : '⬛ B&W'}</span>
+                <span class="spec-pill">${order.pages} पाने × ${order.copies} प्रती</span>
+                <span class="spec-pill ${isPaidUpi ? 'payment-paid' : 'payment-cash'}">
+                  ${isPaidUpi ? '✓ UPI Paid (₹' + order.totalAmount + ')' : '💵 Cash on Counter (₹' + order.totalAmount + ')'}
+                </span>
+                <span style="color:#94a3b8; font-size:0.75rem;"><i class="fa-regular fa-clock"></i> ${order.timeFormatted || ''}</span>
+              </div>
+              ${order.specialNote ? `<div style="font-size:0.74rem; color:#fbbf24; margin-top:4px;"><i class="fa-solid fa-message"></i> सूचना: ${escapeHtml(order.specialNote)}</div>` : ''}
+              ${order.utrNumber ? `<div style="font-size:0.72rem; color:#34d399; font-family:monospace;">UTR: ${order.utrNumber}</div>` : ''}
+            </div>
+          </div>
+
+          <div class="queue-action-cluster">
+            <!-- One Click Print -->
+            <button type="button" class="btn-direct-print" onclick="executeOperatorDirectPrint('${order.tokenId}')">
+              <i class="fa-solid fa-print"></i> <span>थेट प्रिंट करा</span>
+            </button>
+
+            <!-- Status Dropdown -->
+            <select class="text-input-field" style="width: auto; padding: 0.5rem 0.6rem; font-size: 0.8rem;" onchange="changeOrderStatus('${order.tokenId}', this.value)">
+              <option value="pending" ${order.orderStatus === 'pending' ? 'selected' : ''}>⏳ प्रलंबित</option>
+              <option value="printing" ${order.orderStatus === 'printing' ? 'selected' : ''}>🖨️ प्रिंटिंग सुरू</option>
+              <option value="ready" ${order.orderStatus === 'ready' ? 'selected' : ''}>🎉 काउंटरवर तयार</option>
+              <option value="completed" ${order.orderStatus === 'completed' ? 'selected' : ''}>✅ पूर्ण झाले</option>
+            </select>
+
+            <!-- WhatsApp Alert -->
+            <a href="${waLink}" target="_blank" class="btn-whatsapp-notify" title="व्हॉट्सॲप मेसेज पाठवा">
+              <i class="fa-brands fa-whatsapp"></i> <span>मेसेज</span>
+            </a>
+
+            <!-- Delete -->
+            <button type="button" class="btn-remove-file" onclick="deleteQueueOrder('${order.tokenId}')" title="रांगेतून काढा">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function updateNavQueueCount() {
+      try {
+        const queue = JSON.parse(localStorage.getItem("emudra_print_queue") || "[]");
+        const pending = queue.filter(o => o.orderStatus !== 'completed').length;
+        document.getElementById('nav-queue-count').innerText = pending;
+      } catch (e) {}
+    }
+
+    function changeOrderStatus(tokenId, newStatus) {
+      const queue = JSON.parse(localStorage.getItem("emudra_print_queue") || "[]");
+      const idx = queue.findIndex(o => o.tokenId === tokenId);
+      if (idx >= 0) {
+        queue[idx].orderStatus = newStatus;
+        localStorage.setItem("emudra_print_queue", JSON.stringify(queue));
+        refreshOperatorQueue();
+      }
+    }
+
+    function deleteQueueOrder(tokenId) {
+      if (!confirm(`नक्की ही प्रिंट ऑर्डर (${tokenId}) हटवायची आहे का?`)) return;
+      let queue = JSON.parse(localStorage.getItem("emudra_print_queue") || "[]");
+      queue = queue.filter(o => o.tokenId !== tokenId);
+      localStorage.setItem("emudra_print_queue", JSON.stringify(queue));
+      refreshOperatorQueue();
+    }
+
+    // 🖨️ ONE-CLICK INSTANT PRINT LOGIC FOR OPERATOR
+    function executeOperatorDirectPrint(tokenId) {
+      const queue = JSON.parse(localStorage.getItem("emudra_print_queue") || "[]");
+      const order = queue.find(o => o.tokenId === tokenId);
+      if (!order || !order.fileData) {
+        alert("⚠️ या ऑर्डरची फाईल सापडली नाही.");
+        return;
+      }
+
+      // Mark order as printing
+      changeOrderStatus(tokenId, 'printing');
+
+      const isPdf = order.fileName.toLowerCase().endsWith('.pdf') || (order.fileType && order.fileType.includes('pdf'));
+
+      // If PDF, open in print window
+      if (isPdf) {
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+          printWindow.document.write(`
+            <html>
+              <head>
+                <title>Print - ${order.fileName}</title>
+                <style>
+                  body, html { margin:0; padding:0; height:100%; overflow:hidden; }
+                  iframe { width:100%; height:100%; border:none; }
+                </style>
+              </head>
+              <body>
+                <iframe id="pdfFrame" src="${order.fileData}"></iframe>
+                <script>
+                  window.onload = function() {
+                    setTimeout(function() {
+                      const f = document.getElementById('pdfFrame');
+                      try {
+                        f.contentWindow.focus();
+                        f.contentWindow.print();
+                      } catch(e) {
+                        window.print();
+                      }
+                    }, 800);
+                  };
+                <\/script>
+              </body>
+            </html>
+          `);
+          printWindow.document.close();
+        } else {
+          // Fallback if popup blocked
+          const a = document.createElement('a');
+          a.href = order.fileData;
+          a.target = '_blank';
+          a.click();
+        }
+      } else {
+        // Image printing: Render clean printable A4 view
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+          printWindow.document.write(`
+            <html>
+              <head>
+                <title>Print - ${order.fileName}</title>
+                <style>
+                  @page { size: A4; margin: 0; }
+                  body { margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; background: #fff; }
+                  img { max-width: 100%; max-height: 100%; object-fit: contain; }
+                </style>
+              </head>
+              <body>
+                <img src="${order.fileData}" alt="Print Preview">
+                <script>
+                  window.onload = function() {
+                    setTimeout(function() { window.print(); }, 500);
+                  };
+                <\/script>
+              </body>
+            </html>
+          `);
+          printWindow.document.close();
+        }
+      }
+    }
+
+    // Audio Notification using Web Audio API Synthesizer (No external MP3 file needed!)
+    function playNotificationChime() {
+      if (!audioChimeEnabled) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        
+        // Pleasant Dual-tone bell chime
+        const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(587.33, now); // D5
+        osc1.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(880, now + 0.15);
+        osc2.frequency.exponentialRampToValueAtTime(1174.66, now + 0.35); // D6
+
+        gainNode.gain.setValueAtTime(0.3, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+        osc1.connect(gainNode);
+        osc2.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        osc1.start(now);
+        osc1.stop(now + 0.65);
+        osc2.start(now + 0.15);
+        osc2.stop(now + 0.65);
+      } catch (e) {}
+    }
+
+    function toggleAudioChime() {
+      audioChimeEnabled = !audioChimeEnabled;
+      const icon = document.getElementById('icon-audio');
+      const btn = document.getElementById('btn-audio-toggle');
+      if (audioChimeEnabled) {
+        icon.className = "fa-solid fa-volume-high";
+        btn.querySelector('span').innerText = "ऑडिओ अलर्ट: चालू";
+        playNotificationChime();
+      } else {
+        icon.className = "fa-solid fa-volume-xmark";
+        btn.querySelector('span').innerText = "ऑडिओ अलर्ट: बंद";
+      }
+    }
+
+    // QR Standee Designer Modal
+    function openStandeeModal() {
+      const currentUrl = window.location.href.split('#')[0].split('?')[0];
+      const standeeQrApi = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(currentUrl)}&margin=1`;
+      document.getElementById('standee-qr-image').src = standeeQrApi;
+      document.getElementById('standee-disp-name').innerText = currentConfig.shopName;
+      openModal('modal-standee');
+    }
+
+    function openRatesModal() {
+      openModal('modal-rates');
+    }
+
+    function escapeHtml(text) {
+      if (!text) return "";
+      return text.replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+      });
+    }
+
+    // Auto-listen to storage changes across browser tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'emudra_print_queue') {
+        updateNavQueueCount();
+        if (document.getElementById('view-operator').classList.contains('active')) {
+          refreshOperatorQueue();
+          playNotificationChime();
+        }
+      }
+    });
+
+    // Auto-init on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedSettings();
+      calculateBill();
+      updateNavQueueCount();
+
+      // Check URL parameters for direct operator mode
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('mode') === 'operator') {
+        operatorAuthenticated = true;
+        switchMainView('operator');
+      }
+    });
+  </script>
+</body>
+</html>

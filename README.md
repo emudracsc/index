@@ -1,6 +1,12 @@
-# 📄 मराठी व इंग्रजी PDF मजकूर संपादक (PDF Text Find & Replace)
+# 🌐 eMudra CSC Portal & Digital Tools Studio
 
-PDF फाईल्समधील कोणताही मराठी (देवनागरी) किंवा इंग्रजी मजकूर (नाव, पत्ता, तारीख, अधिकारी, नंबर इत्यादी) शोधून बदलण्यासाठी (Find & Replace) हाय-स्पीड प्रोग्रॅम.
+महाराष्ट्र शासनाचे अधिकृत **ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र** पोर्टल आणि डिजिटल साधने.
+
+---
+
+## 📄 मराठी व इंग्रजी PDF मजकूर संपादक (PDF Text Find & Replace & Merger)
+
+PDF फाईल्समधील कोणताही मराठी (देवनागरी) किंवा इंग्रजी मजकूर (नाव, पत्ता, तारीख, अधिकारी, नंबर इत्यादी) शोधून बदलण्यासाठी (Find & Replace) व PDF एकत्र (Merge) करण्यासाठी हाय-स्पीड प्रोग्रॅम.
 
 ---
 
@@ -47,6 +53,8 @@ PDF फाईल्समधील कोणताही मराठी (दे
 
 | फाईल | वर्णन |
 | :--- | :--- |
+| 🌐 **[index.html](file:///c:/Users/user/.gemini/antigravity-ide/scratch/pdf/index.html)** | ई-मुद्रा आपले सरकार केंद्र मुख्य पोर्टल |
+| 🛠️ **[pdf-replacer.html](file:///c:/Users/user/.gemini/antigravity-ide/scratch/pdf/pdf-replacer.html)** | मराठी/इंग्रजी PDF रिप्लेसर व मर्जर वेब टूल |
 | 🖱️ **[start_replacer.bat](file:///c:/Users/user/.gemini/antigravity-ide/scratch/pdf/start_replacer.bat)** | १-क्लिक डेस्कटॉप GUI सुरू करणारी फाईल |
 | 🖥️ **[pdf_text_replacer_gui.py](file:///c:/Users/user/.gemini/antigravity-ide/scratch/pdf/pdf_text_replacer_gui.py)** | ग्राफिकल यूजर इंटरफेस (Desktop App) |
 | ⚡ **[pdf_text_replacer.py](file:///c:/Users/user/.gemini/antigravity-ide/scratch/pdf/pdf_text_replacer.py)** | हाय-स्पीड कोर रिप्लेसमेंट इंजिन (CLI व लायब्ररी) |
@@ -58,5 +66,5 @@ PDF फाईल्समधील कोणताही मराठी (दे
 
 ## 💡 महत्त्वाच्या टिप्स:
 1. **चाचणी (Testing)**: मोठ्या फाईलवर प्रोसेस करण्यापूर्वी प्रथम `-p "1-5"` देऊन ५ पानांवर आउटपुट तपासून घ्या.
-2. **देवनागरी फॉन्ट**: विंडोज मधील `Nirmala UI` आणि `Mangal` फॉन्टचा वापर करून मराठी अक्षरांचे काना, मात्रा, वेलांटी, जोडाक्षरे अचूक ठेवली जातात.
+2. **देवनागरी फॉन्ट**: विंडोज मधील `Nirmala UI`, `Mangal` आणि `Lohit-Marathi` फॉन्टचा वापर करून मराठी अक्षरांचे काना, मात्रा, वेलांटी, जोडाक्षरे अचूक ठेवली जातात.
 3. **स्कॅन मोड**: प्रत्यक्ष बदल करण्याआधी `--scan-only` किंवा GUI मधील **'🔍 फक्त स्कॅन करा'** बटण वापरून शब्द सापडत आहेत का याची खात्री करता येते.

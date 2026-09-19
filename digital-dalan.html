@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ई-पुस्तिकालय व डिजिटल सेवा दालन | ई-मुद्रा आपले सरकार व आधार सेवा केंद्र</title>
+  <meta name="description" content="ई-मुद्रा आपले सरकार केंद्र - महसूल सेवा, ई-पुस्तिकालय, डिजिटल वॉल आणि त्रिभाषी वृत्तपत्र पोर्टल." />
+  <link rel="stylesheet" href="dalan-styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Ambient Glow Elements -->
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+  <div class="glow-orb glow-orb-3"></div>
+
+  <!-- Top Info Bar -->
+  <div class="top-info-bar">
+    <div class="top-info-left">
+      <span class="gov-badge">
+        <i class="fas fa-landmark"></i> महाराष्ट्र शासन • ई-मुद्रा आपले सरकार केंद्र
+      </span>
+      <span class="live-clock-badge">
+        <i class="far fa-clock"></i> <span id="live-clock-text">--:--:--</span>
+      </span>
+    </div>
+    <div class="top-info-right">
+      <span id="live-greeting-text" style="color: #fed7aa; font-weight: 600; font-size: 0.85rem;">नमस्कार!</span>
+      <button id="audio-toggle-btn" class="audio-toggle-btn" onclick="toggleAudioFeedback()">
+        <i class="fas fa-volume-up"></i> ध्वनी
+      </button>
+    </div>
+  </div>
+
+  <!-- Master Header -->
+  <header class="main-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-wrapper">
+        <div class="emblem-icon">
+          🏛️
+        </div>
+        <div class="brand-text">
+          <h1>सर्व शासकीय व ई-मुद्रा सेवा एकाच छताखाली!</h1>
+          <p>डिजिटल नागरिक सेवा व ई-पुस्तिकालय महादालन</p>
+        </div>
+      </a>
+
+      <button id="mobile-nav-toggle" class="nav-toggle" aria-label="Toggle Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <ul id="main-nav-links" class="nav-links">
+        <li><a href="index.html" class="nav-link active"><i class="fas fa-home"></i> मुख्य दालन</a></li>
+        <li><a href="digital-wall.html" class="nav-link"><i class="fas fa-tv"></i> डिजिटल वॉल</a></li>
+        <li><a href="logo-wall.html" class="nav-link"><i class="fas fa-qrcode"></i> महसूल ई-सेवा</a></li>
+        <li><a href="book-wall.html" class="nav-link"><i class="fas fa-book-open"></i> ई-पुस्तके</a></li>
+        <li><a href="news_paper.html" class="nav-link"><i class="fas fa-newspaper"></i> वृत्तपत्रे</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero-section">
+      <div class="hero-pill">
+        <i class="fas fa-sparkles"></i> आधुनिक डिजिटल तंत्रज्ञान पोर्टल
+      </div>
+      <h2 class="hero-title">
+        नागरिकांच्या सेवेसाठी सर्व डिजिटल दालने एकाच ठिकाणी
+      </h2>
+      <p class="hero-subtitle">
+        उपविभाग कणकवली अंतर्गत विविध शासकीय महसूल सेवा, ई-पुस्तके, स्पर्धा परीक्षा साहित्य व डिजिटल वृत्तपत्रे यांचा लाभ घेण्यासाठी खालील दालनांमध्ये प्रवेश करा.
+      </p>
+
+      <!-- Live Quick Statistics -->
+      <div class="hero-stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-file-invoice"></i>
+          </div>
+          <div class="stat-info">
+            <h4>१५+</h4>
+            <p>महसूल ई-सेवा लिंक्स</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-book-reader"></i>
+          </div>
+          <div class="stat-info">
+            <h4>१०+</h4>
+            <p>ई-पुस्तके व अभ्यास साहित्य</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-newspaper"></i>
+          </div>
+          <div class="stat-info">
+            <h4>२०+</h4>
+            <p>त्रिभाषी वृत्तपत्रे</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="stat-info">
+            <h4>१००%</h4>
+            <p>अधिकृत व सुरक्षित पोर्टल</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Search Bar -->
+    <section class="controls-wrapper">
+      <div class="search-filter-box">
+        <div class="search-input-wrapper">
+          <input 
+            type="text" 
+            id="portal-search-input" 
+            class="search-input" 
+            placeholder="शासकीय सेवा किंवा पुस्तके शोधा (उदा. ७/१२, ई-हक्क, ई-मोजणी, ई-बुक...)" 
+          />
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="filter-pills-row">
+          <button class="filter-pill active" data-category="all">सर्व विभाग (All)</button>
+          <button class="filter-pill" data-category="digital">डिजिटल वॉल</button>
+          <button class="filter-pill" data-category="mahasul">महसूल ई-सेवा</button>
+          <button class="filter-pill" data-category="books">ई-पुस्तके</button>
+          <button class="filter-pill" data-category="news">वृत्तपत्रे</button>
+          <span id="results-count-badge" class="results-count-badge">४ प्रमुख दालने उपलब्ध</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hub Feature Sections Cards Grid -->
+    <section class="hub-features-grid">
+      <!-- 1. Digital Wall -->
+      <div class="hub-card searchable-item" data-category="digital" data-title="डिजिटल वॉल ई-पुस्तिकालय शेल्फ्स क्युआर कोड" data-desc="वृत्तपत्रे, सायबर सुरक्षा, एमपीएससी व सरकारी नोकरी माहिती शेल्फ्स">
+        <div>
+          <div class="hub-card-icon hub-icon-1">
+            <i class="fas fa-layer-group"></i>
+          </div>
+          <h3>डिजिटल वॉल (Digital Wall)</h3>
+          <p>
+            ३D शेल्फ्स स्वरूपात सर्व प्रमुख शासकीय दालने, वृत्तपत्रे, सायबर सुरक्षा मार्गदर्शक, एमपीएससी आणि सरकारी नोकरी मार्गदर्शन QR कोड्ससह.
+          </p>
+        </div>
+        <a href="digital-wall.html" class="btn-hub-explore">
+          <span>दालनात प्रवेश करा</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- 2. Revenue E-Links (Logo Wall) -->
+      <div class="hub-card searchable-item" data-category="mahasul" data-title="महसूल ई-लिंक्स ई-हक्क ई-चावडी ७/१२ ई-मोजणी ई-भुलेख ई-नकाशा" data-desc="जमीन महसूल नोंदी, फेरफार अर्ज, मूल्यांकन व डिजिटल ७/१२">
+        <div>
+          <div class="hub-card-icon hub-icon-2">
+            <i class="fas fa-qrcode"></i>
+          </div>
+          <h3>महसूल ई-सेवा दालन</h3>
+          <p>
+            ई-हक्क (फेरफार), ई-चावडी, ई-मोजणी, ई-भुलेख, ई-नकाशा, डिजिटल स्वाक्षरीत ७/१२, ८-अ व शेतकरी योजनांच्या १५+ अधिकृत सेवा.
+          </p>
+        </div>
+        <a href="logo-wall.html" class="btn-hub-explore">
+          <span>ई-सेवा एक्सप्लोर करा</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- 3. E-Books Wall -->
+      <div class="hub-card searchable-item" data-category="books" data-title="ई-पुस्तके डिजिटल ग्रंथालय अभ्यास साहित्य" data-desc="स्पर्धा परीक्षा व महसूल संदर्भातील पुस्तकांचे डिजिटल दालन">
+        <div>
+          <div class="hub-card-icon hub-icon-3">
+            <i class="fas fa-book-reader"></i>
+          </div>
+          <h3>ई-पुस्तकालय (E-Library)</h3>
+          <p>
+            नागरिकांसाठी आणि विद्यार्थ्यांसाठी उपयुक्त ई-पुस्तके, स्पर्धा परीक्षा वाचन साहित्य आणि माहितीपर मार्गदर्शिकांचे समृद्ध दालन.
+          </p>
+        </div>
+        <a href="book-wall.html" class="btn-hub-explore">
+          <span>पुस्तके पहा</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- 4. Newspaper Portal -->
+      <div class="hub-card searchable-item" data-category="news" data-title="वृत्तपत्र दालन मराठी हिंदी इंग्रजी वर्तमानपत्रे" data-desc="सर्व प्रमुख मराठी, हिंदी आणि इंग्रजी ई-वृत्तपत्रे एकाच ठिकाणी">
+        <div>
+          <div class="hub-card-icon hub-icon-4">
+            <i class="fas fa-newspaper"></i>
+          </div>
+          <h3>त्रिभाषी वृत्तपत्र दालन</h3>
+          <p>
+            लोकसत्ता, सकाळ, पुढारी, महाराष्ट्र टाइम्स, दैनिक जागरण, अमर उजाला, Times of India, The Hindu सह २०+ प्रमुख वृत्तपत्रे.
+          </p>
+        </div>
+        <a href="news_paper.html" class="btn-hub-explore">
+          <span>वृत्तपत्रे वाचा</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Master Footer -->
+  <footer class="main-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">🏛️ ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र</div>
+      <div class="footer-nav">
+        <a href="index.html">मुख्य दालन</a>
+        <a href="digital-wall.html">डिजिटल वॉल</a>
+        <a href="logo-wall.html">महसूल ई-सेवा</a>
+        <a href="book-wall.html">ई-पुस्तके</a>
+        <a href="news_paper.html">वृत्तपत्रे</a>
+      </div>
+      <p class="footer-copy">
+        © 2026 ई-मुद्रा आपले सरकार केंद्र व आधार सेवा केंद्र. सर्व हक्क राखीव.
+      </p>
+    </div>
+  </footer>
+
+  <script src="dalan-script.js"></script>
+</body>
+</html>
