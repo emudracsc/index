@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Text Replace (मजकूर संपादक) | eMudra CSC Hub</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/emudra_logo.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- PDF.js and PDF-Lib -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #09111e;
+      --card: #132238;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: #1e3a5f;
+      --success: #22c55e;
+      --danger: #f87171;
+      --hub-navy: #09111e;
+      --hub-gold: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', 'Noto Sans Devanagari', 'Mukta', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Hub Header */
+    .hub-header {
+      background: rgba(9, 17, 30, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 0.75rem 1.5rem;
+    }
+    .hub-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .hub-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: #fff;
+    }
+    .hub-brand-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    }
+    .hub-brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .hub-brand-sub {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    .hub-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .hub-center-tag {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .hub-btn-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .home-btn {
+      background: linear-gradient(135deg, #fbbf24, #d97706);
+      color: #0f172a;
+      border: none;
+    }
+    .home-btn:hover {
+      background: linear-gradient(135deg, #f59e0b, #b45309);
+    }
+    .hub-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .hub-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1.25rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.25rem;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    }
+    .card-header-box {
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #ffffff;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 14px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-bottom: 1.2rem;
+      background: rgba(15, 23, 42, 0.4);
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+    }
+    .drop-zone .icon-box {
+      font-size: 2.2rem;
+      color: #38bdf8;
+      margin-bottom: 0.5rem;
+    }
+    .drop-zone p { color: var(--muted); font-size: 0.92rem; }
+    .drop-zone strong { color: #ffffff; }
+    input[type="file"] { display: none; }
+
+    .form-group { margin-bottom: 1.15rem; }
+    label {
+      display: block;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 0.4rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(9, 17, 30, 0.75);
+      color: var(--text);
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.85rem;
+      margin-top: 1.5rem;
+    }
+    button {
+      flex: 1;
+      padding: 0.85rem 1rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      transform: translateY(-1px);
+    }
+    .btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      flex: 0 0 110px;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+    }
+
+    .status {
+      margin-top: 1.25rem;
+      font-size: 0.88rem;
+      text-align: center;
+      min-height: 1.4rem;
+      font-weight: 600;
+    }
+    .status.success { color: var(--success); }
+    .status.error { color: var(--danger); }
+    .status.working { color: #38bdf8; }
+
+    .file-name {
+      font-size: 0.85rem;
+      color: #38bdf8;
+      margin-bottom: 1.15rem;
+      word-break: break-all;
+      display: none;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+    .file-name.visible { display: flex; align-items: center; gap: 0.4rem; }
+
+    /* Footer */
+    footer {
+      background: #060b14;
+      color: #64748b;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.8rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="hub-header">
+    <div class="hub-header-inner">
+      <a href="emudra-hub.html" class="hub-brand" title="eMudra Hub (ई मुद्रा हब)">
+        <div class="hub-brand-badge">
+          <i class="fa-solid fa-file-signature"></i>
+        </div>
+        <div>
+          <div class="hub-brand-title">
+            <span>PDF Text Replace</span>
+            <span style="font-size: 0.85rem; color: #fbbf24; font-weight: 600;">(मजकूर संपादक)</span>
+          </div>
+          <div class="hub-brand-sub">eMudra CSC डिजिटल प्रिंटिंग व टूल्स स्टुडिओ</div>
+        </div>
+      </a>
+
+      <div class="hub-header-actions">
+        <div class="hub-center-tag">
+          <i class="fa-solid fa-id-badge" style="color: #fbbf24;"></i> Center: <strong>152153410016</strong>
+        </div>
+        <a href="emudra-hub.html" class="hub-btn-pill hub-btn" title="ई मुद्रा हब वर परत जा">
+          <i class="fa-solid fa-grid-2"></i> <span>eMudra Hub</span>
+        </a>
+        <a href="index.html" class="hub-btn-pill home-btn" title="मुख्य वेबसाईटवर परत जा">
+          <i class="fa-solid fa-house"></i> <span>मुख्यपृष्ठ</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Card -->
+  <main class="main-content">
+    <div class="card">
+      <div class="card-header-box">
+        <h1><i class="fa-solid fa-file-pen" style="color: #38bdf8;"></i> PDF Text Replace</h1>
+        <p class="subtitle">
+          Website वर generate केलेल्या PDF साठी.<br>
+          Search करून text बदला (font size original सारखा राहील)
+        </p>
+      </div>
+
+      <div class="drop-zone" id="dropZone">
+        <div class="icon-box"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+        <p><strong>Click करा</strong> किंवा PDF drag & drop करा</p>
+      </div>
+      <input type="file" id="fileInput" accept="application/pdf">
+
+      <div class="file-name" id="fileName"></div>
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-magnifying-glass"></i> Search Text (शोधायचा text)</label>
+        <input type="text" id="searchText" placeholder="उदा. Old Name / जुने नाव">
+      </div>
+
+      <div class="form-group">
+        <label><i class="fa-solid fa-pen-to-square"></i> Replace With (नवीन text)</label>
+        <input type="text" id="replaceText" placeholder="उदा. New Name / नवीन नाव">
+      </div>
+
+      <div class="actions">
+        <button class="btn-secondary" id="clearBtn"><i class="fa-solid fa-rotate-left"></i> Clear</button>
+        <button class="btn-primary" id="replaceBtn" disabled><i class="fa-solid fa-download"></i> Replace & Download</button>
+      </div>
+
+      <div class="status" id="status"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2026 eMudra CSC • आपले सरकार सेवा केंद्र • सर्व हक्क सुरक्षित</p>
+  </footer>
+
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const { PDFDocument, rgb, StandardFonts } = PDFLib;
+
+    const dropZone    = document.getElementById('dropZone');
+    const fileInput   = document.getElementById('fileInput');
+    const fileNameEl  = document.getElementById('fileName');
+    const searchInput = document.getElementById('searchText');
+    const replaceInput= document.getElementById('replaceText');
+    const replaceBtn  = document.getElementById('replaceBtn');
+    const clearBtn    = document.getElementById('clearBtn');
+    const statusEl    = document.getElementById('status');
+
+    let pdfBytes = null;
+    let pdfFileName = '';
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', e => {
+      if (e.target.files.length) loadPdf(e.target.files[0]);
+      fileInput.value = '';
+    });
+
+    dropZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type === 'application/pdf') loadPdf(file);
+      else showStatus('फक्त PDF फाइल टाका', 'error');
+    });
+
+    async function loadPdf(file) {
+      try {
+        pdfBytes = await file.arrayBuffer();
+        pdfFileName = file.name;
+        fileNameEl.innerHTML = '<i class="fa-solid fa-file-pdf"></i> Selected: ' + escapeHtml(file.name);
+        fileNameEl.classList.add('visible');
+        replaceBtn.disabled = false;
+        showStatus('PDF लोड झाले. Text टाका आणि Replace दाबा.', 'success');
+      } catch (err) {
+        showStatus('PDF लोड करताना error आला', 'error');
+      }
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[m]);
+    }
+
+    clearBtn.addEventListener('click', () => {
+      pdfBytes = null;
+      pdfFileName = '';
+      fileNameEl.classList.remove('visible');
+      searchInput.value = '';
+      replaceInput.value = '';
+      replaceBtn.disabled = true;
+      showStatus('');
+    });
+
+    replaceBtn.addEventListener('click', async () => {
+      const search = searchInput.value.trim();
+      const replace = replaceInput.value;
+
+      if (!pdfBytes) return showStatus('आधी PDF निवडा', 'error');
+      if (!search) return showStatus('Search text टाका', 'error');
+
+      replaceBtn.disabled = true;
+      showStatus('Text शोधत आहे आणि बदलत आहे... थांबा', 'working');
+
+      try {
+        // ---------- 1. Extract text positions with pdf.js ----------
+        const pdf = await pdfjsLib.getDocument({ data: pdfBytes.slice(0) }).promise;
+        const matches = [];
+
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const content = await page.getTextContent();
+          const viewport = page.getViewport({ scale: 1 });
+
+          content.items.forEach(item => {
+            if (!item.str) return;
+
+            // Case-insensitive search
+            if (item.str.toLowerCase().includes(search.toLowerCase())) {
+              const fontSize = Math.abs(item.transform[0]) || 11;
+              const x = item.transform[4];
+              const y = item.transform[5];
+
+              matches.push({
+                pageIndex: pageNum - 1,
+                x: x,
+                y: y,
+                width: item.width || (item.str.length * fontSize * 0.5),
+                height: item.height || fontSize,
+                fontSize: fontSize
+              });
+            }
+          });
+        }
+
+        if (matches.length === 0) {
+          showStatus(`"${search}" हा text सापडला नाही`, 'error');
+          replaceBtn.disabled = false;
+          return;
+        }
+
+        // ---------- 2. Create new PDF + overlay ----------
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+        const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        const pages = pdfDoc.getPages();
+
+        matches.forEach(m => {
+          const page = pages[m.pageIndex];
+
+          // White rectangle to cover old text (thoda padding)
+          page.drawRectangle({
+            x: m.x - 1.5,
+            y: m.y - 2.5,
+            width: m.width + 5,
+            height: m.height + 5,
+            color: rgb(1, 1, 1),
+          });
+
+          // New text - almost same font size
+          page.drawText(replace, {
+            x: m.x,
+            y: m.y,
+            size: m.fontSize * 0.92,   // थोडेसे adjust
+            font: font,
+            color: rgb(0, 0, 0),
+          });
+        });
+
+        // ---------- 3. Download ----------
+        const newBytes = await pdfDoc.save();
+        const blob = new Blob([newBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = pdfFileName.replace(/\.pdf$/i, '') + '-replaced.pdf';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        showStatus(`यशस्वी! ${matches.length} जागी text बदलला गेला.`, 'success');
+      } catch (err) {
+        console.error(err);
+        showStatus('Error आला: ' + (err.message || 'काहीतरी चुकले'), 'error');
+      } finally {
+        replaceBtn.disabled = false;
+      }
+    });
+
+    function showStatus(msg, type = '') {
+      statusEl.textContent = msg;
+      statusEl.className = 'status' + (type ? ' ' + type : '');
+    }
+  </script>
+</body>
+</html>
