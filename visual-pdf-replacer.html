@@ -1036,7 +1036,8 @@
     const btnReplaceAll = document.getElementById('btnReplaceAll');
     const btnReplaceCurrentPage = document.getElementById('btnReplaceCurrentPage');
     const selFontAdjustment = document.getElementById('selFontAdjustment');
-    const chkStrictMask = document.getElementById('chkStrictMask');
+    const selHorizontalPadding = document.getElementById('selHorizontalPadding');
+    const selVerticalPadding = document.getElementById('selVerticalPadding');
     const historyList = document.getElementById('historyList');
     const btnUndoLast = document.getElementById('btnUndoLast');
     const downloadReadyCard = document.getElementById('downloadReadyCard');
@@ -1443,8 +1444,7 @@
         const pdfDoc = await PDFDocument.load(originalPdfBytes, { ignoreEncryption: true });
 
         const pages = pdfDoc.getPages();
-        const fontMode = selFontAdjustment.value;
-        const strictMask = chkStrictMask.checked;
+        const fontMode = selFontAdjustment?.value || 'auto';
         const chosenWeight = (document.getElementById('selFontWeight')?.value) || '600';
         const chosenColor = (document.getElementById('selFontColor')?.value) || '#000000';
 
