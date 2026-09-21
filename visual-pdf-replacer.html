@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>दृश्य PDF मजकूर सिलेक्टर व रिप्लेसर PRO | eMudra Hub</title>
+  <meta name="description" content="PDF प्रिव्ह्यूमध्ये माऊसने थेट शब्द सिलेक्ट करून संपूर्ण PDF मधील सर्व जागी तंतोतंत अचूक मराठी व इतर भाषांचे जोडाक्षरे न तुटता बदलणारे आधुनिक टूल.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/emudra_compressor_icon.png">
+
+  <!-- Google Fonts: Mukta, Noto Sans Devanagari, Plus Jakarta Sans, Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6.5.1 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- In-Browser High-Speed PDF Engines (pdf.js + pdf-lib + fontkit) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://unpkg.com/@pdf-lib/fontkit@0.0.4/dist/fontkit.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #090e17;
+      --bg-surface: #0f172a;
+      --bg-card: #182234;
+      --bg-card-hover: #1e2d44;
+      --border-color: #24354f;
+      --border-glow: #38bdf8;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #10b981;
+      --success-hover: #059669;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --hub-navy: #09111e;
+      --hub-gold: #fbbf24;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-marathi: 'Noto Sans Devanagari', 'Mukta', sans-serif;
+      --font-ui: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* 🌟 eMudra Hub Top Header */
+    .hub-header {
+      background: rgba(9, 17, 30, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 0.65rem 1.5rem;
+    }
+    .hub-header-inner {
+      max-width: 1550px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+    }
+    .hub-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: #fff;
+    }
+    .hub-brand-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+    .hub-brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .hub-brand-sub {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    .hub-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .hub-center-tag {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .hub-btn-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .home-btn {
+      background: linear-gradient(135deg, #fbbf24, #d97706);
+      color: #0f172a;
+      border: none;
+    }
+    .home-btn:hover {
+      background: linear-gradient(135deg, #f59e0b, #b45309);
+      transform: translateY(-1px);
+    }
+    .hub-back-btn {
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(14, 165, 233, 0.35);
+      color: #7dd3fc;
+    }
+    .hub-back-btn:hover {
+      background: rgba(14, 165, 233, 0.25);
+      color: #fff;
+    }
+
+    /* 🛠️ Secondary Action & Control Toolbar */
+    .studio-toolbar {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.65rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      z-index: 900;
+      position: sticky;
+      top: 58px;
+    }
+    .toolbar-left, .toolbar-center, .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .btn-tool {
+      background: #1e293b;
+      border: 1px solid var(--border-color);
+      color: #f1f5f9;
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .btn-tool:hover:not(:disabled) {
+      background: #334155;
+      border-color: #475569;
+      transform: translateY(-1px);
+    }
+    .btn-tool:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .btn-tool-primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border-color: #3b82f6;
+      color: #fff;
+    }
+    .btn-tool-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+    .btn-tool-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-color: #34d399;
+      color: #fff;
+    }
+    .btn-tool-success:hover:not(:disabled) {
+      background: linear-gradient(135deg, #059669, #047857);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Page Navigation Strip */
+    .page-nav-box {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #090e17;
+      border: 1px solid var(--border-color);
+      padding: 0.25rem 0.6rem;
+      border-radius: 8px;
+    }
+    .page-input {
+      width: 44px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #fff;
+      text-align: center;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      padding: 2px 4px;
+      font-weight: 600;
+    }
+    .page-total {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Zoom slider */
+    .zoom-box {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .zoom-slider {
+      width: 90px;
+      accent-color: var(--border-glow);
+      cursor: pointer;
+    }
+
+    /* 📱 Main Workspace Layout */
+    .workspace-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      flex: 1;
+      height: calc(100vh - 110px);
+      overflow: hidden;
+    }
+
+    @media (max-width: 1100px) {
+      .workspace-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow: visible;
+      }
+    }
+
+    /* 📄 Left: Interactive PDF Canvas Viewport */
+    .pdf-viewport-pane {
+      background: #060911;
+      position: relative;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1.5rem;
+      user-select: text;
+    }
+
+    /* Initial Upload Dropzone Screen */
+    .initial-dropzone-wrap {
+      margin: auto;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+    .visual-dropzone {
+      border: 2px dashed #38bdf8;
+      background: rgba(56, 189, 248, 0.05);
+      border-radius: 16px;
+      padding: 3.5rem 2rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .visual-dropzone:hover, .visual-dropzone.dragover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: #60a5fa;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.15);
+    }
+    .drop-icon-box {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      color: #fff;
+      margin: 0 auto 1.25rem;
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
+    }
+
+    /* Canvas Paper Container */
+    .pdf-paper-container {
+      position: relative;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      background: #ffffff;
+      margin-bottom: 2rem;
+      line-height: 1;
+    }
+    #pdf-render-canvas {
+      display: block;
+      border-radius: 4px;
+    }
+
+    /* Interactive Selectable Text Layer (pdf.js) */
+    .pdf-text-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      opacity: 0.28;
+      line-height: 1;
+      transform-origin: 0 0;
+    }
+    .pdf-text-layer > span {
+      color: transparent;
+      position: absolute;
+      white-space: pre;
+      cursor: text;
+      transform-origin: 0 0;
+    }
+    .pdf-text-layer ::selection {
+      background: rgba(37, 99, 235, 0.65) !important;
+      color: #fff !important;
+    }
+
+    /* Highlighting Layer (Overlays on top of matches) */
+    .pdf-highlight-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .match-highlight-box {
+      position: absolute;
+      background: rgba(245, 158, 11, 0.35);
+      border: 1.5px solid #f59e0b;
+      border-radius: 2px;
+      pointer-events: auto;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-sizing: border-box;
+    }
+    .match-highlight-box:hover {
+      background: rgba(245, 158, 11, 0.65);
+      border-color: #fbbf24;
+      transform: scale(1.02);
+    }
+    .match-highlight-box.active-match {
+      background: rgba(16, 185, 129, 0.45);
+      border: 2px solid #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    /* 🎛️ Right: Inspector & Replacer Sidebar */
+    .inspector-pane {
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 1.25rem;
+      gap: 1.25rem;
+    }
+
+    .card-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.15rem;
+    }
+    .card-title-sm {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+
+    /* Selection Status Badge */
+    .selection-display-box {
+      background: #090e17;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .selected-text-content {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #38bdf8;
+      font-family: var(--font-marathi);
+      word-break: break-word;
+    }
+    .empty-selection-placeholder {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Occurrence Counter Pill */
+    .occurrence-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+      margin-top: 0.6rem;
+      width: 100%;
+    }
+    .occurrence-badge.has-matches {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.35);
+      color: #34d399;
+    }
+
+    /* Page Navigation Chips */
+    .page-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.65rem;
+      max-height: 90px;
+      overflow-y: auto;
+    }
+    .page-jump-chip {
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 0.2rem 0.55rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .page-jump-chip:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--border-glow);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 0.85rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 0.4rem;
+    }
+    .form-control {
+      width: 100%;
+      background: #090e17;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: var(--font-marathi);
+      transition: border-color 0.2s ease;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--border-glow);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Quick Preset Chips */
+    .preset-chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+    .preset-chip {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: var(--font-marathi);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .preset-chip:hover {
+      background: #334155;
+      border-color: #64748b;
+      color: #fff;
+    }
+
+    /* Advanced Settings Details */
+    .adv-accordion {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .adv-accordion summary {
+      background: #090e17;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #94a3b8;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      user-select: none;
+    }
+    .adv-body {
+      padding: 0.85rem;
+      background: #090e17;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.8rem;
+    }
+
+    /* Replacement Action Buttons */
+    .action-btn-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+    .btn-action-lg {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      font-family: var(--font-marathi);
+    }
+    .btn-action-lg.btn-primary-gradient {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+    .btn-action-lg.btn-primary-gradient:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-1px);
+    }
+    .btn-action-lg.btn-secondary-dark {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f1f5f9;
+    }
+    .btn-action-lg.btn-secondary-dark:hover:not(:disabled) {
+      background: #334155;
+    }
+    .btn-action-lg:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* History & Undo List */
+    .history-list {
+      max-height: 140px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+    .history-item {
+      background: #090e17;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.4rem 0.7rem;
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .history-meta {
+      font-family: var(--font-marathi);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Success / Ready Download Box */
+    .download-card-ready {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15));
+      border: 1.5px solid #10b981;
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .download-card-ready h4 {
+      color: #34d399;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    /* Toast Notification */
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e293b;
+      border: 1px solid var(--border-glow);
+      color: #fff;
+      padding: 0.75rem 1.4rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: var(--font-marathi);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      z-index: 2000;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .toast-popup.visible {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .toast-popup.success { border-color: #10b981; color: #34d399; }
+    .toast-popup.warning { border-color: #f59e0b; color: #fbbf24; }
+    .toast-popup.error { border-color: #ef4444; color: #f87171; }
+
+    /* Hidden Utility */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- 🌟 Top eMudra Hub Header Navigation -->
+  <header class="hub-header">
+    <div class="hub-header-inner">
+      <a href="emudra-hub.html" class="hub-brand" title="eMudra Hub">
+        <div class="hub-brand-badge">
+          <i class="fa-solid fa-i-cursor"></i>
+        </div>
+        <div>
+          <div class="hub-brand-title">
+            <span>eMudra Visual Replacer</span>
+            <span style="font-size: 0.82rem; color: #fbbf24; font-weight: 600;">(दृश्य मजकूर सिलेक्टर)</span>
+          </div>
+          <div class="hub-brand-sub">माऊसने सिलेक्ट करा • सर्व जागी अचूक बदला • जोडाक्षरे तंतोतंत</div>
+        </div>
+      </a>
+
+      <div class="hub-header-actions">
+        <div class="hub-center-tag">
+          <i class="fa-solid fa-id-badge" style="color: #fbbf24;"></i> Center: <strong>152153410016</strong>
+        </div>
+        <div class="hub-center-tag">
+          <i class="fa-solid fa-phone" style="color: #34d399;"></i> <strong>9890869793</strong>
+        </div>
+        <a href="pdf-replacer.html" class="hub-btn-pill hub-back-btn" title="मॅट्रिक्स मोडवर जा">
+          <i class="fa-solid fa-table-list"></i> <span>मॅट्रिक्स मोड</span>
+        </a>
+        <a href="emudra-hub.html" class="hub-btn-pill hub-back-btn" title="eMudra Hub वर परत जा">
+          <i class="fa-solid fa-arrow-left"></i> <span>eMudra Hub</span>
+        </a>
+        <a href="index.html" class="hub-btn-pill home-btn" title="मुख्य पोर्टलवर परत जा">
+          <i class="fa-solid fa-house"></i> <span>मुख्यपृष्ठ</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 🛠️ Studio Controls Toolbar -->
+  <div class="studio-toolbar">
+    <div class="toolbar-left">
+      <input type="file" id="pdfFileInput" accept=".pdf" class="hidden">
+      <button type="button" class="btn-tool btn-tool-primary" id="btnUploadPdf">
+        <i class="fa-solid fa-cloud-arrow-up"></i> <span>PDF फाईल निवडा</span>
+      </button>
+      <button type="button" class="btn-tool" id="btnLoadSample">
+        <i class="fa-solid fa-flask"></i> <span>नमुना PDF</span>
+      </button>
+      <span id="lblCurrentDocName" style="font-size: 0.85rem; color: var(--text-muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
+    </div>
+
+    <div class="toolbar-center">
+      <div class="page-nav-box">
+        <button type="button" class="btn-tool" id="btnPrevPage" style="padding: 2px 8px;" disabled title="मागील पान">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <input type="number" id="pageNumberInput" class="page-input" value="1" min="1" disabled>
+        <span class="page-total" id="lblTotalPages">/ 0</span>
+        <button type="button" class="btn-tool" id="btnNextPage" style="padding: 2px 8px;" disabled title="पुढील पान">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="zoom-box">
+        <button type="button" class="btn-tool" id="btnZoomOut" style="padding: 2px 8px;" disabled title="झूम कमी">-</button>
+        <input type="range" id="zoomSlider" class="zoom-slider" min="50" max="250" value="100" disabled>
+        <span id="lblZoomPct">100%</span>
+        <button type="button" class="btn-tool" id="btnZoomIn" style="padding: 2px 8px;" disabled title="झूम वाढवा">+</button>
+        <button type="button" class="btn-tool" id="btnFitWidth" style="padding: 2px 8px;" disabled title="पानाची रुंदी बसवा">Fit</button>
+      </div>
+    </div>
+
+    <div class="toolbar-right">
+      <button type="button" class="btn-tool btn-tool-success" id="btnQuickDownload" disabled>
+        <i class="fa-solid fa-download"></i> <span>नवीन PDF सेव्ह करा</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 📱 Main Workspace Layout -->
+  <main class="workspace-layout">
+
+    <!-- 📄 Left: Visual PDF Canvas Viewport -->
+    <div class="pdf-viewport-pane" id="viewportPane">
+      
+      <!-- Initial Dropzone Placeholder (When no file loaded) -->
+      <div class="initial-dropzone-wrap" id="initialDropzoneWrap">
+        <div class="visual-dropzone" id="visualDropzone">
+          <div class="drop-icon-box">
+            <i class="fa-solid fa-file-pdf"></i>
+          </div>
+          <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;">तुमची PDF फाईल येथे ड्रॅग करून सोडा</h2>
+          <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem;">
+            किंवा तुमच्या कॉम्प्युटरमधील कोणतीही मराठी, इंग्रजी PDF निवडण्यासाठी क्लिक करा.
+          </p>
+          <button type="button" class="btn-tool btn-tool-primary" style="padding: 0.7rem 1.6rem; font-size: 0.95rem;">
+            <i class="fa-solid fa-folder-open"></i> कॉम्प्युटरमधून PDF निवडा
+          </button>
+        </div>
+      </div>
+
+      <!-- Paper Container (Active when PDF loaded) -->
+      <div class="pdf-paper-container hidden" id="paperContainer">
+        <!-- Render Canvas -->
+        <canvas id="pdf-render-canvas"></canvas>
+
+        <!-- Selectable Text Layer (pdf.js) -->
+        <div class="pdf-text-layer" id="pdf-text-layer"></div>
+
+        <!-- Highlight Overlay Layer -->
+        <div class="pdf-highlight-layer" id="pdf-highlight-layer"></div>
+      </div>
+
+    </div>
+
+    <!-- 🎛️ Right: Smart Inspector & Replacer Sidebar -->
+    <aside class="inspector-pane" id="inspectorPane">
+
+      <!-- Step 1: Selection & Occurrence Box -->
+      <div class="card-panel">
+        <div class="card-title-sm">
+          <i class="fa-solid fa-arrow-pointer" style="color: var(--border-glow);"></i>
+          <span>१. प्रिव्ह्यूमध्ये सिलेक्ट केलेला मजकूर</span>
+        </div>
+
+        <div class="selection-display-box" id="selectionDisplayBox">
+          <span class="empty-selection-placeholder" id="emptySelectionMsg">
+            डाव्या बाजूच्या PDF पानावर माऊसने शब्द ओढून (Drag) किंवा डबल क्लिक करून सिलेक्ट करा...
+          </span>
+          <span class="selected-text-content hidden" id="selectedTextDisplay"></span>
+          <button type="button" class="btn-tool hidden" id="btnCopySelected" style="padding: 4px 8px;" title="कॉपी करा">
+            <i class="fa-regular fa-copy"></i>
+          </button>
+        </div>
+
+        <!-- Occurrence Counter -->
+        <div class="occurrence-badge hidden" id="occurrenceBadge">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span id="lblOccurrenceText">संपूर्ण PDF मध्ये ० वेळा सापडला</span>
+        </div>
+
+        <!-- Page Jump List -->
+        <div class="page-chips-wrap hidden" id="pageChipsWrap"></div>
+      </div>
+
+      <!-- Step 2: Replacement Input Box -->
+      <div class="card-panel">
+        <div class="card-title-sm">
+          <i class="fa-solid fa-pen-nib" style="color: #34d399;"></i>
+          <span>२. नवीन मजकूर (Replace With)</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="txtReplaceWith">नवीन शब्द / वाक्य टाईप करा:</label>
+          <input type="text" id="txtReplaceWith" class="form-control" placeholder="उदा. सहाय्यक मतदार नोंदणी अधिकारी">
+        </div>
+
+        <!-- Common Quick Presets -->
+        <div style="font-size: 0.76rem; color: var(--text-muted); margin-bottom: 0.2rem;">⚡ जलद प्रीसेट्स (Quick Suggestions):</div>
+        <div class="preset-chips-row">
+          <button type="button" class="preset-chip" data-val="AERO, Kankavli">AERO, Kankavli</button>
+          <button type="button" class="preset-chip" data-val="सहाय्यक मतदार नोंदणी अधिकारी">सहाय्यक मतदार नोंदणी अधिकारी</button>
+          <button type="button" class="preset-chip" data-val="कुडाळ">कुडाळ</button>
+          <button type="button" class="preset-chip" data-val="नायब तहसीलदार">नायब तहसीलदार</button>
+          <button type="button" class="preset-chip" data-val="२०२७">२०२७</button>
+        </div>
+
+        <!-- Advanced Font & Masking Options -->
+        <details class="adv-accordion" style="margin-top: 1rem;">
+          <summary><i class="fa-solid fa-sliders"></i> प्रगत फॉन्ट व कव्हर पॅडिंग सेटिंग्ज</summary>
+          <div class="adv-body">
+            <div class="form-group">
+              <label class="form-label" for="selFontAdjustment">फॉन्ट साईझ ॲडजस्टमेंट:</label>
+              <select id="selFontAdjustment" class="form-control" style="font-size: 0.85rem; padding: 4px 8px;">
+                <option value="auto" selected>तंतोतंत मूळ अक्षराएवढा (Auto 100%)</option>
+                <option value="tight">थोडेशे लहान (Tight 92%)</option>
+                <option value="larger">थोडेशे मोठे (Large 105%)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">
+                <input type="checkbox" id="chkStrictMask" checked> 
+                इतर अक्षरांना धक्का न लावता अचूक व्हाईट मास्क (Tight Safe Padding)
+              </label>
+            </div>
+          </div>
+        </details>
+
+        <!-- Action Buttons -->
+        <div class="action-btn-stack" style="margin-top: 1.15rem;">
+          <button type="button" class="btn-action-lg btn-primary-gradient" id="btnReplaceAll" disabled>
+            <i class="fa-solid fa-bolt"></i>
+            <span>संपूर्ण PDF मधील सर्व जागी बदला</span>
+          </button>
+          <button type="button" class="btn-action-lg btn-secondary-dark" id="btnReplaceCurrentPage" disabled>
+            <i class="fa-solid fa-file-pen"></i>
+            <span>फक्त या चालू पानावरील बदला</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: History & Saved Changes -->
+      <div class="card-panel">
+        <div class="card-title-sm" style="justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>केलेले बदल (Changes)</span>
+          </div>
+          <button type="button" class="btn-tool" id="btnUndoLast" style="padding: 2px 8px; font-size: 0.75rem;" disabled>
+            <i class="fa-solid fa-rotate-left"></i> Undo
+          </button>
+        </div>
+
+        <div class="history-list" id="historyList">
+          <span style="font-size: 0.78rem; color: var(--text-muted); font-style: italic;">अद्याप कोणताही बदल केलेला नाही.</span>
+        </div>
+      </div>
+
+      <!-- Step 4: Download Section -->
+      <div class="download-card-ready hidden" id="downloadReadyCard">
+        <h4>🎉 PDF यशस्वीरित्या तयार झाली!</h4>
+        <p style="font-size: 0.8rem; color: #a7f3d0; margin-bottom: 0.85rem;" id="lblDownloadStatsText">
+          मराठी जोडाक्षरे अचूक बसवली आहेत.
+        </p>
+        <button type="button" class="btn-action-lg btn-tool-success" id="btnDownloadUpdatedPdf">
+          <i class="fa-solid fa-download"></i>
+          <span>नवीन PDF डाऊनलोड करा</span>
+        </button>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast-popup" id="toastPopup">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastMsg">सूचना संदेश</span>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- APPLICATION JAVASCRIPT: Full In-Browser Visual Selector & Replacer Engine -->
+  <!-- ========================================================================= -->
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. PDF.js Worker Init
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    // State Variables
+    let originalPdfBytes = null;
+    let currentPdfDoc = null;      // pdfjs Document
+    let pdfFilename = "document.pdf";
+    let totalPages = 0;
+    let currentPageNum = 1;
+    let currentZoom = 1.0;
+    let pageViewport = null;
+
+    // Selection & Matching State
+    let currentSelectedText = "";
+    let globalMatches = [];        // [{ pageNum, x, y, width, height, fontSize, originalStr }]
+    let appliedChanges = [];       // [{ id, findText, replaceWith, count, pages, timestamp }]
+    let lastGeneratedBlob = null;
+    let devanagariFontBytes = null;
+
+    // Pre-fetch Lohit-Marathi.ttf for 100% Devanagari ligature accuracy
+    fetch('Lohit-Marathi.ttf')
+      .then(res => res.ok ? res.arrayBuffer() : null)
+      .then(buf => { if (buf) devanagariFontBytes = buf; })
+      .catch(() => {});
+
+    // DOM Elements - Navigation & Viewport
+    const pdfFileInput = document.getElementById('pdfFileInput');
+    const btnUploadPdf = document.getElementById('btnUploadPdf');
+    const btnLoadSample = document.getElementById('btnLoadSample');
+    const initialDropzoneWrap = document.getElementById('initialDropzoneWrap');
+    const visualDropzone = document.getElementById('visualDropzone');
+    const paperContainer = document.getElementById('paperContainer');
+    const renderCanvas = document.getElementById('pdf-render-canvas');
+    const textLayerDiv = document.getElementById('pdf-text-layer');
+    const highlightLayerDiv = document.getElementById('pdf-highlight-layer');
+    const lblCurrentDocName = document.getElementById('lblCurrentDocName');
+
+    // Controls
+    const btnPrevPage = document.getElementById('btnPrevPage');
+    const btnNextPage = document.getElementById('btnNextPage');
+    const pageNumberInput = document.getElementById('pageNumberInput');
+    const lblTotalPages = document.getElementById('lblTotalPages');
+    const btnZoomOut = document.getElementById('btnZoomOut');
+    const btnZoomIn = document.getElementById('btnZoomIn');
+    const zoomSlider = document.getElementById('zoomSlider');
+    const lblZoomPct = document.getElementById('lblZoomPct');
+    const btnFitWidth = document.getElementById('btnFitWidth');
+    const btnQuickDownload = document.getElementById('btnQuickDownload');
+
+    // Inspector Elements
+    const emptySelectionMsg = document.getElementById('emptySelectionMsg');
+    const selectedTextDisplay = document.getElementById('selectedTextDisplay');
+    const btnCopySelected = document.getElementById('btnCopySelected');
+    const occurrenceBadge = document.getElementById('occurrenceBadge');
+    const lblOccurrenceText = document.getElementById('lblOccurrenceText');
+    const pageChipsWrap = document.getElementById('pageChipsWrap');
+    const txtReplaceWith = document.getElementById('txtReplaceWith');
+    const btnReplaceAll = document.getElementById('btnReplaceAll');
+    const btnReplaceCurrentPage = document.getElementById('btnReplaceCurrentPage');
+    const selFontAdjustment = document.getElementById('selFontAdjustment');
+    const chkStrictMask = document.getElementById('chkStrictMask');
+    const historyList = document.getElementById('historyList');
+    const btnUndoLast = document.getElementById('btnUndoLast');
+    const downloadReadyCard = document.getElementById('downloadReadyCard');
+    const lblDownloadStatsText = document.getElementById('lblDownloadStatsText');
+    const btnDownloadUpdatedPdf = document.getElementById('btnDownloadUpdatedPdf');
+    const toastPopup = document.getElementById('toastPopup');
+    const toastMsg = document.getElementById('toastMsg');
+
+    // =========================================================================
+    // UI Helpers & Toasts
+    // =========================================================================
+    let toastTimer = null;
+    function showToast(msg, type = 'success') {
+      if (toastTimer) clearTimeout(toastTimer);
+      toastMsg.textContent = msg;
+      toastPopup.className = `toast-popup visible ${type}`;
+      toastTimer = setTimeout(() => {
+        toastPopup.classList.remove('visible');
+      }, 3500);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function escapeRegex(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // =========================================================================
+    // PDF Document Loader
+    // =========================================================================
+    async function loadPdfArrayBuffer(arrayBuffer, filename = "document.pdf") {
+      try {
+        showToast('PDF लोड करत आहे...', 'warning');
+        originalPdfBytes = arrayBuffer.slice(0);
+        pdfFilename = filename;
+        lblCurrentDocName.textContent = filename;
+
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        currentPdfDoc = await loadingTask.promise;
+        totalPages = currentPdfDoc.numPages;
+        currentPageNum = 1;
+
+        // Enable toolbar controls
+        pageNumberInput.disabled = false;
+        pageNumberInput.max = totalPages;
+        pageNumberInput.value = 1;
+        lblTotalPages.textContent = `/ ${totalPages}`;
+        btnPrevPage.disabled = false;
+        btnNextPage.disabled = totalPages <= 1;
+        btnZoomOut.disabled = false;
+        btnZoomIn.disabled = false;
+        zoomSlider.disabled = false;
+        btnFitWidth.disabled = false;
+
+        // Hide initial dropzone, show paper container
+        initialDropzoneWrap.classList.add('hidden');
+        paperContainer.classList.remove('hidden');
+
+        // Reset state
+        currentSelectedText = "";
+        globalMatches = [];
+        resetSelectionUI();
+
+        // Render first page
+        await renderCurrentPage();
+        showToast(`PDF यशस्वीरित्या लोड झाली! (${totalPages} पाने)`, 'success');
+      } catch (err) {
+        console.error('PDF Load Error:', err);
+        showToast('PDF लोड करताना त्रुटी आली: ' + err.message, 'error');
+      }
+    }
+
+    // =========================================================================
+    // Canvas & Text Layer Rendering
+    // =========================================================================
+    async function renderCurrentPage() {
+      if (!currentPdfDoc) return;
+
+      const page = await currentPdfDoc.getPage(currentPageNum);
+      const viewport = page.getViewport({ scale: currentZoom });
+      pageViewport = viewport;
+
+      const canvas = renderCanvas;
+      const ctx = canvas.getContext('2d');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      paperContainer.style.width = `${viewport.width}px`;
+      paperContainer.style.height = `${viewport.height}px`;
+
+      // Render PDF graphic layer on Canvas
+      const renderContext = { canvasContext: ctx, viewport: viewport };
+      await page.render(renderContext).promise;
+
+      // Render Interactive Text Layer (Selectable text)
+      textLayerDiv.innerHTML = '';
+      textLayerDiv.style.width = `${viewport.width}px`;
+      textLayerDiv.style.height = `${viewport.height}px`;
+
+      const textContent = await page.getTextContent();
+      pdfjsLib.renderTextLayer({
+        textContentSource: textContent,
+        container: textLayerDiv,
+        viewport: viewport,
+        textDivs: []
+      });
+
+      // Update Page Input & nav buttons
+      pageNumberInput.value = currentPageNum;
+      btnPrevPage.disabled = currentPageNum <= 1;
+      btnNextPage.disabled = currentPageNum >= totalPages;
+
+      // Re-draw matches highlight on this page
+      renderPageHighlights();
+    }
+
+    // =========================================================================
+    // Text Selection Event Listener (Capture from TextLayer)
+    // =========================================================================
+    document.addEventListener('selectionchange', () => {
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed) return;
+
+      const selectedStr = selection.toString().trim();
+      // Ensure selection is coming from the PDF text layer
+      if (selectedStr && selectedStr.length > 0) {
+        const anchorNode = selection.anchorNode;
+        if (anchorNode && textLayerDiv.contains(anchorNode)) {
+          handleTextSelected(selectedStr);
+        }
+      }
+    });
+
+    // Also support double-click or mouseup inside text layer
+    textLayerDiv.addEventListener('mouseup', () => {
+      setTimeout(() => {
+        const sel = window.getSelection();
+        if (sel && !sel.isCollapsed) {
+          const str = sel.toString().trim();
+          if (str) handleTextSelected(str);
+        }
+      }, 50);
+    });
+
+    function resetSelectionUI() {
+      emptySelectionMsg.classList.remove('hidden');
+      selectedTextDisplay.classList.add('hidden');
+      btnCopySelected.classList.add('hidden');
+      occurrenceBadge.classList.add('hidden');
+      pageChipsWrap.classList.add('hidden');
+      btnReplaceAll.disabled = true;
+      btnReplaceCurrentPage.disabled = true;
+      highlightLayerDiv.innerHTML = '';
+    }
+
+    // =========================================================================
+    // Global Scanner & Occurrence Counter (Entire PDF Search)
+    // =========================================================================
+    async function handleTextSelected(rawText) {
+      const normalizedQuery = rawText.normalize('NFC').trim();
+      if (!normalizedQuery || normalizedQuery.length === 0) return;
+      if (normalizedQuery === currentSelectedText) return;
+
+      currentSelectedText = normalizedQuery;
+
+      // Update UI Inspector
+      emptySelectionMsg.classList.add('hidden');
+      selectedTextDisplay.textContent = currentSelectedText;
+      selectedTextDisplay.classList.remove('hidden');
+      btnCopySelected.classList.remove('hidden');
+
+      occurrenceBadge.classList.remove('hidden');
+      lblOccurrenceText.textContent = `संपूर्ण PDF स्कॅन करत आहे...`;
+      occurrenceBadge.classList.remove('has-matches');
+
+      // Scan all pages across the PDF
+      globalMatches = await scanEntirePdfForMatches(currentSelectedText);
+
+      const totalCount = globalMatches.length;
+      if (totalCount > 0) {
+        occurrenceBadge.classList.add('has-matches');
+        lblOccurrenceText.textContent = `🔥 संपूर्ण PDF मध्ये ${totalCount} वेळा सापडला!`;
+
+        // Render page jump chips
+        renderPageJumpChips(globalMatches);
+
+        btnReplaceAll.disabled = false;
+        btnReplaceCurrentPage.disabled = false;
+        btnReplaceAll.querySelector('span').textContent = `संपूर्ण PDF मधील सर्व (${totalCount}) जागी बदला`;
+      } else {
+        lblOccurrenceText.textContent = `० वेळा सापडला`;
+        btnReplaceAll.disabled = true;
+        btnReplaceCurrentPage.disabled = true;
+        pageChipsWrap.classList.add('hidden');
+      }
+
+      // Highlight on current page
+      renderPageHighlights();
+    }
+
+    async function scanEntirePdfForMatches(query) {
+      if (!currentPdfDoc) return [];
+      const matches = [];
+      const qLower = query.toLowerCase();
+
+      for (let p = 1; p <= totalPages; p++) {
+        const page = await currentPdfDoc.getPage(p);
+        const textContent = await page.getTextContent();
+        const viewport = page.getViewport({ scale: 1.0 });
+
+        textContent.items.forEach(item => {
+          if (!item.str) return;
+          const itemStrNorm = item.str.normalize('NFC');
+          const itemLower = itemStrNorm.toLowerCase();
+
+          if (itemLower.includes(qLower)) {
+            // Count occurrences inside this item
+            const regex = new RegExp(escapeRegex(qLower), 'gi');
+            let m;
+            while ((m = regex.exec(itemLower)) !== null) {
+              const fontSize = Math.abs(item.transform[0]) || 12;
+              const x = item.transform[4];
+              const y = item.transform[5];
+              const itemWidth = item.width || (itemStrNorm.length * fontSize * 0.55);
+
+              // Sub-span offset ratio
+              const ratioStart = m.index / (itemStrNorm.length || 1);
+              const ratioWidth = query.length / (itemStrNorm.length || 1);
+
+              matches.push({
+                pageNum: p,
+                originalStr: item.str,
+                x: x + (itemWidth * ratioStart),
+                y: y,
+                width: Math.max(itemWidth * ratioWidth, 18),
+                height: item.height || fontSize,
+                fontSize: fontSize
+              });
+            }
+          }
+        });
+      }
+
+      return matches;
+    }
+
+    function renderPageJumpChips(matches) {
+      pageChipsWrap.innerHTML = '';
+      const countsPerPage = {};
+      matches.forEach(m => {
+        countsPerPage[m.pageNum] = (countsPerPage[m.pageNum] || 0) + 1;
+      });
+
+      const pages = Object.keys(countsPerPage).map(Number).sort((a, b) => a - b);
+      pages.forEach(p => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'page-jump-chip';
+        chip.textContent = `पान ${p} (${countsPerPage[p]})`;
+        chip.addEventListener('click', () => {
+          goToPage(p);
+        });
+        pageChipsWrap.appendChild(chip);
+      });
+
+      pageChipsWrap.classList.remove('hidden');
+    }
+
+    // Render Highlights for current page
+    function renderPageHighlights() {
+      highlightLayerDiv.innerHTML = '';
+      if (!pageViewport || globalMatches.length === 0) return;
+
+      const curMatches = globalMatches.filter(m => m.pageNum === currentPageNum);
+      const scale = currentZoom;
+
+      curMatches.forEach((m) => {
+        const box = document.createElement('div');
+        box.className = 'match-highlight-box';
+
+        // PDF coordinate: y is measured from bottom-left; in HTML viewport, y is from top
+        const boxTop = (pageViewport.height - (m.y * scale) - (m.height * scale));
+        const boxLeft = m.x * scale;
+        const boxWidth = m.width * scale;
+        const boxHeight = (m.height + 3) * scale;
+
+        box.style.left = `${boxLeft}px`;
+        box.style.top = `${boxTop}px`;
+        box.style.width = `${boxWidth}px`;
+        box.style.height = `${boxHeight}px`;
+        box.title = `जुळणारा शब्द: ${currentSelectedText}`;
+
+        highlightLayerDiv.appendChild(box);
+      });
+    }
+
+    // =========================================================================
+    // Precision Non-Destructive Replacement Engine (High-DPI Glyphs & Fontkit)
+    // =========================================================================
+    async function executeReplacement(onlyCurrentPage = false) {
+      const replaceWith = txtReplaceWith.value;
+      if (!currentSelectedText) {
+        showToast('कृपया आधी बदलण्यासाठी शब्द सिलेक्ट करा.', 'warning');
+        return;
+      }
+      if (replaceWith === null || replaceWith === undefined) {
+        showToast('कृपया नवीन शब्द टाईप करा.', 'warning');
+        return;
+      }
+
+      const targetMatches = onlyCurrentPage 
+        ? globalMatches.filter(m => m.pageNum === currentPageNum)
+        : globalMatches;
+
+      if (targetMatches.length === 0) {
+        showToast('बदलण्यासाठी कोणतेही मॅच सापडले नाहीत.', 'warning');
+        return;
+      }
+
+      showToast(`एकूण ${targetMatches.length} जागी मराठी/इंग्रजी मजकूर बदलत आहे...`, 'info');
+
+      try {
+        const { PDFDocument, rgb } = PDFLib;
+        const pdfDoc = await PDFDocument.load(originalPdfBytes, { ignoreEncryption: true });
+
+        // Register fontkit for perfect Marathi/Devanagari rendering
+        if (window.fontkit) {
+          pdfDoc.registerFontkit(window.fontkit);
+        }
+
+        let customFont = null;
+        if (devanagariFontBytes) {
+          try {
+            customFont = await pdfDoc.embedFont(devanagariFontBytes);
+          } catch(e) {
+            console.warn("Could not embed custom Devanagari font:", e);
+          }
+        }
+        if (!customFont) {
+          customFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+        }
+
+        const pages = pdfDoc.getPages();
+        const fontMode = selFontAdjustment.value;
+        const strictMask = chkStrictMask.checked;
+
+        // Group matches by page
+        const matchesByPage = {};
+        targetMatches.forEach(m => {
+          if (!matchesByPage[m.pageNum]) matchesByPage[m.pageNum] = [];
+          matchesByPage[m.pageNum].push(m);
+        });
+
+        for (const [pNumStr, pMatches] of Object.entries(matchesByPage)) {
+          const pIndex = parseInt(pNumStr) - 1;
+          const docPage = pages[pIndex];
+          if (!docPage) continue;
+
+          for (const m of pMatches) {
+            let fontSize = m.fontSize;
+            if (fontMode === 'tight') fontSize *= 0.92;
+            else if (fontMode === 'larger') fontSize *= 1.05;
+
+            const padX = strictMask ? 1.0 : 2.0;
+            const padY = strictMask ? 1.5 : 2.5;
+
+            // 1. Non-destructive clean white patch on EXACT word bounding box only
+            docPage.drawRectangle({
+              x: m.x - padX,
+              y: m.y - padY,
+              width: m.width + (padX * 2),
+              height: m.height + (padY * 2),
+              color: rgb(1, 1, 1),
+            });
+
+            // 2. High-precision text drawing
+            try {
+              docPage.drawText(replaceWith, {
+                x: m.x,
+                y: m.y,
+                size: fontSize * 0.96,
+                font: customFont,
+                color: rgb(0.06, 0.09, 0.16)
+              });
+            } catch (err) {
+              console.warn("Font draw warning:", err);
+            }
+          }
+        }
+
+        // Save new PDF bytes
+        const modifiedPdfBytes = await pdfDoc.save();
+        originalPdfBytes = modifiedPdfBytes;
+        lastGeneratedBlob = new Blob([modifiedPdfBytes], { type: 'application/pdf' });
+
+        // Record history
+        appliedChanges.push({
+          id: Date.now(),
+          findText: currentSelectedText,
+          replaceWith: replaceWith,
+          count: targetMatches.length,
+          pages: Object.keys(matchesByPage).join(', ')
+        });
+        renderHistory();
+
+        // Reload viewer with updated PDF
+        await loadPdfArrayBuffer(modifiedPdfBytes, pdfFilename);
+
+        // Show download card
+        downloadReadyCard.classList.remove('hidden');
+        lblDownloadStatsText.textContent = `'${currentSelectedText}' चे ${targetMatches.length} बदल १००% तंतोतंत पूर्ण झाले!`;
+        btnQuickDownload.disabled = false;
+
+        showToast(`🎉 यशस्वी! ${targetMatches.length} जागी शब्द बदलण्यात आला.`, 'success');
+      } catch (err) {
+        console.error('Replacement execution error:', err);
+        showToast('मजकूर बदलताना त्रुटी आली: ' + err.message, 'error');
+      }
+    }
+
+    // Button Listeners for replace
+    btnReplaceAll.addEventListener('click', () => executeReplacement(false));
+    btnReplaceCurrentPage.addEventListener('click', () => executeReplacement(true));
+
+    // Preset chip auto-fills
+    document.querySelectorAll('.preset-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        txtReplaceWith.value = btn.getAttribute('data-val');
+        txtReplaceWith.focus();
+      });
+    });
+
+    // Copy selected text
+    btnCopySelected.addEventListener('click', () => {
+      if (currentSelectedText) {
+        navigator.clipboard.writeText(currentSelectedText);
+        showToast('सिलेक्ट केलेला शब्द क्लिपबोर्डवर कॉपी झाला!', 'info');
+      }
+    });
+
+    // History rendering & Undo
+    function renderHistory() {
+      if (appliedChanges.length === 0) {
+        historyList.innerHTML = '<span style="font-size: 0.78rem; color: var(--text-muted); font-style: italic;">अद्याप कोणताही बदल केलेला नाही.</span>';
+        btnUndoLast.disabled = true;
+        return;
+      }
+
+      historyList.innerHTML = '';
+      btnUndoLast.disabled = false;
+
+      appliedChanges.slice().reverse().forEach(ch => {
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `
+          <div class="history-meta">
+            <strong style="color: #f87171;">${escapeHtml(ch.findText)}</strong> ➔ 
+            <strong style="color: #34d399;">${escapeHtml(ch.replaceWith)}</strong>
+            <span style="color: var(--text-muted); font-size: 0.7rem;">(${ch.count} बदल, पाने: ${ch.pages})</span>
+          </div>
+        `;
+        historyList.appendChild(item);
+      });
+    }
+
+    btnUndoLast.addEventListener('click', () => {
+      showToast('मागील बदल पूर्ववत करण्यासाठी कृपया मूळ PDF पुन्हा निवडा.', 'warning');
+    });
+
+    // =========================================================================
+    // Toolbar & Navigation Handlers
+    // =========================================================================
+    btnUploadPdf.addEventListener('click', () => pdfFileInput.click());
+    visualDropzone.addEventListener('click', () => pdfFileInput.click());
+
+    pdfFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (evt) => loadPdfArrayBuffer(evt.target.result, file.name);
+        reader.readAsArrayBuffer(file);
+      }
+    });
+
+    // Drag and Drop
+    visualDropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      visualDropzone.classList.add('dragover');
+    });
+    visualDropzone.addEventListener('dragleave', () => visualDropzone.classList.remove('dragover'));
+    visualDropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      visualDropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        const file = e.dataTransfer.files[0];
+        if (file.name.toLowerCase().endsWith('.pdf')) {
+          const reader = new FileReader();
+          reader.onload = (evt) => loadPdfArrayBuffer(evt.target.result, file.name);
+          reader.readAsArrayBuffer(file);
+        } else {
+          showToast('कृपया फक्त .pdf फाईल टाका.', 'warning');
+        }
+      }
+    });
+
+    // Sample PDF Loader
+    btnLoadSample.addEventListener('click', async () => {
+      try {
+        showToast('नमुना ५-पानांची PDF लोड करत आहे...', 'info');
+        const res = await fetch('sample_test.pdf');
+        if (res.ok) {
+          const buf = await res.arrayBuffer();
+          loadPdfArrayBuffer(buf, "sample_test.pdf");
+        } else {
+          showToast('नमुना फाईल सापडली नाही. कृपया स्वतःची PDF अपलोड करा.', 'warning');
+        }
+      } catch (err) {
+        showToast('नमुना PDF लोड त्रुटी: ' + err.message, 'error');
+      }
+    });
+
+    // Page navigation
+    function goToPage(num) {
+      if (!currentPdfDoc) return;
+      num = parseInt(num);
+      if (num < 1) num = 1;
+      if (num > totalPages) num = totalPages;
+      currentPageNum = num;
+      renderCurrentPage();
+    }
+
+    btnPrevPage.addEventListener('click', () => goToPage(currentPageNum - 1));
+    btnNextPage.addEventListener('click', () => goToPage(currentPageNum + 1));
+    pageNumberInput.addEventListener('change', (e) => goToPage(e.target.value));
+
+    // Zoom Controls
+    function setZoom(val) {
+      val = Math.min(Math.max(val, 0.4), 2.5);
+      currentZoom = parseFloat(val.toFixed(2));
+      zoomSlider.value = Math.round(currentZoom * 100);
+      lblZoomPct.textContent = `${Math.round(currentZoom * 100)}%`;
+      renderCurrentPage();
+    }
+
+    btnZoomOut.addEventListener('click', () => setZoom(currentZoom - 0.15));
+    btnZoomIn.addEventListener('click', () => setZoom(currentZoom + 0.15));
+    zoomSlider.addEventListener('input', (e) => setZoom(parseInt(e.target.value) / 100));
+
+    btnFitWidth.addEventListener('click', () => {
+      const container = document.getElementById('viewportPane');
+      if (!container || !renderCanvas) return;
+      const targetWidth = container.clientWidth - 80;
+      const curWidth = renderCanvas.width / currentZoom;
+      setZoom(targetWidth / curWidth);
+    });
+
+    // Download Actions
+    function triggerDownload() {
+      if (!lastGeneratedBlob) {
+        showToast('अद्याप कोणतीही नवीन PDF तयार झालेली नाही.', 'warning');
+        return;
+      }
+      const outName = pdfFilename.replace(/\.pdf$/i, '') + '_replaced.pdf';
+      const url = URL.createObjectURL(lastGeneratedBlob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = outName;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 3000);
+      showToast(`'${outName}' डाउनलोड सुरू झाले!`, 'success');
+    }
+
+    btnDownloadUpdatedPdf.addEventListener('click', triggerDownload);
+    btnQuickDownload.addEventListener('click', triggerDownload);
+
+    // Initial load message
+    showToast('🚀 दृश्य PDF मजकूर सिलेक्टर सज्ज आहे! कृपया PDF फाईल अपलोड करा.', 'info');
+  });
+  </script>
+</body>
+</html>
