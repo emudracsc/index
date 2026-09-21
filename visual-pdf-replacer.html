@@ -23,6 +23,13 @@
   <script src="https://unpkg.com/@pdf-lib/fontkit@0.0.4/dist/fontkit.umd.min.js"></script>
 
   <style>
+    @font-face {
+      font-family: 'LohitMarathiLocal';
+      src: url('Lohit-Marathi.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
     :root {
       --bg-dark: #090e17;
       --bg-surface: #0f172a;
@@ -850,6 +857,7 @@
         <!-- Common Quick Presets -->
         <div style="font-size: 0.76rem; color: var(--text-muted); margin-bottom: 0.2rem;">⚡ जलद प्रीसेट्स (Quick Suggestions):</div>
         <div class="preset-chips-row">
+          <button type="button" class="preset-chip" data-val="तहसिल कार्यालय कणकवली">तहसिल कार्यालय कणकवली</button>
           <button type="button" class="preset-chip" data-val="AERO, Kankavli">AERO, Kankavli</button>
           <button type="button" class="preset-chip" data-val="सहाय्यक मतदार नोंदणी अधिकारी">सहाय्यक मतदार नोंदणी अधिकारी</button>
           <button type="button" class="preset-chip" data-val="कुडाळ">कुडाळ</button>
@@ -867,6 +875,25 @@
                 <option value="auto" selected>तंतोतंत मूळ अक्षराएवढा (Auto 100%)</option>
                 <option value="tight">थोडेशे लहान (Tight 92%)</option>
                 <option value="larger">थोडेशे मोठे (Large 105%)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="selFontWeight">अक्षर जाडी (Font Weight):</label>
+              <select id="selFontWeight" class="form-control" style="font-size: 0.85rem; padding: 4px 8px;">
+                <option value="600" selected>मध्यम ठळक (Semi-Bold 600 - शिफारस)</option>
+                <option value="700">जास्त ठळक (Bold 700)</option>
+                <option value="500">मध्यम (Medium 500)</option>
+                <option value="400">सामान्य (Regular 400)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="selFontColor">अक्षराचा रंग (Font Color):</label>
+              <select id="selFontColor" class="form-control" style="font-size: 0.85rem; padding: 4px 8px;">
+                <option value="#000000" selected>काळा (Pure Black #000000)</option>
+                <option value="#1e293b">गडद राखाडी (Dark Charcoal #1e293b)</option>
+                <option value="#0f172a">खोल नेव्ही (Deep Navy #0f172a)</option>
+                <option value="#dc2626">लाल (Red #dc2626)</option>
+                <option value="#1d4ed8">निळा (Blue #1d4ed8)</option>
               </select>
             </div>
             <div class="form-group" style="margin-bottom: 0;">
@@ -1298,6 +1325,56 @@
     }
 
     // =========================================================================
+    // 100% Precision Marathi/Hindi/Multi-Language HarfBuzz Native Canvas Shaper
+    // =========================================================================
+    function createShapedTextStamp(text, fontSizePt, fontColor = '#000000', fontWeight = '600') {
+      // 4x scale = 288 DPI for crisp vector-grade print clarity
+      const scale = 4;
+      const fontSizePx = Math.max(fontSizePt * scale, 16);
+      const fontFamily = "'Noto Sans Devanagari', 'Mukta', 'LohitMarathiLocal', system-ui, sans-serif";
+
+      // Temporary canvas to measure metrics
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.font = `${fontWeight} ${fontSizePx}px ${fontFamily}`;
+
+      const metrics = tempCtx.measureText(text);
+      const textWidth = Math.ceil(metrics.width);
+      const ascent = metrics.actualBoundingBoxAscent ? Math.ceil(metrics.actualBoundingBoxAscent) : Math.ceil(fontSizePx * 0.9);
+      const descent = metrics.actualBoundingBoxDescent ? Math.ceil(metrics.actualBoundingBoxDescent) : Math.ceil(fontSizePx * 0.35);
+
+      const padPx = 4 * scale;
+      const canvasWidth = Math.max(textWidth + (padPx * 2), 16);
+      const canvasHeight = Math.max(ascent + descent + (padPx * 2), 16);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
+
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
+      // Re-apply font on newly sized canvas
+      ctx.font = `${fontWeight} ${fontSizePx}px ${fontFamily}`;
+      ctx.fillStyle = fontColor;
+      ctx.textBaseline = 'alphabetic';
+
+      // Draw text with browser's native HarfBuzz/DirectWrite/CoreText engine
+      const baselineY = padPx + ascent;
+      ctx.fillText(text, padPx, baselineY);
+
+      return {
+        pngDataUrl: canvas.toDataURL('image/png'),
+        pdfWidth: canvasWidth / scale,
+        pdfHeight: canvasHeight / scale,
+        offsetX: padPx / scale,
+        offsetY: (descent + padPx) / scale,
+        textWidthPt: textWidth / scale
+      };
+    }
+
+    // =========================================================================
     // Precision Non-Destructive Replacement Engine (High-DPI Glyphs & Fontkit)
     // =========================================================================
     async function executeReplacement(onlyCurrentPage = false) {
@@ -1306,7 +1383,7 @@
         showToast('कृपया आधी बदलण्यासाठी शब्द सिलेक्ट करा.', 'warning');
         return;
       }
-      if (replaceWith === null || replaceWith === undefined) {
+      if (replaceWith === null || replaceWith === undefined || replaceWith.trim().length === 0) {
         showToast('कृपया नवीन शब्द टाईप करा.', 'warning');
         return;
       }
@@ -1323,29 +1400,30 @@
       showToast(`एकूण ${targetMatches.length} जागी मराठी/इंग्रजी मजकूर बदलत आहे...`, 'info');
 
       try {
+        if (document.fonts) {
+          try { await document.fonts.ready; } catch(e) {}
+        }
+
         const { PDFDocument, rgb } = PDFLib;
         const pdfDoc = await PDFDocument.load(originalPdfBytes, { ignoreEncryption: true });
-
-        // Register fontkit for perfect Marathi/Devanagari rendering
-        if (window.fontkit) {
-          pdfDoc.registerFontkit(window.fontkit);
-        }
-
-        let customFont = null;
-        if (devanagariFontBytes) {
-          try {
-            customFont = await pdfDoc.embedFont(devanagariFontBytes);
-          } catch(e) {
-            console.warn("Could not embed custom Devanagari font:", e);
-          }
-        }
-        if (!customFont) {
-          customFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
-        }
 
         const pages = pdfDoc.getPages();
         const fontMode = selFontAdjustment.value;
         const strictMask = chkStrictMask.checked;
+        const chosenWeight = (document.getElementById('selFontWeight')?.value) || '600';
+        const chosenColor = (document.getElementById('selFontColor')?.value) || '#000000';
+
+        // Cache generated high-DPI shaped stamps per font size & style
+        const stampCache = {};
+        async function getStamp(text, size, color, weight) {
+          const key = `${text}_${Math.round(size * 10) / 10}_${color}_${weight}`;
+          if (!stampCache[key]) {
+            const data = createShapedTextStamp(text, size, color, weight);
+            const img = await pdfDoc.embedPng(data.pngDataUrl);
+            stampCache[key] = { img, ...data };
+          }
+          return stampCache[key];
+        }
 
         // Group matches by page
         const matchesByPage = {};
@@ -1367,27 +1445,26 @@
             const padX = strictMask ? 1.0 : 2.0;
             const padY = strictMask ? 1.5 : 2.5;
 
+            const stamp = await getStamp(replaceWith, fontSize, chosenColor, chosenWeight);
+            const descPad = Math.max(fontSize * 0.28, padY);
+            const boxH = Math.max(m.height + descPad + 2, fontSize * 1.25);
+
             // 1. Non-destructive clean white patch on EXACT word bounding box only
             docPage.drawRectangle({
               x: m.x - padX,
-              y: m.y - padY,
+              y: m.y - descPad,
               width: m.width + (padX * 2),
-              height: m.height + (padY * 2),
+              height: boxH,
               color: rgb(1, 1, 1),
             });
 
-            // 2. High-precision text drawing
-            try {
-              docPage.drawText(replaceWith, {
-                x: m.x,
-                y: m.y,
-                size: fontSize * 0.96,
-                font: customFont,
-                color: rgb(0.06, 0.09, 0.16)
-              });
-            } catch (err) {
-              console.warn("Font draw warning:", err);
-            }
+            // 2. High-precision native HarfBuzz-shaped text drawing
+            docPage.drawImage(stamp.img, {
+              x: m.x - stamp.offsetX,
+              y: m.y - stamp.offsetY,
+              width: stamp.pdfWidth,
+              height: stamp.pdfHeight,
+            });
           }
         }
 

@@ -490,29 +490,71 @@
         }
 
         // ---------- 2. Create new PDF + overlay ----------
+        if (document.fonts) {
+          try { await document.fonts.ready; } catch(e) {}
+        }
+
         const pdfDoc = await PDFDocument.load(pdfBytes);
-        const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
         const pages = pdfDoc.getPages();
+
+        function createShapedTextStamp(text, fontSizePt) {
+          const scale = 4;
+          const fontSizePx = Math.max(fontSizePt * scale, 16);
+          const fontFamily = "'Noto Sans Devanagari', 'Mukta', system-ui, sans-serif";
+          const tempCanvas = document.createElement('canvas');
+          const tempCtx = tempCanvas.getContext('2d');
+          tempCtx.font = `600 ${fontSizePx}px ${fontFamily}`;
+          const metrics = tempCtx.measureText(text);
+          const textWidth = Math.ceil(metrics.width);
+          const ascent = metrics.actualBoundingBoxAscent ? Math.ceil(metrics.actualBoundingBoxAscent) : Math.ceil(fontSizePx * 0.9);
+          const descent = metrics.actualBoundingBoxDescent ? Math.ceil(metrics.actualBoundingBoxDescent) : Math.ceil(fontSizePx * 0.35);
+          const padPx = 4 * scale;
+          const canvasWidth = Math.max(textWidth + (padPx * 2), 16);
+          const canvasHeight = Math.max(ascent + descent + (padPx * 2), 16);
+
+          const canvas = document.createElement('canvas');
+          canvas.width = canvasWidth;
+          canvas.height = canvasHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.font = `600 ${fontSizePx}px ${fontFamily}`;
+          ctx.fillStyle = '#000000';
+          ctx.textBaseline = 'alphabetic';
+          ctx.fillText(text, padPx, padPx + ascent);
+
+          return {
+            pngDataUrl: canvas.toDataURL('image/png'),
+            pdfWidth: canvasWidth / scale,
+            pdfHeight: canvasHeight / scale,
+            offsetX: padPx / scale,
+            offsetY: (descent + padPx) / scale
+          };
+        }
+
+        const stampData = createShapedTextStamp(replace, matches[0].fontSize * 0.96);
+        const stampImg = await pdfDoc.embedPng(stampData.pngDataUrl);
 
         matches.forEach(m => {
           const page = pages[m.pageIndex];
+          const descPad = Math.max(m.fontSize * 0.28, 2.5);
+          const boxH = Math.max(m.height + descPad + 2, m.fontSize * 1.25);
 
-          // White rectangle to cover old text (thoda padding)
+          // White rectangle to cover old text
           page.drawRectangle({
             x: m.x - 1.5,
-            y: m.y - 2.5,
-            width: m.width + 5,
-            height: m.height + 5,
+            y: m.y - descPad,
+            width: m.width + 3,
+            height: boxH,
             color: rgb(1, 1, 1),
           });
 
-          // New text - almost same font size
-          page.drawText(replace, {
-            x: m.x,
-            y: m.y,
-            size: m.fontSize * 0.92,   // थोडेसे adjust
-            font: font,
-            color: rgb(0, 0, 0),
+          // New text with 100% native HarfBuzz shaping
+          page.drawImage(stampImg, {
+            x: m.x - stampData.offsetX,
+            y: m.y - stampData.offsetY,
+            width: stampData.pdfWidth,
+            height: stampData.pdfHeight,
           });
         });
 

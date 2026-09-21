@@ -25,6 +25,13 @@
   <link rel="stylesheet" href="style.css?v=8.1">
 
   <style>
+    @font-face {
+      font-family: 'LohitMarathiLocal';
+      src: url('Lohit-Marathi.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
     /* eMudra Hub Unified Top Navigation */
     :root {
       --hub-navy: #09111e;
@@ -318,6 +325,9 @@
                 <div class="designation-presets-row">
                   <span class="preset-label">⚡ प्रमुख पदनाम बदल:</span>
                   <div class="preset-chips">
+                    <button type="button" class="chip chip-designation" data-from-post="तहसील कार्यालय" data-to-post="तहसिल कार्यालय कणकवली" title="तहसील कार्यालय बदला">
+                      🏛️ तहसील कार्यालय ➔ तहसिल कार्यालय कणकवली
+                    </button>
                     <button type="button" class="chip chip-designation" data-from-post="ERO, Kankavli" data-to-post="AERO, Kankavli" title="ERO to AERO (Kankavli)">
                       🎯 ERO, Kankavli ➔ AERO, Kankavli
                     </button>
@@ -1417,6 +1427,55 @@
       };
     }
 
+    // =========================================================================
+    // 100% Precision Marathi/Hindi/Multi-Language HarfBuzz Native Canvas Shaper
+    // =========================================================================
+    function createShapedTextStamp(text, fontSizePt, fontColor = '#000000', fontWeight = '600') {
+      const scale = 4; // 288 DPI for ultra-crisp print quality
+      const fontSizePx = Math.max(fontSizePt * scale, 16);
+      const fontFamily = "'Noto Sans Devanagari', 'Mukta', 'LohitMarathiLocal', system-ui, sans-serif";
+
+      // Temporary canvas to measure metrics
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.font = `${fontWeight} ${fontSizePx}px ${fontFamily}`;
+
+      const metrics = tempCtx.measureText(text);
+      const textWidth = Math.ceil(metrics.width);
+      const ascent = metrics.actualBoundingBoxAscent ? Math.ceil(metrics.actualBoundingBoxAscent) : Math.ceil(fontSizePx * 0.9);
+      const descent = metrics.actualBoundingBoxDescent ? Math.ceil(metrics.actualBoundingBoxDescent) : Math.ceil(fontSizePx * 0.35);
+
+      const padPx = 4 * scale;
+      const canvasWidth = Math.max(textWidth + (padPx * 2), 16);
+      const canvasHeight = Math.max(ascent + descent + (padPx * 2), 16);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
+
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
+      // Re-apply font on newly sized canvas
+      ctx.font = `${fontWeight} ${fontSizePx}px ${fontFamily}`;
+      ctx.fillStyle = fontColor;
+      ctx.textBaseline = 'alphabetic';
+
+      // Draw text with browser's native HarfBuzz/DirectWrite/CoreText engine
+      const baselineY = padPx + ascent;
+      ctx.fillText(text, padPx, baselineY);
+
+      return {
+        pngDataUrl: canvas.toDataURL('image/png'),
+        pdfWidth: canvasWidth / scale,
+        pdfHeight: canvasHeight / scale,
+        offsetX: padPx / scale,
+        offsetY: (descent + padPx) / scale,
+        textWidthPt: textWidth / scale
+      };
+    }
+
     // --- Client-Side In-Browser Replace Engine ---
     async function runClientSideReplace(file, rulesMap, pageRangeStr) {
       const startTime = performance.now();
@@ -1424,24 +1483,26 @@
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
       const targetPages = parsePageRange(pageRangeStr, pdf.numPages);
 
+      // Ensure web fonts are loaded
+      if (document.fonts) {
+        try { await document.fonts.ready; } catch(e) {}
+      }
+
       const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
       if (window.fontkit) {
         pdfDoc.registerFontkit(window.fontkit);
       }
 
-      // Embed Lohit-Marathi.ttf if available
-      let customFont = null;
-      try {
-        const fontRes = await fetch('Lohit-Marathi.ttf').catch(() => null);
-        if (fontRes && fontRes.ok) {
-          const fontBytes = await fontRes.arrayBuffer();
-          customFont = await pdfDoc.embedFont(fontBytes);
+      // High-resolution stamp cache for lightning speed
+      const stampCache = {};
+      async function getStamp(text, size) {
+        const key = `${text}_${Math.round(size * 10) / 10}`;
+        if (!stampCache[key]) {
+          const data = createShapedTextStamp(text, size, '#000000', '600');
+          const img = await pdfDoc.embedPng(data.pngDataUrl);
+          stampCache[key] = { img, ...data };
         }
-      } catch (e) {
-        console.warn("Could not embed custom Devanagari font:", e);
-      }
-      if (!customFont) {
-        customFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+        return stampCache[key];
       }
 
       const pages = pdfDoc.getPages();
@@ -1458,8 +1519,8 @@
         const docPage = pages[pageNum - 1];
         let pageHasChange = false;
 
-        textContent.items.forEach(item => {
-          if (!item.str) return;
+        for (const item of textContent.items) {
+          if (!item.str) continue;
           for (const [findWord, replaceWord] of Object.entries(rulesMap)) {
             if (item.str.toLowerCase().includes(findWord.toLowerCase())) {
               pageHasChange = true;
@@ -1468,35 +1529,37 @@
               const y = item.transform[5];
               const width = item.width || (item.str.length * fontSize * 0.55);
               const height = item.height || fontSize;
+              const descPad = Math.max(fontSize * 0.28, 2.5);
+              const boxH = Math.max(height + descPad + 2, fontSize * 1.25);
 
               // 1. Cover old text with clean background rectangle
               docPage.drawRectangle({
-                x: x - 1,
-                y: y - 2,
-                width: width + 2,
-                height: height + 3,
+                x: x - 1.5,
+                y: y - descPad,
+                width: width + 3,
+                height: boxH,
                 color: PDFLib.rgb(1, 1, 1),
               });
 
-              // 2. Draw replacement text
+              // 2. Draw replacement text with 100% native HarfBuzz shaping
               const repText = item.str.replace(new RegExp(escapeRegex(findWord), 'gi'), replaceWord);
               try {
-                docPage.drawText(repText, {
-                  x: x,
-                  y: y,
-                  size: fontSize * 0.95,
-                  font: customFont,
-                  color: PDFLib.rgb(0, 0, 0)
+                const stamp = await getStamp(repText, fontSize * 0.96);
+                docPage.drawImage(stamp.img, {
+                  x: x - stamp.offsetX,
+                  y: y - stamp.offsetY,
+                  width: stamp.pdfWidth,
+                  height: stamp.pdfHeight
                 });
               } catch(drawErr) {
-                console.warn("Font draw warning:", drawErr);
+                console.warn("HarfBuzz stamp draw warning:", drawErr);
               }
 
               keywordReplacements[findWord] += 1;
               totalReplacements += 1;
             }
           }
-        });
+        }
 
         if (pageHasChange) pagesModified++;
         updateLiveCounters(totalReplacements, totalReplacements, pageNum, pdf.numPages, pct, `पान ${pageNum} वरील मजकूर बदलला...`);
