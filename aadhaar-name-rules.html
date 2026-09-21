@@ -541,10 +541,285 @@
       background: rgba(255, 255, 255, 0.02);
     }
 
-    /* Printable Slip (Hidden in UI, visible when printing) */
+    /* Annexure Action Banner inside Checklist */
+    .annexure-action-banner {
+      margin-top: 1rem;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(79, 70, 229, 0.2));
+      border: 1.5px solid rgba(245, 158, 11, 0.45);
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: bannerGlow 2.5s infinite alternate;
+    }
+    @keyframes bannerGlow {
+      from { box-shadow: 0 0 10px rgba(245, 158, 11, 0.2); }
+      to { box-shadow: 0 0 20px rgba(79, 70, 229, 0.35); }
+    }
+    .annexure-action-content {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      flex: 1;
+      min-width: 250px;
+    }
+    .annexure-action-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .annexure-action-content h4 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fde68a;
+      margin-bottom: 0.2rem;
+      font-family: var(--font-marathi);
+    }
+    .annexure-action-content p {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      margin: 0;
+      line-height: 1.35;
+      font-family: var(--font-marathi);
+    }
+    .btn-fill-format {
+      padding: 0.65rem 1.15rem;
+      background: linear-gradient(135deg, #f59e0b, #ea580c);
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 0.88rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      font-family: var(--font-marathi);
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    }
+    .btn-fill-format:hover {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.5);
+    }
+
+    /* Annexure Studio Section */
+    .annexure-studio-wrap {
+      margin-top: 2rem;
+      background: linear-gradient(180deg, #0b1329 0%, #080d1b 100%);
+      border: 1.5px solid rgba(99, 102, 241, 0.35);
+      border-radius: 18px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .annexure-studio-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .annexure-studio-header h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-marathi);
+      margin: 0;
+    }
+    .annexure-studio-header p {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      margin: 0.3rem 0 0 0;
+      font-family: var(--font-marathi);
+    }
+    .annex-active-badge {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Annexure Tabs */
+    .annexure-tabs-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .annex-tab-btn {
+      background: #1e293b;
+      border: 1.5px solid #334155;
+      color: #cbd5e1;
+      padding: 0.65rem 1.1rem;
+      border-radius: 10px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      font-family: var(--font-marathi);
+    }
+    .annex-tab-btn:hover {
+      background: #334155;
+      color: #fff;
+    }
+    .annex-tab-btn.active {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(99, 102, 241, 0.35));
+      border-color: #818cf8;
+      color: #f8fafc;
+      box-shadow: 0 0 14px rgba(99, 102, 241, 0.3);
+    }
+    .annex-tab-btn .tab-rec-tag {
+      background: #fbbf24;
+      color: #0f172a;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      margin-left: 0.2rem;
+    }
+
+    /* Studio Grid: Form (Left) & Sheet Preview (Right) */
+    .annexure-studio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 1100px) {
+      .annexure-studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Form Controls */
+    .annex-form-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 1.25rem;
+    }
+    .aff-form-group {
+      margin-bottom: 0.85rem;
+    }
+    .aff-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 0.3rem;
+      font-family: var(--font-marathi);
+    }
+    .aff-input, .aff-select {
+      width: 100%;
+      background: #09111e;
+      border: 1.5px solid #334155;
+      border-radius: 8px;
+      color: #f8fafc;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.88rem;
+      font-family: var(--font-marathi), 'Poppins', sans-serif;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .aff-input:focus, .aff-select:focus {
+      border-color: #fbbf24;
+      box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2);
+    }
+    .aff-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    @media (max-width: 600px) {
+      .aff-grid-2 { grid-template-columns: 1fr; }
+    }
+
+    /* Right Live Sheet Preview */
+    .annex-preview-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .annex-preview-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .annex-preview-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #7dd3fc;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-marathi);
+    }
+    .affidavit-paper-sheet {
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 6px;
+      padding: 30px 35px;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 13.5px;
+      line-height: 1.65;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+      max-height: 650px;
+      overflow-y: auto;
+      text-align: justify;
+      position: relative;
+    }
+    .stamp-gap-indicator {
+      border: 1.5px dashed #94a3b8;
+      background: #f8fafc;
+      color: #64748b;
+      text-align: center;
+      padding: 8px;
+      margin-bottom: 20px;
+      font-size: 11px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      border-radius: 4px;
+    }
+
+    /* Print media query rules */
     @media print {
-      body * { visibility: hidden; }
-      #printableSlip, #printableSlip * { visibility: visible; }
+      body * { visibility: hidden !important; }
+      body.print-slip #printableSlip, body.print-slip #printableSlip * { visibility: visible !important; }
+      body.print-affidavit #printableAffidavit, body.print-affidavit #printableAffidavit * { visibility: visible !important; }
+      
       #printableSlip {
         position: absolute;
         left: 0;
@@ -555,10 +830,24 @@
         padding: 20px;
         font-family: 'Noto Sans Devanagari', sans-serif !important;
       }
+      
+      #printableAffidavit {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        color: #000 !important;
+        background: #fff !important;
+        font-family: 'Times New Roman', Times, serif !important;
+        line-height: 1.65;
+        font-size: 14px;
+        padding: 0 25mm 25mm 25mm;
+        text-align: justify;
+      }
       .no-print { display: none !important; }
     }
 
-    .printable-slip-card {
+    .printable-slip-card, .printable-affidavit-card {
       display: none;
     }
   </style>
@@ -763,6 +1052,24 @@
           <ul class="doc-items-list" id="docListContainer">
             <!-- Populated dynamically -->
           </ul>
+
+          <!-- Annexure Action Banner (Shows when an Annexure is required) -->
+          <div id="annexureActionBanner" class="annexure-action-banner" style="display: none;">
+            <div class="annexure-action-content">
+              <div class="annexure-action-icon">
+                <i class="fa-solid fa-file-signature"></i>
+              </div>
+              <div>
+                <h4 id="bannerAnnexureHeading">परिशिष्ट (Annexure B) प्रतिज्ञापत्र आवश्यक</h4>
+                <p id="bannerAnnexureSub">या नाव बदलासाठी अधिकृत प्रतिज्ञापत्र आवश्यक आहे. खालील बटण दाबून त्वरित फॉर्म भरा.</p>
+              </div>
+            </div>
+            <button type="button" class="btn-fill-format" id="btnFillRequiredFormat">
+              <i class="fa-solid fa-file-pen"></i>
+              <span>Fill Required Format (फॉर्म भरा)</span>
+              <i class="fa-solid fa-arrow-down"></i>
+            </button>
+          </div>
         </div>
 
         <!-- Operator Guidelines Card -->
@@ -791,6 +1098,233 @@
       </section>
 
     </div>
+
+    <!-- 📜 Annexure Form Filler & Legal Print Studio -->
+    <section class="annexure-studio-wrap" id="annexureStudioSection">
+      <div class="annexure-studio-header">
+        <div>
+          <h3>
+            <i class="fa-solid fa-file-contract"></i> अधिकृत परिशिष्ट प्रतिज्ञापत्र जनरेटर (Annexure Form Filler Studio)
+          </h3>
+          <p>
+            UIDAI व महा-IT च्या १८ सप्टेंबर २०२६ परिपत्रकानुसार नॉन-ज्युडिशियल स्टॅम्प पेपरवर प्रिंट करण्यासाठी तयार फॉरमॅट
+          </p>
+        </div>
+        <div id="lblActiveAnnexBadge" class="annex-active-badge">
+          <i class="fa-solid fa-circle-check"></i> <span id="lblActiveAnnexText">शिफारस केलेले: Annexure B</span>
+        </div>
+      </div>
+
+      <!-- Annexure Tab Navigation -->
+      <div class="annexure-tabs-bar">
+        <button type="button" class="annex-tab-btn active" data-annex="B" id="tabAnnexB">
+          <i class="fa-solid fa-file-lines"></i> Annexure B <span style="font-size:0.75rem;">(प्रौढ नाव दुरुस्ती)</span>
+        </button>
+        <button type="button" class="annex-tab-btn" data-annex="C" id="tabAnnexC">
+          <i class="fa-solid fa-child"></i> Annexure C <span style="font-size:0.75rem;">(बालक नाव दुरुस्ती)</span>
+        </button>
+        <button type="button" class="annex-tab-btn" data-annex="D" id="tabAnnexD">
+          <i class="fa-solid fa-ring"></i> Annexure D <span style="font-size:0.75rem;">(लग्न/घटस्फोट आडनाव)</span>
+        </button>
+        <button type="button" class="annex-tab-btn" data-annex="E" id="tabAnnexE">
+          <i class="fa-solid fa-user-tag"></i> Annexure E <span style="font-size:0.75rem;">(प्रौढ urf/alias काढणे)</span>
+        </button>
+        <button type="button" class="annex-tab-btn" data-annex="F" id="tabAnnexF">
+          <i class="fa-solid fa-id-badge"></i> Annexure F <span style="font-size:0.75rem;">(बालक urf/alias काढणे)</span>
+        </button>
+      </div>
+
+      <!-- Studio Grid: Form on Left, Sheet Preview on Right -->
+      <div class="annexure-studio-grid">
+
+        <!-- LEFT: Form Controls -->
+        <div class="annex-form-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+            <h4 style="margin: 0; font-size: 0.95rem; color: #fbbf24; display: flex; align-items: center; gap: 0.4rem; font-family: var(--font-marathi);">
+              <i class="fa-solid fa-pen-to-square"></i> प्रतिज्ञापत्राची माहिती भरा:
+            </h4>
+            <button type="button" class="btn-action-secondary" id="btnSyncFromMain" style="padding: 0.35rem 0.75rem; font-size: 0.76rem; border-radius: 6px; cursor: pointer;">
+              <i class="fa-solid fa-arrows-rotate"></i> वरील नाव पुन्हा घ्या
+            </button>
+          </div>
+
+          <!-- Applicant / Deponent Name -->
+          <div class="aff-form-group">
+            <label class="aff-label" for="affResidentName" id="lblAffResidentName">
+              👤 अर्जदाराचे नाव (I, Shri/Smt./Ms.):
+            </label>
+            <input type="text" id="affResidentName" class="aff-input" placeholder="उदा. Rama Durga Prasad">
+          </div>
+
+          <!-- Guardian Fields (Only for Annexure C & F) -->
+          <div id="groupMinorInfo" style="display: none; background: rgba(59, 130, 246, 0.08); border: 1px dashed rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 0.85rem;">
+            <div class="aff-form-group">
+              <label class="aff-label" for="affMinorName">
+                👶 बालकाचे नाव (Minor Name):
+              </label>
+              <input type="text" id="affMinorName" class="aff-input" placeholder="बालकाचे नाव">
+            </div>
+            <div class="aff-form-group">
+              <label class="aff-label" for="affGuardianRel">
+                🤝 पालकांचे नातेसंबंध (Relationship):
+              </label>
+              <select id="affGuardianRel" class="aff-select">
+                <option value="father">वडिल (Father)</option>
+                <option value="mother">आई (Mother)</option>
+                <option value="legal guardian">कायदेशीर पालक (Legal Guardian)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Relative Name (S/o, D/o, W/o) -->
+          <div class="aff-form-group">
+            <label class="aff-label" for="affRelativeName" id="lblAffRelativeName">
+              👨‍👦 नातेवाईकाचे नाव (S/o, D/o, W/o):
+            </label>
+            <input type="text" id="affRelativeName" class="aff-input" placeholder="वडिलांचे किंवा पतीचे नाव">
+          </div>
+
+          <!-- Address -->
+          <div class="aff-form-group">
+            <label class="aff-label" for="affAddress">
+              🏠 संपूर्ण रहिवासी पत्ता (Resident of):
+            </label>
+            <input type="text" id="affAddress" class="aff-input" placeholder="उदा. मु. पो. कणकवली, ता. कणकवली, जि. सिंधुदुर्ग, पिन ४१६६०२">
+          </div>
+
+          <!-- Aadhaar Number -->
+          <div class="aff-form-group">
+            <label class="aff-label" for="affAadhaarNo">
+              🆔 १२-अंकी आधार क्रमांक (Aadhaar Number):
+            </label>
+            <input type="text" id="affAadhaarNo" class="aff-input" placeholder="XXXX XXXX XXXX" maxlength="14">
+          </div>
+
+          <!-- Two Names Comparison (Old / Incorrect vs Correct) -->
+          <div class="aff-grid-2">
+            <div class="aff-form-group">
+              <label class="aff-label" for="affOldName" id="lblAffOldName">
+                ⚠️ आधारवरील चुकीचे नाव:
+              </label>
+              <input type="text" id="affOldName" class="aff-input" placeholder="आधारवर नोंद असलेले नाव">
+            </div>
+            <div class="aff-form-group">
+              <label class="aff-label" for="affNewName" id="lblAffNewName">
+                ✅ दुरुस्त / खरे नाव:
+              </label>
+              <input type="text" id="affNewName" class="aff-input" placeholder="मागणी केलेले योग्य नाव">
+            </div>
+          </div>
+
+          <!-- Marriage / Divorce Specific Fields (Annexure D) -->
+          <div id="groupMarriageInfo" style="display: none; background: rgba(245, 158, 11, 0.08); border: 1px dashed rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 0.85rem;">
+            <div class="aff-grid-2">
+              <div class="aff-form-group">
+                <label class="aff-label" for="affEventType">प्रकार:</label>
+                <select id="affEventType" class="aff-select">
+                  <option value="marriage">विवाह (Marriage)</option>
+                  <option value="divorce">घटस्फोट (Divorce)</option>
+                </select>
+              </div>
+              <div class="aff-form-group">
+                <label class="aff-label" for="affEventDate">विवाह/घटस्फोट दिनांक:</label>
+                <input type="date" id="affEventDate" class="aff-input">
+              </div>
+            </div>
+            <div class="aff-grid-2">
+              <div class="aff-form-group">
+                <label class="aff-label" for="affPriorSurname">माहेरचे / जुने आडनाव:</label>
+                <input type="text" id="affPriorSurname" class="aff-input" placeholder="उदा. Rai">
+              </div>
+              <div class="aff-form-group">
+                <label class="aff-label" for="affNewSurname">सासरचे / नवीन आडनाव:</label>
+                <input type="text" id="affNewSurname" class="aff-input" placeholder="उदा. Siddharth Rai">
+              </div>
+            </div>
+          </div>
+
+          <!-- urf / alias Specific Fields (Annexure E & F) -->
+          <div id="groupUrfInfo" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1px dashed rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 0.85rem;">
+            <div class="aff-grid-2">
+              <div class="aff-form-group">
+                <label class="aff-label" for="affRetainedName">कायम ठेवायचे नाव (Retain):</label>
+                <input type="text" id="affRetainedName" class="aff-input" placeholder="उदा. Jagdish Singh">
+              </div>
+              <div class="aff-form-group">
+                <label class="aff-label" for="affDiscontinuedName">काढून टाकायचे नाव (Discontinue):</label>
+                <input type="text" id="affDiscontinuedName" class="aff-input" placeholder="उदा. Jagga">
+              </div>
+            </div>
+          </div>
+
+          <!-- Verification Block -->
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 0.75rem; margin-bottom: 0.85rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: #38bdf8; margin-bottom: 0.4rem; font-family: var(--font-marathi);">
+              📍 सत्यापन माहिती (Verification Statement):
+            </div>
+            <div class="aff-grid-2">
+              <div class="aff-form-group" style="margin-bottom: 0;">
+                <label class="aff-label" for="affPlace">सत्यापन ठिकाण (Verified at):</label>
+                <input type="text" id="affPlace" class="aff-input" value="कणकवली">
+              </div>
+              <div class="aff-form-group" style="margin-bottom: 0;">
+                <label class="aff-label" for="affDateFormatted">दिनांक (Date):</label>
+                <input type="text" id="affDateFormatted" class="aff-input">
+              </div>
+            </div>
+          </div>
+
+          <!-- Stamp Paper Margin Setting -->
+          <div class="aff-form-group">
+            <label class="aff-label" for="affStampMargin">
+              📐 स्टॅम्प पेपर टॉप मार्जिन (Top Margin Space for Stamp):
+            </label>
+            <select id="affStampMargin" class="aff-select">
+              <option value="0">साध्या A4 कागदावर प्रिंट (0 mm)</option>
+              <option value="70">₹10 / ₹50 स्टॅम्प पेपर (70 mm जागा सोडा)</option>
+              <option value="95" selected>₹100 स्टॅम्प पेपर (95 mm जागा सोडा - Recommended)</option>
+              <option value="120">₹500 स्टॅम्प पेपर (120 mm जागा सोडा)</option>
+            </select>
+          </div>
+
+          <!-- Studio Action Buttons -->
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 0.6rem; margin-top: 1rem;">
+            <button type="button" class="btn-action btn-action-primary" id="btnPrintAffidavit" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+              <i class="fa-solid fa-print"></i> प्रतिज्ञापत्र प्रिंट करा
+            </button>
+            <button type="button" class="btn-action btn-action-secondary" id="btnCopyAffidavit">
+              <i class="fa-solid fa-copy"></i> मजकूर कॉपी करा
+            </button>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: Live Legal Paper Preview -->
+        <div class="annex-preview-card">
+          <div class="annex-preview-toolbar">
+            <div class="annex-preview-title">
+              <i class="fa-solid fa-file-invoice" style="color: #fbbf24;"></i>
+              <span id="previewSheetTitle">Annexure B (for adults) Live Preview</span>
+            </div>
+            <div style="font-size: 0.74rem; color: #94a3b8;">
+              <i class="fa-solid fa-file-lines"></i> A4 / Legal Paper Layout
+            </div>
+          </div>
+
+          <!-- White Physical Sheet Container -->
+          <div class="affidavit-paper-sheet" id="affidavitPaperSheet">
+            <div id="stampGapIndicator" class="stamp-gap-indicator">
+              <i class="fa-solid fa-arrows-up-down"></i> नॉन-ज्युडिशियल स्टॅम्प पेपरसाठी वरील रिकामी जागा (<span id="lblStampGap">95</span> mm)
+            </div>
+
+            <div id="affidavitContentLive">
+              <!-- Dynamically rendered legal text -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
 
     <!-- Master Reference Table (Annexure A SOP Guide) -->
     <section class="sop-table-wrap">
@@ -937,16 +1471,23 @@
     </div>
   </div>
 
+  <!-- Printable Legal Affidavit Container (Visible during Affidavit Print) -->
+  <div id="printableAffidavit" class="printable-affidavit-card">
+    <div id="printableAffidavitGap" style="height: 95mm;"></div>
+    <div id="printableAffidavitContent"></div>
+  </div>
+
   <!-- Footer -->
   <footer style="background: var(--hub-navy); color: #cbd5e1; text-align: center; padding: 1.5rem 1rem; border-top: 3px solid var(--hub-gold); margin-top: auto; font-size: 0.85rem;">
-    <p><strong>Aadhaar Name Update Rules Engine</strong> • eMudra CSC Hub • जिल्हा समन्वयक (MahaIT) व UIDAI मार्गदर्शक</p>
+    <p><strong>Aadhaar Name Update Rules Engine & Annexure Generator</strong> • eMudra CSC Hub • जिल्हा समन्वयक (MahaIT) व UIDAI मार्गदर्शक</p>
     <p style="margin-top: 4px; font-size: 0.78rem; color: #94a3b8;">Center ID: 152153410016 • मु. पो. कणकवली, जि. सिंधुदुर्ग • संपर्क: 9890869793</p>
     <p style="margin-top: 6px; font-size: 0.72rem; color: #64748b;">© 2026 eMudra CSC. सर्व हक्क सुरक्षित. All Rights Reserved.</p>
   </footer>
 
-  <!-- Script: Intelligent Rule Evaluation Engine -->
+  <!-- Script: Intelligent Rule Evaluation & Annexure Form Filler Engine -->
   <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // Main Form Controls
     const txtOldName = document.getElementById('txtOldName');
     const txtNewName = document.getElementById('txtNewName');
     const lblAdult = document.getElementById('lblAdult');
@@ -963,7 +1504,86 @@
     const docListContainer = document.getElementById('docListContainer');
     const operatorRulesList = document.getElementById('operatorRulesList');
 
+    // Annexure Prompt Banner
+    const annexureActionBanner = document.getElementById('annexureActionBanner');
+    const bannerAnnexureHeading = document.getElementById('bannerAnnexureHeading');
+    const bannerAnnexureSub = document.getElementById('bannerAnnexureSub');
+    const btnFillRequiredFormat = document.getElementById('btnFillRequiredFormat');
+
+    // Annexure Studio Controls
+    const lblActiveAnnexBadge = document.getElementById('lblActiveAnnexBadge');
+    const lblActiveAnnexText = document.getElementById('lblActiveAnnexText');
+    const annexTabs = {
+      B: document.getElementById('tabAnnexB'),
+      C: document.getElementById('tabAnnexC'),
+      D: document.getElementById('tabAnnexD'),
+      E: document.getElementById('tabAnnexE'),
+      F: document.getElementById('tabAnnexF')
+    };
+
+    const affResidentName = document.getElementById('affResidentName');
+    const lblAffResidentName = document.getElementById('lblAffResidentName');
+    const affRelativeName = document.getElementById('affRelativeName');
+    const lblAffRelativeName = document.getElementById('lblAffRelativeName');
+    const affAddress = document.getElementById('affAddress');
+    const affAadhaarNo = document.getElementById('affAadhaarNo');
+    const affOldName = document.getElementById('affOldName');
+    const affNewName = document.getElementById('affNewName');
+
+    const groupMinorInfo = document.getElementById('groupMinorInfo');
+    const affMinorName = document.getElementById('affMinorName');
+    const affGuardianRel = document.getElementById('affGuardianRel');
+
+    const groupMarriageInfo = document.getElementById('groupMarriageInfo');
+    const affEventType = document.getElementById('affEventType');
+    const affEventDate = document.getElementById('affEventDate');
+    const affPriorSurname = document.getElementById('affPriorSurname');
+    const affNewSurname = document.getElementById('affNewSurname');
+
+    const groupUrfInfo = document.getElementById('groupUrfInfo');
+    const affRetainedName = document.getElementById('affRetainedName');
+    const affDiscontinuedName = document.getElementById('affDiscontinuedName');
+
+    const affPlace = document.getElementById('affPlace');
+    const affDateFormatted = document.getElementById('affDateFormatted');
+    const affStampMargin = document.getElementById('affStampMargin');
+    const lblStampGap = document.getElementById('lblStampGap');
+    const stampGapIndicator = document.getElementById('stampGapIndicator');
+    const previewSheetTitle = document.getElementById('previewSheetTitle');
+    const affidavitPaperSheet = document.getElementById('affidavitPaperSheet');
+    const affidavitContentLive = document.getElementById('affidavitContentLive');
+
+    const btnPrintAffidavit = document.getElementById('btnPrintAffidavit');
+    const btnCopyAffidavit = document.getElementById('btnCopyAffidavit');
+    const btnSyncFromMain = document.getElementById('btnSyncFromMain');
+
+    const printableAffidavit = document.getElementById('printableAffidavit');
+    const printableAffidavitGap = document.getElementById('printableAffidavitGap');
+    const printableAffidavitContent = document.getElementById('printableAffidavitContent');
+
     let currentAgeGroup = 'adult';
+    let currentAnnexTab = 'B';
+    let recommendedAnnex = 'B';
+
+    // Set Default Verification Date (e.g. "21st day of September, 2026")
+    const now = new Date();
+    const day = now.getDate();
+    let daySuffix = 'th';
+    if (day === 1 || day === 21 || day === 31) daySuffix = 'st';
+    else if (day === 2 || day === 22) daySuffix = 'nd';
+    else if (day === 3 || day === 23) daySuffix = 'rd';
+
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const currentMonthName = monthNames[now.getMonth()];
+    const currentYear = now.getFullYear();
+    if (affDateFormatted) {
+      affDateFormatted.value = `${day}${daySuffix} day of ${currentMonthName}, ${currentYear}`;
+    }
+
+    // Default Event Date (today)
+    if (affEventDate) {
+      affEventDate.value = now.toISOString().split('T')[0];
+    }
 
     // Age radio switcher
     lblAdult.addEventListener('click', () => {
@@ -983,8 +1603,14 @@
     });
 
     // Inputs listener
-    txtOldName.addEventListener('input', evaluateRules);
-    txtNewName.addEventListener('input', evaluateRules);
+    txtOldName.addEventListener('input', () => {
+      evaluateRules();
+      syncFromMainForm(false);
+    });
+    txtNewName.addEventListener('input', () => {
+      evaluateRules();
+      syncFromMainForm(false);
+    });
     chkMarriage.addEventListener('change', evaluateRules);
     chkGender.addEventListener('change', evaluateRules);
     chkDataEntry.addEventListener('change', evaluateRules);
@@ -1006,6 +1632,7 @@
         chkDataEntry.checked = false;
         chkRegional.checked = false;
         evaluateRules();
+        syncFromMainForm(true);
       });
     });
 
@@ -1019,6 +1646,7 @@
       chkRegional.checked = false;
       lblAdult.click();
       evaluateRules();
+      syncFromMainForm(true);
       txtOldName.focus();
     });
 
@@ -1041,7 +1669,12 @@
         slipDocList.appendChild(li);
       });
 
+      document.body.classList.remove('print-affidavit');
+      document.body.classList.add('print-slip');
       window.print();
+      setTimeout(() => {
+        document.body.classList.remove('print-slip');
+      }, 1000);
     });
 
     // Helper: Levenshtein distance for minor spelling checks
@@ -1087,6 +1720,7 @@
         title: 'नाव दुरुस्ती विश्लेषण',
         desc: '',
         type: 'standard', // 'standard', 'no-doc', 'gazette'
+        annexure: null,   // 'B', 'C', 'D', 'E', 'F'
         docs: [],
         rules: []
       };
@@ -1097,6 +1731,7 @@
         scenario.desc = 'UIDAI च्या १८ सप्टेंबर २०२६ SOP नियमांनुसार विश्लेषण करण्यासाठी जुने आधार नाव व नवीन मागणी केलेले नाव वर टाका.';
         scenario.docs = ['दोन्ही नावे प्रविष्ट केल्यावर आवश्यक दस्तऐवजांची यादी येथे दिसेल.'];
         scenario.rules = ['Operator ने नागरिकाच्या मूळ कागदपत्रांची पडताळणी केल्याशिवाय फॉर्म सबमिट करू नये.'];
+        scenario.annexure = isAdult ? 'B' : 'C';
         renderOutput(scenario);
         return;
       }
@@ -1106,6 +1741,7 @@
         scenario.title = 'जुने नाव आणि नवीन नाव एकच आहे';
         scenario.desc = 'नावात कोणताही फरक आढळला नाही. स्पेलिंग, स्पेसिंग किंवा अक्षरांमध्ये बदल असल्यास तसे प्रविष्ट करा.';
         scenario.type = 'no-doc';
+        scenario.annexure = null;
         scenario.docs = ['कोणत्याही बदलाची गरज नाही'];
         scenario.rules = ['नावात बदल नसल्यास डेमोग्राफिक अपडेट करण्याची आवश्यकता नाही.'];
         renderOutput(scenario);
@@ -1117,6 +1753,7 @@
         scenario.code = '1(h)';
         scenario.title = 'लग्न / घटस्फोटामुळे Surname (आडनाव) बदल';
         scenario.desc = 'विवाहानंतर किंवा घटस्फोटानंतर महिलेचे आडनाव बदलण्यासाठी हा नियम लागू होतो.';
+        scenario.annexure = 'D';
         scenario.docs = [
           'Annexure D (विवाह / घटस्फोटानंतर आडनाव बदल प्रमाणपत्र)',
           'PoI (Proof of Identity - ओळख पुरावा)'
@@ -1133,6 +1770,7 @@
         scenario.code = '1(i)';
         scenario.title = 'Gender Change (लिंग बदल) मुळे नाव बदल';
         scenario.desc = 'लिंग बदल प्रक्रियेनंतर त्या अनुषंगाने नाव बदलण्यासाठी आवश्यक पुरावा.';
+        scenario.annexure = null;
         scenario.docs = [
           'PoI (Proof of Identity - ओळख पुरावा / वैद्यकीय अथवा अधिकृत प्रमाणपत्र)'
         ];
@@ -1147,6 +1785,7 @@
         scenario.code = '1(g)';
         scenario.title = 'English मध्ये नाव बरोबर पण Regional Language (मराठी) मध्ये चूक';
         scenario.desc = 'इंग्रजी स्पेलिंग बरोबर असून केवळ मराठी / स्थानिक भाषेतील फॉन्ट किंवा वेलांटी / मात्रा चुकीची आली असल्यास.';
+        scenario.annexure = null;
         scenario.docs = [
           'PoI (Proof of Identity - वैध ओळख पुरावा)'
         ];
@@ -1161,6 +1800,7 @@
         scenario.code = '1(f)';
         scenario.title = 'Aadhaar मध्ये नाव चुकीचे record झाले (पण योग्य document सादर केले आहे)';
         scenario.desc = 'आधार नोंदणीवेळी ऑपरेटरकडून चूक झाली होती, परंतु नागरिकाकडे योग्य नावाचे मूळ दस्तऐवज उपलब्ध आहे.';
+        scenario.annexure = isAdult ? 'B' : 'C';
         scenario.docs = [
           isAdult ? 'Annexure B (Adult Name Correction / Data-Entry Error)' : 'Annexure C (Minor Name Correction)',
           'PoI / PoR (Proof of Identity / Proof of Relationship)'
@@ -1178,8 +1818,9 @@
         scenario.code = '1(j)';
         scenario.title = '१८ वर्षाखालील मुलाचे "Baby of ..." वरून पूर्ण नाव करणे';
         scenario.desc = 'बालकाच्या जन्मानंतर "Baby of [आईचे नाव]" अशी तात्पुरती नोंद झाली होती, आता अधिकृत नाव ठेवले आहे.';
+        scenario.annexure = 'C';
         scenario.docs = [
-          'Affidavit (शपथपत्र - आई/वडिलांचे प्रतिज्ञापत्र)',
+          'Affidavit (Annexure C किंवा पालकांचे शपथपत्र)',
           'PoI / PoR (मुलाचे जन्म प्रमाणपत्र किंवा पालकांचा PoR पुरावा)'
         ];
         scenario.rules = [
@@ -1191,11 +1832,11 @@
 
       // 1(l): Randomly occurring capital letters (rAMESH ➔ Ramesh)
       if (oldRaw.toLowerCase() === newRaw.toLowerCase() && oldRaw.replace(/\s+/g, '') === newRaw.replace(/\s+/g, '')) {
-        // Only case difference
         scenario.code = '1(l)';
         scenario.title = 'नावातील Random Capital Letters दुरुस्त करणे (उदा. rAMESH ➔ Ramesh)';
         scenario.desc = 'नावात कोणताही शब्द किंवा स्पेलिंग बदललेले नाही, केवळ कॅपिटल / स्मॉल अक्षरांचा घोळ सुधारला आहे.';
         scenario.type = 'no-doc';
+        scenario.annexure = null;
         scenario.docs = [
           '✅ कोणत्याही दस्तऐवजाची गरज नाही (No document required)'
         ];
@@ -1212,6 +1853,7 @@
         scenario.title = 'नावातील Dots (टिंब) काढणे (उदा. R.P. Singh ➔ RP Singh)';
         scenario.desc = 'नावातील शब्दांमधील केवळ टिंब (.) काढले आहेत, स्पेलिंग समान आहे.';
         scenario.type = 'no-doc';
+        scenario.annexure = null;
         scenario.docs = [
           '✅ कोणत्याही दस्तऐवजाची गरज नाही (No document required)'
         ];
@@ -1228,6 +1870,7 @@
         scenario.code = '1(n)';
         scenario.title = '"urf / alias" (उर्फ / टोपणनाव) काढणे';
         scenario.desc = 'जुना आधार कार्डमध्ये नोंदवलेले "उर्फ / टोपणनाव" काढून केवळ मूळ अधिकृत नाव ठेवणे.';
+        scenario.annexure = isAdult ? 'E' : 'F';
         scenario.docs = [
           isAdult ? 'Annexure E (urf / alias removal - Adult)' : 'Annexure F (urf / alias removal - Minor)',
           'PoI (Proof of Identity - वैध ओळख पुरावा)'
@@ -1252,6 +1895,7 @@
         scenario.code = '1(k)';
         scenario.title = 'Military ranks / designations / prefixes काढणे (उदा. Dr., Col., Shri)';
         scenario.desc = 'नावाच्या सुरुवातीला लावलेली पदवी, हुद्दा किंवा आदरार्थी उपाधी (Prefix) काढून केवळ नाव ठेवणे.';
+        scenario.annexure = null;
         scenario.docs = [
           'PoI (Proof of Identity - ओळख पुरावा)'
         ];
@@ -1274,6 +1918,7 @@
           scenario.code = '1(c)';
           scenario.title = 'नावातील शब्दांचा sequential order (क्रम) बदलणे';
           scenario.desc = 'नावातील स्पेलिंग तेच आहे, फक्त शब्दांची जागा बदलली आहे (उदा. प्रथम नाव व आडनाव मागे-पुढे झाले).';
+          scenario.annexure = null;
           scenario.docs = [
             'PoI / PoR (Proof of Identity किंवा Proof of Relationship)'
           ];
@@ -1302,6 +1947,7 @@
         scenario.code = '1(a)';
         scenario.title = 'Abbreviation / Initials चे Full Name करणे (उदा. R D Prasad ➔ Rama Durga Prasad)';
         scenario.desc = 'आधारवरील एका अक्षरी आद्याक्षराचा (Initials) पूर्ण शब्दात विस्तार करणे.';
+        scenario.annexure = isAdult ? 'B' : 'C';
         scenario.docs = [
           isAdult ? 'Annexure B (Adult Name Correction / Initials Expansion)' : 'Annexure C (Minor Name Correction)',
           'PoI / PoR (Proof of Identity / Proof of Relationship)'
@@ -1316,7 +1962,6 @@
 
       // 1(b): Middle or Last name add/delete
       if (Math.abs(oldTokens.length - newTokens.length) === 1) {
-        // Check if one token was inserted or deleted while others match
         const longer = oldTokens.length > newTokens.length ? oldTokens : newTokens;
         const shorter = oldTokens.length > newTokens.length ? newTokens : oldTokens;
         let matched = 0;
@@ -1328,6 +1973,7 @@
           scenario.code = '1(b)';
           scenario.title = 'Middle name किंवा Last name add / delete करणे (उदा. Rama Prasad ➔ Rama Shyam Prasad)';
           scenario.desc = 'नावात मधले नाव (वडिलांचे/पतीचे नाव) किंवा आडनाव नव्याने जोडणे अथवा वगळणे.';
+          scenario.annexure = isAdult ? 'B' : 'C';
           scenario.docs = [
             isAdult ? 'Annexure B (Adult Name Correction)' : 'Annexure C (Minor Name Correction)',
             'PoI / PoR (Proof of Identity / Proof of Relationship)'
@@ -1347,6 +1993,7 @@
         scenario.code = '1(d)';
         scenario.title = 'Spelling मध्ये minor correction (किरकोळ स्पेलिंग सुधारणा)';
         scenario.desc = 'उच्चार समान राहून केवळ एका किंवा दोन अक्षरांमध्ये किरकोळ सुधारणा (उदा. Suresh ➔ Sureshh किंवा Patil ➔ Patel).';
+        scenario.annexure = null;
         scenario.docs = [
           'PoI / PoR (Proof of Identity / Proof of Relationship)'
         ];
@@ -1362,6 +2009,7 @@
         scenario.code = '1(e)';
         scenario.title = 'एकापेक्षा जास्त किरकोळ बदल (Combination of a, b, c, d)';
         scenario.desc = 'नावात एकापेक्षा जास्त लहान सुधारणा आहेत परंतु मूळ ओळख व व्यक्ती तीच आहे.';
+        scenario.annexure = null;
         scenario.docs = [
           'PoI / PoR (Proof of Identity / Proof of Relationship)'
         ];
@@ -1377,6 +2025,7 @@
       scenario.title = 'Complete change of name / identity (पूर्णपणे वेगळे नाव)';
       scenario.desc = 'जुने नाव आणि नवीन नाव यामध्ये मोठा फरक आहे (उदा. पूर्णपणे नवीन नाव धारण करणे).';
       scenario.type = 'gazette';
+      scenario.annexure = null;
       scenario.docs = [
         '📜 Gazette Notification (महाराष्ट्र / केंद्र शासनाचे अधिकृत राजपत्र - अनिवार्य)',
         'PoI (Proof of Identity - जुन्या किंवा नवीन नावाचा वैध ओळख पुरावा)'
@@ -1434,10 +2083,571 @@
         li.innerHTML = r;
         operatorRulesList.appendChild(li);
       });
+
+      // Annexure Prompt Banner & Auto-select
+      if (sc.annexure) {
+        recommendedAnnex = sc.annexure;
+        annexureActionBanner.style.display = 'flex';
+        bannerAnnexureHeading.textContent = `परिशिष्ट (Annexure ${sc.annexure}) प्रतिज्ञापत्र आवश्यक`;
+        bannerAnnexureSub.textContent = `या नाव बदलासाठी अधिकृत Annexure ${sc.annexure} प्रतिज्ञापत्र सादर करणे आवश्यक आहे. खालील 'Fill Required Format' बटण दाबून फॉर्म भरा.`;
+        lblActiveAnnexText.textContent = `शिफारस केलेले: Annexure ${sc.annexure}`;
+        lblActiveAnnexBadge.style.display = 'inline-flex';
+        selectAnnexureTab(sc.annexure, true);
+      } else {
+        annexureActionBanner.style.display = 'none';
+        lblActiveAnnexText.textContent = `सामान्य निवड (कोणतेही परिशिष्ट अनिवार्य नाही)`;
+      }
     }
 
-    // Initial evaluation
+    // Annexure Studio Tab Switching
+    function selectAnnexureTab(tabCode, fromSop = false) {
+      currentAnnexTab = tabCode;
+      Object.keys(annexTabs).forEach(k => {
+        if (annexTabs[k]) {
+          annexTabs[k].classList.toggle('active', k === tabCode);
+        }
+      });
+
+      // Conditional field toggles
+      if (tabCode === 'C' || tabCode === 'F') {
+        // Minor tabs
+        groupMinorInfo.style.display = 'block';
+        lblAffResidentName.innerHTML = '👤 पालक / कायदेशीर पालकांचे नाव (I, Shri/Smt./Ms.):';
+        lblAffRelativeName.innerHTML = '👨‍👦 पालकांच्या वडिलांचे किंवा पतीचे नाव (S/o, D/o, W/o):';
+      } else {
+        groupMinorInfo.style.display = 'none';
+        lblAffResidentName.innerHTML = '👤 अर्जदाराचे नाव (I, Shri/Smt./Ms.):';
+        lblAffRelativeName.innerHTML = '👨‍👦 नातेवाईकाचे नाव (S/o, D/o, W/o):';
+      }
+
+      if (tabCode === 'D') {
+        groupMarriageInfo.style.display = 'block';
+        lblAffResidentName.innerHTML = '👤 अर्जदार महिलेचे नाव (I, Smt./Ms.):';
+        lblAffRelativeName.innerHTML = '👨 वडिलांचे नाव (D/o) / पतीचे नाव (W/o):';
+      } else {
+        groupMarriageInfo.style.display = 'none';
+      }
+
+      if (tabCode === 'E' || tabCode === 'F') {
+        groupUrfInfo.style.display = 'block';
+      } else {
+        groupUrfInfo.style.display = 'none';
+      }
+
+      // Update titles
+      const tabNames = {
+        B: 'Annexure B (for adults - Data Entry Error / Initials)',
+        C: 'Annexure C (for minors - Data Entry Error / Initials)',
+        D: 'Annexure D (Post Marriage/Divorce Surname Change)',
+        E: 'Annexure E (for adults - urf / alias removal)',
+        F: 'Annexure F (for minors - urf / alias removal)'
+      };
+      previewSheetTitle.textContent = `${tabNames[tabCode] || 'Annexure'} Live Preview`;
+
+      renderAffidavitPreview();
+    }
+
+    // Attach click events to tabs
+    Object.keys(annexTabs).forEach(k => {
+      if (annexTabs[k]) {
+        annexTabs[k].addEventListener('click', () => {
+          selectAnnexureTab(k, false);
+        });
+      }
+    });
+
+    // Sync from Main Form
+    function syncFromMainForm(forceOverwrite = false) {
+      const oldVal = txtOldName.value.trim();
+      const newVal = txtNewName.value.trim();
+
+      if (forceOverwrite || !affOldName.value || affOldName.value === affNewName.value) {
+        affOldName.value = oldVal;
+      }
+      if (forceOverwrite || !affNewName.value || affNewName.value === oldVal) {
+        affNewName.value = newVal;
+      }
+      if (forceOverwrite || !affResidentName.value) {
+        affResidentName.value = newVal || oldVal;
+      }
+      if (currentAgeGroup === 'minor') {
+        if (forceOverwrite || !affMinorName.value) {
+          affMinorName.value = newVal || oldVal;
+        }
+      }
+
+      // Auto-extract urf or marriage surnames if applicable
+      if (currentAnnexTab === 'D') {
+        const oldTokens = oldVal.split(/\s+/);
+        const newTokens = newVal.split(/\s+/);
+        if (oldTokens.length > 1 && !affPriorSurname.value) {
+          affPriorSurname.value = oldTokens[oldTokens.length - 1];
+        }
+        if (newTokens.length > 1 && !affNewSurname.value) {
+          affNewSurname.value = newTokens[newTokens.length - 1];
+        }
+      }
+
+      if (currentAnnexTab === 'E' || currentAnnexTab === 'F') {
+        const urfMatch = oldVal.match(/^(.*?)\s+(?:urf|alias|उर्फ)\s+(.*)$/i);
+        if (urfMatch) {
+          if (!affRetainedName.value) affRetainedName.value = urfMatch[1];
+          if (!affDiscontinuedName.value) affDiscontinuedName.value = urfMatch[2];
+        } else {
+          if (!affRetainedName.value) affRetainedName.value = newVal;
+          if (!affDiscontinuedName.value) affDiscontinuedName.value = 'alias';
+        }
+      }
+
+      renderAffidavitPreview();
+    }
+
+    btnSyncFromMain.addEventListener('click', () => {
+      syncFromMainForm(true);
+    });
+
+    // Smooth Scroll Button "Fill Required Format"
+    btnFillRequiredFormat.addEventListener('click', () => {
+      const studio = document.getElementById('annexureStudioSection');
+      if (studio) {
+        studio.scrollIntoView({ behavior: 'smooth' });
+        studio.style.transition = 'all 0.4s ease';
+        studio.style.boxShadow = '0 0 35px rgba(251, 191, 36, 0.7)';
+        setTimeout(() => {
+          studio.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.4)';
+        }, 1800);
+      }
+    });
+
+    // Stamp Margin Listener
+    affStampMargin.addEventListener('change', () => {
+      const mm = parseInt(affStampMargin.value, 10) || 0;
+      lblStampGap.textContent = mm;
+      if (mm > 0) {
+        stampGapIndicator.style.display = 'block';
+        stampGapIndicator.style.height = `${mm * 1.5}px`;
+        printableAffidavitGap.style.height = `${mm}mm`;
+      } else {
+        stampGapIndicator.style.display = 'none';
+        printableAffidavitGap.style.height = '0mm';
+      }
+    });
+
+    // Re-render live preview on every field input
+    [
+      affResidentName, affRelativeName, affAddress, affAadhaarNo,
+      affOldName, affNewName, affMinorName, affGuardianRel,
+      affEventType, affEventDate, affPriorSurname, affNewSurname,
+      affRetainedName, affDiscontinuedName, affPlace, affDateFormatted
+    ].forEach(inputEl => {
+      if (inputEl) {
+        inputEl.addEventListener('input', renderAffidavitPreview);
+      }
+    });
+
+    // Generate Legal Affidavit HTML
+    function generateAffidavitHtml(tabCode, isPreview = true) {
+      const resident = affResidentName.value.trim() || '________________________________';
+      const relative = affRelativeName.value.trim() || '________________________________';
+      const address = affAddress.value.trim() || '________________________________';
+      const aadhaar = affAadhaarNo.value.trim() || '________________________';
+      const oldName = affOldName.value.trim() || '________________________________';
+      const correctName = affNewName.value.trim() || '________________________________';
+      const minor = affMinorName.value.trim() || '________________________________';
+      const guardianRel = affGuardianRel ? affGuardianRel.value : 'father/mother/legal guardian';
+      const eventType = affEventType ? affEventType.value : 'marriage';
+      const eventDate = affEventDate.value || '________________';
+      const priorSurname = affPriorSurname.value.trim() || '________________';
+      const newSurname = affNewSurname.value.trim() || '________________';
+      const retained = affRetainedName.value.trim() || '________________________________';
+      const discontinued = affDiscontinuedName.value.trim() || '________________________________';
+      const place = affPlace.value.trim() || 'कणकवली';
+      const dateStr = affDateFormatted.value.trim() || `${day}${daySuffix} day of ${currentMonthName}, ${currentYear}`;
+
+      const highlight = (txt) => isPreview ? `<span style="border-bottom: 1.5px solid #0284c7; font-weight: bold; color: #0284c7;">${txt}</span>` : `<u><strong>${txt}</strong></u>`;
+
+      if (tabCode === 'B') {
+        return `
+          <div style="text-align: right; font-weight: bold; margin-bottom: 22px; font-size: 15px;">Annexure B (for adults)</div>
+          <div style="text-align: center; margin-bottom: 22px;">
+            <div style="font-size: 19px; font-weight: bold; letter-spacing: 1px; text-decoration: underline;">AFFIDAVIT</div>
+            <div style="font-size: 13.5px; font-style: italic; margin-top: 5px;">(Applicable where the resident's name had been incorrectly recorded in Aadhaar due to data entry error)</div>
+            <div style="font-size: 12.5px; font-weight: bold; margin-top: 4px;">(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)</div>
+          </div>
+
+          <p style="margin-bottom: 16px; text-indent: 0;">
+            I, Shri/Smt./Ms. ${highlight(resident)}, S/o, D/o, W/o ${highlight(relative)}, resident of ${highlight(address)}, do hereby solemnly affirm and declare as under:
+          </p>
+
+          <ol style="padding-left: 26px; margin-bottom: 24px; line-height: 1.85;">
+            <li style="margin-bottom: 10px;">That I am the holder of Aadhaar number ${highlight(aadhaar)}.</li>
+            <li style="margin-bottom: 10px;">That my correct name is ${highlight(correctName)}.</li>
+            <li style="margin-bottom: 10px;">That due to an inadvertent data entry error at the time of enrolment/update, my name had been recorded in Aadhaar as ${highlight(oldName)}, whereas my correct name is ${highlight(correctName)}.</li>
+            <li style="margin-bottom: 10px;">That the update request pertains only to the correction of my name and does not amount to a change of identity or adoption of a different name.</li>
+            <li style="margin-bottom: 10px;">That I am submitting the prescribed supporting document evidencing my correct name.</li>
+            <li style="margin-bottom: 10px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
+          </ol>
+
+          <div style="text-align: right; margin-top: 35px; margin-bottom: 30px; font-weight: bold; font-size: 14px;">
+            Deponent
+          </div>
+
+          <div style="margin-top: 25px; line-height: 1.75;">
+            <strong>Verification:</strong><br>
+            Verified at ${highlight(place)} on this ${highlight(dateStr)} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+          </div>
+
+          <div style="text-align: right; margin-top: 35px; margin-bottom: 25px; font-weight: bold; font-size: 14px;">
+            Deponent
+          </div>
+
+          <div style="margin-top: 25px; font-size: 12.5px; font-style: italic; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 12px;">
+            (This affidavit may be signed and attested in the presence of a Judicial Magistrate or Executive Magistrate/Notary Public)
+          </div>
+        `;
+      } else if (tabCode === 'C') {
+        return `
+          <div style="text-align: right; font-weight: bold; margin-bottom: 22px; font-size: 15px;">Annexure C (for minors)</div>
+          <div style="text-align: center; margin-bottom: 22px;">
+            <div style="font-size: 19px; font-weight: bold; letter-spacing: 1px; text-decoration: underline;">AFFIDAVIT</div>
+            <div style="font-size: 13.5px; font-style: italic; margin-top: 5px;">(Applicable where the resident's name had been incorrectly recorded in Aadhaar due to data entry error)</div>
+            <div style="font-size: 12.5px; font-weight: bold; margin-top: 4px;">(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)</div>
+          </div>
+
+          <p style="margin-bottom: 16px; text-indent: 0;">
+            I, Shri/Smt./Ms. ${highlight(resident)}, S/o, D/o, W/o ${highlight(relative)}, resident of ${highlight(address)}, being the ${highlight(guardianRel)} of minor ${highlight(minor)}, do hereby solemnly affirm and declare as under:
+          </p>
+
+          <ol style="padding-left: 26px; margin-bottom: 24px; line-height: 1.85;">
+            <li style="margin-bottom: 10px;">That minor ${highlight(minor)} is the holder of Aadhaar Number ${highlight(aadhaar)}.</li>
+            <li style="margin-bottom: 10px;">That correct name of the minor is ${highlight(correctName)}.</li>
+            <li style="margin-bottom: 10px;">That due to an inadvertent data entry error at the time of enrolment/update, his/her name had been recorded in Aadhaar as ${highlight(oldName)}, whereas his/her correct name is ${highlight(correctName)}.</li>
+            <li style="margin-bottom: 10px;">That the update request pertains only to the correction of his/her name and does not amount to a change of identity or adoption of a different name.</li>
+            <li style="margin-bottom: 10px;">That I am submitting the prescribed supporting document evidencing his/her correct name.</li>
+            <li style="margin-bottom: 10px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
+          </ol>
+
+          <div style="text-align: right; margin-top: 35px; margin-bottom: 30px; font-weight: bold; font-size: 14px;">
+            Deponent
+          </div>
+
+          <div style="margin-top: 25px; line-height: 1.75;">
+            <strong>Verification:</strong><br>
+            Verified at ${highlight(place)} on this ${highlight(dateStr)} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+          </div>
+
+          <div style="text-align: right; margin-top: 35px; margin-bottom: 25px; font-weight: bold; font-size: 14px;">
+            Deponent
+          </div>
+
+          <div style="margin-top: 25px; font-size: 12.5px; font-style: italic; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 12px;">
+            (This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)
+          </div>
+        `;
+      } else if (tabCode === 'D') {
+        return `
+          <div style="text-align: right; font-weight: bold; margin-bottom: 22px; font-size: 15px;">Annexure D</div>
+          <div style="text-align: center; margin-bottom: 22px;">
+            <div style="font-size: 19px; font-weight: bold; letter-spacing: 1px; text-decoration: underline;">AFFIDAVIT</div>
+            <div style="font-size: 13.5px; font-style: italic; margin-top: 5px;">(Applicable for change of surname in Aadhaar post Marriage/Divorce)</div>
+            <div style="font-size: 12.5px; font-weight: bold; margin-top: 4px;">(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)</div>
+          </div>
+
+          <p style="margin-bottom: 16px; text-indent: 0;">
+            I, Smt./Ms. ${highlight(resident)}, D/o ${highlight(relative)}, W/o ${highlight(newSurname)} (wherever applicable), resident of ${highlight(address)}, do hereby solemnly affirm and declare as under:
+          </p>
+
+          <ol style="padding-left: 26px; margin-bottom: 24px; line-height: 1.85;">
+            <li style="margin-bottom: 10px;">That I am the holder of Aadhaar number ${highlight(aadhaar)}.</li>
+            <li style="margin-bottom: 10px;">That my name prior to marriage/divorce was ${highlight(oldName)}.</li>
+            <li style="margin-bottom: 10px;">That consequent upon my ${eventType} solemnized on / ${eventType} becoming effective on ${highlight(eventDate)}, I have adopted/am entitled to use the surname ${highlight(newSurname)}, and my full name is now ${highlight(correctName)}.</li>
+            <li style="margin-bottom: 10px;">That I request for name update in my Aadhaar by replacing my earlier surname ${highlight(priorSurname)} with my present surname ${highlight(newSurname)}, while my identity as the individual remains same.</li>
+            <li style="margin-bottom: 10px;">That I am submitting the prescribed supporting document(s) in support of the said change of surname.</li>
+            <li style="margin-bottom: 10px;">That the requested name update is solely on account of marriage/divorce and does not involve any fraudulent assumption or concealment of identity.</li>
+            <li style="margin-bottom: 10px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
+          </ol>
+
+          <div style="text-align: right; margin-top: 35px; margin-bottom: 30px; font-weight: bold; font-size: 14px;">
+            Deponent
+          </div>
+
+          <div style="margin-top: 25px; line-height: 1.75;">
+            <strong>Verification:</strong><br>
+            Verified at ${highlight(place)} on this ${highlight(dateStr)} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+          </div>
+
+          <div style="text-align: right; margin-top: 35px; margin-bottom: 25px; font-weight: bold; font-size: 14px;">
+            Deponent
+          </div>
+
+          <div style="margin-top: 25px; font-size: 12.5px; font-style: italic; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 12px;">
+            (This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)
+          </div>
+        `;
+      } else if (tabCode === 'E') {
+        return `
+          <div style="text-align: right; font-weight: bold; margin-bottom: 22px; font-size: 15px;">Annexure E (for adults)</div>
+          <div style="text-align: center; margin-bottom: 22px;">
+            <div style="font-size: 19px; font-weight: bold; letter-spacing: 1px; text-decoration: underline;">AFFIDAVIT</div>
+            <div style="font-size: 13.5px; font-style: italic; margin-top: 5px;">(Applicable where the name is recorded in Aadhaar with "urf" or "alias" and the Aadhaar number holder seeks to retain one of the names)</div>
+            <div style="font-size: 12.5px; font-weight: bold; margin-top: 4px;">(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)</div>
+          </div>
+
+          <p style="margin-bottom: 16px; text-indent: 0;">
+            I, Shri/Smt./Ms. ${highlight(resident)}, S/o, D/o, W/o ${highlight(relative)}, resident of ${highlight(address)}, do hereby solemnly affirm and declare as under:
+          </p>
+
+          <ol style="padding-left: 26px; margin-bottom: 24px; line-height: 1.85;">
+            <li style="margin-bottom: 10px;">That I am the holder of Aadhaar Number ${highlight(aadhaar)}.</li>
+            <li style="margin-bottom: 10px;">That my name is presently recorded/used as ${highlight(oldName)} in Aadhaar, both names referring to one and the same person, i.e. myself.</li>
+            <li style="margin-bottom: 10px;">That I intend to retain the name ${highlight(retained)} and discontinue the use of ${highlight(discontinued)} as an alias/urf.</li>
+            <li style="margin-bottom: 10px;">That the requested update is limited to removal of the "urf or alias" and retention of the aforesaid name and does not amount to a change of identity or adoption of a different name.</li>
+            <li style="margin-bottom: 10px;">That I am submitting the prescribed supporting document(s) in support of the name sought to be retained.</li>
+            <li style="margin-bottom: 10px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
+          </ol>
+
+          <div style="text-align: right; margin-top: 35px; margin-bottom: 30px; font-weight: bold; font-size: 14px;">
+            Deponent
+          </div>
+
+          <div style="margin-top: 25px; line-height: 1.75;">
+            <strong>Verification:</strong><br>
+            Verified at ${highlight(place)} on this ${highlight(dateStr)} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+          </div>
+
+          <div style="text-align: right; margin-top: 35px; margin-bottom: 25px; font-weight: bold; font-size: 14px;">
+            Deponent
+          </div>
+
+          <div style="margin-top: 25px; font-size: 12.5px; font-style: italic; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 12px;">
+            (This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)
+          </div>
+        `;
+      } else if (tabCode === 'F') {
+        return `
+          <div style="text-align: right; font-weight: bold; margin-bottom: 22px; font-size: 15px;">Annexure F (for minors)</div>
+          <div style="text-align: center; margin-bottom: 22px;">
+            <div style="font-size: 19px; font-weight: bold; letter-spacing: 1px; text-decoration: underline;">AFFIDAVIT</div>
+            <div style="font-size: 13.5px; font-style: italic; margin-top: 5px;">(Applicable where the name is recorded in Aadhaar with "urf" or "alias" and the Aadhaar number holder seeks to retain one of the names)</div>
+            <div style="font-size: 12.5px; font-weight: bold; margin-top: 4px;">(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)</div>
+          </div>
+
+          <p style="margin-bottom: 16px; text-indent: 0;">
+            I, Shri/Smt./Ms. ${highlight(resident)}, S/o, D/o, W/o ${highlight(relative)}, resident of ${highlight(address)}, being the ${highlight(guardianRel)} of minor ${highlight(minor)}, do hereby solemnly affirm and declare as under:
+          </p>
+
+          <ol style="padding-left: 26px; margin-bottom: 24px; line-height: 1.85;">
+            <li style="margin-bottom: 10px;">That minor ${highlight(minor)} is the holder of Aadhaar Number ${highlight(aadhaar)}.</li>
+            <li style="margin-bottom: 10px;">That the name of the minor is presently recorded/used as ${highlight(oldName)} in his/her Aadhaar, both names referring to one and the same minor.</li>
+            <li style="margin-bottom: 10px;">That I, being the father/mother/legal guardian of the minor, seek to retain the name ${highlight(retained)} and discontinue the use of ${highlight(discontinued)} as an alias/urf.</li>
+            <li style="margin-bottom: 10px;">That the requested update is limited to removal of the "urf/alias" and retention of the aforesaid name and does not amount to a change of identity or adoption of a different name of minor.</li>
+            <li style="margin-bottom: 10px;">That I am submitting the prescribed supporting document(s) in support of the name sought to be retained.</li>
+            <li style="margin-bottom: 10px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
+          </ol>
+
+          <div style="text-align: right; margin-top: 35px; margin-bottom: 30px; font-weight: bold; font-size: 14px;">
+            Deponent
+          </div>
+
+          <div style="margin-top: 25px; line-height: 1.75;">
+            <strong>Verification:</strong><br>
+            Verified at ${highlight(place)} on this ${highlight(dateStr)} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+          </div>
+
+          <div style="text-align: right; margin-top: 35px; margin-bottom: 25px; font-weight: bold; font-size: 14px;">
+            Deponent
+          </div>
+
+          <div style="margin-top: 25px; font-size: 12.5px; font-style: italic; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 12px;">
+            (This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)
+          </div>
+        `;
+      }
+      return '';
+    }
+
+    function renderAffidavitPreview() {
+      if (!affidavitContentLive) return;
+      affidavitContentLive.innerHTML = generateAffidavitHtml(currentAnnexTab, true);
+    }
+
+    // Plain text generator for copying
+    function generateAffidavitPlainText(tabCode) {
+      const resident = affResidentName.value.trim() || '________________________________';
+      const relative = affRelativeName.value.trim() || '________________________________';
+      const address = affAddress.value.trim() || '________________________________';
+      const aadhaar = affAadhaarNo.value.trim() || '________________________';
+      const oldName = affOldName.value.trim() || '________________________________';
+      const correctName = affNewName.value.trim() || '________________________________';
+      const minor = affMinorName.value.trim() || '________________________________';
+      const guardianRel = affGuardianRel ? affGuardianRel.value : 'father/mother/legal guardian';
+      const eventType = affEventType ? affEventType.value : 'marriage';
+      const eventDate = affEventDate.value || '________________';
+      const priorSurname = affPriorSurname.value.trim() || '________________';
+      const newSurname = affNewSurname.value.trim() || '________________';
+      const retained = affRetainedName.value.trim() || '________________________________';
+      const discontinued = affDiscontinuedName.value.trim() || '________________________________';
+      const place = affPlace.value.trim() || 'कणकवली';
+      const dateStr = affDateFormatted.value.trim() || `${day}${daySuffix} day of ${currentMonthName}, ${currentYear}`;
+
+      if (tabCode === 'B') {
+        return `Annexure B (for adults)
+
+AFFIDAVIT
+(Applicable where the resident's name had been incorrectly recorded in Aadhaar due to data entry error)
+(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)
+
+I, Shri/Smt./Ms. ${resident}, S/o, D/o, W/o ${relative}, resident of ${address}, do hereby solemnly affirm and declare as under:
+
+1. That I am the holder of Aadhaar number ${aadhaar}.
+2. That my correct name is ${correctName}.
+3. That due to an inadvertent data entry error at the time of enrolment/update, my name had been recorded in Aadhaar as ${oldName}, whereas my correct name is ${correctName}.
+4. That the update request pertains only to the correction of my name and does not amount to a change of identity or adoption of a different name.
+5. That I am submitting the prescribed supporting document evidencing my correct name.
+6. That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.
+
+                                                    Deponent
+
+Verification:
+Verified at ${place} on this ${dateStr} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+
+                                                    Deponent
+
+(This affidavit may be signed and attested in the presence of a Judicial Magistrate or Executive Magistrate/Notary Public)`;
+      } else if (tabCode === 'C') {
+        return `Annexure C (for minors)
+
+AFFIDAVIT
+(Applicable where the resident's name had been incorrectly recorded in Aadhaar due to data entry error)
+(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)
+
+I, Shri/Smt./Ms. ${resident}, S/o, D/o, W/o ${relative}, resident of ${address}, being the ${guardianRel} of minor ${minor}, do hereby solemnly affirm and declare as under:
+
+1. That minor ${minor} is the holder of Aadhaar Number ${aadhaar}.
+2. That correct name of the minor is ${correctName}.
+3. That due to an inadvertent data entry error at the time of enrolment/update, his/her name had been recorded in Aadhaar as ${oldName}, whereas his/her correct name is ${correctName}.
+4. That the update request pertains only to the correction of his/her name and does not amount to a change of identity or adoption of a different name.
+5. That I am submitting the prescribed supporting document evidencing his/her correct name.
+6. That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.
+
+                                                    Deponent
+
+Verification:
+Verified at ${place} on this ${dateStr} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+
+                                                    Deponent
+
+(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)`;
+      } else if (tabCode === 'D') {
+        return `Annexure D
+
+AFFIDAVIT
+(Applicable for change of surname in Aadhaar post Marriage/Divorce)
+(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)
+
+I, Smt./Ms. ${resident}, D/o ${relative}, W/o ${newSurname} (wherever applicable), resident of ${address}, do hereby solemnly affirm and declare as under:
+
+1. That I am the holder of Aadhaar number ${aadhaar}.
+2. That my name prior to marriage/divorce was ${oldName}.
+3. That consequent upon my ${eventType} solemnized on / ${eventType} becoming effective on ${eventDate}, I have adopted/am entitled to use the surname ${newSurname}, and my full name is now ${correctName}.
+4. That I request for name update in my Aadhaar by replacing my earlier surname ${priorSurname} with my present surname ${newSurname}, while my identity as the individual remains same.
+5. That I am submitting the prescribed supporting document(s) in support of the said change of surname.
+6. That the requested name update is solely on account of marriage/divorce and does not involve any fraudulent assumption or concealment of identity.
+7. That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.
+
+                                                    Deponent
+
+Verification:
+Verified at ${place} on this ${dateStr} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+
+                                                    Deponent
+
+(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)`;
+      } else if (tabCode === 'E') {
+        return `Annexure E (for adults)
+
+AFFIDAVIT
+(Applicable where the name is recorded in Aadhaar with "urf" or "alias" and the Aadhaar number holder seeks to retain one of the names)
+(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)
+
+I, Shri/Smt./Ms. ${resident}, S/o, D/o, W/o ${relative}, resident of ${address}, do hereby solemnly affirm and declare as under:
+
+1. That I am the holder of Aadhaar Number ${aadhaar}.
+2. That my name is presently recorded/used as ${oldName} in Aadhaar, both names referring to one and the same person, i.e. myself.
+3. That I intend to retain the name ${retained} and discontinue the use of ${discontinued} as an alias/urf.
+4. That the requested update is limited to removal of the "urf or alias" and retention of the aforesaid name and does not amount to a change of identity or adoption of a different name.
+5. That I am submitting the prescribed supporting document(s) in support of the name sought to be retained.
+6. That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.
+
+                                                    Deponent
+
+Verification:
+Verified at ${place} on this ${dateStr} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+
+                                                    Deponent
+
+(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)`;
+      } else if (tabCode === 'F') {
+        return `Annexure F (for minors)
+
+AFFIDAVIT
+(Applicable where the name is recorded in Aadhaar with "urf" or "alias" and the Aadhaar number holder seeks to retain one of the names)
+(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)
+
+I, Shri/Smt./Ms. ${resident}, S/o, D/o, W/o ${relative}, resident of ${address}, being the ${guardianRel} of minor ${minor}, do hereby solemnly affirm and declare as under:
+
+1. That minor ${minor} is the holder of Aadhaar Number ${aadhaar}.
+2. That the name of the minor is presently recorded/used as ${oldName} in his/her Aadhaar, both names referring to one and the same minor.
+3. That I, being the father/mother/legal guardian of the minor, seek to retain the name ${retained} and discontinue the use of ${discontinued} as an alias/urf.
+4. That the requested update is limited to removal of the "urf/alias" and retention of the aforesaid name and does not amount to a change of identity or adoption of a different name of minor.
+5. That I am submitting the prescribed supporting document(s) in support of the name sought to be retained.
+6. That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.
+
+                                                    Deponent
+
+Verification:
+Verified at ${place} on this ${dateStr} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+
+                                                    Deponent
+
+(This affidavit may be signed and attested in presence of a Judicial Magistrate or Executive Magistrate/Notary Public)`;
+      }
+      return '';
+    }
+
+    // Print Affidavit
+    btnPrintAffidavit.addEventListener('click', () => {
+      const mm = parseInt(affStampMargin.value, 10) || 0;
+      printableAffidavitGap.style.height = `${mm}mm`;
+      printableAffidavitContent.innerHTML = generateAffidavitHtml(currentAnnexTab, false);
+
+      document.body.classList.remove('print-slip');
+      document.body.classList.add('print-affidavit');
+      window.print();
+      setTimeout(() => {
+        document.body.classList.remove('print-affidavit');
+      }, 1000);
+    });
+
+    // Copy Affidavit Plain Text
+    btnCopyAffidavit.addEventListener('click', () => {
+      const text = generateAffidavitPlainText(currentAnnexTab);
+      navigator.clipboard.writeText(text).then(() => {
+        alert('✅ प्रतिज्ञापत्राचा अधिकृत मजकूर क्लिपबोर्डवर यशस्वीरित्या कॉपी झाला आहे!\n\nआपण हा मजकूर थेट MS Word, PageMaker किंवा नोटपॅडमध्ये पेस्ट करून वापरू शकता.');
+      }).catch(() => {
+        alert('मजकूर कॉपी करताना अडचण आली, कृपया मॅन्युअली सिलेक्ट करून कॉपी करा.');
+      });
+    });
+
+    // Clean up print classes after printing
+    window.onafterprint = () => {
+      document.body.classList.remove('print-slip');
+      document.body.classList.remove('print-affidavit');
+    };
+
+    // Initial evaluation & sync
     evaluateRules();
+    syncFromMainForm(true);
   });
   </script>
 
