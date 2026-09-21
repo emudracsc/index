@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aadhaar Name Update सोपा मार्गदर्शक (SOP दि. १८ सप्टेंबर २०२६) | eMudra Hub</title>
+  <meta name="description" content="UIDAI च्या १८ सप्टेंबर २०२६ च्या नवीन SOP नुसार जुने नाव व नवीन नाव टाकून आधार नाव दुरुस्तीसाठी आवश्यक कागदपत्रे, नियम व अनेक्झर तपासण्याचे अधिकृत टूल.">
+
+  <link rel="icon" type="image/png" href="images/emudra_logo.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Devanagari & Mukta -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Mukta:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Complete CSS Design System -->
+  <link rel="stylesheet" href="style.css?v=8.1">
+
+  <style>
+    :root {
+      --hub-navy: #09111e;
+      --hub-surface: #0f172a;
+      --hub-card: #1e293b;
+      --hub-gold: #fbbf24;
+      --hub-gold-hover: #f59e0b;
+      --hub-border: #334155;
+      --aadhaar-red: #ef4444;
+      --aadhaar-orange: #f97316;
+      --aadhaar-green: #10b981;
+      --aadhaar-blue: #0284c7;
+      --font-marathi: 'Noto Sans Devanagari', 'Mukta', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', var(--font-marathi), system-ui, sans-serif;
+      background: #090e17;
+      color: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Government Tricolor Top Ribbon */
+    .gov-tricolor-stripe {
+      height: 4.5px;
+      width: 100%;
+      background: linear-gradient(90deg, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%);
+      position: sticky;
+      top: 0;
+      z-index: 1001;
+    }
+
+    /* Header */
+    .app-header {
+      background: rgba(9, 17, 30, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.25);
+      position: sticky;
+      top: 4.5px;
+      z-index: 1000;
+      padding: 0.75rem 1.5rem;
+    }
+    .app-header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+    }
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+      color: #fff;
+    }
+    .app-brand-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ef4444, #f97316);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+    }
+    .app-brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .app-brand-sub {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-family: var(--font-marathi);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .sop-date-pill {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn-hub-back {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #e2e8f0;
+      padding: 0.4rem 0.95rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+    .btn-hub-back:hover {
+      background: var(--hub-gold);
+      color: #09111e;
+      border-color: var(--hub-gold);
+    }
+
+    /* Layout */
+    .main-container {
+      max-width: 1400px;
+      margin: 1.5rem auto;
+      padding: 0 1.25rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* Top Notice Bar */
+    .notice-card {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.12), rgba(15, 23, 42, 0.9));
+      border: 1.5px solid rgba(2, 132, 199, 0.35);
+      border-radius: 14px;
+      padding: 1.15rem 1.4rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .notice-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      flex: 1;
+      min-width: 260px;
+    }
+    .notice-icon {
+      font-size: 1.4rem;
+      margin-top: 2px;
+    }
+    .notice-content h4 {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #7dd3fc;
+      margin-bottom: 0.2rem;
+      font-family: var(--font-marathi);
+    }
+    .notice-content p {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+      font-family: var(--font-marathi);
+    }
+
+    /* App Grid */
+    .app-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1.35fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 992px) {
+      .app-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Cards */
+    .card-panel {
+      background: #0f172a;
+      border: 1.5px solid var(--hub-border);
+      border-radius: 16px;
+      padding: 1.4rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+    .card-header-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.15rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .card-header-title h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-marathi);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 1.15rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 0.45rem;
+      font-family: var(--font-marathi);
+    }
+    .form-control-input {
+      width: 100%;
+      background: #090e17;
+      border: 1.5px solid #334155;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: #fff;
+      font-size: 1rem;
+      font-family: var(--font-marathi);
+      transition: all 0.2s ease;
+    }
+    .form-control-input:focus {
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Age Radio Group */
+    .age-selector-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .age-pill-label {
+      background: #090e17;
+      border: 1.5px solid #334155;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-marathi);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .age-pill-label:hover {
+      border-color: #64748b;
+    }
+    .age-pill-label.active {
+      background: rgba(2, 132, 199, 0.15);
+      border-color: #0284c7;
+      color: #38bdf8;
+    }
+
+    /* Circumstances Pill Grid */
+    .special-circ-wrap {
+      background: #090e17;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+    .circ-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .circ-checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      cursor: pointer;
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      transition: background 0.15s ease;
+      font-family: var(--font-marathi);
+    }
+    .circ-checkbox-label:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    /* Sample Scenario Buttons */
+    .preset-chips-wrap {
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .preset-chips-title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #94a3b8;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .preset-chip-btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 0.35rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      cursor: pointer;
+      font-family: var(--font-marathi);
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s ease;
+    }
+    .preset-chip-btn:hover {
+      background: #334155;
+      color: #fff;
+      border-color: #64748b;
+      transform: translateY(-1px);
+    }
+
+    /* RIGHT COLUMN: Result & Document Checklist */
+    .result-badge-hero {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(249, 115, 22, 0.15));
+      border: 2px solid #f97316;
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .result-badge-hero.no-doc {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15));
+      border-color: #10b981;
+    }
+    .result-badge-hero.gazette {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(185, 28, 28, 0.2));
+      border-color: #dc2626;
+    }
+    .scenario-id-tag {
+      display: inline-block;
+      background: #f97316;
+      color: #0f172a;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .scenario-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.35rem;
+      font-family: var(--font-marathi);
+    }
+    .scenario-explanation {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      font-family: var(--font-marathi);
+      line-height: 1.5;
+    }
+
+    /* Documents Required Box */
+    .doc-checklist-card {
+      background: #090e17;
+      border: 1.5px solid #334155;
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .doc-checklist-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #38bdf8;
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-marathi);
+    }
+    .doc-items-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .doc-item-pill {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      font-size: 0.88rem;
+      font-family: var(--font-marathi);
+      line-height: 1.4;
+    }
+    .doc-item-pill i {
+      font-size: 1.1rem;
+      margin-top: 2px;
+      color: #fbbf24;
+    }
+    .doc-item-pill.doc-mandatory {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .doc-item-pill.doc-mandatory i {
+      color: #f87171;
+    }
+    .doc-item-pill.doc-free {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+    .doc-item-pill.doc-free i {
+      color: #34d399;
+    }
+
+    /* Operator Instructions Box */
+    .operator-rules-box {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.25rem;
+    }
+    .operator-rules-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #fbbf24;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-marathi);
+    }
+    .operator-rules-list {
+      list-style: disc;
+      padding-left: 1.2rem;
+      font-size: 0.82rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+      font-family: var(--font-marathi);
+    }
+
+    /* Action Buttons */
+    .actions-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .btn-action {
+      padding: 0.75rem 1.2rem;
+      border-radius: 10px;
+      border: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      font-family: var(--font-marathi);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+    .btn-action-primary {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+    }
+    .btn-action-primary:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+    .btn-action-secondary {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #e2e8f0;
+    }
+    .btn-action-secondary:hover {
+      background: #334155;
+    }
+
+    /* Master Reference Modal / Accordion */
+    .sop-table-wrap {
+      margin-top: 2rem;
+      background: #0f172a;
+      border: 1.5px solid var(--hub-border);
+      border-radius: 16px;
+      padding: 1.4rem;
+      overflow-x: auto;
+    }
+    .sop-master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      font-family: var(--font-marathi);
+      margin-top: 0.85rem;
+    }
+    .sop-master-table th, .sop-master-table td {
+      padding: 0.75rem 0.9rem;
+      border: 1px solid #334155;
+      text-align: left;
+    }
+    .sop-master-table th {
+      background: #1e293b;
+      color: #38bdf8;
+      font-weight: 800;
+    }
+    .sop-master-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Printable Slip (Hidden in UI, visible when printing) */
+    @media print {
+      body * { visibility: hidden; }
+      #printableSlip, #printableSlip * { visibility: visible; }
+      #printableSlip {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        color: #000 !important;
+        background: #fff !important;
+        padding: 20px;
+        font-family: 'Noto Sans Devanagari', sans-serif !important;
+      }
+      .no-print { display: none !important; }
+    }
+
+    .printable-slip-card {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-tricolor-stripe"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="app-header-inner">
+      <a href="emudra-hub.html" class="app-brand">
+        <div class="app-brand-badge">
+          <i class="fa-solid fa-id-card"></i>
+        </div>
+        <div>
+          <div class="app-brand-title">
+            <span>Aadhaar Name Update सोपा मार्गदर्शक</span>
+          </div>
+          <div class="app-brand-sub">UIDAI च्या नवीन SOP नुसार (दिनांक १८ सप्टेंबर २०२६) नाव दुरुस्ती नियम व कागदपत्रे</div>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <div class="sop-date-pill">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span>SOP दि. १८ सप्टेंबर २०२६</span>
+        </div>
+        <a href="emudra-hub.html" class="btn-hub-back">
+          <i class="fa-solid fa-arrow-left"></i> eMudra Hub वर परत जा
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-container">
+
+    <!-- Top Notice Bar with SOP Core Pillars -->
+    <div class="notice-card">
+      <div class="notice-item">
+        <div class="notice-icon text-emerald-400"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="notice-content">
+          <h4>उद्देश (Purpose)</h4>
+          <p>Aadhaar मध्ये नाव दुरुस्ती / Update करण्यासाठी कोणत्या परिस्थितीत कोणते दस्तऐवज आवश्यक आहेत, याचे अचूक नियम.</p>
+        </div>
+      </div>
+
+      <div class="notice-item">
+        <div class="notice-icon text-amber-400"><i class="fa-solid fa-calendar-days"></i></div>
+        <div class="notice-content">
+          <h4>लागू दिनांक (Effective Date)</h4>
+          <p>ही SOP १८ सप्टेंबर २०२६ रोजी जारी झालेली असून स्वाक्षरीच्या तारखेपासून सर्व केंद्रांवर लागू आहे.</p>
+        </div>
+      </div>
+
+      <div class="notice-item">
+        <div class="notice-icon text-sky-400"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="notice-content">
+          <h4>महत्त्वाचा नियम (Golden Rule)</h4>
+          <p>सादर केलेल्या document मधील spelling व क्रमानुसारच Aadhaar अपडेट होईल. Operator ने स्वतःहून spelling बदलू नये.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- App Interactive Grid -->
+    <div class="app-grid">
+
+      <!-- LEFT: Inputs & Circumstance Selector -->
+      <section class="card-panel">
+        <div class="card-header-title">
+          <h3><i class="fa-solid fa-pen-to-square" style="color: #38bdf8;"></i> १. नाव व तपशील प्रविष्ट करा</h3>
+          <span style="font-size: 0.78rem; color: #94a3b8;">(Auto-Detect Engine)</span>
+        </div>
+
+        <!-- Old Name Input -->
+        <div class="form-group">
+          <label class="form-label" for="txtOldName">
+            📌 आधार कार्डवरील जुने नाव (Old Name in Aadhaar):
+          </label>
+          <input type="text" id="txtOldName" class="form-control-input" placeholder="उदा. R D Prasad किंवा Baby of Sudha किंवा Divakar Anand" value="R D Prasad" autocomplete="off">
+        </div>
+
+        <!-- New Name Input -->
+        <div class="form-group">
+          <label class="form-label" for="txtNewName">
+            🎯 नवीन दुरुस्त नाव (New Requested Name):
+          </label>
+          <input type="text" id="txtNewName" class="form-control-input" placeholder="उदा. Rama Durga Prasad किंवा Anand Divakar" value="Rama Durga Prasad" autocomplete="off">
+        </div>
+
+        <!-- Age Selector (Adult vs Minor) -->
+        <div class="form-group">
+          <label class="form-label">👤 अर्जदाराचा वय गट (Applicant Age Category):</label>
+          <div class="age-selector-row">
+            <label class="age-pill-label active" id="lblAdult">
+              <input type="radio" name="ageGroup" value="adult" checked style="display:none;">
+              <i class="fa-solid fa-user-tie" style="color: #38bdf8;"></i>
+              <div>
+                <strong>प्रौढ नागरिक (Adult)</strong>
+                <div style="font-size: 0.72rem; color: #94a3b8;">१८ वर्षे किंवा त्यावरील</div>
+              </div>
+            </label>
+
+            <label class="age-pill-label" id="lblMinor">
+              <input type="radio" name="ageGroup" value="minor" style="display:none;">
+              <i class="fa-solid fa-child" style="color: #f472b6;"></i>
+              <div>
+                <strong>बालक (Minor)</strong>
+                <div style="font-size: 0.72rem; color: #94a3b8;">१८ वर्षांखालील मूल</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Special Circumstances Checkboxes (Overrides) -->
+        <div class="special-circ-wrap">
+          <label class="form-label" style="font-size: 0.82rem; margin-bottom: 0.2rem; color: #fbbf24;">
+            ⚡ विशेष परिस्थिती असल्यास टिक करा (Optional Conditions):
+          </label>
+          <div class="circ-grid">
+            <label class="circ-checkbox-label">
+              <input type="checkbox" id="chkMarriage" value="marriage">
+              <span>लग्नानंतर किंवा घटस्फोटानंतर आडनाव बदल (Surname Change after Marriage/Divorce) [नियम १(h)]</span>
+            </label>
+            <label class="circ-checkbox-label">
+              <input type="checkbox" id="chkGender" value="gender">
+              <span>लिंग बदलानुसार नाव बदल (Gender Transition Name Change) [नियम १(i)]</span>
+            </label>
+            <label class="circ-checkbox-label">
+              <input type="checkbox" id="chkDataEntry" value="dataentry">
+              <span>आधार नोंदणीवेळी ऑपरेटरकडून चुकीचे नाव नोंदवले गेले होते [नियम १(f)]</span>
+            </label>
+            <label class="circ-checkbox-label">
+              <input type="checkbox" id="chkRegional" value="regional">
+              <span>इंग्रजीत नाव बरोबर आहे, फक्त मराठी/प्रादेशिक भाषा स्पेलिंग चुकीचे आहे [नियम १(g)]</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Quick SOP Sample Presets -->
+        <div class="preset-chips-wrap">
+          <div class="preset-chips-title">📋 परिपत्रकातील नमुना उदाहरणे (Click to Test):</div>
+          <button type="button" class="preset-chip-btn" data-old="R D Prasad" data-new="Rama Durga Prasad" data-age="adult" title="1(a) Initials विस्तार">
+            1(a) R D Prasad ➔ Rama Durga Prasad
+          </button>
+          <button type="button" class="preset-chip-btn" data-old="Rama Prasad" data-new="Rama Shyam Prasad" data-age="adult" title="1(b) Middle Name Add">
+            1(b) Rama Prasad ➔ Rama Shyam Prasad
+          </button>
+          <button type="button" class="preset-chip-btn" data-old="Divakar Anand" data-new="Anand Divakar" data-age="adult" title="1(c) Sequence बदल">
+            1(c) Divakar Anand ➔ Anand Divakar
+          </button>
+          <button type="button" class="preset-chip-btn" data-old="Suresh Patil" data-new="Sureshh Patil" data-age="adult" title="1(d) Minor Spelling">
+            1(d) Suresh Patil ➔ Sureshh Patil
+          </button>
+          <button type="button" class="preset-chip-btn" data-old="Baby of Sudha" data-new="Ritu Kumar" data-age="minor" title="1(j) Baby of ...">
+            1(j) Baby of Sudha ➔ Ritu Kumar
+          </button>
+          <button type="button" class="preset-chip-btn" data-old="Dr. Mahesh Sutar" data-new="Mahesh Sutar" data-age="adult" title="1(k) Prefix Dr. काढणे">
+            1(k) Dr. Mahesh ➔ Mahesh
+          </button>
+          <button type="button" class="preset-chip-btn" data-old="rAMESH" data-new="Ramesh" data-age="adult" title="1(l) Capital Letters">
+            1(l) rAMESH ➔ Ramesh
+          </button>
+          <button type="button" class="preset-chip-btn" data-old="R.P. Singh" data-new="RP Singh" data-age="adult" title="1(m) Dots काढणे">
+            1(m) R.P. Singh ➔ RP Singh
+          </button>
+          <button type="button" class="preset-chip-btn" data-old="Jagdish Singh urf Jagga" data-new="Jagdish Singh" data-age="adult" title="1(n) urf/alias काढणे">
+            1(n) Jagdish urf Jagga ➔ Jagdish
+          </button>
+          <button type="button" class="preset-chip-btn" data-old="Vijay Kumar" data-new="Sohan Lal Sharma" data-age="adult" title="1(o) Complete Change">
+            1(o) Vijay Kumar ➔ Sohan Lal (Gazette)
+          </button>
+        </div>
+
+      </section>
+
+      <!-- RIGHT: Live Analyzed Result & Document Checklist -->
+      <section class="card-panel">
+        <div class="card-header-title">
+          <h3><i class="fa-solid fa-file-shield" style="color: #34d399;"></i> २. आवश्यक दस्तऐवज तपासणी निकाल</h3>
+          <span id="lblLiveStatus" style="font-size: 0.78rem; color: #34d399; font-weight: 700;">● थेट पडताळणी</span>
+        </div>
+
+        <!-- Scenario Banner -->
+        <div class="result-badge-hero" id="resultHeroBox">
+          <div class="scenario-id-tag" id="lblScenarioCode">नियम १(a)</div>
+          <h2 class="scenario-title" id="lblScenarioTitle">Abbreviation / Initials चे Full Name करणे</h2>
+          <p class="scenario-explanation" id="lblScenarioDesc">
+            नावातील आद्याक्षरे (उदा. R D) काढून पूर्ण नाव (Rama Durga) करणे.
+          </p>
+        </div>
+
+        <!-- Document Checklist -->
+        <div class="doc-checklist-card">
+          <div class="doc-checklist-title">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>सादर करावयाचे अधिकृत दस्तऐवज (Required Documents):</span>
+          </div>
+
+          <ul class="doc-items-list" id="docListContainer">
+            <!-- Populated dynamically -->
+          </ul>
+        </div>
+
+        <!-- Operator Guidelines Card -->
+        <div class="operator-rules-box">
+          <div class="operator-rules-title">
+            <i class="fa-solid fa-user-shield"></i>
+            <span>ऑपरेटरसाठी SOP नियमावली व दक्षता:</span>
+          </div>
+          <ul class="operator-rules-list" id="operatorRulesList">
+            <li>सादर केलेल्या प्रमाणपत्रात जशी स्पेलिंग, स्पेसिंग व क्रम आहे, तंतोतंत तसेच अपडेट करावे.</li>
+            <li>नागरिकाने तोंडी सांगितलेले नाव थेट भरू नये, सादर कागदपत्रांची पडताळणी अनिवार्य आहे.</li>
+            <li>मोठा नाव बदल (Major Name Change) असल्यास राज्य / केंद्र शासनाचे <strong>राजपत्र (Gazette Notification)</strong> अनिवार्य आहे.</li>
+          </ul>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions-row">
+          <button type="button" class="btn-action btn-action-primary" id="btnPrintSlip">
+            <i class="fa-solid fa-print"></i> नागरिकासाठी तपासणी स्लिप प्रिंट करा
+          </button>
+          <button type="button" class="btn-action btn-action-secondary" id="btnResetForm">
+            <i class="fa-solid fa-rotate-left"></i> रिसेट करा
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- Master Reference Table (Annexure A SOP Guide) -->
+    <section class="sop-table-wrap">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-marathi);">
+          <i class="fa-solid fa-table-list"></i> Annexure A – Name Update चे सर्व १५ Scenario आणि आवश्यक दस्तऐवज मास्टर चार्ट
+        </h3>
+        <span style="font-size: 0.8rem; color: #94a3b8;">(MahaIT / UIDAI SOP १८ सप्टेंबर २०२६)</span>
+      </div>
+
+      <table class="sop-master-table">
+        <thead>
+          <tr>
+            <th style="width: 8%;">क्र.</th>
+            <th style="width: 28%;">Scenario / परिस्थिती</th>
+            <th style="width: 32%;">उदाहरण (Examples)</th>
+            <th style="width: 32%;">आवश्यक दस्तऐवज (Required Documents)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1(a)</strong></td>
+            <td>Abbreviation/initials चे full name करणे</td>
+            <td>R D Prasad ➔ Rama Durga Prasad</td>
+            <td>Adult: <strong>Annexure B + PoI/PoR</strong><br>Minor: <strong>Annexure C + PoI/PoR</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(b)</strong></td>
+            <td>Middle name किंवा Last name add/delete करणे</td>
+            <td>Rama Prasad ➔ Rama Shyam Prasad (किंवा काढणे)</td>
+            <td>Adult: <strong>Annexure B + PoI/PoR</strong><br>Minor: <strong>Annexure C + PoI/PoR</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(c)</strong></td>
+            <td>नावातील शब्दांचा sequential order बदलणे</td>
+            <td>Divakar Anand ➔ Anand Divakar</td>
+            <td><strong>PoI / PoR</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(d)</strong></td>
+            <td>Spelling मध्ये minor correction (phonetic sound समान)</td>
+            <td>किरकोळ spelling सुधारणा (Suresh ➔ Sureshh)</td>
+            <td><strong>PoI / PoR</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(e)</strong></td>
+            <td>वरील (a), (b), (c), (d) यांचे combination</td>
+            <td>एकापेक्षा जास्त किरकोळ बदल एकत्र असणे</td>
+            <td><strong>PoI / PoR</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(f)</strong></td>
+            <td>Aadhaar मध्ये नाव चुकीचे record झाले, पण योग्य document सादर केला आहे</td>
+            <td>Aadhaar मध्ये चुकीचे नाव, document मध्ये योग्य नाव</td>
+            <td>Adult: <strong>Annexure B + PoI/PoR</strong><br>Minor: <strong>Annexure C + PoI/PoR</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(g)</strong></td>
+            <td>English मध्ये नाव बरोबर पण regional language मध्ये चुकीचे</td>
+            <td>English correct, Marathi/Hindi इ. मध्ये चुकीचे</td>
+            <td><strong>PoI (Proof of Identity)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(h)</strong></td>
+            <td>लग्न/घटस्फोटामुळे surname बदल</td>
+            <td>Marriage नंतर surname change</td>
+            <td><strong>Annexure D + PoI</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(i)</strong></td>
+            <td>Gender change मुळे नाव बदल</td>
+            <td>नाव gender change नुसार बदलणे</td>
+            <td><strong>PoI (Proof of Identity)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(j)</strong></td>
+            <td>१८ वर्षाखालील मुलाचे "Baby of ..." वरून पूर्ण नाव</td>
+            <td>Baby of Sudha ➔ Ritu Kumar</td>
+            <td><strong>Affidavit + PoI / PoR</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(k)</strong></td>
+            <td>Military ranks / designations / prefixes काढणे</td>
+            <td>Lt Gen, Maj, Brig, Col, Dr., Shri, Smt. इ.</td>
+            <td><strong>PoI (Proof of Identity)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(l)</strong></td>
+            <td>नावातील randomly occurring capital letters दुरुस्त करणे</td>
+            <td>rAMESH ➔ Ramesh</td>
+            <td><span style="color: #34d399; font-weight: 700;">कोणत्याही दस्तऐवजाची गरज नाही (No document required)</span></td>
+          </tr>
+          <tr>
+            <td><strong>1(m)</strong></td>
+            <td>नावातील dots काढणे</td>
+            <td>R.P. Singh ➔ RP Singh</td>
+            <td><span style="color: #34d399; font-weight: 700;">कोणत्याही दस्तऐवजाची गरज नाही (No document required)</span></td>
+          </tr>
+          <tr>
+            <td><strong>1(n)</strong></td>
+            <td>"urf/alias" काढणे</td>
+            <td>Jagdish Singh urf Jagga ➔ Jagdish Singh</td>
+            <td>Adult: <strong>Annexure E + PoI</strong><br>Minor: <strong>Annexure F + PoI</strong></td>
+          </tr>
+          <tr>
+            <td><strong>1(o)</strong></td>
+            <td>Complete change of name / identity</td>
+            <td>पूर्णपणे वेगळे नाव (Major name change)</td>
+            <td><strong style="color: #f87171;">PoI + Gazette Notification (फक्त Gazette Notification अनिवार्य)</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- Printable Slip Container (Visible during Print) -->
+  <div id="printableSlip" class="printable-slip-card">
+    <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
+      <h2 style="margin: 0; font-size: 18px;">ई-मुद्रा आपले सरकार व आधार सेवा केंद्र, कणकवली</h2>
+      <p style="margin: 3px 0 0; font-size: 13px;">आधार नाव दुरुस्ती आवश्यक कागदपत्रे पडताळणी स्लिप (SOP दि. १८ सप्टेंबर २०२६)</p>
+    </div>
+
+    <div style="margin-bottom: 15px; font-size: 13px; line-height: 1.6;">
+      <div><strong>दिनांक:</strong> <span id="slipDate"></span></div>
+      <div><strong>वय गट:</strong> <span id="slipAge">प्रौढ (१८+ वर्षे)</span></div>
+      <div><strong>आधारवरील जुने नाव:</strong> <span id="slipOldName"></span></div>
+      <div><strong>नवीन मागणी केलेले नाव:</strong> <span id="slipNewName"></span></div>
+      <div><strong>लागू असलेला SOP नियम:</strong> <span id="slipScenario"></span></div>
+    </div>
+
+    <div style="border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 10px 0; margin-bottom: 15px;">
+      <h3 style="margin: 0 0 8px; font-size: 14px;">लागणारे आवश्यक दस्तऐवज (Document Checklist):</h3>
+      <ul id="slipDocList" style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.6;"></ul>
+    </div>
+
+    <div style="font-size: 11px; color: #444; line-height: 1.4;">
+      <p><strong>महत्त्वाची सूचना:</strong> UIDAI नियमानुसार सादर केलेल्या मूळ कागदपत्रातील अचूक स्पेलिंगप्रमाणेच नाव अपडेट होईल. खोटी किंवा बनावट कागदपत्रे सादर केल्यास अर्ज फेटाळला जाऊ शकतो व कायदेशीर कारवाई होऊ शकते.</p>
+    </div>
+
+    <div style="margin-top: 25px; display: flex; justify-content: space-between; font-size: 12px;">
+      <div>नागरिकाची स्वाक्षरी: ________________</div>
+      <div>केंद्र ऑपरेटर शिक्का व स्वाक्षरी: ________________</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer style="background: var(--hub-navy); color: #cbd5e1; text-align: center; padding: 1.5rem 1rem; border-top: 3px solid var(--hub-gold); margin-top: auto; font-size: 0.85rem;">
+    <p><strong>Aadhaar Name Update Rules Engine</strong> • eMudra CSC Hub • जिल्हा समन्वयक (MahaIT) व UIDAI मार्गदर्शक</p>
+    <p style="margin-top: 4px; font-size: 0.78rem; color: #94a3b8;">Center ID: 152153410016 • मु. पो. कणकवली, जि. सिंधुदुर्ग • संपर्क: 9890869793</p>
+    <p style="margin-top: 6px; font-size: 0.72rem; color: #64748b;">© 2026 eMudra CSC. सर्व हक्क सुरक्षित. All Rights Reserved.</p>
+  </footer>
+
+  <!-- Script: Intelligent Rule Evaluation Engine -->
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const txtOldName = document.getElementById('txtOldName');
+    const txtNewName = document.getElementById('txtNewName');
+    const lblAdult = document.getElementById('lblAdult');
+    const lblMinor = document.getElementById('lblMinor');
+    const chkMarriage = document.getElementById('chkMarriage');
+    const chkGender = document.getElementById('chkGender');
+    const chkDataEntry = document.getElementById('chkDataEntry');
+    const chkRegional = document.getElementById('chkRegional');
+
+    const resultHeroBox = document.getElementById('resultHeroBox');
+    const lblScenarioCode = document.getElementById('lblScenarioCode');
+    const lblScenarioTitle = document.getElementById('lblScenarioTitle');
+    const lblScenarioDesc = document.getElementById('lblScenarioDesc');
+    const docListContainer = document.getElementById('docListContainer');
+    const operatorRulesList = document.getElementById('operatorRulesList');
+
+    let currentAgeGroup = 'adult';
+
+    // Age radio switcher
+    lblAdult.addEventListener('click', () => {
+      currentAgeGroup = 'adult';
+      lblAdult.classList.add('active');
+      lblMinor.classList.remove('active');
+      document.querySelector('input[name="ageGroup"][value="adult"]').checked = true;
+      evaluateRules();
+    });
+
+    lblMinor.addEventListener('click', () => {
+      currentAgeGroup = 'minor';
+      lblMinor.classList.add('active');
+      lblAdult.classList.remove('active');
+      document.querySelector('input[name="ageGroup"][value="minor"]').checked = true;
+      evaluateRules();
+    });
+
+    // Inputs listener
+    txtOldName.addEventListener('input', evaluateRules);
+    txtNewName.addEventListener('input', evaluateRules);
+    chkMarriage.addEventListener('change', evaluateRules);
+    chkGender.addEventListener('change', evaluateRules);
+    chkDataEntry.addEventListener('change', evaluateRules);
+    chkRegional.addEventListener('change', evaluateRules);
+
+    // Preset Buttons
+    document.querySelectorAll('.preset-chip-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        txtOldName.value = btn.getAttribute('data-old');
+        txtNewName.value = btn.getAttribute('data-new');
+        const age = btn.getAttribute('data-age');
+        if (age === 'minor') {
+          lblMinor.click();
+        } else {
+          lblAdult.click();
+        }
+        chkMarriage.checked = false;
+        chkGender.checked = false;
+        chkDataEntry.checked = false;
+        chkRegional.checked = false;
+        evaluateRules();
+      });
+    });
+
+    // Reset Form
+    document.getElementById('btnResetForm').addEventListener('click', () => {
+      txtOldName.value = '';
+      txtNewName.value = '';
+      chkMarriage.checked = false;
+      chkGender.checked = false;
+      chkDataEntry.checked = false;
+      chkRegional.checked = false;
+      lblAdult.click();
+      evaluateRules();
+      txtOldName.focus();
+    });
+
+    // Print Slip
+    document.getElementById('btnPrintSlip').addEventListener('click', () => {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('mr-IN', { day: 'numeric', month: 'long', year: 'numeric' }) + ' ' + now.toLocaleTimeString('mr-IN', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('slipDate').textContent = dateStr;
+      document.getElementById('slipAge').textContent = currentAgeGroup === 'adult' ? 'प्रौढ (१८+ वर्षे)' : 'बालक (१८ वर्षांखालील)';
+      document.getElementById('slipOldName').textContent = txtOldName.value || '-';
+      document.getElementById('slipNewName').textContent = txtNewName.value || '-';
+      document.getElementById('slipScenario').textContent = `${lblScenarioCode.textContent} : ${lblScenarioTitle.textContent}`;
+
+      // Populate Slip Docs
+      const slipDocList = document.getElementById('slipDocList');
+      slipDocList.innerHTML = '';
+      document.querySelectorAll('#docListContainer .doc-item-pill').forEach(pill => {
+        const li = document.createElement('li');
+        li.textContent = pill.textContent.trim();
+        slipDocList.appendChild(li);
+      });
+
+      window.print();
+    });
+
+    // Helper: Levenshtein distance for minor spelling checks
+    function levenshteinDistance(s1, s2) {
+      s1 = s1.toLowerCase().trim();
+      s2 = s2.toLowerCase().trim();
+      const m = s1.length, n = s2.length;
+      const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+      for (let i = 0; i <= m; i++) dp[i][0] = i;
+      for (let j = 0; j <= n; j++) dp[0][j] = j;
+
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          if (s1[i - 1] === s2[j - 1]) {
+            dp[i][j] = dp[i - 1][j - 1];
+          } else {
+            dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+          }
+        }
+      }
+      return dp[m][n];
+    }
+
+    // Helper: Strip dots
+    function stripDots(str) {
+      return str.replace(/\./g, '').replace(/\s+/g, ' ').trim();
+    }
+
+    // Prefixes list
+    const KNOWN_PREFIXES = [
+      'lt gen', 'maj gen', 'brig', 'col', 'capt', 'lt', 'sub', 'subedar',
+      'dr.', 'dr', 'shri', 'smt', 'srimati', 'smt.', 'mr.', 'mr', 'mrs.', 'mrs',
+      'miss', 'ms.', 'ms', 'adv.', 'adv', 'prof.', 'prof', 'kumar', 'kumari'
+    ];
+
+    function evaluateRules() {
+      const oldRaw = txtOldName.value.trim();
+      const newRaw = txtNewName.value.trim();
+      const isAdult = currentAgeGroup === 'adult';
+
+      let scenario = {
+        code: '1(a)',
+        title: 'नाव दुरुस्ती विश्लेषण',
+        desc: '',
+        type: 'standard', // 'standard', 'no-doc', 'gazette'
+        docs: [],
+        rules: []
+      };
+
+      if (!oldRaw && !newRaw) {
+        scenario.code = 'सूचना';
+        scenario.title = 'कृपया जुने व नवीन नाव प्रविष्ट करा';
+        scenario.desc = 'UIDAI च्या १८ सप्टेंबर २०२६ SOP नियमांनुसार विश्लेषण करण्यासाठी जुने आधार नाव व नवीन मागणी केलेले नाव वर टाका.';
+        scenario.docs = ['दोन्ही नावे प्रविष्ट केल्यावर आवश्यक दस्तऐवजांची यादी येथे दिसेल.'];
+        scenario.rules = ['Operator ने नागरिकाच्या मूळ कागदपत्रांची पडताळणी केल्याशिवाय फॉर्म सबमिट करू नये.'];
+        renderOutput(scenario);
+        return;
+      }
+
+      if (oldRaw === newRaw) {
+        scenario.code = 'समान नाव';
+        scenario.title = 'जुने नाव आणि नवीन नाव एकच आहे';
+        scenario.desc = 'नावात कोणताही फरक आढळला नाही. स्पेलिंग, स्पेसिंग किंवा अक्षरांमध्ये बदल असल्यास तसे प्रविष्ट करा.';
+        scenario.type = 'no-doc';
+        scenario.docs = ['कोणत्याही बदलाची गरज नाही'];
+        scenario.rules = ['नावात बदल नसल्यास डेमोग्राफिक अपडेट करण्याची आवश्यकता नाही.'];
+        renderOutput(scenario);
+        return;
+      }
+
+      // Check special checkboxes first
+      if (chkMarriage.checked) {
+        scenario.code = '1(h)';
+        scenario.title = 'लग्न / घटस्फोटामुळे Surname (आडनाव) बदल';
+        scenario.desc = 'विवाहानंतर किंवा घटस्फोटानंतर महिलेचे आडनाव बदलण्यासाठी हा नियम लागू होतो.';
+        scenario.docs = [
+          'Annexure D (विवाह / घटस्फोटानंतर आडनाव बदल प्रमाणपत्र)',
+          'PoI (Proof of Identity - ओळख पुरावा)'
+        ];
+        scenario.rules = [
+          'विवाह नोंदणी दाखला (Marriage Certificate) किंवा कायदेशीर घटस्फोट हुकूमनामा सोबत असणे ग्राह्य धरले जाते.',
+          'Annexure D राजपत्रित अधिकारी (Gazetted Officer) किंवा सक्षम प्राधिकाऱ्याकडून साक्षांकित असावे.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      if (chkGender.checked) {
+        scenario.code = '1(i)';
+        scenario.title = 'Gender Change (लिंग बदल) मुळे नाव बदल';
+        scenario.desc = 'लिंग बदल प्रक्रियेनंतर त्या अनुषंगाने नाव बदलण्यासाठी आवश्यक पुरावा.';
+        scenario.docs = [
+          'PoI (Proof of Identity - ओळख पुरावा / वैद्यकीय अथवा अधिकृत प्रमाणपत्र)'
+        ];
+        scenario.rules = [
+          'सक्षम वैद्यकीय अधीक्षक किंवा जिल्हा दंडाधिकारी कार्यालयाचे प्रमाणपत्र पडताळावे.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      if (chkRegional.checked) {
+        scenario.code = '1(g)';
+        scenario.title = 'English मध्ये नाव बरोबर पण Regional Language (मराठी) मध्ये चूक';
+        scenario.desc = 'इंग्रजी स्पेलिंग बरोबर असून केवळ मराठी / स्थानिक भाषेतील फॉन्ट किंवा वेलांटी / मात्रा चुकीची आली असल्यास.';
+        scenario.docs = [
+          'PoI (Proof of Identity - वैध ओळख पुरावा)'
+        ];
+        scenario.rules = [
+          'इंग्रजी नाव न बदलता केवळ स्थानिक भाषेतील ट्रान्सलिटिरेशन (मराठी टायपिंग) सुधारून सबमिट करावे.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      if (chkDataEntry.checked) {
+        scenario.code = '1(f)';
+        scenario.title = 'Aadhaar मध्ये नाव चुकीचे record झाले (पण योग्य document सादर केले आहे)';
+        scenario.desc = 'आधार नोंदणीवेळी ऑपरेटरकडून चूक झाली होती, परंतु नागरिकाकडे योग्य नावाचे मूळ दस्तऐवज उपलब्ध आहे.';
+        scenario.docs = [
+          isAdult ? 'Annexure B (Adult Name Correction / Data-Entry Error)' : 'Annexure C (Minor Name Correction)',
+          'PoI / PoR (Proof of Identity / Proof of Relationship)'
+        ];
+        scenario.rules = [
+          'नागरिकाच्या सादर केलेल्या मूळ कागदपत्रातील नावाप्रमाणेच अपडेट होईल.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      // 1(j): Baby of ... detection
+      const isBabyOf = /^baby\s+of/i.test(oldRaw) || /^b\/o/i.test(oldRaw) || /^बेबी\s+ऑफ/i.test(oldRaw);
+      if (isBabyOf) {
+        scenario.code = '1(j)';
+        scenario.title = '१८ वर्षाखालील मुलाचे "Baby of ..." वरून पूर्ण नाव करणे';
+        scenario.desc = 'बालकाच्या जन्मानंतर "Baby of [आईचे नाव]" अशी तात्पुरती नोंद झाली होती, आता अधिकृत नाव ठेवले आहे.';
+        scenario.docs = [
+          'Affidavit (शपथपत्र - आई/वडिलांचे प्रतिज्ञापत्र)',
+          'PoI / PoR (मुलाचे जन्म प्रमाणपत्र किंवा पालकांचा PoR पुरावा)'
+        ];
+        scenario.rules = [
+          'जन्म प्रमाणपत्रामध्ये बाळाचे नाव नोंदवलेले असणे अनिवार्य आहे किंवा पालकांचे संयुक्त प्रतिज्ञापत्र जोडावे.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      // 1(l): Randomly occurring capital letters (rAMESH ➔ Ramesh)
+      if (oldRaw.toLowerCase() === newRaw.toLowerCase() && oldRaw.replace(/\s+/g, '') === newRaw.replace(/\s+/g, '')) {
+        // Only case difference
+        scenario.code = '1(l)';
+        scenario.title = 'नावातील Random Capital Letters दुरुस्त करणे (उदा. rAMESH ➔ Ramesh)';
+        scenario.desc = 'नावात कोणताही शब्द किंवा स्पेलिंग बदललेले नाही, केवळ कॅपिटल / स्मॉल अक्षरांचा घोळ सुधारला आहे.';
+        scenario.type = 'no-doc';
+        scenario.docs = [
+          '✅ कोणत्याही दस्तऐवजाची गरज नाही (No document required)'
+        ];
+        scenario.rules = [
+          'नागरिकाकडून कोणतेही अतिरिक्त कागदपत्र न मागता थेट ऑपरेटर स्तरावर दुरुस्त करता येते.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      // 1(m): Dot removal (R.P. Singh ➔ RP Singh)
+      if (stripDots(oldRaw).toLowerCase() === stripDots(newRaw).toLowerCase()) {
+        scenario.code = '1(m)';
+        scenario.title = 'नावातील Dots (टिंब) काढणे (उदा. R.P. Singh ➔ RP Singh)';
+        scenario.desc = 'नावातील शब्दांमधील केवळ टिंब (.) काढले आहेत, स्पेलिंग समान आहे.';
+        scenario.type = 'no-doc';
+        scenario.docs = [
+          '✅ कोणत्याही दस्तऐवजाची गरज नाही (No document required)'
+        ];
+        scenario.rules = [
+          'नावातील केवळ डॉट्स काढण्यासाठी कोणतेही पुरावे देण्याची आवश्यकता नाही.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      // 1(n): urf / alias removal
+      const urfRegex = /\b(urf|alias|उर्फ|टोपणनाव)\b/i;
+      if (urfRegex.test(oldRaw) && !urfRegex.test(newRaw)) {
+        scenario.code = '1(n)';
+        scenario.title = '"urf / alias" (उर्फ / टोपणनाव) काढणे';
+        scenario.desc = 'जुना आधार कार्डमध्ये नोंदवलेले "उर्फ / टोपणनाव" काढून केवळ मूळ अधिकृत नाव ठेवणे.';
+        scenario.docs = [
+          isAdult ? 'Annexure E (urf / alias removal - Adult)' : 'Annexure F (urf / alias removal - Minor)',
+          'PoI (Proof of Identity - वैध ओळख पुरावा)'
+        ];
+        scenario.rules = [
+          'उर्फ काढण्यासाठी Annexure E (प्रौढ) किंवा Annexure F (बालक) सक्षम अधिकाऱ्याकडून प्रमाणित करून घ्यावे.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      // 1(k): Military Ranks / Prefixes removal
+      let oldLower = oldRaw.toLowerCase();
+      let hasPrefix = false;
+      for (const p of KNOWN_PREFIXES) {
+        if (oldLower.startsWith(p + ' ') || oldLower.startsWith(p + '.')) {
+          hasPrefix = true;
+          break;
+        }
+      }
+      if (hasPrefix) {
+        scenario.code = '1(k)';
+        scenario.title = 'Military ranks / designations / prefixes काढणे (उदा. Dr., Col., Shri)';
+        scenario.desc = 'नावाच्या सुरुवातीला लावलेली पदवी, हुद्दा किंवा आदरार्थी उपाधी (Prefix) काढून केवळ नाव ठेवणे.';
+        scenario.docs = [
+          'PoI (Proof of Identity - ओळख पुरावा)'
+        ];
+        scenario.rules = [
+          'आधारमध्ये कोणतीही पदवी (Dr., Adv., Col., Shri, Smt.) नोंदवण्यास मनाई आहे. पुरावा तपासून prefix वगळावे.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      // Tokenize words
+      const oldTokens = oldRaw.split(/\s+/).filter(Boolean);
+      const newTokens = newRaw.split(/\s+/).filter(Boolean);
+
+      // 1(c): Sequential order change (Divakar Anand ➔ Anand Divakar)
+      if (oldTokens.length === newTokens.length && oldTokens.length >= 2) {
+        const sortedOld = [...oldTokens].map(s => s.toLowerCase()).sort().join(' ');
+        const sortedNew = [...newTokens].map(s => s.toLowerCase()).sort().join(' ');
+        if (sortedOld === sortedNew) {
+          scenario.code = '1(c)';
+          scenario.title = 'नावातील शब्दांचा sequential order (क्रम) बदलणे';
+          scenario.desc = 'नावातील स्पेलिंग तेच आहे, फक्त शब्दांची जागा बदलली आहे (उदा. प्रथम नाव व आडनाव मागे-पुढे झाले).';
+          scenario.docs = [
+            'PoI / PoR (Proof of Identity किंवा Proof of Relationship)'
+          ];
+          scenario.rules = [
+            'सादर केलेल्या ओळख पुराव्यामध्ये ज्या क्रमाने नाव आहे, तोच क्रम आधारवर नोंदवावा.'
+          ];
+          renderOutput(scenario);
+          return;
+        }
+      }
+
+      // 1(a): Initials expansion (R D Prasad ➔ Rama Durga Prasad)
+      let isInitialsExpansion = false;
+      if (oldTokens.length === newTokens.length) {
+        let singleLetterMatches = 0;
+        for (let i = 0; i < oldTokens.length; i++) {
+          const ot = oldTokens[i].replace(/\./g, '');
+          const nt = newTokens[i].replace(/\./g, '');
+          if (ot.length === 1 && nt.length > 1 && nt.toLowerCase().startsWith(ot.toLowerCase())) {
+            singleLetterMatches++;
+          }
+        }
+        if (singleLetterMatches > 0) isInitialsExpansion = true;
+      }
+      if (isInitialsExpansion) {
+        scenario.code = '1(a)';
+        scenario.title = 'Abbreviation / Initials चे Full Name करणे (उदा. R D Prasad ➔ Rama Durga Prasad)';
+        scenario.desc = 'आधारवरील एका अक्षरी आद्याक्षराचा (Initials) पूर्ण शब्दात विस्तार करणे.';
+        scenario.docs = [
+          isAdult ? 'Annexure B (Adult Name Correction / Initials Expansion)' : 'Annexure C (Minor Name Correction)',
+          'PoI / PoR (Proof of Identity / Proof of Relationship)'
+        ];
+        scenario.rules = [
+          'Initials चा विस्तार करताना Annexure B (प्रौढ) किंवा Annexure C (बालक) सोबत वैध ओळख पुरावा जोडणे अनिवार्य आहे.',
+          'सादर दस्तऐवजातील पूर्ण नावाप्रमाणेच आधारवर नाव अपडेट होईल.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      // 1(b): Middle or Last name add/delete
+      if (Math.abs(oldTokens.length - newTokens.length) === 1) {
+        // Check if one token was inserted or deleted while others match
+        const longer = oldTokens.length > newTokens.length ? oldTokens : newTokens;
+        const shorter = oldTokens.length > newTokens.length ? newTokens : oldTokens;
+        let matched = 0;
+        shorter.forEach(st => {
+          if (longer.some(lt => lt.toLowerCase() === st.toLowerCase())) matched++;
+        });
+
+        if (matched === shorter.length) {
+          scenario.code = '1(b)';
+          scenario.title = 'Middle name किंवा Last name add / delete करणे (उदा. Rama Prasad ➔ Rama Shyam Prasad)';
+          scenario.desc = 'नावात मधले नाव (वडिलांचे/पतीचे नाव) किंवा आडनाव नव्याने जोडणे अथवा वगळणे.';
+          scenario.docs = [
+            isAdult ? 'Annexure B (Adult Name Correction)' : 'Annexure C (Minor Name Correction)',
+            'PoI / PoR (Proof of Identity / Proof of Relationship)'
+          ];
+          scenario.rules = [
+            'नवीन जोडले जाणारे नाव अधिकृत पुराव्यावर उपलब्ध असल्याची खात्री करावी.',
+            'Annexure B / C सोबत सक्षम PoI / PoR जोडणे अनिवार्य आहे.'
+          ];
+          renderOutput(scenario);
+          return;
+        }
+      }
+
+      // 1(d): Minor phonetic / spelling correction (Levenshtein distance <= 2)
+      const dist = levenshteinDistance(oldRaw, newRaw);
+      if (dist <= 2) {
+        scenario.code = '1(d)';
+        scenario.title = 'Spelling मध्ये minor correction (किरकोळ स्पेलिंग सुधारणा)';
+        scenario.desc = 'उच्चार समान राहून केवळ एका किंवा दोन अक्षरांमध्ये किरकोळ सुधारणा (उदा. Suresh ➔ Sureshh किंवा Patil ➔ Patel).';
+        scenario.docs = [
+          'PoI / PoR (Proof of Identity / Proof of Relationship)'
+        ];
+        scenario.rules = [
+          'उच्चार बदलत नसल्यास साध्या PoI/PoR पुराव्यावर बदल करता येतो, गॅझेटची आवश्यकता नसते.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      // 1(e): Combination of minor changes
+      if (dist <= 4 && oldTokens.length === newTokens.length) {
+        scenario.code = '1(e)';
+        scenario.title = 'एकापेक्षा जास्त किरकोळ बदल (Combination of a, b, c, d)';
+        scenario.desc = 'नावात एकापेक्षा जास्त लहान सुधारणा आहेत परंतु मूळ ओळख व व्यक्ती तीच आहे.';
+        scenario.docs = [
+          'PoI / PoR (Proof of Identity / Proof of Relationship)'
+        ];
+        scenario.rules = [
+          'सर्व बदल किरकोळ स्वरूपाचे असल्याची पडताळणी करावी.'
+        ];
+        renderOutput(scenario);
+        return;
+      }
+
+      // 1(o): Complete change of name / identity (Major Name Change)
+      scenario.code = '1(o)';
+      scenario.title = 'Complete change of name / identity (पूर्णपणे वेगळे नाव)';
+      scenario.desc = 'जुने नाव आणि नवीन नाव यामध्ये मोठा फरक आहे (उदा. पूर्णपणे नवीन नाव धारण करणे).';
+      scenario.type = 'gazette';
+      scenario.docs = [
+        '📜 Gazette Notification (महाराष्ट्र / केंद्र शासनाचे अधिकृत राजपत्र - अनिवार्य)',
+        'PoI (Proof of Identity - जुन्या किंवा नवीन नावाचा वैध ओळख पुरावा)'
+      ];
+      scenario.rules = [
+        '⚠️ MAJOR NAME CHANGE: UIDAI नियमांनुसार पूर्ण नाव बदलासाठी केवळ राजपत्र (Gazette Notification) ग्राह्य धरले जाते.',
+        'गॅझेटशिवाय असा बदल केल्यास अर्ज सिस्टीममधून थेट रिजेक्ट (Reject) केला जाईल.'
+      ];
+      renderOutput(scenario);
+    }
+
+    function renderOutput(sc) {
+      lblScenarioCode.textContent = sc.code;
+      lblScenarioTitle.textContent = sc.title;
+      lblScenarioDesc.textContent = sc.desc;
+
+      // Update badge class
+      resultHeroBox.className = 'result-badge-hero';
+      if (sc.type === 'no-doc') {
+        resultHeroBox.classList.add('no-doc');
+      } else if (sc.type === 'gazette') {
+        resultHeroBox.classList.add('gazette');
+      }
+
+      // Populate Docs
+      docListContainer.innerHTML = '';
+      sc.docs.forEach(docText => {
+        const li = document.createElement('li');
+        li.className = 'doc-item-pill';
+        if (sc.type === 'gazette' && docText.includes('Gazette')) {
+          li.classList.add('doc-mandatory');
+        } else if (sc.type === 'no-doc') {
+          li.classList.add('doc-free');
+        }
+
+        let iconHtml = '<i class="fa-solid fa-file-lines"></i>';
+        if (docText.includes('Gazette') || docText.includes('राजपत्र')) {
+          iconHtml = '<i class="fa-solid fa-scroll text-rose-500"></i>';
+        } else if (docText.includes('Annexure')) {
+          iconHtml = '<i class="fa-solid fa-file-signature text-amber-400"></i>';
+        } else if (docText.includes('PoI') || docText.includes('PoR')) {
+          iconHtml = '<i class="fa-solid fa-address-card text-sky-400"></i>';
+        } else if (docText.includes('गरज नाही')) {
+          iconHtml = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+        }
+
+        li.innerHTML = `${iconHtml} <span>${docText}</span>`;
+        docListContainer.appendChild(li);
+      });
+
+      // Populate Rules
+      operatorRulesList.innerHTML = '';
+      sc.rules.forEach(r => {
+        const li = document.createElement('li');
+        li.innerHTML = r;
+        operatorRulesList.appendChild(li);
+      });
+    }
+
+    // Initial evaluation
+    evaluateRules();
+  });
+  </script>
+
+</body>
+</html>
