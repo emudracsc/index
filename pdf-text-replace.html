@@ -537,14 +537,14 @@
 
         matches.forEach(m => {
           const page = pages[m.pageIndex];
-          const descPad = Math.max(m.fontSize * 0.28, 2.5);
-          const boxH = Math.max(m.height + descPad + 2, m.fontSize * 1.25);
+          const descPad = m.fontSize * 0.14;
+          const boxH = m.fontSize * 0.90;
 
-          // White rectangle to cover old text
+          // White rectangle to cover old text - ZERO padding to protect adjacent text and lines
           page.drawRectangle({
-            x: m.x - 1.5,
+            x: m.x,
             y: m.y - descPad,
-            width: m.width + 3,
+            width: m.width,
             height: boxH,
             color: rgb(1, 1, 1),
           });

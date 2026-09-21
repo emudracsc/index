@@ -867,12 +867,13 @@
 
         <!-- Advanced Font & Masking Options -->
         <details class="adv-accordion" style="margin-top: 1rem;">
-          <summary><i class="fa-solid fa-sliders"></i> प्रगत फॉन्ट व कव्हर पॅडिंग सेटिंग्ज</summary>
+          <summary><i class="fa-solid fa-sliders"></i> प्रगत फॉन्ट व कव्हर पॅडिंग सेटिंग्ज (Safe Line Guard)</summary>
           <div class="adv-body">
             <div class="form-group">
               <label class="form-label" for="selFontAdjustment">फॉन्ट साईझ ॲडजस्टमेंट:</label>
               <select id="selFontAdjustment" class="form-control" style="font-size: 0.85rem; padding: 4px 8px;">
                 <option value="auto" selected>तंतोतंत मूळ अक्षराएवढा (Auto 100%)</option>
+                <option value="fit">जागेनुसार अचूक बसवा (Auto-Fit to Width - जागा ओलांडणार नाही)</option>
                 <option value="tight">थोडेशे लहान (Tight 92%)</option>
                 <option value="larger">थोडेशे मोठे (Large 105%)</option>
               </select>
@@ -896,11 +897,21 @@
                 <option value="#1d4ed8">निळा (Blue #1d4ed8)</option>
               </select>
             </div>
+            <div class="form-group">
+              <label class="form-label" for="selHorizontalPadding">आडवे व्हाईट बॉक्स पॅडिंग (लगतच्या शब्दांचे रक्षण):</label>
+              <select id="selHorizontalPadding" class="form-control" style="font-size: 0.85rem; padding: 4px 8px;">
+                <option value="0" selected>०.० pt (तंतोतंत शून्य - चिकटलेला शेजारील शब्द अजिबात झाकला जाणार नाही)</option>
+                <option value="0.4">सूक्ष्म ०.४ pt</option>
+                <option value="1.0">१.० pt</option>
+              </select>
+            </div>
             <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">
-                <input type="checkbox" id="chkStrictMask" checked> 
-                इतर अक्षरांना धक्का न लावता अचूक व्हाईट मास्क (Tight Safe Padding)
-              </label>
+              <label class="form-label" for="selVerticalPadding">उभी जागा (वरच्या व खालच्या ओळींचे रक्षण):</label>
+              <select id="selVerticalPadding" class="form-control" style="font-size: 0.85rem; padding: 4px 8px;">
+                <option value="safe" selected>सुरक्षित 90% (बाजूच्या वरच्या/खालच्या ओळी अजिबात कट होणार नाहीत)</option>
+                <option value="compact">अति कॉम्पॅक्ट 82% (अतिशय दाट ओळींसाठी)</option>
+                <option value="standard">सामान्य 96%</option>
+              </select>
             </div>
           </div>
         </details>
@@ -1233,6 +1244,10 @@
       const matches = [];
       const qLower = query.toLowerCase();
 
+      // Reusable measurement context for exact Devanagari sub-span placement
+      const measureCanvas = document.createElement('canvas');
+      const measureCtx = measureCanvas.getContext('2d');
+
       for (let p = 1; p <= totalPages; p++) {
         const page = await currentPdfDoc.getPage(p);
         const textContent = await page.getTextContent();
@@ -1253,16 +1268,36 @@
               const y = item.transform[5];
               const itemWidth = item.width || (itemStrNorm.length * fontSize * 0.55);
 
-              // Sub-span offset ratio
-              const ratioStart = m.index / (itemStrNorm.length || 1);
-              const ratioWidth = query.length / (itemStrNorm.length || 1);
+              let matchX = x;
+              let matchWidth = itemWidth;
+
+              if (itemStrNorm.trim() === query.trim() || itemLower === qLower) {
+                // Exact 100% item match - use PDF stream exact bounding box
+                matchX = x;
+                matchWidth = item.width || itemWidth;
+              } else {
+                // Sub-span exact proportional measurement with Canvas shaper
+                measureCtx.font = `600 ${fontSize}px 'Noto Sans Devanagari', 'Mukta', system-ui, sans-serif`;
+                const prefixStr = item.str.substring(0, m.index);
+                const matchedStr = item.str.substring(m.index, m.index + query.length);
+
+                const wPrefix = measureCtx.measureText(prefixStr).width;
+                const wMatch = measureCtx.measureText(matchedStr).width;
+                const wTotal = measureCtx.measureText(item.str).width || 1;
+
+                const actualWidth = item.width || wTotal;
+                const scale = actualWidth / wTotal;
+
+                matchX = x + (wPrefix * scale);
+                matchWidth = Math.min(wMatch * scale, actualWidth - (wPrefix * scale));
+              }
 
               matches.push({
                 pageNum: p,
                 originalStr: item.str,
-                x: x + (itemWidth * ratioStart),
+                x: matchX,
                 y: y,
-                width: Math.max(itemWidth * ratioWidth, 18),
+                width: matchWidth,
                 height: item.height || fontSize,
                 fontSize: fontSize
               });
@@ -1442,14 +1477,36 @@
             if (fontMode === 'tight') fontSize *= 0.92;
             else if (fontMode === 'larger') fontSize *= 1.05;
 
-            const padX = strictMask ? 1.0 : 2.0;
-            const padY = strictMask ? 1.5 : 2.5;
+            // Safe horizontal and vertical clearances to protect adjacent text & lines
+            const padX = parseFloat(document.getElementById('selHorizontalPadding')?.value || '0');
+            const vertMode = document.getElementById('selVerticalPadding')?.value || 'safe';
+
+            let descRatio = 0.14;
+            let totalHeightRatio = 0.90;
+
+            if (vertMode === 'compact') {
+              descRatio = 0.10;
+              totalHeightRatio = 0.82;
+            } else if (vertMode === 'standard') {
+              descRatio = 0.18;
+              totalHeightRatio = 0.96;
+            }
+
+            // Auto-fit to original width if requested
+            if (fontMode === 'fit') {
+              const testStamp = await getStamp(replaceWith, fontSize, chosenColor, chosenWeight);
+              if (testStamp.textWidthPt > m.width) {
+                fontSize = Math.max(fontSize * (m.width / testStamp.textWidthPt) * 0.98, 7);
+              }
+            }
 
             const stamp = await getStamp(replaceWith, fontSize, chosenColor, chosenWeight);
-            const descPad = Math.max(fontSize * 0.28, padY);
-            const boxH = Math.max(m.height + descPad + 2, fontSize * 1.25);
+            const descPad = fontSize * descRatio;
+            const boxH = fontSize * totalHeightRatio;
 
             // 1. Non-destructive clean white patch on EXACT word bounding box only
+            // padX = 0 ensures adjacent words on left/right are NEVER touched or cut off!
+            // boxH = 0.90 * fontSize ensures adjacent lines above/below are NEVER touched or cut off!
             docPage.drawRectangle({
               x: m.x - padX,
               y: m.y - descPad,

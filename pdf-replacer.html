@@ -1519,34 +1519,62 @@
         const docPage = pages[pageNum - 1];
         let pageHasChange = false;
 
+        // Shared measuring context for sub-span positioning
+        const replacerMeasureCanvas = document.createElement('canvas');
+        const replacerMeasureCtx = replacerMeasureCanvas.getContext('2d');
+
         for (const item of textContent.items) {
           if (!item.str) continue;
           for (const [findWord, replaceWord] of Object.entries(rulesMap)) {
-            if (item.str.toLowerCase().includes(findWord.toLowerCase())) {
+            const lowerItem = item.str.toLowerCase();
+            const lowerFind = findWord.toLowerCase();
+            const matchIdx = lowerItem.indexOf(lowerFind);
+
+            if (matchIdx !== -1) {
               pageHasChange = true;
               const fontSize = Math.abs(item.transform[0]) || 11;
               const x = item.transform[4];
               const y = item.transform[5];
-              const width = item.width || (item.str.length * fontSize * 0.55);
-              const height = item.height || fontSize;
-              const descPad = Math.max(fontSize * 0.28, 2.5);
-              const boxH = Math.max(height + descPad + 2, fontSize * 1.25);
+              const itemWidth = item.width || (item.str.length * fontSize * 0.55);
 
-              // 1. Cover old text with clean background rectangle
+              let targetX = x;
+              let targetWidth = itemWidth;
+
+              if (lowerItem.trim() === lowerFind.trim()) {
+                targetX = x;
+                targetWidth = item.width || itemWidth;
+              } else {
+                replacerMeasureCtx.font = `600 ${fontSize}px 'Noto Sans Devanagari', 'Mukta', system-ui, sans-serif`;
+                const prefixStr = item.str.substring(0, matchIdx);
+                const matchStr = item.str.substring(matchIdx, matchIdx + findWord.length);
+
+                const wPrefix = replacerMeasureCtx.measureText(prefixStr).width;
+                const wMatch = replacerMeasureCtx.measureText(matchStr).width;
+                const wTotal = replacerMeasureCtx.measureText(item.str).width || 1;
+                const scale = (item.width || wTotal) / wTotal;
+
+                targetX = x + (wPrefix * scale);
+                targetWidth = Math.min(wMatch * scale, (item.width || wTotal) - (wPrefix * scale));
+              }
+
+              // Safe clearances: NEVER touch adjacent words on left/right or lines above/below
+              const descPad = fontSize * 0.14;
+              const boxH = fontSize * 0.90;
+
+              // 1. Cover old text with clean background rectangle (zero horizontal padding)
               docPage.drawRectangle({
-                x: x - 1.5,
+                x: targetX,
                 y: y - descPad,
-                width: width + 3,
+                width: targetWidth,
                 height: boxH,
                 color: PDFLib.rgb(1, 1, 1),
               });
 
               // 2. Draw replacement text with 100% native HarfBuzz shaping
-              const repText = item.str.replace(new RegExp(escapeRegex(findWord), 'gi'), replaceWord);
               try {
-                const stamp = await getStamp(repText, fontSize * 0.96);
+                const stamp = await getStamp(replaceWord, fontSize * 0.96);
                 docPage.drawImage(stamp.img, {
-                  x: x - stamp.offsetX,
+                  x: targetX - stamp.offsetX,
                   y: y - stamp.offsetY,
                   width: stamp.pdfWidth,
                   height: stamp.pdfHeight
