@@ -1053,18 +1053,6 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "pdf-compressor.html",
     isInternal: true
   },
-  // ⚡ मराठी व इंग्रजी PDF टेक्स्ट रिप्लेसर व PDF मर्जर प्रो (Marathi PDF Replacer & Merger Pro)
-  {
-    id: "link-pdf-replacer",
-    category: "उपयुक्त दस्तऐवज टूल्स",
-    icon: "fa-solid fa-file-pen",
-    title_mr: "⚡ मराठी PDF मजकूर रिप्लेसर व मर्जर Pro",
-    title_en: "Marathi & English PDF Text Replacer & Merger Pro",
-    desc_mr: "PDF मधील मराठी (देवनागरी) व इंग्रजी मजकूर अचूक फॉन्टसह शोधा व बदला (Find & Replace), तसेच अनेक PDF फाईल्स एकत्र (Merge) करा.",
-    desc_en: "Search & replace Marathi/English text with exact HarfBuzz font shaping and merge multiple PDFs seamlessly.",
-    url: "pdf-replacer.html",
-    isInternal: true
-  },
   // 🖼️ A4 ४x६ फोटो प्रिंट स्टुडिओ (A4 4x6 Photo Print Pro)
   {
     id: "link-photo-print-4x6",
