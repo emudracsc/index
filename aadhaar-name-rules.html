@@ -1634,7 +1634,7 @@
           <ul class="operator-rules-list" id="operatorRulesList">
             <li>सादर केलेल्या प्रमाणपत्रात जशी स्पेलिंग, स्पेसिंग व क्रम आहे, तंतोतंत तसेच अपडेट करावे.</li>
             <li>नागरिकाने तोंडी सांगितलेले नाव थेट भरू नये, सादर कागदपत्रांची पडताळणी अनिवार्य आहे.</li>
-            <li>मोठा नाव बदल (Major Name Change) असल्यास राज्य / केंद्र शासनाचे <strong>राजपत्र (Gazette Notification)</strong> अनिवार्य आहे.</li>
+            <li>मोठा नाव बदल (Major Name Change) असल्यास राज्य / केंद्र शासनाचे <strong>राजपत्र (Gazette Notification)</strong> अनिवार्य आहे. राजपत्रासोबत अन्य कोणत्याही अतिरिक्त PoI ओळख पुराव्याची गरज नसते.</li>
           </ul>
         </div>
 
@@ -3167,17 +3167,17 @@
 
       // 15. Rule 5(o): Complete change of name / identity (Major Name Change)
       scenario.code = '5(o)';
-      scenario.title = 'Complete change of name / change of identity (पूर्णपणे वेगळे नाव)';
-      scenario.desc = 'जुने नाव आणि नवीन नाव यामध्ये मोठा फरक आहे (उदा. Ram Gupta ➔ Shyam Gupta).';
+      scenario.title = 'Complete change of name / change of identity (पूर्ण नाव / पहिले नाव बदलणे)';
+      scenario.desc = 'जुने नाव आणि नवीन नाव यामध्ये मोठा फरक आहे (उदा. Ram Gupta ➔ Shyam Gupta). UIDAI SOP नुसार यासाठी शासकीय राजपत्र हे स्वतःच एकमेव परिपूर्ण व स्वतंत्र ओळख पुरावा (PoI) आहे.';
       scenario.type = 'gazette';
       scenario.annexure = null;
       scenario.docs = [
-        '📜 Gazette Notification (महाराष्ट्र / केंद्र शासनाचे अधिकृत राजपत्र - अनिवार्य)',
-        isUnder5 ? 'बालकाचा मूळ जन्म दाखला (RBD Act 1969)' : (isChild ? 'शाळा सोडल्याचा दाखला LC / मार्कशीट / जन्म दाखला' : 'PoI (Proof of Identity - वैध ओळख पुरावा)')
+        '📜 शासकीय राजपत्र (Gazette Notification for Name Change - १००% एकमेव पुरेसा पुरावा)'
       ];
       scenario.rules = [
-        '⚠️ MAJOR NAME CHANGE: UIDAI नियमांनुसार पूर्ण नाव बदलासाठी केवळ राजपत्र (Gazette Notification) अनिवार्य आहे.',
-        'गॅझेटशिवाय असा मोठा बदल केल्यास अर्ज सिस्टीममधून थेट रिजेक्ट (Reject) केला जाईल.'
+        '⚠️ MAJOR NAME CHANGE: UIDAI परिपत्रकानुसार पहिल्या नावात किंवा संपूर्ण नावात बदलासाठी **केवळ शासकीय राजपत्र (Gazette Notification)** १००% पुरेसे आहे.',
+        '✅ **राजपत्रासोबत (Gazette सोबत) कोणताही अन्य ओळख पुरावा (PoI) देण्याची गरज नाही**; UIDAI Schedule II (क्र. १८) नुसार राजपत्र हा स्वतःच एक परिपूर्ण आणि स्वतंत्र ओळख पुरावा (PoI) मानला जातो.',
+        'राजपत्राशिवाय असा मोठा बदल केल्यास अर्ज सिस्टीममधून थेट रिजेक्ट (Reject) केला जाईल.'
       ];
       renderOutput(scenario);
     }
@@ -3314,7 +3314,7 @@
           directAccNoticeText.innerHTML = '<strong>✅ कोणत्याही कागदपत्राची गरज नाही (No Document Required):</strong> केवळ डॉट्स किंवा कॅपिटल अक्षरांच्या दुरुस्तीसाठी कोणताही पुरावा न घेता ऑपरेटर थेट बदल करू शकतो.';
         } else if (scenario.type === 'gazette') {
           directAccNotice.classList.add('notice-gazette');
-          directAccNoticeText.innerHTML = '<strong>⚠️ राजपत्र (Gazette Notification) अनिवार्य:</strong> नाव पूर्णपणे वेगळे असल्याने महाराष्ट्र किंवा केंद्र शासनाचे अधिकृत राजपत्र १००% अनिवार्य आहे. त्यासोबत खालीलपैकी १ मूळ दस्तऐवज सादर करावा.';
+          directAccNoticeText.innerHTML = '<strong>📜 शासकीय राजपत्र (Gazette Notification) – १००% एकमेव पुरेसा दस्तऐवज:</strong> UIDAI परिपत्रक (दि. १८ सप्टेंबर २०२६) नियमांनुसार पहिल्या नावात किंवा संपूर्ण नावात बदलासाठी <strong>केवळ शासकीय राजपत्र</strong> आवश्यक आहे. <strong>राजपत्रासोबत अन्य कोणताही अतिरिक्त ओळख पुरावा (PoI) देण्याची अजिबात आवश्यकता नाही.</strong>';
         } else if (currentAgeGroup === 'under5') {
           directAccNotice.classList.add('notice-under5');
           directAccNoticeText.innerHTML = '<strong>👶 ० ते ५ वर्षे विशेष नियम:</strong> UIDAI नियमांनुसार ५ वर्षांखालील मुलांसाठी केवळ List I मधील दस्तऐवज (जन्म दाखला, पासपोर्ट, पालकत्व आदेश किंवा DCPO) ग्राह्य असून पॅन/व्होटर/ड्रायव्हिंग लायसन्स चालत नाही. आई किंवा वडिलांचे आधार व नातेसंबंध पडताळणी आवश्यक.';
@@ -3342,20 +3342,42 @@
         return;
       }
 
+      // If Gazette scenario (5(o) Complete change of name / first name)
+      if (scenario.type === 'gazette') {
+        if (lblDocCountText) lblDocCountText.textContent = '१ दस्तऐवज (केवळ राजपत्र पुरेसे - No PoI needed)';
+        directDocsGrid.innerHTML = `
+          <div class="direct-doc-row mandatory-doc" style="border-color: rgba(239, 68, 68, 0.7); background: rgba(239, 68, 68, 0.12); padding: 1.1rem 1.25rem;">
+            <div class="direct-doc-left">
+              <div class="direct-doc-icon-wrap" style="width: 38px; height: 38px; background: rgba(239, 68, 68, 0.25); color: #f87171; font-size: 1.2rem;">
+                <i class="fa-solid fa-scroll"></i>
+              </div>
+              <div class="direct-doc-texts">
+                <div class="direct-doc-name-mr" style="font-size: 0.98rem; color: #fff; font-weight: 800;">
+                  <span>शासकीय राजपत्र (Gazette Notification for change in first name or full name)</span>
+                  <span style="background: rgba(239, 68, 68, 0.35); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.6); font-size: 0.74rem; padding: 2px 8px; border-radius: 4px; font-weight: 800;">१००% एकमेव पुरेसा पुरावा</span>
+                  <a href="gazette-name-change.html" target="_blank" class="btn-table-annex" style="margin-left: auto; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; padding: 4px 10px; font-size: 0.75rem; background: #0284c7; border-color: #38bdf8; color: #fff;">
+                    <i class="fa-solid fa-file-lines"></i> राजपत्र अर्ज नमुना पहा
+                  </a>
+                </div>
+                <div class="direct-doc-name-en" style="font-size: 0.76rem; color: #94a3b8; margin-top: 3px;">
+                  Official Gazette Notification published by State / Central Government (UIDAI List IV, Item 18)
+                </div>
+                <div class="direct-doc-note" style="font-size: 0.8rem; color: #fecaca; margin-top: 6px; line-height: 1.45;">
+                  <i class="fa-solid fa-circle-check text-emerald-400"></i> <strong>UIDAI SOP नियम:</strong> संपूर्ण नाव किंवा पहिले नाव बदलण्यासाठी शासकीय राजपत्र हे स्वतःच परिपूर्ण व स्वतंत्र ओळख पुरावा (PoI) आहे. <strong>राजपत्रासोबत पॅन कार्ड, मतदार ओळखपत्र, शाळा दाखला किंवा अन्य कोणताही अतिरिक्त PoI ओळख पुरावा जोडण्याची अजिबात गरज नाही.</strong>
+                </div>
+              </div>
+            </div>
+            <div class="direct-doc-tags" style="align-self: flex-start; margin-top: 4px;">
+              <span class="tag-badge tag-poi">PoI (स्वतंत्र)</span>
+              <span class="tag-badge tag-por">List IV (क्र. १८)</span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
       // Compile exact documents based on age group & scenario
       let applicableDocs = [];
-
-      // 1. Mandatory Override Docs (Gazette, Specific Annexures, Marriage Cert)
-      if (scenario.type === 'gazette') {
-        applicableDocs.push({
-          isMandatory: true,
-          badgeText: '१००% अनिवार्य',
-          nameMr: 'शासकीय राजपत्र (Gazette Notification for Name Change)',
-          nameEn: 'Official Gazette Notification published by State / Central Govt',
-          note: 'पहिल्या नावात किंवा पूर्ण नावात बदल करण्यासाठी एकमेव कायदेशीर अनिवार्य दस्तऐवज.',
-          tags: ['PoI', 'List IV']
-        });
-      }
 
       if (scenario.code === '4(h)') {
         // Marriage surname
