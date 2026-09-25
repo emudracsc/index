@@ -3429,6 +3429,16 @@
           note: 'Baby of... वरून बालकाचे अधिकृत नाव ठेवण्यासाठी पालकांचे प्रतिज्ञापत्र.',
           tags: ['Affidavit', 'SOP 4(j)']
         });
+      } else if (scenario.code === '4(i)') {
+        // Gender transition
+        applicableDocs.push({
+          isMandatory: true,
+          badgeText: 'अनिवार्य पुरावा',
+          nameMr: 'तृतीयापंथी ओळखपत्र / सक्षम वैद्यकीय प्रमाणपत्र (Transgender ID / Medical Certificate)',
+          nameEn: 'Certificate issued under Transgender Persons (Protection of Rights) Act, 2019',
+          note: 'सामाजिक न्याय मंत्रालय किंवा सक्षम जिल्हा दंडाधिकारी / वैद्यकीय अधीक्षक यांनी दिलेले अधिकृत प्रमाणपत्र (UIDAI List IV, क्र. १७).',
+          tags: ['PoI', 'SOP 4(i)', 'List IV']
+        });
       }
 
       // 2. Fetch category documents from database
@@ -3467,11 +3477,11 @@
           }
         });
       } else {
-        // Adult List III & IV documents (PoI valid for name update)
-        const adultDocIds = [38, 1, 3, 4, 5, 6, 2, 13, 14, 10, 7, 8, 20, 21, 17];
+        // Adult List III & IV documents (PoI valid for name update - strictly PoI true)
+        const adultDocIds = [38, 1, 3, 4, 5, 6, 2, 13, 14, 10, 7, 8, 9, 22, 17];
         adultDocIds.forEach(id => {
           const d = UIDAI_DOCUMENTS_DB.find(doc => doc.id === id);
-          if (d) {
+          if (d && d.poi) {
             applicableDocs.push({
               isMandatory: false,
               badgeText: d.list.includes('III') ? 'List III' : 'List IV',
@@ -3789,6 +3799,10 @@
 
     // Smooth Scroll Button "Fill Required Format"
     btnFillRequiredFormat.addEventListener('click', () => {
+      if (recommendedAnnex) {
+        selectAnnexureTab(recommendedAnnex, true);
+        syncFromMainForm(true);
+      }
       const studio = document.getElementById('annexureStudioSection');
       if (studio) {
         studio.scrollIntoView({ behavior: 'smooth' });
@@ -4247,27 +4261,45 @@ Date: ${dateStr}
       return '';
     }
 
-    // --- PRINT AFFIDAVIT ACTION ---
+    // --- PRINT AFFIDAVIT ACTION (with Legal / Ledger Paper Support) ---
     btnPrintAffidavit.addEventListener('click', () => {
       const mm = parseInt(affStampMargin.value, 10) || 0;
       printableAffidavitGap.style.height = `${mm}mm`;
 
-      // Set Paper Size in Print CSS dynamically
+      // Set Paper Size in Print CSS dynamically (Legal / Ledger vs A4)
       const paper = affPaperSize.value || 'legal';
+      const pt = affFontSize.value || '14';
+
+      const printableAffidavit = document.getElementById('printableAffidavit');
+      if (printableAffidavit) {
+        printableAffidavit.style.fontSize = `${pt}pt`;
+      }
+
       const existingStyle = document.getElementById('dynamicPrintSizeStyle');
       if (existingStyle) existingStyle.remove();
 
       const style = document.createElement('style');
       style.id = 'dynamicPrintSizeStyle';
       if (paper === 'legal') {
-        style.innerHTML = `@page { size: legal portrait; margin: 10mm 20mm 15mm 20mm; }`;
+        // Legal / Ledger Paper (8.5 x 14 in / 215.9 x 355.6 mm)
+        style.innerHTML = `
+          @page { size: legal portrait; margin: 10mm 15mm 12mm 15mm; }
+          #printableAffidavit { width: 100% !important; padding: 0 !important; font-size: ${pt}pt !important; line-height: 1.8 !important; }
+          #printableAffidavit p, #printableAffidavit ol, #printableAffidavit li, #printableAffidavit div { page-break-inside: avoid !important; break-inside: avoid !important; }
+        `;
       } else {
-        style.innerHTML = `@page { size: A4 portrait; margin: 10mm 20mm 15mm 20mm; }`;
+        // Standard A4 Paper
+        style.innerHTML = `
+          @page { size: A4 portrait; margin: 10mm 15mm 12mm 15mm; }
+          #printableAffidavit { width: 100% !important; padding: 0 !important; font-size: ${pt}pt !important; line-height: 1.7 !important; }
+          #printableAffidavit p, #printableAffidavit ol, #printableAffidavit li, #printableAffidavit div { page-break-inside: avoid !important; break-inside: avoid !important; }
+        `;
       }
       document.head.appendChild(style);
 
-      // Generate Clean Printable HTML (strictly without unwanted instructions!)
-      printableAffidavitContent.innerHTML = generateAffidavitHtml(currentAnnexTab, false);
+      // Generate Clean Printable HTML (strictly without unwanted instructions if checked)
+      const omitInstructions = chkOmitInstructions ? chkOmitInstructions.checked : true;
+      printableAffidavitContent.innerHTML = generateAffidavitHtml(currentAnnexTab, !omitInstructions);
 
       document.body.classList.remove('print-slip');
       document.body.classList.add('print-affidavit');
