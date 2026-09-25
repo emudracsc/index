@@ -1404,55 +1404,6 @@
       </div>
     </div>
 
-    <!-- Quick Annexure Launcher Card -->
-    <div class="quick-annex-launcher-card">
-      <div class="quick-annex-header">
-        <div class="quick-annex-title-wrap">
-          <div class="quick-annex-badge">
-            <i class="fa-solid fa-file-contract"></i>
-          </div>
-          <div>
-            <h3 class="quick-annex-title">UIDAI SOP १८ सप्टेंबर २०२६ – अधिकृत परिशिष्ट प्रतिज्ञापत्र (Direct Annexure Form Filler)</h3>
-            <p class="quick-annex-desc">नाव दुरुस्ती / बदलाच्या आवश्यकतेनुसार खालीलपैकी योग्य Annexure निवडा, माहिती भरा व लेजर / स्टॅम्प पेपरवर स्वच्छ प्रिंट करा (अनावश्यक सूचना मजकुराशिवाय).</p>
-          </div>
-        </div>
-        <div class="quick-annex-stamp-note">
-          <i class="fa-solid fa-stamp text-amber-400"></i> ₹१० / ₹५० / ₹१०० स्टॅम्प पेपर तयार (Clean Print)
-        </div>
-      </div>
-      <div class="quick-annex-btn-grid">
-        <button type="button" class="quick-annex-btn" data-annex-target="B">
-          <div class="qbtn-tag">Annexure B</div>
-          <div class="qbtn-name">प्रौढ नागरिक (Adults)</div>
-          <div class="qbtn-sub">डेटा एंट्री चुकांमुळे नाव दुरुस्ती / आद्याक्षरे [नियम २(f)]</div>
-        </button>
-        <button type="button" class="quick-annex-btn" data-annex-target="C">
-          <div class="qbtn-tag">Annexure C</div>
-          <div class="qbtn-name">बालक / Minors (१८ वर्षांखालील)</div>
-          <div class="qbtn-sub">पालकांकडून बालकासाठी डेटा एंट्री चूक शपथपत्र [नियम २(f)]</div>
-        </button>
-        <button type="button" class="quick-annex-btn" data-annex-target="D">
-          <div class="qbtn-tag">Annexure D</div>
-          <div class="qbtn-name">महिला (Post Marriage / Divorce)</div>
-          <div class="qbtn-sub">विवाह किंवा घटस्फोटानंतर आडनाव बदल शपथपत्र [नियम ४(h)]</div>
-        </button>
-        <button type="button" class="quick-annex-btn" data-annex-target="E">
-          <div class="qbtn-tag">Annexure E</div>
-          <div class="qbtn-name">प्रौढ नागरिक (urf / alias काढणे)</div>
-          <div class="qbtn-sub">'उर्फ / टोपणनाव' काढून एकच मूळ नाव ठेवणे [नियम ४(n)]</div>
-        </button>
-        <button type="button" class="quick-annex-btn" data-annex-target="F">
-          <div class="qbtn-tag">Annexure F</div>
-          <div class="qbtn-name">बालक / Minors (urf / alias काढणे)</div>
-          <div class="qbtn-sub">बालकाच्या नावातील 'उर्फ' काढून टाकणे [नियम ४(n)]</div>
-        </button>
-        <button type="button" class="quick-annex-btn" data-annex-target="HOF">
-          <div class="qbtn-tag" style="background:#0284c7; color:#fff;">Page 14 HOF</div>
-          <div class="qbtn-name">कुटुंब प्रमुख स्वयंघोषणापत्र</div>
-          <div class="qbtn-sub">पत्ता अपडेटसाठी HOF Self-Declaration [List IV]</div>
-        </button>
-      </div>
-    </div>
 
     <!-- App Interactive Grid -->
     <div class="app-grid" id="ruleCheckerSection">
@@ -1717,8 +1668,33 @@
         </div>
       </div>
 
-      <!-- Annexure Tab Navigation -->
-      <div class="annexure-tabs-bar">
+      <!-- Notice when No Annexure is Required -->
+      <div id="noAnnexureRequiredBox" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1.5px solid rgba(16, 185, 129, 0.35); border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(16, 185, 129, 0.2); color: #34d399; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0;">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+              <h4 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: #34d399; font-family: var(--font-marathi);">
+                या नाव बदलासाठी कोणत्याही प्रतिज्ञापत्राची (Annexure) आवश्यकता नाही!
+              </h4>
+              <p style="margin: 0.3rem 0 0 0; font-size: 0.85rem; color: #cbd5e1; font-family: var(--font-marathi); line-height: 1.45;">
+                UIDAI SOP नियमांनुसार या केससाठी कोणतेही स्टॅम्प पेपर प्रतिज्ञापत्र लागत नाही. केवळ वरील यादीतील <strong>१ वैध मूळ कागदपत्र (Acceptable Document)</strong> सादर करणे पुरेसे आहे.
+              </p>
+            </div>
+          </div>
+          <button type="button" id="btnShowAllAnnexManual" class="btn-action-secondary" style="font-size: 0.8rem; padding: 0.5rem 0.95rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 0.45rem;">
+            <i class="fa-solid fa-folder-open"></i> मॅन्युअली इतर फॉरमॅट पहा
+          </button>
+        </div>
+      </div>
+
+      <!-- Annexure Tab Navigation (Only applicable format button will be displayed) -->
+      <div class="annexure-tabs-bar" id="annexureTabsBar">
+        <div id="lblOnlyApplicableFormatNotice" style="width: 100%; font-size: 0.86rem; font-weight: 800; color: #fbbf24; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.45rem; font-family: var(--font-marathi);">
+          <i class="fa-solid fa-circle-check text-emerald-400"></i> <span id="lblOnlyApplicableFormatText">केवळ लागू असलेला अधिकृत फॉरमॅट:</span>
+        </div>
         <button type="button" class="annex-tab-btn active" data-annex="B" id="tabAnnexB">
           <i class="fa-solid fa-file-lines"></i> Annexure B <span style="font-size:0.75rem;">(प्रौढ डेटा एंट्री चूक)</span>
         </button>
@@ -1737,10 +1713,13 @@
         <button type="button" class="annex-tab-btn" data-annex="HOF" id="tabAnnexHOF">
           <i class="fa-solid fa-house-user"></i> HOF घोषणापत्र <span style="font-size:0.75rem;">(पत्ता शेअरिंग)</span>
         </button>
+        <button type="button" id="btnToggleOtherTabs" style="background: rgba(255,255,255,0.04); border: 1px dashed #64748b; color: #94a3b8; padding: 0.5rem 0.85rem; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: none; font-family: var(--font-marathi); align-items: center; gap: 0.35rem;">
+          <i class="fa-solid fa-ellipsis"></i> इतर फॉरमॅट बदला
+        </button>
       </div>
 
       <!-- Studio Grid: Form on Left, Sheet Preview on Right -->
-      <div class="annexure-studio-grid">
+      <div class="annexure-studio-grid" id="annexureStudioGrid">
 
         <!-- LEFT: Form Controls -->
         <div class="annex-form-card">
@@ -2620,6 +2599,14 @@
       HOF: document.getElementById('tabAnnexHOF')
     };
 
+    const noAnnexureRequiredBox = document.getElementById('noAnnexureRequiredBox');
+    const annexureTabsBar = document.getElementById('annexureTabsBar');
+    const annexureStudioGrid = document.getElementById('annexureStudioGrid');
+    const lblOnlyApplicableFormatNotice = document.getElementById('lblOnlyApplicableFormatNotice');
+    const lblOnlyApplicableFormatText = document.getElementById('lblOnlyApplicableFormatText');
+    const btnShowAllAnnexManual = document.getElementById('btnShowAllAnnexManual');
+    const btnToggleOtherTabs = document.getElementById('btnToggleOtherTabs');
+
     const lblActiveAnnexBadge = document.getElementById('lblActiveAnnexBadge');
     const lblActiveAnnexText = document.getElementById('lblActiveAnnexText');
     const previewSheetTitle = document.getElementById('previewSheetTitle');
@@ -3242,19 +3229,52 @@
         operatorRulesList.appendChild(li);
       });
 
-      // Annexure Prompt Banner & Auto-select
+      // Annexure Prompt Banner & Dynamic Format Filter
       if (sc.annexure) {
         recommendedAnnex = sc.annexure;
         annexureActionBanner.style.display = 'flex';
         bannerAnnexureHeading.textContent = `परिशिष्ट (Annexure ${sc.annexure}) प्रतिज्ञापत्र आवश्यक`;
         bannerAnnexureSub.textContent = `या नाव बदलासाठी अधिकृत Annexure ${sc.annexure} प्रतिज्ञापत्र सादर करणे आवश्यक आहे. खालील बटण दाबून फॉर्म भरा व लेजर/स्टॅम्पवर प्रिंट करा.`;
         btnFillFormatText.textContent = `Fill Annexure ${sc.annexure} Format (हा फॉर्म भरा)`;
-        lblActiveAnnexText.textContent = `शिफारस केलेले: Annexure ${sc.annexure}`;
+
+        // Studio: Hide "No Annexure" box, show only this applicable format!
+        if (noAnnexureRequiredBox) noAnnexureRequiredBox.style.display = 'none';
+        if (annexureTabsBar) annexureTabsBar.style.display = 'flex';
+        if (annexureStudioGrid) annexureStudioGrid.style.display = 'grid';
+
+        if (lblOnlyApplicableFormatText) {
+          lblOnlyApplicableFormatText.innerHTML = `या केससाठी <strong>केवळ Annexure ${sc.annexure}</strong> हाच अधिकृत फॉरमॅट लागू आहे:`;
+        }
+
+        // Hide all tabs except the applicable one!
+        Object.keys(annexTabs).forEach(k => {
+          if (annexTabs[k]) {
+            if (k === sc.annexure) {
+              annexTabs[k].style.display = 'inline-flex';
+              annexTabs[k].classList.add('active');
+            } else {
+              annexTabs[k].style.display = 'none'; // HIDE ALL OTHER FORMATS!
+              annexTabs[k].classList.remove('active');
+            }
+          }
+        });
+
+        if (btnToggleOtherTabs) {
+          btnToggleOtherTabs.style.display = 'inline-flex';
+          btnToggleOtherTabs.innerHTML = '<i class="fa-solid fa-ellipsis"></i> इतर फॉरमॅट बदला';
+        }
+
+        lblActiveAnnexText.textContent = `लागू फॉरमॅट: Annexure ${sc.annexure}`;
         lblActiveAnnexBadge.style.display = 'inline-flex';
         selectAnnexureTab(sc.annexure, true);
       } else {
         annexureActionBanner.style.display = 'none';
-        lblActiveAnnexText.textContent = `सर्व ५ अधिकृत परिशिष्ट उपलब्ध (B ते F)`;
+        // When NO annexure is required, do NOT show all formats! Show clear notice!
+        if (noAnnexureRequiredBox) noAnnexureRequiredBox.style.display = 'block';
+        if (annexureTabsBar) annexureTabsBar.style.display = 'none';
+        if (annexureStudioGrid) annexureStudioGrid.style.display = 'none';
+        lblActiveAnnexText.textContent = `कोणतेही प्रतिज्ञापत्र आवश्यक नाही`;
+        lblActiveAnnexBadge.style.display = 'none';
       }
 
       // Direct Render of Acceptable Documents (No manual search needed!)
@@ -3473,6 +3493,7 @@
               <div class="direct-doc-name-mr">
                 <span>${doc.nameMr}</span>
                 ${doc.isMandatory ? `<span style="background:rgba(239,68,68,0.25); color:#f87171; border:1px solid rgba(239,68,68,0.4); font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:800;">${doc.badgeText}</span>` : ''}
+                ${doc.tags.includes('Affidavit') ? `<a href="#annexureStudioSection" class="btn-table-annex" style="margin-left:auto; display:inline-flex; align-items:center; gap:4px; text-decoration:none; padding:2px 8px; font-size:0.72rem;"><i class="fa-solid fa-file-pen"></i> हा फॉर्म भरा</a>` : ''}
               </div>
               <div class="direct-doc-name-en">${doc.nameEn}</div>
               <div class="direct-doc-note">${doc.note}</div>
@@ -3634,10 +3655,52 @@
     document.querySelectorAll('[data-open-annex]').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = btn.getAttribute('data-open-annex');
+        if (noAnnexureRequiredBox) noAnnexureRequiredBox.style.display = 'none';
+        if (annexureTabsBar) annexureTabsBar.style.display = 'flex';
+        if (annexureStudioGrid) annexureStudioGrid.style.display = 'grid';
+        Object.keys(annexTabs).forEach(k => {
+          if (annexTabs[k]) annexTabs[k].style.display = 'inline-flex';
+        });
         selectAnnexureTab(target, false);
         document.getElementById('annexureStudioSection').scrollIntoView({ behavior: 'smooth' });
       });
     });
+
+    // Toggle manual Annexure view when no annexure was required
+    if (btnShowAllAnnexManual) {
+      btnShowAllAnnexManual.addEventListener('click', () => {
+        if (noAnnexureRequiredBox) noAnnexureRequiredBox.style.display = 'none';
+        if (annexureTabsBar) annexureTabsBar.style.display = 'flex';
+        if (annexureStudioGrid) annexureStudioGrid.style.display = 'grid';
+        Object.keys(annexTabs).forEach(k => {
+          if (annexTabs[k]) annexTabs[k].style.display = 'inline-flex';
+        });
+        if (lblOnlyApplicableFormatText) {
+          lblOnlyApplicableFormatText.textContent = 'सर्व उपलब्ध अधिकृत परिशिष्ट (मॅन्युअल निवड):';
+        }
+        selectAnnexureTab('B', false);
+      });
+    }
+
+    // Toggle other tabs button
+    if (btnToggleOtherTabs) {
+      let showingAllTabs = false;
+      btnToggleOtherTabs.addEventListener('click', () => {
+        showingAllTabs = !showingAllTabs;
+        Object.keys(annexTabs).forEach(k => {
+          if (annexTabs[k]) {
+            if (showingAllTabs) {
+              annexTabs[k].style.display = 'inline-flex';
+            } else {
+              annexTabs[k].style.display = (k === currentAnnexTab) ? 'inline-flex' : 'none';
+            }
+          }
+        });
+        btnToggleOtherTabs.innerHTML = showingAllTabs 
+          ? '<i class="fa-solid fa-compress"></i> केवळ लागू फॉरमॅट ठेवा' 
+          : '<i class="fa-solid fa-ellipsis"></i> इतर फॉरमॅट बदला';
+      });
+    }
 
     // Sync from Main Form
     function syncFromMainForm(forceOverwrite = false) {
