@@ -1297,52 +1297,18 @@
         display: block !important;
         margin: 0 !important;
         padding: 0 !important;
+        width: 100% !important;
+        overflow: visible !important;
       }
 
-      /* Hide everything by default */
-      body * {
+      /* CRUCIAL: Remove all siblings from print flow so they take ZERO height & ZERO blank pages! */
+      body.print-affidavit > *:not(#printableAffidavit),
+      body.print-slip > *:not(#printableSlip) {
+        display: none !important;
         visibility: hidden !important;
-      }
-
-      /* When printing affidavit, show affidavit container and all its children */
-      body.print-affidavit #printableAffidavit,
-      body.print-affidavit #printableAffidavit * {
-        visibility: visible !important;
-      }
-
-      body.print-affidavit #printableAffidavit {
-        display: block !important;
-        position: relative !important;
-        left: auto !important;
-        top: auto !important;
-        width: 100% !important;
-        background: #ffffff !important;
-        color: #000000 !important;
-        font-family: 'Times New Roman', Times, serif !important;
-        line-height: 1.8 !important;
-        font-size: 14pt !important;
-        text-align: justify !important;
-        padding: 0 !important;
-        margin: 0 !important;
-      }
-
-      /* When printing slip, show slip container and all its children */
-      body.print-slip #printableSlip,
-      body.print-slip #printableSlip * {
-        visibility: visible !important;
-      }
-
-      body.print-slip #printableSlip {
-        display: block !important;
-        position: relative !important;
-        left: auto !important;
-        top: auto !important;
-        width: 100% !important;
-        background: #ffffff !important;
-        color: #000000 !important;
-        font-family: 'Noto Sans Devanagari', sans-serif !important;
-        padding: 15px !important;
-        margin: 0 !important;
+        height: 0 !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
       }
 
       /* When not in active print mode, keep hidden */
@@ -1353,15 +1319,78 @@
         display: none !important;
       }
 
+      /* Make Affidavit 100% visible on Page 1 */
+      body.print-affidavit #printableAffidavit {
+        display: block !important;
+        visibility: visible !important;
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'Times New Roman', Times, serif !important;
+        line-height: 1.45 !important;
+        font-size: 13.5pt !important;
+        text-align: justify !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      body.print-affidavit #printableAffidavit * {
+        visibility: visible !important;
+        color: #000000 !important;
+      }
+
+      /* Enforce compact print sizing for single page guarantee */
+      #printableAffidavit p {
+        margin-bottom: 8px !important;
+        line-height: 1.45 !important;
+      }
+
+      #printableAffidavit ol {
+        padding-left: 24px !important;
+        margin-bottom: 10px !important;
+        line-height: 1.45 !important;
+      }
+
+      #printableAffidavit li {
+        margin-bottom: 4px !important;
+        line-height: 1.45 !important;
+      }
+
+      #printableAffidavitContent {
+        page-break-inside: auto !important;
+        break-inside: auto !important;
+      }
+
       #printableAffidavit p, 
       #printableAffidavit ol, 
-      #printableAffidavit li, 
-      #printableAffidavit div {
+      #printableAffidavit li {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
       }
 
-      .no-print, .omit-instruction-print {
+      /* When printing slip, show slip container and all its children */
+      body.print-slip #printableSlip,
+      body.print-slip #printableSlip * {
+        visibility: visible !important;
+      }
+
+      body.print-slip #printableSlip {
+        display: block !important;
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'Noto Sans Devanagari', sans-serif !important;
+        padding: 15px !important;
+        margin: 0 !important;
+      }
+
+      .no-print, .omit-instruction-print, .preview-instruction-tag {
         display: none !important;
       }
     }
@@ -3939,38 +3968,38 @@
 
       if (tabCode === 'B') {
         return `
-          <div style="text-align: right; font-weight: bold; margin-bottom: 16px; font-size: 14px; font-family:'Times New Roman',serif;">
+          <div style="text-align: right; font-weight: bold; margin-bottom: 8px; font-size: 13px; font-family:'Times New Roman',serif;">
             ${isPreview ? 'Annexure B (for adults)' : ''}
           </div>
-          <div style="text-align: center; margin-bottom: 22px;">
-            <div style="font-size: 20px; font-weight: bold; letter-spacing: 1.5px; text-decoration: underline;">AFFIDAVIT</div>
+          <div style="text-align: center; margin-bottom: 12px;">
+            <div style="font-size: 18px; font-weight: bold; letter-spacing: 1px; text-decoration: underline;">AFFIDAVIT</div>
             ${renderInstruction('(Applicable where the resident\'s name had been incorrectly recorded in Aadhaar due to data entry error)')}
             ${renderInstruction('(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)')}
           </div>
 
-          <p style="margin-bottom: 16px; text-indent: 0; line-height: 1.75;">
+          <p style="margin-bottom: 8px; text-indent: 0; line-height: 1.45;">
             I, Shri/Smt./Ms. ${highlight(resident)}, S/o, D/o, W/o ${highlight(relative)}, resident of ${highlight(address)}, do hereby solemnly affirm and declare as under:-
           </p>
 
-          <ol style="padding-left: 26px; margin-bottom: 24px; line-height: 1.85;">
-            <li style="margin-bottom: 10px;">That I am the holder of Aadhaar number ${highlight(aadhaar)}.</li>
-            <li style="margin-bottom: 10px;">That my correct name is ${highlight(correctName)}.</li>
-            <li style="margin-bottom: 10px;">That due to an inadvertent data entry error at the time of enrolment/update, my name had been recorded in Aadhaar as ${highlight(oldName)}, whereas my correct name is ${highlight(correctName)}.</li>
-            <li style="margin-bottom: 10px;">That the update request pertains only to the correction of my name and does not amount to a change of identity or adoption of a different name.</li>
-            <li style="margin-bottom: 10px;">That I am submitting the prescribed supporting document evidencing my correct name.</li>
-            <li style="margin-bottom: 10px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
+          <ol style="padding-left: 24px; margin-bottom: 10px; line-height: 1.45;">
+            <li style="margin-bottom: 4px;">That I am the holder of Aadhaar number ${highlight(aadhaar)}.</li>
+            <li style="margin-bottom: 4px;">That my correct name is ${highlight(correctName)}.</li>
+            <li style="margin-bottom: 4px;">That due to an inadvertent data entry error at the time of enrolment/update, my name had been recorded in Aadhaar as ${highlight(oldName)}, whereas my correct name is ${highlight(correctName)}.</li>
+            <li style="margin-bottom: 4px;">That the update request pertains only to the correction of my name and does not amount to a change of identity or adoption of a different name.</li>
+            <li style="margin-bottom: 4px;">That I am submitting the prescribed supporting document evidencing my correct name.</li>
+            <li style="margin-bottom: 4px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
           </ol>
 
-          <div style="text-align: right; margin-top: 35px; margin-bottom: 28px; font-weight: bold; font-size: 15px;">
+          <div style="text-align: right; margin-top: 14px; margin-bottom: 12px; font-weight: bold; font-size: 14px;">
             Deponent
           </div>
 
-          <div style="margin-top: 25px; line-height: 1.8;">
+          <div style="margin-top: 10px; line-height: 1.45;">
             <strong>Verification:</strong><br>
             Verified at ${highlight(place)} on this ${highlight(dateStr)} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
           </div>
 
-          <div style="text-align: right; margin-top: 35px; margin-bottom: 25px; font-weight: bold; font-size: 15px;">
+          <div style="text-align: right; margin-top: 14px; margin-bottom: 0px; font-weight: bold; font-size: 14px;">
             Deponent
           </div>
 
@@ -3978,38 +4007,38 @@
         `;
       } else if (tabCode === 'C') {
         return `
-          <div style="text-align: right; font-weight: bold; margin-bottom: 16px; font-size: 14px; font-family:'Times New Roman',serif;">
+          <div style="text-align: right; font-weight: bold; margin-bottom: 8px; font-size: 13px; font-family:'Times New Roman',serif;">
             ${isPreview ? 'Annexure C (for minors)' : ''}
           </div>
-          <div style="text-align: center; margin-bottom: 22px;">
-            <div style="font-size: 20px; font-weight: bold; letter-spacing: 1.5px; text-decoration: underline;">AFFIDAVIT</div>
+          <div style="text-align: center; margin-bottom: 12px;">
+            <div style="font-size: 18px; font-weight: bold; letter-spacing: 1px; text-decoration: underline;">AFFIDAVIT</div>
             ${renderInstruction('(Applicable where the resident\'s name had been incorrectly recorded in Aadhaar due to data entry error)')}
             ${renderInstruction('(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)')}
           </div>
 
-          <p style="margin-bottom: 16px; text-indent: 0; line-height: 1.75;">
+          <p style="margin-bottom: 8px; text-indent: 0; line-height: 1.45;">
             I, Shri/Smt./Ms. ${highlight(resident)}, S/o, D/o, W/o ${highlight(relative)}, resident of ${highlight(address)}, being the ${highlight(guardianRel)} of minor ${highlight(minor)}, do hereby solemnly affirm and declare as under:-
           </p>
 
-          <ol style="padding-left: 26px; margin-bottom: 24px; line-height: 1.85;">
-            <li style="margin-bottom: 10px;">That minor ${highlight(minor)} is the holder of Aadhaar Number ${highlight(aadhaar)}.</li>
-            <li style="margin-bottom: 10px;">That correct name of the minor is ${highlight(correctName)}.</li>
-            <li style="margin-bottom: 10px;">That due to an inadvertent data entry error at the time of enrolment/update, his/her name had been recorded in Aadhaar as ${highlight(oldName)}, whereas his/her correct name is ${highlight(correctName)}.</li>
-            <li style="margin-bottom: 10px;">That the update request pertains only to the correction of his/her name and does not amount to a change of identity or adoption of a different name.</li>
-            <li style="margin-bottom: 10px;">That I am submitting the prescribed supporting document evidencing his/her correct name.</li>
-            <li style="margin-bottom: 10px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
+          <ol style="padding-left: 24px; margin-bottom: 10px; line-height: 1.45;">
+            <li style="margin-bottom: 4px;">That minor ${highlight(minor)} is the holder of Aadhaar Number ${highlight(aadhaar)}.</li>
+            <li style="margin-bottom: 4px;">That correct name of the minor is ${highlight(correctName)}.</li>
+            <li style="margin-bottom: 4px;">That due to an inadvertent data entry error at the time of enrolment/update, his/her name had been recorded in Aadhaar as ${highlight(oldName)}, whereas his/her correct name is ${highlight(correctName)}.</li>
+            <li style="margin-bottom: 4px;">That the update request pertains only to the correction of his/her name and does not amount to a change of identity or adoption of a different name.</li>
+            <li style="margin-bottom: 4px;">That I am submitting the prescribed supporting document evidencing his/her correct name.</li>
+            <li style="margin-bottom: 4px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
           </ol>
 
-          <div style="text-align: right; margin-top: 35px; margin-bottom: 28px; font-weight: bold; font-size: 15px;">
+          <div style="text-align: right; margin-top: 14px; margin-bottom: 12px; font-weight: bold; font-size: 14px;">
             Deponent
           </div>
 
-          <div style="margin-top: 25px; line-height: 1.8;">
+          <div style="margin-top: 10px; line-height: 1.45;">
             <strong>Verification:</strong><br>
             Verified at ${highlight(place)} on this ${highlight(dateStr)} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
           </div>
 
-          <div style="text-align: right; margin-top: 35px; margin-bottom: 25px; font-weight: bold; font-size: 15px;">
+          <div style="text-align: right; margin-top: 14px; margin-bottom: 0px; font-weight: bold; font-size: 14px;">
             Deponent
           </div>
 
@@ -4017,39 +4046,39 @@
         `;
       } else if (tabCode === 'D') {
         return `
-          <div style="text-align: right; font-weight: bold; margin-bottom: 16px; font-size: 14px; font-family:'Times New Roman',serif;">
+          <div style="text-align: right; font-weight: bold; margin-bottom: 8px; font-size: 13px; font-family:'Times New Roman',serif;">
             ${isPreview ? 'Annexure D' : ''}
           </div>
-          <div style="text-align: center; margin-bottom: 22px;">
-            <div style="font-size: 20px; font-weight: bold; letter-spacing: 1.5px; text-decoration: underline;">AFFIDAVIT</div>
+          <div style="text-align: center; margin-bottom: 12px;">
+            <div style="font-size: 18px; font-weight: bold; letter-spacing: 1px; text-decoration: underline;">AFFIDAVIT</div>
             ${renderInstruction('(Applicable for change of surname in Aadhaar post Marriage/Divorce)')}
             ${renderInstruction('(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)')}
           </div>
 
-          <p style="margin-bottom: 16px; text-indent: 0; line-height: 1.75;">
+          <p style="margin-bottom: 8px; text-indent: 0; line-height: 1.45;">
             I, Smt./Ms. ${highlight(resident)}, D/o ${highlight(fatherName)}, W/o ${highlight(husbandName)} (wherever applicable), resident of ${highlight(address)}, do hereby solemnly affirm and declare as under:-
           </p>
 
-          <ol style="padding-left: 26px; margin-bottom: 24px; line-height: 1.85;">
-            <li style="margin-bottom: 10px;">That I am the holder of Aadhaar number ${highlight(aadhaar)}.</li>
-            <li style="margin-bottom: 10px;">That my name prior to marriage/divorce was ${highlight(priorName)}.</li>
-            <li style="margin-bottom: 10px;">That consequent upon my ${eventType} solemnized on / ${eventType} becoming effective on ${highlight(eventDate)}, I have adopted/am entitled to use the surname ${highlight(newSurname)}, and my full name is now ${highlight(fullNewNameD)}.</li>
-            <li style="margin-bottom: 10px;">That I request for name update in my Aadhaar by replacing my earlier surname ${highlight(priorSurname)} with my present surname ${highlight(newSurname)}, while my identity as the individual remains same.</li>
-            <li style="margin-bottom: 10px;">That I am submitting the prescribed supporting document(s) in support of the said change of surname.</li>
-            <li style="margin-bottom: 10px;">That the requested name update is solely on account of marriage/divorce and does not involve any fraudulent assumption or concealment of identity.</li>
-            <li style="margin-bottom: 10px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
+          <ol style="padding-left: 24px; margin-bottom: 10px; line-height: 1.45;">
+            <li style="margin-bottom: 4px;">That I am the holder of Aadhaar number ${highlight(aadhaar)}.</li>
+            <li style="margin-bottom: 4px;">That my name prior to marriage/divorce was ${highlight(priorName)}.</li>
+            <li style="margin-bottom: 4px;">That consequent upon my ${eventType} solemnized on / ${eventType} becoming effective on ${highlight(eventDate)}, I have adopted/am entitled to use the surname ${highlight(newSurname)}, and my full name is now ${highlight(fullNewNameD)}.</li>
+            <li style="margin-bottom: 4px;">That I request for name update in my Aadhaar by replacing my earlier surname ${highlight(priorSurname)} with my present surname ${highlight(newSurname)}, while my identity as the individual remains same.</li>
+            <li style="margin-bottom: 4px;">That I am submitting the prescribed supporting document(s) in support of the said change of surname.</li>
+            <li style="margin-bottom: 4px;">That the requested name update is solely on account of marriage/divorce and does not involve any fraudulent assumption or concealment of identity.</li>
+            <li style="margin-bottom: 4px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
           </ol>
 
-          <div style="text-align: right; margin-top: 35px; margin-bottom: 28px; font-weight: bold; font-size: 15px;">
+          <div style="text-align: right; margin-top: 14px; margin-bottom: 12px; font-weight: bold; font-size: 14px;">
             Deponent
           </div>
 
-          <div style="margin-top: 25px; line-height: 1.8;">
+          <div style="margin-top: 10px; line-height: 1.45;">
             <strong>Verification:</strong><br>
             Verified at ${highlight(place)} on this ${highlight(dateStr)} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
           </div>
 
-          <div style="text-align: right; margin-top: 35px; margin-bottom: 25px; font-weight: bold; font-size: 15px;">
+          <div style="text-align: right; margin-top: 14px; margin-bottom: 0px; font-weight: bold; font-size: 14px;">
             Deponent
           </div>
 
@@ -4057,38 +4086,38 @@
         `;
       } else if (tabCode === 'E') {
         return `
-          <div style="text-align: right; font-weight: bold; margin-bottom: 16px; font-size: 14px; font-family:'Times New Roman',serif;">
+          <div style="text-align: right; font-weight: bold; margin-bottom: 8px; font-size: 13px; font-family:'Times New Roman',serif;">
             ${isPreview ? 'Annexure E (for adults)' : ''}
           </div>
-          <div style="text-align: center; margin-bottom: 22px;">
-            <div style="font-size: 20px; font-weight: bold; letter-spacing: 1.5px; text-decoration: underline;">AFFIDAVIT</div>
+          <div style="text-align: center; margin-bottom: 12px;">
+            <div style="font-size: 18px; font-weight: bold; letter-spacing: 1px; text-decoration: underline;">AFFIDAVIT</div>
             ${renderInstruction('(Applicable where the name is recorded in Aadhaar with "urf" or "alias" and the Aadhaar number holder seeks to retain one of the names)')}
             ${renderInstruction('(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)')}
           </div>
 
-          <p style="margin-bottom: 16px; text-indent: 0; line-height: 1.75;">
+          <p style="margin-bottom: 8px; text-indent: 0; line-height: 1.45;">
             I, Shri/Smt./Ms. ${highlight(resident)}, S/o, D/o, W/o ${highlight(relative)}, resident of ${highlight(address)}, do hereby solemnly affirm and declare as under:-
           </p>
 
-          <ol style="padding-left: 26px; margin-bottom: 24px; line-height: 1.85;">
-            <li style="margin-bottom: 10px;">That I am the holder of Aadhaar Number ${highlight(aadhaar)}.</li>
-            <li style="margin-bottom: 10px;">That my name is presently recorded/used as ${highlight(urfFullName)} in Aadhaar, both names referring to one and the same person, i.e. myself.</li>
-            <li style="margin-bottom: 10px;">That I intend to retain the name ${highlight(retained)} and discontinue the use of ${highlight(discontinued)} as an alias/urf.</li>
-            <li style="margin-bottom: 10px;">That the requested update is limited to removal of the "urf or alias" and retention of the aforesaid name and does not amount to a change of identity or adoption of a different name.</li>
-            <li style="margin-bottom: 10px;">That I am submitting the prescribed supporting document(s) in support of the name sought to be retained.</li>
-            <li style="margin-bottom: 10px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
+          <ol style="padding-left: 24px; margin-bottom: 10px; line-height: 1.45;">
+            <li style="margin-bottom: 4px;">That I am the holder of Aadhaar Number ${highlight(aadhaar)}.</li>
+            <li style="margin-bottom: 4px;">That my name is presently recorded/used as ${highlight(urfFullName)} in Aadhaar, both names referring to one and the same person, i.e. myself.</li>
+            <li style="margin-bottom: 4px;">That I intend to retain the name ${highlight(retained)} and discontinue the use of ${highlight(discontinued)} as an alias/urf.</li>
+            <li style="margin-bottom: 4px;">That the requested update is limited to removal of the "urf or alias" and retention of the aforesaid name and does not amount to a change of identity or adoption of a different name.</li>
+            <li style="margin-bottom: 4px;">That I am submitting the prescribed supporting document(s) in support of the name sought to be retained.</li>
+            <li style="margin-bottom: 4px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
           </ol>
 
-          <div style="text-align: right; margin-top: 35px; margin-bottom: 28px; font-weight: bold; font-size: 15px;">
+          <div style="text-align: right; margin-top: 14px; margin-bottom: 12px; font-weight: bold; font-size: 14px;">
             Deponent
           </div>
 
-          <div style="margin-top: 25px; line-height: 1.8;">
+          <div style="margin-top: 10px; line-height: 1.45;">
             <strong>Verification:</strong><br>
             Verified at ${highlight(place)} on this ${highlight(dateStr)} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
           </div>
 
-          <div style="text-align: right; margin-top: 35px; margin-bottom: 25px; font-weight: bold; font-size: 15px;">
+          <div style="text-align: right; margin-top: 14px; margin-bottom: 0px; font-weight: bold; font-size: 14px;">
             Deponent
           </div>
 
@@ -4096,38 +4125,38 @@
         `;
       } else if (tabCode === 'F') {
         return `
-          <div style="text-align: right; font-weight: bold; margin-bottom: 16px; font-size: 14px; font-family:'Times New Roman',serif;">
+          <div style="text-align: right; font-weight: bold; margin-bottom: 8px; font-size: 13px; font-family:'Times New Roman',serif;">
             ${isPreview ? 'Annexure F (for minors)' : ''}
           </div>
-          <div style="text-align: center; margin-bottom: 22px;">
-            <div style="font-size: 20px; font-weight: bold; letter-spacing: 1.5px; text-decoration: underline;">AFFIDAVIT</div>
+          <div style="text-align: center; margin-bottom: 12px;">
+            <div style="font-size: 18px; font-weight: bold; letter-spacing: 1px; text-decoration: underline;">AFFIDAVIT</div>
             ${renderInstruction('(Applicable where the name is recorded in Aadhaar with "urf" or "alias" and the Aadhaar number holder seeks to retain one of the names)')}
             ${renderInstruction('(To be printed on Non-Judicial Stamp Paper of minimum value of ₹10)')}
           </div>
 
-          <p style="margin-bottom: 16px; text-indent: 0; line-height: 1.75;">
+          <p style="margin-bottom: 8px; text-indent: 0; line-height: 1.45;">
             I, Shri/Smt./Ms. ${highlight(resident)}, S/o, D/o, W/o ${highlight(relative)}, resident of ${highlight(address)}, being the ${highlight(guardianRel)} of minor ${highlight(minor)}, do hereby solemnly affirm and declare as under:-
           </p>
 
-          <ol style="padding-left: 26px; margin-bottom: 24px; line-height: 1.85;">
-            <li style="margin-bottom: 10px;">That minor ${highlight(minor)} is the holder of Aadhaar Number ${highlight(aadhaar)}.</li>
-            <li style="margin-bottom: 10px;">That the name of the minor is presently recorded/used as ${highlight(urfFullName)} in his/her Aadhaar, both names referring to one and the same minor.</li>
-            <li style="margin-bottom: 10px;">That I, being the father/mother/legal guardian of the minor, seek to retain the name ${highlight(retained)} and discontinue the use of ${highlight(discontinued)} as an alias/urf.</li>
-            <li style="margin-bottom: 10px;">That the requested update is limited to removal of the "urf/alias" and retention of the aforesaid name and does not amount to a change of identity or adoption of a different name of minor.</li>
-            <li style="margin-bottom: 10px;">That I am submitting the prescribed supporting document(s) in support of the name sought to be retained.</li>
-            <li style="margin-bottom: 10px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
+          <ol style="padding-left: 24px; margin-bottom: 10px; line-height: 1.45;">
+            <li style="margin-bottom: 4px;">That minor ${highlight(minor)} is the holder of Aadhaar Number ${highlight(aadhaar)}.</li>
+            <li style="margin-bottom: 4px;">That the name of the minor is presently recorded/used as ${highlight(urfFullName)} in his/her Aadhaar, both names referring to one and the same minor.</li>
+            <li style="margin-bottom: 4px;">That I, being the father/mother/legal guardian of the minor, seek to retain the name ${highlight(retained)} and discontinue the use of ${highlight(discontinued)} as an alias/urf.</li>
+            <li style="margin-bottom: 4px;">That the requested update is limited to removal of the "urf/alias" and retention of the aforesaid name and does not amount to a change of identity or adoption of a different name of minor.</li>
+            <li style="margin-bottom: 4px;">That I am submitting the prescribed supporting document(s) in support of the name sought to be retained.</li>
+            <li style="margin-bottom: 4px;">That I undertake if any declaration made herein or any document submitted by me is found to be false, fabricated, forged, fraudulent or otherwise not genuine, I shall be solely responsible for all legal consequences including deactivation of my Aadhaar number and prosecution under the applicable laws.</li>
           </ol>
 
-          <div style="text-align: right; margin-top: 35px; margin-bottom: 28px; font-weight: bold; font-size: 15px;">
+          <div style="text-align: right; margin-top: 14px; margin-bottom: 12px; font-weight: bold; font-size: 14px;">
             Deponent
           </div>
 
-          <div style="margin-top: 25px; line-height: 1.8;">
+          <div style="margin-top: 10px; line-height: 1.45;">
             <strong>Verification:</strong><br>
             Verified at ${highlight(place)} on this ${highlight(dateStr)} that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
           </div>
 
-          <div style="text-align: right; margin-top: 35px; margin-bottom: 25px; font-weight: bold; font-size: 15px;">
+          <div style="text-align: right; margin-top: 14px; margin-bottom: 0px; font-weight: bold; font-size: 14px;">
             Deponent
           </div>
 
@@ -4136,24 +4165,24 @@
       } else if (tabCode === 'HOF') {
         // Page 14 HOF Self-Declaration
         return `
-          <div style="text-align: center; margin-bottom: 22px;">
-            <div style="font-size: 16px; font-weight: bold; letter-spacing: 0.5px; text-decoration: underline; line-height: 1.5;">
+          <div style="text-align: center; margin-bottom: 12px;">
+            <div style="font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-decoration: underline; line-height: 1.4;">
               SELF-DECLARATION FROM THE HEAD OF FAMILY (HOF) FOR SHARING ADDRESS WITH IMMEDIATE FAMILY MEMBER RESIDING AT THE SAME ADDRESS
             </div>
             ${renderInstruction('(Valid for Head of Family based Aadhaar address update - 3 months validity)')}
           </div>
 
-          <p style="margin-bottom: 16px; text-indent: 0; line-height: 1.85;">
+          <p style="margin-bottom: 8px; text-indent: 0; line-height: 1.45;">
             I, ${highlight(resident)} (Name as in Aadhaar), resident of ${highlight(address)} (Address as provided in Aadhaar) holding Aadhaar Number ${highlight(aadhaar)}, do hereby solemnly affirm and declare as under:-
           </p>
 
-          <ol style="padding-left: 26px; margin-bottom: 24px; line-height: 1.9; list-style-type: lower-roman;">
-            <li style="margin-bottom: 14px;">That resident Mr./Ms. ${highlight(applicantHof)} holding Aadhaar number ${highlight(aadhaarHof)} is related to me as my ${highlight(relHof)} and is residing with me at the above mentioned address.</li>
-            <li style="margin-bottom: 14px;">That I agree to share my address in my Aadhaar with Mr./Ms. ${highlight(applicantHof)} for updating his/her address in Aadhaar in my capacity of Head of the Family (HoF).</li>
-            <li style="margin-bottom: 14px;">That the undersigned undertakes that, the above mentioned information is correct to the best of my knowledge and belief and at any point of time if any of the said information is found to be incorrect/fraudulent/false, the Aadhaar of Mr./Ms. ${highlight(applicantHof)} and mine can be deactivated and legal action may be initiated against me, as per the provisions of the Aadhaar Act, 2016 and Regulations framed there under.</li>
+          <ol style="padding-left: 24px; margin-bottom: 10px; line-height: 1.45; list-style-type: lower-roman;">
+            <li style="margin-bottom: 6px;">That resident Mr./Ms. ${highlight(applicantHof)} holding Aadhaar number ${highlight(aadhaarHof)} is related to me as my ${highlight(relHof)} and is residing with me at the above mentioned address.</li>
+            <li style="margin-bottom: 6px;">That I agree to share my address in my Aadhaar with Mr./Ms. ${highlight(applicantHof)} for updating his/her address in Aadhaar in my capacity of Head of the Family (HoF).</li>
+            <li style="margin-bottom: 6px;">That the undersigned undertakes that, the above mentioned information is correct to the best of my knowledge and belief and at any point of time if any of the said information is found to be incorrect/fraudulent/false, the Aadhaar of Mr./Ms. ${highlight(applicantHof)} and mine can be deactivated and legal action may be initiated against me, as per the provisions of the Aadhaar Act, 2016 and Regulations framed there under.</li>
           </ol>
 
-          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 45px; font-size: 14px; font-weight: bold;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; font-size: 14px; font-weight: bold;">
             <div>
               Date: ${highlight(dateStr)}
             </div>
@@ -4334,16 +4363,24 @@ Date: ${dateStr}
       if (paper === 'legal') {
         // Legal / Ledger Paper (8.5 x 14 in / 215.9 x 355.6 mm)
         style.innerHTML = `
-          @page { size: legal portrait; margin: 10mm 15mm 12mm 15mm; }
+          @page { size: legal portrait; margin: 8mm 15mm 8mm 15mm; }
+          body.print-affidavit > *:not(#printableAffidavit) { display: none !important; height: 0 !important; max-height: 0 !important; overflow: hidden !important; }
           body.print-affidavit #printableAffidavit { 
             display: block !important; 
             visibility: visible !important; 
+            position: static !important;
             width: 100% !important; 
             padding: 0 !important; 
             font-size: ${pt}pt !important; 
-            line-height: 1.8 !important; 
+            line-height: 1.45 !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
           }
-          #printableAffidavit p, #printableAffidavit ol, #printableAffidavit li, #printableAffidavit div { 
+          #printableAffidavitContent { page-break-inside: auto !important; break-inside: auto !important; }
+          #printableAffidavit p { margin-bottom: 8px !important; line-height: 1.45 !important; }
+          #printableAffidavit ol { margin-bottom: 10px !important; padding-left: 24px !important; line-height: 1.45 !important; }
+          #printableAffidavit li { margin-bottom: 4px !important; line-height: 1.45 !important; }
+          #printableAffidavit p, #printableAffidavit ol, #printableAffidavit li { 
             page-break-inside: avoid !important; 
             break-inside: avoid !important; 
           }
@@ -4351,16 +4388,24 @@ Date: ${dateStr}
       } else {
         // Standard A4 Paper
         style.innerHTML = `
-          @page { size: A4 portrait; margin: 10mm 15mm 12mm 15mm; }
+          @page { size: A4 portrait; margin: 8mm 15mm 8mm 15mm; }
+          body.print-affidavit > *:not(#printableAffidavit) { display: none !important; height: 0 !important; max-height: 0 !important; overflow: hidden !important; }
           body.print-affidavit #printableAffidavit { 
             display: block !important; 
             visibility: visible !important; 
+            position: static !important;
             width: 100% !important; 
             padding: 0 !important; 
             font-size: ${pt}pt !important; 
-            line-height: 1.7 !important; 
+            line-height: 1.4 !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
           }
-          #printableAffidavit p, #printableAffidavit ol, #printableAffidavit li, #printableAffidavit div { 
+          #printableAffidavitContent { page-break-inside: auto !important; break-inside: auto !important; }
+          #printableAffidavit p { margin-bottom: 6px !important; line-height: 1.4 !important; }
+          #printableAffidavit ol { margin-bottom: 8px !important; padding-left: 24px !important; line-height: 1.4 !important; }
+          #printableAffidavit li { margin-bottom: 3px !important; line-height: 1.4 !important; }
+          #printableAffidavit p, #printableAffidavit ol, #printableAffidavit li { 
             page-break-inside: avoid !important; 
             break-inside: avoid !important; 
           }
