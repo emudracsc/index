@@ -203,9 +203,9 @@ function handleAdminLogin(e) {
   }
   const pinInput = document.getElementById('login-admin-pin');
   const pin = pinInput ? pinInput.value.trim() : '';
-  const expectedPin = localStorage.getItem(STORAGE_KEYS.ADMIN_PIN) || '1234';
+  const expectedPin = localStorage.getItem(STORAGE_KEYS.ADMIN_PIN) || '341992';
   
-  if (pin === expectedPin || pin === '1234' || pin === '341992' || pin === 'admin' || pin === '40068' || pin === '73016') {
+  if (pin === expectedPin || pin === '341992' || pin === '1234' || pin === 'admin' || pin === '40068' || pin === '73016') {
     currentUser = { role: 'admin', center: 'Full Access', name: 'Admin (सर्व ऑपरेटर)' };
     localStorage.setItem('ask_current_user', JSON.stringify(currentUser));
     
@@ -327,13 +327,15 @@ function applyRoleUI() {
       if (regCenterFilter) regCenterFilter.style.display = 'none'; // Operator cannot choose other centers
       if (cloudSyncStatus) cloudSyncStatus.style.display = 'none'; // Hide Firebase status from operator
       if (regDatePreset) {
-        regDatePreset.value = 'today';
-        regDatePreset.style.display = 'none'; // Operator is locked to today
+        // Allow operators to change report date
+        // regDatePreset.value = 'today';
+        regDatePreset.style.display = 'inline-block';
       }
       if (customDateWrap) customDateWrap.style.display = 'none';
 
-      // Lock day report for operator to today only - hide past date pickers
-      if (reportFilterToolbar) reportFilterToolbar.style.display = 'none';
+      // Allow operators to select past dates (report filter toolbar visible)
+if (reportFilterToolbar) reportFilterToolbar.style.display = 'block';
+      // Keep report filter toolbar visible for backdated reports
 
       navTabs.forEach(btn => {
         // Operator can see Register, Upload, and Day Report (Today only)
@@ -653,7 +655,7 @@ function setupFirebaseConnection() {
 function listenToCloudFirestore() {
   if (!isFirebaseConnected || !db) return;
 
-  const demoKeywords = ['गणेश', 'सुनीता', 'आदित्य', 'प्रकाश', 'डेमो', 'Sample', 'Demo', 'Parab', 'Rane', 'Sawant'];
+  const demoKeywords = ['डेमो', 'Sample', 'Demo'];
 
   try {
     // 1. Live transactions listener
@@ -667,20 +669,23 @@ function listenToCloudFirestore() {
             data.syncedToFirebase = true;
             
             const isDemo = data.customerName && demoKeywords.some(k => data.customerName.includes(k) || (data.notes && data.notes.includes(k)));
-            if (isDemo) {
-              // Automatically delete lingering demo docs from Cloud Firestore
-              db.collection('aadhaar_transactions').doc(doc.id).delete().catch(() => {});
-            } else {
+            if (!isDemo) {
               cloudTxList.push(data);
             }
           });
-          // Sort by timestamp descending
-          cloudTxList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-          saveStoredTransactions(cloudTxList);
+          // Merge cloud transactions with local transactions without wiping unsynced records
+          const localTx = getStoredTransactions();
+          const txMap = new Map();
+          localTx.forEach(t => txMap.set(t.id, t));
+          cloudTxList.forEach(t => txMap.set(t.id, t));
+          const mergedTx = Array.from(txMap.values());
+          mergedTx.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+          saveStoredTransactions(mergedTx);
           refreshAllDataViews();
         }
       }, (error) => {
-        console.warn('Firestore snapshot listener note:', error);
+        console.warn('Firestore snapshot listener error:', error);
+        handleFirestorePermissionWarning(error);
       });
 
     // 2. Live expenses listener
@@ -692,20 +697,20 @@ function listenToCloudFirestore() {
             const data = doc.data();
             data.id = doc.id;
             data.syncedToFirebase = true;
-
-            const isDemoExp = data.description && (data.description.includes('लॅमिनेशन पाऊच') || data.description.includes('डेमो') || data.description.includes('Sample'));
-            if (isDemoExp) {
-              db.collection('aadhaar_expenses').doc(doc.id).delete().catch(() => {});
-            } else {
-              cloudExpList.push(data);
-            }
+            cloudExpList.push(data);
           });
-          cloudExpList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-          saveStoredExpenses(cloudExpList);
+          const localExp = getStoredExpenses();
+          const expMap = new Map();
+          localExp.forEach(e => expMap.set(e.id, e));
+          cloudExpList.forEach(e => expMap.set(e.id, e));
+          const mergedExp = Array.from(expMap.values());
+          mergedExp.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+          saveStoredExpenses(mergedExp);
           refreshAllDataViews();
         }
       }, (error) => {
-        console.warn('Firestore expense snapshot listener note:', error);
+        console.warn('Firestore expense snapshot listener error:', error);
+        handleFirestorePermissionWarning(error);
       });
 
     // 3. Live daily_summaries listener
@@ -718,7 +723,12 @@ function listenToCloudFirestore() {
             data.id = doc.id;
             sumList.push(data);
           });
-          saveStoredDailySummaries(sumList);
+          const localSum = getStoredDailySummaries();
+          const sumMap = new Map();
+          localSum.forEach(s => sumMap.set(s.id, s));
+          sumList.forEach(s => sumMap.set(s.id, s));
+          const mergedSum = Array.from(sumMap.values());
+          saveStoredDailySummaries(mergedSum);
           refreshAllDataViews();
         }
       }, (error) => {
@@ -726,6 +736,18 @@ function listenToCloudFirestore() {
       });
   } catch (e) {
     console.error('Error attaching listeners:', e);
+  }
+}
+
+function handleFirestorePermissionWarning(error) {
+  if (error && (error.code === 'permission-denied' || (error.message && error.message.includes('permission')))) {
+    const statusBadge = document.getElementById('cloud-sync-status');
+    const statusText = document.getElementById('sync-status-text');
+    if (statusBadge && statusText) {
+      statusBadge.className = 'cloud-badge offline';
+      statusText.textContent = 'Firebase: Rules परमिशन अडचण';
+      statusBadge.title = 'Firebase Console मधील Firestore Database -> Rules मध्ये जाऊन "allow read, write: if true;" करा.';
+    }
   }
 }
 
@@ -1394,9 +1416,9 @@ function updateMetricsDashboard() {
 
   // Role and Center filter
   if (currentUser && currentUser.role === 'operator') {
-    filteredTx = filteredTx.filter(t => isRecordForCurrentUser(t) && normalizeDateToISO(t.date) === today);
-    filteredExp = filteredExp.filter(e => isRecordForCurrentUser(e) && normalizeDateToISO(e.date) === today);
-    filteredSum = filteredSum.filter(s => isRecordForCurrentUser(s) && normalizeDateToISO(s.date) === today);
+    filteredTx = filteredTx.filter(t => isRecordForCurrentUser(t));
+    filteredExp = filteredExp.filter(e => isRecordForCurrentUser(e));
+    filteredSum = filteredSum.filter(s => isRecordForCurrentUser(s));
   } else if (centerSelect !== 'all') {
     filteredTx = filteredTx.filter(t => t.center === centerSelect);
     filteredExp = filteredExp.filter(e => e.center === centerSelect || !e.center || e.center.includes('सामायिक'));
@@ -1407,9 +1429,8 @@ function updateMetricsDashboard() {
   const marathiMonths = ['जानेवारी', 'फेब्रुवारी', 'मार्च', 'एप्रिल', 'मे', 'जून', 'जुलै', 'ऑगस्ट', 'सप्टेंबर', 'ऑक्टोबर', 'नोव्हेंबर', 'डिसेंबर'];
 
   // Period Filter
-  if (currentUser && currentUser.role === 'operator') {
-    // Operator is always strictly restricted to today
-    periodLabel = 'आज (' + formatDateDDMMYYYY(today) + ')';
+  if (false) {
+    // Unused
   } else {
     if (period === 'today') {
       filteredTx = filteredTx.filter(t => normalizeDateToISO(t.date) === today);
@@ -1636,7 +1657,6 @@ function filterRegisterRecords() {
     // Role-based security check for operator
     if (currentUser && currentUser.role === 'operator') {
       if (!isRecordForCurrentUser(t)) return false;
-      if (normalizeDateToISO(t.date) !== today) return false;
     } else if (currentUser && currentUser.role === 'admin') {
       if (centerFilter !== 'all' && t.center !== centerFilter) return false;
     }
@@ -1653,10 +1673,7 @@ function filterRegisterRecords() {
     }
 
     // 2. Date Filter
-    if (currentUser && currentUser.role === 'operator') {
-      if (recDate !== today) return false;
-    } else {
-      if (datePreset === 'today') {
+    if (datePreset === 'today') {
         if (recDate !== today) return false;
       } else if (datePreset === 'yesterday') {
         const yest = new Date(now);
@@ -1677,7 +1694,6 @@ function filterRegisterRecords() {
         if (from && recDate < from) return false;
         if (to && recDate > to) return false;
       }
-    }
 
     // 3. Service Filter
     if (serviceFilter !== 'all') {
@@ -2084,9 +2100,7 @@ function generateDailyReport() {
 
   // Strict Role-Based Isolation & Lock
   if (currentUser && currentUser.role === 'operator') {
-    // 1. Force TODAY ONLY (No past reports for operators)
-    scope = 'today';
-    // 2. Strict Center & Operator Data Isolation (No other operator data visible)
+    // Operators can view any date range for their center
     allTx = allTx.filter(t => isRecordForCurrentUser(t));
     allExp = allExp.filter(e => isRecordForCurrentUser(e));
   } else if (centerSelect !== 'all') {
@@ -3709,14 +3723,17 @@ function parseAndPreviewMainCSV(csvText, sourceFileName) {
     // 1. EXTRACT EXACT AMOUNT FROM 'TOTAL_AMOUNT' COLUMN
     const extractedFee = extractTotalAmountFromRow(row);
 
-    let normalizedDate = userSelectedDate || todayStr;
-    if (!userSelectedDate && rawDate) {
+    let normalizedDate = '';
+    if (rawDate) {
       if (/^\d{4}-\d{2}-\d{2}$/.test(rawDate)) {
         normalizedDate = rawDate;
       } else if (/^\d{2}[-\/]\d{2}[-\/]\d{4}$/.test(rawDate)) {
         const parts = rawDate.split(/[-\/]/);
         normalizedDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
       }
+    }
+    if (!normalizedDate) {
+      normalizedDate = userSelectedDate || todayStr;
     }
 
     // Apply Service Classification
@@ -3876,10 +3893,8 @@ async function confirmMainImportedRecords() {
   mainParsedReportTransactions.forEach(tx => {
     tx.operatorName = chosenOperator;
     tx.center = chosenCenter;
-    if (userSelectedDate) {
-      tx.date = userSelectedDate;
-    } else if (!tx.date) {
-      tx.date = effectiveDate;
+    if (!tx.date) {
+      tx.date = userSelectedDate || effectiveDate;
     }
   });
 
@@ -4033,7 +4048,7 @@ function showMainZipAlert(msg, type = 'info') {
 let pendingAdminAction = null; // { type: 'delete_tx' | 'delete_exp' | 'clear_all', targetId: '...', description: '...' }
 
 function getAdminPin() {
-  return localStorage.getItem(STORAGE_KEYS.ADMIN_PIN) || '1234';
+  return localStorage.getItem(STORAGE_KEYS.ADMIN_PIN) || '341992';
 }
 
 function saveAdminPinChange(event) {
