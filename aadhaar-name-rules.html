@@ -1289,41 +1289,88 @@
 
     /* Print media query rules */
     @media print {
-      body * { visibility: hidden !important; }
-      body.print-slip #printableSlip, body.print-slip #printableSlip * { visibility: visible !important; }
-      body.print-affidavit #printableAffidavit, body.print-affidavit #printableAffidavit * { visibility: visible !important; }
-      
-      #printableSlip {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        color: #000 !important;
-        background: #fff !important;
-        padding: 20px;
-        font-family: 'Noto Sans Devanagari', sans-serif !important;
+      html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        height: auto !important;
+        min-height: auto !important;
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
-      
-      #printableAffidavit {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        color: #000 !important;
-        background: #fff !important;
+
+      /* Hide everything by default */
+      body * {
+        visibility: hidden !important;
+      }
+
+      /* When printing affidavit, show affidavit container and all its children */
+      body.print-affidavit #printableAffidavit,
+      body.print-affidavit #printableAffidavit * {
+        visibility: visible !important;
+      }
+
+      body.print-affidavit #printableAffidavit {
+        display: block !important;
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        color: #000000 !important;
         font-family: 'Times New Roman', Times, serif !important;
-        line-height: 1.7;
-        font-size: 14pt;
-        padding: 0 20mm 20mm 20mm;
-        text-align: justify;
+        line-height: 1.8 !important;
+        font-size: 14pt !important;
+        text-align: justify !important;
+        padding: 0 !important;
+        margin: 0 !important;
       }
+
+      /* When printing slip, show slip container and all its children */
+      body.print-slip #printableSlip,
+      body.print-slip #printableSlip * {
+        visibility: visible !important;
+      }
+
+      body.print-slip #printableSlip {
+        display: block !important;
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'Noto Sans Devanagari', sans-serif !important;
+        padding: 15px !important;
+        margin: 0 !important;
+      }
+
+      /* When not in active print mode, keep hidden */
+      body:not(.print-affidavit) #printableAffidavit {
+        display: none !important;
+      }
+      body:not(.print-slip) #printableSlip {
+        display: none !important;
+      }
+
+      #printableAffidavit p, 
+      #printableAffidavit ol, 
+      #printableAffidavit li, 
+      #printableAffidavit div {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
       .no-print, .omit-instruction-print {
         display: none !important;
       }
     }
 
-    .printable-slip-card, .printable-affidavit-card {
-      display: none;
+    /* Screen display: hide print cards while browsing */
+    @media screen {
+      .printable-slip-card, .printable-affidavit-card {
+        display: none !important;
+      }
     }
   </style>
 </head>
@@ -4275,6 +4322,10 @@ Date: ${dateStr}
         printableAffidavit.style.fontSize = `${pt}pt`;
       }
 
+      // Generate Clean Printable HTML (strictly without unwanted instructions if checked)
+      const omitInstructions = chkOmitInstructions ? chkOmitInstructions.checked : true;
+      printableAffidavitContent.innerHTML = generateAffidavitHtml(currentAnnexTab, !omitInstructions);
+
       const existingStyle = document.getElementById('dynamicPrintSizeStyle');
       if (existingStyle) existingStyle.remove();
 
@@ -4284,29 +4335,49 @@ Date: ${dateStr}
         // Legal / Ledger Paper (8.5 x 14 in / 215.9 x 355.6 mm)
         style.innerHTML = `
           @page { size: legal portrait; margin: 10mm 15mm 12mm 15mm; }
-          #printableAffidavit { width: 100% !important; padding: 0 !important; font-size: ${pt}pt !important; line-height: 1.8 !important; }
-          #printableAffidavit p, #printableAffidavit ol, #printableAffidavit li, #printableAffidavit div { page-break-inside: avoid !important; break-inside: avoid !important; }
+          body.print-affidavit #printableAffidavit { 
+            display: block !important; 
+            visibility: visible !important; 
+            width: 100% !important; 
+            padding: 0 !important; 
+            font-size: ${pt}pt !important; 
+            line-height: 1.8 !important; 
+          }
+          #printableAffidavit p, #printableAffidavit ol, #printableAffidavit li, #printableAffidavit div { 
+            page-break-inside: avoid !important; 
+            break-inside: avoid !important; 
+          }
         `;
       } else {
         // Standard A4 Paper
         style.innerHTML = `
           @page { size: A4 portrait; margin: 10mm 15mm 12mm 15mm; }
-          #printableAffidavit { width: 100% !important; padding: 0 !important; font-size: ${pt}pt !important; line-height: 1.7 !important; }
-          #printableAffidavit p, #printableAffidavit ol, #printableAffidavit li, #printableAffidavit div { page-break-inside: avoid !important; break-inside: avoid !important; }
+          body.print-affidavit #printableAffidavit { 
+            display: block !important; 
+            visibility: visible !important; 
+            width: 100% !important; 
+            padding: 0 !important; 
+            font-size: ${pt}pt !important; 
+            line-height: 1.7 !important; 
+          }
+          #printableAffidavit p, #printableAffidavit ol, #printableAffidavit li, #printableAffidavit div { 
+            page-break-inside: avoid !important; 
+            break-inside: avoid !important; 
+          }
         `;
       }
       document.head.appendChild(style);
 
-      // Generate Clean Printable HTML (strictly without unwanted instructions if checked)
-      const omitInstructions = chkOmitInstructions ? chkOmitInstructions.checked : true;
-      printableAffidavitContent.innerHTML = generateAffidavitHtml(currentAnnexTab, !omitInstructions);
-
       document.body.classList.remove('print-slip');
       document.body.classList.add('print-affidavit');
-      window.print();
+
+      // Crucial: Wait 150ms for DOM update, innerHTML parsing and CSS application before opening print dialog
       setTimeout(() => {
-        document.body.classList.remove('print-affidavit');
-      }, 1000);
+        window.print();
+        setTimeout(() => {
+          document.body.classList.remove('print-affidavit');
+        }, 1500);
+      }, 150);
     });
 
     // Copy Affidavit Plain Text
@@ -4367,10 +4438,12 @@ Date: ${dateStr}
 
       document.body.classList.remove('print-affidavit');
       document.body.classList.add('print-slip');
-      window.print();
       setTimeout(() => {
-        document.body.classList.remove('print-slip');
-      }, 1000);
+        window.print();
+        setTimeout(() => {
+          document.body.classList.remove('print-slip');
+        }, 1500);
+      }, 150);
     });
 
     // Clean up print classes after printing
