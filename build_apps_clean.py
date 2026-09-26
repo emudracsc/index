@@ -1,9 +1,15 @@
-<!DOCTYPE html>
+# -*- coding: utf-8 -*-
+"""
+Builder that creates hearing-search.html and hearing-register.html
+using exact HTML/JS without f-string escaping conflicts.
+"""
+
+template = r"""<!DOCTYPE html>
 <html lang="mr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>२६८-कणकवली मतदार सुनावणी व आक्षेप शोध इंजिन | आपले सरकार सेवा केंद्र</title>
+  <title>__PAGE_TITLE__</title>
   <meta name="description" content="२६८ - कणकवली विधानसभा मतदारसंघ मतदार यादी दुरुस्ती, आक्षेप, दैनिक सुनावणी हजेरी नोंदवही, कागदपत्रे पडताळणी व DEO व्यवस्थापन प्रणाली.">
   
   <!-- Google Fonts -->
@@ -1963,11 +1969,11 @@
 
     <!-- Mode Switcher (Search vs Register) -->
     <div class="nav-mode-tabs">
-      <button type="button" class="nav-mode-btn active" id="btnNavSearchMode" onclick="switchAppMode('search')">
+      <button type="button" class="nav-mode-btn __SEARCH_BTN_ACTIVE__" id="btnNavSearchMode" onclick="switchAppMode('search')">
         <i class="fa-solid fa-magnifying-glass"></i>
         <span>सुनावणी शोध (Search)</span>
       </button>
-      <button type="button" class="nav-mode-btn " id="btnNavRegisterMode" onclick="switchAppMode('register')">
+      <button type="button" class="nav-mode-btn __REG_BTN_ACTIVE__" id="btnNavRegisterMode" onclick="switchAppMode('register')">
         <i class="fa-solid fa-clipboard-check"></i>
         <span>सुनावणी नोंदवही व DEO पोर्टल</span>
         <span class="nav-counter-pill" id="navRegBadge">०</span>
@@ -2011,7 +2017,7 @@
   <main class="app-main">
     
     <!-- VIEW 1: सुनावणी शोध (CITIZEN SEARCH & NOTICE SLIP VIEW) -->
-    <div id="viewSearchPanel" class="app-view-panel active">
+    <div id="viewSearchPanel" class="app-view-panel __SEARCH_PANEL_ACTIVE__">
       
       <!-- Hero Search Section -->
       <section class="search-hero-card">
@@ -2244,7 +2250,7 @@
     </div>
 
     <!-- VIEW 2: सुनावणी नोंदवही व नियंत्रण प्रणाली (HEARING REGISTER APPLICATION) -->
-    <div id="viewRegisterPanel" class="app-view-panel ">
+    <div id="viewRegisterPanel" class="app-view-panel __REG_PANEL_ACTIVE__">
       
       <!-- Register Top Hero Strip -->
       <section class="reg-hero-strip">
@@ -3562,7 +3568,7 @@
 
       // Check URL hash / parameter for mode
       const hash = window.location.hash.toLowerCase();
-      if (hash === '#register' || 'false' === 'true') {
+      if (hash === '#register' || '__IS_STANDALONE__' === 'true') {
         switchAppMode('register');
       } else {
         switchAppMode('search');
@@ -6112,3 +6118,28 @@
   </script>
 </body>
 </html>
+"""
+
+# Build hearing-search.html
+search_html = template.replace("__PAGE_TITLE__", "२६८-कणकवली मतदार सुनावणी व आक्षेप शोध इंजिन | आपले सरकार सेवा केंद्र")
+search_html = search_html.replace("__SEARCH_BTN_ACTIVE__", "active")
+search_html = search_html.replace("__REG_BTN_ACTIVE__", "")
+search_html = search_html.replace("__SEARCH_PANEL_ACTIVE__", "active")
+search_html = search_html.replace("__REG_PANEL_ACTIVE__", "")
+search_html = search_html.replace("__IS_STANDALONE__", "false")
+
+with open("hearing-search.html", "w", encoding="utf-8") as f:
+    f.write(search_html)
+print(f"Written hearing-search.html ({len(search_html)} bytes)")
+
+# Build hearing-register.html
+reg_html = template.replace("__PAGE_TITLE__", "२६८-कणकवली मतदार सुनावणी नोंदवही व नियंत्रण प्रणाली | आपले सरकार सेवा केंद्र")
+reg_html = reg_html.replace("__SEARCH_BTN_ACTIVE__", "")
+reg_html = reg_html.replace("__REG_BTN_ACTIVE__", "active")
+reg_html = reg_html.replace("__SEARCH_PANEL_ACTIVE__", "")
+reg_html = reg_html.replace("__REG_PANEL_ACTIVE__", "active")
+reg_html = reg_html.replace("__IS_STANDALONE__", "true")
+
+with open("hearing-register.html", "w", encoding="utf-8") as f:
+    f.write(reg_html)
+print(f"Written hearing-register.html ({len(reg_html)} bytes)")

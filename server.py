@@ -32,13 +32,52 @@ except ImportError:
 
 from pdf_text_replacer import replace_text_in_pdf, scan_pdf, get_default_font_path
 
+import threading
+
 PORT = 8080
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs")
+DATA_DIR = os.path.join(BASE_DIR, "data")
+HEARING_DB_PATH = os.path.join(DATA_DIR, "hearing-register-db.json")
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs(DATA_DIR, exist_ok=True)
+
+hearing_db_lock = threading.Lock()
+
+def load_hearing_db():
+    with hearing_db_lock:
+        if os.path.exists(HEARING_DB_PATH):
+            try:
+                with open(HEARING_DB_PATH, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"[WARN] Error reading hearing DB: {e}")
+                return {}
+        return {}
+
+def save_hearing_db(data):
+    with hearing_db_lock:
+        os.makedirs(DATA_DIR, exist_ok=True)
+        temp_path = HEARING_DB_PATH + ".tmp"
+        try:
+            with open(temp_path, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+            if os.path.exists(HEARING_DB_PATH):
+                os.replace(temp_path, HEARING_DB_PATH)
+            else:
+                os.rename(temp_path, HEARING_DB_PATH)
+            return True
+        except Exception as e:
+            print(f"[ERROR] Error saving hearing DB: {e}")
+            if os.path.exists(temp_path):
+                try:
+                    os.remove(temp_path)
+                except Exception:
+                    pass
+            return False
 
 
 class PDFReplacerHTTPHandler(SimpleHTTPRequestHandler):
@@ -51,11 +90,23 @@ class PDFReplacerHTTPHandler(SimpleHTTPRequestHandler):
             message = "".join(c if (ord(c) < 128 and c not in '\r\n') else "_" for c in str(message))
         super().send_error(code, message, explain)
 
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.end_headers()
+
     def do_HEAD(self):
         parsed = urllib.parse.urlparse(self.path)
         url_path = parsed.path
 
-        if url_path == "/api/download" or url_path.startswith("/download"):
+        if url_path in ("/api/hearing/register", "/api/hearing/sync"):
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+        elif url_path == "/api/download" or url_path.startswith("/download"):
             self._handle_download(parsed)
         elif url_path.startswith("/outputs/"):
             self._handle_output_file(url_path)
@@ -66,7 +117,10 @@ class PDFReplacerHTTPHandler(SimpleHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         url_path = parsed.path
 
-        if url_path == "/api/download" or url_path.startswith("/download"):
+        if url_path in ("/api/hearing/register", "/api/hearing/sync"):
+            db = load_hearing_db()
+            self._send_json({"success": True, "count": len(db), "data": db})
+        elif url_path == "/api/download" or url_path.startswith("/download"):
             self._handle_download(parsed)
         elif url_path.startswith("/outputs/"):
             # Ensure proper attachment header for direct output downloads
@@ -163,7 +217,13 @@ class PDFReplacerHTTPHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         url_path = urllib.parse.urlparse(self.path).path
 
-        if url_path in ("/api/scan", "/api/scan_stream"):
+        if url_path == "/api/hearing/register":
+            self._handle_hearing_register_save()
+        elif url_path == "/api/hearing/delete":
+            self._handle_hearing_register_delete()
+        elif url_path == "/api/hearing/admin-login":
+            self._handle_hearing_admin_login()
+        elif url_path in ("/api/scan", "/api/scan_stream"):
             self._handle_scan_stream()
         elif url_path in ("/api/replace", "/api/replace_stream"):
             self._handle_replace_stream()
@@ -173,6 +233,86 @@ class PDFReplacerHTTPHandler(SimpleHTTPRequestHandler):
             self._handle_sample()
         else:
             self.send_error(404, "Endpoint not found")
+
+    def _read_json_body(self):
+        content_length = int(self.headers.get("Content-Length", 0))
+        if content_length <= 0:
+            return {}
+        raw = self.rfile.read(content_length).decode("utf-8", errors="ignore")
+        return json.loads(raw) if raw.strip() else {}
+
+    def _handle_hearing_register_save(self):
+        try:
+            body = self._read_json_body()
+            db = load_hearing_db()
+            if "records" in body and isinstance(body["records"], dict):
+                for epic, rec in body["records"].items():
+                    if epic:
+                        db[epic] = rec
+            elif "epic" in body and "record" in body:
+                epic = str(body["epic"]).strip()
+                if epic:
+                    db[epic] = body["record"]
+            elif "epic" in body and isinstance(body, dict):
+                epic = str(body["epic"]).strip()
+                if epic:
+                    db[epic] = body
+            save_hearing_db(db)
+            self._send_json({"success": True, "count": len(db), "message": "डेटा सर्व्हरवर सेव्ह झाला!"})
+        except Exception as e:
+            self._send_json({"success": False, "error": str(e)}, 500)
+
+    def _handle_hearing_register_delete(self):
+        try:
+            body = self._read_json_body()
+            epic = str(body.get("epic", "")).strip()
+            pin = str(body.get("pin", "") or body.get("password", "")).strip()
+
+            # PIN verification (default admin PIN: 1234, admin123, or admin)
+            if pin not in ("1234", "admin123", "admin"):
+                self._send_json({"success": False, "message": "अवैध ॲडमिन पिन / पासवर्ड! केवळ ॲडमिन नोंद हटवू शकतात."}, 403)
+                return
+
+            if not epic:
+                self._send_json({"success": False, "message": "EPIC नंबर आवश्यक आहे."}, 400)
+                return
+
+            db = load_hearing_db()
+            deleted = False
+            if epic in db:
+                del db[epic]
+                save_hearing_db(db)
+                deleted = True
+
+            self._send_json({
+                "success": True,
+                "deleted": epic,
+                "wasPresent": deleted,
+                "count": len(db),
+                "message": f"EPIC {epic} ची नोंद सर्व्हरवरून यशस्वीरित्या हटवली!"
+            })
+        except Exception as e:
+            self._send_json({"success": False, "error": str(e)}, 500)
+
+    def _handle_hearing_admin_login(self):
+        try:
+            body = self._read_json_body()
+            pin = str(body.get("pin", "") or body.get("password", "")).strip()
+
+            if pin in ("1234", "admin123", "admin"):
+                self._send_json({
+                    "success": True,
+                    "isAdmin": True,
+                    "message": "ॲडमिन पडताळणी यशस्वी! नोंद रद्द/डिलीट करण्याचे अधिकार मिळाले."
+                })
+            else:
+                self._send_json({
+                    "success": False,
+                    "isAdmin": False,
+                    "message": "चुकीचा ॲडमिन पिन किंवा पासवर्ड! कृपया पुन्हा प्रयत्न करा."
+                }, 401)
+        except Exception as e:
+            self._send_json({"success": False, "error": str(e)}, 500)
 
     def _send_json(self, data, status=200):
         body = json.dumps(data, ensure_ascii=False).encode("utf-8")
