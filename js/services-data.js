@@ -1029,6 +1029,18 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
+  // 🌾 ॲग्रीस्टॅक शेतकरी ओळखपत्र (AgriStack Farmer ID Card Studio Pro - A4 Upper Center Print)
+  {
+    id: "link-agristack-id-card",
+    category: "शेतकरी व कृषी योजना",
+    icon: "fa-solid fa-id-card",
+    title_mr: "🌾 ॲग्रीस्टॅक शेतकरी ओळखपत्र (AgriStack Kisan ID Card A4 Print)",
+    title_en: "AgriStack Farmer ID Card Studio Pro (Official A4 PVC Print)",
+    desc_mr: "डिजिटल कृषी मिशन अंतर्गत अधिकृत ॲग्रीस्टॅक शेतकरी ओळखपत्र अचूक ८-अ खाते, सर्व्हे नंबरसह A4 वर त्वरित प्रिंट करा.",
+    desc_en: "Official Maharashtra AgriStack Kisan ID Card Generator with 8-A khata, multi-survey records, and A4 upper-center print engine.",
+    url: "agristek-id-card.html",
+    isInternal: true
+  },
   // 🌟 ई मुद्रा हब (eMudra Hub - All-in-One Digital Printing & Studio)
   {
     id: "link-emudra-hub",

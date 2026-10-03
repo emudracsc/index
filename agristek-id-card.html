@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ॲग्रीस्टॅक शेतकरी ओळखपत्र जनरेटर | AgriStack Farmer ID Card Studio Pro (A4 Upper-Center Print)</title>
+  <meta name="description" content="भारत सरकार व महाराष्ट्र शासन डिजिटल ॲग्रीकल्चर मिशन अंतर्गत ॲग्रीस्टॅक शेतकरी ओळखपत्र (AgriStack Farmer ID Card) A4 पेपरवर अप्पर-सेंटर अचूक प्रिंट करा व PDF डाउनलोड करा.">
+  <meta name="keywords" content="AgriStack ID Card, शेतकरी ओळखपत्र, Kisan ID Card, AgriStack Maharashtra, PM Kisan, A4 Print, CSC Seva">
+
+  <!-- Google Fonts: Mukta & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6.5.1 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- JsBarcode for Code128 Barcodes -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+  <!-- html2canvas & jsPDF for 300 DPI Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- Dedicated Stylesheet -->
+  <link rel="stylesheet" href="css/agristek-id-card.css">
+</head>
+<body data-theme="green">
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-tricolor-stripe no-print"></div>
+
+  <!-- Top App Navigation Bar -->
+  <header class="app-navbar no-print">
+    <div class="brand-section">
+      <div class="brand-logo-pill" title="AgriStack Maharashtra Farmer Registry">
+        <img src="images/mhfr_logo.png" alt="AgriStack Official Logo" class="navbar-official-logo">
+      </div>
+      <div class="brand-titles">
+        <h1>
+          <span>ॲग्रीस्टॅक शेतकरी ओळखपत्र स्टुडिओ</span>
+          <span class="badge-tag">PRO A4 PRINT</span>
+        </h1>
+        <p>AgriStack Farmer Registry • डिजिटल कृषी मिशन • A4 अप्पर-सेंटर प्रिंटिंग प्रणाली</p>
+      </div>
+    </div>
+
+    <div class="nav-buttons-cluster">
+      <a href="index.html" class="btn-nav btn-nav-outline">
+        <i class="fa-solid fa-house"></i> <span>मुख्य पोर्टल</span>
+      </a>
+      <button class="btn-nav btn-nav-demo" onclick="fillSampleDemoData()" title="उदाहरणासाठी नमुना शेतकरी डेटा एका क्लिकवर भरा">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>⚡ नमुना डेटा भरा</span>
+      </button>
+      <button class="btn-nav btn-nav-pdf" id="btnDownloadPdf" onclick="downloadA4Pdf()" title="A4 हाय-रिझोल्यूशन PDF डाउनलोड करा">
+        <i class="fa-solid fa-file-pdf"></i> <span>📥 A4 PDF</span>
+      </button>
+      <button class="btn-nav btn-nav-print" onclick="triggerA4Print()" title="A4 पेपरवर शीर्ष मध्यभागी (Upper-Center) थेट प्रिंट करा">
+        <i class="fa-solid fa-print"></i> <span>🖨️ A4 थेट प्रिंट</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Application Workspace -->
+  <main class="app-container no-print">
+
+    <!-- ==========================================
+         LEFT: CONTROL & FORM EDITOR PANEL
+         ========================================== -->
+    <section class="editor-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <i class="fa-solid fa-sliders text-cyan"></i>
+          <span>कार्ड सेटिंग्ज व शेतकरी माहिती</span>
+        </div>
+        <button class="btn-export-sm" onclick="resetCardForm()" title="फॉर्म रीसेट करा">
+          <i class="fa-solid fa-rotate-left"></i> रीसेट
+        </button>
+      </div>
+
+      <!-- Theme & A4 Print Placement Controls -->
+      <div class="toolbar-strip">
+        <div class="tool-row">
+          <span class="tool-label"><i class="fa-solid fa-palette"></i> कार्ड थीम निवडा:</span>
+          <div class="theme-palette">
+            <div class="theme-chip chip-green active" data-theme="green" title="कृषी हिरवा व गोल्ड (AgriStack Standard)"></div>
+            <div class="theme-chip chip-blue" data-theme="blue" title="डिजिटल फॉर्मल नेव्ही ब्लू"></div>
+            <div class="theme-chip chip-tricolor" data-theme="tricolor" title="शासकीय तिरंगा थीम"></div>
+            <div class="theme-chip chip-gold" data-theme="gold" title="रॉयल गोल्ड PVC"></div>
+          </div>
+        </div>
+
+        <!-- Official Logo & Branding Options -->
+        <div class="tool-row official-branding-row">
+          <span class="tool-label"><i class="fa-solid fa-certificate text-gold"></i> अधिकृत शासकीय लोगो व चिन्हे:</span>
+          <div class="official-toggles-cluster">
+            <label class="toggle-pill" title="भारत सरकार राष्ट्रीय बोधचिन्ह">
+              <input type="checkbox" id="chkNationalEmblem" checked>
+              <span>राष्ट्रीय चिन्ह (Ashok Stambh)</span>
+            </label>
+            <label class="toggle-pill" title="अधिकृत शेतकरी बोधचिन्ह (AgriStack Farmer Logo)">
+              <input type="checkbox" id="chkFarmerEmblem" checked>
+              <span>शेतकरी बोधचिन्ह</span>
+            </label>
+            <label class="toggle-pill" title="महाराष्ट्र शेतकरी नोंदणी अधिकृत ॲग्रीस्टॅक लोगो">
+              <input type="checkbox" id="chkOfficialLogo" checked>
+              <span>अधिकृत ॲग्रीस्टॅक लोगो</span>
+            </label>
+            <label class="toggle-pill" title="उच्च-सुरक्षा डिजिटल वॉटरमार्क">
+              <input type="checkbox" id="chkWatermark" checked>
+              <span>सुरक्षा वॉटरमार्क</span>
+            </label>
+          </div>
+          <div class="logo-style-select-wrap">
+            <span class="style-select-label">लोगो मांडणी:</span>
+            <select id="selLogoStyle" class="form-control-xs">
+              <option value="capsule">पांढऱ्या कॅप्सूल बॅजमध्ये (Best Contrast)</option>
+              <option value="transparent">थेट पारदर्शक (Transparent)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Upper Center Placement Controls -->
+        <div class="tool-row">
+          <span class="tool-label" title="A4 कागदावर वरून अंतर (Upper Margin)">
+            <i class="fa-solid fa-arrows-up-down"></i> A4 वरून अंतर (Top):
+          </span>
+          <div class="range-slider-wrapper">
+            <input type="range" id="sliderTopMargin" min="5" max="50" value="15" step="1">
+            <span class="range-val-badge" id="valTopMargin">15 mm</span>
+          </div>
+        </div>
+
+        <div class="tool-row">
+          <span class="tool-label" title="कार्ड मधील अंतर">
+            <i class="fa-solid fa-arrows-left-right"></i> कार्ड अंतर (Gap):
+          </span>
+          <div class="range-slider-wrapper">
+            <input type="range" id="sliderCardGap" min="0" max="25" value="6" step="1">
+            <span class="range-val-badge" id="valCardGap">6 mm</span>
+          </div>
+        </div>
+
+        <div class="tool-row">
+          <span class="tool-label"><i class="fa-solid fa-scissors"></i> कटिंग व फोल्ड गाइड:</span>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.8rem;">
+            <input type="checkbox" id="chkCutMarks" checked>
+            <span>कात्रीचे खूण दाखवा</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Editor Sub-Tabs -->
+      <nav class="tabs-nav">
+        <button class="tab-btn active" data-tab="tab-personal">
+          <i class="fa-solid fa-user"></i> <span>१. वैयक्तिक</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-land">
+          <i class="fa-solid fa-tractor"></i> <span>२. शेतजमीन व सर्व्हे</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-csc">
+          <i class="fa-solid fa-building-flag"></i> <span>३. केंद्र माहिती (ऐच्छिक)</span>
+        </button>
+      </nav>
+
+      <!-- Tab Content Area -->
+      <div class="tab-content">
+
+        <!-- TAB 1: PERSONAL DETAILS -->
+        <div class="tab-pane active" id="tab-personal">
+          <!-- Photo Upload Block -->
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-camera"></i> शेतकऱ्याचा फोटो (Passport Photo):</label>
+            <div class="photo-upload-area">
+              <img src="" id="photoPreviewThumb" class="photo-preview-thumb" alt="Farmer Thumbnail">
+              <div class="photo-upload-controls">
+                <input type="file" id="farmerPhotoInput" class="file-input-hidden" accept="image/*">
+                <button type="button" class="btn-upload-trigger" onclick="document.getElementById('farmerPhotoInput').click()">
+                  <i class="fa-solid fa-upload"></i> फोटो अपलोड करा (PC / Mobile)
+                </button>
+                <div style="display:flex; gap:8px;">
+                  <button type="button" class="btn-export-sm" onclick="useSamplePhoto()" style="font-size:0.75rem; padding:3px 8px;">
+                    <i class="fa-solid fa-user-tie"></i> नमुना फोटो
+                  </button>
+                </div>
+                <span class="photo-help-text">JPG, PNG, WebP स्वीकार्य (पासपोर्ट साइज योग्य).</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">शेतकऱ्याचे नाव (मराठी) <span class="required">*</span></label>
+              <input type="text" id="inputFarmerNameMr" class="form-control" placeholder="उदा. सखाराम नामदेव पाटील">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Full Name (English) <span class="required">*</span></label>
+              <input type="text" id="inputFarmerNameEn" class="form-control" placeholder="SAKHARAM NAMDEO PATIL">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label"><i class="fa-solid fa-id-badge"></i> शेतकरी ओळख क्र. (Farmer ID) <span class="required">*</span></label>
+              <input type="text" id="inputFarmerId" class="form-control font-mono" placeholder="MH-268-2026-098412">
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fa-solid fa-fingerprint"></i> आधार संदर्भ क्र.</label>
+              <input type="text" id="inputAadhaarRef" class="form-control font-mono" placeholder="XXXX XXXX 8745">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label"><i class="fa-solid fa-phone"></i> मोबाईल क्रमांक</label>
+              <input type="text" id="inputMobile" class="form-control font-mono" placeholder="98XXXXXXXX">
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fa-regular fa-calendar"></i> जन्म दिनांक / वर्ष</label>
+              <input type="text" id="inputDob" class="form-control" placeholder="15/06/1974">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">लिंग (Gender)</label>
+            <select id="inputGender" class="form-control">
+              <option value="पुरुष / MALE">पुरुष / MALE</option>
+              <option value="स्त्री / FEMALE">स्त्री / FEMALE</option>
+              <option value="इतर / OTHER">इतर / OTHER</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- TAB 2: LAND RECORDS -->
+        <div class="tab-pane" id="tab-land">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">जिल्हा (District) <span class="required">*</span></label>
+              <input type="text" id="inputDistrict" class="form-control" placeholder="सिंधुदुर्ग">
+            </div>
+            <div class="form-group">
+              <label class="form-label">तालुका (Taluka) <span class="required">*</span></label>
+              <input type="text" id="inputTaluka" class="form-control" placeholder="कणकवली">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">गाव (Village) <span class="required">*</span></label>
+              <input type="text" id="inputVillage" class="form-control" placeholder="कणकवली">
+            </div>
+            <div class="form-group">
+              <label class="form-label">पिनकोड (Pincode)</label>
+              <input type="text" id="inputPincode" class="form-control font-mono" placeholder="416602">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">खाते क्र. (८-अ खाते क्र.) <span class="required">*</span></label>
+              <input type="text" id="inputKhataNo" class="form-control font-mono" placeholder="उदा. 452">
+            </div>
+            <div class="form-group">
+              <label class="form-label">एकूण क्षेत्र (Total Land Area) <span class="required">*</span></label>
+              <input type="text" id="inputTotalArea" class="form-control" placeholder="उदा. १ हेक्टर ४२ आर (1.42 Ha)">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">धारणा प्रकार (Holding Type)</label>
+            <input type="text" id="inputHoldingType" class="form-control" placeholder="वर्ग-१ (स्वमालकी)">
+          </div>
+
+          <!-- Multi Land Records Table for Back Card (Survey & 8A Details) -->
+          <div class="form-group">
+            <label class="form-label" style="justify-content:space-between;">
+              <span><i class="fa-solid fa-list-check"></i> मागील बाजूसाठी सर्व्हे / गट नोंदी (Land Survey Table):</span>
+              <span class="text-muted" style="font-size:0.75rem; font-weight:normal;">(८-अ व सर्व्हे तपशील)</span>
+            </label>
+            <div class="land-records-box">
+              <div class="land-table-header-row" style="display:grid; grid-template-columns:1.1fr 1.1fr 1fr 1fr 32px; gap:6px; font-size:0.72rem; font-weight:700; color:#38bdf8; margin-bottom:6px; padding:0 4px;">
+                <span>गाव</span>
+                <span>सर्व्हे/गट क्र.</span>
+                <span>८-अ खाते क्र.</span>
+                <span>क्षेत्र (हे.आर.)</span>
+                <span></span>
+              </div>
+              <div id="landRowsContainer"></div>
+              <button type="button" class="btn-add-land-row" onclick="addLandRow()" style="margin-top:6px;">
+                <i class="fa-solid fa-plus"></i> आणखी सर्व्हे / गट नोंद जोडा
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: CSC INFO (OPTIONAL) -->
+        <div class="tab-pane" id="tab-csc">
+          <div class="alert-info-box" style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); padding: 10px 14px; border-radius: 8px; font-size: 0.82rem; color: #bae6fd; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-circle-info" style="color:var(--accent-cyan); font-size:1rem;"></i>
+            <span>CSC केंद्र नोंदणी माहिती पूर्णपणे ऐच्छिक आहे. कार्डवर केंद्राचा संदर्भ दाखवायचा असल्यास येथे नोंदवा किंवा रिकामे ठेवा.</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label"><i class="fa-solid fa-building-flag"></i> CSC केंद्र नोंदणी क्र. <span class="text-muted" style="font-weight: normal; font-size: 0.75rem;">(ऐच्छिक / Optional)</span></label>
+              <input type="text" id="inputCscRegId" class="form-control font-mono" placeholder="उदा. 152153410016 (ऐच्छिक)">
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fa-solid fa-id-badge"></i> VLE केंद्र संचालक नाव <span class="text-muted" style="font-weight: normal; font-size: 0.75rem;">(ऐच्छिक / Optional)</span></label>
+              <input type="text" id="inputVleName" class="form-control" placeholder="उदा. महेश गजानन सुतार (ऐच्छिक)">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Panel Footer Actions -->
+      <div class="panel-footer">
+        <button class="btn-nav btn-nav-demo" onclick="fillSampleDemoData()" style="flex:1;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> <span>नमुना डेटा भरा</span>
+        </button>
+        <button class="btn-nav btn-nav-outline" onclick="saveCardToHistory()" style="flex:1;" title="हा शेतकरी डेटा नंतरसाठी जतन करा">
+          <i class="fa-solid fa-floppy-disk"></i> <span>डेटा जतन करा</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         RIGHT: LIVE PREVIEW & A4 SIMULATION PANEL
+         ========================================== -->
+    <section class="preview-panel">
+      <!-- Preview Header Toolbar -->
+      <div class="preview-top-bar">
+        <!-- View Switcher -->
+        <div class="view-mode-tabs">
+          <button class="view-tab-btn active" data-view="view-dual">
+            <i class="fa-solid fa-address-card"></i> <span>दुहेरी कार्ड (Dual)</span>
+          </button>
+          <button class="view-tab-btn" data-view="view-a4">
+            <i class="fa-solid fa-file-lines"></i> <span>A4 पेपर मांडणी (Upper-Center)</span>
+          </button>
+          <button class="view-tab-btn" data-view="view-flip">
+            <i class="fa-solid fa-arrows-rotate"></i> <span>3D फिरवा (Flip)</span>
+          </button>
+        </div>
+
+        <!-- Quick Export Buttons -->
+        <div class="quick-exports">
+          <button class="btn-export-sm" onclick="downloadFrontPng()" title="PVC फ्रंट कार्ड स्वतंत्र PNG डाऊनलोड">
+            <i class="fa-solid fa-image"></i> फ्रंट PNG
+          </button>
+          <button class="btn-export-sm" onclick="downloadBackPng()" title="PVC बॅक कार्ड स्वतंत्र PNG डाऊनलोड">
+            <i class="fa-solid fa-image"></i> बॅक PNG
+          </button>
+          <button class="btn-nav btn-nav-print" onclick="triggerA4Print()" style="padding: 0.4rem 0.9rem; font-size:0.8rem;">
+            <i class="fa-solid fa-print"></i> प्रिंट (Print)
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Stage Container -->
+      <div class="preview-stage">
+
+        <!-- 1. DUAL CARDS SCREEN VIEW -->
+        <div class="dual-cards-wrapper" id="sectionViewDual">
+          <div class="dual-cards-row">
+            <!-- Front Card Box -->
+            <div class="card-frame-container">
+              <span class="card-side-label"><i class="fa-solid fa-id-card"></i> दर्शनी बाजू (Front Side - 85.6mm × 54mm)</span>
+              <div id="dualFrontContainer"></div>
+            </div>
+
+            <!-- Back Card Box -->
+            <div class="card-frame-container">
+              <span class="card-side-label"><i class="fa-solid fa-address-book"></i> मागील बाजू (Back Side - 85.6mm × 54mm)</span>
+              <div id="dualBackContainer"></div>
+            </div>
+          </div>
+          <div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">
+            <i class="fa-solid fa-circle-info text-cyan"></i> वर "A4 पेपर मांडणी" टॅब निवडून A4 प्रिंट पूर्वदृश्य व वरून अंतर (Top Margin) नियंत्रित करा.
+          </div>
+        </div>
+
+        <!-- 2. A4 PAPER PRINT SIMULATION VIEW (UPPER & CENTER ALIGNED) -->
+        <div class="a4-simulation-container" id="sectionViewA4" style="display:none;">
+          <div class="a4-info-pill">
+            <i class="fa-solid fa-bullseye text-gold"></i>
+            <span>A4 कागदावर वरच्या बाजूस (Upper Side) मध्यभागी अचूक संरेखन (Center Aligned)</span>
+          </div>
+
+          <!-- A4 Paper Visual Mockup -->
+          <div class="a4-paper-mockup">
+            <!-- Top Ruler Indicator showing margin -->
+            <div class="a4-top-ruler-indicator">
+              शीर्ष अंतर: 15 mm (Upper Center Alignment)
+            </div>
+
+            <!-- Pair of Cards side-by-side with fold line -->
+            <div class="a4-cards-pair-row" id="a4CardsPairContainer">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <!-- Printing & Cutting Instructions -->
+            <div class="a4-instructions-banner">
+              <strong>कापून दुमडा व लॅमिनेट करा (Cut, Fold & Laminate):</strong> मध्यभागी कात्रीच्या चिन्हावर कापून दोन्ही बाजू समोरासमोर चिकटवा आणि लॅमिनेशन करा किंवा PVC कार्ड ट्रे मध्ये प्रिंट करा.
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 3D FLIP CARD VIEW -->
+        <div class="flip-card-wrapper" id="sectionViewFlip" style="display:none;">
+          <div class="flip-card-inner" id="flipCardInner">
+            <div class="flip-card-face" id="flipFrontFace"></div>
+            <div class="flip-card-face flip-card-back-face" id="flipBackFace"></div>
+          </div>
+          <button class="btn-flip-trigger" id="btnFlipCard">
+            <i class="fa-solid fa-rotate"></i> कार्ड फिरवून पाहा (Flip Card)
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       DEDICATED A4 PRINT SHEET CONTAINER
+       Exact A4 Portrait (210mm x 297mm)
+       Upper Margin Applied & Horizontally Centered
+       Only visible when window.print() is called
+       ========================================== -->
+  <div id="printable-a4-sheet">
+    <!-- Populated dynamically with exact cards & fold guideline -->
+  </div>
+
+  <!-- Dedicated JavaScript -->
+  <script src="js/agristek-id-card.js"></script>
+
+</body>
+</html>
