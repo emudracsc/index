@@ -4,7 +4,7 @@
  * (c) e-Mudra CSC & Aaple Sarkar Seva Kendra
  */
 
-// Default State
+// Default Blank State (Clean - No dummy / sample data)
 const cardState = {
   theme: 'green',
   topMargin: 15, // mm
@@ -18,90 +18,45 @@ const cardState = {
   showWatermark: true,
   logoStyle: 'capsule', // 'capsule' or 'transparent'
   
-  // Personal Info
-  farmerNameMr: 'सखाराम नामदेव पाटील',
-  farmerNameEn: 'SAKHARAM NAMDEO PATIL',
-  farmerId: 'MH-268-2026-098412',
-  aadhaarRef: 'XXXX XXXX 8745',
-  mobile: '9823456789',
-  dob: '15/06/1974',
-  gender: 'पुरुष / MALE',
-  photoUrl: '', // Base64 or default
+  // Personal Info (Clean / Empty by default)
+  farmerNameMr: '',
+  farmerNameEn: '',
+  farmerId: '',
+  aadhaarRef: '',
+  mobile: '',
+  dob: '',
+  gender: '',
+  photoUrl: '', // blank by default
 
-  // Land Info
-  district: 'सिंधुदुर्ग (Sindhudurg)',
-  taluka: 'कणकवली (Kankavli)',
-  village: 'कणकवली (Kankavli)',
-  pincode: '416602',
-  khataNo: '452',
-  gatNo: '142/1',
-  totalArea: '१ हेक्टर ४२ आर (1.42 Ha)',
-  holdingType: 'वर्ग-१ (स्वमालकी)',
+  // Land Info (Clean / Empty by default)
+  district: '',
+  taluka: '',
+  village: '',
+  pincode: '',
+  khataNo: '',
+  gatNo: '',
+  totalArea: '',
+  holdingType: '',
   
   // CSC & VLE Info (Optional)
-  cscRegId: '152153410016',
-  vleName: 'महेश गजानन सुतार',
+  cscRegId: '',
+  vleName: '',
   issueDate: new Date().toLocaleDateString('mr-IN'),
 
-  // Multi-land holdings (Survey / Gat, 8-A Khata No, Area)
-  landRecords: [
-    { village: 'कणकवली', gat: '142/1', khata: '452', area: '0.62 हे.आर.' },
-    { village: 'कणकवली', gat: '145/3', khata: '452', area: '0.45 हे.आर.' },
-    { village: 'वरवडे', gat: '88/2', khata: '119', area: '0.35 हे.आर.' }
-  ]
+  // Multi-land holdings (Empty by default)
+  landRecords: []
 };
 
-// Default high-contrast farmer sample portrait (SVG data URL)
-const DEFAULT_FARMER_AVATAR = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+// Default clean neutral silhouette for photo placeholder
+const DEFAULT_BLANK_PHOTO = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 200" width="160" height="200">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0f172a"/>
-    </linearGradient>
-    <linearGradient id="pheta" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ea580c"/>
-      <stop offset="50%" stop-color="#f97316"/>
-      <stop offset="100%" stop-color="#c2410c"/>
-    </linearGradient>
-    <linearGradient id="skin" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#fed7aa"/>
-      <stop offset="100%" stop-color="#fba86b"/>
-    </linearGradient>
-  </defs>
-  <rect width="160" height="200" fill="url(#bg)"/>
-  <!-- Body / Kurta -->
-  <path d="M 20 200 L 20 165 C 20 145, 55 135, 80 135 C 105 135, 140 145, 140 165 L 140 200 Z" fill="#ffffff"/>
-  <path d="M 75 135 L 75 175 M 85 135 L 85 175" stroke="#cbd5e1" stroke-width="1.5"/>
-  <!-- Neck -->
-  <rect x="68" y="112" width="24" height="26" rx="4" fill="url(#skin)"/>
-  <!-- Head -->
-  <ellipse cx="80" cy="85" rx="30" ry="36" fill="url(#skin)"/>
-  <!-- Traditional Maharashtra Pheta / Turban -->
-  <path d="M 45 75 C 45 42, 60 30, 80 30 C 100 30, 118 42, 118 75 C 118 68, 110 52, 80 50 C 52 52, 45 68, 45 75 Z" fill="url(#pheta)"/>
-  <path d="M 42 66 Q 80 48 120 62 Q 80 40 42 66" fill="#f59e0b"/>
-  <path d="M 45 72 Q 80 54 118 70 Q 80 46 45 72" fill="#d97706"/>
-  <!-- Pheta Tail (फाटा) -->
-  <path d="M 112 55 L 126 50 L 132 90 L 122 88 Z" fill="url(#pheta)"/>
-  <!-- Ears -->
-  <ellipse cx="48" cy="86" rx="6" ry="10" fill="url(#skin)"/>
-  <ellipse cx="112" cy="86" rx="6" ry="10" fill="url(#skin)"/>
-  <!-- Eyebrows -->
-  <path d="M 58 75 Q 67 71 74 74" stroke="#451a03" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  <path d="M 86 74 Q 93 71 102 75" stroke="#451a03" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  <!-- Eyes -->
-  <ellipse cx="66" cy="81" rx="4" ry="2.5" fill="#1e293b"/>
-  <ellipse cx="94" cy="81" rx="4" ry="2.5" fill="#1e293b"/>
-  <!-- Tilak (गंध) -->
-  <rect x="78" y="65" width="4" height="12" rx="1.5" fill="#ea580c"/>
-  <!-- Nose -->
-  <path d="M 80 78 L 78 92 L 84 92" stroke="#ea580c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-  <!-- Moustache (मिशा) -->
-  <path d="M 64 100 Q 80 94 96 100 Q 88 106 80 99 Q 72 106 64 100" fill="#292524"/>
-  <!-- Lips -->
-  <path d="M 72 106 Q 80 110 88 106" stroke="#9a3412" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <rect width="160" height="200" fill="#e2e8f0"/>
+  <circle cx="80" cy="72" r="32" fill="#94a3b8"/>
+  <path d="M 28 180 C 28 132, 54 122, 80 122 C 106 122, 132 132, 132 180 Z" fill="#94a3b8"/>
+  <text x="80" y="190" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#64748b" font-weight="bold">PHOTO</text>
 </svg>
 `);
+const DEFAULT_FARMER_AVATAR = DEFAULT_BLANK_PHOTO;
 
 // DOM Elements
 let qrCodeInstanceFront = null;
@@ -109,7 +64,9 @@ let qrCodeInstanceA4 = null;
 let qrCodeInstanceFlip = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  cardState.photoUrl = DEFAULT_FARMER_AVATAR;
+  cardState.photoUrl = '';
+  const thumb = document.getElementById('photoPreviewThumb');
+  if (thumb) thumb.src = DEFAULT_BLANK_PHOTO;
   initFormInputs();
   initThemeControls();
   initLayoutSliders();
@@ -353,9 +310,9 @@ function initPhotoUpload() {
 }
 
 function useSamplePhoto() {
-  cardState.photoUrl = DEFAULT_FARMER_AVATAR;
+  cardState.photoUrl = '';
   const thumb = document.getElementById('photoPreviewThumb');
-  if (thumb) thumb.src = DEFAULT_FARMER_AVATAR;
+  if (thumb) thumb.src = DEFAULT_BLANK_PHOTO;
   renderAllCards();
 }
 
@@ -369,6 +326,15 @@ function renderLandRecordsEditor() {
   if (!container) return;
 
   container.innerHTML = '';
+  if (!cardState.landRecords || cardState.landRecords.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:12px 8px; color:#64748b; font-size:0.75rem; background:#f8fafc; border:1px dashed #cbd5e1; border-radius:6px;">
+        कोणतीही नोंद नाही. नवीन नोंद जोडण्यासाठी "नवीन गट नोंद जोडा" दाबा किंवा HTML फाईल अपलोड करा.
+      </div>
+    `;
+    return;
+  }
+
   cardState.landRecords.forEach((record, index) => {
     const row = document.createElement('div');
     row.className = 'land-row-item';
@@ -384,10 +350,11 @@ function renderLandRecordsEditor() {
 }
 
 function addLandRow() {
+  if (!cardState.landRecords) cardState.landRecords = [];
   cardState.landRecords.push({
-    village: cardState.village || 'कणकवली',
+    village: cardState.village || '',
     gat: '',
-    khata: cardState.khataNo || '452',
+    khata: cardState.khataNo || '',
     area: ''
   });
   renderLandRecordsEditor();
@@ -395,12 +362,10 @@ function addLandRow() {
 }
 
 function deleteLandRow(index) {
-  if (cardState.landRecords.length > 1) {
+  if (cardState.landRecords && cardState.landRecords.length > 0) {
     cardState.landRecords.splice(index, 1);
     renderLandRecordsEditor();
     renderAllCards();
-  } else {
-    alert('किमान १ गट नोंद असणे आवश्यक आहे.');
   }
 }
 
@@ -486,38 +451,38 @@ function generateFrontCardHtml(uniqueIdSuffix) {
           <!-- Farmer ID Banner -->
           <div class="card-id-banner">
             <span class="card-id-label">शेतकरी ओळख क्र. (FARMER ID):</span>
-            <span class="card-id-val">${cardState.farmerId || 'MH-268-2026-000000'}</span>
+            <span class="card-id-val">${cardState.farmerId || '—'}</span>
           </div>
 
           <!-- Names -->
-          <div class="farmer-name-marathi">${cardState.farmerNameMr || 'शेतकऱ्याचे नाव'}</div>
-          <div class="farmer-name-english">${cardState.farmerNameEn || 'FARMER NAME'}</div>
+          <div class="farmer-name-marathi">${cardState.farmerNameMr || '—'}</div>
+          <div class="farmer-name-english">${cardState.farmerNameEn || '—'}</div>
 
           <!-- Info Grid -->
           <div class="info-grid-compact">
             <div class="info-item">
               <span class="info-label">जन्म / वय:</span>
-              <span class="info-value">${cardState.dob || '-'}</span>
+              <span class="info-value">${cardState.dob || '—'}</span>
             </div>
             <div class="info-item">
               <span class="info-label">लिंग:</span>
-              <span class="info-value">${cardState.gender || 'पुरुष'}</span>
+              <span class="info-value">${cardState.gender || '—'}</span>
             </div>
             <div class="info-item">
               <span class="info-label">मोबाईल:</span>
-              <span class="info-value">${cardState.mobile || '-'}</span>
+              <span class="info-value">${cardState.mobile || '—'}</span>
             </div>
             <div class="info-item">
               <span class="info-label">आधार संदर्भ:</span>
-              <span class="info-value">${cardState.aadhaarRef || 'XXXXXXXX1234'}</span>
+              <span class="info-value">${cardState.aadhaarRef || '—'}</span>
             </div>
             <div class="info-item">
               <span class="info-label">गाव:</span>
-              <span class="info-value">${cardState.village || '-'}</span>
+              <span class="info-value">${cardState.village || '—'}</span>
             </div>
             <div class="info-item">
               <span class="info-label">तालुका:</span>
-              <span class="info-value">${cardState.taluka || '-'}</span>
+              <span class="info-value">${cardState.taluka || '—'}</span>
             </div>
           </div>
 
@@ -525,12 +490,12 @@ function generateFrontCardHtml(uniqueIdSuffix) {
           <div class="primary-land-badge">
             <div class="land-badge-item">
               <span class="land-badge-lbl">खाते क्रमांक:</span>
-              <span class="land-badge-val">${cardState.khataNo || '-'}</span>
+              <span class="land-badge-val">${cardState.khataNo || '—'}</span>
             </div>
             <div class="land-badge-divider">|</div>
             <div class="land-badge-item">
               <span class="land-badge-lbl">एकूण क्षेत्र:</span>
-              <span class="land-badge-val">${cardState.totalArea || '-'}</span>
+              <span class="land-badge-val">${cardState.totalArea || '—'}</span>
             </div>
           </div>
         </div>
@@ -552,15 +517,26 @@ function generateFrontCardHtml(uniqueIdSuffix) {
 
 // Generate HTML Markup for BACK SIDE
 function generateBackCardHtml(uniqueIdSuffix) {
-  // Render land records with 8-A and Area (up to 7 rows cleanly since barcode & schemes are removed)
-  const rows = cardState.landRecords.slice(0, 7).map(r => `
-    <tr>
-      <td>${r.village || cardState.village || '-'}</td>
-      <td><strong>${r.gat || '-'}</strong></td>
-      <td>${r.khata || cardState.khataNo || '-'}</td>
-      <td><strong>${r.area || '-'}</strong></td>
-    </tr>
-  `).join('');
+  // Render land records with 8-A and Area
+  let rows = '';
+  if (cardState.landRecords && cardState.landRecords.length > 0) {
+    rows = cardState.landRecords.slice(0, 7).map(r => `
+      <tr>
+        <td>${r.village || cardState.village || '—'}</td>
+        <td><strong>${r.gat || '—'}</strong></td>
+        <td>${r.khata || cardState.khataNo || '—'}</td>
+        <td><strong>${r.area || '—'}</strong></td>
+      </tr>
+    `).join('');
+  } else {
+    rows = `
+      <tr>
+        <td colspan="4" style="text-align: center; color: #94a3b8; padding: 20px 8px; font-size: 0.72rem;">
+          कोणतीही नोंद उपलब्ध नाही (HTML अपलोड करा किंवा नोंद जोडा)
+        </td>
+      </tr>
+    `;
+  }
 
   const watermarkBackHtml = cardState.showWatermark ? `
     <div class="card-back-watermark">
@@ -579,6 +555,9 @@ function generateBackCardHtml(uniqueIdSuffix) {
     ? `<div class="back-csc-pill"><i class="fa-solid fa-building-flag"></i> नोंदणी केंद्र: <strong>${cardState.cscRegId}</strong></div>`
     : `<div class="back-csc-pill"><i class="fa-solid fa-shield-halved"></i> भारत सरकार डिजिटल कृषी नोंदणी</div>`;
 
+  const recCount = cardState.landRecords ? cardState.landRecords.length : 0;
+  const totArea = cardState.totalArea || (recCount > 0 ? '-' : '—');
+
   return `
     <div class="agristack-pvc-card card-back" id="cardBack_${uniqueIdSuffix}">
       <!-- Back Header -->
@@ -588,7 +567,7 @@ function generateBackCardHtml(uniqueIdSuffix) {
           <span>शेतजमीन धारणा तपशील (८-अ व सर्व्हे नोंदी)</span>
         </div>
         <div class="back-header-right">
-          <span class="back-dist-label">जिल्हा: ${cardState.district || '-'}</span>
+          <span class="back-dist-label">जिल्हा: ${cardState.district || '—'}</span>
           ${backLogoHtml}
         </div>
       </div>
@@ -615,8 +594,8 @@ function generateBackCardHtml(uniqueIdSuffix) {
             </tbody>
             <tfoot>
               <tr class="table-total-row">
-                <td colspan="2">एकूण सर्व्हे नोंदी: <strong>${cardState.landRecords.length}</strong></td>
-                <td colspan="2">एकूण क्षेत्र: <strong>${cardState.totalArea || '-'}</strong></td>
+                <td colspan="2">एकूण सर्व्हे नोंदी: <strong>${recCount}</strong></td>
+                <td colspan="2">एकूण क्षेत्र: <strong>${totArea}</strong></td>
               </tr>
             </tfoot>
           </table>
@@ -627,7 +606,7 @@ function generateBackCardHtml(uniqueIdSuffix) {
           <div class="back-bottom-left-info">
             ${backCscHtml}
             <div class="back-farmer-ref">
-              <span>शेतकरी ओळख: <strong>${cardState.farmerId || '-'}</strong></span>
+              <span>शेतकरी ओळख: <strong>${cardState.farmerId || '—'}</strong></span>
             </div>
           </div>
           <div class="back-seal-box">
@@ -751,7 +730,8 @@ function generateBarcodeForBox(svgId) {
   if (!el || typeof JsBarcode === 'undefined') return;
 
   try {
-    JsBarcode(el, cardState.farmerId || 'MH-268-2026-098412', {
+    const codeVal = (cardState.farmerId && cardState.farmerId.trim()) ? cardState.farmerId.trim() : '000000000000';
+    JsBarcode(el, codeVal, {
       format: "CODE128",
       width: 1.1,
       height: 20,
@@ -764,55 +744,31 @@ function generateBarcodeForBox(svgId) {
   }
 }
 
-// Demo Data Filler (1-Click Fill)
-function fillSampleDemoData() {
-  cardState.farmerNameMr = 'सखाराम नामदेव पाटील';
-  cardState.farmerNameEn = 'SAKHARAM NAMDEO PATIL';
-  cardState.farmerId = 'MH-268-2026-098412';
-  cardState.aadhaarRef = 'XXXX XXXX 8745';
-  cardState.mobile = '9823456789';
-  cardState.dob = '15/06/1974';
-  cardState.gender = 'पुरुष / MALE';
-  cardState.district = 'सिंधुदुर्ग (Sindhudurg)';
-  cardState.taluka = 'कणकवली (Kankavli)';
-  cardState.village = 'कणकवली (Kankavli)';
-  cardState.pincode = '416602';
-  cardState.khataNo = '452';
-  cardState.totalArea = '१ हेक्टर ४२ आर (1.42 Ha)';
-  cardState.holdingType = 'वर्ग-१ (स्वमालकी)';
-  cardState.cscRegId = '152153410016';
-  cardState.vleName = 'महेश गजानन सुतार';
-  cardState.photoUrl = DEFAULT_FARMER_AVATAR;
-
-  cardState.landRecords = [
-    { village: 'कणकवली', gat: '142/1', khata: '452', area: '0.62 हे.आर.' },
-    { village: 'कणकवली', gat: '145/3', khata: '452', area: '0.45 हे.आर.' },
-    { village: 'वरवडे', gat: '88/2', khata: '119', area: '0.35 हे.आर.' }
-  ];
-
-  initFormInputs();
-  renderLandRecordsEditor();
-  renderAllCards();
-}
-
-// Reset Form
+// Reset Form (Clear all data to blank)
 function resetCardForm() {
   if (confirm('सर्व माहिती रिकामी करायची आहे का?')) {
     cardState.farmerNameMr = '';
     cardState.farmerNameEn = '';
-    cardState.farmerId = 'AGRI-MH-' + Math.floor(100000 + Math.random() * 900000);
+    cardState.farmerId = '';
     cardState.aadhaarRef = '';
     cardState.mobile = '';
     cardState.dob = '';
+    cardState.gender = '';
+    cardState.district = '';
+    cardState.taluka = '';
     cardState.village = '';
+    cardState.pincode = '';
     cardState.khataNo = '';
+    cardState.gatNo = '';
     cardState.totalArea = '';
+    cardState.holdingType = '';
     cardState.cscRegId = '';
     cardState.vleName = '';
-    cardState.photoUrl = DEFAULT_FARMER_AVATAR;
-    cardState.landRecords = [
-      { village: '', gat: '', khata: '', area: '' }
-    ];
+    cardState.photoUrl = '';
+    cardState.landRecords = [];
+
+    const thumb = document.getElementById('photoPreviewThumb');
+    if (thumb) thumb.src = DEFAULT_BLANK_PHOTO;
 
     initFormInputs();
     renderLandRecordsEditor();
@@ -924,38 +880,6 @@ function saveCardToHistory() {
 
 let parsedAgristackData = null;
 
-// Exact Sample Data from User's Prompt (गजानन दत्तात्रय सुतार, तिवरे, कणकवली)
-const USER_PROMPT_SAMPLE_DATA = {
-  farmerNameMr: 'गजानन दत्तात्रय सुतार',
-  farmerNameEn: 'GAJANAN DATTATRAY SUTAR',
-  farmerId: '60711271864',
-  enrollmentId: '27_495_4277_566441_005239',
-  aadhaarRef: 'XXXX XXXX 8745',
-  mobile: '9823456789',
-  dob: '12/04/1976',
-  gender: 'पुरुष / MALE',
-  caste: 'OBC',
-  state: 'महाराष्ट्र',
-  district: 'सिंधुदुर्ग (Sindhudurg)',
-  taluka: 'कणकवली (Kankavli)',
-  village: 'तिवरे (Tiware)',
-  pincode: '416602',
-  khataNo: '181',
-  gatNo: '166/2',
-  totalArea: '१.३४ हेक्टर (1.3401 Ha)',
-  holdingType: 'वर्ग-१ (स्वमालकी)',
-  cscRegId: '152153410016',
-  vleName: 'महेश गजानन सुतार',
-  photoUrl: 'data:image/png;base64,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',
-  landRecords: [
-    { village: 'तिवरे (Tiware)', gat: '166/2', khata: '181', area: '0.08 हे.आर.' },
-    { village: 'तिवरे (Tiware)', gat: '187ब', khata: '181', area: '0.01 हे.आर.' },
-    { village: 'तिवरे (Tiware)', gat: '215', khata: '181', area: '0.60 हे.आर.' },
-    { village: 'तिवरे (Tiware)', gat: '187अ', khata: '181', area: '0.45 हे.आर.' },
-    { village: 'तिवरे (Tiware)', gat: '191', khata: '181', area: '0.20 हे.आर.' }
-  ]
-};
-
 // High-accuracy Marathi Devanagari transliterator for Marathi Names
 function transliterateMarathiToEnglish(nameMr) {
   if (!nameMr || !nameMr.trim()) return '';
@@ -1030,10 +954,10 @@ function parseAgristackHtml(htmlString) {
     email: '',
     aadhaarRef: '',
     state: 'महाराष्ट्र',
-    district: 'सिंधुदुर्ग (Sindhudurg)',
-    taluka: 'कणकवली (Kankavli)',
-    village: 'तिवरे (Tiware)',
-    pincode: '416602',
+    district: '',
+    taluka: '',
+    village: '',
+    pincode: '',
     khataNo: '',
     gatNo: '',
     totalArea: '',
@@ -1206,9 +1130,9 @@ function parseAgristackHtml(htmlString) {
 
           if (fullGat) {
             result.landRecords.push({
-              village: v || result.village || 'तिवरे',
+              village: v || result.village || '',
               gat: fullGat,
-              khata: khata || result.khataNo || '181',
+              khata: khata || result.khataNo || '',
               area: areaNum > 0 ? (areaNum.toFixed(4) + ' हे.आर.') : (areaValStr || '-')
             });
           }
@@ -1229,9 +1153,8 @@ function parseAgristackHtml(htmlString) {
     result.farmerNameMr = result.farmerNameEn;
   }
   if (!result.farmerNameMr) {
-    // If still blank, fallback to user's sample
-    result.farmerNameMr = 'गजानन दत्तात्रय सुतार';
-    result.farmerNameEn = 'GAJANAN DATTATRAY SUTAR';
+    result.farmerNameMr = '';
+    result.farmerNameEn = '';
   }
 
   if (result.landRecords.length > 0 && !result.gatNo) {
@@ -1398,9 +1321,7 @@ function applyExtractedToActiveCard() {
   closeAgristackImportModal();
 }
 
-// Load Exact Sample Data from User's Prompt
 function loadUserPastedSampleData() {
-  applyExtractedDataToCard(USER_PROMPT_SAMPLE_DATA, 'गजानन दत्तात्रय सुतार (नमुना)');
   closeAgristackImportModal();
 }
 

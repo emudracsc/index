@@ -66,9 +66,6 @@
       <button class="btn-nav btn-nav-import" onclick="openAgristackImportModal()" title="ॲग्रीस्टॅक PDF किंवा सेव्ह केलेले HTML अपलोड करून सर्व माहिती ऑटो-फेच करा">
         <i class="fa-solid fa-file-import"></i> <span>📂 PDF / HTML ऑटो-फेच</span>
       </button>
-      <button class="btn-nav btn-nav-demo" onclick="fillSampleDemoData()" title="उदाहरणासाठी नमुना शेतकरी डेटा एका क्लिकवर भरा">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>⚡ नमुना डेटा</span>
-      </button>
       <button class="btn-nav btn-nav-pdf" id="btnDownloadPdf" onclick="downloadA4Pdf()" title="A4 हाय-रिझोल्यूशन PDF डाउनलोड करा">
         <i class="fa-solid fa-file-pdf"></i> <span>📥 A4 PDF</span>
       </button>
@@ -111,9 +108,6 @@
           </button>
           <button type="button" class="btn-fetch-action btn-fetch-secondary" onclick="openAgristackImportModal('mtab-paste')" title="HTML कोड थेट कॉपी-पेस्ट करा">
             <i class="fa-solid fa-code"></i> <span>📋 HTML कोड पेस्ट करा</span>
-          </button>
-          <button type="button" class="btn-fetch-action btn-fetch-sample" onclick="loadUserPastedSampleData()" title="गजानन सुतार (तिवरे) नमुना डेटा थेट भरा">
-            <i class="fa-solid fa-user-check"></i> <span>⚡ गजानन सुतार (नमुना डेटा)</span>
           </button>
         </div>
         <!-- Hidden file input for fast direct upload -->
@@ -220,11 +214,6 @@
                 <button type="button" class="btn-upload-trigger" onclick="document.getElementById('farmerPhotoInput').click()">
                   <i class="fa-solid fa-upload"></i> फोटो अपलोड करा (PC / Mobile)
                 </button>
-                <div style="display:flex; gap:8px;">
-                  <button type="button" class="btn-export-sm" onclick="useSamplePhoto()" style="font-size:0.75rem; padding:3px 8px;">
-                    <i class="fa-solid fa-user-tie"></i> नमुना फोटो
-                  </button>
-                </div>
                 <span class="photo-help-text">JPG, PNG, WebP स्वीकार्य (पासपोर्ट साइज योग्य).</span>
               </div>
             </div>
@@ -233,33 +222,33 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">शेतकऱ्याचे नाव (मराठी) <span class="required">*</span></label>
-              <input type="text" id="inputFarmerNameMr" class="form-control" placeholder="उदा. सखाराम नामदेव पाटील">
+              <input type="text" id="inputFarmerNameMr" class="form-control" placeholder="शेतकऱ्याचे संपूर्ण नाव (मराठी)">
             </div>
             <div class="form-group">
               <label class="form-label">Full Name (English) <span class="required">*</span></label>
-              <input type="text" id="inputFarmerNameEn" class="form-control" placeholder="SAKHARAM NAMDEO PATIL">
+              <input type="text" id="inputFarmerNameEn" class="form-control" placeholder="FARMER FULL NAME (ENGLISH)">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label"><i class="fa-solid fa-id-badge"></i> शेतकरी ओळख क्र. (Farmer ID) <span class="required">*</span></label>
-              <input type="text" id="inputFarmerId" class="form-control font-mono" placeholder="MH-268-2026-098412">
+              <input type="text" id="inputFarmerId" class="form-control font-mono" placeholder="उदा. 60711271864">
             </div>
             <div class="form-group">
               <label class="form-label"><i class="fa-solid fa-fingerprint"></i> आधार संदर्भ क्र.</label>
-              <input type="text" id="inputAadhaarRef" class="form-control font-mono" placeholder="XXXX XXXX 8745">
+              <input type="text" id="inputAadhaarRef" class="form-control font-mono" placeholder="XXXX XXXX 1234">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label"><i class="fa-solid fa-phone"></i> मोबाईल क्रमांक</label>
-              <input type="text" id="inputMobile" class="form-control font-mono" placeholder="98XXXXXXXX">
+              <input type="text" id="inputMobile" class="form-control font-mono" placeholder="मोबाईल नंबर">
             </div>
             <div class="form-group">
               <label class="form-label"><i class="fa-regular fa-calendar"></i> जन्म दिनांक / वर्ष</label>
-              <input type="text" id="inputDob" class="form-control" placeholder="15/06/1974">
+              <input type="text" id="inputDob" class="form-control" placeholder="DD/MM/YYYY">
             </div>
           </div>
 
@@ -278,33 +267,33 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">जिल्हा (District) <span class="required">*</span></label>
-              <input type="text" id="inputDistrict" class="form-control" placeholder="सिंधुदुर्ग">
+              <input type="text" id="inputDistrict" class="form-control" placeholder="जिल्हा">
             </div>
             <div class="form-group">
               <label class="form-label">तालुका (Taluka) <span class="required">*</span></label>
-              <input type="text" id="inputTaluka" class="form-control" placeholder="कणकवली">
+              <input type="text" id="inputTaluka" class="form-control" placeholder="तालुका">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">गाव (Village) <span class="required">*</span></label>
-              <input type="text" id="inputVillage" class="form-control" placeholder="कणकवली">
+              <input type="text" id="inputVillage" class="form-control" placeholder="गाव">
             </div>
             <div class="form-group">
               <label class="form-label">पिनकोड (Pincode)</label>
-              <input type="text" id="inputPincode" class="form-control font-mono" placeholder="416602">
+              <input type="text" id="inputPincode" class="form-control font-mono" placeholder="पिनकोड">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">खाते क्र. (८-अ खाते क्र.) <span class="required">*</span></label>
-              <input type="text" id="inputKhataNo" class="form-control font-mono" placeholder="उदा. 452">
+              <input type="text" id="inputKhataNo" class="form-control font-mono" placeholder="८-अ खाते क्र.">
             </div>
             <div class="form-group">
               <label class="form-label">एकूण क्षेत्र (Total Land Area) <span class="required">*</span></label>
-              <input type="text" id="inputTotalArea" class="form-control" placeholder="उदा. १ हेक्टर ४२ आर (1.42 Ha)">
+              <input type="text" id="inputTotalArea" class="form-control" placeholder="एकूण क्षेत्र (उदा. 1.34 Ha)">
             </div>
           </div>
 
@@ -345,11 +334,11 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label"><i class="fa-solid fa-building-flag"></i> CSC केंद्र नोंदणी क्र. <span class="text-muted" style="font-weight: normal; font-size: 0.75rem;">(ऐच्छिक / Optional)</span></label>
-              <input type="text" id="inputCscRegId" class="form-control font-mono" placeholder="उदा. 152153410016 (ऐच्छिक)">
+              <input type="text" id="inputCscRegId" class="form-control font-mono" placeholder="CSC केंद्र आयडी (ऐच्छिक)">
             </div>
             <div class="form-group">
               <label class="form-label"><i class="fa-solid fa-id-badge"></i> VLE केंद्र संचालक नाव <span class="text-muted" style="font-weight: normal; font-size: 0.75rem;">(ऐच्छिक / Optional)</span></label>
-              <input type="text" id="inputVleName" class="form-control" placeholder="उदा. महेश गजानन सुतार (ऐच्छिक)">
+              <input type="text" id="inputVleName" class="form-control" placeholder="VLE नाव (ऐच्छिक)">
             </div>
           </div>
         </div>
@@ -358,8 +347,8 @@
 
       <!-- Panel Footer Actions -->
       <div class="panel-footer">
-        <button class="btn-nav btn-nav-demo" onclick="fillSampleDemoData()" style="flex:1;">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> <span>नमुना डेटा भरा</span>
+        <button class="btn-nav btn-nav-outline" onclick="resetCardForm()" style="flex:1;" title="सर्व रकाने रिकामे करा">
+          <i class="fa-solid fa-rotate-left"></i> <span>फॉर्म रीसेट करा</span>
         </button>
         <button class="btn-nav btn-nav-outline" onclick="saveCardToHistory()" style="flex:1;" title="हा शेतकरी डेटा नंतरसाठी जतन करा">
           <i class="fa-solid fa-floppy-disk"></i> <span>डेटा जतन करा</span>
@@ -493,9 +482,6 @@
         <button type="button" class="modal-tab-btn" data-tab="mtab-paste" onclick="switchImportModalTab('mtab-paste')">
           <i class="fa-solid fa-paste"></i> <span>२. HTML कोड पेस्ट करा</span>
         </button>
-        <button type="button" class="modal-tab-btn" data-tab="mtab-sample" onclick="switchImportModalTab('mtab-sample')">
-          <i class="fa-solid fa-circle-check text-green"></i> <span>३. नमुना डेटा (गजानन सुतार)</span>
-        </button>
       </div>
 
       <!-- Modal Body -->
@@ -534,25 +520,6 @@
             </button>
             <button type="button" class="btn-modal-primary" onclick="parsePastedHtmlCode()">
               <i class="fa-solid fa-bolt"></i> डेटा फेच करा व तपासा
-            </button>
-          </div>
-        </div>
-
-        <!-- TAB 3: USER SAMPLE PRESET -->
-        <div class="modal-tab-pane" id="mtab-sample">
-          <div class="sample-preset-card">
-            <div class="sample-preset-badge">नमुना शेतकरी डेटा (User Provided Sample)</div>
-            <div class="sample-info-grid">
-              <div><strong>नाव:</strong> गजानन दत्तात्रय सुतार (GAJANAN DATTATRAY SUTAR)</div>
-              <div><strong>शेतकरी आयडी:</strong> 60711271864</div>
-              <div><strong>नोंदणी क्रमांक:</strong> 27_495_4277_566441_005239</div>
-              <div><strong>जिल्हा / तालुका:</strong> सिंधुदुर्ग / कणकवली</div>
-              <div><strong>गाव / ८-अ खाते:</strong> तिवरे / खाते क्र. 181</div>
-              <div><strong>शेतजमीन नोंदी:</strong> १६६/२, १८७ब, २१५, १८७अ, १९१ (एकूण १.३४ हेक्टर)</div>
-              <div><strong>फोटो:</strong> मूळ पोर्टलचा पासपोर्ट फोटो उपलब्ध</div>
-            </div>
-            <button type="button" class="btn-modal-primary" onclick="loadUserPastedSampleData()" style="width:100%; margin-top:14px;">
-              <i class="fa-solid fa-circle-check"></i> हा नमुना डेटा एका क्लिकवर कार्डमध्ये भरा
             </button>
           </div>
         </div>
@@ -636,8 +603,8 @@
         <i class="fa-solid fa-circle-check"></i>
       </div>
       <div class="toast-info">
-        <h4 id="toastTitle"><i class="fa-solid fa-wand-magic-sparkles text-gold"></i> ॲग्रीस्टॅक कार्ड यशस्वीरीत्या तयार झाले!</h4>
-        <p id="toastSubtitle">शेतकरी: <strong id="toastFarmerName">गजानन दत्तात्रय सुतार</strong> (आयडी: <span id="toastFarmerId" class="font-mono">60711271864</span>)</p>
+        <h4 id="toastTitle"><i class="fa-solid fa-wand-magic-sparkles text-gold"></i> ॲग्रीस्टॅक कार्ड तयार झाले!</h4>
+        <p id="toastSubtitle">शेतकरी: <strong id="toastFarmerName">—</strong> (आयडी: <span id="toastFarmerId" class="font-mono">—</span>)</p>
       </div>
       <div class="toast-actions">
         <button class="btn-toast-print" onclick="triggerA4Print()" title="A4 वर थेट प्रिंट करा">
