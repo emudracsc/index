@@ -25,6 +25,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+  <!-- PDF.js for parsing AgriStack Farmer Registry PDFs directly in browser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
+
   <!-- Dedicated Stylesheet -->
   <link rel="stylesheet" href="css/agristek-id-card.css">
 </head>
@@ -52,8 +60,14 @@
       <a href="index.html" class="btn-nav btn-nav-outline">
         <i class="fa-solid fa-house"></i> <span>मुख्य पोर्टल</span>
       </a>
+      <button class="btn-nav btn-nav-upload-html" onclick="triggerDirectHtmlUpload()" title="ॲग्रीस्टॅक HTML पेज अपलोड करा व थेट ओळखपत्र जनरेट करा">
+        <i class="fa-solid fa-file-code"></i> <span>📄 HTML अपलोड (Generate Card)</span>
+      </button>
+      <button class="btn-nav btn-nav-import" onclick="openAgristackImportModal()" title="ॲग्रीस्टॅक PDF किंवा सेव्ह केलेले HTML अपलोड करून सर्व माहिती ऑटो-फेच करा">
+        <i class="fa-solid fa-file-import"></i> <span>📂 PDF / HTML ऑटो-फेच</span>
+      </button>
       <button class="btn-nav btn-nav-demo" onclick="fillSampleDemoData()" title="उदाहरणासाठी नमुना शेतकरी डेटा एका क्लिकवर भरा">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>⚡ नमुना डेटा भरा</span>
+        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>⚡ नमुना डेटा</span>
       </button>
       <button class="btn-nav btn-nav-pdf" id="btnDownloadPdf" onclick="downloadA4Pdf()" title="A4 हाय-रिझोल्यूशन PDF डाउनलोड करा">
         <i class="fa-solid fa-file-pdf"></i> <span>📥 A4 PDF</span>
@@ -79,6 +93,31 @@
         <button class="btn-export-sm" onclick="resetCardForm()" title="फॉर्म रीसेट करा">
           <i class="fa-solid fa-rotate-left"></i> रीसेट
         </button>
+      </div>
+
+      <!-- AgriStack Smart Auto-Fetch Banner -->
+      <div class="agristack-quick-fetch-card">
+        <div class="fetch-card-header">
+          <div class="fetch-card-title">
+            <i class="fa-solid fa-bolt-lightning text-gold"></i>
+            <span>ॲग्रीस्टॅक HTML पेज अपलोड करा (1-Click Card)</span>
+          </div>
+          <span class="fetch-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Parser Pro</span>
+        </div>
+        <p class="fetch-desc">mhfr.agristack.gov.in वरून सेव्ह केलेले HTML पेज निवडा. शेतकरी नाव, फोटो, गाव, ८-अ खाते व सर्व्हे गट नोंदी आपोआप भरून थेट ओळखपत्र जनरेट होईल!</p>
+        <div class="fetch-actions-grid">
+          <button type="button" class="btn-fetch-action btn-fetch-primary" onclick="triggerDirectHtmlUpload()" title="कम्प्युटरवरून HTML फाईल निवडून थेट कार्ड बनवा">
+            <i class="fa-solid fa-cloud-arrow-up"></i> <span>📂 HTML पेज निवडा व कार्ड बनवा</span>
+          </button>
+          <button type="button" class="btn-fetch-action btn-fetch-secondary" onclick="openAgristackImportModal('mtab-paste')" title="HTML कोड थेट कॉपी-पेस्ट करा">
+            <i class="fa-solid fa-code"></i> <span>📋 HTML कोड पेस्ट करा</span>
+          </button>
+          <button type="button" class="btn-fetch-action btn-fetch-sample" onclick="loadUserPastedSampleData()" title="गजानन सुतार (तिवरे) नमुना डेटा थेट भरा">
+            <i class="fa-solid fa-user-check"></i> <span>⚡ गजानन सुतार (नमुना डेटा)</span>
+          </button>
+        </div>
+        <!-- Hidden file input for fast direct upload -->
+        <input type="file" id="agristackFastFileInput" accept=".html,.htm,.txt,.pdf" style="display:none;" onchange="handleDirectFileSelect(event)">
       </div>
 
       <!-- Theme & A4 Print Placement Controls -->
@@ -425,6 +464,192 @@
     </section>
 
   </main>
+
+  <!-- ==========================================
+       AGRISTACK AUTO-FETCH MODAL (PDF & HTML)
+       ========================================== -->
+  <div id="agristackImportModal" class="agristack-modal-backdrop no-print" style="display:none;">
+    <div class="agristack-modal-container">
+      
+      <!-- Modal Header -->
+      <div class="agristack-modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <h3>ॲग्रीस्टॅक डेटा ऑटो-फेच व कार्ड जनरेटर</h3>
+            <p>Maharashtra Farmer Registry (mhfr.agristack.gov.in) PDF किंवा HTML मधून सर्व तपशील एका सेकंदात फेच करा</p>
+          </div>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeAgristackImportModal()" title="बंद करा">&times;</button>
+      </div>
+
+      <!-- Modal Tabs -->
+      <div class="agristack-modal-tabs">
+        <button type="button" class="modal-tab-btn active" data-tab="mtab-file" onclick="switchImportModalTab('mtab-file')">
+          <i class="fa-solid fa-file-arrow-up"></i> <span>१. PDF / HTML फाईल अपलोड</span>
+        </button>
+        <button type="button" class="modal-tab-btn" data-tab="mtab-paste" onclick="switchImportModalTab('mtab-paste')">
+          <i class="fa-solid fa-paste"></i> <span>२. HTML कोड पेस्ट करा</span>
+        </button>
+        <button type="button" class="modal-tab-btn" data-tab="mtab-sample" onclick="switchImportModalTab('mtab-sample')">
+          <i class="fa-solid fa-circle-check text-green"></i> <span>३. नमुना डेटा (गजानन सुतार)</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="agristack-modal-body">
+
+        <!-- TAB 1: FILE UPLOAD -->
+        <div class="modal-tab-pane active" id="mtab-file">
+          <div class="file-dropzone" id="agristackDropZone">
+            <input type="file" id="modalFileInput" accept=".pdf,.html,.htm,.txt" style="display:none;" onchange="handleModalFileSelect(event)">
+            <div class="dropzone-icon">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <h4>ॲग्रीस्टॅक PDF किंवा HTML फाईल येथे ड्रॅग करा किंवा निवडा</h4>
+            <p class="dropzone-sub">महाराष्ट्र शेतकरी नोंदणी (mhfr.agristack.gov.in) पोर्टलवरून सेव्ह केलेले HTML किंवा डाऊनलोड केलेली PDF निवडा</p>
+            <div class="dropzone-formats">
+              <span class="fmt-badge"><i class="fa-solid fa-file-pdf"></i> .PDF</span>
+              <span class="fmt-badge"><i class="fa-solid fa-file-code"></i> .HTML</span>
+              <span class="fmt-badge"><i class="fa-solid fa-globe"></i> .HTM</span>
+            </div>
+            <button type="button" class="btn-browse-file" onclick="document.getElementById('modalFileInput').click()">
+              <i class="fa-solid fa-folder-open"></i> कम्प्युटर / मोबाईलमधून फाईल निवडा
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 2: PASTE HTML -->
+        <div class="modal-tab-pane" id="mtab-paste">
+          <div class="paste-instruction">
+            <i class="fa-solid fa-lightbulb text-gold"></i>
+            <span>ॲग्रीस्टॅक पोर्टलवरील शेतकरी नोंदणी फॉर्मचे HTML (Ctrl+U / F12 Inspect / Ctrl+S) येथे थेट पेस्ट करा:</span>
+          </div>
+          <textarea id="txtAgristackHtmlCode" class="html-paste-area" placeholder="येथे ॲग्रीस्टॅक वेबपेजचा HTML कोड किंवा मजकूर पेस्ट करा... (Ctrl+V)"></textarea>
+          <div class="paste-action-bar">
+            <button type="button" class="btn-modal-subaction" onclick="pasteFromClipboard()">
+              <i class="fa-solid fa-clipboard"></i> क्लिपबोर्डवरून पेस्ट करा
+            </button>
+            <button type="button" class="btn-modal-primary" onclick="parsePastedHtmlCode()">
+              <i class="fa-solid fa-bolt"></i> डेटा फेच करा व तपासा
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 3: USER SAMPLE PRESET -->
+        <div class="modal-tab-pane" id="mtab-sample">
+          <div class="sample-preset-card">
+            <div class="sample-preset-badge">नमुना शेतकरी डेटा (User Provided Sample)</div>
+            <div class="sample-info-grid">
+              <div><strong>नाव:</strong> गजानन दत्तात्रय सुतार (GAJANAN DATTATRAY SUTAR)</div>
+              <div><strong>शेतकरी आयडी:</strong> 60711271864</div>
+              <div><strong>नोंदणी क्रमांक:</strong> 27_495_4277_566441_005239</div>
+              <div><strong>जिल्हा / तालुका:</strong> सिंधुदुर्ग / कणकवली</div>
+              <div><strong>गाव / ८-अ खाते:</strong> तिवरे / खाते क्र. 181</div>
+              <div><strong>शेतजमीन नोंदी:</strong> १६६/२, १८७ब, २१५, १८७अ, १९१ (एकूण १.३४ हेक्टर)</div>
+              <div><strong>फोटो:</strong> मूळ पोर्टलचा पासपोर्ट फोटो उपलब्ध</div>
+            </div>
+            <button type="button" class="btn-modal-primary" onclick="loadUserPastedSampleData()" style="width:100%; margin-top:14px;">
+              <i class="fa-solid fa-circle-check"></i> हा नमुना डेटा एका क्लिकवर कार्डमध्ये भरा
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Parsed Status / Loading Indicator -->
+        <div id="importLoadingState" class="import-loading-state" style="display:none;">
+          <i class="fa-solid fa-circle-notch fa-spin"></i>
+          <span id="importLoadingText">फाईल वाचून माहिती फेच करत आहे...</span>
+        </div>
+
+        <!-- Extracted Data Preview Panel -->
+        <div id="extractedPreviewPanel" class="extracted-preview-panel" style="display:none;">
+          <div class="preview-panel-title">
+            <i class="fa-solid fa-circle-check text-green"></i>
+            <span>माहिती यशस्वीरीत्या फेच झाली! (तपशील पडताळा):</span>
+          </div>
+
+          <div class="extracted-details-card">
+            <div class="extracted-photo-col">
+              <img id="extPhotoPreview" src="" alt="Farmer Photo" class="extracted-photo-img">
+              <span class="photo-detected-tag" id="extPhotoTag"><i class="fa-solid fa-check"></i> फोटो सापडला</span>
+            </div>
+            <div class="extracted-info-cols">
+              <div class="ext-row">
+                <span class="ext-label">शेतकरी आयडी:</span>
+                <span class="ext-val font-mono" id="extFarmerId">-</span>
+              </div>
+              <div class="ext-row">
+                <span class="ext-label">शेतकरी नाव (मराठी):</span>
+                <span class="ext-val highlight" id="extNameMr">-</span>
+              </div>
+              <div class="ext-row">
+                <span class="ext-label">Full Name (English):</span>
+                <span class="ext-val" id="extNameEn">-</span>
+              </div>
+              <div class="ext-row">
+                <span class="ext-label">गाव / तालुका / जिल्हा:</span>
+                <span class="ext-val" id="extLocation">-</span>
+              </div>
+              <div class="ext-row">
+                <span class="ext-label">८-अ खाते क्र. / एकूण क्षेत्र:</span>
+                <span class="ext-val" id="extLandSummary">-</span>
+              </div>
+              <div class="ext-row">
+                <span class="ext-label">सर्व्हे / गट नोंदी:</span>
+                <span class="ext-val" id="extGatList">-</span>
+              </div>
+              <div class="ext-row">
+                <span class="ext-label">CSC केंद्र आयडी:</span>
+                <span class="ext-val font-mono" id="extCscId">-</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview-confirm-actions">
+            <button type="button" class="btn-apply-extracted" onclick="applyExtractedToActiveCard()">
+              <i class="fa-solid fa-id-card"></i> हे तपशील कार्डवर लागू करा व कार्ड तयार करा
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="agristack-modal-footer">
+        <span class="modal-footer-hint">
+          <i class="fa-solid fa-shield-halved text-cyan"></i> सर्व प्रक्रिया सुरक्षितपणे तुमच्या ब्राऊझरमध्ये होते, डेटा सुरक्षित राहतो.
+        </span>
+        <button type="button" class="btn-nav btn-nav-outline" onclick="closeAgristackImportModal()">
+          बंद करा
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Floating Success Alert / Card Generated Banner -->
+  <div id="cardSuccessToast" class="card-success-toast no-print" style="display:none;">
+    <div class="toast-content-wrapper">
+      <div class="toast-icon-pulse">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <div class="toast-info">
+        <h4 id="toastTitle"><i class="fa-solid fa-wand-magic-sparkles text-gold"></i> ॲग्रीस्टॅक कार्ड यशस्वीरीत्या तयार झाले!</h4>
+        <p id="toastSubtitle">शेतकरी: <strong id="toastFarmerName">गजानन दत्तात्रय सुतार</strong> (आयडी: <span id="toastFarmerId" class="font-mono">60711271864</span>)</p>
+      </div>
+      <div class="toast-actions">
+        <button class="btn-toast-print" onclick="triggerA4Print()" title="A4 वर थेट प्रिंट करा">
+          <i class="fa-solid fa-print"></i> प्रिंट
+        </button>
+        <button class="btn-toast-pdf" onclick="downloadA4Pdf()" title="A4 PDF डाउनलोड करा">
+          <i class="fa-solid fa-file-pdf"></i> PDF
+        </button>
+        <button class="btn-toast-close" onclick="hideCardSuccessToast()" title="बंद करा">&times;</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ==========================================
        DEDICATED A4 PRINT SHEET CONTAINER
