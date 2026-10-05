@@ -412,7 +412,7 @@ function generateFrontCardHtml(uniqueIdSuffix) {
   // CSC VLE text (Optional)
   const vleText = (cardState.cscRegId && cardState.cscRegId.trim()) 
     ? `<span>नोंदणी केंद्र: <strong>${cardState.cscRegId}</strong></span>` 
-    : `<span>अधिकृत डिजिटल शेतकरी ओळखपत्र</span>`;
+    : `<span>केवळ माहितीसाठी</span>`;
 
   return `
     <div class="agristack-pvc-card card-front" id="cardFront_${uniqueIdSuffix}">
@@ -473,7 +473,7 @@ function generateFrontCardHtml(uniqueIdSuffix) {
               <span class="info-value">${cardState.mobile || '—'}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">आधार संदर्भ:</span>
+              <span class="info-label">आधार क्र.:</span>
               <span class="info-value">${cardState.aadhaarRef || '—'}</span>
             </div>
             <div class="info-item">
@@ -504,8 +504,8 @@ function generateFrontCardHtml(uniqueIdSuffix) {
       <!-- Front Security Footer -->
       <div class="card-front-footer">
         <div class="footer-left-brand">
-          <i class="fa-solid fa-shield-halved" style="color:#16a34a; font-size:4.2pt;"></i>
-          <span>डिजिटल ॲग्रीकल्चर मिशन (DIGITAL AGRI MISSION)</span>
+          <i class="fa-solid fa-triangle-exclamation" style="color:#d97706; font-size:4.2pt;"></i>
+          <span>शासकीय वापरासाठी अधिकृत नाही • फक्त माहितीसाठी वैध</span>
         </div>
         <div class="footer-right-vle">
           ${vleText}
@@ -553,7 +553,7 @@ function generateBackCardHtml(uniqueIdSuffix) {
   // Optional CSC Center display on back bottom
   const backCscHtml = (cardState.cscRegId && cardState.cscRegId.trim())
     ? `<div class="back-csc-pill"><i class="fa-solid fa-building-flag"></i> नोंदणी केंद्र: <strong>${cardState.cscRegId}</strong></div>`
-    : `<div class="back-csc-pill"><i class="fa-solid fa-shield-halved"></i> भारत सरकार डिजिटल कृषी नोंदणी</div>`;
+    : `<div class="back-csc-pill"><i class="fa-solid fa-circle-info"></i> शेतकरी माहिती संदर्भ पत्र</div>`;
 
   const recCount = cardState.landRecords ? cardState.landRecords.length : 0;
   const totArea = cardState.totalArea || (recCount > 0 ? '-' : '—');
@@ -611,14 +611,14 @@ function generateBackCardHtml(uniqueIdSuffix) {
           </div>
           <div class="back-seal-box">
             <div class="back-sign-line"></div>
-            <span class="stamp-sign-label">अधिकृत स्वाक्षरी</span>
+            <span class="stamp-sign-label">स्वाक्षरी</span>
           </div>
         </div>
       </div>
 
       <!-- Back Terms / Disclaimer -->
       <div class="back-card-footer">
-        हे ओळखपत्र भारत सरकारच्या ॲग्रीस्टॅक पोर्टलशी जोडलेले असून पीक कर्ज, अनुदान व शासकीय योजनांसाठी ग्राह्य आहे.
+        <strong>सूचना:</strong> हे अधिकृत ओळखपत्र नाही किंवा शासकीय वापरासाठी अधिकृत नाही. हे कार्ड फक्त शेतकऱ्याच्या माहितीसाठी वैध राहील.
       </div>
     </div>
   `;
@@ -1025,19 +1025,65 @@ function parseAgristackHtml(htmlString) {
     const el = doc.querySelector(`[formcontrolname="${ctrlName}"]`);
     if (!el) return '';
     if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
-      return el.value || el.getAttribute('value') || '';
+      return el.value || el.getAttribute('value') || el.defaultValue || '';
     }
     // ng-select
     const valLabel = el.querySelector('.ng-value-label');
     if (valLabel) return valLabel.textContent.trim();
     const valDiv = el.querySelector('.ng-value');
     if (valDiv) return valDiv.textContent.replace('×', '').trim();
-    return '';
+    return el.textContent.trim();
   }
 
   result.mobile = readControl('mobileNumber');
   result.email = readControl('emailId');
-  result.aadhaarRef = readControl('aadhaarNumber');
+
+  // Multi-source Aadhaar Extraction
+  let rawAadhaar = readControl('aadhaarNumber');
+  if (!rawAadhaar) {
+    const aadhInput = doc.querySelector('input[formcontrolname="aadhaarNumber"], input[formcontrolname*="aadhaar"], input[id*="aadhaar"], input[placeholder*="Aadhaar"]');
+    if (aadhInput) {
+      rawAadhaar = aadhInput.value || aadhInput.getAttribute('value') || aadhInput.defaultValue || '';
+    }
+  }
+  if (!rawAadhaar) {
+    const labels = doc.querySelectorAll('label, th, td, span, div.form_control');
+    for (const lbl of labels) {
+      const txt = (lbl.textContent || '').trim();
+      if ((txt.includes('Aadhaar Number') || txt.includes('Aadhar Number') || txt.includes('आधार क्रमांक') || txt.includes('आधार क्र')) && !txt.toLowerCase().includes('as per')) {
+        const inp = lbl.querySelector('input') || (lbl.nextElementSibling && lbl.nextElementSibling.querySelector('input')) || (lbl.parentElement ? lbl.parentElement.querySelector('input') : null);
+        if (inp && (inp.value || inp.getAttribute('value') || inp.defaultValue)) {
+          rawAadhaar = inp.value || inp.getAttribute('value') || inp.defaultValue;
+          break;
+        }
+        const textValMatch = (lbl.parentElement ? lbl.parentElement.textContent : txt).match(/([0-9Xx\*\.]{4}\s*[0-9Xx\*\.]{4}\s*[0-9]{4}|[0-9]{12}|[Xx\*\.]{8}[0-9]{4})/);
+        if (textValMatch) {
+          rawAadhaar = textValMatch[1];
+          break;
+        }
+      }
+    }
+  }
+  if (!rawAadhaar) {
+    const aadhMatch = htmlString.match(/Aadhaar\s*(?:Number|No\.?)?[\s\S]{0,160}?(?:value=["']([^"']+)["']|>([0-9Xx\*\. ]{12,16})<)/i) ||
+                      htmlString.match(/(?:Aadhaar|Aadhar|आधार)\s*(?:Number|No\.?|क्रमांक|क्र\.?)?\s*[:\-]?\s*([0-9]{4}\s*[0-9]{4}\s*[0-9]{4}|[0-9]{12}|[Xx\*\.]{4}\s*[Xx\*\.]{4}\s*[0-9]{4}|[Xx\*\.]{8}[0-9]{4})/i) ||
+                      htmlString.match(/\b([0-9]{4}\s+[0-9]{4}\s+[0-9]{4})\b/);
+    if (aadhMatch) {
+      rawAadhaar = aadhMatch[1] || aadhMatch[2] || aadhMatch[0];
+    }
+  }
+
+  if (rawAadhaar) {
+    const cleanDigits = rawAadhaar.trim().replace(/[\s\-]/g, '');
+    if (cleanDigits.length === 12) {
+      result.aadhaarRef = `${cleanDigits.slice(0, 4)} ${cleanDigits.slice(4, 8)} ${cleanDigits.slice(8, 12)}`;
+    } else {
+      result.aadhaarRef = rawAadhaar.trim();
+    }
+  } else {
+    result.aadhaarRef = '';
+  }
+
   result.farmerNameEn = readControl('aadhaarFarmerNameInEnglish');
   result.farmerNameMr = readControl('farmerNameInLocal');
   result.identifierNameEn = readControl('farmerIdentiferNameInEnglish');
@@ -1285,6 +1331,8 @@ function displayExtractedPreviewInModal(data) {
   if (!panel) return;
 
   document.getElementById('extFarmerId').textContent = data.farmerId || '-';
+  const extAadh = document.getElementById('extAadhaar');
+  if (extAadh) extAadh.textContent = data.aadhaarRef || '-';
   document.getElementById('extNameMr').textContent = data.farmerNameMr || '-';
   document.getElementById('extNameEn').textContent = data.farmerNameEn || '-';
   document.getElementById('extLocation').textContent = `${data.village || '-'}, ${data.taluka || '-'}, ${data.district || '-'}`;
@@ -1330,7 +1378,7 @@ function applyExtractedDataToCard(data, sourceName) {
   cardState.farmerNameMr = data.farmerNameMr || cardState.farmerNameMr;
   cardState.farmerNameEn = data.farmerNameEn || cardState.farmerNameEn;
   cardState.farmerId = data.farmerId || cardState.farmerId;
-  cardState.aadhaarRef = data.aadhaarRef || (data.enrollmentId ? ('ENR: ' + data.enrollmentId.slice(-9)) : cardState.aadhaarRef);
+  cardState.aadhaarRef = data.aadhaarRef || cardState.aadhaarRef;
   cardState.mobile = data.mobile || cardState.mobile;
   cardState.dob = data.dob || cardState.dob;
   cardState.gender = data.gender || cardState.gender;
@@ -1450,6 +1498,17 @@ async function processAgristackPdfFile(file, isDirect) {
 
     const fidMatch = fullText.match(/Farmer\s*Id\s*[:\-]?\s*([0-9]{8,15})/i) || fullText.match(/([0-9]{10,12})\s*Farmer\s*Id/i);
     if (fidMatch) extracted.farmerId = fidMatch[1];
+
+    const aadhMatch = fullText.match(/(?:Aadhaar|Aadhar|आधार)\s*(?:Number|No\.?|क्रमांक|क्र\.?)?\s*[:\-]?\s*([0-9]{4}\s*[0-9]{4}\s*[0-9]{4}|[0-9]{12}|[Xx\*\.]{4}\s*[Xx\*\.]{4}\s*[0-9]{4}|[Xx\*\.]{8}[0-9]{4})/i) || fullText.match(/\b([0-9]{4}\s+[0-9]{4}\s+[0-9]{4})\b/);
+    if (aadhMatch) {
+      const rawPdfAadh = (aadhMatch[1] || aadhMatch[0]).trim();
+      const cleanDigits = rawPdfAadh.replace(/[\s\-]/g, '');
+      if (cleanDigits.length === 12) {
+        extracted.aadhaarRef = `${cleanDigits.slice(0, 4)} ${cleanDigits.slice(4, 8)} ${cleanDigits.slice(8, 12)}`;
+      } else {
+        extracted.aadhaarRef = rawPdfAadh;
+      }
+    }
 
     const enrollMatch = fullText.match(/([0-9]{2}_[0-9]{3}_[0-9]{4}_[0-9]{6}_[0-9]{6})/);
     if (enrollMatch) extracted.enrollmentId = enrollMatch[1];
