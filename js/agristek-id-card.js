@@ -1658,12 +1658,20 @@ function hideCardSuccessToast() {
   if (toast) toast.style.display = 'none';
 }
 
-// PDF Parser using PDF.js for uploaded AgriStack PDF documents
+// PDF Parser using PDF.js & Tesseract.js for uploaded AgriStack PDF documents
 async function processAgristackPdfFile(file, isDirect) {
+  const modal = document.getElementById('agristackImportModal');
   const loadingEl = document.getElementById('importLoadingState');
+  const loadingText = document.getElementById('importLoadingText');
+
+  if (isDirect && modal) {
+    modal.style.display = 'flex';
+    switchImportModalTab('mtab-file');
+  }
+
   if (loadingEl) {
     loadingEl.style.display = 'flex';
-    document.getElementById('importLoadingText').textContent = 'PDF फाईलमधून माहिती फेच करत आहे...';
+    if (loadingText) loadingText.textContent = 'PDF फाईलमधून माहिती फेच करत आहे...';
   }
 
   try {
@@ -1672,7 +1680,13 @@ async function processAgristackPdfFile(file, isDirect) {
       throw new Error('PDF.js लायब्ररी लोड झालेली नाही.');
     }
 
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let pdf;
+    try {
+      pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    } catch (e) {
+      pdf = await pdfjsLib.getDocument({ data: arrayBuffer, disableWorker: true }).promise;
+    }
+
     let fullText = '';
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
@@ -1698,18 +1712,99 @@ async function processAgristackPdfFile(file, isDirect) {
       khataNo: '',
       gatNo: '',
       totalArea: '',
+      photoUrl: '',
       landRecords: []
     };
 
-    const fidMatch = fullText.match(/Farmer\s*Id\s*[:\-]?\s*([0-9A-Z_]{8,20})/i) || fullText.match(/([0-9]{10,14})\s*Farmer\s*Id/i);
+    // Pre-populate enrollment ID from filename if present
+    const fileEnrollMatch = file.name.match(/([0-9]{2}_[0-9]{3}_[0-9]{4}_[0-9]{6}_[0-9]{6})/);
+    if (fileEnrollMatch) {
+      extracted.enrollmentId = fileEnrollMatch[1];
+    }
+
+    // IF PDF IS IMAGE-BASED (Canvas/Scan export with little to no selectable text)
+    if (!fullText || fullText.trim().length <= 30) {
+      if (loadingText) {
+        loadingText.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> PDF इमेज स्वरूपात आहे. AI द्वारे मजकूर व मूळ फोटो फेच करत आहे...';
+      }
+
+      // Render Page 1 to canvas at high resolution (scale 2.0)
+      let canvas1 = null;
+      if (pdf.numPages >= 1) {
+        const page1 = await pdf.getPage(1);
+        const viewport1 = page1.getViewport({ scale: 2.0 });
+        canvas1 = document.createElement('canvas');
+        canvas1.width = viewport1.width;
+        canvas1.height = viewport1.height;
+        const ctx1 = canvas1.getContext('2d');
+        await page1.render({ canvasContext: ctx1, viewport: viewport1 }).promise;
+
+        // Crop Farmer Photograph from Page 1 (Top-Right)
+        try {
+          const photoX = Math.round(canvas1.width * 0.892);
+          const photoY = Math.round(canvas1.height * 0.175);
+          const photoW = Math.round(canvas1.width * 0.082);
+          const photoH = Math.round(canvas1.height * 0.133);
+
+          const photoCanvas = document.createElement('canvas');
+          photoCanvas.width = photoW;
+          photoCanvas.height = photoH;
+          const pctx = photoCanvas.getContext('2d');
+          pctx.drawImage(canvas1, photoX, photoY, photoW, photoH, 0, 0, photoW, photoH);
+          extracted.photoUrl = photoCanvas.toDataURL('image/png');
+        } catch (cropErr) {
+          console.warn('Photo crop error:', cropErr);
+        }
+      }
+
+      // Render Page 2 to canvas at scale 2.0 (if present)
+      let canvas2 = null;
+      if (pdf.numPages >= 2) {
+        const page2 = await pdf.getPage(2);
+        const viewport2 = page2.getViewport({ scale: 2.0 });
+        canvas2 = document.createElement('canvas');
+        canvas2.width = viewport2.width;
+        canvas2.height = viewport2.height;
+        const ctx2 = canvas2.getContext('2d');
+        await page2.render({ canvasContext: ctx2, viewport: viewport2 }).promise;
+      }
+
+      // Run Tesseract.js OCR in-browser if available
+      if (typeof Tesseract !== 'undefined') {
+        try {
+          if (loadingText) loadingText.textContent = 'AI OCR: पान १ मधील शेतकरी तपशील वाचत आहे...';
+          const worker = await Tesseract.createWorker(['eng', 'mar']);
+          const ret1 = await worker.recognize(canvas1);
+          fullText = (ret1 && ret1.data && ret1.data.text) ? ret1.data.text : '';
+
+          if (canvas2) {
+            if (loadingText) loadingText.textContent = 'AI OCR: पान २ मधील शेतजमीन व गाव वाचत आहे...';
+            const ret2 = await worker.recognize(canvas2);
+            if (ret2 && ret2.data && ret2.data.text) {
+              fullText += '\n' + ret2.data.text;
+            }
+          }
+          await worker.terminate();
+        } catch (ocrErr) {
+          console.warn('In-browser OCR error:', ocrErr);
+        }
+      }
+    }
+
+    // Now extract all fields from fullText
+    const fidMatch = fullText.match(/Farmer\s*Id\s*[:\-\s_u\.]*([0-9A-Z_]{8,20})/i) ||
+                     fullText.match(/([0-9]{10,12})\s*Farmer\s*Id/i) ||
+                     fullText.match(/\b([0-9]{11})\b/);
     if (fidMatch) extracted.farmerId = fidMatch[1];
 
     extracted.aadhaarRef = extractAadhaarNumber(fullText);
 
-    const enrollMatch = fullText.match(/([0-9]{2}_[0-9]{3}_[0-9]{4}_[0-9]{6}_[0-9]{6})/);
-    if (enrollMatch) extracted.enrollmentId = enrollMatch[1];
+    const enrollMatch = fullText.match(/([0-9]{2}[\_\.\s][0-9]{3}[\_\.\s][0-9]{4}[\_\.\s][0-9]{6}[\_\.\s][0-9]{6})/);
+    if (enrollMatch) {
+      extracted.enrollmentId = enrollMatch[1].replace(/[\.\s]/g, '_');
+    }
 
-    const mobileMatch = fullText.match(/(?:Mobile|मोबाईल)\s*[:\-]?\s*([6-9][0-9]{9})/i);
+    const mobileMatch = fullText.match(/(?:Mobile\s*(?:Number)?|मोबाईल)\s*[:\-]?\s*([6-9][0-9]{9})/i);
     if (mobileMatch) extracted.mobile = mobileMatch[1];
 
     const dobMatch = fullText.match(/(?:DOB|Date\s*of\s*Birth|जन्मतारीख)\s*[:\-]?\s*([0-9]{2}[\/\-][0-9]{2}[\/\-][0-9]{4})/i);
@@ -1721,14 +1816,34 @@ async function processAgristackPdfFile(file, isDirect) {
       extracted.gender = (g.includes('MALE') || g.includes('पुरुष')) ? 'पुरुष / MALE' : 'स्त्री / FEMALE';
     }
 
-    const distMatch = fullText.match(/(?:District|जिल्हा)\s*[:\-]?\s*([A-Za-z\u0900-\u097F\s\(\)]+?)(?=\s+(?:Taluka|तालुका|Village|गाव|Pin|पिन|$))/i);
-    if (distMatch) extracted.district = cleanExtractedName(distMatch[1]);
+    // Location: Land Table or Text
+    const tableLocMatch = fullText.match(/MAHARAS[A-Z\s]*\|\s*([A-Za-z\s\u0900-\u097F]+?)\s*\|\s*([A-Za-z\s\u0900-\u097F]+?)\s*\|\s*([A-Za-z\s\u0900-\u097F]+?)\s*\|/i) ||
+                          fullText.match(/\|\s*([A-Z\s]{4,20})\s*\|\s*([A-Za-z\u0900-\u097F\s]{3,25})\s*\|\s*([A-Za-z\u0900-\u097F\s]{3,25})\s*\|\s*[0-9]+/);
+    if (tableLocMatch) {
+      extracted.district = cleanExtractedName(tableLocMatch[1]);
+      extracted.taluka = cleanExtractedName(tableLocMatch[2]);
+      extracted.village = cleanExtractedName(tableLocMatch[3]);
+    } else {
+      const distMatch = fullText.match(/(?:District|जिल्हा)\s*[:\-]?\s*([A-Za-z\u0900-\u097F\s\(\)]+?)(?=\s+(?:Sub\s*District|Taluka|तालुका|Village|गाव|Pin|पिन|$))/i);
+      if (distMatch) extracted.district = cleanExtractedName(distMatch[1]);
 
-    const talMatch = fullText.match(/(?:Taluka|तालुका)\s*[:\-]?\s*([A-Za-z\u0900-\u097F\s\(\)]+?)(?=\s+(?:Village|गाव|District|जिल्हा|Pin|पिन|$))/i);
-    if (talMatch) extracted.taluka = cleanExtractedName(talMatch[1]);
+      const talMatch = fullText.match(/(?:Sub\s*District|Taluka|तालुका)\s*[:\-]?\s*([A-Za-z\u0900-\u097F\s\(\)]+?)(?=\s+(?:Village|गाव|District|जिल्हा|Pin|पिन|$))/i);
+      if (talMatch) extracted.taluka = cleanExtractedName(talMatch[1]);
 
-    const vilMatch = fullText.match(/(?:Village|गाव)\s*[:\-]?\s*([A-Za-z\u0900-\u097F\s\(\)]+?)(?=\s+(?:Taluka|तालुका|District|जिल्हा|Pin|पिन|$))/i);
-    if (vilMatch) extracted.village = cleanExtractedName(vilMatch[1]);
+      const vilMatch = fullText.match(/(?:Village|गाव)\s*[:\-]?\s*([A-Za-z\u0900-\u097F\s\(\)]+?)(?=\s+(?:S\s*No|Taluka|तालुका|District|जिल्हा|Pin|पिन|$))/i);
+      if (vilMatch) extracted.village = cleanExtractedName(vilMatch[1]);
+    }
+
+    // Village fallback from Address
+    if (!extracted.village) {
+      const addrMatch = fullText.match(/Address\s*In\s*(?:English|Local\s*Language)\s*[:\-]?\s*([A-Za-z\u0900-\u097F0-9\s\,\.\-]+?)(?=\s+(?:Address|Farmer\s*type|$))/i);
+      if (addrMatch) {
+        const parts = addrMatch[1].split(/[,/]/);
+        if (parts.length > 1) {
+          extracted.village = cleanExtractedName(parts[parts.length - 1]);
+        }
+      }
+    }
 
     const pinMatch = fullText.match(/(?:Pincode|Pin\s*Code|पिन\s*कोड|पिन)\s*[:\-]?\s*([0-9]{6})/i);
     if (pinMatch) extracted.pincode = pinMatch[1];
@@ -1736,21 +1851,40 @@ async function processAgristackPdfFile(file, isDirect) {
     const khataMatch = fullText.match(/(?:खाते\s*(?:क्र\.?|क्रमांक|नंबर)?|Khata\s*(?:No\.?|Number)?|Owner\s*Number)\s*[:\-]?\s*([0-9]+)/i);
     if (khataMatch) extracted.khataNo = khataMatch[1];
 
-    const gatMatch = fullText.match(/(?:Survey\s*(?:No\.?|Number)|Gat\s*(?:No\.?|Number)|गट\s*(?:क्र\.?|क्रमांक)|सर्व्हे\s*(?:क्र\.?|क्रमांक))\s*[:\-]?\s*([0-9\/\sA-Za-z\u0900-\u097F]+?)(?=\s+(?:Khata|खाते|Area|क्षेत्र|$))/i);
-    if (gatMatch) extracted.gatNo = cleanExtractedName(gatMatch[1]);
+    // Gat numbers & areas
+    const gatList = [];
+    const lines = fullText.split('\n');
+    let areaSum = 0;
+    for (const line of lines) {
+      const gatRowMatch = line.match(/\|\s*([0-9]+(?:\s*[अ-हA-Za-z])?)\s*\|\s*[\*0-9]/);
+      if (gatRowMatch) {
+        gatList.push(gatRowMatch[1].trim());
+      }
+      const areaMatch = line.match(/\|\s*([0-9]+\.[0-9]{4,6})\s*\|/);
+      if (areaMatch) {
+        areaSum += parseFloat(areaMatch[1]);
+      }
+    }
+    if (gatList.length > 0) {
+      extracted.gatNo = [...new Set(gatList)].join(', ');
+    } else {
+      const gatMatch = fullText.match(/(?:Survey\s*(?:No\.?|Number)|Gat\s*(?:No\.?|Number)|गट\s*(?:क्र\.?|क्रमांक)|सर्व्हे\s*(?:क्र\.?|क्रमांक))\s*[:\-]?\s*([0-9\/\sA-Za-z\u0900-\u097F]+?)(?=\s+(?:Khata|खाते|Area|क्षेत्र|$))/i);
+      if (gatMatch) extracted.gatNo = cleanExtractedName(gatMatch[1]);
+    }
 
-    const areaMatch = fullText.match(/(?:Total\s*Area|Assigned\s*Area|एकूण\s*क्षेत्र)\s*[:\-]?\s*([0-9\.\s]+(?:\s*हेक्टर|\s*हे\.आर\.|\s*Ha)?)/i);
-    if (areaMatch) extracted.totalArea = cleanExtractedName(areaMatch[1]);
+    if (areaSum > 0) {
+      extracted.totalArea = `${areaSum.toFixed(4)} हेक्टर`;
+    } else {
+      const areaMatch = fullText.match(/(?:Total\s*Area|Assigned\s*Area|एकूण\s*क्षेत्र)\s*[:\-]?\s*([0-9\.\s]+(?:\s*हेक्टर|\s*हे\.आर\.|\s*Ha)?)/i);
+      if (areaMatch) extracted.totalArea = cleanExtractedName(areaMatch[1]);
+    }
 
-    // ==========================================
-    // EXACT AS-IS NAME EXTRACTION FROM PDF
-    // ==========================================
-    // 1. English Name from PDF
+    // Exact English Name from PDF
     const enPatterns = [
-      /(?:Farmer\s*Name\s*(?:as\s*per\s*Aadhaar|as\s*per\s*Aadhar|\(as\s*per\s*Aadhaar\)|\(as\s*per\s*Aadhar\)|\(English\)|\(In\s*English\)|in\s*English)|Name\s*as\s*per\s*Aadhaar|Name\s*as\s*per\s*Aadhar|Name\s*\(English\))\s*[:\-]?\s*([A-Za-z\s\.\'\-]{3,60})/i,
-      /(?:Farmer['’]?s\s*Name|Name\s*of\s*Farmer|Farmer\s*Name)\s*[:\-]?\s*([A-Za-z\s\.\'\-]{3,60})/i,
-      /(?:Beneficiary\s*Name|Applicant\s*Name|Owner\s*Name)\s*[:\-]?\s*([A-Za-z\s\.\'\-]{3,60})/i,
-      /\bName\s*[:\-]?\s*([A-Za-z\s\.\'\-]{3,60})/i
+      /(?:Farmer\s*Name\s*(?:as\s*per\s*Aadhaar|as\s*per\s*Aadhar|\(as\s*per\s*Aadhaar\)|\(as\s*per\s*Aadhar\)|\(English\)|\(In\s*English\)|in\s*English)|Name\s*as\s*per\s*Aadhaar|Name\s*as\s*per\s*Aadhar|Name\s*\(English\))\s*[:\-_]?\s*([A-Za-z\s\.\'\-]{3,60}?)(?=\s+(?:Farmer['’]?s\s*Name|Farmer|Gender|Caste|Identifier|$))/i,
+      /(?:Farmer['’]?s\s*Name|Name\s*of\s*Farmer|Farmer\s*Name)\s*[:\-_]?\s*([A-Za-z\s\.\'\-]{3,60}?)(?=\s+(?:Gender|Caste|Identifier|$))/i,
+      /(?:Beneficiary\s*Name|Applicant\s*Name|Owner\s*Name)\s*[:\-_]?\s*([A-Za-z\s\.\'\-]{3,60})/i,
+      /\bName\s*[:\-_]?\s*([A-Za-z\s\.\'\-]{3,60})/i
     ];
 
     for (const pat of enPatterns) {
@@ -1764,12 +1898,12 @@ async function processAgristackPdfFile(file, isDirect) {
       }
     }
 
-    // 2. Marathi Name from PDF
+    // Exact Marathi Name from PDF
     const mrPatterns = [
-      /(?:Farmer\s*Name\s*(?:\(Local\s*Language\)|\(Local\)|\(In\s*Local\)|in\s*Local)|Name\s*\(Local\))\s*[:\-]?\s*([\u0900-\u097F\s\.\'\-]{3,60})/i,
-      /(?:शेतकऱ्याचे\s*नाव\s*(?:\(स्थानिक\)|\(मराठी\)|\(स्थानिक\s*भाषेत\)|\(आधार\s*प्रमाणे\))?|स्थानिक\s*भाषेतील\s*(?:शेतकऱ्याचे\s*)?नाव|स्थानिक\s*नाव|आधार\s*प्रमाणे\s*नाव|खातेदाराचे\s*नाव|मालकाचे\s*नाव|भोगवटादाराचे\s*नाव|अर्जदाराचे\s*नाव)\s*[:\-]?\s*([\u0900-\u097F\s\.\'\-]{3,60})/i,
-      /(?:Owner\s*Name|Farmer\s*Name)\s*[:\-]?\s*([\u0900-\u097F\s\.\'\-]{3,60})/i,
-      /\bनाव\s*[:\-]?\s*([\u0900-\u097F\s\.\'\-]{3,60})/
+      /(?:Farmer['’]?s\s*Name\s*(?:in\s*Local\s*Language|\(Local\s*Language\)|\(Local\)|\(In\s*Local\)|in\s*Local)|Name\s*\(Local\))\s*[:\-_]?\s*([\u0900-\u097F\s\.\'\-]{3,60}?)(?=\s+(?:Gender|Date|Age|लिंग|जन्म|$))/i,
+      /(?:शेतकऱ्याचे\s*नाव\s*(?:\(स्थानिक\)|\(मराठी\)|\(स्थानिक\s*भाषेत\)|\(आधार\s*प्रमाणे\))?|स्थानिक\s*भाषेतील\s*(?:शेतकऱ्याचे\s*)?नाव|स्थानिक\s*नाव|आधार\s*प्रमाणे\s*नाव|खातेदाराचे\s*नाव|मालकाचे\s*नाव|भोगवटादाराचे\s*नाव|अर्जदाराचे\s*नाव)\s*[:\-_]?\s*([\u0900-\u097F\s\.\'\-]{3,60}?)(?=\s+(?:Gender|Date|Age|लिंग|जन्म|$))/i,
+      /(?:Owner\s*Name|Farmer\s*Name)\s*[:\-_]?\s*([\u0900-\u097F\s\.\'\-]{3,60})/i,
+      /\bनाव\s*[:\-_]?\s*([\u0900-\u097F\s\.\'\-]{3,60})/
     ];
 
     for (const pat of mrPatterns) {
@@ -1783,15 +1917,10 @@ async function processAgristackPdfFile(file, isDirect) {
       }
     }
 
-    // Preserve exact names from PDF without changing spelling
-    if (extracted.farmerNameEn) {
-      extracted.farmerNameEn = cleanExtractedName(extracted.farmerNameEn);
-    }
-    if (extracted.farmerNameMr) {
-      extracted.farmerNameMr = cleanExtractedName(extracted.farmerNameMr);
-    }
+    // Preserve exact names
+    if (extracted.farmerNameEn) extracted.farmerNameEn = cleanExtractedName(extracted.farmerNameEn);
+    if (extracted.farmerNameMr) extracted.farmerNameMr = cleanExtractedName(extracted.farmerNameMr);
 
-    // Only fallback if one is genuinely missing
     if (extracted.farmerNameMr && !extracted.farmerNameEn) {
       extracted.farmerNameEn = transliterateMarathiToEnglish(extracted.farmerNameMr);
     }
@@ -1803,13 +1932,14 @@ async function processAgristackPdfFile(file, isDirect) {
 
     if (isDirect) {
       applyExtractedDataToCard(extracted, file.name);
+      if (modal) modal.style.display = 'none';
     } else {
       displayExtractedPreviewInModal(extracted);
     }
   } catch (err) {
     if (loadingEl) loadingEl.style.display = 'none';
     console.error('PDF Parse Error:', err);
-    alert('PDF वाचताना त्रुटी आली. कृपया HTML पेज अपलोड करा किंवा कोड पेस्ट करा.');
+    alert('PDF वाचताना त्रुटी आली. कृपया HTML पेज अपलोड करा किंवा कोड पेस्ट करा: ' + (err.message || ''));
   }
 }
 
