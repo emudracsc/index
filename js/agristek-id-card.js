@@ -880,11 +880,86 @@ function saveCardToHistory() {
 
 let parsedAgristackData = null;
 
-// High-accuracy Marathi Devanagari transliterator for Marathi Names
+// Clean extracted name string: strip trailing glued labels, collapse whitespaces, keep exact spelling as-is
+function cleanExtractedName(str) {
+  if (!str) return '';
+  const stopKeywords = [
+    /\s+(?:Farmer\s*Id|Enrollment\s*Id|Father|Husband|Identifier|Gender|DOB|Date\s*of\s*Birth|Age|Mobile|Aadhaar|Aadhar|Address|State|District|Taluka|Village|Pincode|Pin|Survey|Gat|Khata|Total\s*Area|Assigned\s*Area|Status|Photo|Reg|CSC|VLE).*/i,
+    /\s+(?:शेतकरी\s*आयडी|नोंदणी\s*क्रमांक|वडील|पती|नाते|लिंग|जन्मतारीख|वय|मोबाईल|आधार|पत्ता|राज्य|जिल्हा|तालुका|गाव|पिन|पिनकोड|गट|सर्व्हे|खाते|क्षेत्र|स्थिती|फोटो|नोंद).*/i
+  ];
+  let cleaned = str.trim();
+  for (const re of stopKeywords) {
+    cleaned = cleaned.replace(re, '').trim();
+  }
+  // Remove bounding colons, hyphens, quotes, slashes, asterisks
+  cleaned = cleaned.replace(/^[:\-\s\.\,\*\/]+|[:\-\s\.\,\*\/]+$/g, '');
+  cleaned = cleaned.replace(/\s+/g, ' ').trim();
+  return cleaned;
+}
+
+// Universal high-accuracy Aadhaar Number extractor (supports Masked, Bullets, Full 12 digits, Bilingual labels)
+function extractAadhaarNumber(text) {
+  if (!text) return '';
+  let rawAadhaar = '';
+
+  // 1. Explicit Label Match: handles bilingual labels with slashes/parentheses, colons, dashes
+  // Examples: "Aadhaar Number / आधार क्रमांक : XXXX XXXX 1234", "Aadhaar No. (आधार क्र.): •••• •••• 1234"
+  const labelRegex = /(?:Aadhaar|Aadhar|आधार|UIDAI|UID)\s*(?:(?:\/|\(|\b)[^\n\:]{0,50})?[:\-]?\s*([Xx\*\.\u2022•×\d]{4}[\s\-]?[Xx\*\.\u2022•×\d]{4}[\s\-]?[0-9]{4}|[Xx\*\.\u2022•×]{8}[\s\-]?[0-9]{4}|[0-9]{12})/i;
+  const m1 = text.match(labelRegex);
+  if (m1) {
+    rawAadhaar = m1[1].trim();
+  }
+
+  // 2. Standalone masked Aadhaar anywhere in text (XXXX XXXX 1234 or •••• •••• 1234 or ********1234)
+  if (!rawAadhaar) {
+    const standaloneMasked = text.match(/\b([Xx\*\.\u2022•×]{4}[\s\-]?[Xx\*\.\u2022•×]{4}[\s\-]?[0-9]{4})\b/i) ||
+                             text.match(/([Xx\*\.\u2022•×]{8}[\s\-]?[0-9]{4})/i);
+    if (standaloneMasked) {
+      rawAadhaar = standaloneMasked[1].trim();
+    }
+  }
+
+  // 3. Standalone 12-digit formatted (1234 5678 9012 or 1234-5678-9012)
+  if (!rawAadhaar) {
+    const standalone12Formatted = text.match(/\b([0-9]{4}[\s\-][0-9]{4}[\s\-][0-9]{4})\b/);
+    if (standalone12Formatted) {
+      rawAadhaar = standalone12Formatted[1].trim();
+    }
+  }
+
+  // 4. Standalone 12 digits near Aadhaar/UID keyword
+  if (!rawAadhaar) {
+    const near12 = text.match(/(?:Aadhaar|Aadhar|आधार|UID)[\s\S]{0,120}?\b([0-9]{12})\b/i);
+    if (near12) {
+      rawAadhaar = near12[1].trim();
+    }
+  }
+
+  // 5. Last 4 digits match if full mask is omitted
+  if (!rawAadhaar) {
+    const last4 = text.match(/(?:Aadhaar|Aadhar|आधार)\s*(?:[^\n\:]{0,40})?(?:ending\s*with|last\s*4\s*digits?|शेवटचे\s*४\s*अंक|शेवटचे\s*4\s*अंक)?\s*[:\-]?\s*(?:[Xx\*\.\u2022•×]{4,8}\s*)?([0-9]{4})\b/i);
+    if (last4 && last4[1]) {
+      rawAadhaar = `XXXX XXXX ${last4[1]}`;
+    }
+  }
+
+  if (rawAadhaar) {
+    // Normalize unicode mask characters to 'X'
+    let norm = rawAadhaar.replace(/[\u2022•×\*\.]/g, 'X');
+    const cleanDigitsOrX = norm.replace(/[\s\-]/g, '');
+    if (cleanDigitsOrX.length === 12) {
+      return `${cleanDigitsOrX.slice(0, 4)} ${cleanDigitsOrX.slice(4, 8)} ${cleanDigitsOrX.slice(8, 12)}`;
+    }
+    return norm;
+  }
+  return '';
+}
+
+// Marathi Devanagari transliterator for Marathi Names (used ONLY as emergency fallback if English is absent from file)
 function transliterateMarathiToEnglish(nameMr) {
   if (!nameMr || !nameMr.trim()) return '';
   const map = {
-    'अ':'A','आ':'AA','इ':'I','ई':'EE','उ':'U','ऊ':'OO','ऋ':'RI','ए':'E','ऐ':'AI','ओ':'O','औ':'AU','अं':'AM','अः':'AH',
+    'अ':'A','आ':'AA','इ':'I','ई':'I','उ':'U','ऊ':'U','ऋ':'RI','ए':'E','ऐ':'AI','ओ':'O','औ':'AU','अं':'AM','अः':'AH',
     'क':'K','ख':'KH','ग':'G','घ':'GH','ङ':'NG',
     'च':'CH','छ':'CHH','ज':'J','झ':'JH','ञ':'NY',
     'ट':'T','ठ':'TH','ड':'D','ढ':'DH','ण':'N',
@@ -892,7 +967,7 @@ function transliterateMarathiToEnglish(nameMr) {
     'प':'P','फ':'PH','ब':'B','भ':'BH','म':'M',
     'य':'Y','र':'R','ल':'L','व':'V','श':'SH','ष':'SH','स':'S','ह':'H','ळ':'L',
     'क्ष':'KSH','ज्ञ':'DNY','श्र':'SHR',
-    'ा':'A','ि':'I','ी':'EE','ु':'U','ू':'OO','ृ':'RI','े':'E','ै':'AI','ो':'O','ौ':'AU','ं':'M','ः':'H','्':''
+    'ा':'A','ि':'I','ी':'I','ु':'U','ू':'U','ृ':'RI','े':'E','ै':'AI','ो':'O','ौ':'AU','ं':'N','ः':'H','्':''
   };
 
   const knownDict = {
@@ -900,9 +975,9 @@ function transliterateMarathiToEnglish(nameMr) {
     'सुतार': 'SUTAR', 'पाटील': 'PATIL', 'शिंदे': 'SHINDE', 'पवार': 'PAWAR',
     'जाधव': 'JADHAV', 'कदम': 'KADAM', 'देशमुख': 'DESHMUKH', 'सावंत': 'SAWANT',
     'चव्हाण': 'CHAVAN', 'राणे': 'RANE', 'भोसले': 'BHOSALE', 'गायकवाड': 'GAIKWAD',
-    'सखाराम': 'SAKHARAM', 'नामदेव': 'NAMDEO', 'रमेश': 'RAMESH', 'सुरेश': 'SURESH',
+    'सखाराम': 'SAKHARAM', 'नामदेव': 'NAMDEV', 'रमेश': 'RAMESH', 'सुरेश': 'SURESH',
     'गणेश': 'GANESH', 'महेश': 'MAHESH', 'राजेश': 'RAJESH', 'संतोष': 'SANTOSH',
-    'संदीप': 'SANDEEP', 'सचिन': 'SACHIN', 'अमोल': 'AMOL', 'विकास': 'VIKAS',
+    'संदीप': 'SANDIP', 'सचिन': 'SACHIN', 'अमोल': 'AMOL', 'विकास': 'VIKAS',
     'सुनील': 'SUNIL', 'अनिल': 'ANIL', 'संजय': 'SANJAY', 'अशोक': 'ASHOK',
     'विजय': 'VIJAY', 'मनोज': 'MANOJ', 'तानाजी': 'TANAJI', 'तुकाराम': 'TUKARAM',
     'पांडुरंग': 'PANDURANG', 'विठ्ठल': 'VITTHAL', 'ज्ञानेश्वर': 'DNYANESHWAR'
@@ -968,6 +1043,73 @@ function parseAgristackHtml(htmlString) {
     landRecords: []
   };
 
+  // Helper to read value from an element or input (supports Angular ng-reflect-model, value, etc.)
+  function readElementValue(el) {
+    if (!el) return '';
+    if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+      const val = el.getAttribute('ng-reflect-model') ||
+                  el.value ||
+                  el.getAttribute('value') ||
+                  el.getAttribute('ng-reflect-value') ||
+                  el.getAttribute('data-value') ||
+                  el.defaultValue ||
+                  '';
+      if (val && typeof val === 'string' && val.trim()) return val.trim();
+    }
+    const valLabel = el.querySelector('.ng-value-label, .p-dropdown-label');
+    if (valLabel && valLabel.textContent.trim()) return valLabel.textContent.trim();
+    const valDiv = el.querySelector('.ng-value');
+    if (valDiv && valDiv.textContent.trim()) return valDiv.textContent.replace('×', '').trim();
+
+    const childInp = el.querySelector('input, select');
+    if (childInp) {
+      const childVal = readElementValue(childInp);
+      if (childVal) return childVal;
+    }
+    return (el.textContent || '').trim();
+  }
+
+  // Multi-key control reader
+  function readControlMulti(keys) {
+    for (const key of keys) {
+      const el = doc.querySelector(`[formcontrolname="${key}"], [name="${key}"], #${key}`);
+      if (el) {
+        const val = readElementValue(el);
+        if (val) return val;
+      }
+    }
+    return '';
+  }
+
+  // Find value in DOM adjacent to label texts
+  function findValueNearLabels(labelTexts, requirePattern) {
+    const elements = doc.querySelectorAll('label, th, td, dt, span, div.form_control, div.form-group, div.col, p');
+    for (const el of elements) {
+      const txt = (el.textContent || '').trim().toLowerCase();
+      const matchesLabel = labelTexts.some(lt => txt.includes(lt.toLowerCase()));
+      if (matchesLabel) {
+        // Child input
+        const inp = el.querySelector('input');
+        if (inp) {
+          const v = readElementValue(inp);
+          if (v && (!requirePattern || requirePattern.test(v))) return v;
+        }
+        // Next sibling
+        let next = el.nextElementSibling;
+        if (next) {
+          const v = readElementValue(next);
+          if (v && (!requirePattern || requirePattern.test(v))) return v;
+        }
+        // Parent's next sibling
+        if (el.parentElement && el.parentElement.nextElementSibling) {
+          const v = readElementValue(el.parentElement.nextElementSibling);
+          if (v && (!requirePattern || requirePattern.test(v))) return v;
+        }
+      }
+    }
+    return '';
+  }
+
   // 1. Farmer ID & Enrollment ID
   const numDivs = doc.querySelectorAll('.farmerDetailsNumber');
   numDivs.forEach(div => {
@@ -984,7 +1126,9 @@ function parseAgristackHtml(htmlString) {
     }
   });
 
-  // Regex fallbacks for Farmer ID & Enrollment ID
+  if (!result.farmerId) {
+    result.farmerId = readControlMulti(['farmerId', 'farmer_id', 'farmerIdentificationNumber']);
+  }
   if (!result.farmerId) {
     const fidMatch = htmlString.match(/Farmer\s*Id[\s\S]{0,120}?<span[^>]*>\s*([0-9A-Z_]{8,20})\s*<\/span>/i) ||
                      htmlString.match(/<span[^>]*>\s*([0-9]{10,14})\s*<\/span>[\s\S]{0,120}?Farmer\s*Id/i) ||
@@ -993,12 +1137,14 @@ function parseAgristackHtml(htmlString) {
   }
 
   if (!result.enrollmentId) {
+    result.enrollmentId = readControlMulti(['enrollmentId', 'enrollment_id', 'farmerEnrollmentId']);
+  }
+  if (!result.enrollmentId) {
     const enrollMatch = htmlString.match(/([0-9]{2}_[0-9]{3}_[0-9]{4}_[0-9]{6}_[0-9]{6})/);
     if (enrollMatch) result.enrollmentId = enrollMatch[1];
   }
 
   // 2. Photo Extraction (Base64 or URL)
-  // Look for .form_control containing Photograph
   const controls = doc.querySelectorAll('.form_control');
   controls.forEach(ctrl => {
     if (ctrl.textContent.includes('Photograph') || ctrl.textContent.includes('फोटो')) {
@@ -1009,7 +1155,6 @@ function parseAgristackHtml(htmlString) {
     }
   });
 
-  // Fallback scan all images for base64 portrait
   if (!result.photoUrl) {
     const allImgs = doc.querySelectorAll('img');
     for (const img of allImgs) {
@@ -1020,30 +1165,12 @@ function parseAgristackHtml(htmlString) {
     }
   }
 
-  // 3. Helper to read ng-select or formcontrolname input
-  function readControl(ctrlName) {
-    const el = doc.querySelector(`[formcontrolname="${ctrlName}"]`);
-    if (!el) return '';
-    if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
-      return el.value || el.getAttribute('value') || el.defaultValue || '';
-    }
-    // ng-select
-    const valLabel = el.querySelector('.ng-value-label');
-    if (valLabel) return valLabel.textContent.trim();
-    const valDiv = el.querySelector('.ng-value');
-    if (valDiv) return valDiv.textContent.replace('×', '').trim();
-    return el.textContent.trim();
-  }
-
-  result.mobile = readControl('mobileNumber');
-  result.email = readControl('emailId');
-
-  // Multi-source Aadhaar Extraction
-  let rawAadhaar = readControl('aadhaarNumber');
+  // 3. Multi-source Aadhaar Extraction
+  let rawAadhaar = readControlMulti(['aadhaarNumber', 'aadhaar', 'aadharNumber', 'aadharNo', 'aadhaarNo']);
   if (!rawAadhaar) {
     const aadhInput = doc.querySelector('input[formcontrolname="aadhaarNumber"], input[formcontrolname*="aadhaar"], input[id*="aadhaar"], input[placeholder*="Aadhaar"]');
     if (aadhInput) {
-      rawAadhaar = aadhInput.value || aadhInput.getAttribute('value') || aadhInput.defaultValue || '';
+      rawAadhaar = readElementValue(aadhInput);
     }
   }
   if (!rawAadhaar) {
@@ -1052,11 +1179,14 @@ function parseAgristackHtml(htmlString) {
       const txt = (lbl.textContent || '').trim();
       if ((txt.includes('Aadhaar Number') || txt.includes('Aadhar Number') || txt.includes('आधार क्रमांक') || txt.includes('आधार क्र')) && !txt.toLowerCase().includes('as per')) {
         const inp = lbl.querySelector('input') || (lbl.nextElementSibling && lbl.nextElementSibling.querySelector('input')) || (lbl.parentElement ? lbl.parentElement.querySelector('input') : null);
-        if (inp && (inp.value || inp.getAttribute('value') || inp.defaultValue)) {
-          rawAadhaar = inp.value || inp.getAttribute('value') || inp.defaultValue;
-          break;
+        if (inp) {
+          const v = readElementValue(inp);
+          if (v) {
+            rawAadhaar = v;
+            break;
+          }
         }
-        const textValMatch = (lbl.parentElement ? lbl.parentElement.textContent : txt).match(/([0-9Xx\*\.]{4}\s*[0-9Xx\*\.]{4}\s*[0-9]{4}|[0-9]{12}|[Xx\*\.]{8}[0-9]{4})/);
+        const textValMatch = (lbl.parentElement ? lbl.parentElement.textContent : txt).match(/([0-9Xx\*\.\u2022•×]{4}[\s\-]?[0-9Xx\*\.\u2022•×]{4}[\s\-]?[0-9]{4}|[0-9]{12}|[Xx\*\.\u2022•×]{8}[\s\-]?[0-9]{4})/);
         if (textValMatch) {
           rawAadhaar = textValMatch[1];
           break;
@@ -1065,34 +1195,120 @@ function parseAgristackHtml(htmlString) {
     }
   }
   if (!rawAadhaar) {
-    const aadhMatch = htmlString.match(/Aadhaar\s*(?:Number|No\.?)?[\s\S]{0,160}?(?:value=["']([^"']+)["']|>([0-9Xx\*\. ]{12,16})<)/i) ||
-                      htmlString.match(/(?:Aadhaar|Aadhar|आधार)\s*(?:Number|No\.?|क्रमांक|क्र\.?)?\s*[:\-]?\s*([0-9]{4}\s*[0-9]{4}\s*[0-9]{4}|[0-9]{12}|[Xx\*\.]{4}\s*[Xx\*\.]{4}\s*[0-9]{4}|[Xx\*\.]{8}[0-9]{4})/i) ||
-                      htmlString.match(/\b([0-9]{4}\s+[0-9]{4}\s+[0-9]{4})\b/);
-    if (aadhMatch) {
-      rawAadhaar = aadhMatch[1] || aadhMatch[2] || aadhMatch[0];
-    }
-  }
-
-  if (rawAadhaar) {
-    const cleanDigits = rawAadhaar.trim().replace(/[\s\-]/g, '');
-    if (cleanDigits.length === 12) {
-      result.aadhaarRef = `${cleanDigits.slice(0, 4)} ${cleanDigits.slice(4, 8)} ${cleanDigits.slice(8, 12)}`;
-    } else {
-      result.aadhaarRef = rawAadhaar.trim();
-    }
+    rawAadhaar = extractAadhaarNumber(htmlString);
   } else {
-    result.aadhaarRef = '';
+    rawAadhaar = extractAadhaarNumber(rawAadhaar) || rawAadhaar;
+  }
+  result.aadhaarRef = rawAadhaar;
+
+  // ==========================================
+  // 4. FARMER NAME EXTRACTION (EXACT AS-IS PRESERVATION)
+  // ==========================================
+  const enControlKeys = [
+    'aadhaarFarmerNameInEnglish',
+    'farmerNameInEnglish',
+    'farmerNameEnglish',
+    'farmerNameEn',
+    'aadhaarFarmerName',
+    'farmerNameAsPerAadhaar',
+    'aadhaarName',
+    'nameInEnglish',
+    'nameAsPerAadhaar',
+    'farmer_name_en',
+    'farmer_name_english',
+    'farmerName',
+    'name'
+  ];
+  result.farmerNameEn = readControlMulti(enControlKeys);
+
+  // If farmerName was read from a generic key like 'farmerName' or 'name', verify it's English
+  if (result.farmerNameEn && !/[A-Za-z]{2,}/.test(result.farmerNameEn)) {
+    // If it has Devanagari instead, treat it as Marathi name
+    if (/[\u0900-\u097F]{2,}/.test(result.farmerNameEn) && !result.farmerNameMr) {
+      result.farmerNameMr = result.farmerNameEn;
+    }
+    result.farmerNameEn = '';
   }
 
-  result.farmerNameEn = readControl('aadhaarFarmerNameInEnglish');
-  result.farmerNameMr = readControl('farmerNameInLocal');
-  result.identifierNameEn = readControl('farmerIdentiferNameInEnglish');
-  result.identifierNameMr = readControl('farmerIdentiferNameInLocal');
-  result.dob = readControl('famerDateOfBirth');
-  result.age = readControl('farmerAge');
-  result.pincode = readControl('pincode');
+  // Label search in DOM for English Name
+  if (!result.farmerNameEn) {
+    const enLabelVal = findValueNearLabels(
+      ['Farmer Name (as per Aadhaar)', 'Name as per Aadhaar', 'Farmer Name (English)', 'Farmer Name in English', 'Name (English)'],
+      /[A-Za-z]{2,}/
+    );
+    if (enLabelVal) result.farmerNameEn = enLabelVal;
+  }
 
-  const rawGender = readControl('gender');
+  // Regex fallback in htmlString for English Name
+  if (!result.farmerNameEn) {
+    const enRegexPatterns = [
+      /formcontrolname=["'](?:aadhaarFarmerNameInEnglish|farmerNameInEnglish|farmerNameEnglish|farmerNameEn|farmerNameAsPerAadhaar|aadhaarName)["'][^>]*?(?:ng-reflect-model|ng-reflect-value|value)=["']([^"']+)["']/i,
+      /(?:ng-reflect-model|ng-reflect-value|value)=["']([^"']+)["'][^>]*?formcontrolname=["'](?:aadhaarFarmerNameInEnglish|farmerNameInEnglish|farmerNameEnglish|farmerNameEn|farmerNameAsPerAadhaar|aadhaarName)["']/i,
+      /(?:Farmer\s*Name\s*(?:as\s*per\s*Aadhaar|\(as\s*per\s*Aadhaar\)|\(English\)|\(In\s*English\)|in\s*English)?|Name\s*as\s*per\s*Aadhaar|Name\s*\(English\))[\s\S]{0,180}?(?:(?:ng-reflect-model|ng-reflect-value|value)=["']([A-Za-z\s\.\'\-]{3,60})["']|<(?:span|div|p|td|strong|b)[^>]*>([A-Za-z\s\.\'\-]{3,60})<\/(?:span|div|p|td|strong|b)>)/i
+    ];
+    for (const re of enRegexPatterns) {
+      const m = htmlString.match(re);
+      if (m) {
+        const val = cleanExtractedName(m[1] || m[2]);
+        if (val && /[A-Za-z]{2,}/.test(val)) {
+          result.farmerNameEn = val;
+          break;
+        }
+      }
+    }
+  }
+
+  // Marathi Name Extraction
+  const mrControlKeys = [
+    'farmerNameInLocal',
+    'farmerNameLocal',
+    'farmerNameInMarathi',
+    'farmerNameMarathi',
+    'farmerNameMr',
+    'farmer_name_local',
+    'farmer_name_mr',
+    'localFarmerName'
+  ];
+  result.farmerNameMr = readControlMulti(mrControlKeys);
+
+  // Label search in DOM for Marathi Name
+  if (!result.farmerNameMr) {
+    const mrLabelVal = findValueNearLabels(
+      ['शेतकऱ्याचे नाव (स्थानिक)', 'शेतकऱ्याचे नाव (मराठी)', 'स्थानिक भाषेतील नाव', 'स्थानिक नाव', 'शेतकऱ्याचे नाव', 'आधार प्रमाणे नाव', 'खातेदाराचे नाव', 'मालकाचे नाव'],
+      /[\u0900-\u097F]{2,}/
+    );
+    if (mrLabelVal) result.farmerNameMr = mrLabelVal;
+  }
+
+  // Regex fallback in htmlString for Marathi Name
+  if (!result.farmerNameMr) {
+    const mrRegexPatterns = [
+      /formcontrolname=["'](?:farmerNameInLocal|farmerNameLocal|farmerNameInMarathi|farmerNameMarathi|farmerNameMr|localFarmerName)["'][^>]*?(?:ng-reflect-model|ng-reflect-value|value)=["']([^"']+)["']/i,
+      /(?:ng-reflect-model|ng-reflect-value|value)=["']([\u0900-\u097F\s\.\'\-]{3,60})["'][^>]*?formcontrolname=["'](?:farmerNameInLocal|farmerNameLocal|farmerNameInMarathi|farmerNameMarathi|farmerNameMr|localFarmerName)["']/i,
+      /(?:शेतकऱ्याचे\s*नाव\s*(?:\(स्थानिक\)|\(मराठी\)|\(आधार\s*प्रमाणे\))?|स्थानिक\s*भाषेतील\s*नाव|स्थानिक\s*नाव|खातेदाराचे\s*नाव|मालकाचे\s*नाव|Farmer\s*Name\s*\(Local\))[\s\S]{0,180}?(?:(?:ng-reflect-model|ng-reflect-value|value)=["']([\u0900-\u097F\s\.\'\-]{3,60})["']|<(?:span|div|p|td|strong|b)[^>]*>([\u0900-\u097F\s\.\'\-]{3,60})<\/(?:span|div|p|td|strong|b)>)/i
+    ];
+    for (const re of mrRegexPatterns) {
+      const m = htmlString.match(re);
+      if (m) {
+        const val = cleanExtractedName(m[1] || m[2]);
+        if (val && /[\u0900-\u097F]{2,}/.test(val)) {
+          result.farmerNameMr = val;
+          break;
+        }
+      }
+    }
+  }
+
+  // 5. Other Personal & Contact Info
+  result.identifierNameEn = readControlMulti(['farmerIdentiferNameInEnglish', 'identifierNameInEnglish', 'fatherNameInEnglish']);
+  result.identifierNameMr = readControlMulti(['farmerIdentiferNameInLocal', 'identifierNameInLocal', 'fatherNameInLocal']);
+  result.dob = readControlMulti(['famerDateOfBirth', 'farmerDob', 'dateOfBirth', 'dob']);
+  result.age = readControlMulti(['farmerAge', 'age']);
+  result.mobile = readControlMulti(['mobileNumber', 'mobile', 'phone']);
+  result.email = readControlMulti(['emailId', 'email']);
+  result.pincode = readControlMulti(['pincode', 'pinCode', 'pin']);
+
+  const rawGender = readControlMulti(['gender', 'farmerGender']);
   if (rawGender) {
     if (rawGender.toLowerCase().includes('male') && !rawGender.toLowerCase().includes('female')) {
       result.gender = 'पुरुष / MALE';
@@ -1103,31 +1319,22 @@ function parseAgristackHtml(htmlString) {
     }
   }
 
-  const rawCaste = readControl('casteCategory');
+  const rawCaste = readControlMulti(['casteCategory', 'caste']);
   if (rawCaste) result.caste = rawCaste;
 
-  const rawState = readControl('state');
+  const rawState = readControlMulti(['state', 'stateName']);
   if (rawState) result.state = rawState.toLowerCase().includes('maha') ? 'महाराष्ट्र' : rawState;
 
-  const rawDist = readControl('district');
-  if (rawDist) {
-    if (rawDist.toLowerCase().includes('sindhu')) result.district = 'सिंधुदुर्ग (Sindhudurg)';
-    else result.district = rawDist;
-  }
+  const rawDist = readControlMulti(['district', 'districtName']);
+  if (rawDist) result.district = rawDist.trim();
 
-  const rawTal = readControl('taluka');
-  if (rawTal) {
-    if (rawTal.toLowerCase().includes('kank')) result.taluka = 'कणकवली (Kankavli)';
-    else result.taluka = rawTal;
-  }
+  const rawTal = readControlMulti(['taluka', 'talukaName', 'tahsil']);
+  if (rawTal) result.taluka = rawTal.trim();
 
-  const rawVil = readControl('village');
-  if (rawVil) {
-    if (rawVil.toLowerCase().includes('tiwa')) result.village = 'तिवरे (Tiware)';
-    else result.village = rawVil;
-  }
+  const rawVil = readControlMulti(['village', 'villageName']);
+  if (rawVil) result.village = rawVil.trim();
 
-  // 4. CSC Registration ID / Operator ID
+  // 6. CSC Registration ID / Operator ID
   const cscPill = doc.querySelector('.profile_div .p-button-label') || doc.querySelector('.profile_div button');
   if (cscPill && cscPill.textContent.trim().match(/^[0-9]{10,16}$/)) {
     result.cscRegId = cscPill.textContent.trim();
@@ -1136,7 +1343,7 @@ function parseAgristackHtml(htmlString) {
     if (cscMatch) result.cscRegId = cscMatch[1];
   }
 
-  // 5. Land Details Table Extraction (Survey Numbers, 8-A Khata No, Extent Area)
+  // 7. Land Details Table Extraction (Survey Numbers, 8-A Khata No, Extent Area)
   const tables = doc.querySelectorAll('table');
   tables.forEach(table => {
     const ths = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim().toLowerCase());
@@ -1169,8 +1376,8 @@ function parseAgristackHtml(htmlString) {
           const areaNum = parseFloat(areaValStr) || 0;
           totalAreaSum += areaNum;
 
-          if (owner && !result.farmerNameMr) result.farmerNameMr = owner;
-          if (ident && !result.identifierNameMr) result.identifierNameMr = ident;
+          if (owner && !result.farmerNameMr) result.farmerNameMr = cleanExtractedName(owner);
+          if (ident && !result.identifierNameMr) result.identifierNameMr = cleanExtractedName(ident);
           if (khata && !result.khataNo) result.khataNo = khata;
           if (v && !result.village) result.village = v;
 
@@ -1191,16 +1398,21 @@ function parseAgristackHtml(htmlString) {
     }
   });
 
-  // Name Resolution & Transliteration
+  // Final Name Cleaning & Preservation (DO NOT ALTER SPELLING)
+  if (result.farmerNameEn) {
+    result.farmerNameEn = cleanExtractedName(result.farmerNameEn);
+  }
+  if (result.farmerNameMr) {
+    result.farmerNameMr = cleanExtractedName(result.farmerNameMr);
+  }
+
+  // Only if English is completely absent from the file, transliterate from Marathi
   if (result.farmerNameMr && !result.farmerNameEn) {
     result.farmerNameEn = transliterateMarathiToEnglish(result.farmerNameMr);
   }
+  // Only if Marathi is completely absent from the file, use English
   if (!result.farmerNameMr && result.farmerNameEn) {
     result.farmerNameMr = result.farmerNameEn;
-  }
-  if (!result.farmerNameMr) {
-    result.farmerNameMr = '';
-    result.farmerNameEn = '';
   }
 
   if (result.landRecords.length > 0 && !result.gatNo) {
@@ -1208,17 +1420,6 @@ function parseAgristackHtml(htmlString) {
   }
   if (!result.khataNo && result.landRecords.length > 0) {
     result.khataNo = result.landRecords[0].khata;
-  }
-
-  // Format bilingual village if Tiware
-  if (result.village && result.village.toLowerCase().includes('tiwa')) {
-    result.village = 'तिवरे (Tiware)';
-  }
-  if (result.taluka && result.taluka.toLowerCase().includes('kank')) {
-    result.taluka = 'कणकवली (Kankavli)';
-  }
-  if (result.district && result.district.toLowerCase().includes('sindhu')) {
-    result.district = 'सिंधुदुर्ग (Sindhudurg)';
   }
 
   return result;
@@ -1488,27 +1689,22 @@ async function processAgristackPdfFile(file, isDirect) {
       farmerNameEn: '',
       mobile: '',
       aadhaarRef: '',
+      dob: '',
+      gender: '',
       district: '',
       taluka: '',
       village: '',
+      pincode: '',
       khataNo: '',
+      gatNo: '',
       totalArea: '',
       landRecords: []
     };
 
-    const fidMatch = fullText.match(/Farmer\s*Id\s*[:\-]?\s*([0-9]{8,15})/i) || fullText.match(/([0-9]{10,12})\s*Farmer\s*Id/i);
+    const fidMatch = fullText.match(/Farmer\s*Id\s*[:\-]?\s*([0-9A-Z_]{8,20})/i) || fullText.match(/([0-9]{10,14})\s*Farmer\s*Id/i);
     if (fidMatch) extracted.farmerId = fidMatch[1];
 
-    const aadhMatch = fullText.match(/(?:Aadhaar|Aadhar|आधार)\s*(?:Number|No\.?|क्रमांक|क्र\.?)?\s*[:\-]?\s*([0-9]{4}\s*[0-9]{4}\s*[0-9]{4}|[0-9]{12}|[Xx\*\.]{4}\s*[Xx\*\.]{4}\s*[0-9]{4}|[Xx\*\.]{8}[0-9]{4})/i) || fullText.match(/\b([0-9]{4}\s+[0-9]{4}\s+[0-9]{4})\b/);
-    if (aadhMatch) {
-      const rawPdfAadh = (aadhMatch[1] || aadhMatch[0]).trim();
-      const cleanDigits = rawPdfAadh.replace(/[\s\-]/g, '');
-      if (cleanDigits.length === 12) {
-        extracted.aadhaarRef = `${cleanDigits.slice(0, 4)} ${cleanDigits.slice(4, 8)} ${cleanDigits.slice(8, 12)}`;
-      } else {
-        extracted.aadhaarRef = rawPdfAadh;
-      }
-    }
+    extracted.aadhaarRef = extractAadhaarNumber(fullText);
 
     const enrollMatch = fullText.match(/([0-9]{2}_[0-9]{3}_[0-9]{4}_[0-9]{6}_[0-9]{6})/);
     if (enrollMatch) extracted.enrollmentId = enrollMatch[1];
@@ -1516,15 +1712,91 @@ async function processAgristackPdfFile(file, isDirect) {
     const mobileMatch = fullText.match(/(?:Mobile|मोबाईल)\s*[:\-]?\s*([6-9][0-9]{9})/i);
     if (mobileMatch) extracted.mobile = mobileMatch[1];
 
-    const khataMatch = fullText.match(/(?:खाते\s*क्र|Owner\s*Number)\s*[:\-]?\s*([0-9]+)/i);
+    const dobMatch = fullText.match(/(?:DOB|Date\s*of\s*Birth|जन्मतारीख)\s*[:\-]?\s*([0-9]{2}[\/\-][0-9]{2}[\/\-][0-9]{4})/i);
+    if (dobMatch) extracted.dob = dobMatch[1];
+
+    const genderMatch = fullText.match(/(?:Gender|लिंग)\s*[:\-]?\s*(पुरुष|स्त्री|MALE|FEMALE)/i);
+    if (genderMatch) {
+      const g = genderMatch[1].toUpperCase();
+      extracted.gender = (g.includes('MALE') || g.includes('पुरुष')) ? 'पुरुष / MALE' : 'स्त्री / FEMALE';
+    }
+
+    const distMatch = fullText.match(/(?:District|जिल्हा)\s*[:\-]?\s*([A-Za-z\u0900-\u097F\s\(\)]+?)(?=\s+(?:Taluka|तालुका|Village|गाव|Pin|पिन|$))/i);
+    if (distMatch) extracted.district = cleanExtractedName(distMatch[1]);
+
+    const talMatch = fullText.match(/(?:Taluka|तालुका)\s*[:\-]?\s*([A-Za-z\u0900-\u097F\s\(\)]+?)(?=\s+(?:Village|गाव|District|जिल्हा|Pin|पिन|$))/i);
+    if (talMatch) extracted.taluka = cleanExtractedName(talMatch[1]);
+
+    const vilMatch = fullText.match(/(?:Village|गाव)\s*[:\-]?\s*([A-Za-z\u0900-\u097F\s\(\)]+?)(?=\s+(?:Taluka|तालुका|District|जिल्हा|Pin|पिन|$))/i);
+    if (vilMatch) extracted.village = cleanExtractedName(vilMatch[1]);
+
+    const pinMatch = fullText.match(/(?:Pincode|Pin\s*Code|पिन\s*कोड|पिन)\s*[:\-]?\s*([0-9]{6})/i);
+    if (pinMatch) extracted.pincode = pinMatch[1];
+
+    const khataMatch = fullText.match(/(?:खाते\s*(?:क्र\.?|क्रमांक|नंबर)?|Khata\s*(?:No\.?|Number)?|Owner\s*Number)\s*[:\-]?\s*([0-9]+)/i);
     if (khataMatch) extracted.khataNo = khataMatch[1];
 
-    // Names in Marathi & English
-    const mrNameMatch = fullText.match(/(?:शेतकऱ्याचे नाव|Owner Name)\s*[:\-]?\s*([\u0900-\u097F\s]{5,40})/);
-    if (mrNameMatch) extracted.farmerNameMr = mrNameMatch[1].trim();
+    const gatMatch = fullText.match(/(?:Survey\s*(?:No\.?|Number)|Gat\s*(?:No\.?|Number)|गट\s*(?:क्र\.?|क्रमांक)|सर्व्हे\s*(?:क्र\.?|क्रमांक))\s*[:\-]?\s*([0-9\/\sA-Za-z\u0900-\u097F]+?)(?=\s+(?:Khata|खाते|Area|क्षेत्र|$))/i);
+    if (gatMatch) extracted.gatNo = cleanExtractedName(gatMatch[1]);
 
+    const areaMatch = fullText.match(/(?:Total\s*Area|Assigned\s*Area|एकूण\s*क्षेत्र)\s*[:\-]?\s*([0-9\.\s]+(?:\s*हेक्टर|\s*हे\.आर\.|\s*Ha)?)/i);
+    if (areaMatch) extracted.totalArea = cleanExtractedName(areaMatch[1]);
+
+    // ==========================================
+    // EXACT AS-IS NAME EXTRACTION FROM PDF
+    // ==========================================
+    // 1. English Name from PDF
+    const enPatterns = [
+      /(?:Farmer\s*Name\s*(?:as\s*per\s*Aadhaar|as\s*per\s*Aadhar|\(as\s*per\s*Aadhaar\)|\(as\s*per\s*Aadhar\)|\(English\)|\(In\s*English\)|in\s*English)|Name\s*as\s*per\s*Aadhaar|Name\s*as\s*per\s*Aadhar|Name\s*\(English\))\s*[:\-]?\s*([A-Za-z\s\.\'\-]{3,60})/i,
+      /(?:Farmer['’]?s\s*Name|Name\s*of\s*Farmer|Farmer\s*Name)\s*[:\-]?\s*([A-Za-z\s\.\'\-]{3,60})/i,
+      /(?:Beneficiary\s*Name|Applicant\s*Name|Owner\s*Name)\s*[:\-]?\s*([A-Za-z\s\.\'\-]{3,60})/i,
+      /\bName\s*[:\-]?\s*([A-Za-z\s\.\'\-]{3,60})/i
+    ];
+
+    for (const pat of enPatterns) {
+      const m = fullText.match(pat);
+      if (m) {
+        const val = cleanExtractedName(m[1]);
+        if (val && /[A-Za-z]{2,}/.test(val)) {
+          extracted.farmerNameEn = val;
+          break;
+        }
+      }
+    }
+
+    // 2. Marathi Name from PDF
+    const mrPatterns = [
+      /(?:Farmer\s*Name\s*(?:\(Local\s*Language\)|\(Local\)|\(In\s*Local\)|in\s*Local)|Name\s*\(Local\))\s*[:\-]?\s*([\u0900-\u097F\s\.\'\-]{3,60})/i,
+      /(?:शेतकऱ्याचे\s*नाव\s*(?:\(स्थानिक\)|\(मराठी\)|\(स्थानिक\s*भाषेत\)|\(आधार\s*प्रमाणे\))?|स्थानिक\s*भाषेतील\s*(?:शेतकऱ्याचे\s*)?नाव|स्थानिक\s*नाव|आधार\s*प्रमाणे\s*नाव|खातेदाराचे\s*नाव|मालकाचे\s*नाव|भोगवटादाराचे\s*नाव|अर्जदाराचे\s*नाव)\s*[:\-]?\s*([\u0900-\u097F\s\.\'\-]{3,60})/i,
+      /(?:Owner\s*Name|Farmer\s*Name)\s*[:\-]?\s*([\u0900-\u097F\s\.\'\-]{3,60})/i,
+      /\bनाव\s*[:\-]?\s*([\u0900-\u097F\s\.\'\-]{3,60})/
+    ];
+
+    for (const pat of mrPatterns) {
+      const m = fullText.match(pat);
+      if (m) {
+        const val = cleanExtractedName(m[1]);
+        if (val && /[\u0900-\u097F]{2,}/.test(val)) {
+          extracted.farmerNameMr = val;
+          break;
+        }
+      }
+    }
+
+    // Preserve exact names from PDF without changing spelling
+    if (extracted.farmerNameEn) {
+      extracted.farmerNameEn = cleanExtractedName(extracted.farmerNameEn);
+    }
     if (extracted.farmerNameMr) {
+      extracted.farmerNameMr = cleanExtractedName(extracted.farmerNameMr);
+    }
+
+    // Only fallback if one is genuinely missing
+    if (extracted.farmerNameMr && !extracted.farmerNameEn) {
       extracted.farmerNameEn = transliterateMarathiToEnglish(extracted.farmerNameMr);
+    }
+    if (!extracted.farmerNameMr && extracted.farmerNameEn) {
+      extracted.farmerNameMr = extracted.farmerNameEn;
     }
 
     if (loadingEl) loadingEl.style.display = 'none';
