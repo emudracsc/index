@@ -1041,6 +1041,18 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "agristek-id-card.html",
     isInternal: true
   },
+  // 🌾 फळपिक विमा पीकपेरा स्वयंघोषणापत्र २०२६-२७ (हवामान आधारीत रब्बी हंगाम)
+  {
+    id: "link-pikpera",
+    category: "शेतकरी व कृषी योजना",
+    icon: "fa-solid fa-wheat-awn",
+    title_mr: "🌾 फळपिक विमा पीकपेरा स्वयंघोषणापत्र २०२६-२७ (Pikpera)",
+    title_en: "Pikpera Crop Sowing Declaration Form (Rabi 2026-27)",
+    desc_mr: "हवामान आधारीत फळपिक विमा योजना रब्बी हंगाम २०२६-२७ साठी अधिकृत पीकपेरा स्वयंघोषणापत्र अचूक ७/१२, बँक तपशील व स्वाक्षरीसह थेट A4 वर तयार व प्रिंट करा.",
+    desc_en: "Official Weather Based Fruit Crop Insurance Rabi 2026-27 self-declaration crop sowing certificate generator with dynamic 7/12 table and 1-click A4 print.",
+    url: "Pikpera.html",
+    isInternal: true
+  },
   // 🌟 ई मुद्रा हब (eMudra Hub - All-in-One Digital Printing & Studio)
   {
     id: "link-emudra-hub",
@@ -1479,17 +1491,6 @@ const DEFAULT_IMPORTANT_LINKS = [
     desc_mr: "व्यक्तीचे नाव, फोटो क्रॉप, कॅमेरा कॅप्चर व A4 संमतीपत्र प्रिंट स्टुडिओ.",
     desc_en: "Print Studio Pro with Camera, Cropper, Photo Slider & A4 Print.",
     url: "affidavit-print.html",
-    isInternal: true
-  },
-  {
-    id: "link-pikpera",
-    category: "शेतकरी व महसूल योजना",
-    icon: "fa-solid fa-wheat-awn",
-    title_mr: "🌾 पीकपेरा खरीप (Pikpera)",
-    title_en: "Pikpera Self-Declaration Form",
-    desc_mr: "खरीप हंगाम पीक पेरा नोंदणी व स्वयंघोषणापत्र थेट तयार व A4 प्रिंट करा.",
-    desc_en: "Kharif crop declaration certificate with 1-click A4 print.",
-    url: "Pikpera.html",
     isInternal: true
   },
   {
