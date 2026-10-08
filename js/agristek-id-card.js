@@ -101,11 +101,19 @@ function initFormInputs() {
   mapping.forEach(item => {
     const el = document.getElementById(item.id);
     if (el) {
-      el.value = cardState[item.prop] || '';
-      el.addEventListener('input', (e) => {
+      if (cardState[item.prop]) {
+        el.value = cardState[item.prop];
+      } else if (item.id === 'inputGender' && !cardState.gender) {
+        cardState.gender = el.value || 'पुरुष / MALE';
+      } else {
+        el.value = '';
+      }
+      const syncHandler = (e) => {
         cardState[item.prop] = e.target.value;
         renderAllCards();
-      });
+      };
+      el.addEventListener('input', syncHandler);
+      el.addEventListener('change', syncHandler);
     }
   });
 
@@ -795,11 +803,18 @@ async function downloadA4Pdf() {
     const printSheet = document.getElementById('printable-a4-sheet');
     if (!printSheet) throw new Error('Print sheet not found');
 
-    // Make visible temporarily for capture
+    // Make visible temporarily with exact A4 dimensions for capture
     printSheet.style.display = 'flex';
     printSheet.style.position = 'fixed';
     printSheet.style.top = '0';
     printSheet.style.left = '0';
+    printSheet.style.width = '210mm';
+    printSheet.style.minHeight = '297mm';
+    printSheet.style.background = '#ffffff';
+    printSheet.style.flexDirection = 'column';
+    printSheet.style.alignItems = 'center';
+    printSheet.style.justifyContent = 'flex-start';
+    printSheet.style.boxSizing = 'border-box';
     printSheet.style.zIndex = '99999';
 
     const canvas = await html2canvas(printSheet, {
@@ -809,8 +824,17 @@ async function downloadA4Pdf() {
     });
 
     // Reset styles
-    printSheet.style.display = '';
+    printSheet.style.display = 'none';
     printSheet.style.position = '';
+    printSheet.style.top = '';
+    printSheet.style.left = '';
+    printSheet.style.width = '';
+    printSheet.style.minHeight = '';
+    printSheet.style.background = '';
+    printSheet.style.flexDirection = '';
+    printSheet.style.alignItems = '';
+    printSheet.style.justifyContent = '';
+    printSheet.style.boxSizing = '';
     printSheet.style.zIndex = '';
 
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
@@ -899,21 +923,24 @@ function cleanExtractedName(str) {
 
 // Universal high-accuracy Aadhaar Number extractor (supports Masked, Bullets, Full 12 digits, Bilingual labels)
 function extractAadhaarNumber(text) {
-  if (!text) return '';
+  if (!text || typeof text !== 'string') return '';
+  const cleanText = text.trim();
+  if (['on', 'true', 'false', 'null', 'undefined'].includes(cleanText.toLowerCase())) return '';
+
   let rawAadhaar = '';
 
   // 1. Explicit Label Match: handles bilingual labels with slashes/parentheses, colons, dashes
   // Examples: "Aadhaar Number / आधार क्रमांक : XXXX XXXX 1234", "Aadhaar No. (आधार क्र.): •••• •••• 1234"
-  const labelRegex = /(?:Aadhaar|Aadhar|आधार|UIDAI|UID)\s*(?:(?:\/|\(|\b)[^\n\:]{0,50})?[:\-]?\s*([Xx\*\.\u2022•×\d]{4}[\s\-]?[Xx\*\.\u2022•×\d]{4}[\s\-]?[0-9]{4}|[Xx\*\.\u2022•×]{8}[\s\-]?[0-9]{4}|[0-9]{12})/i;
-  const m1 = text.match(labelRegex);
+  const labelRegex = /(?:Aadhaar|Aadhar|आधार|UIDAI|UID)\s*(?:Number|No\.?|क्रमांक|क्र\.?|खाते)?(?:\s*[\/|\(][^\n\:]{0,50})?[:\-]?\s*([Xx\*\.\u2022•×\d]{4}[\s\-]?[Xx\*\.\u2022•×\d]{4}[\s\-]?[0-9]{4}|[Xx\*\.\u2022•×]{8}[\s\-]?[0-9]{4}|[0-9]{12})\b/i;
+  const m1 = cleanText.match(labelRegex);
   if (m1) {
     rawAadhaar = m1[1].trim();
   }
 
   // 2. Standalone masked Aadhaar anywhere in text (XXXX XXXX 1234 or •••• •••• 1234 or ********1234)
   if (!rawAadhaar) {
-    const standaloneMasked = text.match(/\b([Xx\*\.\u2022•×]{4}[\s\-]?[Xx\*\.\u2022•×]{4}[\s\-]?[0-9]{4})\b/i) ||
-                             text.match(/([Xx\*\.\u2022•×]{8}[\s\-]?[0-9]{4})/i);
+    const standaloneMasked = cleanText.match(/(?:^|[\s\:\-\(])([Xx\*\.\u2022•×]{4}[\s\-]?[Xx\*\.\u2022•×]{4}[\s\-]?[0-9]{4})(?:$|[\s\:\-\)])/i) ||
+                             cleanText.match(/(?:^|[\s\:\-\(])([Xx\*\.\u2022•×]{8}[\s\-]?[0-9]{4})(?:$|[\s\:\-\)])/i);
     if (standaloneMasked) {
       rawAadhaar = standaloneMasked[1].trim();
     }
@@ -921,7 +948,7 @@ function extractAadhaarNumber(text) {
 
   // 3. Standalone 12-digit formatted (1234 5678 9012 or 1234-5678-9012)
   if (!rawAadhaar) {
-    const standalone12Formatted = text.match(/\b([0-9]{4}[\s\-][0-9]{4}[\s\-][0-9]{4})\b/);
+    const standalone12Formatted = cleanText.match(/\b([0-9]{4}[\s\-][0-9]{4}[\s\-][0-9]{4})\b/);
     if (standalone12Formatted) {
       rawAadhaar = standalone12Formatted[1].trim();
     }
@@ -929,7 +956,7 @@ function extractAadhaarNumber(text) {
 
   // 4. Standalone 12 digits near Aadhaar/UID keyword
   if (!rawAadhaar) {
-    const near12 = text.match(/(?:Aadhaar|Aadhar|आधार|UID)[\s\S]{0,120}?\b([0-9]{12})\b/i);
+    const near12 = cleanText.match(/(?:Aadhaar|Aadhar|आधार|UID)\b[\s\S]{0,120}?\b([0-9]{12})\b/i);
     if (near12) {
       rawAadhaar = near12[1].trim();
     }
@@ -937,7 +964,7 @@ function extractAadhaarNumber(text) {
 
   // 5. Last 4 digits match if full mask is omitted
   if (!rawAadhaar) {
-    const last4 = text.match(/(?:Aadhaar|Aadhar|आधार)\s*(?:[^\n\:]{0,40})?(?:ending\s*with|last\s*4\s*digits?|शेवटचे\s*४\s*अंक|शेवटचे\s*4\s*अंक)?\s*[:\-]?\s*(?:[Xx\*\.\u2022•×]{4,8}\s*)?([0-9]{4})\b/i);
+    const last4 = cleanText.match(/(?:Aadhaar|Aadhar|आधार)\s*(?:Number|No\.?|क्रमांक|क्र\.?)?(?:[^\n\:]{0,40})?(?:ending\s*with|last\s*4\s*digits?|शेवटचे\s*४\s*अंक|शेवटचे\s*4\s*अंक)\s*[:\-]?\s*(?:[Xx\*\.\u2022•×]{4,8}\s*)?([0-9]{4})\b/i);
     if (last4 && last4[1]) {
       rawAadhaar = `XXXX XXXX ${last4[1]}`;
     }
@@ -945,7 +972,7 @@ function extractAadhaarNumber(text) {
 
   if (rawAadhaar) {
     // Normalize unicode mask characters to 'X'
-    let norm = rawAadhaar.replace(/[\u2022•×\*\.]/g, 'X');
+    let norm = rawAadhaar.replace(/[\u2022•×\*\.]/g, 'X').toUpperCase();
     const cleanDigitsOrX = norm.replace(/[\s\-]/g, '');
     if (cleanDigitsOrX.length === 12) {
       return `${cleanDigitsOrX.slice(0, 4)} ${cleanDigitsOrX.slice(4, 8)} ${cleanDigitsOrX.slice(8, 12)}`;
@@ -1047,6 +1074,8 @@ function parseAgristackHtml(htmlString) {
   function readElementValue(el) {
     if (!el) return '';
     if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+      // Exclude checkboxes and radios to avoid "on" / "true" pollution
+      if (el.type === 'checkbox' || el.type === 'radio') return '';
       const val = el.getAttribute('ng-reflect-model') ||
                   el.value ||
                   el.getAttribute('value') ||
@@ -1054,7 +1083,12 @@ function parseAgristackHtml(htmlString) {
                   el.getAttribute('data-value') ||
                   el.defaultValue ||
                   '';
-      if (val && typeof val === 'string' && val.trim()) return val.trim();
+      if (val && typeof val === 'string') {
+        const clean = val.trim();
+        if (['on', 'true', 'false', 'null', 'undefined'].includes(clean.toLowerCase())) return '';
+        return clean;
+      }
+      return '';
     }
     const valLabel = el.querySelector('.ng-value-label, .p-dropdown-label');
     if (valLabel && valLabel.textContent.trim()) return valLabel.textContent.trim();
@@ -1166,40 +1200,58 @@ function parseAgristackHtml(htmlString) {
   }
 
   // 3. Multi-source Aadhaar Extraction
-  let rawAadhaar = readControlMulti(['aadhaarNumber', 'aadhaar', 'aadharNumber', 'aadharNo', 'aadhaarNo']);
-  if (!rawAadhaar) {
-    const aadhInput = doc.querySelector('input[formcontrolname="aadhaarNumber"], input[formcontrolname*="aadhaar"], input[id*="aadhaar"], input[placeholder*="Aadhaar"]');
-    if (aadhInput) {
-      rawAadhaar = readElementValue(aadhInput);
-    }
+  let rawAadhaar = '';
+
+  // 3a. Read specific form controls
+  const aadhInput = doc.querySelector('input[formcontrolname="aadhaarNumber"], input[formcontrolname*="aadhaar"], input[id*="aadhaar"], input[placeholder*="Aadhaar" i]');
+  if (aadhInput) {
+    const val = readElementValue(aadhInput);
+    if (val) rawAadhaar = extractAadhaarNumber(val);
   }
+
+  if (!rawAadhaar) {
+    const ctrlVal = readControlMulti(['aadhaarNumber', 'aadhaar', 'aadharNumber', 'aadharNo', 'aadhaarNo']);
+    if (ctrlVal) rawAadhaar = extractAadhaarNumber(ctrlVal);
+  }
+
+  // 3b. Proximity search around Aadhaar labels (excluding checkboxes & radio inputs)
   if (!rawAadhaar) {
     const labels = doc.querySelectorAll('label, th, td, span, div.form_control');
     for (const lbl of labels) {
       const txt = (lbl.textContent || '').trim();
       if ((txt.includes('Aadhaar Number') || txt.includes('Aadhar Number') || txt.includes('आधार क्रमांक') || txt.includes('आधार क्र')) && !txt.toLowerCase().includes('as per')) {
-        const inp = lbl.querySelector('input') || (lbl.nextElementSibling && lbl.nextElementSibling.querySelector('input')) || (lbl.parentElement ? lbl.parentElement.querySelector('input') : null);
+        const inp = lbl.querySelector('input:not([type="checkbox"]):not([type="radio"])') || 
+                    (lbl.nextElementSibling && lbl.nextElementSibling.querySelector('input:not([type="checkbox"]):not([type="radio"])')) || 
+                    (lbl.parentElement ? lbl.parentElement.querySelector('input:not([type="checkbox"]):not([type="radio"])') : null);
         if (inp) {
           const v = readElementValue(inp);
           if (v) {
-            rawAadhaar = v;
-            break;
+            const parsed = extractAadhaarNumber(v);
+            if (parsed) {
+              rawAadhaar = parsed;
+              break;
+            }
           }
         }
         const textValMatch = (lbl.parentElement ? lbl.parentElement.textContent : txt).match(/([0-9Xx\*\.\u2022•×]{4}[\s\-]?[0-9Xx\*\.\u2022•×]{4}[\s\-]?[0-9]{4}|[0-9]{12}|[Xx\*\.\u2022•×]{8}[\s\-]?[0-9]{4})/);
         if (textValMatch) {
-          rawAadhaar = textValMatch[1];
-          break;
+          const parsed = extractAadhaarNumber(textValMatch[1]);
+          if (parsed) {
+            rawAadhaar = parsed;
+            break;
+          }
         }
       }
     }
   }
+
+  // 3c. Full HTML regex fallback
   if (!rawAadhaar) {
     rawAadhaar = extractAadhaarNumber(htmlString);
-  } else {
-    rawAadhaar = extractAadhaarNumber(rawAadhaar) || rawAadhaar;
   }
-  result.aadhaarRef = rawAadhaar;
+
+  // Ensure rawAadhaar is clean & valid
+  result.aadhaarRef = rawAadhaar || '';
 
   // ==========================================
   // 4. FARMER NAME EXTRACTION (EXACT AS-IS PRESERVATION)
@@ -1451,6 +1503,7 @@ function handleDirectFileSelect(event) {
     };
     reader.readAsText(file, 'utf-8');
   }
+  event.target.value = '';
 }
 
 // Modal Handlers & File Upload
@@ -1498,6 +1551,7 @@ function handleModalFileSelect(event) {
     };
     reader.readAsText(file, 'utf-8');
   }
+  event.target.value = '';
 }
 
 // Clipboard Paste
@@ -1532,8 +1586,17 @@ function displayExtractedPreviewInModal(data) {
   if (!panel) return;
 
   document.getElementById('extFarmerId').textContent = data.farmerId || '-';
+  
+  // Aadhaar Preview & Interactive Entry
   const extAadh = document.getElementById('extAadhaar');
   if (extAadh) extAadh.textContent = data.aadhaarRef || '-';
+  const aadhInp = document.getElementById('extAadhaarInput');
+  if (aadhInp) aadhInp.value = data.aadhaarRef || '';
+  const aadhNotice = document.getElementById('extAadhaarNotice');
+  if (aadhNotice) {
+    aadhNotice.style.display = data.aadhaarRef ? 'none' : 'block';
+  }
+
   document.getElementById('extNameMr').textContent = data.farmerNameMr || '-';
   document.getElementById('extNameEn').textContent = data.farmerNameEn || '-';
   document.getElementById('extLocation').textContent = `${data.village || '-'}, ${data.taluka || '-'}, ${data.district || '-'}`;
@@ -1560,11 +1623,136 @@ function displayExtractedPreviewInModal(data) {
   panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+// Live sync of Aadhaar entered in modal preview
+function syncModalAadhaar(val) {
+  if (!parsedAgristackData) parsedAgristackData = {};
+  const formatted = extractAadhaarNumber(val) || val.trim();
+  parsedAgristackData.aadhaarRef = formatted;
+  const extAadh = document.getElementById('extAadhaar');
+  if (extAadh) extAadh.textContent = formatted || '-';
+  const aadhNotice = document.getElementById('extAadhaarNotice');
+  if (aadhNotice) {
+    aadhNotice.style.display = formatted ? 'none' : 'block';
+  }
+}
+
+// Trigger Companion Aadhaar Upload (e-Aadhaar PDF or Aadhaar photo)
+function triggerAadhaarCompanionUpload() {
+  const inp = document.getElementById('companionAadhaarFileInput');
+  if (inp) {
+    inp.value = '';
+    inp.click();
+  }
+}
+
+// Companion Aadhaar File Selector Handler
+async function handleAadhaarCompanionSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const fileName = file.name.toLowerCase();
+  const loadingEl = document.getElementById('importLoadingState');
+  const loadingText = document.getElementById('importLoadingText');
+  if (loadingEl) {
+    loadingEl.style.display = 'flex';
+    if (loadingText) loadingText.textContent = `आधार कार्ड (${file.name}) वाचत आहे...`;
+  }
+
+  try {
+    let extractedAadhaar = '';
+    let extractedPhoto = '';
+
+    if (fileName.endsWith('.pdf')) {
+      const arrayBuffer = await file.arrayBuffer();
+      let pdf;
+      try {
+        pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      } catch(e) {
+        pdf = await pdfjsLib.getDocument({ data: arrayBuffer, disableWorker: true }).promise;
+      }
+
+      let pdfText = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const tc = await page.getTextContent();
+        pdfText += ' ' + tc.items.map(it => it.str).join(' ');
+      }
+
+      extractedAadhaar = extractAadhaarNumber(pdfText);
+
+      // Render page 1 to attempt photo extraction if cardState has no photo
+      if (pdf.numPages >= 1 && !cardState.photoUrl) {
+        try {
+          const p1 = await pdf.getPage(1);
+          const vp = p1.getViewport({ scale: 2.0 });
+          const cv = document.createElement('canvas');
+          cv.width = vp.width;
+          cv.height = vp.height;
+          await p1.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+          const pCanvas = document.createElement('canvas');
+          pCanvas.width = Math.round(cv.width * 0.16);
+          pCanvas.height = Math.round(cv.height * 0.15);
+          pCanvas.getContext('2d').drawImage(cv, Math.round(cv.width * 0.65), Math.round(cv.height * 0.62), pCanvas.width, pCanvas.height, 0, 0, pCanvas.width, pCanvas.height);
+          extractedPhoto = pCanvas.toDataURL('image/png');
+        } catch(photoErr) {
+          console.warn('Aadhaar photo extraction note:', photoErr);
+        }
+      }
+    } else {
+      // Image (JPG, PNG) - If Tesseract OCR is available
+      if (typeof Tesseract !== 'undefined') {
+        const worker = await Tesseract.createWorker(['eng']);
+        const ret = await worker.recognize(file);
+        await worker.terminate();
+        const imgText = (ret && ret.data && ret.data.text) ? ret.data.text : '';
+        extractedAadhaar = extractAadhaarNumber(imgText);
+      }
+    }
+
+    if (extractedAadhaar) {
+      applyAadhaarToCardAndModal(extractedAadhaar);
+      if (extractedPhoto && !cardState.photoUrl) {
+        cardState.photoUrl = extractedPhoto;
+        const thumb = document.getElementById('photoPreviewThumb');
+        if (thumb) thumb.src = extractedPhoto;
+      }
+      renderAllCards();
+      alert(`✅ आधार क्रमांक (${extractedAadhaar}) यशस्वीरीत्या फेच झाला व ओळखपत्रावर जोडला गेला!`);
+    } else {
+      alert('या फाईलमध्ये १२ अंकी आधार क्रमांक स्पष्ट आढळला नाही. कृपया आधार क्रमांक थेट टाईप करा.');
+    }
+  } catch(err) {
+    console.error('Companion Aadhaar Error:', err);
+    alert('आधार फाईल वाचताना त्रुटी: ' + (err.message || ''));
+  } finally {
+    if (loadingEl) loadingEl.style.display = 'none';
+    event.target.value = '';
+  }
+}
+
+function applyAadhaarToCardAndModal(aadh) {
+  if (!aadh) return;
+  cardState.aadhaarRef = aadh;
+  const inp = document.getElementById('inputAadhaarRef');
+  if (inp) inp.value = aadh;
+  const modalInp = document.getElementById('extAadhaarInput');
+  if (modalInp) modalInp.value = aadh;
+  const modalDisplay = document.getElementById('extAadhaar');
+  if (modalDisplay) modalDisplay.textContent = aadh;
+  const aadhNotice = document.getElementById('extAadhaarNotice');
+  if (aadhNotice) aadhNotice.style.display = 'none';
+  if (parsedAgristackData) parsedAgristackData.aadhaarRef = aadh;
+}
+
 // Apply Extracted Data from Modal
 function applyExtractedToActiveCard() {
   if (!parsedAgristackData) {
     alert('फेच केलेला डेटा उपलब्ध नाही.');
     return;
+  }
+  const modalAadhInp = document.getElementById('extAadhaarInput');
+  if (modalAadhInp && modalAadhInp.value.trim()) {
+    parsedAgristackData.aadhaarRef = extractAadhaarNumber(modalAadhInp.value) || modalAadhInp.value.trim();
   }
   applyExtractedDataToCard(parsedAgristackData, 'AgriStack_Import');
   closeAgristackImportModal();
@@ -1632,6 +1820,22 @@ function applyExtractedDataToCard(data, sourceName) {
   renderLandRecordsEditor();
   renderAllCards();
   showCardSuccessToast(cardState.farmerNameMr, cardState.farmerId);
+
+  // If Aadhaar number is empty, gently highlight and focus the Aadhaar input
+  if (!cardState.aadhaarRef) {
+    setTimeout(() => {
+      const aadhInput = document.getElementById('inputAadhaarRef');
+      if (aadhInput) {
+        aadhInput.focus();
+        aadhInput.style.boxShadow = '0 0 10px rgba(245, 158, 11, 0.7)';
+        aadhInput.style.borderColor = '#f59e0b';
+        setTimeout(() => {
+          aadhInput.style.boxShadow = '';
+          aadhInput.style.borderColor = '';
+        }, 5000);
+      }
+    }, 400);
+  }
 }
 
 // Floating Success Toast Notification
@@ -1643,6 +1847,15 @@ function showCardSuccessToast(name, id) {
   const idEl = document.getElementById('toastFarmerId');
   if (nameEl) nameEl.textContent = name || 'शेतकरी';
   if (idEl) idEl.textContent = id || '';
+
+  const subTitle = document.getElementById('toastSubtitle');
+  if (subTitle) {
+    if (!cardState.aadhaarRef) {
+      subTitle.innerHTML = `शेतकरी: <strong id="toastFarmerName">${name || 'शेतकरी'}</strong> (आयडी: <span class="font-mono">${id || '-'}</span>)<br><span style="color:#fde047; font-size:0.75rem;"><i class="fa-solid fa-circle-exclamation"></i> आधार क्र. रिकामा आहे. ओळखपत्रावर आधार क्रमांक दाखवण्यासाठी आधार रकान्यात १२ अंकी नंबर टाका.</span>`;
+    } else {
+      subTitle.innerHTML = `शेतकरी: <strong id="toastFarmerName">${name || 'शेतकरी'}</strong> (आयडी: <span class="font-mono">${id || '-'}</span>)`;
+    }
+  }
 
   toast.style.display = 'block';
 

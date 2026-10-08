@@ -120,6 +120,8 @@
         </div>
         <!-- Hidden file input for fast direct upload -->
         <input type="file" id="agristackFastFileInput" accept=".html,.htm,.txt,.pdf" style="display:none;" onchange="handleDirectFileSelect(event)">
+        <!-- Hidden file input for Aadhaar companion fetch (e-Aadhaar PDF or Aadhaar photo) -->
+        <input type="file" id="companionAadhaarFileInput" accept=".pdf,.png,.jpg,.jpeg,.webp" style="display:none;" onchange="handleAadhaarCompanionSelect(event)">
       </div>
 
       <!-- Theme & A4 Print Placement Controls -->
@@ -244,7 +246,12 @@
               <input type="text" id="inputFarmerId" class="form-control font-mono" placeholder="उदा. 60711271864">
             </div>
             <div class="form-group">
-              <label class="form-label"><i class="fa-solid fa-fingerprint"></i> आधार क्र. (Aadhaar No.)</label>
+              <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+                <span><i class="fa-solid fa-fingerprint"></i> आधार क्र. (Aadhaar No.)</span>
+                <button type="button" onclick="triggerAadhaarCompanionUpload()" style="background:none; border:none; color:var(--accent-cyan, #38bdf8); font-size:0.75rem; cursor:pointer; font-weight:600; padding:0; display:flex; align-items:center; gap:4px;" title="शेतकर्‍याचे आधार कार्ड निवडून थेट आधार नंबर फेच करा">
+                  <i class="fa-solid fa-id-card"></i> आधार कार्डातून फेच करा
+                </button>
+              </label>
               <input type="text" id="inputAadhaarRef" class="form-control font-mono" placeholder="उदा. XXXX XXXX 1234 किंवा 12 अंकी">
             </div>
           </div>
@@ -555,9 +562,20 @@
                 <span class="ext-label">शेतकरी आयडी:</span>
                 <span class="ext-val font-mono" id="extFarmerId">-</span>
               </div>
-              <div class="ext-row">
-                <span class="ext-label">आधार क्र.:</span>
-                <span class="ext-val font-mono" id="extAadhaar">-</span>
+              <div class="ext-row ext-row-aadhaar-edit" style="align-items:flex-start;">
+                <span class="ext-label" style="padding-top:4px;">आधार क्र. (Aadhaar):</span>
+                <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
+                  <div style="display:flex; gap:6px; align-items:center;">
+                    <span class="ext-val font-mono" id="extAadhaar" style="display:none;">-</span>
+                    <input type="text" id="extAadhaarInput" class="form-control-xs font-mono" placeholder="१२ अंकी किंवा XXXX XXXX 1234 टाका" style="padding:4px 8px; font-size:0.82rem; background:rgba(0,0,0,0.35); border:1px solid rgba(56,189,248,0.3); color:#fff; border-radius:4px; flex:1;" oninput="syncModalAadhaar(this.value)">
+                    <button type="button" class="btn-export-sm" onclick="triggerAadhaarCompanionUpload()" style="padding:4px 8px; font-size:0.75rem; white-space:nowrap;" title="शेतकर्‍याचे आधार कार्ड PDF किंवा फोटो निवडून आधार नंबर ऑटो-फेच करा">
+                      <i class="fa-solid fa-id-card"></i> आधार कार्ड निवडा
+                    </button>
+                  </div>
+                  <div id="extAadhaarNotice" style="display:none; background:rgba(245,158,11,0.12); border:1px dashed #f59e0b; border-radius:6px; padding:6px 8px; font-size:0.73rem; color:#fef08a; line-height:1.4;">
+                    <i class="fa-solid fa-circle-info text-gold"></i> शासकीय ॲग्रीस्टॅक नोंदणी PDF मध्ये (UIDAI नियमांनुसार) १२ अंकी आधार नंबर छापलेला नसतो. ओळखपत्रावर आधार क्रमांक दाखवण्यासाठी वरील बॉक्समध्ये १२ अंकी नंबर टाका किंवा शेतकर्‍याचे आधार कार्ड निवडा.
+                  </div>
+                </div>
               </div>
               <div class="ext-row">
                 <span class="ext-label">शेतकरी नाव (मराठी):</span>
