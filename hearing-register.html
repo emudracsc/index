@@ -1939,6 +1939,253 @@
       .card-actions { grid-template-columns: 1fr 1fr; }
       .btn-action-reg { grid-column: span 2; }
     }
+  
+    /* SIR Nyayanirnay Order Modal & Live Paper Styles */
+    .sir-order-modal-card {
+      background: #f8fafc;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 1320px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+      max-height: 96vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sir-order-top-bar {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #172554 100%);
+      color: #ffffff;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 2px solid #f59e0b;
+    }
+
+    .sir-order-actions-bar {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .sir-order-modal-body {
+      display: grid;
+      grid-template-columns: 1.05fr 1.15fr;
+      gap: 16px;
+      padding: 16px 20px;
+      overflow-y: auto;
+      flex: 1;
+      background: #f1f5f9;
+    }
+
+    @media (max-width: 1024px) {
+      .sir-order-modal-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .so-editor-pane {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid #cbd5e1;
+      padding: 18px;
+      overflow-y: auto;
+      max-height: calc(96vh - 160px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .so-section-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .so-section-card:hover {
+      border-color: #cbd5e1;
+    }
+
+    .so-section-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .so-docs-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 12px;
+    }
+
+    @media (max-width: 600px) {
+      .so-docs-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .so-doc-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.84rem;
+      color: #1e293b;
+      cursor: pointer;
+      padding: 5px 6px;
+      border-radius: 4px;
+      transition: background 0.15s ease;
+      user-select: none;
+    }
+
+    .so-doc-item:hover {
+      background: #f8fafc;
+    }
+
+    .so-doc-item input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: #047857;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .so-concl-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border-radius: 6px;
+      border: 1.5px solid #e2e8f0;
+      background: #ffffff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .so-concl-option:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .so-concl-option.active {
+      background: #ecfdf5;
+      border-color: #10b981;
+      font-weight: 700;
+      color: #065f46;
+    }
+
+    .so-concl-option input[type="radio"] {
+      margin-top: 3px;
+      accent-color: #047857;
+      width: 16px;
+      height: 16px;
+    }
+
+    .so-preview-pane {
+      background: #64748b;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      overflow-y: auto;
+      max-height: calc(96vh - 160px);
+      display: flex;
+      justify-content: center;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.15);
+    }
+
+    .sir-order-paper {
+      width: 100%;
+      max-width: 760px;
+      background: #ffffff;
+      color: #000000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      font-family: 'Mukta', 'Noto Sans Devanagari', 'Mangal', serif;
+      font-size: 13.5px;
+      line-height: 1.48;
+      padding: 26px 30px;
+      border-radius: 2px;
+      box-sizing: border-box;
+      min-height: 980px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .so-check-box {
+      display: inline-block;
+      width: 13px;
+      height: 13px;
+      line-height: 11px;
+      border: 1.2px solid #000000;
+      text-align: center;
+      font-size: 11px;
+      margin-right: 5px;
+      vertical-align: middle;
+      font-weight: bold;
+    }
+
+    .so-check-box.checked {
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    .so-check-box.checked::after {
+      content: '✓';
+      display: inline-block;
+      font-size: 11px;
+      line-height: 13px;
+      font-weight: 900;
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 8mm 12mm 8mm 12mm;
+      }
+      body * {
+        visibility: hidden !important;
+      }
+      #printableSirOrderArea, #printableSirOrderArea * {
+        visibility: visible !important;
+      }
+      #printableSirOrderArea {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      .sir-order-paper {
+        max-width: 100% !important;
+        width: 100% !important;
+        box-shadow: none !important;
+        padding: 2mm 4mm !important;
+        font-size: 12.5px !important;
+        line-height: 1.42 !important;
+        min-height: auto !important;
+      }
+      .so-no-print {
+        display: none !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -2799,6 +3046,12 @@
           </button>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn-nav" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff;" onclick="openSirOrderModalByEpic(activeElector ? activeElector.epic : null)">
+            <i class="fa-solid fa-file-contract"></i> <span>न्यायनिर्णय आदेश (Order)</span>
+          </button>
+          <button type="button" class="btn-nav" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff;" onclick="openSirOrderModalByEpic(activeElector ? activeElector.epic : null)">
+            <i class="fa-solid fa-file-contract"></i> <span>न्यायनिर्णय आदेश (Order)</span>
+          </button>
           <button type="button" class="btn-nav" onclick="closeRegActionModal()">रद्द करा</button>
           <button type="button" class="btn-nav btn-nav-primary" onclick="saveElectorWorkflow(false)">
             <i class="fa-solid fa-floppy-disk"></i> <span>माहिती सेव्ह करा</span>
@@ -2810,6 +3063,440 @@
       </div>
     </div>
   </div>
+
+  
+  <!-- MODAL: SIR NYAYANIRNAY COURT HEARING ORDER GENERATOR -->
+  <div class="modal-backdrop" id="sirOrderModal" role="dialog" aria-modal="true">
+    <div class="sir-order-modal-card">
+      
+      <!-- Top Bar -->
+      <div class="sir-order-top-bar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 38px; height: 38px; border-radius: 8px; background: rgba(245, 158, 11, 0.2); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: #fbbf24;">
+            <i class="fa-solid fa-scale-balanced"></i>
+          </div>
+          <div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0; color: #ffffff;">
+              मतदार यादी विशेष सखोल पुनरीक्षण २०२६ (SIR) सुनावणी न्यायनिर्णय व आदेश
+            </h3>
+            <div style="font-size: 0.76rem; color: #94a3b8; margin-top: 2px;">
+              २६८ - कणकवली विधानसभा मतदारसंघ • मा. सहायक मतदार नोंदणी अधिकारी (AERO) यांचे न्यायालय
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="epic-badge" id="soEpicBadge" style="font-size: 0.95rem; padding: 4px 12px; background: #fbbf24; color: #78350f; font-weight: 800;">
+            EPIC: -
+          </span>
+          <button type="button" class="btn-close-modal" onclick="closeSirOrderModal()">&times;</button>
+        </div>
+      </div>
+
+      <!-- Quick Action Toolbar -->
+      <div class="sir-order-actions-bar">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: #475569;">जलद कृती:</span>
+          <button type="button" class="btn-nav" style="background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; font-size: 0.78rem; padding: 5px 12px;" onclick="applySirOrderPreset('valid')">
+            <i class="fa-solid fa-circle-check"></i> <span>कागदपत्रे योग्य (पात्र / समाविष्ट)</span>
+          </button>
+          <button type="button" class="btn-nav" style="background: #fff1f2; color: #9f1239; border: 1px solid #fecdd3; font-size: 0.78rem; padding: 5px 12px;" onclick="applySirOrderPreset('incomplete')">
+            <i class="fa-solid fa-circle-xmark"></i> <span>कागदपत्रे अपूर्ण (अपात्र / वगळा)</span>
+          </button>
+          <button type="button" class="btn-nav" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 0.78rem; padding: 5px 12px;" onclick="switchFromOrderToRegActionModal()">
+            <i class="fa-solid fa-clipboard-user"></i> <span>हजेरी व DEO नोंदवही</span>
+          </button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn-nav" onclick="closeSirOrderModal()">रद्द करा</button>
+          <button type="button" class="btn-nav btn-nav-emerald" onclick="saveSirOrder(false)">
+            <i class="fa-solid fa-floppy-disk"></i> <span>आदेश सेव्ह करा</span>
+          </button>
+          <button type="button" class="btn-nav btn-nav-primary" onclick="printSirOrder()">
+            <i class="fa-solid fa-print"></i> <span>आदेश प्रिंट करा (Print / PDF)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body (Split Editor & Live Preview) -->
+      <div class="sir-order-modal-body">
+        
+        <!-- Left: Form Controls & Document Selector -->
+        <div class="so-editor-pane">
+          
+          <!-- Section A: Voter Identification Details -->
+          <div class="so-section-card" style="background: #f8fafc; border-color: #cbd5e1;">
+            <div class="so-section-title">
+              <i class="fa-solid fa-address-card" style="color: #6366f1;"></i>
+              <span>मतदार व सुनावणी तपशील (Auto-filled Details)</span>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; margin-bottom: 8px;">
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 700; color: #475569;">मतदाराचे नाव:</label>
+                <input type="text" id="soInpName" class="custom-select" style="padding: 6px 10px;" oninput="updateSirOrderPreview()">
+              </div>
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 700; color: #475569;">यादी भाग क्र. व नाव:</label>
+                <input type="text" id="soInpPartVillage" class="custom-select" style="padding: 6px 10px;" oninput="updateSirOrderPreview()">
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 700; color: #475569;">यादी अनुक्रमांक:</label>
+                <input type="text" id="soInpSerial" class="custom-select" style="padding: 6px 10px;" oninput="updateSirOrderPreview()">
+              </div>
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 700; color: #475569;">आदेश दिनांक:</label>
+                <input type="text" id="soInpDate" class="custom-select" style="padding: 6px 10px;" placeholder="DD/MM/YYYY" oninput="updateSirOrderPreview()">
+              </div>
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 700; color: #475569;">ठिकाण:</label>
+                <input type="text" id="soInpPlace" class="custom-select" style="padding: 6px 10px;" value="कणकवली" oninput="updateSirOrderPreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section B: १. स्वतःचा जन्म दिनांक नमूद असलेला पुरावा -->
+          <div class="so-section-card">
+            <div class="so-section-title">
+              <i class="fa-solid fa-user-shield" style="color: #059669;"></i>
+              <span>१. स्वतःचा जन्म दिनांक नमूद असलेला पुरावा:-</span>
+            </div>
+            <div class="so-docs-list">
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_self_a" onchange="updateSirOrderPreview()">
+                <span>a. जन्म दाखला</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_self_b" onchange="updateSirOrderPreview()">
+                <span>b. शासकीय/निमशासकीय/महामंडळाचे ओळखपत्र</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_self_c" onchange="updateSirOrderPreview()">
+                <span>c. शाळा सोडल्याचे प्रमाणपत्र</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_self_d" onchange="updateSirOrderPreview()">
+                <span>d. पारपत्र (पासपोर्ट)</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_self_e" onchange="updateSirOrderPreview()">
+                <span>e. बँका टपाल/LIC यांचेद्वारा निर्गमित दस्तऐवज</span>
+              </label>
+              <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin-top: 2px;">
+                <label class="so-doc-item" style="padding: 0;">
+                  <input type="checkbox" id="so_self_f" onchange="updateSirOrderPreview()">
+                  <span>f. इतर (नमूद करावा):</span>
+                </label>
+                <input type="text" id="so_self_f_text" class="custom-select" style="padding: 4px 8px; font-size: 0.8rem; flex: 1;" placeholder="उदा. आधार कार्ड / पॅन कार्ड" oninput="document.getElementById('so_self_f').checked = !!this.value.trim(); updateSirOrderPreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section C: २. स्वतःच्या आईचा जन्म दिनांक व जन्म ठिकाण नमूद असलेला पुरावा -->
+          <div class="so-section-card">
+            <div class="so-section-title">
+              <i class="fa-solid fa-person-breastfeeding" style="color: #d97706;"></i>
+              <span>२. स्वतःच्या आईचा जन्म दिनांक व जन्म ठिकाण नमूद असलेला पुरावा :-</span>
+            </div>
+            <div class="so-docs-list">
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_mother_a" onchange="updateSirOrderPreview()">
+                <span>a. जन्म दाखला</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_mother_b" onchange="updateSirOrderPreview()">
+                <span>b. शासकीय/निमशासकीय/महामंडळाचे ओळखपत्र</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_mother_c" onchange="updateSirOrderPreview()">
+                <span>c. शाळा सोडल्याचे प्रमाणपत्र</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_mother_d" onchange="updateSirOrderPreview()">
+                <span>d. पारपत्र (पासपोर्ट)</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_mother_e" onchange="updateSirOrderPreview()">
+                <span>e. बँका टपाल/LIC यांचेद्वारा निर्गमित दस्तऐवज</span>
+              </label>
+              <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin-top: 2px;">
+                <label class="so-doc-item" style="padding: 0;">
+                  <input type="checkbox" id="so_mother_f" onchange="updateSirOrderPreview()">
+                  <span>f. इतर (नमूद करावा):</span>
+                </label>
+                <input type="text" id="so_mother_f_text" class="custom-select" style="padding: 4px 8px; font-size: 0.8rem; flex: 1;" placeholder="उदा. रहिवासी दाखला" oninput="document.getElementById('so_mother_f').checked = !!this.value.trim(); updateSirOrderPreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section D: ३. स्वतःच्या वडिलांचा जन्म दिनांक व जन्म ठिकाण नमूद असलेला पुरावा -->
+          <div class="so-section-card">
+            <div class="so-section-title">
+              <i class="fa-solid fa-person" style="color: #2563eb;"></i>
+              <span>३. स्वतःच्या वडिलांचा जन्म दिनांक व जन्म ठिकाण नमूद असलेला पुरावा :-</span>
+            </div>
+            <div class="so-docs-list">
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_father_a" onchange="updateSirOrderPreview()">
+                <span>a. जन्म दाखला</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_father_b" onchange="updateSirOrderPreview()">
+                <span>b. शासकीय/निमशासकीय/महामंडळाचे ओळखपत्र</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_father_c" onchange="updateSirOrderPreview()">
+                <span>c. शाळा सोडल्याचे प्रमाणपत्र</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_father_d" onchange="updateSirOrderPreview()">
+                <span>d. पारपत्र (पासपोर्ट)</span>
+              </label>
+              <label class="so-doc-item">
+                <input type="checkbox" id="so_father_e" onchange="updateSirOrderPreview()">
+                <span>e. बँका टपाल/LIC यांचेद्वारा निर्गमित दस्तऐवज</span>
+              </label>
+              <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin-top: 2px;">
+                <label class="so-doc-item" style="padding: 0;">
+                  <input type="checkbox" id="so_father_f" onchange="updateSirOrderPreview()">
+                  <span>f. इतर (नमूद करावा):</span>
+                </label>
+                <input type="text" id="so_father_f_text" class="custom-select" style="padding: 4px 8px; font-size: 0.8rem; flex: 1;" placeholder="उदा. गाव नमुना ८" oninput="document.getElementById('so_father_f').checked = !!this.value.trim(); updateSirOrderPreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section E: तपासणी निष्कर्ष (Conclusions 1, 2, 3, 4) -->
+          <div class="so-section-card" style="border-color: #cbd5e1;">
+            <div class="so-section-title">
+              <i class="fa-solid fa-magnifying-glass-chart" style="color: #7c3aed;"></i>
+              <span>सदर कागदपत्रांची तपासणी केली असता पुढील निष्कर्ष दिसून आले:</span>
+            </div>
+            
+            <label class="so-concl-option" id="lblConcl1">
+              <input type="radio" name="soConclRadio" value="1" checked onchange="handleSoConclChange(1)">
+              <div>
+                <b>१.</b> सादर केलेली उक्त कागदपत्रे पाहिली असता सदरची कागदपत्र योग्य असल्याचे आढळून आले.
+              </div>
+            </label>
+
+            <label class="so-concl-option" id="lblConcl2">
+              <input type="radio" name="soConclRadio" value="2" onchange="handleSoConclChange(2)">
+              <div>
+                <b>२.</b> उपरोक्त प्रमाणे आवश्यक कोणतीही कागदपत्रे मतदाराने सादर केलेली नाहीत.
+              </div>
+            </label>
+
+            <label class="so-concl-option" id="lblConcl3">
+              <input type="radio" name="soConclRadio" value="3" onchange="handleSoConclChange(3)">
+              <div>
+                <b>३.</b> उपरोक्त प्रमाणे सादर केलेली कागदपत्रे पडताळणी केली असता कागदपत्रे योग्य नसल्याचे निदर्शनास आले.
+              </div>
+            </label>
+
+            <label class="so-concl-option" id="lblConcl4">
+              <input type="radio" name="soConclRadio" value="4" onchange="handleSoConclChange(4)">
+              <div>
+                <b>४.</b> मतदाराने कोणतीही कागदोपत्री पुरावे सादर केलेले नाहीत.
+              </div>
+            </label>
+          </div>
+
+          <!-- Section F: अंतिम आदेश निर्णय (Final Order Decision) -->
+          <div class="so-section-card" style="background: #fdf4ff; border-color: #f0abfc;">
+            <div class="so-section-title">
+              <i class="fa-solid fa-gavel" style="color: #a21caf;"></i>
+              <span>न्यायनिर्णय आदेश पारित (Final Order Decision):</span>
+            </div>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <label class="so-concl-option active" id="lblDecInclude" style="flex: 1; min-width: 200px; margin: 0;">
+                <input type="radio" name="soDecisionRadio" value="include" checked onchange="handleSoDecisionChange('include')">
+                <div>
+                  <b style="color: #047857;">समाविष्ट करण्यात येत आहे</b>
+                  <div style="font-size: 0.74rem; color: #475569;">अंतिम मतदार यादीमध्ये नाव कायम ठेवणे</div>
+                </div>
+              </label>
+
+              <label class="so-concl-option" id="lblDecExclude" style="flex: 1; min-width: 200px; margin: 0;">
+                <input type="radio" name="soDecisionRadio" value="exclude" onchange="handleSoDecisionChange('exclude')">
+                <div>
+                  <b style="color: #b91c1c;">समाविष्ट करता येत नाही</b>
+                  <div style="font-size: 0.74rem; color: #475569;">अंतिम मतदार यादीतून वगळणे / अपात्र</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Live Exact Court Order Printable Preview -->
+        <div class="so-preview-pane">
+          <div class="printable-slip-doc printable-area" id="printableSirOrderArea" style="border: none; padding: 0; background: transparent; width: 100%; display: flex; justify-content: center;">
+            <div class="sir-order-paper">
+              
+              <!-- Court & Jurisdiction Header -->
+              <div>
+                <div style="text-align: center; font-weight: 700; line-height: 1.35; margin-bottom: 6px;">
+                  <div style="font-size: 1.05rem;">श्री. विजय देवू वरक, सहायक मतदार नोंदणी अधिकारी, २६८ कणकवली विधानसभा मतदारसंघ</div>
+                  <div style="font-size: 1.02rem;">तथा निवडणूक नायब तहसीलदार कणकवली यांचे न्यायालयात</div>
+                </div>
+
+                <div style="border-top: 1.5px dashed #000; margin: 6px 0 10px 0;"></div>
+
+                <!-- Voter Particulars -->
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem;">
+                  <div style="flex: 1.2;">
+                    <div style="margin-bottom: 5px;">
+                      मतदाराचे नाव: - <span id="soPrevName" style="font-weight: 800; border-bottom: 1px dotted #000; padding: 0 6px;">-</span>
+                    </div>
+                    <div>
+                      यादी भाग क्रमांक- <span id="soPrevPart" style="font-weight: 800; border-bottom: 1px dotted #000; padding: 0 6px;">-</span>
+                    </div>
+                  </div>
+                  <div style="flex: 0.8; text-align: right;">
+                    <div>
+                      अनुक्रमांक - <span id="soPrevSerial" style="font-weight: 800; border-bottom: 1px dotted #000; padding: 0 6px;">-</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Main Subject Title -->
+                <div style="text-align: center; margin: 8px 0 10px 0;">
+                  <div style="font-size: 1.06rem; font-weight: 800; text-decoration: underline;">
+                    मतदार यादी विशेष सखोल पुनरीक्षण २०२६ (SIR) सुनावणी न्यायनिर्णय
+                  </div>
+                  <div style="font-size: 0.9rem; font-weight: 700; margin-top: 3px;">
+                    (SIR प्रक्रियेतील No Linkage /Unmapped असणाऱ्या मतदारांच्या कागदपत्र पडताळणीच्या आधारे)
+                  </div>
+                </div>
+
+                <!-- Preamble text -->
+                <p style="text-align: justify; text-indent: 32px; font-size: 0.88rem; line-height: 1.5; margin-bottom: 6px;">
+                  उपरोक्त मतदाराचे मतदार यादी सखोल पुनरीक्षण (SIR) प्रक्रियेत मागील SIR २००२ या मतदार यादीतील मतदारांशी Self/Progony Mapping करण्यासाठी कोणीही मतदार सापडत नसल्याने त्यांना मतदान केंद्रस्तरीय अधिकारी (BLO) मार्फत नोटीस बजावणी करून सदर मतदारास त्याच्या विभागणी नुसार पुढील प्रमाणे कागदपत्रे आवश्यक असल्याचे सांगितले.
+                </p>
+
+                <!-- Criteria 1, 2, 3 -->
+                <div style="font-size: 0.86rem; line-height: 1.42; margin-left: 20px; margin-bottom: 6px;">
+                  <div>१) मतदाराचा दिनांक १/७/१९८७ पूर्वी जन्म झाला असल्यास स्वतःचा जन्म पुरावा</div>
+                  <div>२) मतदाराचा जन्म १/७/१९८७ ते २/१२/२००४ दरम्यान झाला असल्यास स्वतः तसेच आई किंवा वडिलांचा जन्म पुरावा.</div>
+                  <div>३) मतदाराचा जन्म २/१२/२००४ नंतर झालेला असल्यास -- स्वतःचा तसेच आई आणि वडिलांचा जन्माचा पुरावा.</div>
+                </div>
+
+                <!-- Documents Intro -->
+                <div style="text-align: center; font-weight: 700; font-size: 0.9rem; margin: 6px 0 4px 0;">
+                  त्यानुसार मतदाराने खालीलप्रमाणे कागदपत्र सादर केलेली आहेत.
+                </div>
+
+                <!-- Doc Category 1 -->
+                <div style="margin-bottom: 6px;">
+                  <div style="font-weight: 700; font-size: 0.88rem;">१. स्वतःचा जन्म दिनांक नमूद असलेला पुरावा:-</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; font-size: 0.85rem; margin-left: 14px; margin-top: 2px;">
+                    <div><span class="so-check-box" id="prev_cb_self_a"></span> a. जन्म दाखला</div>
+                    <div><span class="so-check-box" id="prev_cb_self_b"></span> b. शासकीय/निमशासकीय/महामंडळाचे ओळखपत्र</div>
+                    <div><span class="so-check-box" id="prev_cb_self_c"></span> c. शाळा सोडल्याचे प्रमाणपत्र</div>
+                    <div><span class="so-check-box" id="prev_cb_self_d"></span> d. पारपत्र (पासपोर्ट)</div>
+                    <div><span class="so-check-box" id="prev_cb_self_e"></span> e. बँका टपाल/LIC यांचेद्वारा निर्गमित दस्तऐवज</div>
+                    <div><span class="so-check-box" id="prev_cb_self_f"></span> <span id="prev_text_self_f">f. इतर (नमूद करावा)--------------------------</span></div>
+                  </div>
+                </div>
+
+                <!-- Doc Category 2 -->
+                <div style="margin-bottom: 6px;">
+                  <div style="font-weight: 700; font-size: 0.88rem;">२. स्वतःच्या आईचा जन्म दिनांक व जन्म ठिकाण नमूद असलेला पुरावा :-</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; font-size: 0.85rem; margin-left: 14px; margin-top: 2px;">
+                    <div><span class="so-check-box" id="prev_cb_mother_a"></span> a. जन्म दाखला</div>
+                    <div><span class="so-check-box" id="prev_cb_mother_b"></span> b. शासकीय/निमशासकीय/महामंडळाचे ओळखपत्र</div>
+                    <div><span class="so-check-box" id="prev_cb_mother_c"></span> c. शाळा सोडल्याचे प्रमाणपत्र</div>
+                    <div><span class="so-check-box" id="prev_cb_mother_d"></span> d. पारपत्र (पासपोर्ट)</div>
+                    <div><span class="so-check-box" id="prev_cb_mother_e"></span> e. बँका टपाल/LIC यांचेद्वारा निर्गमित दस्तऐवज</div>
+                    <div><span class="so-check-box" id="prev_cb_mother_f"></span> <span id="prev_text_mother_f">f. इतर (नमूद करावा)--------------------------</span></div>
+                  </div>
+                </div>
+
+                <!-- Doc Category 3 -->
+                <div style="margin-bottom: 6px;">
+                  <div style="font-weight: 700; font-size: 0.88rem;">३. स्वतःच्या वडिलांचा जन्म दिनांक व जन्म ठिकाण नमूद असलेला पुरावा :-</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; font-size: 0.85rem; margin-left: 14px; margin-top: 2px;">
+                    <div><span class="so-check-box" id="prev_cb_father_a"></span> a. जन्म दाखला</div>
+                    <div><span class="so-check-box" id="prev_cb_father_b"></span> b. शासकीय/निमशासकीय/महामंडळाचे ओळखपत्र</div>
+                    <div><span class="so-check-box" id="prev_cb_father_c"></span> c. शाळा सोडल्याचे प्रमाणपत्र</div>
+                    <div><span class="so-check-box" id="prev_cb_father_d"></span> d. पारपत्र (पासपोर्ट)</div>
+                    <div><span class="so-check-box" id="prev_cb_father_e"></span> e. बँका टपाल/LIC यांचेद्वारा निर्गमित दस्तऐवज</div>
+                    <div><span class="so-check-box" id="prev_cb_father_f"></span> <span id="prev_text_father_f">f. इतर (नमूद करावा)--------------------------</span></div>
+                  </div>
+                </div>
+
+                <!-- Conclusions -->
+                <div style="margin-top: 6px; margin-bottom: 6px;">
+                  <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 2px;">
+                    सदर कागदपत्रांची तपासणी केली असता पुढील निष्कर्ष दिसून आले.
+                  </div>
+                  <div style="font-size: 0.85rem; line-height: 1.4; margin-left: 14px;">
+                    <div id="prevConclRow1">१. सादर केलेली उक्त कागदपत्रे पाहिली असता सदरची कागदपत्र योग्य असल्याचे आढळून आले.</div>
+                    <div id="prevConclRow2">२. उपरोक्त प्रमाणे आवश्यक कोणतीही कागदपत्रे मतदाराने सादर केलेली नाहीत.</div>
+                    <div id="prevConclRow3">३. उपरोक्त प्रमाणे सादर केलेली कागदपत्रे पडताळणी केली असता कागदपत्रे योग्य नसल्याचे निदर्शनास आले.</div>
+                    <div id="prevConclRow4">४ मतदाराने कोणतीही कागदोपत्री पुरावे सादर केलेले नाहीत.</div>
+                  </div>
+                </div>
+
+                <!-- Officer Conclusion Statement -->
+                <p style="text-align: justify; text-indent: 32px; font-size: 0.88rem; line-height: 1.5; margin-bottom: 6px;">
+                  सबब मी विजय वरक, सहाय्यक मतदार नोंदणी अधिकारी, २६८ कणकवली विधानसभा मतदारसंघ तथा निवडणूक नायब तहसीलदार कणकवली खालीलप्रमाणे आदेश पारीत करीत आहे.
+                </p>
+
+                <!-- Order Text -->
+                <div style="text-align: center; font-weight: 800; font-size: 1.05rem; margin: 4px 0;">
+                  आदेश
+                </div>
+                <p style="text-align: justify; text-indent: 32px; font-size: 0.88rem; line-height: 1.5; margin-bottom: 14px;">
+                  वर नमूद निष्कर्षातील अनु. क्र. <b><span id="soPrevConclNum" style="border-bottom: 1px dotted #000; padding: 0 6px;">१</span></b> मध्ये नमूद कारणास्तव उक्त नमूद मतदार यांचे मतदार यादी विशेष सखोल पुनरीक्षण (SIR) २०२६ च्या प्रारूप मतदार यादीमध्ये समाविष्ट असलेले नाव अंतिम मतदार यादीमध्ये <span id="soPrevDecisionText" style="font-weight: 800;">समाविष्ट करण्यात येत आहे</span><span id="soPrevDecisionSlash">/ </span><span id="soPrevDecisionAltText" style="text-decoration: line-through; color: #64748b;">करता येत नाही</span>.
+                </p>
+              </div>
+
+              <!-- Footer Date, Place & Signatures -->
+              <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 14px; font-size: 0.88rem; font-weight: 700;">
+                <div>
+                  <div>दिनांक:- <span id="soPrevDate" style="border-bottom: 1px dotted #000; padding: 0 4px;"></span></div>
+                  <div style="margin-top: 3px;">ठिकाण:- <span id="soPrevPlace">कणकवली</span></div>
+                </div>
+                <div style="text-align: center; line-height: 1.35;">
+                  <div style="height: 38px;"></div>
+                  <div>(विजय वरक)</div>
+                  <div>सहायक मतदार नोंदणी अधिकारी,</div>
+                  <div>२६८ कणकवली विधानसभा मतदारसंघ</div>
+                  <div>तथा निवडणूक नायब तहसीलदार कणकवली</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Bottom Controls Bar -->
+      <div class="modal-bottom-bar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div style="font-size: 0.82rem; color: #64748b;">
+          💡 टीप: कागदपत्रे व निष्कर्ष निवडून <b>आदेश प्रिंट करा</b> वर क्लिक केल्यास PDF / प्रिंट तात्काळ तयार होते.
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn-nav" onclick="closeSirOrderModal()">बंद करा</button>
+          <button type="button" class="btn-nav btn-nav-emerald" onclick="saveSirOrder(false)">
+            <i class="fa-solid fa-floppy-disk"></i> <span>आदेश जतन करा (Save)</span>
+          </button>
+          <button type="button" class="btn-nav btn-nav-primary" onclick="printSirOrder()">
+            <i class="fa-solid fa-print"></i> <span>आदेश प्रिंट करा (Print / PDF)</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 
   <!-- PRINT MODAL 1: CITIZEN HEARING NOTICE SLIP -->
   <div class="modal-backdrop" id="hearingSlipModal" role="dialog" aria-modal="true">
@@ -4040,8 +4727,11 @@
           </div>
 
           <div class="card-actions">
-            <button type="button" class="btn-card-action btn-action-reg" onclick="openRegActionModalByEpic('${item.epic}')" title="नोंदवहीत हजेरी व प्रक्रिया करा">
-              <i class="fa-solid fa-clipboard-check"></i> <span>हजेरी व प्रक्रिया</span>
+            <button type="button" class="btn-card-action btn-action-reg" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff;" onclick="openSirOrderModalByEpic('${item.epic}')" title="SIR सुनावणी न्यायनिर्णय आदेश तयार करा">
+              <i class="fa-solid fa-file-signature"></i> <span>प्रक्रिया (आदेश)</span>
+            </button>
+            <button type="button" class="btn-card-action btn-action-edit" onclick="openRegActionModalByEpic('${item.epic}')" title="हजेरी व DEO नोंदवही">
+              <i class="fa-solid fa-clipboard-user"></i> <span>नोंदवही</span>
             </button>
             <button type="button" class="btn-card-action btn-action-print" onclick="openSlipModal(${idx})" title="सुनावणी स्लिप तयार करा">
               <i class="fa-solid fa-print"></i> <span>स्लिप प्रिंट</span>
@@ -4313,9 +5003,13 @@
       const entry = registerStore[item.epic] || {};
       const isSelected = regSelectedEpics.has(item.epic);
 
-      // Attendance Badge
+      // Attendance & SIR Order Badge
       let attBadge = '<span class="badge-status badge-status-pending">प्रलंबित</span>';
-      if (entry.status === 'present') {
+      if (entry.sirOrder && entry.sirOrder.decision === 'include') {
+        attBadge = '<span class="badge-status badge-status-present" title="SIR न्यायनिर्णय: समाविष्ट करण्यात येत आहे"><i class="fa-solid fa-file-circle-check"></i> आदेश पात्र</span>';
+      } else if (entry.sirOrder && entry.sirOrder.decision === 'exclude') {
+        attBadge = '<span class="badge-status badge-status-absent" title="SIR न्यायनिर्णय: समाविष्ट करता येत नाही"><i class="fa-solid fa-file-circle-xmark"></i> आदेश अपात्र</span>';
+      } else if (entry.status === 'present') {
         attBadge = '<span class="badge-status badge-status-present"><i class="fa-solid fa-check"></i> हजर</span>';
       } else if (entry.status === 'absent') {
         if (entry.rescheduledDate) {
@@ -4372,6 +5066,9 @@
           <td style="text-align: center;">
             <div style="display: flex; gap: 4px; justify-content: center; align-items: center; flex-wrap: wrap;">
               ${(entry.status && entry.status !== 'pending') ? `
+                <button type="button" class="btn-card-action btn-action-reg" style="padding: 5px 9px; font-size: 0.78rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff;" onclick="openSirOrderModalByEpic('${item.epic}')" title="SIR सुनावणी न्यायनिर्णय आदेश पहा / प्रिंट करा">
+                  <i class="fa-solid fa-file-contract"></i> <span>आदेश</span>
+                </button>
                 <button type="button" class="btn-card-action btn-action-edit" onclick="handleEditEntry('${item.epic}')" title="नोंद संपादन / बदल करा (Admin Edit)">
                   <i class="fa-solid fa-pen-to-square"></i> <span>दुरुस्ती</span>
                 </button>
@@ -4379,8 +5076,11 @@
                   <i class="fa-solid fa-trash-can"></i>
                 </button>
               ` : `
-                <button type="button" class="btn-card-action btn-action-reg" style="padding: 5px 10px; font-size: 0.8rem;" onclick="openRegActionModalByEpic('${item.epic}')" title="हजेरी, कागदपत्रे व DEO प्रक्रिया">
-                  <i class="fa-solid fa-clipboard-check"></i> <span>प्रक्रिया</span>
+                <button type="button" class="btn-card-action btn-action-reg" style="padding: 5px 10px; font-size: 0.8rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff;" onclick="openSirOrderModalByEpic('${item.epic}')" title="SIR सुनावणी न्यायनिर्णय आदेश तयार करा">
+                  <i class="fa-solid fa-file-signature"></i> <span>प्रक्रिया</span>
+                </button>
+                <button type="button" class="btn-card-action btn-action-edit" style="padding: 5px 7px; font-size: 0.76rem;" onclick="openRegActionModalByEpic('${item.epic}')" title="हजेरी व DEO नोंदवही">
+                  <i class="fa-solid fa-clipboard-user"></i>
                 </button>
               `}
               <button type="button" class="btn-card-action btn-action-print" style="padding: 5px 8px; font-size: 0.78rem;" onclick="openSlipModalByEpic('${item.epic}')" title="स्लिप प्रिंट">
@@ -4850,6 +5550,332 @@
         closeRegActionModal();
       }
     }
+
+    
+    /* ==========================================================================
+       10.1 SIR NYAYANIRNAY COURT HEARING ORDER GENERATOR & PREVIEW LOGIC
+       ========================================================================== */
+    let currentSirOrderEpic = null;
+
+    function openSirOrderModalByEpic(epic) {
+      const item = rawDataset.find(x => x.epic === epic);
+      if (!item) return;
+      currentSirOrderEpic = epic;
+
+      // Update Epic Badge
+      const epicBadge = document.getElementById('soEpicBadge');
+      if (epicBadge) epicBadge.textContent = `EPIC: ${item.epic || 'N/A'}`;
+
+      // Check for saved state in registerStore
+      const entry = registerStore[item.epic] || {};
+      const savedOrder = entry.sirOrder || null;
+
+      // Populate input values
+      document.getElementById('soInpName').value = (savedOrder && savedOrder.name) ? savedOrder.name : item.name;
+      document.getElementById('soInpPartVillage').value = (savedOrder && savedOrder.partVillage) ? savedOrder.partVillage : `${item.part} / ${item.partName || ''}`;
+      document.getElementById('soInpSerial').value = (savedOrder && savedOrder.serial) ? savedOrder.serial : (item.partSerial || item.sNo || '-');
+
+      // Default date to hearing date or today's date
+      const todayFormatted = new Date().toLocaleDateString('en-GB'); // DD/MM/YYYY
+      document.getElementById('soInpDate').value = (savedOrder && savedOrder.date) ? savedOrder.date : (item.d1 || todayFormatted);
+      document.getElementById('soInpPlace').value = (savedOrder && savedOrder.place) ? savedOrder.place : 'कणकवली';
+
+      // Load Document Checkboxes
+      const selfDocs = savedOrder ? (savedOrder.selfDocs || []) : [];
+      const motherDocs = savedOrder ? (savedOrder.motherDocs || []) : [];
+      const fatherDocs = savedOrder ? (savedOrder.fatherDocs || []) : [];
+
+      ['a', 'b', 'c', 'd', 'e', 'f'].forEach(k => {
+        const elSelf = document.getElementById(`so_self_${k}`);
+        if (elSelf) elSelf.checked = selfDocs.includes(k);
+
+        const elMother = document.getElementById(`so_mother_${k}`);
+        if (elMother) elMother.checked = motherDocs.includes(k);
+
+        const elFather = document.getElementById(`so_father_${k}`);
+        if (elFather) elFather.checked = fatherDocs.includes(k);
+      });
+
+      // Custom Other Text fields
+      document.getElementById('so_self_f_text').value = (savedOrder && savedOrder.selfOtherText) ? savedOrder.selfOtherText : '';
+      document.getElementById('so_mother_f_text').value = (savedOrder && savedOrder.motherOtherText) ? savedOrder.motherOtherText : '';
+      document.getElementById('so_father_f_text').value = (savedOrder && savedOrder.fatherOtherText) ? savedOrder.fatherOtherText : '';
+
+      // If no saved order, give smart defaults based on age
+      if (!savedOrder) {
+        // By default check self DOB doc a (जन्म दाखला)
+        const elSelfA = document.getElementById('so_self_a');
+        if (elSelfA) elSelfA.checked = true;
+
+        // If age is young (< 22) born after 2004, or between 1987-2004, hint parent docs
+        const ageNum = parseInt(item.age) || 30;
+        if (ageNum < 40) {
+          const elMotherA = document.getElementById('so_mother_a');
+          if (elMotherA) elMotherA.checked = true;
+        }
+      }
+
+      // Conclusion selection (1 to 4)
+      const chosenConcl = savedOrder ? (savedOrder.conclusion || 1) : 1;
+      const radioConcl = document.querySelector(`input[name="soConclRadio"][value="${chosenConcl}"]`);
+      if (radioConcl) radioConcl.checked = true;
+      highlightConclOptionUI(chosenConcl);
+
+      // Final decision selection ('include' or 'exclude')
+      const chosenDec = savedOrder ? (savedOrder.decision || 'include') : 'include';
+      const radioDec = document.querySelector(`input[name="soDecisionRadio"][value="${chosenDec}"]`);
+      if (radioDec) radioDec.checked = true;
+      highlightDecisionOptionUI(chosenDec);
+
+      // Render the live preview paper
+      updateSirOrderPreview();
+
+      // Show the modal
+      document.getElementById('sirOrderModal').classList.add('active');
+    }
+
+    function closeSirOrderModal() {
+      const modal = document.getElementById('sirOrderModal');
+      if (modal) modal.classList.remove('active');
+      currentSirOrderEpic = null;
+    }
+
+    function handleSoConclChange(val) {
+      highlightConclOptionUI(val);
+      // Auto-toggle decision based on conclusion
+      if (val === 1) {
+        setSoDecision('include');
+      } else {
+        setSoDecision('exclude');
+      }
+      updateSirOrderPreview();
+    }
+
+    function highlightConclOptionUI(val) {
+      [1, 2, 3, 4].forEach(i => {
+        const lbl = document.getElementById(`lblConcl${i}`);
+        if (lbl) lbl.classList.toggle('active', i === val);
+      });
+    }
+
+    function setSoDecision(dec) {
+      const radio = document.querySelector(`input[name="soDecisionRadio"][value="${dec}"]`);
+      if (radio) radio.checked = true;
+      highlightDecisionOptionUI(dec);
+    }
+
+    function handleSoDecisionChange(dec) {
+      highlightDecisionOptionUI(dec);
+      updateSirOrderPreview();
+    }
+
+    function highlightDecisionOptionUI(dec) {
+      const lblInc = document.getElementById('lblDecInclude');
+      const lblExc = document.getElementById('lblDecExclude');
+      if (lblInc) lblInc.classList.toggle('active', dec === 'include');
+      if (lblExc) lblExc.classList.toggle('active', dec === 'exclude');
+    }
+
+    function applySirOrderPreset(type) {
+      if (type === 'valid') {
+        document.getElementById('so_self_a').checked = true;
+        document.getElementById('so_self_c').checked = true;
+        const radio1 = document.querySelector('input[name="soConclRadio"][value="1"]');
+        if (radio1) radio1.checked = true;
+        highlightConclOptionUI(1);
+        setSoDecision('include');
+        showToast('कागदपत्रे योग्य (पात्र) पर्याय निवडला.');
+      } else if (type === 'incomplete') {
+        ['a', 'b', 'c', 'd', 'e', 'f'].forEach(k => {
+          document.getElementById(`so_self_${k}`).checked = false;
+          document.getElementById(`so_mother_${k}`).checked = false;
+          document.getElementById(`so_father_${k}`).checked = false;
+        });
+        const radio2 = document.querySelector('input[name="soConclRadio"][value="2"]');
+        if (radio2) radio2.checked = true;
+        highlightConclOptionUI(2);
+        setSoDecision('exclude');
+        showToast('कागदपत्रे अपूर्ण (अपात्र) पर्याय निवडला.');
+      }
+      updateSirOrderPreview();
+    }
+
+    function switchFromOrderToRegActionModal() {
+      const epic = currentSirOrderEpic;
+      closeSirOrderModal();
+      if (epic) {
+        openRegActionModalByEpic(epic);
+      }
+    }
+
+    function updateSirOrderPreview() {
+      // 1. Details
+      const name = document.getElementById('soInpName').value || '-';
+      const part = document.getElementById('soInpPartVillage').value || '-';
+      const serial = document.getElementById('soInpSerial').value || '-';
+      const date = document.getElementById('soInpDate').value || '-';
+      const place = document.getElementById('soInpPlace').value || 'कणकवली';
+
+      document.getElementById('soPrevName').textContent = name;
+      document.getElementById('soPrevPart').textContent = part;
+      document.getElementById('soPrevSerial').textContent = serial;
+      document.getElementById('soPrevDate').textContent = date;
+      document.getElementById('soPrevPlace').textContent = place;
+
+      // 2. Checkboxes in Document lists
+      ['a', 'b', 'c', 'd', 'e', 'f'].forEach(k => {
+        // Self
+        const chkSelf = document.getElementById(`so_self_${k}`);
+        const prevSelf = document.getElementById(`prev_cb_self_${k}`);
+        if (prevSelf && chkSelf) {
+          prevSelf.className = chkSelf.checked ? 'so-check-box checked' : 'so-check-box';
+        }
+
+        // Mother
+        const chkMother = document.getElementById(`so_mother_${k}`);
+        const prevMother = document.getElementById(`prev_cb_mother_${k}`);
+        if (prevMother && chkMother) {
+          prevMother.className = chkMother.checked ? 'so-check-box checked' : 'so-check-box';
+        }
+
+        // Father
+        const chkFather = document.getElementById(`so_father_${k}`);
+        const prevFather = document.getElementById(`prev_cb_father_${k}`);
+        if (prevFather && chkFather) {
+          prevFather.className = chkFather.checked ? 'so-check-box checked' : 'so-check-box';
+        }
+      });
+
+      // Custom 'Other' text
+      const selfOther = (document.getElementById('so_self_f_text').value || '').trim();
+      document.getElementById('prev_text_self_f').innerHTML = selfOther ? 
+        `f. इतर (नमूद करावा): <u>${selfOther}</u>` : 
+        `f. इतर (नमूद करावा)--------------------------`;
+
+      const motherOther = (document.getElementById('so_mother_f_text').value || '').trim();
+      document.getElementById('prev_text_mother_f').innerHTML = motherOther ? 
+        `f. इतर (नमूद करावा): <u>${motherOther}</u>` : 
+        `f. इतर (नमूद करावा)--------------------------`;
+
+      const fatherOther = (document.getElementById('so_father_f_text').value || '').trim();
+      document.getElementById('prev_text_father_f').innerHTML = fatherOther ? 
+        `f. इतर (नमूद करावा): <u>${fatherOther}</u>` : 
+        `f. इतर (नमूद करावा)--------------------------`;
+
+      // 3. Conclusion Row in Preview
+      const conclVal = parseInt(document.querySelector('input[name="soConclRadio"]:checked')?.value || 1);
+      document.getElementById('soPrevConclNum').textContent = conclVal;
+
+      [1, 2, 3, 4].forEach(i => {
+        const row = document.getElementById(`prevConclRow${i}`);
+        if (row) {
+          if (i === conclVal) {
+            row.style.fontWeight = '800';
+            row.style.color = '#000000';
+          } else {
+            row.style.fontWeight = 'normal';
+            row.style.color = '#1e293b';
+          }
+        }
+      });
+
+      // 4. Final Decision Text
+      const decisionVal = document.querySelector('input[name="soDecisionRadio"]:checked')?.value || 'include';
+      const decPositive = document.getElementById('soPrevDecisionText');
+      const decAlt = document.getElementById('soPrevDecisionAltText');
+
+      if (decisionVal === 'include') {
+        decPositive.innerHTML = `<b>समाविष्ट करण्यात येत आहे</b>`;
+        decPositive.style.textDecoration = 'none';
+        decPositive.style.color = '#000000';
+        decAlt.innerHTML = `<del>करता येत नाही</del>`;
+        decAlt.style.textDecoration = 'line-through';
+        decAlt.style.color = '#64748b';
+      } else {
+        decPositive.innerHTML = `<del>समाविष्ट करण्यात येत आहे</del>`;
+        decPositive.style.textDecoration = 'line-through';
+        decPositive.style.color = '#64748b';
+        decAlt.innerHTML = `<b>करता येत नाही</b>`;
+        decAlt.style.textDecoration = 'none';
+        decAlt.style.color = '#000000';
+      }
+    }
+
+    function printSirOrder() {
+      // Ensure only printableSirOrderArea has printable-area class during this print
+      const allPrintables = document.querySelectorAll('.printable-area');
+      allPrintables.forEach(el => {
+        if (el.id !== 'printableSirOrderArea') el.classList.remove('printable-area');
+      });
+
+      const orderPrintArea = document.getElementById('printableSirOrderArea');
+      if (orderPrintArea) orderPrintArea.classList.add('printable-area');
+
+      window.print();
+    }
+
+    function saveSirOrder(andNext = false) {
+      if (!currentSirOrderEpic) {
+        showToast('मतदार निवडलेला नाही!');
+        return;
+      }
+
+      const epic = currentSirOrderEpic;
+      if (!registerStore[epic]) {
+        registerStore[epic] = {};
+      }
+
+      const selfDocs = ['a', 'b', 'c', 'd', 'e', 'f'].filter(k => document.getElementById(`so_self_${k}`).checked);
+      const motherDocs = ['a', 'b', 'c', 'd', 'e', 'f'].filter(k => document.getElementById(`so_mother_${k}`).checked);
+      const fatherDocs = ['a', 'b', 'c', 'd', 'e', 'f'].filter(k => document.getElementById(`so_father_${k}`).checked);
+
+      const conclVal = parseInt(document.querySelector('input[name="soConclRadio"]:checked')?.value || 1);
+      const decisionVal = document.querySelector('input[name="soDecisionRadio"]:checked')?.value || 'include';
+
+      const orderData = {
+        name: document.getElementById('soInpName').value,
+        partVillage: document.getElementById('soInpPartVillage').value,
+        serial: document.getElementById('soInpSerial').value,
+        date: document.getElementById('soInpDate').value,
+        place: document.getElementById('soInpPlace').value,
+        selfDocs: selfDocs,
+        selfOtherText: document.getElementById('so_self_f_text').value,
+        motherDocs: motherDocs,
+        motherOtherText: document.getElementById('so_mother_f_text').value,
+        fatherDocs: fatherDocs,
+        fatherOtherText: document.getElementById('so_father_f_text').value,
+        conclusion: conclVal,
+        decision: decisionVal,
+        generatedAt: new Date().toISOString()
+      };
+
+      registerStore[epic].sirOrder = orderData;
+      registerStore[epic].orderGenerated = true;
+
+      // Update attendance status automatically if not set or pending
+      if (!registerStore[epic].status || registerStore[epic].status === 'pending') {
+        registerStore[epic].status = (conclVal === 1) ? 'present' : 'present';
+        registerStore[epic].docMode = 'upload';
+      }
+
+      saveRegisterStore(epic);
+      showToast('SIR सुनावणी न्यायनिर्णय आदेश यशस्वीरीत्या सेव्ह झाला!');
+
+      if (andNext) {
+        const curIdxInList = regFilteredDataset.findIndex(x => x.epic === epic);
+        if (curIdxInList >= 0 && curIdxInList < regFilteredDataset.length - 1) {
+          const nextItem = regFilteredDataset[curIdxInList + 1];
+          openSirOrderModalByEpic(nextItem.epic);
+        } else {
+          closeSirOrderModal();
+        }
+      } else {
+        closeSirOrderModal();
+      }
+
+      renderRegisterCurrentPage();
+    }
+
 
     /* 10. PRINTABLE MODALS DISPATCH */
     function openSlipModal(idx) {
