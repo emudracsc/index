@@ -784,7 +784,7 @@
       <!-- Section 3: Crops Table (१० ओळींचा तक्ता) -->
       <div class="form-section-title">
         <i class="fa-solid fa-seedling"></i>
-        <span>३. पिकांची माहिती तक्ता (Crops Table - १० ओळी)</span>
+        <span>३. ७/१२ व पिकांची माहिती (7/12 Land & Crop Details)</span>
       </div>
 
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
@@ -1031,9 +1031,8 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // Crops data store (initially 2 rows)
+    // Crops data store (dynamically managed - only added rows show)
     let cropsData = [
-      { village: '', gat: '', khata: '', area: '', crop: '', ha: '', r: '', date: '' },
       { village: '', gat: '', khata: '', area: '', crop: '', ha: '', r: '', date: '' }
     ];
 
@@ -1113,10 +1112,6 @@
     }
 
     function addCropRow(cropName = '') {
-      if (cropsData.length >= 10) {
-        alert('जास्तीत जास्त १० ओळी भरता येतात.');
-        return;
-      }
       const defaultVillage = document.getElementById('inpMouje').value || document.getElementById('inpResidenceVillage').value || '';
       cropsData.push({
         village: defaultVillage,
@@ -1219,45 +1214,28 @@
       const totalArea = document.getElementById('inpTotalArea').value.trim();
       document.getElementById('prevTotalArea').textContent = totalArea || '________________';
 
-      // 3. Official Crops Table (Always EXACTLY 10 rows rendered)
+      // 3. Official Crops Table (Only render added rows - NO blank rows!)
       const prevTbody = document.getElementById('prevCropTableBody');
       prevTbody.innerHTML = '';
 
-      const marathiRowNums = ['१', '२', '३', '४', '५', '६', '७', '८', '९', '१०'];
-
-      for (let i = 0; i < 10; i++) {
-        const rowData = cropsData[i] || null;
+      cropsData.forEach((rowData, i) => {
         const tr = document.createElement('tr');
+        const displayDate = rowData.date ? formatDateDisplay(rowData.date) : '';
+        const rowNumMarathi = toDevanagariDigits(i + 1);
 
-        if (rowData && (rowData.village || rowData.gat || rowData.khata || rowData.crop || rowData.ha || rowData.r || rowData.area)) {
-          const displayDate = rowData.date ? formatDateDisplay(rowData.date) : '';
-          tr.innerHTML = `
-            <td style="font-weight: 800;">${marathiRowNums[i]}</td>
-            <td>${escapeHtml(rowData.village || '')}</td>
-            <td>${escapeHtml(rowData.gat || '')}</td>
-            <td>${escapeHtml(rowData.khata || '')}</td>
-            <td>${escapeHtml(rowData.area || '')}</td>
-            <td style="font-weight: 700;">${escapeHtml(rowData.crop || '')}</td>
-            <td>${escapeHtml(rowData.ha || '')}</td>
-            <td>${escapeHtml(rowData.r || '')}</td>
-            <td style="font-size: 0.88rem;">${displayDate}</td>
-          `;
-        } else {
-          // Empty row with clean borders
-          tr.innerHTML = `
-            <td style="font-weight: 800;">${marathiRowNums[i]}</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          `;
-        }
+        tr.innerHTML = `
+          <td style="font-weight: 800;">${rowNumMarathi}</td>
+          <td>${escapeHtml(rowData.village || '')}</td>
+          <td>${escapeHtml(rowData.gat || '')}</td>
+          <td>${escapeHtml(rowData.khata || '')}</td>
+          <td>${escapeHtml(rowData.area || '')}</td>
+          <td style="font-weight: 700;">${escapeHtml(rowData.crop || '')}</td>
+          <td>${escapeHtml(rowData.ha || '')}</td>
+          <td>${escapeHtml(rowData.r || '')}</td>
+          <td style="font-size: 0.88rem;">${displayDate}</td>
+        `;
         prevTbody.appendChild(tr);
-      }
+      });
 
       // 4. Identity & Banking Digit Boxes
       const aadhaarVal = document.getElementById('inpAadhaar').value.trim();
@@ -1305,14 +1283,13 @@
       document.getElementById('prevMouje').textContent = '________________';
       document.getElementById('prevTotalArea').textContent = '________________';
 
-      // Clear table
+      // For blank form handwriting copy, show 6 empty rows
       const prevTbody = document.getElementById('prevCropTableBody');
       prevTbody.innerHTML = '';
-      const marathiRowNums = ['१', '२', '३', '४', '५', '६', '७', '८', '९', '१०'];
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 6; i++) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td style="font-weight: 800;">${marathiRowNums[i]}</td>
+          <td style="font-weight: 800;">${toDevanagariDigits(i + 1)}</td>
           <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
           <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
         `;
@@ -1372,7 +1349,6 @@
         document.getElementById('inpMouje').value = '';
         document.getElementById('inpTotalArea').value = '';
         cropsData = [
-          { village: '', gat: '', khata: '', area: '', crop: '', ha: '', r: '', date: '' },
           { village: '', gat: '', khata: '', area: '', crop: '', ha: '', r: '', date: '' }
         ];
         renderCropEditorTable();
