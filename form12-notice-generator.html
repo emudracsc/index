@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>परिशिष्ट १६ | फॉर्म १२ - दाव्याच्या सुनावणीची नोटीस जनरेटर</title>
+  <meta name="description" content="मतदार यादी दुरुस्ती / नाव समाविष्ट करण्याबाबतच्या दाव्यांची सुनावणी नोटीस (परिशिष्ट १६, फॉर्म १२) सिंगल किंवा बल्क एक्सेल अपलोडद्वारे झटपट तयार करा.">
+
+  <!-- Google Fonts: Devanagari & Modern Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- SheetJS for Excel Import & Template Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --primary-navy: #1a0533;
+      --primary-blue: #2d1b69;
+      --primary-mid: #4c2885;
+      --primary-light: #f5f0ff;
+      --saffron-gold: #f59e0b;
+      --saffron-dark: #d97706;
+      --gov-green: #059669;
+      --gov-green-dark: #047857;
+      --accent-teal: #0d9488;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-page: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.12);
+      --font-marathi: 'Noto Sans Devanagari', 'Mukta', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-marathi);
+      background-color: var(--bg-page);
+      color: var(--text-dark);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Government Tricolor Top Ribbon */
+    .gov-top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%);
+      width: 100%;
+    }
+
+    /* Navigation Header */
+    .header-nav {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-blue) 100%);
+      color: #ffffff;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-badge {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--saffron-gold);
+    }
+
+    .brand-title-text h1 {
+      font-size: 1.18rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title-text p {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      margin-top: 1px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-nav-link {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-nav-link:hover {
+      background: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Main Container */
+    .app-main {
+      flex: 1;
+      max-width: 1540px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Mode Switcher Tabs */
+    .mode-tab-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .tab-pills {
+      display: flex;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .tab-btn {
+      padding: 9px 20px;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      background: transparent;
+      transition: all 0.25s ease;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary-blue);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: var(--text-dark);
+    }
+
+    .quick-settings-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-quick {
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      color: var(--text-dark);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-quick:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    /* Primary layout grid: Form Panel + Live Preview Panel */
+    .view-grid {
+      display: grid;
+      grid-template-columns: 500px 1fr;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 1200px) {
+      .view-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Form Card */
+    .panel-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary-blue);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .panel-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Section group boxes */
+    .form-group-section {
+      background: #fafafa;
+      border: 1px solid #eef2f6;
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .section-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--primary-navy);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border-bottom: 1px dashed #cbd5e1;
+      padding-bottom: 6px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .field-row.full {
+      grid-template-columns: 1fr;
+    }
+
+    .field-row.three {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-field label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .form-field label span.req {
+      color: #dc2626;
+    }
+
+    .form-input, .form-textarea, .form-select {
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      color: #0f172a;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--primary-mid);
+      box-shadow: 0 0 0 3px rgba(76, 40, 133, 0.15);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    /* Buttons styling */
+    .btn-action-primary {
+      background: linear-gradient(135deg, var(--gov-green) 0%, var(--gov-green-dark) 100%);
+      color: #ffffff;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+      transition: all 0.25s ease;
+      width: 100%;
+    }
+
+    .btn-action-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .action-btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* Bulk Upload Box */
+    .upload-dropzone {
+      border: 2px dashed #94a3b8;
+      border-radius: var(--radius-md);
+      padding: 28px 20px;
+      text-align: center;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+      border-color: var(--primary-mid);
+      background: #f3e8ff;
+    }
+
+    .dropzone-icon {
+      font-size: 38px;
+      color: var(--primary-mid);
+      margin-bottom: 4px;
+    }
+
+    .dropzone-text {
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: #1e293b;
+    }
+
+    .dropzone-sub {
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+
+    /* Right Preview Section */
+    .preview-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: sticky;
+      top: 80px;
+    }
+
+    .preview-toolbar {
+      background: #ffffff;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .preview-info {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary-navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .preview-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Paper Notice Container (Exact A4 Replica for Preview) */
+    .preview-paper-wrapper {
+      background: #64748b;
+      padding: 24px;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* =========================================================================
+       AUTHENTIC NOTICE PAGE - FORM 12 / APPENDIX 16 EXACT OFFICIAL STYLING
+       ========================================================================= */
+    .notice-page {
+      background: #ffffff;
+      width: 210mm;
+      min-height: 297mm;
+      height: 297mm;
+      padding: 12mm 14mm 10mm 14mm;
+      margin: 0 auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      color: #000000;
+      font-family: var(--font-marathi);
+      position: relative;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Outer Double Border around the Notice */
+    .notice-border-box {
+      border: 2px solid #000000;
+      height: 100%;
+      padding: 8mm 9mm;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Top Title Header */
+    .notice-top-heading {
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .notice-top-heading .main-form-title {
+      font-size: 15pt;
+      font-weight: 800;
+      color: #000000;
+      line-height: 1.25;
+      letter-spacing: -0.2px;
+    }
+
+    .notice-top-heading .sub-rule-title {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #000000;
+      margin-top: 2px;
+      line-height: 1.2;
+    }
+
+    /* Part Sections */
+    .notice-part-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .part-title-label {
+      font-size: 11.5pt;
+      font-weight: 800;
+      color: #000000;
+      margin-bottom: 2px;
+    }
+
+    .part-recipient-line {
+      font-size: 10.5pt;
+      color: #000000;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .part-recipient-line strong {
+      font-weight: 700;
+    }
+
+    .part-ref-line {
+      font-size: 10.5pt;
+      color: #000000;
+      margin-top: 1px;
+      line-height: 1.4;
+    }
+
+    .part-ref-line strong {
+      font-weight: 700;
+    }
+
+    .part-body-para {
+      font-size: 10.5pt;
+      color: #000000;
+      line-height: 1.5;
+      text-align: justify;
+      margin-top: 2px;
+      text-indent: 28px;
+    }
+
+    /* Highlighted or Underlined Values */
+    .val-highlight {
+      font-weight: 700;
+      color: #000000;
+      display: inline-block;
+      padding: 0 4px;
+      border-bottom: 1px solid #000000;
+    }
+
+    .val-dots {
+      display: inline-block;
+      letter-spacing: 2px;
+      color: #475569;
+    }
+
+    .part-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 6px;
+      font-size: 10.5pt;
+      font-weight: 700;
+    }
+
+    .part-footer-left {
+      display: flex;
+      gap: 20px;
+    }
+
+    .part-footer-right {
+      text-align: center;
+      min-width: 170px;
+    }
+
+    .officer-sig-space {
+      height: 38px;
+    }
+
+    /* Divider Dotted Cut Line */
+    .notice-divider-line {
+      border-top: 1.5px dotted #000000;
+      margin: 4px 0;
+      position: relative;
+      height: 1px;
+      width: 100%;
+    }
+
+    .notice-divider-scissors {
+      position: absolute;
+      left: 10px;
+      top: -10px;
+      background: #ffffff;
+      padding: 0 5px;
+      font-size: 10pt;
+      color: #334155;
+    }
+
+    /* Section 3: Certificate of Service */
+    .cert-heading {
+      text-align: center;
+      font-size: 12.5pt;
+      font-weight: 800;
+      margin-bottom: 4px;
+      letter-spacing: -0.2px;
+    }
+
+    .cert-row-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5pt;
+      line-height: 1.45;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .cert-body-para {
+      font-size: 10.5pt;
+      line-height: 1.45;
+      text-align: justify;
+      margin-top: 3px;
+    }
+
+    .cert-sign-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.3fr;
+      align-items: flex-end;
+      margin-top: 8px;
+      font-size: 10.5pt;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .cert-sign-grid .cert-loc-date {
+      text-align: left;
+    }
+
+    .cert-sign-grid .cert-claimant-sig {
+      text-align: center;
+    }
+
+    .cert-sign-grid .cert-blo-sig {
+      text-align: right;
+      line-height: 1.25;
+    }
+
+    /* Bulk Table Container */
+    .bulk-table-container {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .table-toolbar {
+      padding: 14px 18px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .table-stats-badge {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary-navy);
+      background: #ede9fe;
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    .table-search-input {
+      font-family: inherit;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.88rem;
+      min-width: 260px;
+      outline: none;
+    }
+
+    .table-search-input:focus {
+      border-color: var(--primary-mid);
+    }
+
+    .table-scroll {
+      max-height: 440px;
+      overflow-y: auto;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    .data-table th {
+      background: #f1f5f9;
+      color: #1e293b;
+      font-weight: 700;
+      padding: 10px 14px;
+      border-bottom: 2px solid #cbd5e1;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
+
+    .data-table tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .data-table tbody tr.selected {
+      background: #f5f3ff;
+    }
+
+    .badge-claim {
+      background: #dbeafe;
+      color: #1e40af;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
+
+    /* Toast Notification */
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: var(--shadow-lg);
+      font-size: 0.92rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 9999;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .toast-box.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .toast-box.success {
+      background: #065f46;
+      border-left: 5px solid #10b981;
+    }
+
+    .toast-box.info {
+      background: #1e1b4b;
+      border-left: 5px solid #818cf8;
+    }
+
+    .toast-box.warning {
+      background: #854d0e;
+      border-left: 5px solid #facc15;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      max-width: 650px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 16px 22px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.1rem;
+      color: var(--primary-navy);
+      font-weight: 700;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #64748b;
+    }
+
+    .modal-body {
+      padding: 20px 22px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      padding: 14px 22px;
+      background: #f8fafc;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Dedicated Print Container for Browser Print */
+    #print-container {
+      display: none;
+    }
+
+    /* =========================================================================
+       PRINT MEDIA QUERY (DEDICATED STRICT A4 1-PAGE RULES)
+       ========================================================================= */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 6mm 8mm 6mm 8mm !important; /* Removes header/footer URL & date artifacts */
+      }
+
+      html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Hide everything except print-container */
+      .gov-top-bar,
+      .header-nav,
+      .app-main,
+      .toast-box,
+      .modal-overlay,
+      .no-print {
+        display: none !important;
+      }
+
+      #print-container {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      #print-container .notice-page {
+        width: 100% !important;
+        min-height: 284mm !important;
+        height: 284mm !important;
+        max-height: 284mm !important;
+        box-shadow: none !important;
+        margin: 0 auto !important;
+        padding: 4mm 6mm !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        box-sizing: border-box !important;
+      }
+
+      #print-container .notice-border-box {
+        border: 2px solid #000000 !important;
+        height: 100% !important;
+        padding: 6mm 7mm !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+      }
+
+      #print-container .notice-top-heading .main-form-title {
+        font-size: 14pt !important;
+      }
+
+      #print-container .notice-top-heading .sub-rule-title {
+        font-size: 10.5pt !important;
+      }
+
+      #print-container .part-title-label {
+        font-size: 11pt !important;
+      }
+
+      #print-container .part-recipient-line,
+      #print-container .part-ref-line,
+      #print-container .part-body-para,
+      #print-container .part-footer-row,
+      #print-container .cert-row-line,
+      #print-container .cert-body-para,
+      #print-container .cert-sign-grid {
+        font-size: 10pt !important;
+        line-height: 1.45 !important;
+      }
+
+      #print-container .val-highlight {
+        font-weight: 700 !important;
+        border-bottom: 1px solid #000000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-top-bar"></div>
+
+  <!-- Main Navigation Header -->
+  <header class="header-nav">
+    <div class="brand-title-wrap">
+      <div class="brand-badge">
+        <i class="fa-solid fa-file-signature"></i>
+      </div>
+      <div class="brand-title-text">
+        <h1>
+          परिशिष्ट १६ | फॉर्म १२ - दाव्याच्या सुनावणीची नोटीस जनरेटर
+        </h1>
+        <p>
+          [नियम १९(१)(ब)(१)i)] मतदार नोंदणी नियम, १९६० | सुनावणी नोटीस व बजावणी प्रमाणपत्र
+        </p>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <a href="index.html" class="btn-nav-link">
+        <i class="fa-solid fa-house"></i> मुख्य दालन
+      </a>
+      <a href="hearing-register.html" class="btn-nav-link">
+        <i class="fa-solid fa-clipboard-check"></i> सुनावणी नोंदवही
+      </a>
+      <a href="hearing-search.html" class="btn-nav-link">
+        <i class="fa-solid fa-magnifying-glass"></i> सुनावणी शोध
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Application Body -->
+  <main class="app-main">
+
+    <!-- Top Mode Tab Bar -->
+    <div class="mode-tab-bar">
+      <div class="tab-pills">
+        <button type="button" class="tab-btn active" id="tabBtnSingle" onclick="switchMode('single')">
+          <i class="fa-solid fa-user-pen"></i> सिंगल एन्ट्री (Single Entry)
+        </button>
+        <button type="button" class="tab-btn" id="tabBtnBulk" onclick="switchMode('bulk')">
+          <i class="fa-solid fa-file-excel"></i> बल्क एक्सेल इंपोर्ट (Bulk Excel Upload)
+        </button>
+      </div>
+
+      <div class="quick-settings-wrap">
+        <button type="button" class="btn-quick" onclick="downloadSampleExcel()">
+          <i class="fa-solid fa-download" style="color: #059669;"></i> नमुना एक्सेल डाऊनलोड करा (.xlsx)
+        </button>
+        <button type="button" class="btn-quick" onclick="setBlankNotice()">
+          <i class="fa-regular fa-file"></i> कोरी नोटीस (Blank Form)
+        </button>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         VIEW 1: SINGLE ENTRY MODE
+         ======================================================================= -->
+    <div id="viewSingle" class="view-grid">
+      
+      <!-- Left Form Input Card -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fa-solid fa-pen-to-square"></i> नोटीस तपशील भरा
+          </div>
+        </div>
+
+        <div class="panel-body">
+          
+          <!-- Section A: दावेदाराची माहिती -->
+          <div class="form-group-section">
+            <div class="section-title">
+              <i class="fa-solid fa-user-tag" style="color: var(--primary-mid);"></i> १. दावेदाराची माहिती (Claimant Details)
+            </div>
+
+            <div class="field-row full">
+              <div class="form-field">
+                <label for="inpName">दावेदाराचे पूर्ण नाव <span class="req">*</span></label>
+                <input type="text" id="inpName" class="form-input" placeholder="दावेदाराचे पूर्ण नाव प्रविष्ट करा" oninput="updateSinglePreview()">
+              </div>
+            </div>
+
+            <div class="field-row full">
+              <div class="form-field">
+                <label for="inpAddress">दावेदाराचा पूर्ण पत्ता <span class="req">*</span></label>
+                <textarea id="inpAddress" class="form-textarea" placeholder="दावेदाराचा संपूर्ण पत्ता (घर क्र., गाव/वार्ड, तालुका, जिल्हा)" oninput="updateSinglePreview()"></textarea>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="form-field">
+                <label for="inpClaimNo">संदर्भ: दावा क्र. <span class="req">*</span></label>
+                <input type="text" id="inpClaimNo" class="form-input" placeholder="उदा. F6/2026/049182" oninput="updateSinglePreview()">
+              </div>
+              <div class="form-field">
+                <label for="inpPartNo">मतदार यादी भाग क्र. (ऐच्छिक)</label>
+                <input type="text" id="inpPartNo" class="form-input" placeholder="उदा. १२४" oninput="updateSinglePreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section B: सुनावणी तपशील -->
+          <div class="form-group-section">
+            <div class="section-title">
+              <i class="fa-regular fa-calendar-check" style="color: #0d9488;"></i> २. सुनावणी तपशील (Hearing Schedule)
+            </div>
+
+            <div class="field-row full">
+              <div class="form-field">
+                <label for="inpHearingPlace">सुनावणीचे ठिकाण <span class="req">*</span></label>
+                <input type="text" id="inpHearingPlace" class="form-input" placeholder="उदा. तहसील कार्यालय (निवडणूक शाखा)" oninput="updateSinglePreview()">
+              </div>
+            </div>
+
+            <div class="field-row three">
+              <div class="form-field">
+                <label for="inpHearingDate">सुनावणी दिनांक <span class="req">*</span></label>
+                <input type="date" id="inpHearingDate" class="form-input" onchange="onDateChanged()">
+              </div>
+              <div class="form-field">
+                <label for="inpHearingDay">वार (दिवस)</label>
+                <input type="text" id="inpHearingDay" class="form-input" placeholder="उदा. सोमवार" oninput="updateSinglePreview()">
+              </div>
+              <div class="form-field">
+                <label for="inpHearingTime">सुनावणी वेळ <span class="req">*</span></label>
+                <input type="text" id="inpHearingTime" class="form-input" placeholder="उदा. सकाळी ११:००" oninput="updateSinglePreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section C: नोटीस जारी माहिती -->
+          <div class="form-group-section">
+            <div class="section-title">
+              <i class="fa-solid fa-stamp" style="color: #ea580c;"></i> ३. नोटीस निर्गमित तपशील (Issuing Authority)
+            </div>
+
+            <div class="field-row">
+              <div class="form-field">
+                <label for="inpIssuePlace">स्थान <span class="req">*</span></label>
+                <input type="text" id="inpIssuePlace" class="form-input" placeholder="उदा. तालुका ठिकाण / कार्यालय" oninput="updateSinglePreview()">
+              </div>
+              <div class="form-field">
+                <label for="inpNoticeDate">नोटीस दिनांक <span class="req">*</span></label>
+                <input type="date" id="inpNoticeDate" class="form-input" onchange="updateSinglePreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section D: प्रमाणपत्र व BLO माहिती -->
+          <div class="form-group-section">
+            <div class="section-title">
+              <i class="fa-solid fa-id-badge" style="color: #4f46e5;"></i> ४. नोटीस बजावणी प्रमाणपत्र व BLO माहिती
+            </div>
+
+            <div class="field-row full">
+              <div class="form-field">
+                <label for="inpBloName">BLO (मतदान केंद्रस्तरीय अधिकारी) चे नाव <span class="req">*</span></label>
+                <input type="text" id="inpBloName" class="form-input" placeholder="उदा. बी.एल.ओ. चे नाव (BLO)" oninput="updateSinglePreview()">
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="form-field">
+                <label for="inpServedDate">नोटीस बजावणी दिनांक</label>
+                <input type="date" id="inpServedDate" class="form-input" onchange="updateSinglePreview()">
+              </div>
+              <div class="form-field">
+                <label for="inpBloMobile">BLO संपर्क / केंद्र क्र. (ऐच्छिक)</label>
+                <input type="text" id="inpBloMobile" class="form-input" placeholder="उदा. मो. ९८XXXXXXXX" oninput="updateSinglePreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <button type="button" class="btn-action-primary" onclick="printSingleNotice()">
+            <i class="fa-solid fa-print"></i> नोटीस प्रिंट करा / PDF सेव्ह करा (A4)
+          </button>
+
+          <div class="action-btn-group">
+            <button type="button" class="btn-secondary" onclick="resetSingleForm()">
+              <i class="fa-solid fa-rotate-left"></i> फॉर्म साफ करा
+            </button>
+            <button type="button" class="btn-secondary" onclick="exportSingleNoticeData()">
+              <i class="fa-solid fa-file-arrow-down"></i> डेटा जतन करा
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right Live Preview Column -->
+      <div class="preview-column">
+        <div class="preview-toolbar">
+          <div class="preview-info">
+            <i class="fa-regular fa-eye" style="color: var(--gov-green);"></i> थेट प्रीव्ह्यू (A4 कागद रूपरेषा)
+          </div>
+
+          <div class="preview-tools">
+            <button type="button" class="btn-quick" onclick="printSingleNotice()">
+              <i class="fa-solid fa-print" style="color: #0284c7;"></i> प्रिंट
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable/Responsive Wrapper for A4 sheet -->
+        <div class="preview-paper-wrapper">
+          <div id="singleNoticePreview">
+            <!-- Rendered by JavaScript -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =======================================================================
+         VIEW 2: BULK EXCEL UPLOAD MODE
+         ======================================================================= -->
+    <div id="viewBulk" class="view-grid" style="display: none; grid-template-columns: 460px 1fr;">
+      
+      <!-- Left Bulk Controls Card -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fa-solid fa-file-excel" style="color: #15803d;"></i> एक्सेल फाइल अपलोड व बॅच सेटिंग्ज
+          </div>
+        </div>
+
+        <div class="panel-body">
+          
+          <!-- Dropzone -->
+          <div class="upload-dropzone" id="bulkDropzone" onclick="document.getElementById('excelFileInput').click()">
+            <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display: none;" onchange="handleExcelUpload(this.files[0])">
+            <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+            <div class="dropzone-text">येथे एक्सेल फाईल ड्रॅग करा किंवा निवडा</div>
+            <div class="dropzone-sub">(.xlsx, .xls किंवा .csv फाईल स्वीकारा)</div>
+          </div>
+
+          <!-- Universal Batch Defaults (सामाईक बॅच सेटिंग्ज) -->
+          <div class="form-group-section" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+            <div class="section-title" style="color: #166534;">
+              <i class="fa-solid fa-sliders"></i> सामाईक बॅच तपशील (Common Batch Settings)
+            </div>
+            <p style="font-size: 0.78rem; color: #15803d; margin-bottom: 10px;">
+              * ज्या नोंदींमध्ये ठिकाण, वेळ किंवा BLO नाव रिकामे असेल, तिथे खालील सामाईक मूल्ये आपोआप लागू होतील.
+            </p>
+
+            <div class="field-row full">
+              <div class="form-field">
+                <label for="batchPlace">सामाईक सुनावणी ठिकाण</label>
+                <input type="text" id="batchPlace" class="form-input" placeholder="उदा. तहसील कार्यालय (निवडणूक शाखा)" onchange="applyBatchDefaultsToUI()">
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="form-field">
+                <label for="batchHearingDate">सामाईक सुनावणी दिनांक</label>
+                <input type="date" id="batchHearingDate" class="form-input" onchange="onBatchDateChanged()">
+              </div>
+              <div class="form-field">
+                <label for="batchHearingDay">सामाईक वार</label>
+                <input type="text" id="batchHearingDay" class="form-input" placeholder="उदा. सोमवार" onchange="applyBatchDefaultsToUI()">
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="form-field">
+                <label for="batchHearingTime">सामाईक सुनावणी वेळ</label>
+                <input type="text" id="batchHearingTime" class="form-input" placeholder="उदा. सकाळी ११:०० वाजता" onchange="applyBatchDefaultsToUI()">
+              </div>
+              <div class="form-field">
+                <label for="batchIssuePlace">सामाईक निर्गमित स्थान</label>
+                <input type="text" id="batchIssuePlace" class="form-input" placeholder="उदा. तालुका ठिकाण / कार्यालय" onchange="applyBatchDefaultsToUI()">
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="form-field">
+                <label for="batchNoticeDate">सामाईक नोटीस दिनांक</label>
+                <input type="date" id="batchNoticeDate" class="form-input" onchange="applyBatchDefaultsToUI()">
+              </div>
+              <div class="form-field">
+                <label for="batchServedDate">सामाईक बजावणी दिनांक</label>
+                <input type="date" id="batchServedDate" class="form-input" onchange="applyBatchDefaultsToUI()">
+              </div>
+            </div>
+
+            <div class="field-row full">
+              <div class="form-field">
+                <label for="batchBloName">सामाईक BLO चे नाव</label>
+                <input type="text" id="batchBloName" class="form-input" placeholder="उदा. बी.एल.ओ. चे नाव (BLO)" onchange="applyBatchDefaultsToUI()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Bulk Actions -->
+          <button type="button" class="btn-action-primary" id="btnBulkPrintAll" onclick="printBulkNotices(false)" disabled>
+            <i class="fa-solid fa-print"></i> सर्व लोड केलेल्या नोटीस प्रिंट करा
+          </button>
+
+          <button type="button" class="btn-secondary" id="btnBulkPrintSelected" onclick="printBulkNotices(true)" disabled style="width: 100%;">
+            <i class="fa-solid fa-check-double"></i> फक्त निवडलेली (<span id="selectedCountText">0</span>) नोटीस प्रिंट करा
+          </button>
+
+          <div class="action-btn-group">
+            <button type="button" class="btn-secondary" onclick="openColumnMapperModal()">
+              <i class="fa-solid fa-arrows-split-up-and-left"></i> कॉलम मॅपिंग बदला
+            </button>
+            <button type="button" class="btn-secondary" onclick="clearBulkData()">
+              <i class="fa-solid fa-trash-can"></i> डेटा हटवा
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right Records Table & Preview -->
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        
+        <!-- Table Card -->
+        <div class="bulk-table-container">
+          <div class="table-toolbar">
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <span class="table-stats-badge" id="bulkStatsBadge">
+                एकूण नोंदी: ० | निवडलेली: ०
+              </span>
+              <label style="font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)">
+                सर्व निवडा (Select All)
+              </label>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="text" id="tableSearchInput" class="table-search-input" placeholder="नाव, दावा क्र. किंवा पत्त्यानुसार शोधा..." oninput="filterBulkTable()">
+            </div>
+          </div>
+
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px; text-align: center;">निवड</th>
+                  <th style="width: 50px;">क्र.</th>
+                  <th>दावेदाराचे नाव</th>
+                  <th>संदर्भ / दावा क्र.</th>
+                  <th>पत्ता</th>
+                  <th>सुनावणी दिनांक व वेळ</th>
+                  <th style="text-align: center;">कृती</th>
+                </tr>
+              </thead>
+              <tbody id="bulkTableBody">
+                <tr>
+                  <td colspan="7" style="text-align: center; padding: 40px 10px; color: #94a3b8;">
+                    <i class="fa-solid fa-file-excel" style="font-size: 32px; display: block; margin-bottom: 10px;"></i>
+                    कोणतीही एक्सेल फाईल लोड केलेली नाही. कृपया डाव्या बाजूला एक्सेल फाईल अपलोड करा.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Selected Single Row Preview -->
+        <div class="preview-toolbar">
+          <div class="preview-info" id="bulkPreviewTitle">
+            <i class="fa-solid fa-eye" style="color: var(--gov-green);"></i> निवडलेल्या नोंदीचा प्रीव्ह्यू (नोंद १)
+          </div>
+          <div class="preview-tools">
+            <button type="button" class="btn-quick" onclick="navigateBulkPreview(-1)">
+              <i class="fa-solid fa-arrow-left"></i> मागील
+            </button>
+            <span id="bulkNavIndicator" style="font-size: 0.85rem; font-weight: 700; color: #475569;">१ / ०</span>
+            <button type="button" class="btn-quick" onclick="navigateBulkPreview(1)">
+              पुढील <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <button type="button" class="btn-quick" onclick="printCurrentBulkPreview()">
+              <i class="fa-solid fa-print"></i> ही नोटीस प्रिंट करा
+            </button>
+          </div>
+        </div>
+
+        <div class="preview-paper-wrapper">
+          <div id="bulkNoticePreview">
+            <!-- Rendered by JavaScript -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- =========================================================================
+       COLUMN MAPPER MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="columnMapperModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-arrows-split-up-and-left"></i> एक्सेल कॉलम मॅपिंग (Column Mapping)</h3>
+        <button type="button" class="modal-close-btn" onclick="closeColumnMapperModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: #64748b;">
+          तुमच्या एक्सेल फाईलचे रकाने खालील नोटीस रकान्यांशी जोडा:
+        </p>
+
+        <div class="field-row">
+          <div class="form-field">
+            <label>दावेदाराचे नाव (Claimant Name) *</label>
+            <select id="mapColName" class="form-select"></select>
+          </div>
+          <div class="form-field">
+            <label>संदर्भ: दावा क्र. (Claim / Ref No) *</label>
+            <select id="mapColClaimNo" class="form-select"></select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="form-field">
+            <label>दावेदाराचा पत्ता (Address)</label>
+            <select id="mapColAddress" class="form-select"></select>
+          </div>
+          <div class="form-field">
+            <label>मतदार यादी भाग क्र. (Part No)</label>
+            <select id="mapColPartNo" class="form-select"></select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="form-field">
+            <label>सुनावणी ठिकाण (Hearing Place)</label>
+            <select id="mapColHearingPlace" class="form-select"></select>
+          </div>
+          <div class="form-field">
+            <label>सुनावणी दिनांक (Hearing Date)</label>
+            <select id="mapColHearingDate" class="form-select"></select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="form-field">
+            <label>सुनावणी वेळ (Hearing Time)</label>
+            <select id="mapColHearingTime" class="form-select"></select>
+          </div>
+          <div class="form-field">
+            <label>सुनावणी वार (Hearing Day)</label>
+            <select id="mapColHearingDay" class="form-select"></select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="form-field">
+            <label>BLO चे नाव (BLO Name)</label>
+            <select id="mapColBloName" class="form-select"></select>
+          </div>
+          <div class="form-field">
+            <label>नोटीस निर्गमित स्थान (Place)</label>
+            <select id="mapColIssuePlace" class="form-select"></select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="form-field">
+            <label>नोटीस दिनांक (Notice Date)</label>
+            <select id="mapColNoticeDate" class="form-select"></select>
+          </div>
+          <div class="form-field">
+            <label>बजावणी दिनांक (Serving Date)</label>
+            <select id="mapColServedDate" class="form-select"></select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeColumnMapperModal()">रद्द करा</button>
+        <button type="button" class="btn-action-primary" style="width: auto;" onclick="applyManualColumnMapping()">
+          मॅपिंग लागू करा व डेटा रिफ्रेश करा
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastBox" class="toast-box">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastMessage">संदेश</span>
+  </div>
+
+  <!-- Dedicated Print Container (Hidden on Screen, Visible on Print) -->
+  <div id="print-container"></div>
+
+  <!-- =========================================================================
+       APPLICATION LOGIC SCRIPT
+       ========================================================================= -->
+  <script>
+    /* Global Application State */
+    let currentMode = 'single';
+    let bulkRecords = [];
+    let selectedIndices = new Set();
+    let currentBulkPreviewIndex = 0;
+    let excelRawRows = [];
+    let excelHeaders = [];
+
+    // Marathi Day of week mapping
+    const marathiDays = [
+      'रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'
+    ];
+
+    // Marathi Month mapping
+    const marathiMonths = [
+      'जानेवारी', 'फेब्रुवारी', 'मार्च', 'एप्रिल', 'मे', 'जून',
+      'जुलै', 'ऑगस्ट', 'सप्टेंबर', 'ऑक्टोबर', 'नोव्हेंबर', 'डिसेंबर'
+    ];
+
+    // Initialize Default Dates on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      const todayStr = formatDateToInput(today);
+      
+      // Default dates
+      document.getElementById('inpNoticeDate').value = todayStr;
+      document.getElementById('inpServedDate').value = todayStr;
+      document.getElementById('batchNoticeDate').value = todayStr;
+      document.getElementById('batchServedDate').value = todayStr;
+
+      // Hearing Date 7 days later by default
+      const hearingDate = new Date();
+      hearingDate.setDate(today.getDate() + 7);
+      const hearingStr = formatDateToInput(hearingDate);
+      document.getElementById('inpHearingDate').value = hearingStr;
+      document.getElementById('batchHearingDate').value = hearingStr;
+
+      // Set Day names
+      document.getElementById('inpHearingDay').value = marathiDays[hearingDate.getDay()];
+      document.getElementById('batchHearingDay').value = marathiDays[hearingDate.getDay()];
+
+      // Clear specific text and location fields (clean blank state)
+      document.getElementById('inpHearingPlace').value = '';
+      document.getElementById('inpHearingTime').value = '';
+      document.getElementById('inpIssuePlace').value = '';
+      document.getElementById('inpName').value = '';
+      document.getElementById('inpAddress').value = '';
+      document.getElementById('inpClaimNo').value = '';
+      document.getElementById('inpPartNo').value = '';
+      document.getElementById('inpBloName').value = '';
+      document.getElementById('inpBloMobile').value = '';
+
+      // Update live preview with clean blank notice
+      updateSinglePreview();
+
+      // Drag & drop handlers
+      initDragAndDrop();
+    });
+
+    /* Format Date to YYYY-MM-DD */
+    function formatDateToInput(d) {
+      if (!d || isNaN(d.getTime())) return '';
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    /* Convert date string (YYYY-MM-DD) or Date object to DD/MM/YYYY */
+    function formatToIndianDate(val) {
+      if (!val) return '';
+      if (typeof val === 'string' && val.includes('-')) {
+        const parts = val.split('-');
+        if (parts.length === 3 && parts[0].length === 4) {
+          return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+      }
+      if (val instanceof Date) {
+        const dd = String(val.getDate()).padStart(2, '0');
+        const mm = String(val.getMonth() + 1).padStart(2, '0');
+        const yyyy = val.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+      }
+      return String(val);
+    }
+
+    /* Day change on Hearing Date change */
+    function onDateChanged() {
+      const val = document.getElementById('inpHearingDate').value;
+      if (val) {
+        const d = new Date(val);
+        if (!isNaN(d.getTime())) {
+          document.getElementById('inpHearingDay').value = marathiDays[d.getDay()];
+        }
+      }
+      updateSinglePreview();
+    }
+
+    function onBatchDateChanged() {
+      const val = document.getElementById('batchHearingDate').value;
+      if (val) {
+        const d = new Date(val);
+        if (!isNaN(d.getTime())) {
+          document.getElementById('batchHearingDay').value = marathiDays[d.getDay()];
+        }
+      }
+      applyBatchDefaultsToUI();
+    }
+
+    /* Switch Tabs */
+    function switchMode(mode) {
+      currentMode = mode;
+      const tabSingle = document.getElementById('tabBtnSingle');
+      const tabBulk = document.getElementById('tabBtnBulk');
+      const viewSingle = document.getElementById('viewSingle');
+      const viewBulk = document.getElementById('viewBulk');
+
+      if (mode === 'single') {
+        tabSingle.classList.add('active');
+        tabBulk.classList.remove('active');
+        viewSingle.style.display = 'grid';
+        viewBulk.style.display = 'none';
+        updateSinglePreview();
+      } else {
+        tabBulk.classList.add('active');
+        tabSingle.classList.remove('active');
+        viewBulk.style.display = 'grid';
+        viewSingle.style.display = 'none';
+        updateBulkPreview();
+      }
+    }
+
+
+
+    /* Set Blank Form (dots only) */
+    function setBlankNotice() {
+      if (currentMode === 'single') {
+        document.getElementById('inpName').value = '';
+        document.getElementById('inpAddress').value = '';
+        document.getElementById('inpClaimNo').value = '';
+        document.getElementById('inpPartNo').value = '';
+        document.getElementById('inpHearingPlace').value = '';
+        document.getElementById('inpHearingTime').value = '';
+        document.getElementById('inpHearingDate').value = '';
+        document.getElementById('inpHearingDay').value = '';
+        document.getElementById('inpIssuePlace').value = '';
+        document.getElementById('inpNoticeDate').value = '';
+        document.getElementById('inpBloName').value = '';
+        document.getElementById('inpBloMobile').value = '';
+        document.getElementById('inpServedDate').value = '';
+        updateSinglePreview();
+        showToast('कोरी नोटीस तयार केली आहे!', 'info');
+      } else {
+        showToast('सिंगल मोडमध्ये जाऊन कोरी नोटीस प्रिंट करू शकता.', 'info');
+      }
+    }
+
+    /* Reset Form */
+    function resetSingleForm() {
+      document.getElementById('inpName').value = '';
+      document.getElementById('inpAddress').value = '';
+      document.getElementById('inpClaimNo').value = '';
+      document.getElementById('inpPartNo').value = '';
+      updateSinglePreview();
+      showToast('फॉर्म रिकामा केला गेला.', 'info');
+    }
+
+    /* =========================================================================
+       NOTICE TEMPLATE GENERATOR - PERFECTION MATCHING OFFICIAL IMAGE
+       ========================================================================= */
+    function generateNoticeHTML(data) {
+      // Helper to return filled value or clean dotted line
+      const formatField = (val, defaultDotsLength = 25) => {
+        if (val && String(val).trim()) {
+          return `<span class="val-highlight">${escapeHTML(String(val).trim())}</span>`;
+        }
+        return `<span class="val-dots">${'.'.repeat(defaultDotsLength)}</span>`;
+      };
+
+      const nameAndAddress = (() => {
+        let text = '';
+        if (data.name && data.address) {
+          text = `${data.name}, पत्ता: ${data.address}`;
+        } else if (data.name) {
+          text = data.name;
+        } else if (data.address) {
+          text = data.address;
+        }
+        if (text) {
+          return `<span class="val-highlight">${escapeHTML(text)}</span>`;
+        }
+        return `<span class="val-dots">${'.'.repeat(55)}</span>`;
+      })();
+
+      const claimNoVal = data.claimNo ? 
+        `<span class="val-highlight">${escapeHTML(data.claimNo)}${data.partNo ? ' (भाग क्र: ' + escapeHTML(data.partNo) + ')' : ''}</span>` : 
+        `<span class="val-dots">${'.'.repeat(30)}</span>`;
+
+      const hearingPlaceVal = formatField(data.hearingPlace, 20);
+      const hearingTimeVal = formatField(data.hearingTime, 14);
+      const hearingDayVal = formatField(data.hearingDay, 14);
+      const hearingDateVal = formatField(formatToIndianDate(data.hearingDate), 16);
+
+      const issuePlaceVal = formatField(data.issuePlace, 18);
+      const noticeDateVal = formatField(formatToIndianDate(data.noticeDate), 16);
+
+      const bloNameVal = formatField(data.bloName ? data.bloName + (data.bloMobile ? ' (' + data.bloMobile + ')' : '') : '', 28);
+      const claimantNameVal = formatField(data.name, 26);
+      const servedDateVal = formatField(formatToIndianDate(data.servedDate || data.noticeDate), 16);
+      const receivedDateVal = formatField(formatToIndianDate(data.servedDate || data.noticeDate), 14);
+
+      return `
+      <div class="notice-page">
+        <div class="notice-border-box">
+
+          <!-- TOP HEADING -->
+          <div class="notice-top-heading">
+            <div class="main-form-title">
+              परिशिष्ट १६ (प्रकरण २, परिच्छेद २.५) | फॉर्म १२
+            </div>
+            <div class="sub-rule-title">
+              [नियम १९(१)(ब)(१)i) पहा दाव्याच्या सुनावणीची] नोटीस
+            </div>
+          </div>
+
+          <!-- ===================================================================
+               PART 1: कार्यालयाची प्रत (OFFICE COPY)
+               =================================================================== -->
+          <div class="notice-part-block">
+            <div class="part-title-label">
+              प्रत (कार्यालयाची प्रत)
+            </div>
+
+            <div class="part-recipient-line">
+              <strong>प्रति,</strong> ${nameAndAddress}
+            </div>
+
+            <div class="part-ref-line">
+              <strong>संदर्भ: दावा क्र.</strong> ${claimNoVal}
+            </div>
+
+            <div class="part-body-para">
+              कृपया नोंद घ्या की, मतदार यादीत तुमचे नाव समाविष्ट करण्याबाबतच्या तुमच्या दाव्याची सुनावणी ${hearingPlaceVal} (ठिकाण) येथे ${hearingTimeVal} वाजता ${hearingDayVal} रोजी (दिनांक: ${hearingDateVal}) होईल. सुनावणीचे वेळेस तुमचे पुरावे घेऊन उपस्थित राहण्याचे निर्देश आहेत.
+            </div>
+
+            <div class="part-footer-row">
+              <div class="part-footer-left">
+                <div>स्थान: ${issuePlaceVal}</div>
+                <div>दिनांक: ${noticeDateVal}</div>
+              </div>
+              <div class="part-footer-right">
+                <div class="officer-sig-space"></div>
+                <div>मतदार नोंदणी अधिकारी</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DIVIDER 1 -->
+          <div class="notice-divider-line">
+            <span class="notice-divider-scissors"><i class="fa-solid fa-scissors"></i></span>
+          </div>
+
+          <!-- ===================================================================
+               PART 2: मूळ प्रत (दावेदाराला बजावण्यात यायची आहे) (CLAIMANT COPY)
+               =================================================================== -->
+          <div class="notice-part-block">
+            <div class="part-title-label">
+              मूळ प्रत (दावेदाराला बजावण्यात यायची आहे)
+            </div>
+
+            <div class="part-recipient-line">
+              <strong>प्रति,</strong> ${nameAndAddress}
+            </div>
+
+            <div class="part-ref-line">
+              <strong>संदर्भ: दावा क्र.</strong> ${claimNoVal}
+            </div>
+
+            <div class="part-body-para">
+              कृपया नोंद घ्या की, मतदार यादीत तुमचे नाव समाविष्ट करण्याबाबतच्या तुमच्या दाव्याची सुनावणी ${hearingPlaceVal} (ठिकाण) येथे ${hearingTimeVal} वाजता ${hearingDayVal} रोजी (दिनांक: ${hearingDateVal}) होईल. सुनावणीचे वेळेस तुमचे पुरावे घेऊन उपस्थित राहण्याचे निर्देश आहेत.
+            </div>
+
+            <div class="part-footer-row">
+              <div class="part-footer-left">
+                <div>स्थान: ${issuePlaceVal}</div>
+                <div>दिनांक: ${noticeDateVal}</div>
+              </div>
+              <div class="part-footer-right">
+                <div class="officer-sig-space"></div>
+                <div>मतदार नोंदणी अधिकारी</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DIVIDER 2 -->
+          <div class="notice-divider-line">
+            <span class="notice-divider-scissors"><i class="fa-solid fa-scissors"></i></span>
+          </div>
+
+          <!-- ===================================================================
+               PART 3: नोटीस बजावल्याचे प्रमाणपत्र (CERTIFICATE OF SERVICE)
+               =================================================================== -->
+          <div class="notice-part-block">
+            <div class="cert-heading">
+              नोटीस बजावल्याचे प्रमाणपत्र
+            </div>
+
+            <div class="cert-row-line">
+              <div><strong>सुनावणीच्या दिनांकाची नोटीस मिळाली.</strong></div>
+              <div>दिनांक: ${receivedDateVal}</div>
+              <div>दावेदार: ${claimantNameVal}</div>
+            </div>
+
+            <div class="cert-body-para">
+              प्रमाणित करण्यात येते की, दावेदाराला वरील नोटीस आज दिनांक: ${servedDateVal} रोजी माझ्याद्वारे ${bloNameVal} यांचेकडून थेट राहत्या घरी बजावण्यात आली आहे.
+            </div>
+
+            <div class="cert-sign-grid">
+              <div class="cert-loc-date">
+                <div>स्थान: ${issuePlaceVal}</div>
+                <div style="margin-top: 3px;">दिनांक: ${servedDateVal}</div>
+              </div>
+
+              <div class="cert-claimant-sig">
+                <div>दावेदाराचे नाव व सही</div>
+              </div>
+
+              <div class="cert-blo-sig">
+                <div>नोटीस बजावणारा अधिकारी</div>
+                <div style="font-size: 9pt; font-weight: 600;">(मतदान केंद्रस्तरीय अधिकारी BLO)</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      `;
+    }
+
+    /* Helper: Escape HTML string */
+    function escapeHTML(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    /* Get data object from Single Form inputs */
+    function getSingleFormData() {
+      return {
+        name: document.getElementById('inpName').value.trim(),
+        address: document.getElementById('inpAddress').value.trim(),
+        claimNo: document.getElementById('inpClaimNo').value.trim(),
+        partNo: document.getElementById('inpPartNo').value.trim(),
+        hearingPlace: document.getElementById('inpHearingPlace').value.trim(),
+        hearingDate: document.getElementById('inpHearingDate').value,
+        hearingDay: document.getElementById('inpHearingDay').value.trim(),
+        hearingTime: document.getElementById('inpHearingTime').value.trim(),
+        issuePlace: document.getElementById('inpIssuePlace').value.trim(),
+        noticeDate: document.getElementById('inpNoticeDate').value,
+        bloName: document.getElementById('inpBloName').value.trim(),
+        bloMobile: document.getElementById('inpBloMobile').value.trim(),
+        servedDate: document.getElementById('inpServedDate').value
+      };
+    }
+
+    /* Update live single preview */
+    function updateSinglePreview() {
+      const data = getSingleFormData();
+      const container = document.getElementById('singleNoticePreview');
+      if (container) {
+        container.innerHTML = generateNoticeHTML(data);
+      }
+    }
+
+    /* Print Single Notice */
+    function printSingleNotice() {
+      const data = getSingleFormData();
+      const printContainer = document.getElementById('print-container');
+      printContainer.innerHTML = generateNoticeHTML(data);
+
+      window.print();
+    }
+
+    /* Export Single Form Data to JSON */
+    function exportSingleNoticeData() {
+      const data = getSingleFormData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `Notice_${data.claimNo || 'Form12'}_${data.name || 'claimant'}.json`;
+      a.click();
+      showToast('माहिती जतन झाली!', 'success');
+    }
+
+    /* =========================================================================
+       BULK EXCEL UPLOAD ENGINE
+       ========================================================================= */
+    function initDragAndDrop() {
+      const dropzone = document.getElementById('bulkDropzone');
+      if (!dropzone) return;
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropzone.classList.add('dragover');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('dragover');
+        });
+      });
+
+      dropzone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0) {
+          handleExcelUpload(files[0]);
+        }
+      });
+    }
+
+    /* Parse Excel File with SheetJS */
+    function handleExcelUpload(file) {
+      if (!file) return;
+
+      showToast('एक्सेल फाईल वाचत आहे...', 'info');
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[firstSheetName];
+          const jsonRows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+          if (!jsonRows || jsonRows.length < 2) {
+            alert('या फाईलमध्ये नोंदी आढळल्या नाहीत.');
+            return;
+          }
+
+          excelRawRows = jsonRows;
+          excelHeaders = (jsonRows[0] || []).map(h => String(h || '').trim());
+
+          // Auto map columns
+          autoMapAndLoadRecords(excelHeaders, jsonRows.slice(1));
+
+        } catch (err) {
+          console.error(err);
+          alert('एक्सेल फाईल वाचताना त्रुटी: ' + err.message);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    /* Auto Column Matching */
+    let columnMap = {
+      name: -1,
+      claimNo: -1,
+      address: -1,
+      partNo: -1,
+      hearingPlace: -1,
+      hearingDate: -1,
+      hearingTime: -1,
+      hearingDay: -1,
+      bloName: -1,
+      issuePlace: -1,
+      noticeDate: -1,
+      servedDate: -1
+    };
+
+    function autoMapAndLoadRecords(headers, rows) {
+      const lowerHeaders = headers.map(h => h.toLowerCase());
+
+      // Helper to find index by match patterns
+      const findCol = (patterns) => {
+        return lowerHeaders.findIndex(h => patterns.some(p => h.includes(p)));
+      };
+
+      columnMap.name = findCol(['दावेदाराचे नाव', 'नाव', 'name', 'claimant', 'elector', 'voter', 'मतदार']);
+      columnMap.claimNo = findCol(['दावा क्र', 'दावा', 'claim', 'form', 'ref', 'epic', 'ओळखपत्र', 'अर्ज']);
+      columnMap.address = findCol(['पत्ता', 'address', 'गाव', 'village', 'residence']);
+      columnMap.partNo = findCol(['भाग क्र', 'part', 'बूथ', 'station']);
+      columnMap.hearingPlace = findCol(['ठिकाण', 'place', 'सुनावणी ठिकाण', 'office']);
+      columnMap.hearingDate = findCol(['सुनावणी दिनांक', 'hearing date', 'd1', 'तारीख', 'दिनांक', 'date']);
+      columnMap.hearingTime = findCol(['वेळ', 'time', 'वाजता']);
+      columnMap.hearingDay = findCol(['वार', 'day']);
+      columnMap.bloName = findCol(['blo', 'बीएलओ', 'अधिकारी', 'officer']);
+      columnMap.issuePlace = findCol(['स्थान', 'issue place', 'शहर', 'tahsil']);
+      columnMap.noticeDate = findCol(['नोटीस दिनांक', 'notice date']);
+      columnMap.servedDate = findCol(['बजावणी दिनांक', 'serving date']);
+
+      // Build parsed records
+      processRowsToRecords(rows);
+    }
+
+    function processRowsToRecords(rows) {
+      const batchPlace = document.getElementById('batchPlace').value.trim();
+      const batchHearingDate = document.getElementById('batchHearingDate').value;
+      const batchHearingDay = document.getElementById('batchHearingDay').value.trim();
+      const batchHearingTime = document.getElementById('batchHearingTime').value.trim();
+      const batchIssuePlace = document.getElementById('batchIssuePlace').value.trim();
+      const batchNoticeDate = document.getElementById('batchNoticeDate').value;
+      const batchServedDate = document.getElementById('batchServedDate').value;
+      const batchBloName = document.getElementById('batchBloName').value.trim();
+
+      bulkRecords = [];
+      selectedIndices.clear();
+
+      rows.forEach((row, idx) => {
+        if (!row || row.length === 0) return;
+
+        const getVal = (colIdx) => (colIdx >= 0 && row[colIdx] != null ? String(row[colIdx]).trim() : '');
+
+        const name = getVal(columnMap.name);
+        const claimNo = getVal(columnMap.claimNo);
+        const address = getVal(columnMap.address);
+        const partNo = getVal(columnMap.partNo);
+
+        // If both name and claimNo are empty, skip row
+        if (!name && !claimNo) return;
+
+        let hearingDate = getVal(columnMap.hearingDate) || batchHearingDate;
+        let hearingDay = getVal(columnMap.hearingDay) || batchHearingDay;
+        let hearingTime = getVal(columnMap.hearingTime) || batchHearingTime;
+        let hearingPlace = getVal(columnMap.hearingPlace) || batchPlace;
+        let issuePlace = getVal(columnMap.issuePlace) || batchIssuePlace;
+        let noticeDate = getVal(columnMap.noticeDate) || batchNoticeDate;
+        let servedDate = getVal(columnMap.servedDate) || batchServedDate;
+        let bloName = getVal(columnMap.bloName) || batchBloName;
+
+        // Auto-calculate day if date is provided and day is empty
+        if (hearingDate && !hearingDay) {
+          const d = new Date(hearingDate);
+          if (!isNaN(d.getTime())) hearingDay = marathiDays[d.getDay()];
+        }
+
+        const record = {
+          id: idx + 1,
+          name: name,
+          claimNo: claimNo || `दावा क्र. ${idx + 1}`,
+          address: address || '',
+          partNo: partNo || '',
+          hearingPlace: hearingPlace,
+          hearingDate: hearingDate,
+          hearingTime: hearingTime,
+          hearingDay: hearingDay,
+          issuePlace: issuePlace,
+          noticeDate: noticeDate,
+          servedDate: servedDate,
+          bloName: bloName,
+          bloMobile: ''
+        };
+
+        bulkRecords.push(record);
+        selectedIndices.add(bulkRecords.length - 1); // select all by default
+      });
+
+      if (bulkRecords.length > 0) {
+        currentBulkPreviewIndex = 0;
+        document.getElementById('btnBulkPrintAll').disabled = false;
+        document.getElementById('btnBulkPrintSelected').disabled = false;
+        renderBulkTable();
+        updateBulkPreview();
+        showToast(`${bulkRecords.length} दावेदारांची माहिती यशस्वीरीत्या लोड झाली!`, 'success');
+      } else {
+        alert('फाईलमध्ये योग्य नोंदी आढळल्या नाहीत.');
+      }
+    }
+
+    /* Apply Batch settings changes to loaded UI records */
+    function applyBatchDefaultsToUI() {
+      if (bulkRecords.length === 0) return;
+
+      const batchPlace = document.getElementById('batchPlace').value.trim();
+      const batchHearingDate = document.getElementById('batchHearingDate').value;
+      const batchHearingDay = document.getElementById('batchHearingDay').value.trim();
+      const batchHearingTime = document.getElementById('batchHearingTime').value.trim();
+      const batchIssuePlace = document.getElementById('batchIssuePlace').value.trim();
+      const batchNoticeDate = document.getElementById('batchNoticeDate').value;
+      const batchServedDate = document.getElementById('batchServedDate').value;
+      const batchBloName = document.getElementById('batchBloName').value.trim();
+
+      bulkRecords.forEach(r => {
+        if (!r.hearingPlace || r.hearingPlace === batchPlace) r.hearingPlace = batchPlace;
+        if (!r.hearingDate || r.hearingDate === batchHearingDate) r.hearingDate = batchHearingDate;
+        if (!r.hearingDay || r.hearingDay === batchHearingDay) r.hearingDay = batchHearingDay;
+        if (!r.hearingTime || r.hearingTime === batchHearingTime) r.hearingTime = batchHearingTime;
+        if (!r.issuePlace || r.issuePlace === batchIssuePlace) r.issuePlace = batchIssuePlace;
+        if (!r.noticeDate || r.noticeDate === batchNoticeDate) r.noticeDate = batchNoticeDate;
+        if (!r.servedDate || r.servedDate === batchServedDate) r.servedDate = batchServedDate;
+        if (!r.bloName || r.bloName === batchBloName) r.bloName = batchBloName;
+      });
+
+      renderBulkTable();
+      updateBulkPreview();
+      showToast('सामाईक बॅच तपशील सर्व नोंदींना लागू केले!', 'info');
+    }
+
+    /* Render Bulk Table */
+    function renderBulkTable() {
+      const tbody = document.getElementById('bulkTableBody');
+      const statsBadge = document.getElementById('bulkStatsBadge');
+      const selectedCountText = document.getElementById('selectedCountText');
+      const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+
+      statsBadge.innerText = `एकूण नोंदी: ${bulkRecords.length} | निवडलेली: ${selectedIndices.size}`;
+      selectedCountText.innerText = selectedIndices.size;
+      selectAllCheckbox.checked = bulkRecords.length > 0 && selectedIndices.size === bulkRecords.length;
+
+      if (bulkRecords.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 40px 10px; color: #94a3b8;">
+              <i class="fa-solid fa-file-excel" style="font-size: 32px; display: block; margin-bottom: 10px;"></i>
+              कोणतीही एक्सेल फाईल लोड केलेली नाही.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const searchQuery = (document.getElementById('tableSearchInput')?.value || '').toLowerCase().trim();
+
+      let html = '';
+      bulkRecords.forEach((r, idx) => {
+        if (searchQuery) {
+          const match = r.name.toLowerCase().includes(searchQuery) ||
+                        r.claimNo.toLowerCase().includes(searchQuery) ||
+                        r.address.toLowerCase().includes(searchQuery);
+          if (!match) return;
+        }
+
+        const isSelected = selectedIndices.has(idx);
+        const isCurrentPreview = idx === currentBulkPreviewIndex;
+
+        html += `
+          <tr class="${isSelected ? 'selected' : ''}" style="${isCurrentPreview ? 'border-left: 4px solid var(--primary-mid);' : ''}">
+            <td style="text-align: center;">
+              <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelectRecord(${idx}, this.checked)">
+            </td>
+            <td>${idx + 1}</td>
+            <td><strong>${escapeHTML(r.name)}</strong></td>
+            <td><span class="badge-claim">${escapeHTML(r.claimNo)}</span></td>
+            <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHTML(r.address)}">${escapeHTML(r.address || '-')}</td>
+            <td>${formatToIndianDate(r.hearingDate)} (${escapeHTML(r.hearingTime || '-')})</td>
+            <td style="text-align: center; white-space: nowrap;">
+              <button type="button" class="btn-quick" style="padding: 4px 8px; font-size: 0.78rem;" onclick="setBulkPreviewIndex(${idx})" title="प्रीव्ह्यू पहा">
+                <i class="fa-solid fa-eye" style="color: var(--gov-green);"></i>
+              </button>
+              <button type="button" class="btn-quick" style="padding: 4px 8px; font-size: 0.78rem;" onclick="printSpecificRecord(${idx})" title="फक्त ही नोटीस प्रिंट करा">
+                <i class="fa-solid fa-print" style="color: #0284c7;"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    /* Filter bulk table */
+    function filterBulkTable() {
+      renderBulkTable();
+    }
+
+    /* Checkbox Handlers */
+    function toggleSelectRecord(idx, isChecked) {
+      if (isChecked) {
+        selectedIndices.add(idx);
+      } else {
+        selectedIndices.delete(idx);
+      }
+      renderBulkTable();
+    }
+
+    function toggleSelectAll(isChecked) {
+      if (isChecked) {
+        bulkRecords.forEach((_, idx) => selectedIndices.add(idx));
+      } else {
+        selectedIndices.clear();
+      }
+      renderBulkTable();
+    }
+
+    /* Bulk Preview Navigation */
+    function setBulkPreviewIndex(idx) {
+      if (idx >= 0 && idx < bulkRecords.length) {
+        currentBulkPreviewIndex = idx;
+        renderBulkTable();
+        updateBulkPreview();
+      }
+    }
+
+    function navigateBulkPreview(dir) {
+      const newIdx = currentBulkPreviewIndex + dir;
+      if (newIdx >= 0 && newIdx < bulkRecords.length) {
+        setBulkPreviewIndex(newIdx);
+      }
+    }
+
+    function updateBulkPreview() {
+      const container = document.getElementById('bulkNoticePreview');
+      const title = document.getElementById('bulkPreviewTitle');
+      const indicator = document.getElementById('bulkNavIndicator');
+
+      if (!container) return;
+
+      if (bulkRecords.length === 0) {
+        container.innerHTML = `
+          <div style="background: #ffffff; width: 210mm; min-height: 297mm; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 16px;">
+            <div>
+              <i class="fa-solid fa-file-excel" style="font-size: 48px; margin-bottom: 12px; display: block; text-align: center;"></i>
+              कृपया डाव्या बाजूला एक्सेल फाईल अपलोड करा.
+            </div>
+          </div>
+        `;
+        if (title) title.innerHTML = `<i class="fa-solid fa-eye"></i> प्रीव्ह्यू उपलब्ध नाही`;
+        if (indicator) indicator.innerText = '० / ०';
+        return;
+      }
+
+      const rec = bulkRecords[currentBulkPreviewIndex] || bulkRecords[0];
+      container.innerHTML = generateNoticeHTML(rec);
+
+      if (title) {
+        title.innerHTML = `<i class="fa-solid fa-eye" style="color: var(--gov-green);"></i> प्रीव्ह्यू: <strong>${escapeHTML(rec.name)}</strong> (दावा: ${escapeHTML(rec.claimNo)})`;
+      }
+      if (indicator) {
+        indicator.innerText = `${currentBulkPreviewIndex + 1} / ${bulkRecords.length}`;
+      }
+    }
+
+    /* Print Single Record from Table */
+    function printSpecificRecord(idx) {
+      const rec = bulkRecords[idx];
+      if (!rec) return;
+
+      const printContainer = document.getElementById('print-container');
+      printContainer.innerHTML = generateNoticeHTML(rec);
+      window.print();
+    }
+
+    /* Print Current Bulk Preview */
+    function printCurrentBulkPreview() {
+      if (bulkRecords.length > 0) {
+        printSpecificRecord(currentBulkPreviewIndex);
+      }
+    }
+
+    /* Print All or Selected Bulk Notices */
+    function printBulkNotices(onlySelected = false) {
+      if (bulkRecords.length === 0) {
+        alert('कोणत्याही नोंदी लोड केलेल्या नाहीत.');
+        return;
+      }
+
+      const targetRecords = [];
+      bulkRecords.forEach((rec, idx) => {
+        if (!onlySelected || selectedIndices.has(idx)) {
+          targetRecords.push(rec);
+        }
+      });
+
+      if (targetRecords.length === 0) {
+        alert('कृपया किमान एक नोंद निवडा.');
+        return;
+      }
+
+      showToast(`${targetRecords.length} नोटीस प्रिंटसाठी तयार होत आहेत...`, 'info');
+
+      const printContainer = document.getElementById('print-container');
+      printContainer.innerHTML = '';
+
+      let combinedHTML = '';
+      targetRecords.forEach(rec => {
+        combinedHTML += generateNoticeHTML(rec);
+      });
+
+      printContainer.innerHTML = combinedHTML;
+
+      // Small delay to ensure browser layout parses all pages
+      setTimeout(() => {
+        window.print();
+      }, 300);
+    }
+
+    /* Clear Bulk Data */
+    function clearBulkData() {
+      if (confirm('सर्व लोड केलेला एक्सेल डेटा हटवायचा आहे का?')) {
+        bulkRecords = [];
+        selectedIndices.clear();
+        currentBulkPreviewIndex = 0;
+        document.getElementById('btnBulkPrintAll').disabled = true;
+        document.getElementById('btnBulkPrintSelected').disabled = true;
+        document.getElementById('excelFileInput').value = '';
+        renderBulkTable();
+        updateBulkPreview();
+        showToast('डेटा हटवला गेला.', 'info');
+      }
+    }
+
+    /* =========================================================================
+       COLUMN MAPPER MODAL LOGIC
+       ========================================================================= */
+    function openColumnMapperModal() {
+      if (excelHeaders.length === 0) {
+        alert('कृपया प्रथम एक एक्सेल फाईल अपलोड करा.');
+        return;
+      }
+
+      const modal = document.getElementById('columnMapperModal');
+      modal.classList.add('active');
+
+      const selectFields = [
+        'mapColName', 'mapColClaimNo', 'mapColAddress', 'mapColPartNo',
+        'mapColHearingPlace', 'mapColHearingDate', 'mapColHearingTime',
+        'mapColHearingDay', 'mapColBloName', 'mapColIssuePlace',
+        'mapColNoticeDate', 'mapColServedDate'
+      ];
+
+      selectFields.forEach(fId => {
+        const sel = document.getElementById(fId);
+        sel.innerHTML = '<option value="-1">-- उपलब्ध नाही / सामाईक मूल्य वापरा --</option>';
+        excelHeaders.forEach((h, hIdx) => {
+          sel.innerHTML += `<option value="${hIdx}">कॉलम ${hIdx + 1}: ${escapeHTML(h)}</option>`;
+        });
+      });
+
+      // Pre-select current mappings
+      document.getElementById('mapColName').value = columnMap.name;
+      document.getElementById('mapColClaimNo').value = columnMap.claimNo;
+      document.getElementById('mapColAddress').value = columnMap.address;
+      document.getElementById('mapColPartNo').value = columnMap.partNo;
+      document.getElementById('mapColHearingPlace').value = columnMap.hearingPlace;
+      document.getElementById('mapColHearingDate').value = columnMap.hearingDate;
+      document.getElementById('mapColHearingTime').value = columnMap.hearingTime;
+      document.getElementById('mapColHearingDay').value = columnMap.hearingDay;
+      document.getElementById('mapColBloName').value = columnMap.bloName;
+      document.getElementById('mapColIssuePlace').value = columnMap.issuePlace;
+      document.getElementById('mapColNoticeDate').value = columnMap.noticeDate;
+      document.getElementById('mapColServedDate').value = columnMap.servedDate;
+    }
+
+    function closeColumnMapperModal() {
+      document.getElementById('columnMapperModal').classList.remove('active');
+    }
+
+    function applyManualColumnMapping() {
+      columnMap.name = parseInt(document.getElementById('mapColName').value);
+      columnMap.claimNo = parseInt(document.getElementById('mapColClaimNo').value);
+      columnMap.address = parseInt(document.getElementById('mapColAddress').value);
+      columnMap.partNo = parseInt(document.getElementById('mapColPartNo').value);
+      columnMap.hearingPlace = parseInt(document.getElementById('mapColHearingPlace').value);
+      columnMap.hearingDate = parseInt(document.getElementById('mapColHearingDate').value);
+      columnMap.hearingTime = parseInt(document.getElementById('mapColHearingTime').value);
+      columnMap.hearingDay = parseInt(document.getElementById('mapColHearingDay').value);
+      columnMap.bloName = parseInt(document.getElementById('mapColBloName').value);
+      columnMap.issuePlace = parseInt(document.getElementById('mapColIssuePlace').value);
+      columnMap.noticeDate = parseInt(document.getElementById('mapColNoticeDate').value);
+      columnMap.servedDate = parseInt(document.getElementById('mapColServedDate').value);
+
+      if (excelRawRows.length > 1) {
+        processRowsToRecords(excelRawRows.slice(1));
+      }
+
+      closeColumnMapperModal();
+      showToast('कॉलम मॅपिंग यशस्वीपणे अपडेट केले!', 'success');
+    }
+
+    /* =========================================================================
+       SAMPLE EXCEL TEMPLATE GENERATOR & DOWNLOAD
+       ========================================================================= */
+    function downloadSampleExcel() {
+      try {
+        const sampleRows = [
+          {
+            "अनुक्रमांक": 1,
+            "दावेदाराचे नाव": "उदा. रमेश विठ्ठल पाटील",
+            "दावा क्र": "F6/2026/000001",
+            "पत्ता": "घर क्र. १२, मु.पो. गाव, तालुका, जिल्हा",
+            "भाग क्र": "१२",
+            "सुनावणी ठिकाण": "तहसील कार्यालय (निवडणूक शाखा)",
+            "सुनावणी दिनांक": "2026-10-25",
+            "सुनावणी वेळ": "सकाळी ११:०० वाजता",
+            "वार": "रविवार",
+            "BLO चे नाव": "श्री. ए. बी. पाटील (BLO)",
+            "स्थान": "तालुका ठिकाण",
+            "नोटीस दिनांक": "2026-10-18"
+          }
+        ];
+
+        const ws = XLSX.utils.json_to_sheet(sampleRows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "दावेदार यादी");
+
+        XLSX.writeFile(wb, "Form12_Notice_Sample_List.xlsx");
+        showToast('नमुना एक्सेल फाईल डाऊनलोड झाली!', 'success');
+      } catch (err) {
+        console.error(err);
+        alert('एक्सेल तयार करताना त्रुटी: ' + err.message);
+      }
+    }
+
+    /* Toast Notification Helper */
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toastBox');
+      const toastMsg = document.getElementById('toastMessage');
+
+      toast.className = `toast-box ${type} show`;
+      toastMsg.innerText = msg;
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+  </script>
+</body>
+</html>

@@ -1101,6 +1101,18 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "hearing-search.html",
     isInternal: true
   },
+  // 📜 फॉर्म १२ नोटीस जनरेटर (परिशिष्ट १६ - दाव्याच्या सुनावणीची नोटीस)
+  {
+    id: "link-form12-notice",
+    category: "शासकीय सेवा व शोध",
+    icon: "fa-solid fa-file-signature",
+    title_mr: "📜 फॉर्म १२ नोटीस जनरेटर (परिशिष्ट १६ - सुनावणी नोटीस व बजावणी प्रमाणपत्र)",
+    title_en: "Form 12 Hearing Notice Generator (Appendix 16)",
+    desc_mr: "मतदार नोंदणी नियम १९६० च्या नियम १९(१)(ब)(१)i नुसार दाव्याच्या सुनावणीची नोटीस व बजावणी प्रमाणपत्र सिंगल किंवा बल्क एक्सेलद्वारे झटपट तयार व प्रिंट करा.",
+    desc_en: "Generate official Form 12 voter claim hearing notices and service certificates matching Appendix 16 with single or bulk Excel upload.",
+    url: "form12-notice-generator.html",
+    isInternal: true
+  },
   // 📋 नवीन विशेष शासकीय फॉर्म्स व अर्ज जनरेटर (New Government Form Generators)
   {
     id: "link-idsign-apply-dsc",
