@@ -47,6 +47,7 @@
       'ghareli-kamgar': 'GHR',
       'ghareli-kamgar-sangnakikaran': 'GKS',
       'pikpera': 'PIK',
+      'samaik-sahmatipatra': 'SMP',
       'eaadhaar-print': 'EAD',
       'aero': 'AER',
       'aadhaar-annexure': 'ANX'
@@ -78,6 +79,7 @@
       'ghareli-kamgar': 'महाराष्ट्र घरेलू कामगार नोंदणी अर्ज (नमुना च)',
       'ghareli-kamgar-sangnakikaran': 'घरेलू कामगार संगणकीकरण माहिती व मालकाचे प्रमाणपत्र',
       'pikpera': 'ई-पीक पाहणी / पीकपेरा स्वयंघोषणापत्र',
+      'samaik-sahmatipatra': 'फळपिक विमा सामाईक सहमतीपत्र',
       'eaadhaar-print': 'e-Aadhaar PVC कार्ड प्रिंट',
       'aero': 'Aero ई-सेवा अहवाल',
       'aadhaar-annexure': 'आधार जन्मदिनांक सुधारणा शपथपत्र (लेजर पेपर)'

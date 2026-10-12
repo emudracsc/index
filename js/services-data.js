@@ -1053,6 +1053,18 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "Pikpera.html",
     isInternal: true
   },
+  // 👥 हवामान आधारीत फळपिक विमा सामाईक सहमतीपत्र २०२६-२७
+  {
+    id: "link-samaik-sahmatipatra",
+    category: "शेतकरी व कृषी योजना",
+    icon: "fa-solid fa-users",
+    title_mr: "👥 फळपिक विमा सामाईक सहमतीपत्र २०२६-२७ (Co-holders NOC)",
+    title_en: "Fruit Crop Insurance Joint Co-holders Consent Form",
+    desc_mr: "हवामान आधारीत फळपिक विम्यासाठी सामाईक खातेदारांचे सहमतीपत्र (डायनॅमिक सहखातेदार तक्ता, कायदेशीर हमीपत्र व १-पानावर अचूक A4 प्रिंट).",
+    desc_en: "Official Co-holders Consent & No Objection Certificate generator for weather based fruit crop insurance scheme with dynamic member list and A4 print.",
+    url: "samaik-sahmatipatra.html",
+    isInternal: true
+  },
   // 🌟 ई मुद्रा हब (eMudra Hub - All-in-One Digital Printing & Studio)
   {
     id: "link-emudra-hub",
