@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>आधार ऑपरेटर परीक्षा ऑथोरायझेशन लेटर जनरेटर | UIDAI Annexure 'A' Generator</title>
+    <meta name="description" content="UIDAI ECMP व CELC ऑपरेटर / सुपरवायझर परीक्षेसाठी अधिकृत ऑथोरायझेशन लेटर (Annexure 'A') जनरेटर. MahaIT, CSC, IPPB साठी त्वरित A4 प्रिंट व PDF डाऊनलोड.">
+    <meta name="keywords" content="UIDAI Authorization Letter, Annexure A, ECMP Operator Exam, CELC Operator Exam, MahaIT 2821, Aadhaar Operator Exam Letter, CSC Aadhaar">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Supabase DB & Universal Form History if available -->
+    <script src="js/supabase-db.js"></script>
+    <script src="js/user-auth.js"></script>
+    <script src="js/universal-form-history.js"></script>
+
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --primary-blue: #1e40af;
+            --primary-indigo: #312e81;
+            --accent-gold: #d97706;
+            --accent-green: #059669;
+            --bg-body: #0f172a;
+            --panel-bg: #1e293b;
+            --panel-card: #273549;
+            --panel-border: #334155;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --input-bg: #0f172a;
+            --input-border: #475569;
+            --input-focus: #3b82f6;
+            --paper-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Mukta', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* -------------------------------------------------------------
+           TOP NAVIGATION BAR
+        ------------------------------------------------------------- */
+        .top-navbar {
+            background: linear-gradient(135deg, #091322 0%, #1e1b4b 50%, #0f172a 100%);
+            border-bottom: 2px solid #f59e0b;
+            color: #ffffff;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .brand-title h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-title p {
+            font-size: 0.76rem;
+            color: #cbd5e1;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-home {
+            background: rgba(255, 255, 255, 0.12);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .btn-home:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .btn-sample {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+        .btn-sample:hover {
+            background: linear-gradient(135deg, #0369a1, #075985);
+            transform: translateY(-1px);
+        }
+
+        .btn-reset {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .btn-reset:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+            font-size: 0.95rem;
+            padding: 9px 20px;
+        }
+        .btn-print:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+        }
+
+        /* -------------------------------------------------------------
+           MAIN SPLIT WORKSPACE
+        ------------------------------------------------------------- */
+        .workspace-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 72px);
+            overflow: hidden;
+        }
+
+        /* LEFT SIDE: FORM EDITOR PANEL */
+        .editor-sidebar {
+            width: 480px;
+            min-width: 420px;
+            background: var(--panel-bg);
+            border-right: 1px solid var(--panel-border);
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* RIGHT SIDE: LIVE A4 PREVIEW */
+        .preview-viewport {
+            flex: 1;
+            background: #475569;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 20px 80px 20px;
+            position: relative;
+        }
+
+        /* -------------------------------------------------------------
+           EDITOR ACCORDIONS & FORM CARDS
+        ------------------------------------------------------------- */
+        .form-card {
+            background: var(--panel-card);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .form-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .form-card-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-card-title i {
+            color: #f59e0b;
+        }
+
+        .badge-preset {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-label span.req {
+            color: #f87171;
+        }
+
+        .form-control {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        .form-help {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        /* Preset Buttons Grid */
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .btn-preset-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+            padding: 7px 10px;
+            border-radius: 8px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-preset-chip:hover, .btn-preset-chip.active {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: #f59e0b;
+            color: #fbbf24;
+        }
+
+        /* Photo Upload & Preview in editor */
+        .photo-uploader-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px dashed #475569;
+        }
+
+        .photo-thumb-preview {
+            width: 58px;
+            height: 70px;
+            border: 1px solid #64748b;
+            background: #0f172a;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-size: 0.7rem;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .photo-thumb-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .file-upload-btn-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .btn-upload {
+            background: #3b82f6;
+            color: #ffffff;
+            font-size: 0.78rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            width: fit-content;
+        }
+        .btn-upload:hover {
+            background: #2563eb;
+        }
+
+        .btn-remove-photo {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            font-size: 0.72rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        /* -------------------------------------------------------------
+           A4 SHEET LIVE PREVIEW (WYSIWYG)
+        ------------------------------------------------------------- */
+        .a4-paper-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sheet-zoom-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 20px;
+            color: #e2e8f0;
+            font-size: 0.78rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sheet-zoom-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sheet-zoom-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* THE EXACT A4 SHEET */
+        .a4-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            background: #ffffff;
+            color: #000000;
+            box-shadow: var(--paper-shadow);
+            padding: 22mm 24mm 22mm 24mm;
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            line-height: 1.6;
+            transform-origin: top center;
+            transition: transform 0.2s ease;
+        }
+
+        /* Top Right Annexure */
+        .doc-annexure-header {
+            text-align: right;
+            font-size: 11pt;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 25px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Main Document Title */
+        .doc-title-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .doc-main-title {
+            font-size: 13pt;
+            font-weight: 700;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            color: #000000;
+            letter-spacing: 0.2px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Letter No & Date Row */
+        .doc-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 35px;
+            font-size: 11pt;
+            font-family: Arial, sans-serif;
+        }
+
+        .meta-letter-no {
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .meta-letter-val {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-date {
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .meta-date-val {
+            font-weight: 700;
+        }
+
+        /* Subtitle: TO WHOM IT MAY CONCERN */
+        .doc-salutation-center {
+            text-align: center;
+            font-size: 12.5pt;
+            font-weight: 700;
+            margin-bottom: 35px;
+            letter-spacing: 0.5px;
+            color: #000000;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Main Letter Body Paragraphs */
+        .doc-body-section {
+            font-size: 11pt;
+            color: #111827;
+            line-height: 2.1;
+            font-family: Arial, sans-serif;
+            text-align: justify;
+        }
+
+        .body-para {
+            margin-bottom: 22px;
+            text-align: justify;
+        }
+
+        /* Fillable blank value styling */
+        .doc-field-val {
+            font-weight: 800;
+            color: #000000;
+            text-transform: uppercase;
+            padding: 0 4px;
+            display: inline-block;
+        }
+
+        .doc-field-val.dotted-line {
+            border-bottom: 1.5px dotted #000000;
+            min-width: 80px;
+        }
+
+        .doc-dots {
+            display: none;
+            color: #4b5563;
+            letter-spacing: 1px;
+            word-break: break-all;
+        }
+
+        body.show-dots-mode .doc-dots {
+            display: inline;
+        }
+
+        .meta-letter-val.empty-val::after {
+            content: "";
+        }
+
+        body.show-dots-mode .meta-letter-val.empty-val::after {
+            content: ".......................";
+            color: #4b5563;
+        }
+
+        /* Bottom Section: Boxes for Signature & Candidate Photo */
+        .doc-bottom-boxes {
+            margin-top: 55px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+        }
+
+        /* Signature Stamp Box (Left) */
+        .signature-box-wrapper {
+            flex: 1;
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .stamp-rect-box {
+            width: 100%;
+            height: 120px;
+            border: 1px solid #111827;
+            position: relative;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .stamp-rect-box img.uploaded-stamp {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .stamp-watermark-hint {
+            font-size: 8.5pt;
+            color: #9ca3af;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .signature-label {
+            font-size: 10pt;
+            font-weight: 700;
+            color: #000000;
+            line-height: 1.3;
+        }
+
+        /* Photo Box (Right) */
+        .photo-box-wrapper {
+            width: 135px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .candidate-photo-frame {
+            width: 130px;
+            height: 165px;
+            border: 1px solid #111827;
+            position: relative;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .candidate-photo-frame img.uploaded-photo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 2;
+        }
+
+        /* Cross stamp overlay effect on photo if enabled */
+        .cross-stamp-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-35deg);
+            border: 2px dashed rgba(220, 38, 38, 0.45);
+            color: rgba(220, 38, 38, 0.55);
+            font-size: 8pt;
+            font-weight: 700;
+            padding: 2px 6px;
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 3;
+            white-space: nowrap;
+        }
+
+        .photo-placeholder-text {
+            font-size: 9.5pt;
+            font-family: Arial, sans-serif;
+            color: #111827;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        /* Document Page Footer */
+        .doc-page-footer {
+            margin-top: auto;
+            padding-top: 40px;
+            text-align: center;
+            font-size: 10pt;
+            font-family: Arial, sans-serif;
+            color: #111827;
+            font-weight: 600;
+        }
+
+        /* -------------------------------------------------------------
+           SAVED HISTORY MODAL
+        ------------------------------------------------------------- */
+        .history-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .history-modal-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            width: 100%;
+            max-width: 650px;
+            max-height: 85vh;
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .history-modal-header {
+            padding: 16px 20px;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-modal-header h3 {
+            font-size: 1rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .history-modal-body {
+            padding: 16px 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .history-item-card {
+            background: #273549;
+            border: 1px solid #3b4b61;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-info strong {
+            color: #f1f5f9;
+            font-size: 0.9rem;
+            display: block;
+        }
+
+        .history-info span {
+            color: #94a3b8;
+            font-size: 0.78rem;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-hist-load {
+            background: #0284c7;
+            color: #ffffff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+
+        .btn-hist-delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+
+        /* -------------------------------------------------------------
+           TOAST NOTIFICATION
+        ------------------------------------------------------------- */
+        .toast-popup {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #ffffff;
+            border: 1px solid #10b981;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toast-popup.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* -------------------------------------------------------------
+           PRINT MEDIA QUERIES (CRITICAL: EXACT CLEAN 1-PAGE A4)
+        ------------------------------------------------------------- */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+
+            html, body {
+                width: 210mm;
+                height: 297mm;
+                background: #ffffff !important;
+                color: #000000 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+            }
+
+            /* Hide everything except the exact sheet */
+            .top-navbar,
+            .editor-sidebar,
+            .sheet-zoom-bar,
+            .history-modal-overlay,
+            .toast-popup,
+            .no-print {
+                display: none !important;
+            }
+
+            .workspace-container {
+                display: block !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+            .preview-viewport {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                overflow: visible !important;
+                display: block !important;
+            }
+
+            .a4-paper-wrapper {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .a4-sheet {
+                width: 210mm !important;
+                height: 297mm !important;
+                min-height: 297mm !important;
+                max-height: 297mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 24mm 22mm 20mm 22mm !important;
+                transform: none !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            /* CRITICAL: Never show dots (...................) in print */
+            .doc-dots {
+                display: none !important;
+                visibility: hidden !important;
+                width: 0 !important;
+                height: 0 !important;
+                font-size: 0 !important;
+                opacity: 0 !important;
+            }
+
+            .doc-field-val.dotted-line {
+                border-bottom: none !important;
+            }
+
+            .meta-letter-val.empty-val::after {
+                content: "" !important;
+                display: none !important;
+            }
+
+            .stamp-rect-box, .candidate-photo-frame {
+                border: 1px solid #000000 !important;
+            }
+        }
+
+        /* Responsive Layout for smaller screens */
+        @media (max-width: 1024px) {
+            .workspace-container {
+                flex-direction: column;
+                height: auto;
+                overflow: visible;
+            }
+            .editor-sidebar {
+                width: 100%;
+                min-width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--panel-border);
+            }
+            .preview-viewport {
+                height: auto;
+                padding: 20px 10px;
+            }
+            .a4-sheet {
+                transform: scale(0.85);
+                transform-origin: top center;
+                margin-bottom: -150px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .a4-sheet {
+                transform: scale(0.55);
+                transform-origin: top center;
+                margin-bottom: -450px;
+            }
+            .top-navbar {
+                padding: 10px 14px;
+            }
+            .nav-actions {
+                width: 100%;
+                margin-top: 8px;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🌟 TOP NAVBAR -->
+    <header class="top-navbar">
+        <div class="brand-section">
+            <div class="brand-logo-icon">
+                <i class="fa-solid fa-file-shield"></i>
+            </div>
+            <div class="brand-title">
+                <h1>UIDAI ऑथोरायझेशन लेटर जनरेटर <span style="font-size: 0.72rem; background: rgba(245, 158, 11, 0.2); color: #fbbf24; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Annexure 'A'</span></h1>
+                <p>ECMP व CELC ऑपरेटर / सुपरवायझर परीक्षा अधिकृत संमतीपत्र (A4 Standard Print)</p>
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <button class="btn btn-sample" onclick="loadSampleData()" title="नमुना माहिती भरून त्वरित प्रिव्ह्यू पहा">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> <span>नमुना माहिती भरा</span>
+            </button>
+            <button class="btn btn-home" onclick="openHistoryModal()" title="पूर्वी तयार केलेल्या पावत्या पहा">
+                <i class="fa-solid fa-clock-rotate-left"></i> <span>इतिहास</span>
+            </button>
+            <button class="btn btn-reset" onclick="confirmReset()" title="सर्व माहिती रिकामी करा">
+                <i class="fa-solid fa-rotate-right"></i> <span>रिसेट</span>
+            </button>
+            <button class="btn btn-print" onclick="window.print()" title="A4 साइज प्रिंट करा किंवा PDF म्हणून सेव्ह करा">
+                <i class="fa-solid fa-print"></i> <span>प्रिंट / PDF सेव्ह</span>
+            </button>
+            <a href="emudra-hub.html" class="btn btn-home" title="eMudra Hub वर परत जा">
+                <i class="fa-solid fa-arrow-left"></i> <span>हब वर जा</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- 🌟 WORKSPACE CONTAINER -->
+    <div class="workspace-container">
+
+        <!-- 📝 LEFT SIDE: CONTROLS & FORM INPUTS -->
+        <aside class="editor-sidebar">
+
+            <!-- Card 0: Quick Agency Presets -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-title">
+                        <i class="fa-solid fa-building-flag"></i> एजन्सी / रजिस्ट्रार प्रीसेट्स
+                    </div>
+                    <span class="badge-preset">१-क्लिक भरा</span>
+                </div>
+                <div class="preset-buttons">
+                    <button type="button" class="btn-preset-chip active" onclick="applyPreset('mahait')">
+                        <i class="fa-solid fa-landmark"></i> MahaIT (Gov of MH/127)
+                    </button>
+                    <button type="button" class="btn-preset-chip" onclick="applyPreset('csc')">
+                        <i class="fa-solid fa-laptop-code"></i> CSC e-Gov (2061/2906)
+                    </button>
+                    <button type="button" class="btn-preset-chip" onclick="applyPreset('ippb')">
+                        <i class="fa-solid fa-envelopes-bulk"></i> IPPB डाक विभाग (853/2679)
+                    </button>
+                    <button type="button" class="btn-preset-chip" onclick="applyPreset('bank')">
+                        <i class="fa-solid fa-building-columns"></i> बँक ऑफ महाराष्ट्र
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 1: Candidate Information -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-title">
+                        <i class="fa-solid fa-user-check"></i> उमेदवाराची माहिती (Candidate Info)
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col" style="flex: 0 0 110px;">
+                        <label class="form-label">अभिवादन</label>
+                        <select id="inpPrefix" class="form-control" onchange="updatePreview()">
+                            <option value="Sh.">Sh.</option>
+                            <option value="Smt.">Smt.</option>
+                            <option value="Ms.">Ms.</option>
+                            <option value="Kumari" selected>Kumari</option>
+                            <option value="Sh./Smt./Ms./Kumari">सर्व (All)</option>
+                        </select>
+                    </div>
+                    <div class="form-col">
+                        <label class="form-label">उमेदवाराचे पूर्ण नाव <span class="req">*</span></label>
+                        <input type="text" id="inpCandidateName" class="form-control" placeholder="उदा. MEGHA SANJAY MESTRY" value="MEGHA SANJAY MESTRY" oninput="handleUppercase(this); updatePreview();" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col" style="flex: 0 0 110px;">
+                        <label class="form-label">नाते (Relation)</label>
+                        <select id="inpRelationType" class="form-control" onchange="updatePreview()">
+                            <option value="S/D/W of Sh." selected>S/D/W of Sh.</option>
+                            <option value="S/o Sh.">S/o Sh.</option>
+                            <option value="D/o Sh.">D/o Sh.</option>
+                            <option value="W/o Sh.">W/o Sh.</option>
+                        </select>
+                    </div>
+                    <div class="form-col">
+                        <label class="form-label">वडील / पती / पालकांचे नाव <span class="req">*</span></label>
+                        <input type="text" id="inpGuardianName" class="form-control" placeholder="उदा. SANJAY ABA MESTRI" value="SANJAY ABA MESTRI" oninput="handleUppercase(this); updatePreview();" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="form-label">आधार कार्ड क्रमांक (Aadhaar No.) <span class="req">*</span></label>
+                        <input type="text" id="inpAadhaarNo" class="form-control" placeholder="उदा. 4497-7737-5548" value="4497-7737-5548" maxlength="14" oninput="formatAadhaar(this); updatePreview();" autocomplete="off">
+                        <div class="form-help">१२ अंकी आधार नंबर (उदा. 4497-7737-5548)</div>
+                    </div>
+                    <div class="form-col">
+                        <label class="form-label">परीक्षा प्रकार (Exam Scope)</label>
+                        <select id="inpExamType" class="form-control" onchange="updatePreview()">
+                            <option value="Multi Plateform (ECMP) Operator or Child Enrolment Lite Client(CELC) Operator Exam." selected>ECMP Operator किंवा CELC Operator (दोन्ही - Standard)</option>
+                            <option value="Multi Plateform (ECMP) Operator Exam.">फक्त ECMP Operator Exam</option>
+                            <option value="Child Enrolment Lite Client(CELC) Operator Exam.">फक्त CELC Operator Exam</option>
+                            <option value="Multi Plateform (ECMP) Supervisor Exam.">ECMP Supervisor Exam</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Photo Upload Field -->
+                <div class="form-col" style="margin-top: 10px;">
+                    <label class="form-label">उमेदवाराचा पासपोर्ट फोटो (Candidate Photo)</label>
+                    <div class="photo-uploader-box">
+                        <div class="photo-thumb-preview" id="photoThumbPreview">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="file-upload-btn-wrapper">
+                            <label class="btn-upload">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> फोटो निवडा (JPG/PNG)
+                                <input type="file" id="inpCandidatePhoto" accept="image/*" style="display: none;" onchange="handlePhotoUpload(this)">
+                            </label>
+                            <button type="button" class="btn-remove-photo" id="btnRemovePhoto" style="display: none;" onclick="removeCandidatePhoto()">
+                                <i class="fa-solid fa-trash"></i> फोटो काढा
+                            </button>
+                            <span class="form-help">फोटो जोडल्यास थेट बॉक्समध्ये दिसेल किंवा रिकामा ठेवून प्रत्यक्ष फोटो चिटकवू शकता.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Registrar & Enrolment Agency (EA) Details -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-title">
+                        <i class="fa-solid fa-file-contract"></i> रजिस्ट्रार व एजन्सी तपशील (EA Details)
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="form-label">Registrar Name & Code <span class="req">*</span></label>
+                        <input type="text" id="inpRegistrarNameCode" class="form-control" placeholder="उदा. GOV. OF MAHARASHTRA/127" value="GOV. OF MAHARASHTRA/127" oninput="handleUppercase(this); updatePreview();">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="form-label">EA Name & Code <span class="req">*</span></label>
+                        <input type="text" id="inpEaNameCode" class="form-control" placeholder="उदा. MAHARASHTRA INFORMATION TECHNOLOGY CORP.LTD/2821" value="MAHARASHTRA INFORMATION TECHNOLOGY CORP.LTD/2821" oninput="handleUppercase(this); updatePreview();">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="form-label">Respective RO Name (क्षेत्रीय कार्यालय) <span class="req">*</span></label>
+                        <input type="text" id="inpRoName" class="form-control" placeholder="उदा. MUMBAI" value="MUMBAI" oninput="handleUppercase(this); updatePreview();">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Letter No, Date & Stamping -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-title">
+                        <i class="fa-solid fa-calendar-check"></i> पत्र क्रमांक, दिनांक व शिक्का
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="form-label">Letter No (पत्र क्र.)</label>
+                        <input type="text" id="inpLetterNo" class="form-control" placeholder="उदा. EA/UIDAI/2026/048 (किंवा रिकामा ठेवा)" value="EA/UIDAI/2026/048" oninput="updatePreview();">
+                        <div class="form-help">रिकामा ठेवल्यास प्रिंटमध्ये स्वच्छ राहील (कोणतेही डॉट्स येणार नाहीत).</div>
+                    </div>
+                    <div class="form-col">
+                        <label class="form-label">Date (दिनांक)</label>
+                        <input type="text" id="inpDate" class="form-control" placeholder="DD/MM/YYYY" value="" oninput="updatePreview();">
+                        <div style="margin-top: 4px;">
+                            <button type="button" class="btn-preset-chip" style="padding: 3px 8px; font-size: 0.7rem;" onclick="setTodayDate()">
+                                <i class="fa-solid fa-calendar-day"></i> आजचा दिनांक टाका
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="form-label">डॉटेड लाईन (........) फॉरमॅट</label>
+                        <select id="inpDottedStyle" class="form-control" onchange="toggleDottedStyle()">
+                            <option value="none" selected>नाही - स्वच्छ टाइप केलेले पत्र (No Dots - Clean Print)</option>
+                            <option value="show">होय - कोरा हस्तलिखित फॉर्म (Show Dots)</option>
+                        </select>
+                        <div class="form-help">प्रिंटमध्ये स्वच्छ व व्यावसायिक पत्र मिळण्यासाठी 'नाही' निवडा.</div>
+                    </div>
+                    <div class="form-col">
+                        <label class="form-label">फोटोवर क्रॉस स्टॅम्प वॉटरमार्क?</label>
+                        <select id="inpCrossStampWatermark" class="form-control" onchange="updatePreview()">
+                            <option value="none">नाही (प्रत्यक्ष हाताने शिक्का मारणार - Standard)</option>
+                            <option value="show">होय (डिजिटल क्रॉस स्टॅम्प वॉटरमार्क दाखवा)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="form-label">Footer मजकूर (Page Footer)</label>
+                        <input type="text" id="inpFooterPage" class="form-control" value="Page 3 of 3" oninput="updatePreview();">
+                    </div>
+                </div>
+
+                <!-- Digital Stamp upload (optional) -->
+                <div class="form-col" style="margin-top: 6px;">
+                    <label class="form-label">डिजिटल शिक्का / स्वाक्षरी इमेज (ऐच्छिक)</label>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <label class="btn-upload" style="background: #475569;">
+                            <i class="fa-solid fa-stamp"></i> शिक्का निवडा (PNG)
+                            <input type="file" id="inpDigitalStamp" accept="image/*" style="display: none;" onchange="handleStampUpload(this)">
+                        </label>
+                        <button type="button" class="btn-remove-photo" id="btnRemoveStamp" style="display: none;" onclick="removeDigitalStamp()">
+                            काढा
+                        </button>
+                    </div>
+                    <div class="form-help">रिकामा ठेवल्यास अधिकारी मूळ शिक्का व पेनने सही करतील.</div>
+                </div>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div style="display: flex; gap: 10px; margin-top: 10px; margin-bottom: 30px;">
+                <button type="button" class="btn btn-sample" style="flex: 1;" onclick="saveToHistory()">
+                    <i class="fa-solid fa-floppy-disk"></i> रेकॉर्ड सेव्ह करा
+                </button>
+                <button type="button" class="btn btn-print" style="flex: 1;" onclick="window.print()">
+                    <i class="fa-solid fa-print"></i> प्रिंट / PDF
+                </button>
+            </div>
+
+        </aside>
+
+        <!-- 📄 RIGHT SIDE: LIVE A4 PREVIEW -->
+        <main class="preview-viewport" id="previewViewport">
+            <div class="a4-paper-wrapper">
+
+                <!-- Zoom Controls -->
+                <div class="sheet-zoom-bar no-print">
+                    <span><i class="fa-solid fa-magnifying-glass"></i> झूम:</span>
+                    <button class="sheet-zoom-btn" onclick="adjustZoom(-0.05)" title="कमी करा"><i class="fa-solid fa-minus"></i></button>
+                    <span id="zoomPercentLabel">100%</span>
+                    <button class="sheet-zoom-btn" onclick="adjustZoom(0.05)" title="वाढवा"><i class="fa-solid fa-plus"></i></button>
+                    <button class="sheet-zoom-btn" style="width: auto; padding: 0 8px; font-size: 0.72rem;" onclick="resetZoom()">100% Reset</button>
+                </div>
+
+                <!-- ACTUAL A4 LETTER FORMAT (IDENTICAL TO SCANNED TEMPLATE) -->
+                <div class="a4-sheet" id="a4PrintSheet">
+
+                    <!-- Top Right: Annexure 'A' -->
+                    <div class="doc-annexure-header">
+                        Annexure 'A'
+                    </div>
+
+                    <!-- Center Document Title -->
+                    <div class="doc-title-container">
+                        <h2 class="doc-main-title">Authorization Letter Format</h2>
+                    </div>
+
+                    <!-- Letter No & Date Row -->
+                    <div class="doc-meta-row">
+                        <div class="meta-letter-no">
+                            Letter No :- <span id="lblLetterNo" class="meta-letter-val empty-val"></span>
+                        </div>
+                        <div class="meta-date">
+                            Date:- <span id="lblDate" class="meta-date-val">DD/MM/YYYY</span>
+                        </div>
+                    </div>
+
+                    <!-- Salutation -->
+                    <div class="doc-salutation-center">
+                        TO WHOM IT MAY CONCERN
+                    </div>
+
+                    <!-- Main Letter Body -->
+                    <div class="doc-body-section">
+
+                        <!-- Paragraph 1 -->
+                        <p class="body-para" style="margin-bottom: 24px;">
+                            This is to authorize <span id="lblPrefix">Kumari</span> <span id="lblCandidateName" class="doc-field-val">MEGHA SANJAY MESTRY</span><span class="doc-dots"> ...........................................................................</span>, 
+                            <span id="lblRelationType">S/D/W of Sh.</span> <span id="lblGuardianName" class="doc-field-val">SANJAY ABA MESTRI</span><span class="doc-dots"> ..........................................................................................</span> having 
+                            Aadhar No. - <span id="lblAadhaarNo" class="doc-field-val">4497-7737-5548</span><span class="doc-dots"> ..........................................................</span> to register for Enrolment Client 
+                            <span id="lblExamType">Multi Plateform (ECMP) Operator or Child Enrolment Lite Client(CELC) Operator Exam.</span>
+                        </p>
+
+                        <!-- Paragraph 2 -->
+                        <p class="body-para" style="margin-bottom: 24px;">
+                            The details of Registrar Name/Code <span id="lblRegistrarNameCode" class="doc-field-val">GOV. OF MAHARASHTRA/127</span><span class="doc-dots"> ............................................................</span>, EA 
+                            Name &amp; Code <span id="lblEaNameCode" class="doc-field-val">MAHARASHTRA INFORMATION TECHNOLOGY CORP.LTD/2821</span><span class="doc-dots"> ......................................................</span> mentioned are under 
+                            respective RO (Name <span id="lblRoName" class="doc-field-val">MUMBAI</span><span class="doc-dots"> .....................................................................................................</span>).
+                        </p>
+
+                        <!-- Paragraph 3 -->
+                        <p class="body-para" style="margin-bottom: 30px;">
+                            Authorization is valid for one month only. In case the candidate fails to appear in Exam in a month. He has to obtain the authorization again.
+                        </p>
+
+                    </div>
+
+                    <!-- Bottom Boxes: Signature Box (Left) and Candidate Photo Frame (Right) -->
+                    <div class="doc-bottom-boxes">
+
+                        <!-- Left: EA / Registrar Signature & Stamp Box -->
+                        <div class="signature-box-wrapper">
+                            <div class="stamp-rect-box" id="stampRectBox">
+                                <span class="stamp-watermark-hint" id="stampPlaceholderText">EA / Registrar Stamp & Signature</span>
+                            </div>
+                            <div class="signature-label">
+                                EA/ Registrar Signature, Code with Stamp
+                            </div>
+                        </div>
+
+                        <!-- Right: Candidate Photo Box -->
+                        <div class="photo-box-wrapper">
+                            <div class="candidate-photo-frame" id="candidatePhotoFrame">
+                                <div class="photo-placeholder-text" id="photoPlaceholderContent">
+                                    Photo of candidate<br>
+                                    to be &nbsp; &nbsp; Cross<br>
+                                    stamped &amp; cross<br>
+                                    signed
+                                </div>
+                                <div class="cross-stamp-watermark" id="crossStampWatermark" style="display: none;">
+                                    Cross Stamped &amp; Signed
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Page Footer: Page 3 of 3 -->
+                    <div class="doc-page-footer">
+                        <span id="lblFooterPage">Page 3 of 3</span>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    <!-- 🌟 SAVED HISTORY MODAL -->
+    <div class="history-modal-overlay" id="historyModal">
+        <div class="history-modal-box">
+            <div class="history-modal-header">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> पूर्वी तयार केलेली ऑथोरायझेशन लेटर्स</h3>
+                <button type="button" onclick="closeHistoryModal()" style="background:none; border:none; color:#cbd5e1; font-size:1.2rem; cursor:pointer;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="history-modal-body" id="historyListContainer">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 🌟 TOAST POPUP -->
+    <div class="toast-popup" id="toastPopup">
+        <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 1.1rem;"></i>
+        <span id="toastMessage">माहिती यशस्वीरित्या सेव्ह झाली!</span>
+    </div>
+
+    <!-- 🌟 JAVASCRIPT LOGIC -->
+    <script>
+        // Preset Agency Master Data
+        const PRESETS = {
+            mahait: {
+                registrar: "GOV. OF MAHARASHTRA/127",
+                ea: "MAHARASHTRA INFORMATION TECHNOLOGY CORP.LTD/2821",
+                ro: "MUMBAI"
+            },
+            csc: {
+                registrar: "CSC e-Governance Services India Limited/2061",
+                ea: "CSC e-GOVERNANCE SERVICES INDIA LIMITED/2906",
+                ro: "MUMBAI"
+            },
+            ippb: {
+                registrar: "India Post Payments Bank/853",
+                ea: "India Post Payments Bank/2679",
+                ro: "MUMBAI"
+            },
+            bank: {
+                registrar: "Bank of Maharashtra/0021",
+                ea: "Bank of Maharashtra/0021",
+                ro: "PUNE"
+            }
+        };
+
+        let currentZoom = 1.0;
+        let candidatePhotoBase64 = null;
+        let digitalStampBase64 = null;
+
+        // On Page Load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check if current date is set, otherwise set today's formatted date
+            const dateInp = document.getElementById('inpDate');
+            if (!dateInp.value) {
+                setTodayDate();
+            }
+
+            // Restore from localStorage if exists
+            loadSavedFormData();
+
+            // Initial preview render
+            updatePreview();
+        });
+
+        // Set Today's Date in DD/MM/YYYY
+        function setTodayDate() {
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            document.getElementById('inpDate').value = `${dd}/${mm}/${yyyy}`;
+            updatePreview();
+        }
+
+        // Auto uppercase helper
+        function handleUppercase(el) {
+            el.value = el.value.toUpperCase();
+        }
+
+        // Aadhaar 12-digit formatter: XXXX-XXXX-XXXX
+        function formatAadhaar(el) {
+            let val = el.value.replace(/\D/g, '');
+            if (val.length > 12) val = val.substring(0, 12);
+            let formatted = '';
+            for (let i = 0; i < val.length; i++) {
+                if (i > 0 && i % 4 === 0) formatted += '-';
+                formatted += val[i];
+            }
+            el.value = formatted;
+        }
+
+        // Apply Agency Preset
+        function applyPreset(key) {
+            const data = PRESETS[key];
+            if (!data) return;
+
+            document.getElementById('inpRegistrarNameCode').value = data.registrar;
+            document.getElementById('inpEaNameCode').value = data.ea;
+            document.getElementById('inpRoName').value = data.ro;
+
+            // Update active preset button style
+            document.querySelectorAll('.btn-preset-chip').forEach(btn => btn.classList.remove('active'));
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+
+            showToast(`प्रीसेट लागू केला: ${data.ea}`);
+            updatePreview();
+            saveToLocalStorage();
+        }
+
+        // Toggle Dotted Style vs Clean Typed Letter
+        function toggleDottedStyle() {
+            const style = document.getElementById('inpDottedStyle').value;
+            if (style === 'show') {
+                document.body.classList.add('show-dots-mode');
+            } else {
+                document.body.classList.remove('show-dots-mode');
+            }
+            updatePreview();
+        }
+
+        // Live Preview Update function
+        function updatePreview() {
+            const isDotsMode = document.body.classList.contains('show-dots-mode');
+            const prefix = document.getElementById('inpPrefix').value;
+            const candidateName = document.getElementById('inpCandidateName').value.trim();
+            const relationType = document.getElementById('inpRelationType').value;
+            const guardianName = document.getElementById('inpGuardianName').value.trim();
+            const aadhaarNo = document.getElementById('inpAadhaarNo').value.trim();
+            const examType = document.getElementById('inpExamType').value;
+
+            const registrar = document.getElementById('inpRegistrarNameCode').value.trim();
+            const ea = document.getElementById('inpEaNameCode').value.trim();
+            const ro = document.getElementById('inpRoName').value.trim();
+
+            let letterNo = document.getElementById('inpLetterNo').value.trim();
+            let date = document.getElementById('inpDate').value.trim();
+            let footerPage = document.getElementById('inpFooterPage').value.trim();
+            let crossStamp = document.getElementById('inpCrossStampWatermark').value;
+
+            // Reflect in DOM
+            document.getElementById('lblPrefix').textContent = (prefix === 'Sh./Smt./Ms./Kumari') ? 'Sh./Smt./Ms./Kumari' : prefix;
+            document.getElementById('lblCandidateName').textContent = candidateName || (isDotsMode ? '...........................................' : '');
+            document.getElementById('lblRelationType').textContent = relationType;
+            document.getElementById('lblGuardianName').textContent = guardianName || (isDotsMode ? '...........................................' : '');
+            document.getElementById('lblAadhaarNo').textContent = aadhaarNo || (isDotsMode ? 'XXXX-XXXX-XXXX' : '');
+            document.getElementById('lblExamType').textContent = examType;
+
+            document.getElementById('lblRegistrarNameCode').textContent = registrar || (isDotsMode ? '...........................................' : '');
+            document.getElementById('lblEaNameCode').textContent = ea || (isDotsMode ? '...........................................' : '');
+            document.getElementById('lblRoName').textContent = ro || (isDotsMode ? '...........................................' : '');
+
+            // Clean Letter No handling (No dots when empty)
+            const letterNoEl = document.getElementById('lblLetterNo');
+            if (!letterNo || letterNo.replace(/\./g, '').trim() === '') {
+                letterNoEl.textContent = '';
+                letterNoEl.classList.add('empty-val');
+            } else {
+                letterNoEl.textContent = letterNo;
+                letterNoEl.classList.remove('empty-val');
+            }
+
+            document.getElementById('lblDate').textContent = date || 'DD/MM/YYYY';
+            document.getElementById('lblFooterPage').textContent = footerPage || 'Page 3 of 3';
+
+            // Cross stamp watermark toggle
+            const crossStampEl = document.getElementById('crossStampWatermark');
+            if (crossStamp === 'show' && candidatePhotoBase64) {
+                crossStampEl.style.display = 'block';
+            } else {
+                crossStampEl.style.display = 'none';
+            }
+        }
+
+        // Handle Candidate Photo Upload
+        function handlePhotoUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                candidatePhotoBase64 = e.target.result;
+
+                // Update thumbnail in sidebar
+                const thumb = document.getElementById('photoThumbPreview');
+                thumb.innerHTML = `<img src="${candidatePhotoBase64}" alt="Thumb">`;
+                document.getElementById('btnRemovePhoto').style.display = 'inline-block';
+
+                // Update photo frame in document
+                const frame = document.getElementById('candidatePhotoFrame');
+                let img = frame.querySelector('img.uploaded-photo');
+                if (!img) {
+                    img = document.createElement('img');
+                    img.className = 'uploaded-photo';
+                    frame.appendChild(img);
+                }
+                img.src = candidatePhotoBase64;
+                document.getElementById('photoPlaceholderContent').style.display = 'none';
+
+                updatePreview();
+                showToast("फोटो यशस्वीरित्या जोडला!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Remove Candidate Photo
+        function removeCandidatePhoto() {
+            candidatePhotoBase64 = null;
+            document.getElementById('inpCandidatePhoto').value = '';
+            document.getElementById('photoThumbPreview').innerHTML = '<i class="fa-solid fa-user"></i>';
+            document.getElementById('btnRemovePhoto').style.display = 'none';
+
+            const frame = document.getElementById('candidatePhotoFrame');
+            const img = frame.querySelector('img.uploaded-photo');
+            if (img) img.remove();
+            document.getElementById('photoPlaceholderContent').style.display = 'block';
+
+            updatePreview();
+            showToast("फोटो काढला आहे.");
+        }
+
+        // Handle Digital Stamp Upload
+        function handleStampUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                digitalStampBase64 = e.target.result;
+
+                const stampBox = document.getElementById('stampRectBox');
+                let img = stampBox.querySelector('img.uploaded-stamp');
+                if (!img) {
+                    img = document.createElement('img');
+                    img.className = 'uploaded-stamp';
+                    stampBox.appendChild(img);
+                }
+                img.src = digitalStampBase64;
+                document.getElementById('stampPlaceholderText').style.display = 'none';
+                document.getElementById('btnRemoveStamp').style.display = 'inline-block';
+
+                showToast("डिजिटल शिक्का जोडला!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Remove Digital Stamp
+        function removeDigitalStamp() {
+            digitalStampBase64 = null;
+            document.getElementById('inpDigitalStamp').value = '';
+            const stampBox = document.getElementById('stampRectBox');
+            const img = stampBox.querySelector('img.uploaded-stamp');
+            if (img) img.remove();
+            document.getElementById('stampPlaceholderText').style.display = 'block';
+            document.getElementById('btnRemoveStamp').style.display = 'none';
+
+            showToast("डिजिटल शिक्का काढला.");
+        }
+
+        // Load Sample Demo Data (Exact Match to User's Uploaded Photo)
+        function loadSampleData() {
+            document.getElementById('inpPrefix').value = "Kumari";
+            document.getElementById('inpCandidateName').value = "MEGHA SANJAY MESTRY";
+            document.getElementById('inpRelationType').value = "S/D/W of Sh.";
+            document.getElementById('inpGuardianName').value = "SANJAY ABA MESTRI";
+            document.getElementById('inpAadhaarNo').value = "4497-7737-5548";
+            document.getElementById('inpExamType').value = "Multi Plateform (ECMP) Operator or Child Enrolment Lite Client(CELC) Operator Exam.";
+
+            document.getElementById('inpRegistrarNameCode').value = "GOV. OF MAHARASHTRA/127";
+            document.getElementById('inpEaNameCode').value = "MAHARASHTRA INFORMATION TECHNOLOGY CORP.LTD/2821";
+            document.getElementById('inpRoName').value = "MUMBAI";
+
+            document.getElementById('inpLetterNo').value = "EA/UIDAI/2026/048";
+            setTodayDate();
+            document.getElementById('inpFooterPage').value = "Page 3 of 3";
+
+            updatePreview();
+            saveToLocalStorage();
+            showToast("नमुना माहिती लोड झाली (Megha Sanjay Mestry)!");
+        }
+
+        // Reset All Fields
+        function confirmReset() {
+            if (confirm("तुम्हाला खात्री आहे की सर्व भरलेली माहिती रिकामी करायची आहे?")) {
+                document.getElementById('inpCandidateName').value = '';
+                document.getElementById('inpGuardianName').value = '';
+                document.getElementById('inpAadhaarNo').value = '';
+                document.getElementById('inpLetterNo').value = '';
+                removeCandidatePhoto();
+                removeDigitalStamp();
+                updatePreview();
+                showToast("फॉर्म रिसेट करण्यात आला आहे.");
+            }
+        }
+
+        // Adjust Sheet Zoom
+        function adjustZoom(delta) {
+            currentZoom = Math.min(Math.max(0.4, currentZoom + delta), 1.5);
+            applyZoom();
+        }
+
+        function resetZoom() {
+            currentZoom = 1.0;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const sheet = document.getElementById('a4PrintSheet');
+            sheet.style.transform = `scale(${currentZoom})`;
+            document.getElementById('zoomPercentLabel').textContent = `${Math.round(currentZoom * 100)}%`;
+        }
+
+        // Save & Load LocalStorage
+        function saveToLocalStorage() {
+            const state = {
+                prefix: document.getElementById('inpPrefix').value,
+                candidateName: document.getElementById('inpCandidateName').value,
+                relationType: document.getElementById('inpRelationType').value,
+                guardianName: document.getElementById('inpGuardianName').value,
+                aadhaarNo: document.getElementById('inpAadhaarNo').value,
+                examType: document.getElementById('inpExamType').value,
+                registrar: document.getElementById('inpRegistrarNameCode').value,
+                ea: document.getElementById('inpEaNameCode').value,
+                ro: document.getElementById('inpRoName').value,
+                letterNo: document.getElementById('inpLetterNo').value,
+                date: document.getElementById('inpDate').value,
+                footerPage: document.getElementById('inpFooterPage').value,
+                dottedStyle: document.getElementById('inpDottedStyle').value
+            };
+            localStorage.setItem('emudra_auth_letter_current', JSON.stringify(state));
+        }
+
+        function loadSavedFormData() {
+            try {
+                const saved = localStorage.getItem('emudra_auth_letter_current');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    if (data.prefix) document.getElementById('inpPrefix').value = data.prefix;
+                    if (data.candidateName) document.getElementById('inpCandidateName').value = data.candidateName;
+                    if (data.relationType) document.getElementById('inpRelationType').value = data.relationType;
+                    if (data.guardianName) document.getElementById('inpGuardianName').value = data.guardianName;
+                    if (data.aadhaarNo) document.getElementById('inpAadhaarNo').value = data.aadhaarNo;
+                    if (data.examType) document.getElementById('inpExamType').value = data.examType;
+                    if (data.registrar) document.getElementById('inpRegistrarNameCode').value = data.registrar;
+                    if (data.ea) document.getElementById('inpEaNameCode').value = data.ea;
+                    if (data.ro) document.getElementById('inpRoName').value = data.ro;
+                    if (data.letterNo) document.getElementById('inpLetterNo').value = data.letterNo;
+                    if (data.date) document.getElementById('inpDate').value = data.date;
+                    if (data.footerPage) document.getElementById('inpFooterPage').value = data.footerPage;
+                    if (data.dottedStyle) {
+                        document.getElementById('inpDottedStyle').value = data.dottedStyle;
+                        toggleDottedStyle();
+                    }
+                }
+            } catch(e) {
+                console.error("Error loading local state:", e);
+            }
+        }
+
+        // Save to History (LocalStorage List)
+        function saveToHistory() {
+            const candidateName = document.getElementById('inpCandidateName').value.trim();
+            if (!candidateName) {
+                alert("कृपया आधी उमेदवाराचे नाव भरा!");
+                return;
+            }
+
+            const record = {
+                id: Date.now(),
+                timestamp: new Date().toLocaleString('mr-IN'),
+                candidateName: candidateName,
+                guardianName: document.getElementById('inpGuardianName').value.trim(),
+                aadhaarNo: document.getElementById('inpAadhaarNo').value.trim(),
+                prefix: document.getElementById('inpPrefix').value,
+                relationType: document.getElementById('inpRelationType').value,
+                examType: document.getElementById('inpExamType').value,
+                registrar: document.getElementById('inpRegistrarNameCode').value.trim(),
+                ea: document.getElementById('inpEaNameCode').value.trim(),
+                ro: document.getElementById('inpRoName').value.trim(),
+                letterNo: document.getElementById('inpLetterNo').value.trim(),
+                date: document.getElementById('inpDate').value.trim(),
+                footerPage: document.getElementById('inpFooterPage').value.trim()
+            };
+
+            let historyList = [];
+            try {
+                historyList = JSON.parse(localStorage.getItem('emudra_auth_letter_history') || '[]');
+            } catch(e) {}
+
+            historyList.unshift(record);
+            if (historyList.length > 30) historyList.pop(); // Keep last 30
+            localStorage.setItem('emudra_auth_letter_history', JSON.stringify(historyList));
+
+            showToast(`रेकॉर्ड सेव्ह झाला: ${candidateName}`);
+        }
+
+        // Open History Modal
+        function openHistoryModal() {
+            const modal = document.getElementById('historyModal');
+            const container = document.getElementById('historyListContainer');
+            modal.style.display = 'flex';
+
+            let historyList = [];
+            try {
+                historyList = JSON.parse(localStorage.getItem('emudra_auth_letter_history') || '[]');
+            } catch(e) {}
+
+            if (historyList.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #94a3b8; padding: 40px 0;">
+                        <i class="fa-regular fa-folder-open" style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.5;"></i>
+                        <p>कोणताही रेकॉर्ड सेव्ह केलेला नाही.</p>
+                        <p style="font-size: 0.78rem;">फॉर्म भरून 'रेकॉर्ड सेव्ह करा' बटण दाबा.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = historyList.map(item => `
+                <div class="history-item-card">
+                    <div class="history-info">
+                        <strong>${item.candidateName}</strong>
+                        <span>आधार: ${item.aadhaarNo || 'N/A'} | दिनांक: ${item.date || item.timestamp}</span><br>
+                        <span style="color: #cbd5e1; font-size: 0.74rem;">${item.ea || 'MahaIT'}</span>
+                    </div>
+                    <div class="history-actions">
+                        <button class="btn-hist-load" onclick="loadFromHistory(${item.id})">
+                            <i class="fa-solid fa-arrow-down-to-bracket"></i> लोड करा
+                        </button>
+                        <button class="btn-hist-delete" onclick="deleteFromHistory(${item.id})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('historyModal').style.display = 'none';
+        }
+
+        // Load Record from History
+        function loadFromHistory(id) {
+            let historyList = [];
+            try {
+                historyList = JSON.parse(localStorage.getItem('emudra_auth_letter_history') || '[]');
+            } catch(e) {}
+
+            const item = historyList.find(r => r.id === id);
+            if (!item) return;
+
+            if (item.prefix) document.getElementById('inpPrefix').value = item.prefix;
+            if (item.candidateName) document.getElementById('inpCandidateName').value = item.candidateName;
+            if (item.relationType) document.getElementById('inpRelationType').value = item.relationType;
+            if (item.guardianName) document.getElementById('inpGuardianName').value = item.guardianName;
+            if (item.aadhaarNo) document.getElementById('inpAadhaarNo').value = item.aadhaarNo;
+            if (item.examType) document.getElementById('inpExamType').value = item.examType;
+            if (item.registrar) document.getElementById('inpRegistrarNameCode').value = item.registrar;
+            if (item.ea) document.getElementById('inpEaNameCode').value = item.ea;
+            if (item.ro) document.getElementById('inpRoName').value = item.ro;
+            if (item.letterNo) document.getElementById('inpLetterNo').value = item.letterNo;
+            if (item.date) document.getElementById('inpDate').value = item.date;
+            if (item.footerPage) document.getElementById('inpFooterPage').value = item.footerPage;
+
+            updatePreview();
+            closeHistoryModal();
+            showToast(`माहिती लोड केली: ${item.candidateName}`);
+        }
+
+        // Delete from History
+        function deleteFromHistory(id) {
+            let historyList = [];
+            try {
+                historyList = JSON.parse(localStorage.getItem('emudra_auth_letter_history') || '[]');
+            } catch(e) {}
+
+            historyList = historyList.filter(r => r.id !== id);
+            localStorage.setItem('emudra_auth_letter_history', JSON.stringify(historyList));
+            openHistoryModal(); // Refresh modal
+        }
+
+        // Toast Popup Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toastPopup');
+            const msgEl = document.getElementById('toastMessage');
+            msgEl.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
