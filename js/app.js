@@ -3036,8 +3036,8 @@ function getFormTargetPage(formType) {
   if (normalized.includes("gazette") || normalized.includes("rajpatra")) {
     return "gazette-name-change.html";
   }
-  if (normalized.includes("pratigya")) {
-    return "pratigya-patra.html";
+  if (normalized.includes("rahivasi") || normalized.includes("pratigya") || normalized.includes("pratidnya")) {
+    return "pratidnya-patra.html";
   }
   if (normalized.includes("affidavit")) {
     return "affidavit-print.html";
@@ -3068,7 +3068,7 @@ function getFormTargetPage(formType) {
     'income-certificate', 'aadhaar-certificate', 'varas-ferfar',
     'janma-mrutyu-dakhla', 'ration-card-addition', 'ration-card-deletion',
     'varas-affidavit', 'bhumi-abhilekh-nakal', 'nakal-arja',
-    'gazette-name-change', 'affidavit-print', 'pratigya-patra',
+    'gazette-name-change', 'affidavit-print', 'pratigya-patra', 'pratidnya-patra',
     'mahabocw', 'mahabocwgramsevak', 'gramsevak90',
     'gharelu-kamgar', 'gharelu-kamgar-sangnakikaran',
     'ghareli-kamgar', 'ghareli-kamgar-sangnakikaran', 'pikpera',

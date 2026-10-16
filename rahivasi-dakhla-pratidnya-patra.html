@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>रहिवासी दाखला प्रतिज्ञापत्र (मे. कार्यकारी दंडाधिकारी) | eMudra CSC</title>
+  <meta name="description" content="मे. कार्यकारी दंडाधिकारी यांच्यासमोर सादर करावयाचे रहिवासी दाखला प्रतिज्ञापत्र / वास्तव्याचा दाखला जनरेटर (भारतीय न्याय संहिता कलम २२९, २३६ व २३७). १-क्लिक A4 व स्टॅम्प पेपर प्रिंट.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-dark: #172554;
+      --primary-light: #eff6ff;
+      --accent: #d97706;
+      --success: #059669;
+      --danger: #dc2626;
+      --bg-page: #334155;
+      --card-bg: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --base-font-size: 13pt;
+      --line-height: 1.85;
+      --para-gap: 16px;
+      --stamp-gap: 0mm;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Mukta', 'Noto Sans Devanagari', 'Poppins', sans-serif;
+    }
+
+    body {
+      background: var(--bg-page);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Tricolor Bar */
+    .gov-tricolor-stripe {
+      height: 4px;
+      width: 100%;
+      background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    /* Brand Header Navbar */
+    .brand-navbar {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #172554 100%);
+      color: #ffffff;
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+    }
+
+    .brand-titles h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #ffffff;
+    }
+
+    .brand-sub {
+      font-size: 0.76rem;
+      color: #bfdbfe;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .brand-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-print {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+    }
+    .btn-print:hover { transform: translateY(-1px); filter: brightness(1.1); }
+
+    .btn-sample { background: #0284c7; color: #fff; }
+    .btn-sample:hover { background: #0369a1; }
+
+    .btn-reset { background: #475569; color: #fff; }
+    .btn-reset:hover { background: #334155; }
+
+    .btn-save { background: #7c3aed; color: #fff; }
+    .btn-save:hover { background: #6d28d9; }
+
+    .btn-home { background: #1e293b; color: #cbd5e1; border: 1px solid #475569; }
+    .btn-home:hover { background: #0f172a; color: #fff; }
+
+    /* Main Container (Two-column layout) */
+    .app-workspace {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 65px);
+      overflow: hidden;
+    }
+
+    /* Left Control Sidebar */
+    .controls-panel {
+      width: 480px;
+      min-width: 420px;
+      background: #ffffff;
+      border-right: 1px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+
+    /* Quick Toolbar on top of sidebar */
+    .sidebar-toolbar {
+      background: #f8fafc;
+      padding: 10px 14px;
+      border-bottom: 1.5px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .toolbar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mode-pill-group {
+      display: flex;
+      background: #e2e8f0;
+      border-radius: 6px;
+      padding: 2px;
+    }
+
+    .mode-pill {
+      border: none;
+      background: transparent;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #475569;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .mode-pill.active {
+      background: #1e3a8a;
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .slider-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .slider-box input[type="range"] {
+      width: 90px;
+      cursor: pointer;
+    }
+
+    /* Form Body */
+    .form-scroll-body {
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .card-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #1e3a8a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .card-title i {
+      color: #d97706;
+      font-size: 0.95rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .form-group.col-span-2 {
+      grid-column: span 2;
+    }
+
+    .form-group label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      font-size: 0.84rem;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.2s;
+      background: #f8fafc;
+    }
+
+    .form-group input:focus, 
+    .form-group select:focus, 
+    .form-group textarea:focus {
+      border-color: #1e3a8a;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.12);
+    }
+
+    .helper-text {
+      font-size: 0.7rem;
+      color: #64748b;
+    }
+
+    .quick-auto-btn {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 4px;
+    }
+    .quick-auto-btn:hover {
+      background: #bae6fd;
+    }
+
+    /* Right Preview Stage */
+    .preview-stage {
+      flex: 1;
+      background: #475569;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Exact A4 Sheet */
+    .a4-sheet {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.35);
+      padding: 16mm 22mm 16mm 22mm;
+      box-sizing: border-box;
+      position: relative;
+      color: #000000;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      line-height: var(--line-height);
+      font-size: var(--base-font-size);
+    }
+
+    /* Stamp Margin Guide (Visible on Screen, Invisible in Print) */
+    .stamp-spacer-block {
+      width: 100%;
+      height: var(--stamp-gap);
+      border: 1.5px dashed #059669;
+      background: #ecfdf5;
+      border-radius: 6px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: #065f46;
+      font-size: 10pt;
+      font-weight: 700;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+      transition: height 0.15s ease;
+    }
+
+    .stamp-mode-active .stamp-spacer-block {
+      display: flex;
+    }
+
+    /* Document Structure */
+    .doc-top-shree {
+      text-align: center;
+      font-size: 13pt;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+
+    .doc-main-title {
+      text-align: center;
+      font-size: 18pt;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .doc-court-header {
+      font-size: 13.5pt;
+      font-weight: 800;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+
+    .doc-date-row {
+      text-align: right;
+      font-size: 12.5pt;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .doc-paragraph {
+      text-align: justify;
+      margin-bottom: var(--para-gap);
+      text-indent: 40px;
+      font-size: var(--base-font-size);
+      line-height: var(--line-height);
+    }
+
+    .val-highlight {
+      font-weight: 700;
+      color: #000;
+      border-bottom: 1px dotted transparent;
+      transition: background 0.2s;
+    }
+
+    .val-underline {
+      font-weight: 700;
+      border-bottom: 1px solid #000;
+      padding: 0 2px;
+      display: inline;
+      text-underline-offset: 4px;
+    }
+
+    .sign-row-container {
+      margin-top: 35px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0 10px;
+    }
+
+    .attestation-block {
+      text-align: left;
+      font-size: 11pt;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .sign-applicant-block {
+      text-align: right;
+      margin-left: auto;
+      font-size: 12pt;
+      line-height: 1.6;
+    }
+
+    .sign-applicant-block .sign-word {
+      font-size: 13pt;
+      font-weight: 800;
+      margin-bottom: 40px;
+      padding-right: 25px;
+    }
+
+    .sign-applicant-block .applicant-name-bracket {
+      font-weight: 700;
+      font-size: 12pt;
+    }
+
+    /* Print Setup */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm 18mm 12mm 18mm;
+      }
+
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+      }
+
+      .gov-tricolor-stripe,
+      .brand-navbar,
+      .controls-panel,
+      .no-print {
+        display: none !important;
+      }
+
+      .app-workspace {
+        height: auto !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+
+      .preview-stage {
+        background: transparent !important;
+        padding: 0 !important;
+        overflow: visible !important;
+      }
+
+      .a4-sheet {
+        width: 100% !important;
+        min-height: auto !important;
+        height: auto !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .stamp-spacer-block {
+        border: none !important;
+        background: transparent !important;
+        color: transparent !important;
+      }
+
+      .val-highlight {
+        color: #000 !important;
+      }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 950px) {
+      .app-workspace {
+        flex-direction: column;
+        height: auto;
+      }
+      .controls-panel {
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+      }
+      .preview-stage {
+        padding: 10px;
+      }
+      .a4-sheet {
+        transform: scale(0.9);
+        transform-origin: top center;
+        margin-bottom: -40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-tricolor-stripe no-print"></div>
+
+  <!-- Brand Navbar -->
+  <nav class="brand-navbar no-print">
+    <div class="brand-left">
+      <div class="brand-logo-icon">
+        <i class="fa-solid fa-stamp"></i>
+      </div>
+      <div class="brand-titles">
+        <h1>रहिवासी दाखला प्रतिज्ञापत्र (मे. कार्यकारी दंडाधिकारी)</h1>
+        <div class="brand-sub">
+          <span><i class="fa-solid fa-scale-balanced"></i> भारतीय न्याय संहिता (BNS) कलम २२९, २३६ व २३७</span>
+          <span>•</span>
+          <span><i class="fa-solid fa-house-chimney"></i> वास्तव्याचा दाखला</span>
+          <span>•</span>
+          <span>eMudra CSC</span>
+        </div>
+      </div>
+    </div>
+    <div class="brand-actions">
+      <button class="btn btn-print" onclick="window.print()">
+        <i class="fa-solid fa-print"></i> 🖨️ प्रिंट काढा (Print / PDF)
+      </button>
+      <button class="btn btn-sample" onclick="loadSampleData()">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> 📋 नमुना डेटा भरा
+      </button>
+      <button class="btn btn-reset" onclick="resetForm()">
+        <i class="fa-solid fa-arrow-rotate-left"></i> 🧹 रीसेट
+      </button>
+      <button class="btn btn-save" onclick="saveDraft()">
+        <i class="fa-solid fa-floppy-disk"></i> 💾 ड्राफ्ट सेव्ह
+      </button>
+      <a href="index.html" class="btn btn-home">
+        <i class="fa-solid fa-house"></i> मुख्यपृष्ठ
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Workspace -->
+  <div class="app-workspace">
+
+    <!-- Left Controls Panel -->
+    <aside class="controls-panel no-print">
+      
+      <!-- Toolbar -->
+      <div class="sidebar-toolbar">
+        <div class="toolbar-row">
+          <label style="font-size: 0.8rem; font-weight: 800; color: #1e3a8a;">
+            <i class="fa-solid fa-sliders"></i> कागद प्रकार:
+          </label>
+          <div class="mode-pill-group">
+            <button type="button" class="mode-pill active" id="btnModePlain" onclick="setPaperMode('plain')">
+              📄 साधा कागद
+            </button>
+            <button type="button" class="mode-pill" id="btnModeStamp" onclick="setPaperMode('stamp')">
+              📜 ₹100 स्टॅम्प पेपर
+            </button>
+          </div>
+        </div>
+
+        <!-- Stamp Margin Control (Active in Stamp Mode) -->
+        <div class="toolbar-row" id="stampSliderRow" style="display: none; background: #ecfdf5; padding: 6px 10px; border-radius: 6px; border: 1px solid #a7f3d0;">
+          <div class="slider-box" style="width: 100%; justify-content: space-between;">
+            <span><i class="fa-solid fa-arrows-up-down"></i> स्टॅम्प वरची जागा:</span>
+            <input type="range" id="stampGapSlider" min="30" max="120" value="85" oninput="updateStampGap(this.value)">
+            <span id="stampGapVal" style="color: #059669; font-weight: 800; width: 45px; text-align: right;">85mm</span>
+          </div>
+        </div>
+
+        <div class="toolbar-row">
+          <!-- Font Size Slider -->
+          <div class="slider-box">
+            <span><i class="fa-solid fa-text-height"></i> फॉन्ट:</span>
+            <input type="range" id="fontSizeSlider" min="11" max="15" step="0.5" value="13" oninput="updateFontSize(this.value)">
+            <span id="fontSizeVal">13pt</span>
+          </div>
+
+          <!-- Line Height Slider -->
+          <div class="slider-box">
+            <span><i class="fa-solid fa-lines-leaning"></i> अंतर:</span>
+            <input type="range" id="lineHeightSlider" min="1.5" max="2.2" step="0.05" value="1.85" oninput="updateLineHeight(this.value)">
+            <span id="lineHeightVal">1.85</span>
+          </div>
+        </div>
+
+        <div class="toolbar-row">
+          <label class="slider-box" style="cursor: pointer;">
+            <input type="checkbox" id="chkMarathiNums" checked onchange="syncAll()">
+            <span>मराठी आकडे (१, २, ३...)</span>
+          </label>
+          <label class="slider-box" style="cursor: pointer;">
+            <input type="checkbox" id="chkAttestation" onchange="toggleAttestation(this.checked)">
+            <span>समक्ष स्वाक्षरी शेरा दाखवा</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Form Inputs Scroll Body -->
+      <form id="affidavitForm" class="form-scroll-body" onsubmit="event.preventDefault();">
+
+        <!-- Card 1: Court & Date -->
+        <div class="form-card">
+          <div class="card-title">
+            <i class="fa-solid fa-landmark"></i> दंडाधिकारी कार्यालय व तारीख
+          </div>
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label for="inpCourtTitle">दंडाधिकारी / न्यायालय अधिकार क्षेत्र:</label>
+              <input type="text" id="inpCourtTitle" value="मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समोर" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+              <label for="inpAffidavitDate">प्रतिज्ञापत्र दिनांक:</label>
+              <input type="date" id="inpAffidavitDate" onchange="syncAll()">
+            </div>
+            <div class="form-group">
+              <label for="inpBlankDateChk" style="margin-top: 18px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="inpBlankDateChk" onchange="syncAll()">
+                <span>तारीख रिक्त ठेवा ( / /२० )</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Applicant Personal Details -->
+        <div class="form-card">
+          <div class="card-title">
+            <i class="fa-solid fa-user"></i> अर्जदाराची वैयक्तिक माहिती
+          </div>
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label for="inpApplicantName">अर्जदाराचे संपूर्ण नाव: <span style="color:red;">*</span></label>
+              <input type="text" id="inpApplicantName" placeholder="उदा. श्री. नामदेव शंकर गुरव" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+              <label for="inpGender">लिंग / प्रतिज्ञा प्रकार:</label>
+              <select id="inpGender" onchange="syncAll()">
+                <option value="M">पुरुष (लिहून देतो / घोषित करतो)</option>
+                <option value="F">स्त्री (लिहून देते / घोषित करते)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="inpAge">वय (वर्षे):</label>
+              <input type="number" id="inpAge" placeholder="उदा. ४२" oninput="syncAll()">
+            </div>
+            <div class="form-group col-span-2">
+              <label for="inpOccupation">धंदा / व्यवसाय:</label>
+              <input type="text" id="inpOccupation" placeholder="उदा. शेती / व्यवसाय / नोकरी" value="शेती" oninput="syncAll()">
+            </div>
+            <div class="form-group col-span-2">
+              <label for="inpCurrentAddress">सध्याचा पत्ता (रा.):</label>
+              <input type="text" id="inpCurrentAddress" placeholder="उदा. मु. पो. तिवरे" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+              <label for="inpTaluka">तालुका:</label>
+              <input type="text" id="inpTaluka" value="कणकवली" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+              <label for="inpDistrict">जिल्हा:</label>
+              <input type="text" id="inpDistrict" value="सिंधुदुर्ग" oninput="syncAll()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Residence, Birth & Education -->
+        <div class="form-card">
+          <div class="card-title">
+            <i class="fa-solid fa-graduation-cap"></i> कायम रहिवास, जन्म व शिक्षण
+          </div>
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label for="inpNativeVillage">कायम रहिवासी गाव (गाव मौजे):</label>
+              <input type="text" id="inpNativeVillage" placeholder="उदा. तिवरे" oninput="syncAll()">
+              <button type="button" class="quick-auto-btn" onclick="applySameVillage()">
+                <i class="fa-solid fa-clone"></i> हेच गाव जन्म, रेशनकार्ड व घरासाठी लागू करा
+              </button>
+            </div>
+            <div class="form-group">
+              <label for="inpBirthVillage">जन्म गाव (गाव मौजे):</label>
+              <input type="text" id="inpBirthVillage" placeholder="उदा. तिवरे" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+              <label for="inpBirthDate">जन्म दिनांक:</label>
+              <input type="text" id="inpBirthDate" placeholder="उदा. १५/०६/१९८२ किंवा DD/MM/YYYY" oninput="syncAll()">
+            </div>
+            <div class="form-group col-span-2">
+              <label for="inpEducation">प्राथमिक व माध्यमिक शिक्षण कुठे झाले:</label>
+              <input type="text" id="inpEducation" placeholder="उदा. जिल्हा परिषद शाळा व हायस्कूल कणकवली" oninput="syncAll()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Ration Card & House Details -->
+        <div class="form-card">
+          <div class="card-title">
+            <i class="fa-solid fa-id-card"></i> रेशनकार्ड व ग्रामपंचायत घर नोंद
+          </div>
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label for="inpRationVillage">रेशनकार्ड गाव (गाव मौजे):</label>
+              <input type="text" id="inpRationVillage" placeholder="उदा. तिवरे" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+              <label for="inpRationNo">रेशनकार्ड नंबर:</label>
+              <input type="text" id="inpRationNo" placeholder="उदा. १२३४५६७८९" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+              <label for="inpRationSrNo">अनुक्रमांक:</label>
+              <input type="text" id="inpRationSrNo" placeholder="उदा. ०१" oninput="syncAll()">
+            </div>
+            <div class="form-group col-span-2">
+              <label for="inpRationHeadName">रेशनकार्डमध्ये कोणाचे नाव दाखल आहे:</label>
+              <input type="text" id="inpRationHeadName" placeholder="उदा. स्वतःचे / वडील श्री. शंकर अनंत गुरव यांचेसह" oninput="syncAll()">
+            </div>
+            <div class="form-group col-span-2">
+              <label for="inpHouseVillage">ग्रामपंचायत घर गाव (गाव मौजे):</label>
+              <input type="text" id="inpHouseVillage" placeholder="उदा. तिवरे" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+              <label for="inpHouseNo">ग्रामपंचायत घर नं.:</label>
+              <input type="text" id="inpHouseNo" placeholder="उदा. ४५" oninput="syncAll()">
+            </div>
+            <div class="form-group">
+              <label for="inpHouseOwner">घर कोणाच्या नावे दाखल आहे:</label>
+              <input type="text" id="inpHouseOwner" placeholder="उदा. स्वतःचे / वडील / आई" value="माझे वडील" oninput="syncAll()">
+            </div>
+            <div class="form-group col-span-2">
+              <label for="inpLocalVillage">स्थानिक रहिवासी गाव (सबब मी गाव मौजे):</label>
+              <input type="text" id="inpLocalVillage" placeholder="उदा. तिवरे" oninput="syncAll()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Purpose of Affidavit -->
+        <div class="form-card">
+          <div class="card-title">
+            <i class="fa-solid fa-file-circle-check"></i> प्रतिज्ञापत्राचे कारण / हेतू
+          </div>
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label for="inpPurpose">सदरचे प्रतिज्ञापत्र हे कशासाठी हवे आहे:</label>
+              <input type="text" id="inpPurpose" placeholder="उदा. तहसीलदार कार्यालयाकडून / सेतू सुविधा केंद्राकडून / विविध शासकीय योजना व शैक्षणिक" value="तहसीलदार कार्यालयाकडून" oninput="syncAll()">
+              <span class="helper-text">वाक्य: सदरचे प्रतिज्ञापत्र हे <b>[कारण]</b> कामी वास्तव्याचा दाखला मिळणेकामी मी हे प्रतिज्ञापत्र करीत आहे.</span>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </aside>
+
+    <!-- Right Live A4 Preview Stage -->
+    <main class="preview-stage">
+      
+      <!-- A4 Sheet (Exact Print Mirror) -->
+      <article class="a4-sheet" id="printSheet">
+
+        <!-- Stamp Spacer Guide (When in ₹100 Stamp Paper mode) -->
+        <div class="stamp-spacer-block no-print" id="stampSpacer">
+          <i class="fa-solid fa-stamp" style="margin-right: 8px;"></i>
+          ₹१०० स्टॅम्प पेपरसाठी सोडलेली जागा (<span id="stampGuideVal">85mm</span>)
+        </div>
+
+        <!-- Top Header: ॥ श्री ॥ -->
+        <div class="doc-top-shree">॥ श्री ॥</div>
+
+        <!-- Document Main Title: प्रतिज्ञापत्र -->
+        <div class="doc-main-title">प्रतिज्ञापत्र</div>
+
+        <!-- Court Title -->
+        <div class="doc-court-header" id="viewCourtTitle">
+          मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समोर
+        </div>
+
+        <!-- Date Row -->
+        <div class="doc-date-row" id="viewDateRow">
+          दिनांक :- <span id="viewDay">१६</span> / <span id="viewMonth">१०</span> / २०<span id="viewYear">२६</span>
+        </div>
+
+        <!-- Paragraph 1: Applicant Introduction -->
+        <div class="doc-paragraph" id="viewPara1">
+          मी <span class="val-underline" id="viewApplicantName">श्री. नामदेव शंकर गुरव</span> 
+          वय <span class="val-underline" id="viewAge">४२</span> 
+          धंदा <span class="val-underline" id="viewOccupation">शेती</span>
+          रा. <span class="val-underline" id="viewAddress">तिवरे</span> 
+          ता. <span class="val-underline" id="viewTaluka">कणकवली</span>, 
+          जि. <span class="val-underline" id="viewDistrict">सिंधुदुर्ग</span> 
+          सत्यप्रतिज्ञेवर <span id="viewGenderVerb1">लिहून देतो</span> की,
+        </div>
+
+        <!-- Paragraph 2: Core Proofs (Residence, Birth, Education, Ration Card, House No) -->
+        <div class="doc-paragraph" id="viewPara2">
+          मी गांव मौजे <span class="val-underline" id="viewNativeVillage">तिवरे</span> 
+          येथील कायम रहिवासी असून माझा जन्म गाव मौजे <span class="val-underline" id="viewBirthVillage">तिवरे</span> 
+          येथे दिनांक <span class="val-underline" id="viewBirthDate">१५/०६/१९८२</span> रोजी झाला आहे. 
+          त्याचप्रमाणे माझे प्राथमिक व माध्यमिक शिक्षण <span class="val-underline" id="viewEducation">जिल्हा परिषद शाळा व हायस्कूल कणकवली</span> 
+          येथे झाले आहे. गांव मौजे <span class="val-underline" id="viewRationVillage">तिवरे</span> 
+          येथे माझ्या कुटुंबाचे रेशनकार्ड नं. <span class="val-underline" id="viewRationNo">१२३४५६७८९</span> 
+          अनुक्रमांक <span class="val-underline" id="viewRationSrNo">०१</span> यामध्ये 
+          <span class="val-underline" id="viewRationHeadName">स्वतःचे</span> माझे नाव दाखल आहे. 
+          त्याचप्रमाणे गांव मौजे <span class="val-underline" id="viewHouseVillage">तिवरे</span> 
+          येथील ग्रामपंचायत घर नं. <span class="val-underline" id="viewHouseNo">४५</span> 
+          हे माझे <span class="val-underline" id="viewHouseOwner">माझे वडील</span> 
+          यांचे नावे दाखल असून सदर घरामध्ये आम्ही कायम वास्तव्त करुन राहत आहोत. 
+          सबब मी गाव मौजे <span class="val-underline" id="viewLocalVillage">तिवरे</span> 
+          ता. <span class="val-underline" id="viewTaluka2">कणकवली</span>, 
+          जि. <span class="val-underline" id="viewDistrict2">सिंधुदुर्ग</span> 
+          येथील स्थानिक रहिवाशी असून महाराष्ट्राचा रहिवासी आहे.
+        </div>
+
+        <!-- Paragraph 3: Purpose of Affidavit -->
+        <div class="doc-paragraph" id="viewPara3">
+          सदरचे प्रतिज्ञापत्र हे <span class="val-underline" id="viewPurpose">तहसीलदार कार्यालयाकडून</span> 
+          कामी वास्तव्याचा दाखला मिळणेकामी मी हे प्रतिज्ञापत्र करीत आहे.
+        </div>
+
+        <!-- Paragraph 4: Legal Declaration under BNS 229, 236, 237 -->
+        <div class="doc-paragraph" id="viewPara4">
+          भारतीय न्याय संहिता नुसार मी घोषित <span id="viewGenderVerb2">करतो</span> की, सदर प्रतिज्ञापत्रातील सर्व मजकूर, माहिती खरी व बरोबर आहे. 
+          तो खोटा आढळून आल्यास भारतीय न्याय संहिता कलम २२९, २३६ व २३७ प्रमाणे होणारे दंडास व शिक्षेस मी पात्र राहीन याची मला पुर्ण जाणीव आहे. 
+          मी हे प्रतिज्ञापत्र <span id="viewCourtMention">मे. कार्यकारी दंडाधिकारी साहेब कणकवली</span> यांचे समोर पुर्ण केले.
+        </div>
+
+        <!-- Signature Section -->
+        <div class="sign-row-container">
+          <!-- Left Attestation (Optional) -->
+          <div class="attestation-block" id="viewAttestationBlock" style="display: none;">
+            माझे समक्ष:<br><br><br>
+            कार्यकारी दंडाधिकारी / नोटरी<br>
+            कणकवली, जि. सिंधुदुर्ग
+          </div>
+
+          <!-- Right Applicant Signature -->
+          <div class="sign-applicant-block">
+            <div class="sign-word">सही</div>
+            <div class="applicant-name-bracket">( <span id="viewSignName">श्री. नामदेव शंकर गुरव</span> )</div>
+          </div>
+        </div>
+
+      </article>
+
+    </main>
+
+  </div>
+
+  <script>
+    // Marathi Number Conversion Helper
+    function toMarathiNum(numStr) {
+      if (!numStr) return '';
+      const chk = document.getElementById('chkMarathiNums');
+      if (chk && !chk.checked) return numStr;
+      const marathiDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+      return String(numStr).replace(/[0-9]/g, function(w) {
+        return marathiDigits[+w];
+      });
+    }
+
+    // Set Paper Mode (Plain A4 vs ₹100 Stamp Paper)
+    function setPaperMode(mode) {
+      const sheet = document.getElementById('printSheet');
+      const btnPlain = document.getElementById('btnModePlain');
+      const btnStamp = document.getElementById('btnModeStamp');
+      const sliderRow = document.getElementById('stampSliderRow');
+
+      if (mode === 'stamp') {
+        sheet.classList.add('stamp-mode-active');
+        btnStamp.classList.add('active');
+        btnPlain.classList.remove('active');
+        sliderRow.style.display = 'flex';
+        const gapVal = document.getElementById('stampGapSlider').value || 85;
+        updateStampGap(gapVal);
+      } else {
+        sheet.classList.remove('stamp-mode-active');
+        btnPlain.classList.add('active');
+        btnStamp.classList.remove('active');
+        sliderRow.style.display = 'none';
+        document.documentElement.style.setProperty('--stamp-gap', '0mm');
+      }
+    }
+
+    // Update Stamp Gap Slider
+    function updateStampGap(val) {
+      document.getElementById('stampGapVal').innerText = val + 'mm';
+      document.getElementById('stampGuideVal').innerText = val + 'mm';
+      document.documentElement.style.setProperty('--stamp-gap', val + 'mm');
+    }
+
+    // Update Font Size
+    function updateFontSize(val) {
+      document.getElementById('fontSizeVal').innerText = val + 'pt';
+      document.documentElement.style.setProperty('--base-font-size', val + 'pt');
+    }
+
+    // Update Line Height
+    function updateLineHeight(val) {
+      document.getElementById('lineHeightVal').innerText = val;
+      document.documentElement.style.setProperty('--line-height', val);
+    }
+
+    // Toggle Attestation
+    function toggleAttestation(show) {
+      const block = document.getElementById('viewAttestationBlock');
+      if (block) block.style.display = show ? 'block' : 'none';
+    }
+
+    // Quick Village Helper: Copy native village to all other village fields
+    function applySameVillage() {
+      const v = document.getElementById('inpNativeVillage').value.trim();
+      if (!v) {
+        alert("कृपया आधी 'कायम रहिवासी गाव' भरा!");
+        return;
+      }
+      document.getElementById('inpBirthVillage').value = v;
+      document.getElementById('inpRationVillage').value = v;
+      document.getElementById('inpHouseVillage').value = v;
+      document.getElementById('inpLocalVillage').value = v;
+      if (!document.getElementById('inpCurrentAddress').value.trim()) {
+        document.getElementById('inpCurrentAddress').value = v;
+      }
+      syncAll();
+    }
+
+    // Live Sync Function
+    function syncAll() {
+      // 1. Court & Date
+      const courtTitle = document.getElementById('inpCourtTitle').value.trim() || 'मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समोर';
+      document.getElementById('viewCourtTitle').innerText = courtTitle;
+      
+      // Clean court mention in section 4 (remove 'यांचे समोर' or 'यांचे समक्ष')
+      const courtClean = courtTitle.replace(/\s*यांचे\s*(समोर|समक्ष)\s*/g, '').trim();
+      document.getElementById('viewCourtMention').innerText = courtClean;
+
+      const blankDate = document.getElementById('inpBlankDateChk').checked;
+      const dateVal = document.getElementById('inpAffidavitDate').value;
+      if (blankDate || !dateVal) {
+        document.getElementById('viewDateRow').innerHTML = 'दिनांक :- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ २०&nbsp;&nbsp;&nbsp;&nbsp;';
+      } else {
+        const parts = dateVal.split('-');
+        if (parts.length === 3) {
+          const y = parts[0];
+          const m = parts[1];
+          const d = parts[2];
+          const yearShort = y.substring(2);
+          document.getElementById('viewDateRow').innerHTML = `दिनांक :- ${toMarathiNum(d)} / ${toMarathiNum(m)} / २०${toMarathiNum(yearShort)}`;
+        }
+      }
+
+      // 2. Personal Info & Gender Verbs
+      const appName = document.getElementById('inpApplicantName').value.trim() || '...................................................';
+      const gender = document.getElementById('inpGender').value;
+      const age = document.getElementById('inpAge').value.trim() || '.........';
+      const occ = document.getElementById('inpOccupation').value.trim() || '.........';
+      const addr = document.getElementById('inpCurrentAddress').value.trim() || '.....................';
+      const taluka = document.getElementById('inpTaluka').value.trim() || 'कणकवली';
+      const district = document.getElementById('inpDistrict').value.trim() || 'सिंधुदुर्ग';
+
+      document.getElementById('viewApplicantName').innerText = appName;
+      document.getElementById('viewAge').innerText = toMarathiNum(age);
+      document.getElementById('viewOccupation').innerText = occ;
+      document.getElementById('viewAddress').innerText = addr;
+      document.getElementById('viewTaluka').innerText = taluka;
+      document.getElementById('viewDistrict').innerText = district;
+      document.getElementById('viewTaluka2').innerText = taluka;
+      document.getElementById('viewDistrict2').innerText = district;
+      document.getElementById('viewSignName').innerText = appName.replace(/^(श्री\.|सौ\.|श्रीमती)\s*/, '');
+
+      if (gender === 'F') {
+        document.getElementById('viewGenderVerb1').innerText = 'लिहून देते';
+        document.getElementById('viewGenderVerb2').innerText = 'करते';
+      } else {
+        document.getElementById('viewGenderVerb1').innerText = 'लिहून देतो';
+        document.getElementById('viewGenderVerb2').innerText = 'करतो';
+      }
+
+      // 3. Residence, Birth & Education
+      const nativeVil = document.getElementById('inpNativeVillage').value.trim() || '..................';
+      const birthVil = document.getElementById('inpBirthVillage').value.trim() || '..................';
+      const birthDate = document.getElementById('inpBirthDate').value.trim() || '..................';
+      const edu = document.getElementById('inpEducation').value.trim() || '....................................';
+
+      document.getElementById('viewNativeVillage').innerText = nativeVil;
+      document.getElementById('viewBirthVillage').innerText = birthVil;
+      document.getElementById('viewBirthDate').innerText = toMarathiNum(birthDate);
+      document.getElementById('viewEducation').innerText = edu;
+
+      // 4. Ration Card & House Details
+      const rationVil = document.getElementById('inpRationVillage').value.trim() || '..................';
+      const rationNo = document.getElementById('inpRationNo').value.trim() || '..................';
+      const rationSrNo = document.getElementById('inpRationSrNo').value.trim() || '......';
+      const rationHead = document.getElementById('inpRationHeadName').value.trim() || 'स्वतःचे';
+      
+      const houseVil = document.getElementById('inpHouseVillage').value.trim() || '..................';
+      const houseNo = document.getElementById('inpHouseNo').value.trim() || '.........';
+      const houseOwner = document.getElementById('inpHouseOwner').value.trim() || 'माझे वडील';
+      const localVil = document.getElementById('inpLocalVillage').value.trim() || '..................';
+
+      document.getElementById('viewRationVillage').innerText = rationVil;
+      document.getElementById('viewRationNo').innerText = toMarathiNum(rationNo);
+      document.getElementById('viewRationSrNo').innerText = toMarathiNum(rationSrNo);
+      document.getElementById('viewRationHeadName').innerText = rationHead;
+
+      document.getElementById('viewHouseVillage').innerText = houseVil;
+      document.getElementById('viewHouseNo').innerText = toMarathiNum(houseNo);
+      document.getElementById('viewHouseOwner').innerText = houseOwner;
+      document.getElementById('viewLocalVillage').innerText = localVil;
+
+      // 5. Purpose
+      const purpose = document.getElementById('inpPurpose').value.trim() || 'तहसीलदार कार्यालयाकडून';
+      document.getElementById('viewPurpose').innerText = purpose;
+    }
+
+    // Load Sample Data (Matching the Official Executive Magistrate Format)
+    function loadSampleData() {
+      document.getElementById('inpCourtTitle').value = 'मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समोर';
+      
+      const today = new Date();
+      document.getElementById('inpAffidavitDate').value = today.toISOString().split('T')[0];
+      document.getElementById('inpBlankDateChk').checked = false;
+
+      document.getElementById('inpApplicantName').value = 'श्री. नामदेव शंकर गुरव';
+      document.getElementById('inpGender').value = 'M';
+      document.getElementById('inpAge').value = '४२';
+      document.getElementById('inpOccupation').value = 'शेती';
+      document.getElementById('inpCurrentAddress').value = 'मु. पो. तिवरे';
+      document.getElementById('inpTaluka').value = 'कणकवली';
+      document.getElementById('inpDistrict').value = 'सिंधुदुर्ग';
+
+      document.getElementById('inpNativeVillage').value = 'तिवरे';
+      document.getElementById('inpBirthVillage').value = 'तिवरे';
+      document.getElementById('inpBirthDate').value = '१५/०६/१९८२';
+      document.getElementById('inpEducation').value = 'जिल्हा परिषद शाळा व विद्यामंदिर हायस्कूल कणकवली';
+
+      document.getElementById('inpRationVillage').value = 'तिवरे';
+      document.getElementById('inpRationNo').value = '२७२३०१००२५४८';
+      document.getElementById('inpRationSrNo').value = '०१';
+      document.getElementById('inpRationHeadName').value = 'स्वतःचे';
+
+      document.getElementById('inpHouseVillage').value = 'तिवरे';
+      document.getElementById('inpHouseNo').value = '४५/अ';
+      document.getElementById('inpHouseOwner').value = 'माझे वडील श्री. शंकर अनंत गुरव';
+      document.getElementById('inpLocalVillage').value = 'तिवरे';
+
+      document.getElementById('inpPurpose').value = 'तहसीलदार कार्यालयाकडून';
+
+      syncAll();
+    }
+
+    // Reset Form
+    function resetForm() {
+      if (!confirm("सर्व माहिती रीसेट करायची आहे का?")) return;
+      document.getElementById('affidavitForm').reset();
+      document.getElementById('inpCourtTitle').value = 'मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे समोर';
+      document.getElementById('inpTaluka').value = 'कणकवली';
+      document.getElementById('inpDistrict').value = 'सिंधुदुर्ग';
+      document.getElementById('inpBlankDateChk').checked = false;
+      syncAll();
+    }
+
+    // Save Draft to LocalStorage
+    function saveDraft() {
+      const data = {
+        court: document.getElementById('inpCourtTitle').value,
+        date: document.getElementById('inpAffidavitDate').value,
+        blankDate: document.getElementById('inpBlankDateChk').checked,
+        name: document.getElementById('inpApplicantName').value,
+        gender: document.getElementById('inpGender').value,
+        age: document.getElementById('inpAge').value,
+        occ: document.getElementById('inpOccupation').value,
+        addr: document.getElementById('inpCurrentAddress').value,
+        taluka: document.getElementById('inpTaluka').value,
+        district: document.getElementById('inpDistrict').value,
+        native: document.getElementById('inpNativeVillage').value,
+        birthVil: document.getElementById('inpBirthVillage').value,
+        birthDate: document.getElementById('inpBirthDate').value,
+        edu: document.getElementById('inpEducation').value,
+        rationVil: document.getElementById('inpRationVillage').value,
+        rationNo: document.getElementById('inpRationNo').value,
+        rationSr: document.getElementById('inpRationSrNo').value,
+        rationHead: document.getElementById('inpRationHeadName').value,
+        houseVil: document.getElementById('inpHouseVillage').value,
+        houseNo: document.getElementById('inpHouseNo').value,
+        houseOwner: document.getElementById('inpHouseOwner').value,
+        localVil: document.getElementById('inpLocalVillage').value,
+        purpose: document.getElementById('inpPurpose').value
+      };
+      localStorage.setItem('affidavit_pratigya_draft', JSON.stringify(data));
+      alert("✅ ड्राफ्ट यशस्वीरित्या सेव्ह झाला आहे!");
+    }
+
+    // Load Draft from LocalStorage if exists
+    function loadSavedDraft() {
+      const saved = localStorage.getItem('affidavit_pratigya_draft');
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          if (data.court) document.getElementById('inpCourtTitle').value = data.court;
+          if (data.date) document.getElementById('inpAffidavitDate').value = data.date;
+          if (data.blankDate !== undefined) document.getElementById('inpBlankDateChk').checked = data.blankDate;
+          if (data.name) document.getElementById('inpApplicantName').value = data.name;
+          if (data.gender) document.getElementById('inpGender').value = data.gender;
+          if (data.age) document.getElementById('inpAge').value = data.age;
+          if (data.occ) document.getElementById('inpOccupation').value = data.occ;
+          if (data.addr) document.getElementById('inpCurrentAddress').value = data.addr;
+          if (data.taluka) document.getElementById('inpTaluka').value = data.taluka;
+          if (data.district) document.getElementById('inpDistrict').value = data.district;
+          if (data.native) document.getElementById('inpNativeVillage').value = data.native;
+          if (data.birthVil) document.getElementById('inpBirthVillage').value = data.birthVil;
+          if (data.birthDate) document.getElementById('inpBirthDate').value = data.birthDate;
+          if (data.edu) document.getElementById('inpEducation').value = data.edu;
+          if (data.rationVil) document.getElementById('inpRationVillage').value = data.rationVil;
+          if (data.rationNo) document.getElementById('inpRationNo').value = data.rationNo;
+          if (data.rationSr) document.getElementById('inpRationSrNo').value = data.rationSr;
+          if (data.rationHead) document.getElementById('inpRationHeadName').value = data.rationHead;
+          if (data.houseVil) document.getElementById('inpHouseVillage').value = data.houseVil;
+          if (data.houseNo) document.getElementById('inpHouseNo').value = data.houseNo;
+          if (data.houseOwner) document.getElementById('inpHouseOwner').value = data.houseOwner;
+          if (data.localVil) document.getElementById('inpLocalVillage').value = data.localVil;
+          if (data.purpose) document.getElementById('inpPurpose').value = data.purpose;
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+
+    // Initialize on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set today's date
+      const today = new Date();
+      document.getElementById('inpAffidavitDate').value = today.toISOString().split('T')[0];
+
+      // Check saved draft or load sample
+      const saved = localStorage.getItem('affidavit_pratigya_draft');
+      if (saved) {
+        loadSavedDraft();
+      } else {
+        loadSampleData();
+      }
+      syncAll();
+    });
+  </script>
+
+  <!-- Supabase Cloud DB & Universal Form History Tracker -->
+  <script src="js/supabase-db.js"></script>
+  <script src="js/universal-form-history.js"></script>
+</body>
+</html>

@@ -1443,12 +1443,23 @@ const DEFAULT_IMPORTANT_LINKS = [
   {
     id: "link-pratigya",
     category: "अधिकृत शासकीय टूल्स व दाखले",
+    icon: "fa-solid fa-file-contract",
+    title_mr: "📜 रहिवासी दाखला प्रतिज्ञापत्र (मे. कार्यकारी दंडाधिकारी)",
+    title_en: "Rahivasi Dakhala Pratidnya Patra (Domicile Affidavit Generator)",
+    desc_mr: "रहिवासी दाखला / वास्तव्याचा दाखला मिळणेकामी मे. कार्यकारी दंडाधिकारी यांच्यासमोर सादर करावयाचे अधिकृत प्रतिज्ञापत्र व १-क्लिक A4 / स्टॅम्प पेपर प्रिंट.",
+    desc_en: "Official Rahivasi Dakhala Pratidnya Patra generator with BNS sections 229, 236, 237 and instant A4 / Stamp paper print.",
+    url: "pratidnya-patra.html",
+    isInternal: true
+  },
+  {
+    id: "link-lunch-tokens",
+    category: "अधिकृत शासकीय टूल्स व दाखले",
     icon: "fa-solid fa-ticket-simple",
-    title_mr: "🎟️ प्रतिज्ञा पत्र टोकन जनरेटर",
+    title_mr: "🎟️ प्रतिज्ञा पत्र टोकन जनरेटर (Printable Tokens)",
     title_en: "Pratigya Patra Token Generator",
     desc_mr: "प्रतिज्ञा पत्र गोल टोकन्स (A4 वर २० टोकन्स) त्वरित जनरेट व प्रिंट करा.",
     desc_en: "Printable Round Tokens generator with custom date & range.",
-    url: "pratigya-patra.html",
+    url: "lunch-tokens.html",
     isInternal: true
   },
   {
