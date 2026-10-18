@@ -1029,6 +1029,18 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
+  // 📝 मराठी शासकीय अर्ज जनरेटर प्रो (Official Marathi Application Letter Generator - Police / Tahsil / Grampanchayat)
+  {
+    id: "link-application-generator",
+    category: "उपयुक्त दस्तऐवज टूल्स",
+    icon: "fa-solid fa-file-signature",
+    title_mr: "📝 मराठी शासकीय अर्ज जनरेटर प्रो (Application Letter Generator A4 Print)",
+    title_en: "Official Marathi Application Letter Generator (Police/Tahsil A4 Studio)",
+    desc_mr: "पोलीस पूर्व चारित्र्य व चालवर्तन दाखला, तहसीलदार, तलाठी व ग्रामपंचायत सर्व शासकीय विनंती अर्ज A4 वर त्वरित तयार व प्रिंट करा.",
+    desc_en: "Official Marathi government application generator for Police Character Verification, Tahsildar, Talathi & Gram Panchayat with 1-click A4 print and PDF.",
+    url: "application-generator.html",
+    isInternal: true
+  },
   // 🌾 ॲग्रीस्टॅक शेतकरी ओळखपत्र (AgriStack Farmer ID Card Studio Pro - A4 Upper Center Print)
   {
     id: "link-agristack-id-card",

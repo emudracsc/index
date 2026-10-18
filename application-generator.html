@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>मराठी शासकीय अर्ज जनरेटर प्रो | Official Marathi Application Letter Generator Studio</title>
+  <meta name="description" content="पोलीस पूर्व चारित्र्य व चालवर्तन दाखला, तहसीलदार, तलाठी, ग्रामपंचायत व सर्व शासकीय कार्यालयांसाठी अधिकृत मराठी विनंती अर्ज अचूक A4 वर त्वरित तयार करा, PDF डाउनलोड करा व थेट प्रिंट करा.">
+  <meta name="keywords" content="Marathi Application Generator, अर्ज जनरेटर, चारित्र्य दाखला अर्ज, पोलिस चालचलन अर्ज, तहसीलदार अर्ज, शासकीय विनंती अर्ज, eMudra CSC">
+
+  <!-- Google Fonts: Mukta, Noto Sans Devanagari & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6.5.1 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- html2canvas & jsPDF for high-res PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-dark: #0f172a;
+      --primary-light: #eff6ff;
+      --accent: #d97706;
+      --accent-hover: #b45309;
+      --success: #059669;
+      --success-dark: #047857;
+      --navy: #0f172a;
+      --card-bg: #ffffff;
+      --border-color: #cbd5e1;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --bg-workspace: #f1f5f9;
+      --font-marathi: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-marathi);
+      background-color: var(--bg-workspace);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Tricolor Ribbon */
+    .gov-top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%);
+      width: 100%;
+    }
+
+    /* Navbar */
+    .app-navbar {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #f59e0b;
+    }
+
+    .brand-text h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      font-size: 0.7rem;
+      background: #f59e0b;
+      color: #0f172a;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-text p {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      margin-top: 2px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .nav-btn-home {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .nav-btn-home:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .nav-btn-sample {
+      background: #f59e0b;
+      color: #0f172a;
+    }
+    .nav-btn-sample:hover {
+      background: #d97706;
+      color: #ffffff;
+    }
+
+    .nav-btn-pdf {
+      background: #dc2626;
+      color: #ffffff;
+    }
+    .nav-btn-pdf:hover {
+      background: #b91c1c;
+    }
+
+    .nav-btn-print {
+      background: #10b981;
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.4);
+    }
+    .nav-btn-print:hover {
+      background: #059669;
+    }
+
+    /* Mobile View Mode Switcher */
+    .mobile-tab-bar {
+      display: none;
+      background: #ffffff;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 8px 16px;
+      gap: 8px;
+      position: sticky;
+      top: 68px;
+      z-index: 90;
+    }
+
+    .mobile-tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+    .mobile-tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Main Workspace Layout */
+    .workspace-wrapper {
+      flex: 1;
+      display: flex;
+      padding: 20px;
+      gap: 24px;
+      max-width: 1750px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Left Form Editor Panel */
+    .editor-section {
+      flex: 1;
+      min-width: 460px;
+      max-width: 620px;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .editor-header {
+      background: #f8fafc;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .editor-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .editor-scroll {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Template Selector Box */
+    .template-box {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+      border: 1.5px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .template-label {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .template-select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid #93c5fd;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #0f172a;
+      background: #ffffff;
+      outline: none;
+      cursor: pointer;
+    }
+    .template-select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    /* Form Accordion / Card Groups */
+    .form-group-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .group-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #334155;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1.5px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .group-title i {
+      color: var(--primary);
+      margin-right: 6px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    .field-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    .field-input, .field-textarea, .field-select {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      color: #1e293b;
+      outline: none;
+      transition: all 0.2s ease;
+      background: #f8fafc;
+    }
+
+    .field-input:focus, .field-textarea:focus, .field-select:focus {
+      background: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.12);
+    }
+
+    .field-textarea {
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.5;
+    }
+
+    /* Quick Dropdown Preset Chips */
+    .quick-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .quick-chip {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .quick-chip:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    /* Right Preview Section */
+    .preview-section {
+      flex: 1.4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .preview-toolbar {
+      width: 100%;
+      max-width: 820px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 10px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    .toolbar-select {
+      padding: 5px 8px;
+      font-size: 0.82rem;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      font-family: inherit;
+      background: #f8fafc;
+      color: #1e293b;
+      cursor: pointer;
+    }
+
+    .tool-btn {
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+    .tool-btn:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    /* A4 Paper Display - Exact Standard Government Letter Layout */
+    .a4-viewport {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+      padding-bottom: 40px;
+    }
+
+    .a4-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e2e8f0;
+      padding: 24mm 24mm 24mm 24mm;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+      color: #000000;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* Letter Specific Typography & Alignment */
+    .letter-header-top {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 24px;
+    }
+
+    .applicant-address-block {
+      text-align: left;
+      font-weight: 600;
+      font-size: 1.02rem;
+      line-height: 1.45;
+      max-width: 320px;
+    }
+
+    .applicant-name-line {
+      font-weight: 700;
+      font-size: 1.08rem;
+    }
+
+    .letter-recipient-block {
+      text-align: left;
+      margin-bottom: 24px;
+      font-size: 1.02rem;
+      line-height: 1.45;
+    }
+
+    .letter-recipient-block .prati {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .letter-recipient-block .officer-title {
+      padding-left: 36px;
+      font-weight: 600;
+    }
+
+    .letter-subject-block {
+      text-align: center;
+      margin: 20px 0 24px 0;
+      font-weight: 700;
+      font-size: 1.08rem;
+    }
+
+    .letter-subject-text {
+      display: inline-block;
+      text-decoration: none;
+      border-bottom: 1.5px solid #000000;
+      padding-bottom: 2px;
+    }
+
+    .letter-reference-block {
+      text-align: center;
+      margin-top: -14px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .letter-salutation {
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-size: 1.05rem;
+    }
+
+    .letter-body {
+      text-align: justify;
+      font-size: 1.02rem;
+      line-height: 1.65;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .letter-body p {
+      text-indent: 44px;
+      margin: 0;
+    }
+
+    .letter-enclosures {
+      margin-top: 24px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .enclosures-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .enclosures-list {
+      padding-left: 20px;
+    }
+
+    .letter-footer {
+      margin-top: auto;
+      padding-top: 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .contact-block {
+      font-size: 0.98rem;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .signature-block {
+      text-align: center;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sign-salutation {
+      font-weight: 600;
+      margin-bottom: 30px;
+      font-size: 1rem;
+    }
+
+    .signature-img-preview {
+      max-height: 50px;
+      max-width: 150px;
+      object-fit: contain;
+      margin-bottom: 6px;
+    }
+
+    .sign-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      border-top: 1px dotted transparent;
+    }
+
+    /* Print Specific Rules */
+    @page {
+      size: A4 portrait;
+      margin: 15mm 20mm;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .gov-top-bar,
+      .app-navbar,
+      .mobile-tab-bar,
+      .editor-section,
+      .preview-toolbar,
+      .no-print {
+        display: none !important;
+      }
+
+      .workspace-wrapper {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        display: block !important;
+      }
+
+      .preview-section {
+        flex: none !important;
+        width: 100% !important;
+        display: block !important;
+      }
+
+      .a4-viewport {
+        padding: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+
+      .a4-page {
+        width: 100% !important;
+        min-height: auto !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 16pt !important;
+        line-height: 1.6 !important;
+      }
+
+      .applicant-address-block {
+        font-size: 15pt !important;
+      }
+
+      .letter-recipient-block {
+        font-size: 15pt !important;
+      }
+
+      .letter-subject-block {
+        font-size: 16pt !important;
+      }
+
+      .letter-body {
+        font-size: 15pt !important;
+        line-height: 1.7 !important;
+      }
+
+      .contact-block {
+        font-size: 14pt !important;
+      }
+
+      .signature-block {
+        font-size: 15pt !important;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .workspace-wrapper {
+        flex-direction: column;
+        padding: 12px;
+      }
+      .editor-section {
+        min-width: 100%;
+        max-width: 100%;
+      }
+      .mobile-tab-bar {
+        display: flex;
+      }
+      .editor-section.mobile-hidden {
+        display: none;
+      }
+      .preview-section.mobile-hidden {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-top-bar no-print"></div>
+
+  <!-- Navbar -->
+  <header class="app-navbar no-print">
+    <div class="brand-section">
+      <div class="brand-icon">
+        <i class="fa-solid fa-file-signature"></i>
+      </div>
+      <div class="brand-text">
+        <h1>
+          <span>मराठी शासकीय अर्ज जनरेटर प्रो</span>
+          <span class="brand-badge">A4 STUDIO</span>
+        </h1>
+        <p>चारित्र्य पडताळणी दाखला • पोलीस ठाणे • महसूल व ग्रामपंचायत सर्व शासकीय विनंती अर्ज</p>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <a href="index.html" class="nav-btn nav-btn-home" title="मुख्य पोर्टलवर परत जा">
+        <i class="fa-solid fa-house"></i> <span>मुख्य पोर्टल</span>
+      </a>
+      <button class="nav-btn nav-btn-sample" onclick="loadSampleImageDemo()" title="स्क्रीनशॉट मधील ज्योत्स्ना कानडे यांचा नमुना डेटा लोड करा">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>नमुना डेटा भरा</span>
+      </button>
+      <button class="nav-btn nav-btn-pdf" onclick="downloadApplicationPdf()" title="A4 PDF डाउनलोड करा">
+        <i class="fa-solid fa-file-pdf"></i> <span>PDF डाउनलोड</span>
+      </button>
+      <button class="nav-btn nav-btn-print" onclick="window.print()" title="थेट A4 पेपरवर प्रिंट करा">
+        <i class="fa-solid fa-print"></i> <span>A4 थेट प्रिंट</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Tab Switcher -->
+  <div class="mobile-tab-bar no-print">
+    <button class="mobile-tab-btn active" id="tabBtnEditor" onclick="switchMobileTab('editor')">
+      <i class="fa-solid fa-pen-to-square"></i> <span>अर्ज संपादक (Edit)</span>
+    </button>
+    <button class="mobile-tab-btn" id="tabBtnPreview" onclick="switchMobileTab('preview')">
+      <i class="fa-solid fa-file-lines"></i> <span>A4 पूर्वावलोकन (Preview)</span>
+    </button>
+  </div>
+
+  <!-- Main Workspace -->
+  <div class="workspace-wrapper">
+
+    <!-- LEFT: FORM CONTROLS & EDITOR -->
+    <section class="editor-section" id="editorPanel">
+      <div class="editor-header">
+        <div class="editor-title">
+          <i class="fa-solid fa-sliders"></i>
+          <span>अर्जाचा तपशील व सेटिंग्ज</span>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="tool-btn" onclick="resetForm()" title="सर्व माहिती साफ करा">
+            <i class="fa-solid fa-rotate-left"></i> रीसेट
+          </button>
+          <button class="tool-btn" onclick="copyFullLetterText()" title="संपूर्ण मजकूर कॉपी करा">
+            <i class="fa-solid fa-copy"></i> मजकूर कॉपी
+          </button>
+        </div>
+      </div>
+
+      <div class="editor-scroll">
+        
+        <!-- 1. TEMPLATE SELECTION -->
+        <div class="template-box">
+          <div class="template-label">
+            <i class="fa-solid fa-bolt-lightning"></i>
+            <span>अर्जाचा प्रकार / तयार टेम्पलेट निवडा:</span>
+          </div>
+          <select id="templateSelector" class="template-select" onchange="applyTemplate(this.value)">
+            <option value="police-character" selected>⭐ पूर्व चारित्र्य व चालवर्तन दाखला अर्ज (पोलीस अधीक्षक / पोलीस ठाणे)</option>
+            <option value="tahsildar-general">🏛️ सर्वसाधारण शासकीय विनंती अर्ज (मा. तहसीलदार साहेब)</option>
+            <option value="ration-card">📜 रेशन कार्ड नाव समाविष्ट / विभक्त करणे अर्ज (पुरवठा अधिकारी)</option>
+            <option value="grampanchayat-noc">🏠 ग्रामपंचायत नाहरकत / रहिवासी दाखला मागणी अर्ज (ग्रामसेवक / सरपंच)</option>
+            <option value="police-lost-report">👮 पोलीस ठाणे तक्रार / गहाळ वस्तू नोंद अर्ज (पोलीस निरीक्षक)</option>
+            <option value="ferfar-talathi">🌾 ७/१२, ८-अ नोंद व फेरफार दुरुस्ती अर्ज (तलाठी साहेब)</option>
+            <option value="electricity-name-change">⚡ महावितरण वीज मीटर नाव बदल / नवीन कनेक्शन अर्ज</option>
+            <option value="custom-blank">✏️ कस्टम / स्वतःचा मोकळा अर्ज (Custom Blank Application)</option>
+          </select>
+        </div>
+
+        <!-- 2. APPLICANT DETAILS -->
+        <div class="form-group-card">
+          <div class="group-title">
+            <span><i class="fa-solid fa-user"></i> अर्जदाराची माहिती (उजवीकडील कोपरा)</span>
+            <div style="font-size: 0.75rem; font-weight: 600; color: #64748b;">
+              लिंग: 
+              <label style="cursor: pointer; margin-left: 4px;">
+                <input type="radio" name="gender" value="female" id="genderFemale" onchange="onGenderChange()" checked> स्त्री
+              </label>
+              <label style="cursor: pointer; margin-left: 6px;">
+                <input type="radio" name="gender" value="male" id="genderMale" onchange="onGenderChange()"> पुरुष
+              </label>
+            </div>
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">अर्जदाराचे पूर्ण नाव:</label>
+            <input type="text" id="applicantName" class="field-input" value="ज्योत्स्ना सिताराम कानडे" placeholder="उदा. ज्योत्स्ना सिताराम कानडे" oninput="updateLetterPreview()">
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">पत्ता (मु. पो. / वाडी / घर क्र.):</label>
+            <input type="text" id="applicantAddress" class="field-input" value="मु. पो. डामरे कानडेवाडी" placeholder="उदा. मु. पो. डामरे कानडेवाडी" oninput="updateLetterPreview()">
+          </div>
+
+          <div class="grid-2">
+            <div class="field-item">
+              <label class="field-label">तालुका:</label>
+              <input type="text" id="applicantTaluka" class="field-input" value="कणकवली" placeholder="उदा. कणकवली" oninput="updateLetterPreview()">
+            </div>
+            <div class="field-item">
+              <label class="field-label">जिल्हा:</label>
+              <input type="text" id="applicantDistrict" class="field-input" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="updateLetterPreview()">
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field-item">
+              <label class="field-label">दिनांक (Date):</label>
+              <input type="text" id="applicantDate" class="field-input" value="२२/०८/२०१८" placeholder="उदा. २२/०८/२०१८" oninput="updateLetterPreview()">
+            </div>
+            <div class="field-item" style="justify-content: flex-end;">
+              <button class="tool-btn" style="height: 38px; width: 100%; justify-content: center;" onclick="setTodayDateMarathi()">
+                <i class="fa-solid fa-calendar-day"></i> आजची तारीख टाका
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. RECIPIENT DETAILS (प्रति) -->
+        <div class="form-group-card">
+          <div class="group-title">
+            <span><i class="fa-solid fa-building-columns"></i> प्रति (कार्यालय व अधिकारी तपशील)</span>
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">जलद अधिकारी निवडा (Quick Preset):</label>
+            <div class="quick-chips">
+              <span class="quick-chip" onclick="setRecipient('मा. पोलिस अधिक्षक', 'सिंधुदुर्ग')">मा. पोलिस अधिक्षक</span>
+              <span class="quick-chip" onclick="setRecipient('मा. पोलीस निरीक्षक साहेब', 'पोलीस ठाणे कणकवली')">मा. पोलीस निरीक्षक</span>
+              <span class="quick-chip" onclick="setRecipient('मा. तहसीलदार साहेब', 'तहसील कार्यालय कणकवली')">मा. तहसीलदार साहेब</span>
+              <span class="quick-chip" onclick="setRecipient('मा. तलाठी साहेब', 'सजा डामरे, ता. कणकवली')">मा. तलाठी साहेब</span>
+              <span class="quick-chip" onclick="setRecipient('मा. सरपंच / ग्रामसेवक साहेब', 'ग्रामपंचायत कार्यालय डामरे')">मा. ग्रामसेवक साहेब</span>
+              <span class="quick-chip" onclick="setRecipient('मा. गट विकास अधिकारी (BDO) साहेब', 'पंचायत समिती कणकवली')">मा. BDO साहेब</span>
+              <span class="quick-chip" onclick="setRecipient('मा. उपविभागीय अधिकारी साहेब (प्रांत)', 'उपविभाग कणकवली')">मा. प्रांत अधिकारी</span>
+            </div>
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">प्रति / अधिकारी पदनाम:</label>
+            <input type="text" id="recipientTitle" class="field-input" value="मा. पोलिस अधिक्षक" placeholder="उदा. मा. पोलिस अधिक्षक" oninput="updateLetterPreview()">
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">कार्यालय / विभाग / ठिकाण:</label>
+            <input type="text" id="recipientOffice" class="field-input" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग किंवा पोलीस ठाणे कणकवली" oninput="updateLetterPreview()">
+          </div>
+        </div>
+
+        <!-- 4. SUBJECT & REFERENCE -->
+        <div class="form-group-card">
+          <div class="group-title">
+            <span><i class="fa-solid fa-heading"></i> अर्जाचा विषय व संदर्भ</span>
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">विषय (Subject):</label>
+            <input type="text" id="letterSubject" class="field-input" value="पूर्व चारित्र्य व चालवर्तन दाखला मिळण्याबाबत." placeholder="उदा. पूर्व चारित्र्य व चालवर्तन दाखला मिळण्याबाबत." oninput="updateLetterPreview()">
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">संदर्भ (Reference - पर्यायी):</label>
+            <input type="text" id="letterReference" class="field-input" value="" placeholder="उदा. जावक क्र. / जाहिरात क्र. (असल्यास)" oninput="updateLetterPreview()">
+          </div>
+        </div>
+
+        <!-- 5. MAIN LETTER CONTENT -->
+        <div class="form-group-card">
+          <div class="group-title">
+            <span><i class="fa-solid fa-align-left"></i> अर्जाचा मुख्य मजकूर</span>
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">संबोधन (Salutation):</label>
+            <input type="text" id="letterSalutation" class="field-input" value="महोदय," placeholder="उदा. महोदय, किंवा महोदया," oninput="updateLetterPreview()">
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">परिच्छेद १ (प्रास्ताविक / कारण):</label>
+            <textarea id="para1" class="field-textarea" style="min-height: 90px;" oninput="updateLetterPreview()">अर्जदार ज्योत्स्ना सिताराम कानडे रा- डामरे, कानडेवाडी तालुका -कणकवली जि-सिंधुदुर्ग सदर अर्ज करीता किंवा करते की मला नोकरी कारणासाठी पूर्व चारीत्र्य व चालवर्तन दाखल्याची आवश्यकता आहे.</textarea>
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">परिच्छेद २ (विनंती / मागणी):</label>
+            <textarea id="para2" class="field-textarea" style="min-height: 80px;" oninput="updateLetterPreview()">तरी नमुद कारणासाठी मला चाल वर्तणुक दाखल्याची आवश्यक असल्याने मला माझे नावे चालवर्तणुक दाखला मिळावा हि नम्र विनंती आहे.</textarea>
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">परिच्छेद ३ (हमी / कागदपत्रे पूर्तता):</label>
+            <textarea id="para3" class="field-textarea" style="min-height: 60px;" oninput="updateLetterPreview()">सदर दाखला मिळणेसाठी आवश्यक कागदपत्रांची मी पूर्तता करीन.</textarea>
+          </div>
+        </div>
+
+        <!-- 6. CONTACT & SIGNATURE -->
+        <div class="form-group-card">
+          <div class="group-title">
+            <span><i class="fa-solid fa-signature"></i> संपर्क व स्वाक्षरी तपशील</span>
+          </div>
+
+          <div class="grid-2">
+            <div class="field-item">
+              <label class="field-label">संपर्क / मोबाईल नंबर:</label>
+              <input type="text" id="applicantPhone" class="field-input" value="" placeholder="उदा. ९८xxxxxxxx किंवा मोकळे ठेवा" oninput="updateLetterPreview()">
+            </div>
+            <div class="field-item">
+              <label class="field-label">स्वाक्षरी शेरा:</label>
+              <input type="text" id="signSalutation" class="field-input" value="आपला विश्वासू" placeholder="उदा. आपला विश्वासू / आपली नम्र" oninput="updateLetterPreview()">
+            </div>
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">स्वाक्षरी करणाऱ्याचे नाव:</label>
+            <input type="text" id="signName" class="field-input" value="ज्योत्स्ना सिताराम कानडे" placeholder="स्वाक्षरी नाव" oninput="updateLetterPreview()">
+          </div>
+
+          <!-- Attachments / Enclosures (Optional Toggle) -->
+          <div class="field-item" style="margin-top: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-weight: 700; cursor: pointer;">
+              <input type="checkbox" id="showEnclosures" onchange="updateLetterPreview()">
+              <span>सहपत्रे / सोबत जोडलेली कागदपत्रे दाखवा (Show Enclosures)</span>
+            </label>
+          </div>
+
+          <div class="field-item" id="enclosuresBox" style="display: none;">
+            <label class="field-label">कागदपत्रांची यादी (प्रत्येक ओळीवर १):</label>
+            <textarea id="enclosuresText" class="field-textarea" style="min-height: 70px;" oninput="updateLetterPreview()">१) आधार कार्ड झेरॉक्स प्रत
+२) शाळा सोडल्याचा दाखला (LC) प्रत
+३) पासपोर्ट आकाराचे फोटो</textarea>
+          </div>
+
+          <!-- Digital Signature Upload (Optional) -->
+          <div class="field-item" style="margin-top: 10px;">
+            <label class="field-label">डिजिटल स्वाक्षरी इमेज (पर्यायी):</label>
+            <input type="file" id="sigFileInput" accept="image/*" class="field-input" onchange="handleSignatureUpload(event)">
+            <small style="color: #64748b; font-size: 0.75rem;">PNG किंवा JPG स्वाक्षरी इमेज जोडल्यास ती अर्जावर थेट दिसेल.</small>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RIGHT: A4 LIVE PREVIEW & PRINT SECTION -->
+    <section class="preview-section" id="previewPanel">
+      
+      <!-- Toolbar -->
+      <div class="preview-toolbar no-print">
+        <div class="toolbar-group">
+          <span class="toolbar-label">फॉन्ट:</span>
+          <select id="fontFamilySelector" class="toolbar-select" onchange="changeLetterFont(this.value)">
+            <option value="'Mukta', sans-serif">Mukta (क्लियर व आधुनिक)</option>
+            <option value="'Noto Sans Devanagari', sans-serif">Noto Sans Devanagari</option>
+            <option value="'Lohit Marathi', sans-serif">Lohit Marathi (शासकीय फॉन्ट)</option>
+            <option value="Georgia, serif">Serif (क्लासिक सरकारी स्टाईल)</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <span class="toolbar-label">आकार:</span>
+          <select id="fontSizeSelector" class="toolbar-select" onchange="changeLetterFontSize(this.value)">
+            <option value="15px">मध्यम (15px)</option>
+            <option value="16px" selected>प्रमाणित (16px - शिफारस)</option>
+            <option value="17px">मोठा (17px)</option>
+            <option value="18px">अधिक मोठा (18px)</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <span class="toolbar-label">मार्जिन:</span>
+          <select id="marginSelector" class="toolbar-select" onchange="changeLetterMargin(this.value)">
+            <option value="20mm">कमी (20mm)</option>
+            <option value="24mm" selected>योग्य (24mm)</option>
+            <option value="28mm">जास्त (28mm)</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <button class="tool-btn" onclick="toggleDevanagariNumbers()" title="देवनागरी (२२/०८/२०१८) आणि इंग्रजी अंकात बदला">
+            <i class="fa-solid fa-arrow-right-arrow-left"></i> देवनागरी अंक
+          </button>
+        </div>
+      </div>
+
+      <!-- A4 Page Viewport -->
+      <div class="a4-viewport">
+        <div class="a4-page" id="a4LetterPage">
+
+          <!-- 1. TOP RIGHT SENDER BLOCK -->
+          <div class="letter-header-top">
+            <div class="applicant-address-block">
+              <div class="applicant-name-line" id="viewApplicantName">ज्योत्स्ना सिताराम कानडे</div>
+              <div id="viewApplicantAddress">मु. पो. डामरे कानडेवाडी</div>
+              <div id="viewApplicantTalukaDist">ता. कणकवली जि. सिंधुदुर्ग</div>
+              <div id="viewApplicantDate">दिनांक २२/०८/२०१८</div>
+            </div>
+          </div>
+
+          <!-- 2. LEFT RECIPIENT BLOCK (प्रति) -->
+          <div class="letter-recipient-block">
+            <div class="prati">प्रति,</div>
+            <div class="officer-title" id="viewRecipientTitle">मा. पोलिस अधिक्षक</div>
+            <div class="officer-title" id="viewRecipientOffice">सिंधुदुर्ग</div>
+          </div>
+
+          <!-- 3. SUBJECT & REFERENCE (Centered) -->
+          <div class="letter-subject-block">
+            <span class="letter-subject-text">विषय - <span id="viewSubject">पूर्व चारित्र्य व चालवर्तन दाखला मिळण्याबाबत.</span></span>
+          </div>
+
+          <div class="letter-reference-block" id="viewReferenceWrap" style="display: none;">
+            <span>संदर्भ - <span id="viewReference"></span></span>
+          </div>
+
+          <!-- 4. SALUTATION & MAIN BODY -->
+          <div class="letter-salutation" id="viewSalutation">महोदय,</div>
+
+          <div class="letter-body">
+            <p id="viewPara1">
+              अर्जदार ज्योत्स्ना सिताराम कानडे रा- डामरे, कानडेवाडी तालुका -कणकवली जि-सिंधुदुर्ग सदर अर्ज करीता किंवा करते की मला नोकरी कारणासाठी पूर्व चारीत्र्य व चालवर्तन दाखल्याची आवश्यकता आहे.
+            </p>
+            <p id="viewPara2">
+              तरी नमुद कारणासाठी मला चाल वर्तणुक दाखल्याची आवश्यक असल्याने मला माझे नावे चालवर्तणुक दाखला मिळावा हि नम्र विनंती आहे.
+            </p>
+            <p id="viewPara3">
+              सदर दाखला मिळणेसाठी आवश्यक कागदपत्रांची मी पूर्तता करीन.
+            </p>
+          </div>
+
+          <!-- 5. ENCLOSURES (Optional) -->
+          <div class="letter-enclosures" id="viewEnclosuresWrap" style="display: none;">
+            <div class="enclosures-title">सोबत जोडलेली कागदपत्रे:</div>
+            <div class="enclosures-list" id="viewEnclosuresList"></div>
+          </div>
+
+          <!-- 6. FOOTER: CONTACT ON LEFT, SIGNATURE ON RIGHT -->
+          <div class="letter-footer">
+            <div class="contact-block" id="viewContactBlock">
+              <div>संपर्क नंबर : <span id="viewContactNum"></span></div>
+            </div>
+
+            <div class="signature-block">
+              <div class="sign-salutation" id="viewSignSalutation">आपला विश्वासू</div>
+              <img id="viewSignatureImg" class="signature-img-preview" style="display: none;" alt="स्वाक्षरी">
+              <div class="sign-name" id="viewSignName">ज्योत्स्ना सिताराम कानडे</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- Javascript Application Engine -->
+  <script>
+    // Templates Library
+    const TEMPLATES = {
+      "police-character": {
+        title: "पूर्व चारित्र्य व चालवर्तन दाखला अर्ज (पोलीस अधीक्षक)",
+        applicantName: "ज्योत्स्ना सिताराम कानडे",
+        address: "मु. पो. डामरे कानडेवाडी",
+        taluka: "कणकवली",
+        district: "सिंधुदुर्ग",
+        date: "२२/०८/२०१८",
+        gender: "female",
+        recipientTitle: "मा. पोलिस अधिक्षक",
+        recipientOffice: "सिंधुदुर्ग",
+        subject: "पूर्व चारित्र्य व चालवर्तन दाखला मिळण्याबाबत.",
+        reference: "",
+        salutation: "महोदय,",
+        para1: "अर्जदार ज्योत्स्ना सिताराम कानडे रा- डामरे, कानडेवाडी तालुका -कणकवली जि-सिंधुदुर्ग सदर अर्ज करीता किंवा करते की मला नोकरी कारणासाठी पूर्व चारीत्र्य व चालवर्तन दाखल्याची आवश्यकता आहे.",
+        para2: "तरी नमुद कारणासाठी मला चाल वर्तणुक दाखल्याची आवश्यक असल्याने मला माझे नावे चालवर्तणुक दाखला मिळावा हि नम्र विनंती आहे.",
+        para3: "सदर दाखला मिळणेसाठी आवश्यक कागदपत्रांची मी पूर्तता करीन.",
+        contact: "",
+        signSalutation: "आपला विश्वासू",
+        signName: "ज्योत्स्ना सिताराम कानडे"
+      },
+      "tahsildar-general": {
+        title: "सर्वसाधारण शासकीय विनंती अर्ज (तहसीलदार)",
+        applicantName: "रमेश गणपत पाटील",
+        address: "मु. पो. कसाल",
+        taluka: "कुडाळ",
+        district: "सिंधुदुर्ग",
+        date: "आजची तारीख",
+        gender: "male",
+        recipientTitle: "मा. तहसीलदार साहेब",
+        recipientOffice: "तहसील कार्यालय कुडाळ, जि. सिंधुदुर्ग",
+        subject: "रहिवासी / उत्पन्न दाखला तातडीने मिळण्याबाबत.",
+        reference: "",
+        salutation: "महोदय,",
+        para1: "अर्जदार रमेश गणपत पाटील रा- कसाल, तालुका -कुडाळ, जि-सिंधुदुर्ग येथील रहिवासी असून मला शासकीय योजना व प्रवेश प्रक्रियेसाठी रहिवासी व उत्पन्न दाखल्याची अत्यंत तातडीने आवश्यकता आहे.",
+        para2: "तरी नमूद प्रयोजनासाठी मला आवश्यक असणारा दाखला लवकरात लवकर निर्गमित करून मिळावा, ही नम्र विनंती आहे.",
+        para3: "सदर दाखल्यासाठी आवश्यक असणारे सर्व पुरावे व कागदपत्रे मी अर्जासोबत जोडत आहे.",
+        contact: "९८२३xxxxxx",
+        signSalutation: "आपला नम्र",
+        signName: "रमेश गणपत पाटील"
+      },
+      "ration-card": {
+        title: "रेशन कार्ड नाव समाविष्ट करणेबाबत अर्ज",
+        applicantName: "सुनील विठ्ठल सावंत",
+        address: "मु. पो. नाटळ, बौद्धवाडी",
+        taluka: "कणकवली",
+        district: "सिंधुदुर्ग",
+        date: "आजची तारीख",
+        gender: "male",
+        recipientTitle: "मा. तालुका पुरवठा अधिकारी साहेब",
+        recipientOffice: "तहसील कार्यालय कणकवली",
+        subject: "रेशन कार्डमध्ये नवीन सदस्याचे नाव समाविष्ट करणेबाबत.",
+        reference: "",
+        salutation: "महोदय,",
+        para1: "अर्जदार सुनील विठ्ठल सावंत रा- नाटळ, तालुका कणकवली सदर अर्ज सादर करतो की माझ्या कुटुंबाच्या रेशन कार्ड क्र. [रेशन कार्ड क्र.] मध्ये माझ्या नवविवाहित पत्नीचे / मुलाचे नाव समाविष्ट करावयाचे आहे.",
+        para2: "सदर सदस्याचे नाव आधीच्या रेशन कार्डमधून कमी केल्याचा दाखला (कमी दाखला) व विवाह नोंदणी / जन्म नोंदणी प्रमाणपत्र सोबत जोडले आहे.",
+        para3: "तरी कृपया माझ्या शिधापत्रिकेत नमूद सदस्याचे नाव समाविष्ट करून नवीन अद्ययावत शिधापत्रिका मिळावी ही नम्र विनंती.",
+        contact: "९८२२xxxxxx",
+        signSalutation: "आपला विश्वासू",
+        signName: "सुनील विठ्ठल सावंत"
+      },
+      "grampanchayat-noc": {
+        title: "ग्रामपंचायत नाहरकत दाखला अर्ज",
+        applicantName: "आनंद बाळकृष्ण राणे",
+        address: "मु. पो. ओरोस खुर्द",
+        taluka: "कुडाळ",
+        district: "सिंधुदुर्ग",
+        date: "आजची तारीख",
+        gender: "male",
+        recipientTitle: "मा. सरपंच / ग्रामसेवक साहेब",
+        recipientOffice: "ग्रामपंचायत कार्यालय ओरोस खुर्द, ता. कुडाळ",
+        subject: "घरबांधकाम / वीज जोडणीसाठी नाहरकत दाखला (NOC) मिळण्याबाबत.",
+        reference: "",
+        salutation: "महोदय,",
+        para1: "अर्जदार आनंद बाळकृष्ण राणे रा- ओरोस खुर्द, तालुका कुडाळ सदर अर्ज सादर करतो की माझ्या मालकीच्या जागेत घरबांधकाम / नवीन वीज जोडणी घ्यावयाची असून त्यासाठी ग्रामपंचायतीच्या नाहरकत दाखल्याची आवश्यकता आहे.",
+        para2: "मी ग्रामपंचायतीचे सर्व कर (घरपट्टी व पाणीपट्टी) वेळच्या वेळी भरलेले असून चालू वर्षाची पावती सोबत जोडलेली आहे.",
+        para3: "तरी कृपया माझ्या नावे घरबांधकाम / वीज जोडणीसाठी ग्रामपंचायतीचा नाहरकत दाखला मिळावा ही नम्र विनंती.",
+        contact: "९४२१xxxxxx",
+        signSalutation: "आपला विश्वासू",
+        signName: "आनंद बाळकृष्ण राणे"
+      },
+      "police-lost-report": {
+        title: "पोलीस ठाणे तक्रार / गहाळ वस्तू नोंद अर्ज",
+        applicantName: "सचिन मनोहर तांबडे",
+        address: "मु. पो. सावंतवाडी बाजारपेठ",
+        taluka: "सावंतवाडी",
+        district: "सिंधुदुर्ग",
+        date: "आजची तारीख",
+        gender: "male",
+        recipientTitle: "मा. पोलीस निरीक्षक साहेब",
+        recipientOffice: "पोलीस ठाणे सावंतवाडी, जि. सिंधुदुर्ग",
+        subject: "माझे मूळ कागदपत्रे / मोबाईल फोन गहाळ झाल्याबाबत तक्रार अर्ज.",
+        reference: "",
+        salutation: "महोदय,",
+        para1: "अर्जदार सचिन मनोहर तांबडे रा- सावंतवाडी सदर अर्ज सादर करतो की, दिनांक [तारीख] रोजी बाजारपेठेत प्रवास करत असताना माझे महत्त्वाचे मूळ कागदपत्रे (उदा. आधार कार्ड / पॅन कार्ड / ड्रायव्हिंग लायसन्स / मोबाईल) गहाळ झाले आहे.",
+        para2: "सदर वस्तूचा मी सर्वत्र शोध घेतला असता ती मिळून आली नाही. भविष्यात या कागदपत्रांचा कोणताही गैरवापर होऊ नये म्हणून मी ही नोंद करीत आहे.",
+        para3: "तरी कृपया माझ्या अर्जाची नोंद घेऊन मला नवीन कागदपत्रे काढण्यासाठी तक्रार नोंद प्रमाणपत्र (पोलीस दाखला) मिळावा ही नम्र विनंती.",
+        contact: "९४२०xxxxxx",
+        signSalutation: "आपला नम्र",
+        signName: "सचिन मनोहर तांबडे"
+      },
+      "ferfar-talathi": {
+        title: "७/१२, ८-अ नोंद व फेरफार दुरुस्ती अर्ज",
+        applicantName: "प्रशांत दत्तात्रय परब",
+        address: "मु. पो. शिरवल",
+        taluka: "कणकवली",
+        district: "सिंधुदुर्ग",
+        date: "आजची तारीख",
+        gender: "male",
+        recipientTitle: "मा. तलाठी साहेब",
+        recipientOffice: "सजा शिरवल, ता. कणकवली, जि. सिंधुदुर्ग",
+        subject: "वारस नोंद / फेरफार नोंद प्रमाणित करून ७/१२ उतारा मिळण्याबाबत.",
+        reference: "",
+        salutation: "महोदय,",
+        para1: "अर्जदार प्रशांत दत्तात्रय परब रा- शिरवल, तालुका कणकवली सदर अर्ज सादर करतो की, मौजे शिरवल येथील सर्व्हे नंबर [नंबर] मधील आमचे दिवंगत वडील यांच्या पश्चात कायदेशीर वारसांची नोंद महसूल दप्तरी घेणे आवश्यक आहे.",
+        para2: "याबाबतचे वारस प्रतिज्ञापत्र, मृत्यू दाखला व कुटुंबातील सर्व सदस्यांची संमती पत्रे अर्जासोबत सादर करीत आहे.",
+        para3: "तरी कृपया सदर प्रकरणी आवश्यक चौकशी करून महसूल दप्तरी फेरफार नोंद मंजूर करावी व अद्ययावत ७/१२ उतारा मिळावा ही नम्र विनंती.",
+        contact: "९८२३xxxxxx",
+        signSalutation: "आपला नम्र",
+        signName: "प्रशांत दत्तात्रय परब"
+      },
+      "electricity-name-change": {
+        title: "महावितरण वीज मीटर नाव बदल अर्ज",
+        applicantName: "दीपक यशवंत कदम",
+        address: "मु. पो. कळसुली",
+        taluka: "कणकवली",
+        district: "सिंधुदुर्ग",
+        date: "आजची तारीख",
+        gender: "male",
+        recipientTitle: "मा. कनिष्ठ अभियंता साहेब",
+        recipientOffice: "म.रा.वि.वि.कं. मर्यादित (महावितरण), उपविभाग कणकवली",
+        subject: "वीज मीटरचे नाव बदलणेबाबत (ग्राहक क्र. [ग्राहक क्र.]).",
+        reference: "",
+        salutation: "महोदय,",
+        para1: "अर्जदार दीपक यशवंत कदम रा- कळसुली, ता. कणकवली अर्ज करतो की माझ्या घराच्या वीज जोडणीचे मीटर (ग्राहक क्र. [ग्राहक क्र.]) हे आधी माझ्या वडिलांच्या नावे होते. वडिलांच्या निधनानंतर सदर जागा व घर माझ्या नावे आलेले आहे.",
+        para2: "याकरिता आवश्यक असणारा मालकी हक्क पुरावा (७/१२ / कर पावती), वारस दाखला व जुने वीज बिल सोबत जोडलेले आहे.",
+        para3: "तरी कृपया सदर वीज मीटरचे नाव बदलून माझ्या नावे नोंद करावे ही नम्र विनंती.",
+        contact: "९९२२xxxxxx",
+        signSalutation: "आपला विश्वासू",
+        signName: "दीपक यशवंत कदम"
+      },
+      "custom-blank": {
+        title: "कस्टम / स्वतःचा मोकळा अर्ज",
+        applicantName: "",
+        address: "",
+        taluka: "",
+        district: "",
+        date: "",
+        gender: "male",
+        recipientTitle: "मा. ",
+        recipientOffice: "",
+        subject: "बाबत.",
+        reference: "",
+        salutation: "महोदय,",
+        para1: "",
+        para2: "",
+        para3: "",
+        contact: "",
+        signSalutation: "आपला विश्वासू",
+        signName: ""
+      }
+    };
+
+    // Convert Western digits (0-9) to Devanagari (०-९)
+    function toDevanagariDigits(str) {
+      if (!str) return "";
+      const devDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+      return str.toString().replace(/[0-9]/g, w => devDigits[+w]);
+    }
+
+    // Convert Devanagari to Western
+    function toWesternDigits(str) {
+      if (!str) return "";
+      const devToWest = { '०':0, '१':1, '२':2, '३':3, '४':4, '५':5, '६':6, '७':7, '८':8, '९':9 };
+      return str.toString().replace(/[०-९]/g, d => devToWest[d]);
+    }
+
+    // Get Today's Date formatted in Marathi numerals
+    function getTodayMarathiDate() {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      return toDevanagariDigits(`${dd}/${mm}/${yyyy}`);
+    }
+
+    function setTodayDateMarathi() {
+      document.getElementById("applicantDate").value = getTodayMarathiDate();
+      updateLetterPreview();
+    }
+
+    // Quick recipient presets
+    function setRecipient(title, office) {
+      document.getElementById("recipientTitle").value = title;
+      document.getElementById("recipientOffice").value = office;
+      updateLetterPreview();
+    }
+
+    // Gender toggle helper
+    function onGenderChange() {
+      const isFemale = document.getElementById("genderFemale").checked;
+      const currentSal = document.getElementById("signSalutation").value;
+      if (isFemale) {
+        if (currentSal === "आपला विश्वासू" || currentSal === "आपला नम्र") {
+          document.getElementById("signSalutation").value = "आपली नम्र";
+        }
+      } else {
+        if (currentSal === "आपली विश्वासू" || currentSal === "आपली नम्र") {
+          document.getElementById("signSalutation").value = "आपला नम्र";
+        }
+      }
+      updateLetterPreview();
+    }
+
+    // Apply Chosen Template
+    function applyTemplate(key) {
+      const t = TEMPLATES[key];
+      if (!t) return;
+
+      document.getElementById("applicantName").value = t.applicantName;
+      document.getElementById("applicantAddress").value = t.address;
+      document.getElementById("applicantTaluka").value = t.taluka;
+      document.getElementById("applicantDistrict").value = t.district;
+
+      if (t.date === "आजची तारीख") {
+        document.getElementById("applicantDate").value = getTodayMarathiDate();
+      } else {
+        document.getElementById("applicantDate").value = t.date;
+      }
+
+      if (t.gender === "female") {
+        document.getElementById("genderFemale").checked = true;
+      } else {
+        document.getElementById("genderMale").checked = true;
+      }
+
+      document.getElementById("recipientTitle").value = t.recipientTitle;
+      document.getElementById("recipientOffice").value = t.recipientOffice;
+      document.getElementById("letterSubject").value = t.subject;
+      document.getElementById("letterReference").value = t.reference || "";
+      document.getElementById("letterSalutation").value = t.salutation;
+      document.getElementById("para1").value = t.para1;
+      document.getElementById("para2").value = t.para2;
+      document.getElementById("para3").value = t.para3;
+      document.getElementById("applicantPhone").value = t.contact;
+      document.getElementById("signSalutation").value = t.signSalutation;
+      document.getElementById("signName").value = t.signName;
+
+      updateLetterPreview();
+    }
+
+    // Load exact sample matching user's uploaded image
+    function loadSampleImageDemo() {
+      document.getElementById("templateSelector").value = "police-character";
+      applyTemplate("police-character");
+    }
+
+    // Reset Form
+    function resetForm() {
+      if (confirm("तुम्हाला फॉर्ममधील सर्व माहिती रीसेट करायची आहे का?")) {
+        applyTemplate("custom-blank");
+      }
+    }
+
+    // Toggle Devangari Numbers
+    let isDevanagari = true;
+    function toggleDevanagariNumbers() {
+      const dateElem = document.getElementById("applicantDate");
+      const phoneElem = document.getElementById("applicantPhone");
+      if (isDevanagari) {
+        dateElem.value = toWesternDigits(dateElem.value);
+        phoneElem.value = toWesternDigits(phoneElem.value);
+        isDevanagari = false;
+      } else {
+        dateElem.value = toDevanagariDigits(dateElem.value);
+        phoneElem.value = toDevanagariDigits(phoneElem.value);
+        isDevanagari = true;
+      }
+      updateLetterPreview();
+    }
+
+    // Update Letter Preview on screen
+    function updateLetterPreview() {
+      const name = document.getElementById("applicantName").value.trim() || "अर्जदाराचे नाव";
+      const addr = document.getElementById("applicantAddress").value.trim() || "";
+      const taluka = document.getElementById("applicantTaluka").value.trim() || "";
+      const dist = document.getElementById("applicantDistrict").value.trim() || "";
+      const date = document.getElementById("applicantDate").value.trim() || "";
+
+      document.getElementById("viewApplicantName").textContent = name;
+      document.getElementById("viewApplicantAddress").textContent = addr;
+
+      let talukaDistStr = "";
+      if (taluka && dist) {
+        talukaDistStr = `ता. ${taluka} जि. ${dist}`;
+      } else if (taluka) {
+        talukaDistStr = `ता. ${taluka}`;
+      } else if (dist) {
+        talukaDistStr = `जि. ${dist}`;
+      }
+      document.getElementById("viewApplicantTalukaDist").textContent = talukaDistStr;
+      document.getElementById("viewApplicantTalukaDist").style.display = talukaDistStr ? "block" : "none";
+
+      document.getElementById("viewApplicantDate").textContent = date ? `दिनांक ${date}` : "";
+      document.getElementById("viewApplicantDate").style.display = date ? "block" : "none";
+
+      // Recipient
+      const recTitle = document.getElementById("recipientTitle").value.trim() || "मा. ";
+      const recOffice = document.getElementById("recipientOffice").value.trim() || "";
+      document.getElementById("viewRecipientTitle").textContent = recTitle;
+      document.getElementById("viewRecipientOffice").textContent = recOffice;
+      document.getElementById("viewRecipientOffice").style.display = recOffice ? "block" : "none";
+
+      // Subject & Ref
+      const subj = document.getElementById("letterSubject").value.trim();
+      document.getElementById("viewSubject").textContent = subj;
+
+      const ref = document.getElementById("letterReference").value.trim();
+      const refWrap = document.getElementById("viewReferenceWrap");
+      if (ref) {
+        refWrap.style.display = "block";
+        document.getElementById("viewReference").textContent = ref;
+      } else {
+        refWrap.style.display = "none";
+      }
+
+      // Salutation
+      const sal = document.getElementById("letterSalutation").value.trim() || "महोदय,";
+      document.getElementById("viewSalutation").textContent = sal;
+
+      // Paragraphs
+      const p1 = document.getElementById("para1").value.trim();
+      const p2 = document.getElementById("para2").value.trim();
+      const p3 = document.getElementById("para3").value.trim();
+
+      const viewP1 = document.getElementById("viewPara1");
+      const viewP2 = document.getElementById("viewPara2");
+      const viewP3 = document.getElementById("viewPara3");
+
+      viewP1.textContent = p1;
+      viewP1.style.display = p1 ? "block" : "none";
+
+      viewP2.textContent = p2;
+      viewP2.style.display = p2 ? "block" : "none";
+
+      viewP3.textContent = p3;
+      viewP3.style.display = p3 ? "block" : "none";
+
+      // Enclosures
+      const showEnc = document.getElementById("showEnclosures").checked;
+      const encWrap = document.getElementById("viewEnclosuresWrap");
+      const encBox = document.getElementById("enclosuresBox");
+      if (showEnc) {
+        encBox.style.display = "block";
+        encWrap.style.display = "block";
+        const encLines = document.getElementById("enclosuresText").value.trim().split("\n");
+        const listHtml = encLines.filter(l => l.trim().length > 0).map(l => `<div>${l}</div>`).join("");
+        document.getElementById("viewEnclosuresList").innerHTML = listHtml;
+      } else {
+        encBox.style.display = "none";
+        encWrap.style.display = "none";
+      }
+
+      // Contact & Sign
+      const phone = document.getElementById("applicantPhone").value.trim();
+      const contactBlock = document.getElementById("viewContactBlock");
+      if (phone) {
+        contactBlock.innerHTML = `<div>संपर्क नंबर : ${phone}</div>`;
+        contactBlock.style.visibility = "visible";
+      } else {
+        contactBlock.innerHTML = `<div>संपर्क नंबर : </div>`;
+        contactBlock.style.visibility = "visible";
+      }
+
+      const signSal = document.getElementById("signSalutation").value.trim() || "आपला विश्वासू";
+      const sName = document.getElementById("signName").value.trim() || name;
+
+      document.getElementById("viewSignSalutation").textContent = signSal;
+      document.getElementById("viewSignName").textContent = sName;
+    }
+
+    // Change Fonts
+    function changeLetterFont(fontVal) {
+      document.getElementById("a4LetterPage").style.fontFamily = fontVal;
+    }
+
+    function changeLetterFontSize(sizeVal) {
+      document.getElementById("a4LetterPage").style.fontSize = sizeVal;
+    }
+
+    function changeLetterMargin(marginVal) {
+      document.getElementById("a4LetterPage").style.padding = marginVal;
+    }
+
+    // Digital Signature Image Upload
+    function handleSignatureUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const sigImg = document.getElementById("viewSignatureImg");
+        sigImg.src = event.target.result;
+        sigImg.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Mobile View Tab Switcher
+    function switchMobileTab(mode) {
+      const editorPanel = document.getElementById("editorPanel");
+      const previewPanel = document.getElementById("previewPanel");
+      const btnEditor = document.getElementById("tabBtnEditor");
+      const btnPreview = document.getElementById("tabBtnPreview");
+
+      if (mode === 'preview') {
+        editorPanel.classList.add("mobile-hidden");
+        previewPanel.classList.remove("mobile-hidden");
+        btnEditor.classList.remove("active");
+        btnPreview.classList.add("active");
+      } else {
+        editorPanel.classList.remove("mobile-hidden");
+        previewPanel.classList.add("mobile-hidden");
+        btnEditor.classList.add("active");
+        btnPreview.classList.remove("active");
+      }
+    }
+
+    // Copy Full Text to Clipboard
+    function copyFullLetterText() {
+      const name = document.getElementById("applicantName").value.trim();
+      const addr = document.getElementById("applicantAddress").value.trim();
+      const taluka = document.getElementById("applicantTaluka").value.trim();
+      const dist = document.getElementById("applicantDistrict").value.trim();
+      const date = document.getElementById("applicantDate").value.trim();
+
+      const recTitle = document.getElementById("recipientTitle").value.trim();
+      const recOffice = document.getElementById("recipientOffice").value.trim();
+      const subj = document.getElementById("letterSubject").value.trim();
+      const sal = document.getElementById("letterSalutation").value.trim();
+
+      const p1 = document.getElementById("para1").value.trim();
+      const p2 = document.getElementById("para2").value.trim();
+      const p3 = document.getElementById("para3").value.trim();
+
+      const phone = document.getElementById("applicantPhone").value.trim();
+      const signSal = document.getElementById("signSalutation").value.trim();
+      const sName = document.getElementById("signName").value.trim();
+
+      const fullText = 
+`${name}
+${addr}
+ता. ${taluka} जि. ${dist}
+दिनांक: ${date}
+
+प्रति,
+  ${recTitle}
+  ${recOffice}
+
+विषय - ${subj}
+
+${sal}
+  ${p1}
+
+  ${p2}
+
+  ${p3}
+
+संपर्क नंबर: ${phone}
+
+${signSal}
+${sName}`;
+
+      navigator.clipboard.writeText(fullText).then(() => {
+        alert("अर्जाचा संपूर्ण मजकूर क्लिपबोर्डवर यशस्वीरित्या कॉपी झाला आहे! तुम्ही हा मजकूर WhatsApp किंवा Word मध्ये पेस्ट करू शकता.");
+      }).catch(err => {
+        console.error(err);
+        alert("कॉपी करण्यात अडचण आली. कृपया मॅन्युअली कॉपी करा.");
+      });
+    }
+
+    // High Quality PDF Download via html2canvas & jsPDF
+    async function downloadApplicationPdf() {
+      const page = document.getElementById("a4LetterPage");
+      const name = document.getElementById("applicantName").value.trim() || "Marathi_Application";
+      const btn = event?.target;
+      const originalText = btn ? btn.innerHTML : "";
+      if (btn) btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> PDF तयार होत आहे...`;
+
+      try {
+        const canvas = await html2canvas(page, {
+          scale: 2.5,
+          useCORS: true,
+          logging: false,
+          backgroundColor: "#ffffff"
+        });
+
+        const imgData = canvas.toDataURL("image/jpeg", 0.95);
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("portrait", "mm", "a4");
+
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+
+        pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+        const fileName = `${name.replace(/\s+/g, '_')}_अर्ज.pdf`;
+        pdf.save(fileName);
+      } catch (err) {
+        console.error("PDF generation error:", err);
+        alert("PDF तयार करताना अडचण आली. तुम्ही थेट प्रिंट (Ctrl+P) करून 'Save as PDF' निवडू शकता.");
+      } finally {
+        if (btn) btn.innerHTML = originalText;
+      }
+    }
+
+    // Initialize on page load
+    window.addEventListener("DOMContentLoaded", () => {
+      updateLetterPreview();
+    });
+  </script>
+
+</body>
+</html>
