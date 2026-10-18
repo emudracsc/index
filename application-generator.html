@@ -586,22 +586,29 @@
     }
 
     .letter-footer {
-      margin-top: auto;
-      padding-top: 36px;
+      margin-top: var(--footer-gap, 35px);
+      width: 100%;
       display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
+      flex-direction: column;
+      gap: 16px;
     }
 
     .contact-block {
-      font-size: 0.98rem;
+      font-size: 1.02rem;
       font-weight: 600;
       line-height: 1.5;
+      text-align: left;
+    }
+
+    .signature-wrap {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
     }
 
     .signature-block {
       text-align: center;
-      min-width: 200px;
+      min-width: 210px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -609,21 +616,28 @@
 
     .sign-salutation {
       font-weight: 600;
-      margin-bottom: 30px;
-      font-size: 1rem;
+      font-size: 1.05rem;
+      margin-bottom: 0;
+    }
+
+    .sign-space {
+      height: var(--sign-gap, 55px);
+      min-height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
     }
 
     .signature-img-preview {
       max-height: 50px;
-      max-width: 150px;
+      max-width: 160px;
       object-fit: contain;
-      margin-bottom: 6px;
     }
 
     .sign-name {
       font-weight: 700;
-      font-size: 1.05rem;
-      border-top: 1px dotted transparent;
+      font-size: 1.08rem;
     }
 
     /* Print Specific Rules */
@@ -696,12 +710,30 @@
         line-height: 1.7 !important;
       }
 
+      .letter-footer {
+        margin-top: var(--footer-gap, 35px) !important;
+        padding-top: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+      }
+
       .contact-block {
         font-size: 14pt !important;
       }
 
+      .signature-wrap {
+        display: flex !important;
+        justify-content: flex-end !important;
+        width: 100% !important;
+      }
+
       .signature-block {
         font-size: 15pt !important;
+      }
+
+      .sign-space {
+        height: var(--sign-gap, 55px) !important;
       }
     }
 
@@ -1020,6 +1052,25 @@
         </div>
 
         <div class="toolbar-group">
+          <span class="toolbar-label">सही अंतर:</span>
+          <select id="signGapSelector" class="toolbar-select" onchange="changeSignGap(this.value)" title="स्वाक्षरी करण्यासाठी सोडायची जागा">
+            <option value="35px">लहान (35px)</option>
+            <option value="55px" selected>योग्य (55px - शिफारस)</option>
+            <option value="75px">मोठे (75px)</option>
+            <option value="95px">जास्त (95px)</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <span class="toolbar-label">मजकूर अंतर:</span>
+          <select id="footerGapSelector" class="toolbar-select" onchange="changeFooterGap(this.value)" title="शेवटचा पॅराग्राफ व स्वाक्षरी मधील अंतर">
+            <option value="20px">कमी (20px)</option>
+            <option value="35px" selected>योग्य (35px)</option>
+            <option value="55px">जास्त (55px)</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
           <button class="tool-btn" onclick="toggleDevanagariNumbers()" title="देवनागरी (२२/०८/२०१८) आणि इंग्रजी अंकात बदला">
             <i class="fa-solid fa-arrow-right-arrow-left"></i> देवनागरी अंक
           </button>
@@ -1077,16 +1128,20 @@
             <div class="enclosures-list" id="viewEnclosuresList"></div>
           </div>
 
-          <!-- 6. FOOTER: CONTACT ON LEFT, SIGNATURE ON RIGHT -->
-          <div class="letter-footer">
+          <!-- 6. FOOTER: CONTACT ON LEFT, SIGNATURE ON RIGHT WITH GENEROUS SIGN SPACE -->
+          <div class="letter-footer" id="viewLetterFooter">
             <div class="contact-block" id="viewContactBlock">
-              <div>संपर्क नंबर : <span id="viewContactNum"></span></div>
+              <span id="viewContactText">संपर्क नंबर</span>
             </div>
 
-            <div class="signature-block">
-              <div class="sign-salutation" id="viewSignSalutation">आपला विश्वासू</div>
-              <img id="viewSignatureImg" class="signature-img-preview" style="display: none;" alt="स्वाक्षरी">
-              <div class="sign-name" id="viewSignName">ज्योत्स्ना सिताराम कानडे</div>
+            <div class="signature-wrap">
+              <div class="signature-block">
+                <div class="sign-salutation" id="viewSignSalutation">आपला विश्वासू</div>
+                <div class="sign-space" id="viewSignSpace">
+                  <img id="viewSignatureImg" class="signature-img-preview" style="display: none;" alt="स्वाक्षरी">
+                </div>
+                <div class="sign-name" id="viewSignName">ज्योत्स्ना सिताराम कानडे</div>
+              </div>
             </div>
           </div>
 
@@ -1465,13 +1520,13 @@
 
       // Contact & Sign
       const phone = document.getElementById("applicantPhone").value.trim();
-      const contactBlock = document.getElementById("viewContactBlock");
-      if (phone) {
-        contactBlock.innerHTML = `<div>संपर्क नंबर : ${phone}</div>`;
-        contactBlock.style.visibility = "visible";
-      } else {
-        contactBlock.innerHTML = `<div>संपर्क नंबर : </div>`;
-        contactBlock.style.visibility = "visible";
+      const contactText = document.getElementById("viewContactText");
+      if (contactText) {
+        if (phone) {
+          contactText.textContent = `संपर्क नंबर : ${phone}`;
+        } else {
+          contactText.textContent = `संपर्क नंबर`;
+        }
       }
 
       const signSal = document.getElementById("signSalutation").value.trim() || "आपला विश्वासू";
@@ -1481,7 +1536,7 @@
       document.getElementById("viewSignName").textContent = sName;
     }
 
-    // Change Fonts
+    // Change Fonts & Sizing
     function changeLetterFont(fontVal) {
       document.getElementById("a4LetterPage").style.fontFamily = fontVal;
     }
@@ -1492,6 +1547,16 @@
 
     function changeLetterMargin(marginVal) {
       document.getElementById("a4LetterPage").style.padding = marginVal;
+    }
+
+    // Change Signature Gap (Space between 'आपला विश्वासू' and Name for physical signing)
+    function changeSignGap(gapVal) {
+      document.getElementById("a4LetterPage").style.setProperty('--sign-gap', gapVal);
+    }
+
+    // Change Paragraph-to-Footer Gap (Distance below paragraph text)
+    function changeFooterGap(gapVal) {
+      document.getElementById("a4LetterPage").style.setProperty('--footer-gap', gapVal);
     }
 
     // Digital Signature Image Upload
@@ -1567,10 +1632,13 @@ ${sal}
 
   ${p3}
 
-संपर्क नंबर: ${phone}
+${phone ? `संपर्क नंबर : ${phone}` : 'संपर्क नंबर'}
 
-${signSal}
-${sName}`;
+
+                                          ${signSal}
+
+
+                                          ${sName}`;
 
       navigator.clipboard.writeText(fullText).then(() => {
         alert("अर्जाचा संपूर्ण मजकूर क्लिपबोर्डवर यशस्वीरित्या कॉपी झाला आहे! तुम्ही हा मजकूर WhatsApp किंवा Word मध्ये पेस्ट करू शकता.");
