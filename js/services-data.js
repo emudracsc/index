@@ -1137,6 +1137,18 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "form12-notice-generator.html",
     isInternal: true
   },
+  // 📋 VB-G RAM G योजना अर्ज जनरेटर (जलतारा / शोष खड्डा / गाय गोठा / शेळी शेड)
+  {
+    id: "link-vb-gramg-generator",
+    category: "विशेष शासकीय फॉर्म्स",
+    icon: "fa-solid fa-file-invoice",
+    title_mr: "📋 VB-G RAM G योजना अर्ज जनरेटर (जलतारा / शोष खड्डा / गाय गोठा)",
+    title_en: "VB-G RAM G Scheme Application Generator (Jaltara / Shosh Khadda / Cow Shed)",
+    desc_mr: "VB-G RAM G योजनेअंतर्गत जलतारा, शोष खड्डा, गाय गोठा व शेळी शेड मंजुरीचा विहित नमुन्यातील (सुधारित) अर्ज एक्सेल डेटामधून १-क्लिक किंवा बल्क A4 प्रिंट करा.",
+    desc_en: "Official VB-G RAM G scheme application generator for Jaltara, Soak Pit, Cow Shed & Goat Shed with single or bulk Excel data upload & A4 print.",
+    url: "vb-gramg-form-generator.html",
+    isInternal: true
+  },
   // 📋 नवीन विशेष शासकीय फॉर्म्स व अर्ज जनरेटर (New Government Form Generators)
   {
     id: "link-idsign-apply-dsc",

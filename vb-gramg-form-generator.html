@@ -1,0 +1,3025 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VB-G RAM G योजना अर्ज जनरेटर | एक्सेल डेटावरून विहित नमुन्यातील अर्ज (सुधारित)</title>
+  <meta name="description" content="महाराष्ट्र शासन VB-G RAM G योजनेअंतर्गत जलतारा / शोष खड्डा / गाय गोठा / शेळी शेड मंजुरीसाठी विहित नमुन्यातील अर्ज (सुधारित) एक्सेल डेटावरून १-क्लिकमध्ये बल्क जनरेट व A4 प्रिंट करा.">
+
+  <!-- Google Fonts: Devanagari & Modern Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- SheetJS for Excel Import & Template Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --primary-navy: #151d3b;
+      --primary-blue: #1e3a8a;
+      --primary-mid: #2563eb;
+      --primary-light: #eff6ff;
+      --saffron-gold: #f59e0b;
+      --saffron-dark: #d97706;
+      --gov-green: #059669;
+      --gov-green-dark: #047857;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-page: #f1f5f9;
+      --card-bg: #ffffff;
+      --border-color: #cbd5e1;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 14px 34px rgba(0, 0, 0, 0.12);
+      --font-marathi: 'Noto Sans Devanagari', 'Mukta', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-marathi);
+      background-color: var(--bg-page);
+      color: var(--text-dark);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Government Tricolor Top Ribbon */
+    .gov-top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%);
+      width: 100%;
+    }
+
+    /* Navigation Header */
+    .header-nav {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-blue) 100%);
+      color: #ffffff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--saffron-gold);
+    }
+
+    .brand-title-text h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title-text p {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      margin-top: 2px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-nav-link {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 7px 13px;
+      border-radius: var(--radius-sm);
+      font-size: 0.84rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      cursor: pointer;
+    }
+
+    .btn-nav-link:hover {
+      background: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Main Container */
+    .app-main {
+      flex: 1;
+      max-width: 1560px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Mode Switcher Tabs */
+    .mode-tab-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .tab-pills {
+      display: flex;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 8px 18px;
+      border-radius: 6px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      background: transparent;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary-blue);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .quick-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-quick {
+      padding: 7px 13px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      color: var(--text-dark);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-quick:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .btn-quick-primary {
+      background: var(--gov-green);
+      color: #ffffff;
+      border-color: var(--gov-green);
+    }
+
+    .btn-quick-primary:hover {
+      background: var(--gov-green-dark);
+      color: #ffffff;
+    }
+
+    /* Primary layout grid: Left Control Panel + Right Live Preview */
+    .view-grid {
+      display: grid;
+      grid-template-columns: 520px 1fr;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 1240px) {
+      .view-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Control Card */
+    .panel-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 14px 18px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .panel-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary-navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-badge {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .panel-body {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 82vh;
+      overflow-y: auto;
+    }
+
+    /* Form Fields & Sections */
+    .form-section-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--primary-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group.col-span-2 {
+      grid-column: span 2;
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .form-label .req {
+      color: #ef4444;
+    }
+
+    .form-input, .form-select {
+      font-family: inherit;
+      padding: 8px 11px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #cbd5e1;
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      background: #ffffff;
+      outline: none;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .form-input:focus, .form-select:focus {
+      border-color: var(--primary-mid);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    /* Radio / Checkbox Pills */
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pill-label {
+      cursor: pointer;
+      border: 1px solid #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      background: #f8fafc;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .pill-label:hover {
+      background: #e2e8f0;
+    }
+
+    .pill-label input {
+      accent-color: var(--primary-mid);
+      cursor: pointer;
+    }
+
+    .pill-label.active {
+      border-color: var(--primary-mid);
+      background: #eff6ff;
+      color: var(--primary-blue);
+      font-weight: 700;
+    }
+
+    /* Primary Action Buttons */
+    .btn-action-primary {
+      background: linear-gradient(135deg, var(--gov-green) 0%, var(--gov-green-dark) 100%);
+      color: #ffffff;
+      border: none;
+      padding: 11px 18px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 3px 10px rgba(5, 150, 105, 0.25);
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    .btn-action-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 15px rgba(5, 150, 105, 0.35);
+    }
+
+    .btn-action-navy {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-blue) 100%);
+      color: #ffffff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action-navy:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 9px 14px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .btn-danger-outline {
+      background: transparent;
+      color: #dc2626;
+      border: 1px solid #fca5a5;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+
+    .btn-danger-outline:hover {
+      background: #fef2f2;
+      border-color: #ef4444;
+    }
+
+    /* Bulk Upload Box */
+    .upload-dropzone {
+      border: 2px dashed #94a3b8;
+      border-radius: var(--radius-md);
+      padding: 24px 16px;
+      text-align: center;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+      border-color: var(--primary-mid);
+      background: #eff6ff;
+    }
+
+    .dropzone-icon {
+      font-size: 34px;
+      color: var(--primary-mid);
+    }
+
+    .dropzone-text {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #1e293b;
+    }
+
+    .dropzone-sub {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    /* Bulk Table Container */
+    .bulk-table-container {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-toolbar {
+      padding: 10px 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .table-stats-badge {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--primary-navy);
+      background: #e0e7ff;
+      padding: 4px 10px;
+      border-radius: 14px;
+    }
+
+    .table-search-input {
+      font-family: inherit;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.84rem;
+      min-width: 200px;
+      outline: none;
+    }
+
+    .table-search-input:focus {
+      border-color: var(--primary-mid);
+    }
+
+    .table-scroll {
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      text-align: left;
+    }
+
+    .data-table th {
+      background: #f1f5f9;
+      color: #1e293b;
+      font-weight: 700;
+      padding: 8px 10px;
+      border-bottom: 2px solid #cbd5e1;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
+
+    .data-table tbody tr {
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .data-table tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .data-table tbody tr.active-row {
+      background: #eff6ff;
+      border-left: 3px solid var(--primary-mid);
+    }
+
+    .badge-category {
+      background: #ede9fe;
+      color: #5b21b6;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.74rem;
+    }
+
+    .badge-work {
+      background: #dcfce7;
+      color: #166534;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.74rem;
+    }
+
+    /* Right Preview Section */
+    .preview-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: sticky;
+      top: 75px;
+    }
+
+    .preview-toolbar {
+      background: #ffffff;
+      padding: 9px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .preview-info {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary-navy);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .preview-tools {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Paper Notice Container (Exact A4 Replica for Preview) */
+    .preview-paper-wrapper {
+      background: #475569;
+      padding: 20px;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* =========================================================================
+       OFFICIAL FORM PAGE - VB-G RAM G SCHEME EXACT OFFICIAL STYLING
+       ========================================================================= */
+    .vbgramg-form-page {
+      background: #ffffff;
+      width: 210mm;
+      min-height: 297mm;
+      height: 297mm;
+      padding: 8mm 9mm 8mm 9mm;
+      margin: 0 auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      color: #000000;
+      font-family: var(--font-marathi);
+      position: relative;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Outer Double Border around the Notice: Outer border + Inner border */
+    .outer-double-frame {
+      border: 2px solid #000000;
+      height: 100%;
+      padding: 2.5mm;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .inner-frame {
+      border: 1px solid #000000;
+      height: 100%;
+      padding: 5mm 6.5mm;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Top Title Header */
+    .form-heading-block {
+      text-align: center;
+      margin-bottom: 2mm;
+    }
+
+    .main-form-title {
+      font-size: 13.5pt;
+      font-weight: 800;
+      color: #000000;
+      line-height: 1.3;
+      letter-spacing: -0.2px;
+    }
+
+    .sub-form-title {
+      font-size: 12.5pt;
+      font-weight: 800;
+      color: #000000;
+      margin-top: 1px;
+      line-height: 1.25;
+    }
+
+    .gov-label {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #000000;
+      margin-top: 2px;
+    }
+
+    /* Recipient & Subject Section */
+    .recipient-block {
+      font-size: 10.5pt;
+      line-height: 1.42;
+      margin-bottom: 2mm;
+    }
+
+    .recipient-line {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .recipient-two-col {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-right: 15mm;
+    }
+
+    .subject-line {
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    /* Applicant Section Header */
+    .applicant-section-title {
+      font-size: 11pt;
+      font-weight: 800;
+      margin-bottom: 1.5mm;
+      text-decoration: underline;
+    }
+
+    /* 12 Form Fields list */
+    .fields-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2mm;
+      font-size: 10.2pt;
+      line-height: 1.38;
+    }
+
+    .field-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .field-row .field-num-label {
+      font-weight: 700;
+      white-space: nowrap;
+      min-width: fit-content;
+    }
+
+    .field-fill-line {
+      flex: 1;
+      border-bottom: 1px solid #000000;
+      min-height: 17px;
+      font-weight: 700;
+      padding-left: 6px;
+      color: #000000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .field-row-sub {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      padding-left: 20px;
+    }
+
+    .field-row-sub .field-sub-label {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* Checkbox boxes in print */
+    .chk-box-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+      margin: 0 4px;
+    }
+
+    .chk-square {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid #000000;
+      border-radius: 2px;
+      font-size: 11pt;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .chk-note {
+      font-size: 9.5pt;
+      color: #000000;
+      margin-left: 4px;
+      font-weight: 600;
+    }
+
+    /* Self Declaration */
+    .declaration-block {
+      margin-top: 2.5mm;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .declaration-title {
+      font-size: 10.8pt;
+      font-weight: 800;
+      text-decoration: underline;
+    }
+
+    .declaration-text {
+      font-size: 9.8pt;
+      line-height: 1.4;
+      text-align: justify;
+    }
+
+    /* Signature & Location Two-Column Box */
+    .sign-location-box {
+      border: 1px solid #000000;
+      margin-top: 2.5mm;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .sign-loc-col-left {
+      padding: 6px 10px;
+      border-right: 1px solid #000000;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-size: 10.2pt;
+    }
+
+    .sign-loc-col-right {
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      font-size: 10.2pt;
+      font-weight: 700;
+    }
+
+    .sig-line-bar {
+      width: 85%;
+      border-bottom: 1px solid #000000;
+      margin-top: 22px;
+    }
+
+    /* Footer Note */
+    .form-bottom-footer {
+      margin-top: 2.5mm;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .footer-note {
+      font-size: 10pt;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .footer-sub-label {
+      font-size: 9.5pt;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      max-width: 650px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 14px 18px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.05rem;
+      color: var(--primary-navy);
+      font-weight: 700;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #64748b;
+    }
+
+    .modal-body {
+      padding: 16px 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-footer {
+      padding: 12px 18px;
+      background: #f8fafc;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Toast Notification */
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 9999;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .toast-box.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .toast-box.success {
+      background: #065f46;
+      border-left: 5px solid #10b981;
+    }
+
+    .toast-box.info {
+      background: #1e1b4b;
+      border-left: 5px solid #818cf8;
+    }
+
+    .toast-box.warning {
+      background: #854d0e;
+      border-left: 5px solid #facc15;
+    }
+
+    /* Dedicated Print Container */
+    #print-container {
+      display: none;
+    }
+
+    /* =========================================================================
+       PRINT MEDIA QUERY (STRICT A4 1-PAGE RULES PER APPLICANT)
+       ========================================================================= */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 6mm 8mm 6mm 8mm !important;
+      }
+
+      html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .gov-top-bar,
+      .header-nav,
+      .app-main,
+      .toast-box,
+      .modal-overlay,
+      .no-print {
+        display: none !important;
+      }
+
+      #print-container {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      #print-container .vbgramg-form-page {
+        width: 100% !important;
+        min-height: 283mm !important;
+        height: 283mm !important;
+        padding: 6mm 7mm !important;
+        margin: 0 auto !important;
+        box-shadow: none !important;
+        border: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        box-sizing: border-box !important;
+      }
+
+      #print-container .vbgramg-form-page:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+
+      .outer-double-frame {
+        border: 2px solid #000000 !important;
+        padding: 2.5mm !important;
+        height: 100% !important;
+      }
+
+      .inner-frame {
+        border: 1px solid #000000 !important;
+        padding: 4mm 5.5mm !important;
+        height: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Government Tricolor Top Ribbon -->
+  <div class="gov-top-bar"></div>
+
+  <!-- Navigation Bar -->
+  <header class="header-nav">
+    <div class="brand-title-wrap">
+      <div class="brand-badge">
+        <i class="fa-solid fa-file-invoice"></i>
+      </div>
+      <div class="brand-title-text">
+        <h1>VB-G RAM G योजना अर्ज जनरेटर</h1>
+        <p>जलतारा / शोष खड्डा / गाय गोठा / शेळी शेड मंजुरी अर्ज (सुधारित नमुना) • महाराष्ट्र शासन</p>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-nav-link" onclick="downloadSampleExcel()" title="नमुना एक्सेल फाईल डाउनलोड करा">
+        <i class="fa-solid fa-file-excel" style="color: #4ade80;"></i> नमुना एक्सेल टेम्पलेट
+      </button>
+      <button class="btn-nav-link" onclick="printBlankForm()" title="हस्तलिखितासाठी कोरा अर्ज प्रिंट करा">
+        <i class="fa-solid fa-print"></i> कोरा अर्ज प्रिंट
+      </button>
+      <a href="index.html" class="btn-nav-link" title="मुख्य पोर्टलवर परत जा">
+        <i class="fa-solid fa-house"></i> मुख्यपृष्ठ
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="app-main">
+
+    <!-- Mode Selector & Global Quick Toolbar -->
+    <div class="mode-tab-bar">
+      <div class="tab-pills">
+        <button class="tab-btn active" id="tab-btn-bulk" onclick="switchTab('bulk')">
+          <i class="fa-solid fa-file-excel"></i> १. एक्सेल फाईल इंपोर्ट (Bulk Mode)
+        </button>
+        <button class="tab-btn" id="tab-btn-single" onclick="switchTab('single')">
+          <i class="fa-solid fa-user-pen"></i> २. एकल अर्जदार फॉर्म (Single Entry)
+        </button>
+        <button class="tab-btn" id="tab-btn-paste" onclick="openPasteModal()">
+          <i class="fa-solid fa-paste"></i> ३. थेट एक्सेल डेटा पेस्ट
+        </button>
+      </div>
+
+      <div class="quick-toolbar">
+        <button class="btn-quick" onclick="loadSampleDataIntoApp()" title="डेमोसाठी ३ नमुना अर्जदार लोड करा">
+          <i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> नमुना डेटा लोड करा
+        </button>
+        <button class="btn-quick btn-quick-primary" onclick="printAllSelected()" id="batch-print-btn" title="सर्व निवडलेले अर्जदार प्रिंट करा">
+          <i class="fa-solid fa-print"></i> सर्व निवडलेले अर्ज प्रिंट करा (<span id="selected-count-badge">0</span>)
+        </button>
+      </div>
+    </div>
+
+    <!-- App Grid: Controls on Left, Preview on Right -->
+    <div class="view-grid">
+
+      <!-- LEFT COLUMN: CONTROLS & DATA -->
+      <div class="controls-column">
+
+        <!-- TAB 1: BULK EXCEL VIEW -->
+        <div id="view-bulk" class="panel-card">
+          <div class="panel-header">
+            <h2><i class="fa-solid fa-table-list" style="color: var(--primary-mid);"></i> एक्सेल अर्जदार यादी</h2>
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <span class="panel-badge" id="applicant-count-badge">एकूण: ० अर्जदार</span>
+              <button class="btn-danger-outline" onclick="clearAllApplicants()" title="सर्व डेटा हटवा">
+                <i class="fa-solid fa-trash-can"></i> साफ करा
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <!-- Drag & Drop Upload Box -->
+            <div class="upload-dropzone" id="excel-dropzone" onclick="document.getElementById('excel-file-input').click()">
+              <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+              <div class="dropzone-text">येथे एक्सेल (.xlsx, .xls) किंवा .csv फाईल ड्रॅग करा किंवा क्लिक करा</div>
+              <div class="dropzone-sub">सर्व रकाने (नाव, आधार, मोबाईल, ७/१२, बँक इ.) आपोआप वाचले जातील</div>
+              <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" style="display: none;" onchange="handleExcelUpload(event)">
+            </div>
+
+            <!-- Action cluster for Excel -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="btn-secondary" style="flex: 1;" onclick="downloadSampleExcel()">
+                <i class="fa-solid fa-download" style="color: var(--gov-green);"></i> नमुना एक्सेल डाउनलोड
+              </button>
+              <button class="btn-secondary" style="flex: 1;" onclick="exportCurrentToExcel()">
+                <i class="fa-solid fa-file-export" style="color: var(--primary-mid);"></i> सध्याचा डेटा एक्सपोर्ट
+              </button>
+              <button class="btn-secondary" onclick="addNewApplicantModal()">
+                <i class="fa-solid fa-plus"></i> नवीन जोडा
+              </button>
+            </div>
+
+            <!-- Table of Applicants -->
+            <div class="bulk-table-container">
+              <div class="table-toolbar">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <label style="font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                    <input type="checkbox" id="select-all-checkbox" checked onchange="toggleSelectAll(this.checked)"> सर्व निवडा
+                  </label>
+                  <span class="table-stats-badge" id="table-selection-summary">० / ० निवडले</span>
+                </div>
+                <input type="text" id="table-search-box" class="table-search-input" placeholder="नाव, मोबाईल किंवा आधार शोधा..." oninput="filterApplicantsTable()">
+              </div>
+
+              <div class="table-scroll">
+                <table class="data-table" id="applicants-data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 36px; text-align: center;"><i class="fa-solid fa-check"></i></th>
+                      <th style="width: 36px;">क्र.</th>
+                      <th>अर्जदाराचे नाव</th>
+                      <th>मोबाईल / आधार</th>
+                      <th>ग्रामपंचायत</th>
+                      <th>कामाचा प्रकार</th>
+                      <th style="text-align: right; width: 80px;">कृती</th>
+                    </tr>
+                  </thead>
+                  <tbody id="applicants-table-body">
+                    <tr>
+                      <td colspan="7" style="text-align: center; padding: 30px 10px; color: #64748b;">
+                        <i class="fa-regular fa-folder-open" style="font-size: 32px; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
+                        कोणतीही एक्सेल फाईल अपलोड केलेली नाही.<br>
+                        वरील बॉक्समध्ये एक्सेल फाईल अपलोड करा किंवा <strong>'नमुना डेटा लोड करा'</strong> बटनावर क्लिक करा.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Batch Action Button -->
+            <button class="btn-action-primary" onclick="printAllSelected()">
+              <i class="fa-solid fa-print"></i> सर्व निवडलेले अर्जदार प्रिंट करा (A4 PDF)
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 2: SINGLE FORM ENTRY VIEW -->
+        <div id="view-single" class="panel-card" style="display: none;">
+          <div class="panel-header">
+            <h2><i class="fa-solid fa-pen-to-square" style="color: var(--primary-mid);"></i> अर्जदार माहिती भरा</h2>
+            <button class="btn-secondary" onclick="loadSampleSingleData()" style="padding: 4px 8px; font-size: 0.8rem;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> डेमो भरा
+            </button>
+          </div>
+
+          <div class="panel-body">
+            <!-- 1. Office Details -->
+            <div class="form-section-title">
+              <span>१. शासकीय कार्यालय तपशील</span>
+            </div>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label">ग्रामपंचायत <span class="req">*</span></label>
+                <input type="text" id="sf-grampanchayat" class="form-input" placeholder="उदा. कसाल" oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">तालुका <span class="req">*</span></label>
+                <input type="text" id="sf-taluka" class="form-input" placeholder="उदा. कुडाळ" oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">जिल्हा <span class="req">*</span></label>
+                <input type="text" id="sf-district" class="form-input" value="सिंधुदुर्ग" oninput="syncSingleToPreview()">
+              </div>
+            </div>
+
+            <!-- 2. Applicant Details -->
+            <div class="form-section-title">
+              <span>२. अर्जदाराची वैयक्तिक माहिती</span>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group col-span-2">
+                <label class="form-label">१. अर्जदाराचे पूर्ण नाव <span class="req">*</span></label>
+                <input type="text" id="sf-name" class="form-input" placeholder="उदा. रमेश विठ्ठल सावंत" oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">२. जॉब कार्ड क्रमांक</label>
+                <input type="text" id="sf-jobcard" class="form-input" placeholder="MH-XX-XXX-XXXX" oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">३. आधार क्रमांक <span class="req">*</span></label>
+                <input type="text" id="sf-aadhaar" class="form-input" placeholder="XXXX XXXX XXXX" maxlength="14" oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">४. मोबाईल नंबर <span class="req">*</span></label>
+                <input type="text" id="sf-mobile" class="form-input" placeholder="9XXXXXXXXX" maxlength="10" oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">५. ग्रामपंचायत नाव</label>
+                <input type="text" id="sf-gp-display" class="form-input" placeholder="ग्रामपंचायत नाव" oninput="syncSingleToPreview()">
+              </div>
+            </div>
+
+            <!-- 3. Category & Work Type -->
+            <div class="form-section-title">
+              <span>३. प्रवर्ग व कामाचा प्रकार</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">६. प्रवर्ग निवडा :</label>
+              <div class="pill-group" id="sf-category-pills">
+                <label class="pill-label active"><input type="radio" name="sf_cat" value="इतर" checked onchange="syncSingleToPreview()"> इतर (General/OBC)</label>
+                <label class="pill-label"><input type="radio" name="sf_cat" value="SC" onchange="syncSingleToPreview()"> SC (अनु. जाती)</label>
+                <label class="pill-label"><input type="radio" name="sf_cat" value="ST" onchange="syncSingleToPreview()"> ST (अनु. जमाती)</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">७. कामाचा प्रकार निवडा :</label>
+              <div class="pill-group" id="sf-work-pills">
+                <label class="pill-label active"><input type="radio" name="sf_work" value="गाय गोठा" checked onchange="syncSingleToPreview()"> गाय गोठा</label>
+                <label class="pill-label"><input type="radio" name="sf_work" value="जलतारा" onchange="syncSingleToPreview()"> जलतारा</label>
+                <label class="pill-label"><input type="radio" name="sf_work" value="शोष खड्डा" onchange="syncSingleToPreview()"> शोष खड्डा</label>
+                <label class="pill-label"><input type="radio" name="sf_work" value="शेळी शेड" onchange="syncSingleToPreview()"> शेळी शेड</label>
+              </div>
+            </div>
+
+            <!-- 4. Land & Schemes -->
+            <div class="form-section-title">
+              <span>४. जमिनीचा व जनावरांचा तपशील</span>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">८. ७/१२ गट नंबर व क्षेत्र</label>
+                <input type="text" id="sf-gat" class="form-input" placeholder="उदा. गट क्र. ४५, ०.३० हे." oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">९. ८ अ नुसार क्षेत्र</label>
+                <input type="text" id="sf-8a" class="form-input" placeholder="उदा. ०.६५ हे. आर" oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">१०. जनावरे असल्यास संख्या</label>
+                <input type="text" id="sf-cattle" class="form-input" placeholder="उदा. २ गायी किंवा संख्या" oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">११. इतर योजनेतून लाभ घेतला आहे का?</label>
+                <div class="pill-group" style="margin-top: 4px;">
+                  <label class="pill-label active"><input type="radio" name="sf_other_benefit" value="नाही" checked onchange="syncSingleToPreview()"> नाही</label>
+                  <label class="pill-label"><input type="radio" name="sf_other_benefit" value="होय" onchange="syncSingleToPreview()"> होय</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. Bank Details -->
+            <div class="form-section-title">
+              <span>५. बँक खाते तपशील</span>
+            </div>
+            <div class="form-grid-3">
+              <div class="form-group col-span-2">
+                <label class="form-label">१२. बँक खाते क्रमांक</label>
+                <input type="text" id="sf-bank-acc" class="form-input" placeholder="खाते क्रमांक" oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">IFSC कोड</label>
+                <input type="text" id="sf-ifsc" class="form-input" placeholder="SBIN000XXXX" oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group col-span-2" style="grid-column: span 3;">
+                <label class="form-label">बँकेचे नाव व शाखा</label>
+                <input type="text" id="sf-bank-name" class="form-input" placeholder="उदा. बँक ऑफ महाराष्ट्र, शाखा कुडाळ" oninput="syncSingleToPreview()">
+              </div>
+            </div>
+
+            <!-- 6. Self Declaration -->
+            <div class="form-section-title">
+              <span>६. स्थळ व दिनांक</span>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">ठिकाण</label>
+                <input type="text" id="sf-place" class="form-input" placeholder="उदा. कसाल" oninput="syncSingleToPreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">दिनांक</label>
+                <input type="text" id="sf-date" class="form-input" oninput="syncSingleToPreview()">
+              </div>
+            </div>
+
+            <!-- Action cluster for single -->
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+              <button class="btn-action-primary" style="flex: 1;" onclick="printCurrentForm()">
+                <i class="fa-solid fa-print"></i> हा फॉर्म प्रिंट करा
+              </button>
+              <button class="btn-secondary" onclick="addSingleToTable()">
+                <i class="fa-solid fa-plus-circle"></i> यादीत जतन करा
+              </button>
+              <button class="btn-secondary" onclick="resetSingleForm()">
+                <i class="fa-solid fa-rotate-left"></i> रिसेट
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: LIVE FORM PREVIEW -->
+      <div class="preview-column">
+        <div class="preview-toolbar">
+          <div class="preview-info">
+            <i class="fa-solid fa-eye" style="color: var(--primary-mid);"></i>
+            <span id="preview-applicant-title">थेट प्रिंट प्रिव्ह्यू (Live A4 Preview)</span>
+          </div>
+
+          <div class="preview-tools">
+            <button class="btn-quick" onclick="zoomPreview(-0.1)" title="झूम कमी करा"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+            <span id="zoom-level-text" style="font-size: 0.8rem; font-weight: 700; color: #475569;">100%</span>
+            <button class="btn-quick" onclick="zoomPreview(0.1)" title="झूम वाढवा"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+            <button class="btn-quick" onclick="resetZoom()" title="मूळ आकार"><i class="fa-solid fa-compress"></i> 100%</button>
+            <button class="btn-quick btn-quick-primary" onclick="printCurrentForm()" title="हा फॉर्म त्वरित प्रिंट करा">
+              <i class="fa-solid fa-print"></i> प्रिंट करा
+            </button>
+          </div>
+        </div>
+
+        <!-- The A4 Sheet Wrapper -->
+        <div class="preview-paper-wrapper">
+          <div id="preview-paper-scale-container" style="transform-origin: top center; transition: transform 0.15s ease;">
+
+            <!-- =========================================================================
+                 AUTHENTIC A4 NOTICE FORM AS PER USER IMAGE
+                 ========================================================================= -->
+            <div class="vbgramg-form-page" id="live-preview-page">
+              <div class="outer-double-frame">
+                <div class="inner-frame">
+
+                  <!-- Header Title -->
+                  <div class="form-heading-block">
+                    <div class="main-form-title">VB-G RAM G योजनेअंतर्गत जलतारा / शोष खड्डा / गाय गोठा</div>
+                    <div class="sub-form-title">मंजुरीसाठी विहित नमुन्यातील अर्ज (सुधारित)</div>
+                    <div class="gov-label">महाराष्ट्र शासन</div>
+                  </div>
+
+                  <!-- Recipient -->
+                  <div class="recipient-block">
+                    <div class="recipient-line">प्रति,</div>
+                    <div class="recipient-line">ग्रामपंचायत अधिकारी,</div>
+                    <div class="recipient-line">
+                      ग्रामपंचायत <span class="field-fill-line" id="pv-grampanchayat-1" style="max-width: 320px;"></span>,
+                    </div>
+                    <div class="recipient-two-col">
+                      <div style="display: flex; align-items: baseline; gap: 4px;">
+                        तालुका: <span class="field-fill-line" id="pv-taluka" style="min-width: 140px; max-width: 200px;"></span>
+                      </div>
+                      <div style="display: flex; align-items: baseline; gap: 4px;">
+                        जिल्हा: <span class="field-fill-line" id="pv-district" style="min-width: 130px; max-width: 180px;">सिंधुदुर्ग</span>
+                      </div>
+                    </div>
+                    <div class="subject-line">
+                      विषय : जलतारा / शोष खड्डा / गाय गोठा मंजूर करणे बाबत.
+                    </div>
+                  </div>
+
+                  <!-- Applicant Details -->
+                  <div class="applicant-section-title">अर्जदाराची माहिती :</div>
+
+                  <div class="fields-list">
+                    <!-- 1 -->
+                    <div class="field-row">
+                      <span class="field-num-label">1. अर्जदाराचे पूर्ण नाव :</span>
+                      <span class="field-fill-line" id="pv-name"></span>
+                    </div>
+
+                    <!-- 2 -->
+                    <div class="field-row">
+                      <span class="field-num-label">2. जॉब कार्ड क्रमांक :</span>
+                      <span class="field-fill-line" id="pv-jobcard"></span>
+                    </div>
+
+                    <!-- 3 -->
+                    <div class="field-row">
+                      <span class="field-num-label">3. आधार क्रमांक :</span>
+                      <span class="field-fill-line" id="pv-aadhaar"></span>
+                    </div>
+
+                    <!-- 4 -->
+                    <div class="field-row">
+                      <span class="field-num-label">4. मोबाईल नंबर :</span>
+                      <span class="field-fill-line" id="pv-mobile"></span>
+                    </div>
+
+                    <!-- 5 -->
+                    <div class="field-row">
+                      <span class="field-num-label">5. ग्रामपंचायत :</span>
+                      <span class="field-fill-line" id="pv-gp-display"></span>
+                    </div>
+
+                    <!-- 6 -->
+                    <div class="field-row">
+                      <span class="field-num-label">6. प्रवर्ग :</span>
+                      <div style="display: flex; align-items: center; gap: 14px; margin-left: 8px;">
+                        <span class="chk-box-wrap"><span class="chk-square" id="pv-cat-sc"></span> SC</span>
+                        <span class="chk-box-wrap"><span class="chk-square" id="pv-cat-st"></span> ST</span>
+                        <span class="chk-box-wrap"><span class="chk-square" id="pv-cat-other"></span> इतर</span>
+                        <span class="chk-note">(योग्य त्या चौकोनात ✓ करा)</span>
+                      </div>
+                    </div>
+
+                    <!-- 7 -->
+                    <div class="field-row">
+                      <span class="field-num-label">7. कामाचा प्रकार :</span>
+                      <div style="display: flex; align-items: center; gap: 12px; margin-left: 8px; flex-wrap: wrap;">
+                        <span class="chk-box-wrap"><span class="chk-square" id="pv-work-jaltara"></span> जलतारा</span>
+                        <span class="chk-box-wrap"><span class="chk-square" id="pv-work-shosh"></span> शोष खड्डा</span>
+                        <span class="chk-box-wrap"><span class="chk-square" id="pv-work-sheli"></span> शेळी शेड</span>
+                        <span class="chk-box-wrap"><span class="chk-square" id="pv-work-gotha"></span> गाय गोठा</span>
+                        <span class="chk-note">(योग्य त्या चौकोनात ✓ करा)</span>
+                      </div>
+                    </div>
+
+                    <!-- 8 -->
+                    <div class="field-row">
+                      <span class="field-num-label">8. 7/12 गट नंबर व क्षेत्र :</span>
+                      <span class="field-fill-line" id="pv-gat"></span>
+                    </div>
+
+                    <!-- 9 -->
+                    <div class="field-row">
+                      <span class="field-num-label">9. 8 अ नुसार क्षेत्र :</span>
+                      <span class="field-fill-line" id="pv-8a"></span>
+                    </div>
+
+                    <!-- 10 -->
+                    <div class="field-row">
+                      <span class="field-num-label">10. जनावरे असल्यास संख्या :</span>
+                      <span class="field-fill-line" id="pv-cattle"></span>
+                    </div>
+
+                    <!-- 11 -->
+                    <div class="field-row">
+                      <span class="field-num-label">11. इतर योजनेतून लाभ घेतला आहे का? :</span>
+                      <div style="display: flex; align-items: center; gap: 18px; margin-left: 8px;">
+                        <span class="chk-box-wrap"><span class="chk-square" id="pv-other-yes"></span> होय</span>
+                        <span class="chk-box-wrap"><span class="chk-square" id="pv-other-no"></span> नाही</span>
+                      </div>
+                    </div>
+
+                    <!-- 12 -->
+                    <div class="field-row">
+                      <span class="field-num-label">12. बँक खाते क्रमांक :</span>
+                      <span class="field-fill-line" id="pv-bank-acc"></span>
+                    </div>
+
+                    <div class="field-row-sub">
+                      <span class="field-sub-label">बँकेचे नाव व शाखा :</span>
+                      <span class="field-fill-line" id="pv-bank-name"></span>
+                    </div>
+
+                    <div class="field-row-sub">
+                      <span class="field-sub-label">IFSC कोड :</span>
+                      <span class="field-fill-line" id="pv-ifsc"></span>
+                    </div>
+                  </div>
+
+                  <!-- Self Declaration -->
+                  <div class="declaration-block">
+                    <div class="declaration-title">स्व-घोषणा / प्रतिज्ञापत्र :</div>
+                    <div class="declaration-text">
+                      मी प्रतिज्ञापत्र करतो की वरील नमूद केलेली सर्व माहिती खरी व बरोबर आहे. सदर माहिती खोटी आढळल्यास मी शासकीय नियमानुसार होणाऱ्या कारवाईस पात्र राहीन.
+                    </div>
+                  </div>
+
+                  <!-- Signature & Location Box -->
+                  <div class="sign-location-box">
+                    <div class="sign-loc-col-left">
+                      <div style="display: flex; align-items: baseline; gap: 6px;">
+                        <span style="font-weight: 700;">ठिकाण :</span>
+                        <span class="field-fill-line" id="pv-place"></span>
+                      </div>
+                      <div style="display: flex; align-items: baseline; gap: 6px;">
+                        <span style="font-weight: 700;">दिनांक :</span>
+                        <span class="field-fill-line" id="pv-date"></span>
+                      </div>
+                    </div>
+                    <div class="sign-loc-col-right">
+                      <div>अर्जदाराची सही / अंगठा</div>
+                      <div class="sig-line-bar"></div>
+                    </div>
+                  </div>
+
+                  <!-- Footnote -->
+                  <div class="form-bottom-footer">
+                    <div class="footer-note">टीप : सर्व आवश्यक कागदपत्रे ग्रामपंचायत अधिकारी यांचेकडे सादर करावीत.</div>
+                    <div class="footer-sub-label">(सुधारित) VB-G RAM G योजना</div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODAL: QUICK PASTE EXCEL DATA -->
+  <div class="modal-overlay" id="modal-paste">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-paste"></i> एक्सेल मधून डेटा कॉपी करून येथे पेस्ट करा</h3>
+        <button class="modal-close-btn" onclick="closePasteModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.88rem; color: #475569;">
+          आपल्या एक्सेल फाईलमधील ओळी कॉपी करा (Ctrl+C) आणि खालील बॉक्समध्ये पेस्ट करा (Ctrl+V).
+          पहिल्या ओळीत हेडर असणे आवश्यक आहे (किंवा नमुना हेडर वापरा).
+        </p>
+        <textarea id="paste-data-textarea" class="form-input" style="height: 180px; font-family: monospace; font-size: 0.84rem; white-space: pre;" placeholder="नाव&#9;मोबाईल&#9;आधार&#9;ग्रामपंचायत&#9;तालुका&#9;कामाचा प्रकार..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closePasteModal()">रद्द करा</button>
+        <button class="btn-action-navy" onclick="processPastedData()">
+          <i class="fa-solid fa-check"></i> डेटा लोड करा
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT APPLICANT -->
+  <div class="modal-overlay" id="modal-edit-applicant">
+    <div class="modal-card" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 id="modal-edit-title"><i class="fa-solid fa-user-edit"></i> अर्जदार माहिती संपादित करा</h3>
+        <button class="modal-close-btn" onclick="closeEditModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 75vh;">
+        <input type="hidden" id="edit-row-index" value="-1">
+        
+        <div class="form-grid-2">
+          <div class="form-group col-span-2">
+            <label class="form-label">अर्जदाराचे पूर्ण नाव <span class="req">*</span></label>
+            <input type="text" id="ed-name" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">जॉब कार्ड क्रमांक</label>
+            <input type="text" id="ed-jobcard" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">आधार क्रमांक</label>
+            <input type="text" id="ed-aadhaar" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">मोबाईल नंबर</label>
+            <input type="text" id="ed-mobile" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">ग्रामपंचायत</label>
+            <input type="text" id="ed-grampanchayat" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">तालुका</label>
+            <input type="text" id="ed-taluka" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">जिल्हा</label>
+            <input type="text" id="ed-district" class="form-input" value="सिंधुदुर्ग">
+          </div>
+          <div class="form-group">
+            <label class="form-label">प्रवर्ग (SC / ST / इतर)</label>
+            <select id="ed-category" class="form-select">
+              <option value="इतर">इतर</option>
+              <option value="SC">SC</option>
+              <option value="ST">ST</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">कामाचा प्रकार</label>
+            <select id="ed-work" class="form-select">
+              <option value="गाय गोठा">गाय गोठा</option>
+              <option value="जलतारा">जलतारा</option>
+              <option value="शोष खड्डा">शोष खड्डा</option>
+              <option value="शेळी शेड">शेळी शेड</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">७/१२ गट नंबर व क्षेत्र</label>
+            <input type="text" id="ed-gat" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">८ अ नुसार क्षेत्र</label>
+            <input type="text" id="ed-8a" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">जनावरांची संख्या</label>
+            <input type="text" id="ed-cattle" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">इतर योजनेतून लाभ घेतला आहे का?</label>
+            <select id="ed-other-benefit" class="form-select">
+              <option value="नाही">नाही</option>
+              <option value="होय">होय</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">बँक खाते क्रमांक</label>
+            <input type="text" id="ed-bank-acc" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">IFSC कोड</label>
+            <input type="text" id="ed-ifsc" class="form-input">
+          </div>
+          <div class="form-group col-span-2">
+            <label class="form-label">बँकेचे नाव व शाखा</label>
+            <input type="text" id="ed-bank-name" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">ठिकाण</label>
+            <input type="text" id="ed-place" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">दिनांक</label>
+            <input type="text" id="ed-date" class="form-input">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeEditModal()">रद्द करा</button>
+        <button class="btn-action-primary" style="width: auto;" onclick="saveEditedApplicant()">
+          <i class="fa-solid fa-save"></i> जतन करा
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-box" id="toast-notification">
+    <i class="fa-solid fa-circle-check" id="toast-icon"></i>
+    <span id="toast-message">माहिती यशस्वीरित्या जतन केली.</span>
+  </div>
+
+  <!-- DEDICATED PRINT CONTAINER (Shown only during window.print()) -->
+  <div id="print-container"></div>
+
+  <!-- APPLICATION LOGIC JAVASCRIPT -->
+  <script>
+    // State management
+    let applicantsList = [];
+    let currentPreviewIndex = 0;
+    let currentZoom = 1.0;
+
+    // Default today's date formatted in DD/MM/YYYY
+    function getTodayDateString() {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('sf-date').value = getTodayDateString();
+      setupDropzone();
+      // Load sample data initially so the user immediately sees a live working demo!
+      loadSampleDataIntoApp(false);
+    });
+
+    // Toast helper
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast-notification');
+      const text = document.getElementById('toast-message');
+      const icon = document.getElementById('toast-icon');
+
+      text.innerText = msg;
+      toast.className = `toast-box ${type} show`;
+
+      if (type === 'success') icon.className = 'fa-solid fa-circle-check';
+      else if (type === 'warning') icon.className = 'fa-solid fa-triangle-exclamation';
+      else icon.className = 'fa-solid fa-circle-info';
+
+      setTimeout(() => {
+        toast.className = 'toast-box';
+      }, 3500);
+    }
+
+    // Tab switcher
+    function switchTab(mode) {
+      document.getElementById('tab-btn-bulk').classList.toggle('active', mode === 'bulk');
+      document.getElementById('tab-btn-single').classList.toggle('active', mode === 'single');
+
+      document.getElementById('view-bulk').style.display = (mode === 'bulk') ? 'flex' : 'none';
+      document.getElementById('view-single').style.display = (mode === 'single') ? 'flex' : 'none';
+
+      if (mode === 'single') {
+        populateSingleFormFromActive();
+      }
+    }
+
+    // Zoom controls for Preview
+    function zoomPreview(delta) {
+      currentZoom = Math.min(Math.max(currentZoom + delta, 0.4), 1.6);
+      applyZoom();
+    }
+
+    function resetZoom() {
+      currentZoom = 1.0;
+      applyZoom();
+    }
+
+    function applyZoom() {
+      const container = document.getElementById('preview-paper-scale-container');
+      container.style.transform = `scale(${currentZoom})`;
+      document.getElementById('zoom-level-text').innerText = `${Math.round(currentZoom * 100)}%`;
+    }
+
+    // Drag & drop setup
+    function setupDropzone() {
+      const dropzone = document.getElementById('excel-dropzone');
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropzone.classList.add('dragover');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('dragover');
+        }, false);
+      });
+
+      dropzone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length) {
+          parseExcelFile(files[0]);
+        }
+      });
+    }
+
+    function handleExcelUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        parseExcelFile(file);
+      }
+    }
+
+    // Core Excel parsing function with flexible header mapping
+    function parseExcelFile(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const jsonRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+          if (!jsonRows || jsonRows.length === 0) {
+            showToast('एक्सेल फाईलमध्ये कोणताही डेटा आढळला नाही!', 'warning');
+            return;
+          }
+
+          const parsedList = jsonRows.map((row, idx) => mapRowToApplicant(row, idx + 1));
+          applicantsList = parsedList;
+          currentPreviewIndex = 0;
+          renderApplicantsTable();
+          updateLivePreview(applicantsList[0]);
+          showToast(`यशस्वी! ${parsedList.length} अर्जदारांचा डेटा एक्सेलवरून लोड झाला.`, 'success');
+        } catch (err) {
+          console.error(err);
+          showToast('एक्सेल फाईल वाचताना त्रुटी आली. कृपया फाईल तपासा.', 'warning');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Flexible column finder
+    function mapRowToApplicant(row, index) {
+      const findVal = (keywords, fallback = '') => {
+        for (const key of Object.keys(row)) {
+          const cleanKey = key.trim().toLowerCase();
+          for (const kw of keywords) {
+            if (cleanKey.includes(kw.toLowerCase())) {
+              return String(row[key]).trim();
+            }
+          }
+        }
+        return fallback;
+      };
+
+      const name = findVal(['नाव', 'name', 'applicant', 'अर्जदार'], `अर्जदार ${index}`);
+      const jobcard = findVal(['जॉब', 'job', 'card', 'कार्ड'], '');
+      const aadhaar = findVal(['आधार', 'aadhaar', 'uid'], '');
+      const mobile = findVal(['मोबाईल', 'mobile', 'phone', 'फोन', 'संपर्क'], '');
+      const gp = findVal(['ग्रामपंचायत', 'grampanchayat', 'gp', 'गाव'], 'कसाल');
+      const taluka = findVal(['तालुका', 'taluka', 'tahsil'], 'कुडाळ');
+      const district = findVal(['जिल्हा', 'district'], 'सिंधुदुर्ग');
+      const category = findVal(['प्रवर्ग', 'category', 'जात', 'caste'], 'इतर');
+      const work = findVal(['काम', 'कामाचा प्रकार', 'work', 'type', 'योजना'], 'गाय गोठा');
+      const gat = findVal(['गट', 'gat', '7/12', '७/१२', 'क्षेत्र'], '');
+      const area8a = findVal(['8 अ', '८ अ', '8a', 'खाते'], '');
+      const cattle = findVal(['जनावरे', 'पशु', 'cattle', 'गाई', 'संख्या'], '');
+      const otherBenefit = findVal(['इतर', 'लाभ', 'other', 'योजना लाभ'], 'नाही');
+      const bankAcc = findVal(['खाते', 'खाता', 'account', 'acc'], '');
+      const bankName = findVal(['बँक', 'bank', 'शाखा', 'branch'], '');
+      const ifsc = findVal(['ifsc', 'आयएफएससी'], '');
+      const place = findVal(['ठिकाण', 'place', 'गाव'], gp || taluka || 'कुडाळ');
+      const date = findVal(['दिनांक', 'date', 'तारीख'], getTodayDateString());
+
+      return {
+        selected: true,
+        name,
+        jobcard,
+        aadhaar,
+        mobile,
+        grampanchayat: gp,
+        taluka,
+        district,
+        category,
+        work,
+        gat,
+        area8a,
+        cattle,
+        otherBenefit,
+        bankAcc,
+        bankName,
+        ifsc,
+        place,
+        date
+      };
+    }
+
+    // Render table
+    function renderApplicantsTable() {
+      const tbody = document.getElementById('applicants-table-body');
+      const searchBox = document.getElementById('table-search-box').value.trim().toLowerCase();
+      tbody.innerHTML = '';
+
+      if (applicantsList.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 30px 10px; color: #64748b;">
+              <i class="fa-regular fa-folder-open" style="font-size: 32px; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
+              कोणताही डेटा उपलब्ध नाही. कृपया एक्सेल फाईल अपलोड करा किंवा 'नवीन जोडा' वर क्लिक करा.
+            </td>
+          </tr>
+        `;
+        updateSelectionStats();
+        return;
+      }
+
+      let visibleCount = 0;
+
+      applicantsList.forEach((app, idx) => {
+        // Search filter
+        const match = !searchBox ||
+          app.name.toLowerCase().includes(searchBox) ||
+          app.mobile.includes(searchBox) ||
+          app.aadhaar.includes(searchBox) ||
+          app.grampanchayat.toLowerCase().includes(searchBox);
+
+        if (!match) return;
+        visibleCount++;
+
+        const tr = document.createElement('tr');
+        if (idx === currentPreviewIndex) {
+          tr.className = 'active-row';
+        }
+
+        tr.onclick = (e) => {
+          if (e.target.tagName !== 'INPUT' && !e.target.closest('button')) {
+            selectApplicantForPreview(idx);
+          }
+        };
+
+        tr.innerHTML = `
+          <td style="text-align: center;">
+            <input type="checkbox" ${app.selected ? 'checked' : ''} onchange="toggleApplicantSelect(${idx}, this.checked)">
+          </td>
+          <td style="font-weight: 700;">${idx + 1}</td>
+          <td>
+            <div style="font-weight: 700; color: #0f172a;">${escapeHtml(app.name)}</div>
+            <div style="font-size: 0.76rem; color: #64748b;">जॉब कार्ड: ${escapeHtml(app.jobcard || '-')}</div>
+          </td>
+          <td>
+            <div style="font-weight: 600;">${escapeHtml(app.mobile || '-')}</div>
+            <div style="font-size: 0.74rem; color: #64748b;">आधार: ${escapeHtml(app.aadhaar || '-')}</div>
+          </td>
+          <td>
+            <span style="font-weight: 600;">${escapeHtml(app.grampanchayat)}</span>
+            <span style="font-size: 0.74rem; color: #64748b; display: block;">ता. ${escapeHtml(app.taluka)}</span>
+          </td>
+          <td>
+            <span class="badge-work">${escapeHtml(app.work)}</span>
+            <span class="badge-category" style="margin-left: 4px;">${escapeHtml(app.category)}</span>
+          </td>
+          <td style="text-align: right; white-space: nowrap;">
+            <button class="btn-quick" style="padding: 3px 6px; font-size: 0.76rem;" onclick="selectApplicantForPreview(${idx})" title="प्रिव्ह्यू पहा">
+              <i class="fa-solid fa-eye" style="color: var(--primary-mid);"></i>
+            </button>
+            <button class="btn-quick" style="padding: 3px 6px; font-size: 0.76rem;" onclick="openEditModal(${idx})" title="माहिती बदला">
+              <i class="fa-solid fa-pen" style="color: #0284c7;"></i>
+            </button>
+            <button class="btn-quick" style="padding: 3px 6px; font-size: 0.76rem;" onclick="deleteApplicant(${idx})" title="हटवा">
+              <i class="fa-solid fa-trash" style="color: #dc2626;"></i>
+            </button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      updateSelectionStats();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function filterApplicantsTable() {
+      renderApplicantsTable();
+    }
+
+    function toggleApplicantSelect(index, isChecked) {
+      if (applicantsList[index]) {
+        applicantsList[index].selected = isChecked;
+        updateSelectionStats();
+      }
+    }
+
+    function toggleSelectAll(isChecked) {
+      applicantsList.forEach(app => app.selected = isChecked);
+      renderApplicantsTable();
+    }
+
+    function updateSelectionStats() {
+      const total = applicantsList.length;
+      const selected = applicantsList.filter(a => a.selected).length;
+
+      document.getElementById('applicant-count-badge').innerText = `एकूण: ${total} अर्जदार`;
+      document.getElementById('selected-count-badge').innerText = selected;
+      document.getElementById('table-selection-summary').innerText = `${selected} / ${total} निवडले`;
+
+      const selectAllCb = document.getElementById('select-all-checkbox');
+      if (selectAllCb) {
+        selectAllCb.checked = (total > 0 && selected === total);
+      }
+    }
+
+    function selectApplicantForPreview(index) {
+      if (index >= 0 && index < applicantsList.length) {
+        currentPreviewIndex = index;
+        updateLivePreview(applicantsList[index]);
+        renderApplicantsTable();
+      }
+    }
+
+    function deleteApplicant(index) {
+      if (confirm(`खात्री आहे का? '${applicantsList[index].name}' यांची नोंद हटवायची आहे?`)) {
+        applicantsList.splice(index, 1);
+        if (currentPreviewIndex >= applicantsList.length) {
+          currentPreviewIndex = Math.max(0, applicantsList.length - 1);
+        }
+        renderApplicantsTable();
+        if (applicantsList.length > 0) {
+          updateLivePreview(applicantsList[currentPreviewIndex]);
+        } else {
+          clearPreviewDisplay();
+        }
+        showToast('नोंद यशस्वीरित्या हटवली.', 'info');
+      }
+    }
+
+    function clearAllApplicants() {
+      if (applicantsList.length === 0) return;
+      if (confirm('सर्व अर्जदारांची यादी साफ करायची आहे का?')) {
+        applicantsList = [];
+        currentPreviewIndex = 0;
+        renderApplicantsTable();
+        clearPreviewDisplay();
+        showToast('सर्व अर्जदारांची यादी साफ केली.', 'info');
+      }
+    }
+
+    // Update Live Preview Sheet with applicant data
+    function updateLivePreview(app) {
+      if (!app) {
+        clearPreviewDisplay();
+        return;
+      }
+
+      document.getElementById('preview-applicant-title').innerText = `प्रिव्ह्यू: ${app.name} (${app.grampanchayat})`;
+
+      // Header office
+      document.getElementById('pv-grampanchayat-1').innerText = app.grampanchayat || '';
+      document.getElementById('pv-taluka').innerText = app.taluka || '';
+      document.getElementById('pv-district').innerText = app.district || 'सिंधुदुर्ग';
+
+      // 12 fields
+      document.getElementById('pv-name').innerText = app.name || '';
+      document.getElementById('pv-jobcard').innerText = app.jobcard || '';
+      document.getElementById('pv-aadhaar').innerText = app.aadhaar || '';
+      document.getElementById('pv-mobile').innerText = app.mobile || '';
+      document.getElementById('pv-gp-display').innerText = app.grampanchayat || '';
+
+      // Category checkboxes
+      const cat = (app.category || '').toUpperCase();
+      document.getElementById('pv-cat-sc').innerText = cat.includes('SC') ? '✓' : '';
+      document.getElementById('pv-cat-st').innerText = cat.includes('ST') ? '✓' : '';
+      document.getElementById('pv-cat-other').innerText = (!cat.includes('SC') && !cat.includes('ST')) ? '✓' : '';
+
+      // Work type checkboxes
+      const w = (app.work || '').toLowerCase();
+      document.getElementById('pv-work-jaltara').innerText = w.includes('जलतारा') ? '✓' : '';
+      document.getElementById('pv-work-shosh').innerText = w.includes('शोष') ? '✓' : '';
+      document.getElementById('pv-work-sheli').innerText = w.includes('शेळी') ? '✓' : '';
+      document.getElementById('pv-work-gotha').innerText = (w.includes('गोठा') || w.includes('गाय')) ? '✓' : '';
+
+      document.getElementById('pv-gat').innerText = app.gat || '';
+      document.getElementById('pv-8a').innerText = app.area8a || '';
+      document.getElementById('pv-cattle').innerText = app.cattle || '';
+
+      // Other scheme
+      const otherYes = (app.otherBenefit || '').toLowerCase().includes('होय') || (app.otherBenefit || '').toLowerCase() === 'yes';
+      document.getElementById('pv-other-yes').innerText = otherYes ? '✓' : '';
+      document.getElementById('pv-other-no').innerText = !otherYes ? '✓' : '';
+
+      // Bank details
+      document.getElementById('pv-bank-acc').innerText = app.bankAcc || '';
+      document.getElementById('pv-bank-name').innerText = app.bankName || '';
+      document.getElementById('pv-ifsc').innerText = app.ifsc || '';
+
+      // Self declaration
+      document.getElementById('pv-place').innerText = app.place || app.grampanchayat || '';
+      document.getElementById('pv-date').innerText = app.date || getTodayDateString();
+    }
+
+    function clearPreviewDisplay() {
+      document.getElementById('preview-applicant-title').innerText = 'थेट प्रिंट प्रिव्ह्यू (कोरा नमुना)';
+      const ids = [
+        'pv-grampanchayat-1', 'pv-taluka', 'pv-district', 'pv-name', 'pv-jobcard',
+        'pv-aadhaar', 'pv-mobile', 'pv-gp-display', 'pv-cat-sc', 'pv-cat-st', 'pv-cat-other',
+        'pv-work-jaltara', 'pv-work-shosh', 'pv-work-sheli', 'pv-work-gotha', 'pv-gat',
+        'pv-8a', 'pv-cattle', 'pv-other-yes', 'pv-other-no', 'pv-bank-acc', 'pv-bank-name',
+        'pv-ifsc', 'pv-place', 'pv-date'
+      ];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = '';
+      });
+      document.getElementById('pv-district').innerText = 'सिंधुदुर्ग';
+    }
+
+    // Populate Single Form Inputs from currently previewed applicant
+    function populateSingleFormFromActive() {
+      const app = applicantsList[currentPreviewIndex];
+      if (!app) return;
+
+      document.getElementById('sf-grampanchayat').value = app.grampanchayat || '';
+      document.getElementById('sf-taluka').value = app.taluka || '';
+      document.getElementById('sf-district').value = app.district || 'सिंधुदुर्ग';
+      document.getElementById('sf-name').value = app.name || '';
+      document.getElementById('sf-jobcard').value = app.jobcard || '';
+      document.getElementById('sf-aadhaar').value = app.aadhaar || '';
+      document.getElementById('sf-mobile').value = app.mobile || '';
+      document.getElementById('sf-gp-display').value = app.grampanchayat || '';
+
+      // Radio category
+      const cat = app.category || 'इतर';
+      document.querySelectorAll("input[name='sf_cat']").forEach(r => {
+        r.checked = (r.value === cat);
+        r.closest('.pill-label').classList.toggle('active', r.checked);
+      });
+
+      // Radio work
+      const work = app.work || 'गाय गोठा';
+      document.querySelectorAll("input[name='sf_work']").forEach(r => {
+        r.checked = (r.value === work);
+        r.closest('.pill-label').classList.toggle('active', r.checked);
+      });
+
+      document.getElementById('sf-gat').value = app.gat || '';
+      document.getElementById('sf-8a').value = app.area8a || '';
+      document.getElementById('sf-cattle').value = app.cattle || '';
+
+      const other = app.otherBenefit || 'नाही';
+      document.querySelectorAll("input[name='sf_other_benefit']").forEach(r => {
+        r.checked = (r.value === other);
+        r.closest('.pill-label').classList.toggle('active', r.checked);
+      });
+
+      document.getElementById('sf-bank-acc').value = app.bankAcc || '';
+      document.getElementById('sf-bank-name').value = app.bankName || '';
+      document.getElementById('sf-ifsc').value = app.ifsc || '';
+      document.getElementById('sf-place').value = app.place || '';
+      document.getElementById('sf-date').value = app.date || getTodayDateString();
+
+      syncSingleToPreview();
+    }
+
+    // Live sync from Single Entry fields directly into Preview Sheet
+    function syncSingleToPreview() {
+      const getVal = id => document.getElementById(id).value.trim();
+      const getRadio = name => {
+        const checked = document.querySelector(`input[name='${name}']:checked`);
+        return checked ? checked.value : '';
+      };
+
+      const gp = getVal('sf-grampanchayat');
+      const taluka = getVal('sf-taluka');
+      const district = getVal('sf-district') || 'सिंधुदुर्ग';
+      const name = getVal('sf-name');
+      const jobcard = getVal('sf-jobcard');
+      const aadhaar = getVal('sf-aadhaar');
+      const mobile = getVal('sf-mobile');
+      const gpDisplay = getVal('sf-gp-display') || gp;
+      const cat = getRadio('sf_cat');
+      const work = getRadio('sf_work');
+      const gat = getVal('sf-gat');
+      const area8a = getVal('sf-8a');
+      const cattle = getVal('sf-cattle');
+      const otherBenefit = getRadio('sf_other_benefit');
+      const bankAcc = getVal('sf-bank-acc');
+      const bankName = getVal('sf-bank-name');
+      const ifsc = getVal('sf-ifsc');
+      const place = getVal('sf-place') || gp;
+      const date = getVal('sf-date') || getTodayDateString();
+
+      // Update active pill classes
+      document.querySelectorAll("input[name='sf_cat']").forEach(r => {
+        r.closest('.pill-label').classList.toggle('active', r.checked);
+      });
+      document.querySelectorAll("input[name='sf_work']").forEach(r => {
+        r.closest('.pill-label').classList.toggle('active', r.checked);
+      });
+      document.querySelectorAll("input[name='sf_other_benefit']").forEach(r => {
+        r.closest('.pill-label').classList.toggle('active', r.checked);
+      });
+
+      // Update preview DOM
+      document.getElementById('pv-grampanchayat-1').innerText = gp;
+      document.getElementById('pv-taluka').innerText = taluka;
+      document.getElementById('pv-district').innerText = district;
+      document.getElementById('pv-name').innerText = name;
+      document.getElementById('pv-jobcard').innerText = jobcard;
+      document.getElementById('pv-aadhaar').innerText = aadhaar;
+      document.getElementById('pv-mobile').innerText = mobile;
+      document.getElementById('pv-gp-display').innerText = gpDisplay;
+
+      document.getElementById('pv-cat-sc').innerText = (cat === 'SC') ? '✓' : '';
+      document.getElementById('pv-cat-st').innerText = (cat === 'ST') ? '✓' : '';
+      document.getElementById('pv-cat-other').innerText = (cat === 'इतर' || (!cat && !cat.includes('SC') && !cat.includes('ST'))) ? '✓' : '';
+
+      document.getElementById('pv-work-jaltara').innerText = (work === 'जलतारा') ? '✓' : '';
+      document.getElementById('pv-work-shosh').innerText = (work === 'शोष खड्डा') ? '✓' : '';
+      document.getElementById('pv-work-sheli').innerText = (work === 'शेळी शेड') ? '✓' : '';
+      document.getElementById('pv-work-gotha').innerText = (work === 'गाय गोठा') ? '✓' : '';
+
+      document.getElementById('pv-gat').innerText = gat;
+      document.getElementById('pv-8a').innerText = area8a;
+      document.getElementById('pv-cattle').innerText = cattle;
+
+      document.getElementById('pv-other-yes').innerText = (otherBenefit === 'होय') ? '✓' : '';
+      document.getElementById('pv-other-no').innerText = (otherBenefit === 'नाही') ? '✓' : '';
+
+      document.getElementById('pv-bank-acc').innerText = bankAcc;
+      document.getElementById('pv-bank-name').innerText = bankName;
+      document.getElementById('pv-ifsc').innerText = ifsc;
+
+      document.getElementById('pv-place').innerText = place;
+      document.getElementById('pv-date').innerText = date;
+    }
+
+    // Add single form entry into the table
+    function addSingleToTable() {
+      const getVal = id => document.getElementById(id).value.trim();
+      const getRadio = name => {
+        const checked = document.querySelector(`input[name='${name}']:checked`);
+        return checked ? checked.value : '';
+      };
+
+      const name = getVal('sf-name');
+      if (!name) {
+        showToast('कृपया अर्जदाराचे पूर्ण नाव प्रविष्ट करा!', 'warning');
+        return;
+      }
+
+      const gp = getVal('sf-grampanchayat') || 'कसाल';
+      const taluka = getVal('sf-taluka') || 'कुडाळ';
+      const district = getVal('sf-district') || 'सिंधुदुर्ग';
+
+      const newApp = {
+        selected: true,
+        name,
+        jobcard: getVal('sf-jobcard'),
+        aadhaar: getVal('sf-aadhaar'),
+        mobile: getVal('sf-mobile'),
+        grampanchayat: gp,
+        taluka,
+        district,
+        category: getRadio('sf_cat') || 'इतर',
+        work: getRadio('sf_work') || 'गाय गोठा',
+        gat: getVal('sf-gat'),
+        area8a: getVal('sf-8a'),
+        cattle: getVal('sf-cattle'),
+        otherBenefit: getRadio('sf_other_benefit') || 'नाही',
+        bankAcc: getVal('sf-bank-acc'),
+        bankName: getVal('sf-bank-name'),
+        ifsc: getVal('sf-ifsc'),
+        place: getVal('sf-place') || gp,
+        date: getVal('sf-date') || getTodayDateString()
+      };
+
+      applicantsList.push(newApp);
+      currentPreviewIndex = applicantsList.length - 1;
+      renderApplicantsTable();
+      showToast(`'${name}' यांची नोंद यादीत जोडली गेली.`, 'success');
+      switchTab('bulk');
+    }
+
+    function resetSingleForm() {
+      document.getElementById('sf-name').value = '';
+      document.getElementById('sf-jobcard').value = '';
+      document.getElementById('sf-aadhaar').value = '';
+      document.getElementById('sf-mobile').value = '';
+      document.getElementById('sf-gp-display').value = '';
+      document.getElementById('sf-gat').value = '';
+      document.getElementById('sf-8a').value = '';
+      document.getElementById('sf-cattle').value = '';
+      document.getElementById('sf-bank-acc').value = '';
+      document.getElementById('sf-bank-name').value = '';
+      document.getElementById('sf-ifsc').value = '';
+      syncSingleToPreview();
+      showToast('फॉर्म रिसेट केला.', 'info');
+    }
+
+    function loadSampleSingleData() {
+      document.getElementById('sf-grampanchayat').value = 'कसाल';
+      document.getElementById('sf-taluka').value = 'कुडाळ';
+      document.getElementById('sf-district').value = 'सिंधुदुर्ग';
+      document.getElementById('sf-name').value = 'रमेश विठ्ठल सावंत';
+      document.getElementById('sf-jobcard').value = 'MH-26-004-012/104';
+      document.getElementById('sf-aadhaar').value = '4521 8963 1254';
+      document.getElementById('sf-mobile').value = '9421258963';
+      document.getElementById('sf-gp-display').value = 'कसाल';
+      document.getElementById('sf-gat').value = 'गट क्र. १४२, क्षेत्र ०.४५ हे.';
+      document.getElementById('sf-8a').value = '०.८० हे. आर';
+      document.getElementById('sf-cattle').value = '३ गाई';
+      document.getElementById('sf-bank-acc').value = '60124589632';
+      document.getElementById('sf-bank-name').value = 'बँक ऑफ महाराष्ट्र, शाखा कसाल';
+      document.getElementById('sf-ifsc').value = 'MAHB0000452';
+      document.getElementById('sf-place').value = 'कसाल';
+      document.getElementById('sf-date').value = getTodayDateString();
+
+      document.querySelectorAll("input[name='sf_cat']").forEach(r => r.checked = (r.value === 'इतर'));
+      document.querySelectorAll("input[name='sf_work']").forEach(r => r.checked = (r.value === 'गाय गोठा'));
+      document.querySelectorAll("input[name='sf_other_benefit']").forEach(r => r.checked = (r.value === 'नाही'));
+
+      syncSingleToPreview();
+      showToast('नमुना डेटा भरला गेला.', 'success');
+    }
+
+    // Modal Add / Edit
+    function addNewApplicantModal() {
+      document.getElementById('edit-row-index').value = -1;
+      document.getElementById('modal-edit-title').innerHTML = '<i class="fa-solid fa-user-plus"></i> नवीन अर्जदार जोडा';
+
+      document.getElementById('ed-name').value = '';
+      document.getElementById('ed-jobcard').value = '';
+      document.getElementById('ed-aadhaar').value = '';
+      document.getElementById('ed-mobile').value = '';
+      document.getElementById('ed-grampanchayat').value = applicantsList[0]?.grampanchayat || 'कसाल';
+      document.getElementById('ed-taluka').value = applicantsList[0]?.taluka || 'कुडाळ';
+      document.getElementById('ed-district').value = 'सिंधुदुर्ग';
+      document.getElementById('ed-category').value = 'इतर';
+      document.getElementById('ed-work').value = 'गाय गोठा';
+      document.getElementById('ed-gat').value = '';
+      document.getElementById('ed-8a').value = '';
+      document.getElementById('ed-cattle').value = '';
+      document.getElementById('ed-other-benefit').value = 'नाही';
+      document.getElementById('ed-bank-acc').value = '';
+      document.getElementById('ed-bank-name').value = '';
+      document.getElementById('ed-ifsc').value = '';
+      document.getElementById('ed-place').value = applicantsList[0]?.grampanchayat || 'कसाल';
+      document.getElementById('ed-date').value = getTodayDateString();
+
+      document.getElementById('modal-edit-applicant').classList.add('active');
+    }
+
+    function openEditModal(index) {
+      const app = applicantsList[index];
+      if (!app) return;
+
+      document.getElementById('edit-row-index').value = index;
+      document.getElementById('modal-edit-title').innerHTML = '<i class="fa-solid fa-user-edit"></i> अर्जदार माहिती संपादित करा';
+
+      document.getElementById('ed-name').value = app.name || '';
+      document.getElementById('ed-jobcard').value = app.jobcard || '';
+      document.getElementById('ed-aadhaar').value = app.aadhaar || '';
+      document.getElementById('ed-mobile').value = app.mobile || '';
+      document.getElementById('ed-grampanchayat').value = app.grampanchayat || '';
+      document.getElementById('ed-taluka').value = app.taluka || '';
+      document.getElementById('ed-district').value = app.district || 'सिंधुदुर्ग';
+      document.getElementById('ed-category').value = app.category || 'इतर';
+      document.getElementById('ed-work').value = app.work || 'गाय गोठा';
+      document.getElementById('ed-gat').value = app.gat || '';
+      document.getElementById('ed-8a').value = app.area8a || '';
+      document.getElementById('ed-cattle').value = app.cattle || '';
+      document.getElementById('ed-other-benefit').value = app.otherBenefit || 'नाही';
+      document.getElementById('ed-bank-acc').value = app.bankAcc || '';
+      document.getElementById('ed-bank-name').value = app.bankName || '';
+      document.getElementById('ed-ifsc').value = app.ifsc || '';
+      document.getElementById('ed-place').value = app.place || '';
+      document.getElementById('ed-date').value = app.date || getTodayDateString();
+
+      document.getElementById('modal-edit-applicant').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('modal-edit-applicant').classList.remove('active');
+    }
+
+    function saveEditedApplicant() {
+      const idx = parseInt(document.getElementById('edit-row-index').value);
+      const name = document.getElementById('ed-name').value.trim();
+      if (!name) {
+        showToast('कृपया अर्जदाराचे नाव प्रविष्ट करा!', 'warning');
+        return;
+      }
+
+      const appData = {
+        selected: true,
+        name,
+        jobcard: document.getElementById('ed-jobcard').value.trim(),
+        aadhaar: document.getElementById('ed-aadhaar').value.trim(),
+        mobile: document.getElementById('ed-mobile').value.trim(),
+        grampanchayat: document.getElementById('ed-grampanchayat').value.trim(),
+        taluka: document.getElementById('ed-taluka').value.trim(),
+        district: document.getElementById('ed-district').value.trim() || 'सिंधुदुर्ग',
+        category: document.getElementById('ed-category').value,
+        work: document.getElementById('ed-work').value,
+        gat: document.getElementById('ed-gat').value.trim(),
+        area8a: document.getElementById('ed-8a').value.trim(),
+        cattle: document.getElementById('ed-cattle').value.trim(),
+        otherBenefit: document.getElementById('ed-other-benefit').value,
+        bankAcc: document.getElementById('ed-bank-acc').value.trim(),
+        bankName: document.getElementById('ed-bank-name').value.trim(),
+        ifsc: document.getElementById('ed-ifsc').value.trim(),
+        place: document.getElementById('ed-place').value.trim(),
+        date: document.getElementById('ed-date').value.trim() || getTodayDateString()
+      };
+
+      if (idx === -1) {
+        applicantsList.push(appData);
+        currentPreviewIndex = applicantsList.length - 1;
+        showToast(`'${name}' यांची नवीन नोंद जोडली गेली.`, 'success');
+      } else {
+        applicantsList[idx] = appData;
+        currentPreviewIndex = idx;
+        showToast(`'${name}' यांची माहिती अद्ययावत केली.`, 'success');
+      }
+
+      closeEditModal();
+      renderApplicantsTable();
+      updateLivePreview(applicantsList[currentPreviewIndex]);
+    }
+
+    // Modal Quick Paste
+    function openPasteModal() {
+      document.getElementById('paste-data-textarea').value = '';
+      document.getElementById('modal-paste').classList.add('active');
+    }
+
+    function closePasteModal() {
+      document.getElementById('modal-paste').classList.remove('active');
+    }
+
+    function processPastedData() {
+      const text = document.getElementById('paste-data-textarea').value.trim();
+      if (!text) {
+        showToast('कृपया डेटा पेस्ट करा!', 'warning');
+        return;
+      }
+
+      const lines = text.split('\n').filter(l => l.trim().length > 0);
+      if (lines.length === 0) return;
+
+      const delimiter = lines[0].includes('\t') ? '\t' : ',';
+      const headers = lines[0].split(delimiter).map(h => h.trim());
+
+      const newRows = [];
+      for (let i = 1; i < lines.length; i++) {
+        const parts = lines[i].split(delimiter);
+        const rowObj = {};
+        headers.forEach((h, hIdx) => {
+          rowObj[h] = parts[hIdx] ? parts[hIdx].trim() : '';
+        });
+        newRows.push(mapRowToApplicant(rowObj, applicantsList.length + i));
+      }
+
+      if (newRows.length > 0) {
+        applicantsList = applicantsList.concat(newRows);
+        currentPreviewIndex = 0;
+        renderApplicantsTable();
+        updateLivePreview(applicantsList[0]);
+        closePasteModal();
+        switchTab('bulk');
+        showToast(`${newRows.length} अर्जदारांचा डेटा यशस्वीरित्या पेस्ट झाला!`, 'success');
+      } else {
+        showToast('डेटा वाचता आला नाही. कृपया हेडर व ओळी तपासा.', 'warning');
+      }
+    }
+
+    // Load rich sample data for instant demonstration
+    function loadSampleDataIntoApp(notify = true) {
+      applicantsList = [
+        {
+          selected: true,
+          name: 'रमेश विठ्ठल सावंत',
+          jobcard: 'MH-26-004-012/104',
+          aadhaar: '4521 8963 1254',
+          mobile: '9421258963',
+          grampanchayat: 'कसाल',
+          taluka: 'कुडाळ',
+          district: 'सिंधुदुर्ग',
+          category: 'इतर',
+          work: 'गाय गोठा',
+          gat: 'गट क्र. १४२, ०.४० हे.',
+          area8a: '०.८५ हे. आर',
+          cattle: '३ गाई',
+          otherBenefit: 'नाही',
+          bankAcc: '60124589632',
+          bankName: 'बँक ऑफ महाराष्ट्र, शाखा कसाल',
+          ifsc: 'MAHB0000452',
+          place: 'कसाल',
+          date: getTodayDateString()
+        },
+        {
+          selected: true,
+          name: 'संतोष बाळकृष्ण राणे',
+          jobcard: 'MH-26-004-015/089',
+          aadhaar: '6325 7841 9652',
+          mobile: '9850147852',
+          grampanchayat: 'ओरोस बुद्रुक',
+          taluka: 'कुडाळ',
+          district: 'सिंधुदुर्ग',
+          category: 'इतर',
+          work: 'जलतारा',
+          gat: 'गट क्र. ७८, ०.६० हे.',
+          area8a: '१.१० हे. आर',
+          cattle: '२ गाई, १ बैल',
+          otherBenefit: 'नाही',
+          bankAcc: '32569841257',
+          bankName: 'स्टेट बँक ऑफ इंडिया, ओरोस',
+          ifsc: 'SBIN0001854',
+          place: 'ओरोस',
+          date: getTodayDateString()
+        },
+        {
+          selected: true,
+          name: 'प्रशांत अनंत नाईक',
+          jobcard: 'MH-26-004-022/312',
+          aadhaar: '8954 1236 4578',
+          mobile: '9423658974',
+          grampanchayat: 'बांदा',
+          taluka: 'सावंतवाडी',
+          district: 'सिंधुदुर्ग',
+          category: 'SC',
+          work: 'शोष खड्डा',
+          gat: 'गट क्र. २१५, ०.२५ हे.',
+          area8a: '०.४० हे. आर',
+          cattle: '१ गाय',
+          otherBenefit: 'नाही',
+          bankAcc: '45896321458',
+          bankName: 'सिंधुदुर्ग जिल्हा मध्यवर्ती बँक, बांदा',
+          ifsc: 'HDFC0CSDCCB',
+          place: 'बांदा',
+          date: getTodayDateString()
+        },
+        {
+          selected: true,
+          name: 'सुभाष महादेव परब',
+          jobcard: 'MH-26-004-031/185',
+          aadhaar: '7412 5896 3214',
+          mobile: '9403568912',
+          grampanchayat: 'नेरूर',
+          taluka: 'कुडाळ',
+          district: 'सिंधुदुर्ग',
+          category: 'इतर',
+          work: 'शेळी शेड',
+          gat: 'गट क्र. ९६, ०.३५ हे.',
+          area8a: '०.७० हे. आर',
+          cattle: '१० शेळ्या',
+          otherBenefit: 'नाही',
+          bankAcc: '50100458963',
+          bankName: 'कॅनरा बँक, कुडाळ',
+          ifsc: 'CNRB0002145',
+          place: 'नेरूर',
+          date: getTodayDateString()
+        }
+      ];
+
+      currentPreviewIndex = 0;
+      renderApplicantsTable();
+      updateLivePreview(applicantsList[0]);
+      if (notify) {
+        showToast('४ नमुना अर्जदारांचा डेटा यशस्वीरित्या लोड झाला!', 'success');
+      }
+    }
+
+    // Export current list to Excel (.xlsx)
+    function exportCurrentToExcel() {
+      if (applicantsList.length === 0) {
+        showToast('एक्सपोर्ट करण्यासाठी कोणताही डेटा नाही!', 'warning');
+        return;
+      }
+
+      const rows = applicantsList.map((app, i) => ({
+        'अनुक्रमांक': i + 1,
+        'अर्जदाराचे पूर्ण नाव': app.name,
+        'जॉब कार्ड क्रमांक': app.jobcard,
+        'आधार क्रमांक': app.aadhaar,
+        'मोबाईल नंबर': app.mobile,
+        'ग्रामपंचायत': app.grampanchayat,
+        'तालुका': app.taluka,
+        'जिल्हा': app.district,
+        'प्रवर्ग (SC/ST/इतर)': app.category,
+        'कामाचा प्रकार (जलतारा/शोष खड्डा/शेळी शेड/गाय गोठा)': app.work,
+        '७/१२ गट नंबर व क्षेत्र': app.gat,
+        '८ अ नुसार क्षेत्र': app.area8a,
+        'जनावरे असल्यास संख्या': app.cattle,
+        'इतर योजनेतून लाभ (होय/नाही)': app.otherBenefit,
+        'बँक खाते क्रमांक': app.bankAcc,
+        'बँकेचे नाव व शाखा': app.bankName,
+        'IFSC कोड': app.ifsc,
+        'ठिकाण': app.place,
+        'दिनांक': app.date
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'VB-G RAM G अर्जदार');
+      XLSX.writeFile(wb, 'VB_G_RAM_G_Applicants_Data.xlsx');
+      showToast('एक्सेल फाईल डाऊनलोड झाली.', 'success');
+    }
+
+    // Download ready-to-use Sample Excel Template
+    function downloadSampleExcel() {
+      const headers = [
+        [
+          'अनुक्रमांक',
+          'अर्जदाराचे पूर्ण नाव',
+          'जॉब कार्ड क्रमांक',
+          'आधार क्रमांक',
+          'मोबाईल नंबर',
+          'ग्रामपंचायत',
+          'तालुका',
+          'जिल्हा',
+          'प्रवर्ग (SC/ST/इतर)',
+          'कामाचा प्रकार (जलतारा/शोष खड्डा/शेळी शेड/गाय गोठा)',
+          '७/१२ गट नंबर व क्षेत्र',
+          '८ अ नुसार क्षेत्र',
+          'जनावरे असल्यास संख्या',
+          'इतर योजनेतून लाभ (होय/नाही)',
+          'बँक खाते क्रमांक',
+          'बँकेचे नाव व शाखा',
+          'IFSC कोड',
+          'ठिकाण',
+          'दिनांक'
+        ],
+        [
+          1,
+          'रमेश विठ्ठल सावंत',
+          'MH-26-004-012/104',
+          '4521 8963 1254',
+          '9421258963',
+          'कसाल',
+          'कुडाळ',
+          'सिंधुदुर्ग',
+          'इतर',
+          'गाय गोठा',
+          'गट क्र. १४२, ०.४० हे.',
+          '०.८५ हे. आर',
+          '३ गाई',
+          'नाही',
+          '60124589632',
+          'बँक ऑफ महाराष्ट्र, शाखा कसाल',
+          'MAHB0000452',
+          'कसाल',
+          getTodayDateString()
+        ],
+        [
+          2,
+          'संतोष बाळकृष्ण राणे',
+          'MH-26-004-015/089',
+          '6325 7841 9652',
+          '9850147852',
+          'ओरोस बुद्रुक',
+          'कुडाळ',
+          'सिंधुदुर्ग',
+          'इतर',
+          'जलतारा',
+          'गट क्र. ७८, ०.६० हे.',
+          '१.१० हे. आर',
+          '२ गाई, १ बैल',
+          'नाही',
+          '32569841257',
+          'स्टेट बँक ऑफ इंडिया, ओरोस',
+          'SBIN0001854',
+          'ओरोस',
+          getTodayDateString()
+        ],
+        [
+          3,
+          'प्रशांत अनंत नाईक',
+          'MH-26-004-022/312',
+          '8954 1236 4578',
+          '9423658974',
+          'बांदा',
+          'सावंतवाडी',
+          'सिंधुदुर्ग',
+          'SC',
+          'शोष खड्डा',
+          'गट क्र. २१५, ०.२५ हे.',
+          '०.४० हे. आर',
+          '१ गाय',
+          'नाही',
+          '45896321458',
+          'सिंधुदुर्ग जिल्हा बँक, बांदा',
+          'HDFC0CSDCCB',
+          'बांदा',
+          getTodayDateString()
+        ]
+      ];
+
+      const ws = XLSX.utils.aoa_to_sheet(headers);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'नमुना फॉर्म');
+      XLSX.writeFile(wb, 'VB_G_RAM_G_Sample_Template.xlsx');
+      showToast('नमुना एक्सेल फाईल डाऊनलोड झाली.', 'success');
+    }
+
+    // HTML Generator for A4 Printable Single Form Page
+    function buildFormHtml(app) {
+      const cat = (app.category || '').toUpperCase();
+      const scCheck = cat.includes('SC') ? '✓' : '';
+      const stCheck = cat.includes('ST') ? '✓' : '';
+      const otherCheck = (!cat.includes('SC') && !cat.includes('ST')) ? '✓' : '';
+
+      const w = (app.work || '').toLowerCase();
+      const jaltaraCheck = w.includes('जलतारा') ? '✓' : '';
+      const shoshCheck = w.includes('शोष') ? '✓' : '';
+      const sheliCheck = w.includes('शेळी') ? '✓' : '';
+      const gothaCheck = (w.includes('गोठा') || w.includes('गाय')) ? '✓' : '';
+
+      const otherYes = (app.otherBenefit || '').toLowerCase().includes('होय') || (app.otherBenefit || '').toLowerCase() === 'yes';
+
+      return `
+        <div class="vbgramg-form-page">
+          <div class="outer-double-frame">
+            <div class="inner-frame">
+
+              <!-- Header Title -->
+              <div class="form-heading-block">
+                <div class="main-form-title">VB-G RAM G योजनेअंतर्गत जलतारा / शोष खड्डा / गाय गोठा</div>
+                <div class="sub-form-title">मंजुरीसाठी विहित नमुन्यातील अर्ज (सुधारित)</div>
+                <div class="gov-label">महाराष्ट्र शासन</div>
+              </div>
+
+              <!-- Recipient -->
+              <div class="recipient-block">
+                <div class="recipient-line">प्रति,</div>
+                <div class="recipient-line">ग्रामपंचायत अधिकारी,</div>
+                <div class="recipient-line">
+                  ग्रामपंचायत <span class="field-fill-line" style="max-width: 320px;">${escapeHtml(app.grampanchayat || '')}</span>,
+                </div>
+                <div class="recipient-two-col">
+                  <div style="display: flex; align-items: baseline; gap: 4px;">
+                    तालुका: <span class="field-fill-line" style="min-width: 140px; max-width: 200px;">${escapeHtml(app.taluka || '')}</span>
+                  </div>
+                  <div style="display: flex; align-items: baseline; gap: 4px;">
+                    जिल्हा: <span class="field-fill-line" style="min-width: 130px; max-width: 180px;">${escapeHtml(app.district || 'सिंधुदुर्ग')}</span>
+                  </div>
+                </div>
+                <div class="subject-line">
+                  विषय : जलतारा / शोष खड्डा / गाय गोठा मंजूर करणे बाबत.
+                </div>
+              </div>
+
+              <!-- Applicant Details -->
+              <div class="applicant-section-title">अर्जदाराची माहिती :</div>
+
+              <div class="fields-list">
+                <!-- 1 -->
+                <div class="field-row">
+                  <span class="field-num-label">1. अर्जदाराचे पूर्ण नाव :</span>
+                  <span class="field-fill-line">${escapeHtml(app.name || '')}</span>
+                </div>
+
+                <!-- 2 -->
+                <div class="field-row">
+                  <span class="field-num-label">2. जॉब कार्ड क्रमांक :</span>
+                  <span class="field-fill-line">${escapeHtml(app.jobcard || '')}</span>
+                </div>
+
+                <!-- 3 -->
+                <div class="field-row">
+                  <span class="field-num-label">3. आधार क्रमांक :</span>
+                  <span class="field-fill-line">${escapeHtml(app.aadhaar || '')}</span>
+                </div>
+
+                <!-- 4 -->
+                <div class="field-row">
+                  <span class="field-num-label">4. मोबाईल नंबर :</span>
+                  <span class="field-fill-line">${escapeHtml(app.mobile || '')}</span>
+                </div>
+
+                <!-- 5 -->
+                <div class="field-row">
+                  <span class="field-num-label">5. ग्रामपंचायत :</span>
+                  <span class="field-fill-line">${escapeHtml(app.grampanchayat || '')}</span>
+                </div>
+
+                <!-- 6 -->
+                <div class="field-row">
+                  <span class="field-num-label">6. प्रवर्ग :</span>
+                  <div style="display: flex; align-items: center; gap: 14px; margin-left: 8px;">
+                    <span class="chk-box-wrap"><span class="chk-square">${scCheck}</span> SC</span>
+                    <span class="chk-box-wrap"><span class="chk-square">${stCheck}</span> ST</span>
+                    <span class="chk-box-wrap"><span class="chk-square">${otherCheck}</span> इतर</span>
+                    <span class="chk-note">(योग्य त्या चौकोनात ✓ करा)</span>
+                  </div>
+                </div>
+
+                <!-- 7 -->
+                <div class="field-row">
+                  <span class="field-num-label">7. कामाचा प्रकार :</span>
+                  <div style="display: flex; align-items: center; gap: 12px; margin-left: 8px; flex-wrap: wrap;">
+                    <span class="chk-box-wrap"><span class="chk-square">${jaltaraCheck}</span> जलतारा</span>
+                    <span class="chk-box-wrap"><span class="chk-square">${shoshCheck}</span> शोष खड्डा</span>
+                    <span class="chk-box-wrap"><span class="chk-square">${sheliCheck}</span> शेळी शेड</span>
+                    <span class="chk-box-wrap"><span class="chk-square">${gothaCheck}</span> गाय गोठा</span>
+                    <span class="chk-note">(योग्य त्या चौकोनात ✓ करा)</span>
+                  </div>
+                </div>
+
+                <!-- 8 -->
+                <div class="field-row">
+                  <span class="field-num-label">8. 7/12 गट नंबर व क्षेत्र :</span>
+                  <span class="field-fill-line">${escapeHtml(app.gat || '')}</span>
+                </div>
+
+                <!-- 9 -->
+                <div class="field-row">
+                  <span class="field-num-label">9. 8 अ नुसार क्षेत्र :</span>
+                  <span class="field-fill-line">${escapeHtml(app.area8a || '')}</span>
+                </div>
+
+                <!-- 10 -->
+                <div class="field-row">
+                  <span class="field-num-label">10. जनावरे असल्यास संख्या :</span>
+                  <span class="field-fill-line">${escapeHtml(app.cattle || '')}</span>
+                </div>
+
+                <!-- 11 -->
+                <div class="field-row">
+                  <span class="field-num-label">11. इतर योजनेतून लाभ घेतला आहे का? :</span>
+                  <div style="display: flex; align-items: center; gap: 18px; margin-left: 8px;">
+                    <span class="chk-box-wrap"><span class="chk-square">${otherYes ? '✓' : ''}</span> होय</span>
+                    <span class="chk-box-wrap"><span class="chk-square">${!otherYes ? '✓' : ''}</span> नाही</span>
+                  </div>
+                </div>
+
+                <!-- 12 -->
+                <div class="field-row">
+                  <span class="field-num-label">12. बँक खाते क्रमांक :</span>
+                  <span class="field-fill-line">${escapeHtml(app.bankAcc || '')}</span>
+                </div>
+
+                <div class="field-row-sub">
+                  <span class="field-sub-label">बँकेचे नाव व शाखा :</span>
+                  <span class="field-fill-line">${escapeHtml(app.bankName || '')}</span>
+                </div>
+
+                <div class="field-row-sub">
+                  <span class="field-sub-label">IFSC कोड :</span>
+                  <span class="field-fill-line">${escapeHtml(app.ifsc || '')}</span>
+                </div>
+              </div>
+
+              <!-- Self Declaration -->
+              <div class="declaration-block">
+                <div class="declaration-title">स्व-घोषणा / प्रतिज्ञापत्र :</div>
+                <div class="declaration-text">
+                  मी प्रतिज्ञापत्र करतो की वरील नमूद केलेली सर्व माहिती खरी व बरोबर आहे. सदर माहिती खोटी आढळल्यास मी शासकीय नियमानुसार होणाऱ्या कारवाईस पात्र राहीन.
+                </div>
+              </div>
+
+              <!-- Signature & Location Box -->
+              <div class="sign-location-box">
+                <div class="sign-loc-col-left">
+                  <div style="display: flex; align-items: baseline; gap: 6px;">
+                    <span style="font-weight: 700;">ठिकाण :</span>
+                    <span class="field-fill-line">${escapeHtml(app.place || app.grampanchayat || '')}</span>
+                  </div>
+                  <div style="display: flex; align-items: baseline; gap: 6px;">
+                    <span style="font-weight: 700;">दिनांक :</span>
+                    <span class="field-fill-line">${escapeHtml(app.date || getTodayDateString())}</span>
+                  </div>
+                </div>
+                <div class="sign-loc-col-right">
+                  <div>अर्जदाराची सही / अंगठा</div>
+                  <div class="sig-line-bar"></div>
+                </div>
+              </div>
+
+              <!-- Footnote -->
+              <div class="form-bottom-footer">
+                <div class="footer-note">टीप : सर्व आवश्यक कागदपत्रे ग्रामपंचायत अधिकारी यांचेकडे सादर करावीत.</div>
+                <div class="footer-sub-label">(सुधारित) VB-G RAM G योजना</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Print Single Active Form
+    function printCurrentForm() {
+      const app = applicantsList[currentPreviewIndex];
+      const printContainer = document.getElementById('print-container');
+
+      if (!app) {
+        // Print preview page directly
+        const previewClone = document.getElementById('live-preview-page').cloneNode(true);
+        printContainer.innerHTML = '';
+        printContainer.appendChild(previewClone);
+      } else {
+        printContainer.innerHTML = buildFormHtml(app);
+      }
+
+      window.print();
+    }
+
+    // Batch Print All Selected Applicants
+    function printAllSelected() {
+      const selected = applicantsList.filter(a => a.selected);
+      if (selected.length === 0) {
+        showToast('प्रिंट करण्यासाठी कृपया किमान एक अर्जदार निवडा!', 'warning');
+        return;
+      }
+
+      const printContainer = document.getElementById('print-container');
+      let combinedHtml = '';
+
+      selected.forEach(app => {
+        combinedHtml += buildFormHtml(app);
+      });
+
+      printContainer.innerHTML = combinedHtml;
+      window.print();
+    }
+
+    // Print Blank Form for manual handwriting
+    function printBlankForm() {
+      const blankApp = {
+        name: '',
+        jobcard: '',
+        aadhaar: '',
+        mobile: '',
+        grampanchayat: '',
+        taluka: '',
+        district: 'सिंधुदुर्ग',
+        category: '',
+        work: '',
+        gat: '',
+        area8a: '',
+        cattle: '',
+        otherBenefit: '',
+        bankAcc: '',
+        bankName: '',
+        ifsc: '',
+        place: '',
+        date: ''
+      };
+
+      const printContainer = document.getElementById('print-container');
+      printContainer.innerHTML = buildFormHtml(blankApp);
+      window.print();
+    }
+  </script>
+</body>
+</html>
