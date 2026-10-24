@@ -1,0 +1,2738 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERO सुनावणी नोटीस जनरेटर (फॉर्म १३, फॉर्म १४, तामिली दाखला व रोजनामा)</title>
+  <meta name="description" content="Registration of Electors Rules, 1960 अंतर्गत फॉर्म ७ हरकतींची सुनावणी नोटीस (फॉर्म १३, १४), बजावणी प्रमाणपत्र व सुनावणी रोजनामा एकाच क्लिकमध्ये एक्सेल अपलोडवरून बल्क जनरेट करा.">
+
+  <!-- Google Fonts: Serif & Devanagari for Official ECI Legal Documents -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- SheetJS for Excel Import & Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --primary-navy: #0f172a;
+      --primary-blue: #1e3a8a;
+      --primary-mid: #2563eb;
+      --primary-light: #eff6ff;
+      --saffron-gold: #f59e0b;
+      --saffron-dark: #d97706;
+      --gov-green: #059669;
+      --gov-red: #dc2626;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-page: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #cbd5e1;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+      --shadow-md: 0 6px 18px rgba(0,0,0,0.08);
+      --shadow-lg: 0 14px 34px rgba(0,0,0,0.12);
+      --font-marathi: 'Noto Sans Devanagari', 'Mukta', sans-serif;
+      --font-legal: 'Tinos', 'Times New Roman', Times, serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-marathi);
+      background-color: var(--bg-page);
+      color: var(--text-dark);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Government Tricolor Top Ribbon */
+    .gov-top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%);
+      width: 100%;
+    }
+
+    /* Navigation Header */
+    .header-nav {
+      background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
+      color: #ffffff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--saffron-gold);
+    }
+
+    .brand-title-text h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title-text p {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      margin-top: 1px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-nav-link {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 7px 13px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-nav-link:hover {
+      background: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Main Container */
+    .app-main {
+      flex: 1;
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Mode & Settings Bar */
+    .mode-tab-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .tab-pills {
+      display: flex;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .tab-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      background: transparent;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary-blue);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .quick-settings-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-quick {
+      padding: 7px 13px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      color: var(--text-dark);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-quick:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .btn-quick.primary {
+      background: #1e3a8a;
+      color: #ffffff;
+      border-color: #1e3a8a;
+    }
+
+    .btn-quick.primary:hover {
+      background: #1e40af;
+    }
+
+    .btn-quick.success {
+      background: #059669;
+      color: #ffffff;
+      border-color: #059669;
+    }
+
+    .btn-quick.success:hover {
+      background: #047857;
+    }
+
+    /* Main Grid: Control Panel + Live Preview */
+    .view-grid {
+      display: grid;
+      grid-template-columns: 480px 1fr;
+      gap: 22px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 1240px) {
+      .view-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Control Card */
+    .panel-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-head {
+      background: #f8fafc;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .card-head h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-body {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Upload Dropzone */
+    .upload-box {
+      border: 2px dashed #94a3b8;
+      border-radius: var(--radius-md);
+      padding: 24px 16px;
+      text-align: center;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .upload-box:hover, .upload-box.dragover {
+      border-color: var(--primary-mid);
+      background: #eff6ff;
+    }
+
+    .upload-icon {
+      font-size: 36px;
+      color: var(--primary-mid);
+    }
+
+    .upload-text {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #1e293b;
+    }
+
+    .upload-sub {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    /* Global Batch Defaults Section */
+    .section-collapsible {
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      background: #f8fafc;
+      overflow: hidden;
+    }
+
+    .collapsible-header {
+      padding: 10px 14px;
+      background: #f1f5f9;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .collapsible-body {
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .form-group-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-field label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .form-control {
+      padding: 8px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.85rem;
+      color: var(--text-dark);
+      background: #ffffff;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-mid);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+
+    /* Data Table & Search */
+    .table-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .search-input-wrap i {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+
+    .search-input-wrap input {
+      width: 100%;
+      padding: 7px 10px 7px 30px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .table-container {
+      max-height: 380px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: #ffffff;
+    }
+
+    .applicant-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .applicant-table th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 2px solid #cbd5e1;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      white-space: nowrap;
+    }
+
+    .applicant-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+
+    .applicant-table tbody tr {
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .applicant-table tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .applicant-table tbody tr.active-preview {
+      background: #e0e7ff;
+      font-weight: 600;
+    }
+
+    /* Action Toolbar below Table */
+    .action-cluster {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Right Preview Column */
+    .preview-column {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: sticky;
+      top: 76px;
+    }
+
+    .preview-toolbar {
+      background: #ffffff;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .preview-mode-pills {
+      display: flex;
+      gap: 4px;
+      background: #f1f5f9;
+      padding: 3px;
+      border-radius: 8px;
+      flex-wrap: wrap;
+    }
+
+    .p-mode-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .p-mode-btn.active {
+      background: #ffffff;
+      color: var(--primary-blue);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      font-weight: 700;
+    }
+
+    .preview-record-navigator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .preview-scale-wrapper {
+      background: #e2e8f0;
+      padding: 24px 16px;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      min-height: 800px;
+    }
+
+    /* =========================================================================
+       EXACT STATUTORY ECI NOTICE FORMAT: FORM 13, FORM 14, CERTIFICATES & ROZNAMA
+       ========================================================================= */
+
+    /* A4 Physical Print Sheet: 210mm x 297mm */
+    .a4-sheet {
+      width: 210mm;
+      min-height: 297mm;
+      height: 297mm;
+      background: #ffffff;
+      color: #000000;
+      margin: 0 auto;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      box-sizing: border-box;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      page-break-after: always;
+      break-after: page;
+      overflow: hidden;
+    }
+
+    /* Inner padding and border */
+    .sheet-inner {
+      padding: 16mm 18mm 14mm 18mm;
+      height: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* Page number watermark / top-right mark */
+    .sheet-corner-num {
+      position: absolute;
+      top: 10mm;
+      right: 14mm;
+      font-family: var(--font-legal);
+      font-size: 15pt;
+      font-weight: 700;
+      color: #333333;
+    }
+
+    /* Dotted underline line for official filled values */
+    .dotted-val {
+      display: inline-block;
+      border-bottom: 1px dotted #000000;
+      padding: 0 4px;
+      font-weight: 700;
+      color: #000000;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .dotted-val.left-align {
+      text-align: left;
+    }
+
+    .dotted-line-full {
+      border-bottom: 1px dotted #000000;
+      display: block;
+      width: 100%;
+      height: 16px;
+      margin: 4px 0;
+    }
+
+    /* Typography for ECI Forms */
+    .doc-statutory-heading {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .doc-statutory-heading .stat-rules {
+      font-family: var(--font-legal);
+      font-size: 13.5pt;
+      font-style: italic;
+      color: #000000;
+      line-height: 1.25;
+    }
+
+    .doc-statutory-heading .stat-order {
+      font-family: var(--font-legal);
+      font-size: 12pt;
+      color: #000000;
+      margin-top: 1px;
+    }
+
+    .doc-statutory-heading .stat-form-title {
+      font-family: var(--font-legal);
+      font-size: 14pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 10px;
+    }
+
+    .doc-statutory-heading .stat-sub-rule {
+      font-family: var(--font-legal);
+      font-size: 11pt;
+      margin-top: 2px;
+    }
+
+    .doc-statutory-heading .stat-notice-purpose {
+      font-family: var(--font-legal);
+      font-size: 11.5pt;
+      font-style: italic;
+      margin-top: 3px;
+    }
+
+    /* 2-Column Split: Recipient Section */
+    .recipient-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 16px;
+      margin-top: 14px;
+      align-items: flex-start;
+      font-family: var(--font-legal);
+      font-size: 11pt;
+    }
+
+    .recipient-left {
+      line-height: 1.35;
+    }
+
+    .recipient-left .copy-type {
+      font-weight: 700;
+      font-size: 11.5pt;
+      text-decoration: underline;
+    }
+
+    .recipient-left .office-note {
+      font-size: 10.5pt;
+      margin-bottom: 8px;
+    }
+
+    .recipient-right {
+      line-height: 1.45;
+      font-size: 11pt;
+    }
+
+    .recipient-right .name-bold {
+      font-weight: 700;
+      font-size: 11.5pt;
+    }
+
+    /* Reference & Objection No Row */
+    .ref-objection-row {
+      display: flex;
+      justify-content: flex-start;
+      gap: 32px;
+      align-items: baseline;
+      margin: 16px 0 14px 0;
+      font-family: var(--font-legal);
+      font-size: 11pt;
+    }
+
+    /* Body Paragraphs */
+    .doc-body-para {
+      font-family: var(--font-legal);
+      font-size: 11pt;
+      line-height: 1.6;
+      text-align: justify;
+      color: #000000;
+      margin-bottom: 12px;
+    }
+
+    .doc-body-para strong {
+      font-weight: 700;
+    }
+
+    .indented-target-box {
+      margin: 8px 0 10px 30px;
+      line-height: 1.45;
+      font-family: var(--font-legal);
+      font-size: 11pt;
+    }
+
+    .grounds-list {
+      margin: 8px 0 14px 24px;
+      font-family: var(--font-legal);
+      font-size: 11pt;
+      line-height: 1.6;
+    }
+
+    /* Footer Row: Place, Date & ERO Signature */
+    .doc-footer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: flex-end;
+      margin-top: 20px;
+      font-family: var(--font-legal);
+      font-size: 11pt;
+    }
+
+    .doc-footer-left {
+      line-height: 1.5;
+    }
+
+    .doc-footer-right {
+      text-align: right;
+      line-height: 1.35;
+    }
+
+    .sig-space {
+      height: 48px;
+    }
+
+    /* Certificate of Service of Notice Specifics */
+    .cert-title-block {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .cert-rules {
+      font-family: var(--font-legal);
+      font-size: 13.5pt;
+      font-style: italic;
+    }
+
+    .cert-order {
+      font-family: var(--font-legal);
+      font-size: 11.5pt;
+      margin-top: 1px;
+    }
+
+    .cert-main-head {
+      font-family: var(--font-legal);
+      font-size: 13pt;
+      font-weight: 700;
+      margin-top: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .cert-sub-head {
+      font-family: var(--font-legal);
+      font-size: 12pt;
+      font-style: italic;
+      margin-top: 3px;
+    }
+
+    .cert-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin: 20px 0 35px 0;
+      font-family: var(--font-legal);
+      font-size: 11.5pt;
+    }
+
+    .cert-body-para {
+      font-family: var(--font-legal);
+      font-size: 11.5pt;
+      line-height: 1.8;
+      text-align: justify;
+      margin: 24px 0;
+    }
+
+    .post-receipt-box {
+      border: 1px dashed #666666;
+      border-radius: 4px;
+      padding: 12px;
+      margin-top: 30px;
+      font-family: var(--font-legal);
+      font-size: 10pt;
+      color: #333333;
+      background: #fafafa;
+    }
+
+    /* PAGE 1: सुनावणी रोजनामा / केलेली कार्यवाही तक्ता */
+    .roznama-sheet-inner {
+      padding: 14mm 16mm 14mm 16mm;
+      height: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .roznama-header {
+      text-align: center;
+      margin-bottom: 14px;
+      border-bottom: 2px solid #000000;
+      padding-bottom: 10px;
+    }
+
+    .roznama-header h2 {
+      font-size: 15pt;
+      font-weight: 800;
+      color: #000000;
+    }
+
+    .roznama-header p {
+      font-size: 10.5pt;
+      color: #333333;
+      margin-top: 2px;
+    }
+
+    .roznama-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1.5px solid #000000;
+      flex: 1;
+    }
+
+    .roznama-table th {
+      border: 1px solid #000000;
+      padding: 10px 8px;
+      font-size: 11pt;
+      font-weight: 700;
+      text-align: center;
+      background: #f8fafc;
+    }
+
+    .roznama-table td {
+      border: 1px solid #000000;
+      padding: 12px 10px;
+      font-size: 10.5pt;
+      vertical-align: top;
+    }
+
+    .roznama-date-col {
+      width: 110px;
+      text-align: center;
+      font-weight: 700;
+      font-family: var(--font-legal);
+      font-size: 11pt;
+    }
+
+    .roznama-sign-col {
+      width: 160px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .roznama-content {
+      line-height: 1.8;
+      font-size: 11pt;
+      text-align: justify;
+    }
+
+    .roznama-blank-row {
+      height: 90px;
+    }
+
+    /* =========================================================================
+       PRINT STYLES FOR HIGH PRECISION A4 MULTI-PAGE OUTPUT
+       ========================================================================= */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+
+      html, body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 210mm !important;
+      }
+
+      /* Hide all user interface elements during printing */
+      .gov-top-bar,
+      .header-nav,
+      .mode-tab-bar,
+      .view-grid > .panel-card,
+      .preview-toolbar,
+      .toast-box,
+      .modal-backdrop,
+      .btn-quick,
+      .nav-actions {
+        display: none !important;
+      }
+
+      .app-main {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+      }
+
+      .view-grid {
+        display: block !important;
+      }
+
+      .preview-column {
+        position: static !important;
+        display: block !important;
+      }
+
+      .preview-scale-wrapper {
+        background: transparent !important;
+        padding: 0 !important;
+        gap: 0 !important;
+      }
+
+      .a4-sheet {
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        min-height: 297mm !important;
+        max-height: 297mm !important;
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+    }
+
+    /* Modal Styling */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalFadeIn 0.25s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-header {
+      padding: 14px 20px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      color: #64748b;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .modal-body {
+      padding: 18px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-footer {
+      padding: 12px 20px;
+      background: #f8fafc;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Toast Notification */
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 2000;
+    }
+
+    .toast-box.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-box.success {
+      background: #047857;
+      border-left: 4px solid #34d399;
+    }
+
+    .toast-box.warning {
+      background: #b45309;
+      border-left: 4px solid #fde047;
+    }
+
+    .toast-box.info {
+      background: #1e3a8a;
+      border-left: 4px solid #60a5fa;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-top-bar"></div>
+
+  <!-- Main Navigation Header -->
+  <header class="header-nav">
+    <div class="brand-title-wrap">
+      <div class="brand-badge">
+        <i class="fa-solid fa-stamp"></i>
+      </div>
+      <div class="brand-title-text">
+        <h1>ERO सुनावणी नोटीस जनरेटर (फॉर्म १३, १४ व रोजनामा)</h1>
+        <p>Registration of Electors Rules, 1960 • मतदार यादी हरकत सुनावणी संपूर्ण ५-पानी संच</p>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <a href="index.html" class="btn-nav-link"><i class="fa-solid fa-house"></i> मुख्य पोर्टल</a>
+      <a href="form12-notice-generator.html" class="btn-nav-link"><i class="fa-solid fa-file-signature"></i> फॉर्म १२ नोटीस</a>
+      <a href="hearing-register.html" class="btn-nav-link"><i class="fa-solid fa-clipboard-check"></i> सुनावणी नोंदवही</a>
+    </div>
+  </header>
+
+  <!-- Main Body Content -->
+  <main class="app-main">
+
+    <!-- Top Action / Mode Bar -->
+    <div class="mode-tab-bar">
+      <div class="tab-pills">
+        <button class="tab-btn active" id="tab-btn-bulk" onclick="switchMainTab('bulk')">
+          <i class="fa-solid fa-file-excel"></i> एक्सेल बल्क डेटा (<span id="stat-count-badge">0</span>)
+        </button>
+        <button class="tab-btn" id="tab-btn-single" onclick="switchMainTab('single')">
+          <i class="fa-solid fa-pen-to-square"></i> चालू नोंद संपादन
+        </button>
+      </div>
+
+      <div class="quick-settings-wrap">
+        <button class="btn-quick" onclick="downloadSampleExcel()" title="नमुना एक्सेल फाईल डाऊनलोड करा व त्यामध्ये स्वतःचा डेटा भरून अपलोड करा">
+          <i class="fa-solid fa-download" style="color: #059669;"></i> <strong>नमुना एक्सेल टेम्पलेट</strong>
+        </button>
+        <button class="btn-quick" onclick="openPasteModal()" title="एक्सेल किंवा गुगल शीटमधून डेटा थेट कॉपी-पेस्ट करा">
+          <i class="fa-solid fa-paste" style="color: #2563eb;"></i> जलद पेस्ट
+        </button>
+        <button class="btn-quick" onclick="loadSampleData(true)" title="सईदा सत्तार काझी व इतर नमुना डेटा लोड करा">
+          <i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> नमुना डेटा लोड
+        </button>
+        <button class="btn-quick success" onclick="printAllSelected()" title="निवडलेल्या सर्व मतदारांच्या नोटिसा एकाच वेळी A4 वर प्रिंट करा">
+          <i class="fa-solid fa-print"></i> <strong>सर्व निवडलेले प्रिंट करा</strong>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main View Grid -->
+    <div class="view-grid">
+
+      <!-- Left Column: Controls & Data Table -->
+      <div class="panel-card" id="left-control-panel">
+        
+        <!-- Tab 1: Bulk Excel Management -->
+        <div id="panel-bulk-content">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-users-gear" style="color: #2563eb;"></i> हरकतदार व मतदार यादी</h2>
+            <button class="btn-quick" onclick="openAddModal()" style="font-size: 0.8rem; padding: 4px 10px;">
+              <i class="fa-solid fa-plus"></i> नवीन नोंद
+            </button>
+          </div>
+
+          <div class="card-body">
+            <!-- File Upload Dropzone -->
+            <div class="upload-box" id="dropzone" onclick="document.getElementById('excelFileInput').click()">
+              <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display: none;" onchange="handleFileSelect(event)">
+              <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+              <div class="upload-text">एक्सेल फाईल येथे ड्रॅग करा किंवा निवडा (.xlsx, .xls)</div>
+              <div class="upload-sub">सर्व ५ पाने (फॉर्म १३, १४, तामिली दाखला व रोजनामा) १-क्लिकमध्ये तयार होतील</div>
+            </div>
+
+            <!-- Global Defaults Collapsible for Quick Hearing Date & Officer Assignment -->
+            <div class="section-collapsible">
+              <div class="collapsible-header" onclick="toggleCollapsible('defaults-body', 'defaults-chevron')">
+                <span><i class="fa-solid fa-sliders" style="color: #2563eb;"></i> सामायिक सुनावणी सेटिंग्ज (Apply to All)</span>
+                <i class="fa-solid fa-chevron-down" id="defaults-chevron"></i>
+              </div>
+              <div class="collapsible-body" id="defaults-body" style="display: none;">
+                <div class="form-group-grid">
+                  <div class="form-field">
+                    <label>सुनावणी ठिकाण (Place of Hearing):</label>
+                    <input type="text" id="def-hearing-place" class="form-control" value="At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602">
+                  </div>
+                  <div class="form-field">
+                    <label>सुनावणी वेळ (Hearing Time):</label>
+                    <input type="text" id="def-hearing-time" class="form-control" value="10:30:00">
+                  </div>
+                </div>
+
+                <div class="form-group-grid">
+                  <div class="form-field">
+                    <label>सुनावणी दिनांक (Hearing Date):</label>
+                    <input type="text" id="def-hearing-date" class="form-control" value="10/01/2024" placeholder="DD/MM/YYYY">
+                  </div>
+                  <div class="form-field">
+                    <label>नोटीस जारी दिनांक (Notice Date):</label>
+                    <input type="text" id="def-notice-date" class="form-control" value="05/01/2024" placeholder="DD/MM/YYYY">
+                  </div>
+                </div>
+
+                <div class="form-field">
+                  <label>मतदारसंघ (Constituency):</label>
+                  <input type="text" id="def-constituency" class="form-control" value="268 Kankavli Constituency">
+                </div>
+
+                <div class="form-field">
+                  <label>ERO पदनाम व सही ब्लॉक:</label>
+                  <input type="text" id="def-ero-title" class="form-control" value="Electoral Registration Officer, 268 Kankavli Constituency">
+                </div>
+
+                <button class="btn-quick primary" style="justify-content: center;" onclick="applyGlobalDefaults()">
+                  <i class="fa-solid fa-check-double"></i> सर्व लोड केलेल्या नोंदींवर लागू करा
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Filter & Selection Controls -->
+            <div class="table-tools">
+              <div class="search-input-wrap">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="tableSearchInput" placeholder="नाव, संदर्भ क्र., गाव किंवा भाग क्र. शोधा..." oninput="filterApplicantTable()">
+              </div>
+              <button class="btn-quick" onclick="toggleSelectAllRows()" id="btn-select-all-toggle" style="font-size: 0.8rem;">
+                <i class="fa-regular fa-square-check"></i> सर्व निवडा
+              </button>
+            </div>
+
+            <!-- Table of Applicants -->
+            <div class="table-container">
+              <table class="applicant-table" id="applicantDataTable">
+                <thead>
+                  <tr>
+                    <th style="width: 28px;"></th>
+                    <th style="width: 32px;">#</th>
+                    <th>मतदाराचे नाव (Person Objected)</th>
+                    <th>हरकतदार (Objector)</th>
+                    <th>भाग / यादी क्र.</th>
+                    <th style="width: 60px;">कृती</th>
+                  </tr>
+                </thead>
+                <tbody id="applicantTableBody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="action-cluster">
+              <button class="btn-quick" onclick="exportCurrentToExcel()">
+                <i class="fa-solid fa-file-export" style="color: #059669;"></i> एक्सेल एक्सपोर्ट
+              </button>
+              <button class="btn-quick" onclick="clearAllData()" style="color: #dc2626;">
+                <i class="fa-solid fa-trash-can"></i> सर्व हटवा
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Single Active Record Direct Editor -->
+        <div id="panel-single-content" style="display: none;">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-user-pen" style="color: #2563eb;"></i> चालू नोटीस माहिती संपादन</h2>
+            <button class="btn-quick primary" onclick="saveActiveRecordChanges()" style="font-size: 0.8rem;">
+              <i class="fa-solid fa-floppy-disk"></i> जतन करा
+            </button>
+          </div>
+
+          <div class="card-body">
+            <div class="form-group-grid">
+              <div class="form-field">
+                <label>संदर्भ क्रमांक (Reference No.):</label>
+                <input type="text" id="se-ref-no" class="form-control" oninput="liveUpdateActive()">
+              </div>
+              <div class="form-field">
+                <label>हरकत क्र. (Objection No.):</label>
+                <input type="text" id="se-objection-no" class="form-control" oninput="liveUpdateActive()">
+              </div>
+            </div>
+
+            <!-- Person Objected To (Voter) -->
+            <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; border-left: 3px solid #2563eb;">
+              <strong style="font-size: 0.85rem; color: #1e3a8a;"><i class="fa-solid fa-user-xmark"></i> ज्याच्या नावावर हरकत घेतली आहे तो मतदार (Person Objected to):</strong>
+              <div class="form-field" style="margin-top: 6px;">
+                <label>मतदाराचे पूर्ण नाव:</label>
+                <input type="text" id="se-person-name" class="form-control" oninput="liveUpdateActive()">
+              </div>
+              <div class="form-field" style="margin-top: 6px;">
+                <label>मतदाराचा पत्ता:</label>
+                <textarea id="se-person-address" class="form-control" rows="2" oninput="liveUpdateActive()"></textarea>
+              </div>
+              <div class="form-group-grid" style="margin-top: 6px;">
+                <div class="form-field">
+                  <label>यादी अनुक्रमांक (Serial No.):</label>
+                  <input type="text" id="se-serial-no" class="form-control" oninput="liveUpdateActive()">
+                </div>
+                <div class="form-field">
+                  <label>भाग / केंद्र (Part Name/No.):</label>
+                  <input type="text" id="se-part-no" class="form-control" oninput="liveUpdateActive()">
+                </div>
+              </div>
+            </div>
+
+            <!-- Objector (Applicant) -->
+            <div style="background: #f8fafc; padding: 10px; border-radius: 8px; border-left: 3px solid #f59e0b;">
+              <strong style="font-size: 0.85rem; color: #b45309;"><i class="fa-solid fa-user-check"></i> हरकतदार / अर्जदार (Objector):</strong>
+              <div class="form-field" style="margin-top: 6px;">
+                <label>हरकतदाराचे नाव:</label>
+                <input type="text" id="se-objector-name" class="form-control" oninput="liveUpdateActive()">
+              </div>
+              <div class="form-field" style="margin-top: 6px;">
+                <label>हरकतदाराचा पत्ता:</label>
+                <input type="text" id="se-objector-address" class="form-control" oninput="liveUpdateActive()">
+              </div>
+            </div>
+
+            <!-- Hearing Details -->
+            <div class="form-group-grid">
+              <div class="form-field">
+                <label>सुनावणी दिनांक:</label>
+                <input type="text" id="se-hearing-date" class="form-control" oninput="liveUpdateActive()">
+              </div>
+              <div class="form-field">
+                <label>सुनावणी वेळ:</label>
+                <input type="text" id="se-hearing-time" class="form-control" oninput="liveUpdateActive()">
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label>सुनावणीचे ठिकाण:</label>
+              <input type="text" id="se-hearing-place" class="form-control" oninput="liveUpdateActive()">
+            </div>
+
+            <div class="form-field">
+              <label>हरकतीचे कारण (Grounds of Objection):</label>
+              <input type="text" id="se-grounds" class="form-control" oninput="liveUpdateActive()">
+            </div>
+
+            <div class="form-group-grid">
+              <div class="form-field">
+                <label>नोटीस जारी दिनांक:</label>
+                <input type="text" id="se-notice-date" class="form-control" oninput="liveUpdateActive()">
+              </div>
+              <div class="form-field">
+                <label>मतदार तामिली दिनांक:</label>
+                <input type="text" id="se-service-date-voter" class="form-control" oninput="liveUpdateActive()">
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label>सुनावणी रोजनामा / केलेली कार्यवाही शेरा (Page 1 Notes):</label>
+              <textarea id="se-roznama-notes" class="form-control" rows="3" oninput="liveUpdateActive()"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Live Multi-Page A4 Preview -->
+      <div class="preview-column">
+        
+        <!-- Preview Navigation Toolbar -->
+        <div class="preview-toolbar">
+          <div class="preview-mode-pills">
+            <button class="p-mode-btn active" id="btn-pmode-all" onclick="setPreviewDisplayMode('all')">
+              <i class="fa-solid fa-layer-group"></i> सर्व ५ पाने (Full Dossier)
+            </button>
+            <button class="p-mode-btn" id="btn-pmode-roznama" onclick="setPreviewDisplayMode('roznama')">
+              <i class="fa-solid fa-list-check"></i> पृ. १ रोजनामा
+            </button>
+            <button class="p-mode-btn" id="btn-pmode-form13" onclick="setPreviewDisplayMode('form13')">
+              <i class="fa-solid fa-file-lines"></i> पृ. २ फॉर्म १३ (हरकतदार)
+            </button>
+            <button class="p-mode-btn" id="btn-pmode-cert1" onclick="setPreviewDisplayMode('cert1')">
+              <i class="fa-solid fa-stamp"></i> पृ. ३ तामिली (हरकतदार)
+            </button>
+            <button class="p-mode-btn" id="btn-pmode-form14" onclick="setPreviewDisplayMode('form14')">
+              <i class="fa-solid fa-file-contract"></i> पृ. ४ फॉर्म १४ (मतदार)
+            </button>
+            <button class="p-mode-btn" id="btn-pmode-cert2" onclick="setPreviewDisplayMode('cert2')">
+              <i class="fa-solid fa-certificate"></i> पृ. ५ तामिली (मतदार)
+            </button>
+          </div>
+
+          <div class="preview-record-navigator">
+            <button class="btn-quick" onclick="navigateRecord(-1)" title="मागील नोटीस"><i class="fa-solid fa-chevron-left"></i></button>
+            <span>नोंद: <strong id="current-record-num">1</strong> / <span id="total-record-num">1</span></span>
+            <button class="btn-quick" onclick="navigateRecord(1)" title="पुढील नोटीस"><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="btn-quick primary" onclick="printCurrentActiveRecord()" title="केवळ ही चालू नोटीस प्रिंट करा">
+              <i class="fa-solid fa-print"></i> <strong>चालू संच प्रिंट</strong>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scale Container for Preview -->
+        <div class="preview-scale-wrapper" id="previewContainer">
+          <!-- Rendered dynamically via JavaScript -->
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Modal: Paste Data from Excel -->
+  <div class="modal-backdrop" id="modal-paste">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-paste" style="color: #2563eb;"></i> एक्सेल किंवा स्प्रेडशीटमधून डेटा पेस्ट करा</h3>
+        <button class="modal-close-btn" onclick="closePasteModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: #64748b;">
+          तुमच्या एक्सेल किंवा गुगल शीटमधील डेटा (हेडरसह) कॉपी करून खालील बॉक्समध्ये पेस्ट (Ctrl+V) करा. सिस्टीम आपोआप कॉलम ओळखेल.
+        </p>
+        <textarea id="paste-data-textarea" class="form-control" rows="10" placeholder="उदा:
+संदर्भ क्र	हरकत क्र	मतदाराचे नाव	पत्ता	अनुक्रमांक	भाग क्र	हरकतदार	हरकतदार पत्ता	सुनावणी दिनांक	वेळ
+S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kambli	175 , Maharashtra-	10/01/2024	10:30:00"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-quick" onclick="closePasteModal()">रद्द करा</button>
+        <button class="btn-quick primary" onclick="processPastedData()"><i class="fa-solid fa-check"></i> डेटा आयात करा</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add New Record Manually -->
+  <div class="modal-backdrop" id="modal-add-record">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-user-plus" style="color: #059669;"></i> नवीन सुनावणी नोटीस नोंद जोडा</h3>
+        <button class="modal-close-btn" onclick="closeAddModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group-grid">
+          <div class="form-field">
+            <label>संदर्भ क्रमांक (Reference No.): *</label>
+            <input type="text" id="add-ref-no" class="form-control" value="S13268G7O0501241200008">
+          </div>
+          <div class="form-field">
+            <label>हरकत क्र. (Objection No.): *</label>
+            <input type="text" id="add-objection-no" class="form-control" value="1">
+          </div>
+        </div>
+
+        <div style="background: #f1f5f9; padding: 10px; border-radius: 8px;">
+          <strong style="font-size: 0.85rem; color: #1e3a8a;">मतदार माहिती (ज्यांच्या नावावर हरकत आहे):</strong>
+          <div class="form-field" style="margin-top: 6px;">
+            <label>मतदाराचे पूर्ण नाव: *</label>
+            <input type="text" id="add-person-name" class="form-control" placeholder="उदा. Saeeda Sattar Kazi / सईदा सत्तार काझी">
+          </div>
+          <div class="form-field" style="margin-top: 6px;">
+            <label>मतदाराचा पत्ता:</label>
+            <input type="text" id="add-person-address" class="form-control" placeholder="House No 94, Kazirde, Kharepatan, Kankavli, Sindhudurg, Maharashtra- 416703">
+          </div>
+          <div class="form-group-grid" style="margin-top: 6px;">
+            <div class="form-field">
+              <label>यादी अनुक्रमांक (Serial No):</label>
+              <input type="text" id="add-serial-no" class="form-control" placeholder="उदा. 486">
+            </div>
+            <div class="form-field">
+              <label>भाग / गाव (Part No/Name):</label>
+              <input type="text" id="add-part-no" class="form-control" placeholder="उदा. 195 किंवा karjirde">
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #f8fafc; padding: 10px; border-radius: 8px;">
+          <strong style="font-size: 0.85rem; color: #b45309;">हरकतदार / अर्जदार (Objector):</strong>
+          <div class="form-field" style="margin-top: 6px;">
+            <label>हरकतदाराचे नाव: *</label>
+            <input type="text" id="add-objector-name" class="form-control" placeholder="उदा. Ankita Atul Kambli / अंकिता अतुल कांबळी">
+          </div>
+          <div class="form-field" style="margin-top: 6px;">
+            <label>हरकतदाराचा पत्ता:</label>
+            <input type="text" id="add-objector-address" class="form-control" placeholder="175 , Maharashtra-">
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-field">
+            <label>सुनावणी दिनांक:</label>
+            <input type="text" id="add-hearing-date" class="form-control" value="10/01/2024">
+          </div>
+          <div class="form-field">
+            <label>सुनावणी वेळ:</label>
+            <input type="text" id="add-hearing-time" class="form-control" value="10:30:00">
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>सुनावणीचे ठिकाण:</label>
+          <input type="text" id="add-hearing-place" class="form-control" value="At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602">
+        </div>
+
+        <div class="form-field">
+          <label>हरकतीचे कारण (Grounds):</label>
+          <input type="text" id="add-grounds" class="form-control" value="Absent/Permanently shifted">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-quick" onclick="closeAddModal()">रद्द करा</button>
+        <button class="btn-quick success" onclick="saveNewRecord()"><i class="fa-solid fa-plus"></i> नोंद जोडा</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dedicated Print Container (Hidden on Screen, Rendered on window.print) -->
+  <div id="printContainer" style="display: none;"></div>
+
+  <!-- Toast Box -->
+  <div class="toast-box" id="toastBox">
+    <i class="fa-solid fa-circle-info" id="toastIcon"></i>
+    <span id="toastMessage">माहिती</span>
+  </div>
+
+  <script>
+    /* =========================================================================
+       APPLICATION STATE & DATA STORAGE
+       ========================================================================= */
+    let applicantsList = [];
+    let currentPreviewIndex = 0;
+    let previewDisplayMode = 'all'; // 'all', 'roznama', 'form13', 'cert1', 'form14', 'cert2'
+
+    // Month Names in English for Statutory Legal Rule Notices
+    const MONTH_NAMES = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    /* Initialize Application on DOM Ready */
+    window.addEventListener('DOMContentLoaded', () => {
+      setupDragDrop();
+      loadSampleData(false); // Load sample matching user's PDF
+    });
+
+    /* Toggle Collapsible Sections */
+    function toggleCollapsible(bodyId, chevronId) {
+      const body = document.getElementById(bodyId);
+      const chevron = document.getElementById(chevronId);
+      if (body.style.display === 'none') {
+        body.style.display = 'flex';
+        chevron.className = 'fa-solid fa-chevron-up';
+      } else {
+        body.style.display = 'none';
+        chevron.className = 'fa-solid fa-chevron-down';
+      }
+    }
+
+    /* Tab Switching: Bulk vs Single Direct Editor */
+    function switchMainTab(tab) {
+      document.getElementById('tab-btn-bulk').classList.toggle('active', tab === 'bulk');
+      document.getElementById('tab-btn-single').classList.toggle('active', tab === 'single');
+      document.getElementById('panel-bulk-content').style.display = tab === 'bulk' ? 'block' : 'none';
+      document.getElementById('panel-single-content').style.display = tab === 'single' ? 'block' : 'none';
+
+      if (tab === 'single') {
+        populateSingleEditorFromActive();
+      }
+    }
+
+    /* Switch Live Preview Display Modes */
+    function setPreviewDisplayMode(mode) {
+      previewDisplayMode = mode;
+      document.querySelectorAll('.p-mode-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn-pmode-${mode}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderLivePreview();
+    }
+
+    /* Setup Drag & Drop File Upload */
+    function setupDragDrop() {
+      const dropzone = document.getElementById('dropzone');
+      ['dragenter', 'dragover'].forEach(evt => {
+        dropzone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          dropzone.classList.add('dragover');
+        });
+      });
+      ['dragleave', 'drop'].forEach(evt => {
+        dropzone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('dragover');
+        });
+      });
+      dropzone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0) {
+          processExcelFile(files[0]);
+        }
+      });
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        processExcelFile(file);
+      }
+    }
+
+    /* Parse Excel File using SheetJS */
+    function processExcelFile(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const rawRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+          if (rawRows.length === 0) {
+            showToast('एक्सेल फाईल रिकामी आहे!', 'warning');
+            return;
+          }
+
+          const parsedList = rawRows.map((row, index) => mapRowToApplicant(row, index + 1));
+          applicantsList = parsedList;
+          currentPreviewIndex = 0;
+
+          renderApplicantTable();
+          renderLivePreview();
+          showToast(`${applicantsList.length} नोंदी यशस्वीरीत्या आयात केल्या!`, 'success');
+        } catch (err) {
+          console.error(err);
+          showToast('एक्सेल वाचताना त्रुटी: ' + err.message, 'warning');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    /* Map Flexible Header Names to Standard Object */
+    function mapRowToApplicant(row, defaultIdx = 1) {
+      // Helper to find by possible column aliases
+      const getVal = (aliases) => {
+        for (const k of Object.keys(row)) {
+          const cleanK = k.toString().trim().toLowerCase().replace(/[\s_\-.]/g, '');
+          for (const a of aliases) {
+            const cleanA = a.toLowerCase().replace(/[\s_\-.]/g, '');
+            if (cleanK === cleanA || cleanK.includes(cleanA)) {
+              return String(row[k]).trim();
+            }
+          }
+        }
+        return '';
+      };
+
+      const refNo = getVal(['reference', 'refno', 'संदर्भ', 'applicationno']) || `S13268G7O050124${String(defaultIdx).padStart(6, '0')}`;
+      const objectionNo = getVal(['objectionno', 'objection', 'हरकतक्र', 'हरकत']) || String(defaultIdx);
+      const personName = getVal(['personobjectedname', 'personname', 'votername', 'मतदाराचेनाव', 'नाव', 'person']) || 'Saeeda Sattar Kazi';
+      const personAddress = getVal(['personobjectedaddress', 'personaddress', 'voteraddress', 'मतदाराचापत्ता', 'पत्ता']) || 'House No 94, Kazirde, Kharepatan, Kankavli, Sindhudurg, Maharashtra- 416703';
+      const serialNo = getVal(['serialno', 'serial', 'अनुक्रमांक', 'srno', 'slno']) || '486';
+      const partNo = getVal(['partno', 'partname', 'भागक्र', 'भागनाव', 'गाव', 'karjirde']) || 'karjirde';
+      const objectorName = getVal(['objectorname', 'objector', 'हरकतदाराचेनाव', 'अर्जदाराचेनाव']) || 'Ankita Atul Kambli';
+      const objectorAddress = getVal(['objectoraddress', 'हरकतदाराचापत्ता']) || '175 , Maharashtra-';
+      const constituency = getVal(['constituency', 'मतदारसंघ', 'विधानसभा']) || '268 Kankavli Constituency';
+      const hearingPlace = getVal(['hearingplace', 'place', 'सुनावणीठिकाण', 'ठिकाण']) || 'At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602';
+      const hearingTime = getVal(['hearingtime', 'time', 'सुनावणीवेळ', 'वेळ']) || '10:30:00';
+      const hearingDate = getVal(['hearingdate', 'सुनावणीदिनांक', 'दिनांक']) || '10/01/2024';
+      const noticeDate = getVal(['noticedate', 'नोटीसदिनांक']) || '05/01/2024';
+      const serviceDateVoter = getVal(['servicedatevoter', 'तामिलीदिनांकमतदार']) || '06/01/2024';
+      const grounds = getVal(['grounds', 'ground', 'कारण', 'हरकतीचेकारण']) || 'Absent/Permanently shifted';
+      const eroTitle = getVal(['erotitle', 'ero', 'अधिकारी']) || 'Electoral Registration Officer,\n268 Kankavli Constituency';
+      const servingOfficer = getVal(['servingofficer', 'बजावणीअधिकारी', 'blo']) || `BLO-195 ${partNo}`;
+      const roznamaNotes = getVal(['roznama', 'कार्यवाही', 'शेरा']) || `पुकारणी केली. BLO केंद्र क्र. 195 ${partNo} उपस्थित.\n${personName} यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत.\nसबब निर्णयावर.`;
+
+      return {
+        selected: true,
+        refNo,
+        objectionNo,
+        personName,
+        personAddress,
+        serialNo,
+        partNo,
+        objectorName,
+        objectorAddress,
+        constituency,
+        hearingPlace,
+        hearingTime,
+        hearingDate,
+        noticeDate,
+        serviceDateVoter,
+        grounds,
+        eroTitle,
+        servingOfficer,
+        roznamaNotes
+      };
+    }
+
+    /* Convert date string (DD/MM/YYYY or YYYY-MM-DD) to Day with Ordinal, Month Name, and Year */
+    function parseDateParts(dateStr) {
+      if (!dateStr) return { dayOrdinal: '10th', monthName: 'January', year: '2024', formatted: '' };
+
+      let d = 10, m = 1, y = 2024;
+      const clean = dateStr.trim();
+
+      if (clean.includes('/')) {
+        const parts = clean.split('/');
+        if (parts.length >= 3) {
+          d = parseInt(parts[0]) || 10;
+          m = parseInt(parts[1]) || 1;
+          y = parseInt(parts[2]) || 2024;
+          if (y < 100) y += 2000;
+        }
+      } else if (clean.includes('-')) {
+        const parts = clean.split('-');
+        if (parts.length >= 3) {
+          if (parts[0].length === 4) {
+            y = parseInt(parts[0]) || 2024;
+            m = parseInt(parts[1]) || 1;
+            d = parseInt(parts[2]) || 10;
+          } else {
+            d = parseInt(parts[0]) || 10;
+            m = parseInt(parts[1]) || 1;
+            y = parseInt(parts[2]) || 2024;
+            if (y < 100) y += 2000;
+          }
+        }
+      }
+
+      // Add ordinal suffix: 1st, 2nd, 3rd, 4th... 10th...
+      const getOrdinal = (n) => {
+        const s = ["th", "st", "nd", "rd"];
+        const v = n % 100;
+        return n + (s[(v - 20) % 10] || s[v] || s[0]);
+      };
+
+      const monthName = MONTH_NAMES[Math.max(0, Math.min(11, m - 1))] || 'January';
+
+      return {
+        dayOrdinal: getOrdinal(d),
+        monthName,
+        year: String(y),
+        formatted: `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`
+      };
+    }
+
+    /* Render Applicant Table */
+    function renderApplicantTable() {
+      const tbody = document.getElementById('applicantTableBody');
+      const badge = document.getElementById('stat-count-badge');
+      badge.innerText = applicantsList.length;
+
+      document.getElementById('total-record-num').innerText = applicantsList.length || 1;
+      document.getElementById('current-record-num').innerText = applicantsList.length > 0 ? (currentPreviewIndex + 1) : 0;
+
+      if (applicantsList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 24px;">कोणताही डेटा नाही. वरील बॉक्समधून एक्सेल फाईल अपलोड करा किंवा 'नमुना डेटा लोड' वर क्लिक करा.</td></tr>`;
+        return;
+      }
+
+      let html = '';
+      applicantsList.forEach((app, idx) => {
+        const isSelected = app.selected ? 'checked' : '';
+        const isActive = idx === currentPreviewIndex ? 'active-preview' : '';
+        html += `
+          <tr class="${isActive}" onclick="selectPreviewRecord(${idx})">
+            <td onclick="event.stopPropagation();">
+              <input type="checkbox" ${isSelected} onchange="toggleRowSelection(${idx}, this.checked)">
+            </td>
+            <td>${idx + 1}</td>
+            <td><strong>${escapeHtml(app.personName)}</strong></td>
+            <td>${escapeHtml(app.objectorName)}</td>
+            <td>${escapeHtml(app.partNo)} / Sr.${escapeHtml(app.serialNo)}</td>
+            <td onclick="event.stopPropagation();">
+              <button class="btn-quick" style="padding: 2px 6px; font-size: 0.75rem;" onclick="deleteRecord(${idx})" title="हटवा">
+                <i class="fa-solid fa-trash-can" style="color: #dc2626;"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    /* Table Search Filter */
+    function filterApplicantTable() {
+      const q = document.getElementById('tableSearchInput').value.toLowerCase().trim();
+      const rows = document.querySelectorAll('#applicantTableBody tr');
+      rows.forEach(r => {
+        const text = r.innerText.toLowerCase();
+        r.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    function toggleRowSelection(idx, checked) {
+      if (applicantsList[idx]) {
+        applicantsList[idx].selected = checked;
+      }
+    }
+
+    function toggleSelectAllRows() {
+      const allSelected = applicantsList.every(a => a.selected);
+      applicantsList.forEach(a => a.selected = !allSelected);
+      renderApplicantTable();
+    }
+
+    function selectPreviewRecord(idx) {
+      currentPreviewIndex = idx;
+      renderApplicantTable();
+      renderLivePreview();
+      if (document.getElementById('panel-single-content').style.display !== 'none') {
+        populateSingleEditorFromActive();
+      }
+    }
+
+    function navigateRecord(delta) {
+      if (applicantsList.length === 0) return;
+      currentPreviewIndex = (currentPreviewIndex + delta + applicantsList.length) % applicantsList.length;
+      renderApplicantTable();
+      renderLivePreview();
+      if (document.getElementById('panel-single-content').style.display !== 'none') {
+        populateSingleEditorFromActive();
+      }
+    }
+
+    function deleteRecord(idx) {
+      if (confirm(`'${applicantsList[idx]?.personName}' यांची नोंद हटवायची आहे का?`)) {
+        applicantsList.splice(idx, 1);
+        if (currentPreviewIndex >= applicantsList.length) {
+          currentPreviewIndex = Math.max(0, applicantsList.length - 1);
+        }
+        renderApplicantTable();
+        renderLivePreview();
+        showToast('नोंद हटवली गेली.', 'info');
+      }
+    }
+
+    function clearAllData() {
+      if (confirm('सर्व डेटा हटवायचा आहे का?')) {
+        applicantsList = [];
+        currentPreviewIndex = 0;
+        renderApplicantTable();
+        renderLivePreview();
+        showToast('सर्व डेटा हटवला गेला.', 'info');
+      }
+    }
+
+    /* Apply Global Defaults to All Records */
+    function applyGlobalDefaults() {
+      const hearingPlace = document.getElementById('def-hearing-place').value.trim();
+      const hearingTime = document.getElementById('def-hearing-time').value.trim();
+      const hearingDate = document.getElementById('def-hearing-date').value.trim();
+      const noticeDate = document.getElementById('def-notice-date').value.trim();
+      const constituency = document.getElementById('def-constituency').value.trim();
+      const eroTitle = document.getElementById('def-ero-title').value.trim();
+
+      applicantsList.forEach(app => {
+        if (hearingPlace) app.hearingPlace = hearingPlace;
+        if (hearingTime) app.hearingTime = hearingTime;
+        if (hearingDate) app.hearingDate = hearingDate;
+        if (noticeDate) app.noticeDate = noticeDate;
+        if (constituency) app.constituency = constituency;
+        if (eroTitle) app.eroTitle = eroTitle;
+      });
+
+      renderLivePreview();
+      showToast('सर्व नोंदींवर सामायिक सेटिंग्ज लागू झाल्या!', 'success');
+    }
+
+    /* Single Record Editor Handlers */
+    function populateSingleEditorFromActive() {
+      const app = applicantsList[currentPreviewIndex];
+      if (!app) return;
+
+      document.getElementById('se-ref-no').value = app.refNo || '';
+      document.getElementById('se-objection-no').value = app.objectionNo || '';
+      document.getElementById('se-person-name').value = app.personName || '';
+      document.getElementById('se-person-address').value = app.personAddress || '';
+      document.getElementById('se-serial-no').value = app.serialNo || '';
+      document.getElementById('se-part-no').value = app.partNo || '';
+      document.getElementById('se-objector-name').value = app.objectorName || '';
+      document.getElementById('se-objector-address').value = app.objectorAddress || '';
+      document.getElementById('se-hearing-date').value = app.hearingDate || '';
+      document.getElementById('se-hearing-time').value = app.hearingTime || '';
+      document.getElementById('se-hearing-place').value = app.hearingPlace || '';
+      document.getElementById('se-grounds').value = app.grounds || '';
+      document.getElementById('se-notice-date').value = app.noticeDate || '';
+      document.getElementById('se-service-date-voter').value = app.serviceDateVoter || '';
+      document.getElementById('se-roznama-notes').value = app.roznamaNotes || '';
+    }
+
+    function liveUpdateActive() {
+      const app = applicantsList[currentPreviewIndex];
+      if (!app) return;
+
+      app.refNo = document.getElementById('se-ref-no').value;
+      app.objectionNo = document.getElementById('se-objection-no').value;
+      app.personName = document.getElementById('se-person-name').value;
+      app.personAddress = document.getElementById('se-person-address').value;
+      app.serialNo = document.getElementById('se-serial-no').value;
+      app.partNo = document.getElementById('se-part-no').value;
+      app.objectorName = document.getElementById('se-objector-name').value;
+      app.objectorAddress = document.getElementById('se-objector-address').value;
+      app.hearingDate = document.getElementById('se-hearing-date').value;
+      app.hearingTime = document.getElementById('se-hearing-time').value;
+      app.hearingPlace = document.getElementById('se-hearing-place').value;
+      app.grounds = document.getElementById('se-grounds').value;
+      app.noticeDate = document.getElementById('se-notice-date').value;
+      app.serviceDateVoter = document.getElementById('se-service-date-voter').value;
+      app.roznamaNotes = document.getElementById('se-roznama-notes').value;
+
+      renderLivePreview();
+    }
+
+    function saveActiveRecordChanges() {
+      liveUpdateActive();
+      renderApplicantTable();
+      showToast('बदल यशस्वीरीत्या जतन झाले!', 'success');
+    }
+
+    /* =========================================================================
+       HTML GENERATORS FOR THE 5 EXACT PAGES MATCHING THE USER'S PDF
+       ========================================================================= */
+
+    /* PAGE 1: सुनावणी रोजनामा / केलेली कार्यवाही तक्ता (Roznama Sheet) */
+    function buildRoznamaHtml(app, pageNum = 1) {
+      const dateParts = parseDateParts(app.hearingDate);
+      const notesLines = (app.roznamaNotes || '').split('\n').filter(l => l.trim().length > 0);
+
+      let formattedNotes = '';
+      if (notesLines.length > 0) {
+        formattedNotes = notesLines.map(l => `<div>${escapeHtml(l)}</div>`).join('');
+      } else {
+        formattedNotes = `
+          <div>पुकारणी केली. BLO केंद्र क्र. ${escapeHtml(app.partNo)} उपस्थित.</div>
+          <div>${escapeHtml(app.personName)} यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत.</div>
+          <div>सबब निर्णयावर.</div>
+        `;
+      }
+
+      return `
+        <div class="a4-sheet">
+          <div class="sheet-corner-num">${pageNum}</div>
+          <div class="roznama-sheet-inner">
+            <div class="roznama-header">
+              <h2>सुनावणी नोंदवही / केलेली कार्यवाही</h2>
+              <p>Registration of Electors Rules, 1960 • ERO मतदार यादी दुरुस्ती / हरकत सुनावणी कामकाज</p>
+            </div>
+
+            <table class="roznama-table">
+              <thead>
+                <tr>
+                  <th class="roznama-date-col">दिनांक</th>
+                  <th>केलेली कार्यवाही</th>
+                  <th class="roznama-sign-col">अर्जदाराची/हरकतदाराची स्वाक्षरी</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="roznama-date-col">
+                    <div style="font-weight: 700; margin-bottom: 8px;">${escapeHtml(app.hearingDate)}</div>
+                  </td>
+                  <td>
+                    <div class="roznama-content">
+                      ${formattedNotes}
+                      <div style="margin-top: 36px; text-align: right; padding-right: 20px;">
+                        <div style="height: 35px;"></div>
+                        <div>...................................................</div>
+                        <div style="font-weight: 700;">मतदार नोंदणी अधिकारी / नायब तहसिलदार</div>
+                        <div style="font-size: 9.5pt;">${escapeHtml(app.constituency)}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="roznama-sign-col">
+                    <div style="height: 40px;"></div>
+                    <div style="font-weight: 700; border-bottom: 1px dotted #000; padding-bottom: 4px;">
+                      ${escapeHtml(app.servingOfficer || `BLO-${app.partNo}`)}
+                    </div>
+                    <div style="font-size: 9pt; color: #444; margin-top: 4px;">(BLO / अधिकारी स्वाक्षरी)</div>
+                  </td>
+                </tr>
+
+                <!-- Additional Blank Ruled Rows for Adjourned Dates or Manual Notes -->
+                <tr class="roznama-blank-row">
+                  <td class="roznama-date-col"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr class="roznama-blank-row">
+                  <td class="roznama-date-col"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr class="roznama-blank-row">
+                  <td class="roznama-date-col"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    /* PAGE 2: FORM 13 (Notice to the Objector) */
+    function buildForm13Html(app, pageNum = 20) {
+      const hDate = parseDateParts(app.hearingDate);
+      const nDate = parseDateParts(app.noticeDate);
+
+      return `
+        <div class="a4-sheet">
+          <div class="sheet-corner-num">${pageNum}</div>
+          <div class="sheet-inner">
+            <div>
+              <div class="doc-statutory-heading">
+                <div class="stat-rules">Registration of Electors Rules, 1960</div>
+                <div class="stat-order">(Statutory Rules and Order)</div>
+                <div class="stat-form-title">FORM 13</div>
+                <div class="stat-sub-rule">[See rule 19(1)(b)(ii)]</div>
+                <div class="stat-notice-purpose">Notice to the objector</div>
+              </div>
+
+              <!-- Recipient Grid -->
+              <div class="recipient-grid">
+                <div class="recipient-left">
+                  <div class="copy-type">Duplicate</div>
+                  <div class="office-note">(Office Copy)</div>
+                  <div>To</div>
+                  <div>(Full name and address of objector)</div>
+                </div>
+                <div class="recipient-right">
+                  <div class="name-bold">${escapeHtml(app.objectorName)}</div>
+                  <div>${escapeHtml(app.objectorAddress)}</div>
+                </div>
+              </div>
+
+              <!-- Reference & Objection No Row -->
+              <div class="ref-objection-row">
+                <div>Reference: <span class="dotted-val left-align" style="min-width: 190px;">${escapeHtml(app.refNo)}</span></div>
+                <div>Objection No. <span class="dotted-val" style="min-width: 45px;">${escapeHtml(app.objectionNo)}</span></div>
+              </div>
+
+              <!-- Body Paragraph -->
+              <div class="doc-body-para">
+                Take notice that your objection to the inclusion of the name of -
+              </div>
+
+              <div class="indented-target-box">
+                <div style="font-weight: 700; font-size: 11.5pt;">${escapeHtml(app.personName)}</div>
+                <div>${escapeHtml(app.personAddress)}</div>
+              </div>
+
+              <div class="doc-body-para" style="margin-top: 14px;">
+                will be heard at <span class="dotted-val left-align" style="min-width: 280px;">${escapeHtml(app.hearingPlace)}</span> (place) at <span class="dotted-val" style="min-width: 75px;">${escapeHtml(app.hearingTime)}</span> O'clock on the <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> ${escapeHtml(hDate.year)} .
+              </div>
+
+              <div class="doc-body-para">
+                You are directed to be present at the hearing with such evidence as you may like to adduce.
+              </div>
+            </div>
+
+            <!-- Footer: Place, Date & ERO Signature -->
+            <div class="doc-footer-grid">
+              <div class="doc-footer-left">
+                <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
+                <div style="margin-top: 4px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
+
+                <div style="margin-top: 35px;">
+                  <span style="font-size: 12pt; font-weight: 700; margin-right: 6px;">X</span>
+                  <span class="dotted-val left-align" style="min-width: 160px;">${escapeHtml(app.objectorName)}</span>
+                </div>
+              </div>
+
+              <div class="doc-footer-right">
+                <div class="sig-space"></div>
+                <div style="font-weight: 700;">Electoral Registration Officer,</div>
+                <div>${escapeHtml(app.constituency)}</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+    }
+
+    /* PAGE 3: CERTIFICATE OF SERVICE OF NOTICE (Objector) */
+    function buildCert1Html(app, pageNum = 2) {
+      const hDate = parseDateParts(app.hearingDate);
+      const nDate = parseDateParts(app.noticeDate);
+
+      return `
+        <div class="a4-sheet">
+          <div class="sheet-corner-num">${pageNum}</div>
+          <div class="sheet-inner">
+            <div>
+              <div class="cert-title-block">
+                <div class="cert-rules">Registration of Electors Rules, 1960</div>
+                <div class="cert-order">(Statutory Rules and Order)</div>
+                <div class="cert-main-head">CERTIFICATE OF SERVICE OF NOTICE</div>
+                <div class="cert-sub-head">Received notice of the date of hearing</div>
+              </div>
+
+              <!-- Top Row: Date on Left, Objector Name on Right -->
+              <div class="cert-top-row">
+                <div>
+                  Date: <span class="dotted-val left-align" style="min-width: 110px;">${escapeHtml(app.noticeDate)}</span>
+                </div>
+                <div style="text-align: right; min-width: 220px;">
+                  <div style="font-weight: 700;">${escapeHtml(app.objectorName)}</div>
+                  <div style="border-bottom: 1px dotted #000; width: 100%; height: 16px;"></div>
+                  <div style="margin-top: 2px;">Objector</div>
+                </div>
+              </div>
+
+              <!-- Main Certification Paragraph -->
+              <div class="cert-body-para">
+                Certified that the notice on the objector has been duly served by me this <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> on (name) <span class="dotted-val left-align" style="min-width: 200px;">${escapeHtml(app.objectorName)}</span> personally / by affixing on residence.
+              </div>
+            </div>
+
+            <!-- Footer: Place, Date & Serving Officer -->
+            <div>
+              <div class="doc-footer-grid">
+                <div class="doc-footer-left">
+                  <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
+                  <div style="margin-top: 4px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
+                </div>
+
+                <div class="doc-footer-right">
+                  <div class="sig-space"></div>
+                  <div style="border-bottom: 1px dotted #000; width: 180px; margin-left: auto; height: 1px;"></div>
+                  <div style="font-weight: 700; margin-top: 4px;">Serving Officer.</div>
+                  <div style="font-size: 10pt; color: #333;">(निवडणूक नायब तहसिलदार / प्राधिकृत अधिकारी)</div>
+                </div>
+              </div>
+
+              <div class="post-receipt-box">
+                N.B.- If this notice is served by post, attach the receipt here.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+    }
+
+    /* PAGE 4: FORM 14 (Notice to the Person Objected to) */
+    function buildForm14Html(app, pageNum = 4) {
+      const hDate = parseDateParts(app.hearingDate);
+      const nDate = parseDateParts(app.noticeDate);
+
+      return `
+        <div class="a4-sheet">
+          <div class="sheet-corner-num">${pageNum}</div>
+          <div class="sheet-inner">
+            <div>
+              <div class="doc-statutory-heading">
+                <div class="stat-form-title" style="font-size: 15pt;">FORM 14</div>
+                <div class="stat-sub-rule">[See rule 19(1)(b)(ii)]</div>
+                <div class="stat-notice-purpose">[Notice to the person in respect of whom objection has been made]</div>
+              </div>
+
+              <!-- Recipient Grid -->
+              <div class="recipient-grid">
+                <div class="recipient-left">
+                  <div class="copy-type">Original</div>
+                  <div class="office-note">To be served on the person objected to</div>
+                  <div style="margin-top: 6px;">To</div>
+                  <div>(Full name and address of person objected to)</div>
+                </div>
+                <div class="recipient-right">
+                  <div class="name-bold">${escapeHtml(app.personName)}</div>
+                  <div>${escapeHtml(app.personAddress)}</div>
+                </div>
+              </div>
+
+              <!-- Reference & Objection No Row -->
+              <div class="ref-objection-row">
+                <div>Reference: <span class="dotted-val left-align" style="min-width: 190px;">${escapeHtml(app.refNo)}</span></div>
+                <div>Objection No. <span class="dotted-val" style="min-width: 45px;">${escapeHtml(app.objectionNo)}</span></div>
+              </div>
+
+              <!-- Body Paragraph -->
+              <div class="doc-body-para">
+                Take notice that the objection to the inclusion of your name at Serial No <span class="dotted-val" style="min-width: 50px;">${escapeHtml(app.serialNo)}</span> in part <span class="dotted-val left-align" style="min-width: 100px;">${escapeHtml(app.partNo)}</span> of the electoral roll for <span class="dotted-val left-align" style="min-width: 130px;">${escapeHtml(extractConstituencyName(app.constituency))}</span> constituency filed by
+              </div>
+
+              <div style="font-family: var(--font-legal); font-size: 10.5pt; margin-left: 20px;">
+                (Full name and address of objector):
+              </div>
+              <div class="indented-target-box" style="margin-top: 3px;">
+                <div style="font-weight: 700;">${escapeHtml(app.objectorName)}</div>
+                <div>${escapeHtml(app.objectorAddress)}</div>
+              </div>
+
+              <div class="doc-body-para" style="margin-top: 10px;">
+                will be heard at <span class="dotted-val left-align" style="min-width: 270px;">${escapeHtml(app.hearingPlace)}</span> (place) at <span class="dotted-val" style="min-width: 75px;">${escapeHtml(app.hearingTime)}</span> O'clock on the <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> ${escapeHtml(hDate.year)} .
+              </div>
+
+              <div class="doc-body-para">
+                You are directed to be present at the hearing with such evidence as you may like to adduce.
+              </div>
+
+              <div class="doc-body-para" style="margin-bottom: 4px;">
+                The grounds of objection (in brief) are:-
+              </div>
+              <div class="grounds-list">
+                <div>(a) <span class="dotted-val left-align" style="min-width: 280px;">${escapeHtml(app.grounds || 'Absent/Permanently shifted')}</span></div>
+                <div style="margin-top: 3px;">(b) <span class="dotted-val" style="min-width: 280px;">&nbsp;</span></div>
+                <div style="margin-top: 3px;">(c) <span class="dotted-val" style="min-width: 280px;">&nbsp;</span></div>
+              </div>
+            </div>
+
+            <!-- Footer: Place, Date & ERO Signature -->
+            <div class="doc-footer-grid">
+              <div class="doc-footer-left">
+                <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
+                <div style="margin-top: 4px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
+              </div>
+
+              <div class="doc-footer-right">
+                <div class="sig-space"></div>
+                <div style="font-weight: 700;">Electoral Registration Officer,</div>
+                <div>${escapeHtml(app.constituency)}</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+    }
+
+    /* PAGE 5: CERTIFICATE OF SERVICE OF NOTICE (Person Objected to) */
+    function buildCert2Html(app, pageNum = 5) {
+      const hDate = parseDateParts(app.hearingDate);
+      const voterServeDate = app.serviceDateVoter || app.noticeDate;
+
+      return `
+        <div class="a4-sheet">
+          <div class="sheet-corner-num">${pageNum}</div>
+          <div class="sheet-inner">
+            <div>
+              <div class="cert-title-block">
+                <div class="cert-rules">Registration of Electors Rules, 1960</div>
+                <div class="cert-order">(Statutory Rules and Order)</div>
+                <div class="cert-main-head">CERTIFICATE OF SERVICE OF NOTICE</div>
+                <div class="cert-sub-head">Received notice of the date of hearing</div>
+              </div>
+
+              <!-- Top Row: Date on Left, Person Name on Right -->
+              <div class="cert-top-row">
+                <div>
+                  Date: <span class="dotted-val left-align" style="min-width: 110px;">${escapeHtml(voterServeDate)}</span>
+                </div>
+                <div style="text-align: right; min-width: 220px;">
+                  <div style="font-weight: 700;">${escapeHtml(app.personName)}</div>
+                  <div style="border-bottom: 1px dotted #000; width: 100%; height: 16px;"></div>
+                  <div style="margin-top: 2px;">Person objected to</div>
+                </div>
+              </div>
+
+              <!-- Main Certification Paragraph -->
+              <div class="cert-body-para">
+                Certified that the notice on the person, the entry relating to whose name has been objected to, has been duly served by me this <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> on (name) <span class="dotted-val left-align" style="min-width: 200px;">${escapeHtml(app.personName)}</span> personally / by affixing on residence.
+              </div>
+            </div>
+
+            <!-- Footer: Place, Date & Serving Officer -->
+            <div>
+              <div class="doc-footer-grid">
+                <div class="doc-footer-left">
+                  <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
+                  <div style="margin-top: 4px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(voterServeDate)}</span></div>
+                </div>
+
+                <div class="doc-footer-right">
+                  <div class="sig-space"></div>
+                  <div style="border-bottom: 1px dotted #000; width: 180px; margin-left: auto; height: 1px;"></div>
+                  <div style="font-weight: 700; margin-top: 4px;">Serving Officer.</div>
+                  <div style="font-size: 10pt; color: #333;">${escapeHtml(app.servingOfficer || `BLO-${app.partNo}`)}</div>
+                </div>
+              </div>
+
+              <div class="post-receipt-box">
+                N.B.- If this notice is served by post, attach the receipt here.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+    }
+
+    /* Helper: Extract Place Name from Long Place String */
+    function extractPlace(str) {
+      if (!str) return 'Kankavli';
+      if (str.toLowerCase().includes('kankvali') || str.toLowerCase().includes('kankavli')) return 'Kankavli';
+      const parts = str.split(/[\s,]+/);
+      return parts[0] || 'Kankavli';
+    }
+
+    function extractConstituencyName(str) {
+      if (!str) return 'Kankavli';
+      return str.replace(/\bconstituency\b/gi, '').replace(/\b\d+\b/g, '').trim() || 'Kankavli';
+    }
+
+    /* Render Live Preview based on Active Mode */
+    function renderLivePreview() {
+      const container = document.getElementById('previewContainer');
+      const app = applicantsList[currentPreviewIndex];
+
+      if (!app) {
+        container.innerHTML = `
+          <div style="text-align: center; color: #64748b; padding: 60px 20px;">
+            <i class="fa-solid fa-file-circle-question" style="font-size: 48px; color: #94a3b8; margin-bottom: 12px;"></i>
+            <h3>कोणतीही नोटीस निवडलेली नाही</h3>
+            <p style="margin-top: 6px;">कृपया डावीकडील पॅनेलमधून एक्सेल फाईल अपलोड करा किंवा नमुना डेटा लोड करा.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      if (previewDisplayMode === 'all') {
+        html += buildRoznamaHtml(app, 1);
+        html += buildForm13Html(app, 20);
+        html += buildCert1Html(app, 2);
+        html += buildForm14Html(app, 4);
+        html += buildCert2Html(app, 5);
+      } else if (previewDisplayMode === 'roznama') {
+        html += buildRoznamaHtml(app, 1);
+      } else if (previewDisplayMode === 'form13') {
+        html += buildForm13Html(app, 20);
+      } else if (previewDisplayMode === 'cert1') {
+        html += buildCert1Html(app, 2);
+      } else if (previewDisplayMode === 'form14') {
+        html += buildForm14Html(app, 4);
+      } else if (previewDisplayMode === 'cert2') {
+        html += buildCert2Html(app, 5);
+      }
+
+      container.innerHTML = html;
+    }
+
+    /* =========================================================================
+       PRINT FUNCTIONS
+       ========================================================================= */
+
+    /* Print Active Record */
+    function printCurrentActiveRecord() {
+      const app = applicantsList[currentPreviewIndex];
+      if (!app) {
+        showToast('प्रिंट करण्यासाठी कोणतीही नोंद उपलब्ध नाही!', 'warning');
+        return;
+      }
+
+      const printContainer = document.getElementById('printContainer');
+      let html = '';
+
+      if (previewDisplayMode === 'all') {
+        html += buildRoznamaHtml(app, 1);
+        html += buildForm13Html(app, 20);
+        html += buildCert1Html(app, 2);
+        html += buildForm14Html(app, 4);
+        html += buildCert2Html(app, 5);
+      } else if (previewDisplayMode === 'roznama') {
+        html += buildRoznamaHtml(app, 1);
+      } else if (previewDisplayMode === 'form13') {
+        html += buildForm13Html(app, 20);
+      } else if (previewDisplayMode === 'cert1') {
+        html += buildCert1Html(app, 2);
+      } else if (previewDisplayMode === 'form14') {
+        html += buildForm14Html(app, 4);
+      } else if (previewDisplayMode === 'cert2') {
+        html += buildCert2Html(app, 5);
+      }
+
+      printContainer.innerHTML = html;
+      printContainer.style.display = 'block';
+
+      window.print();
+
+      setTimeout(() => {
+        printContainer.style.display = 'none';
+        printContainer.innerHTML = '';
+      }, 1000);
+    }
+
+    /* Batch Print All Selected Applicants */
+    function printAllSelected() {
+      const selected = applicantsList.filter(a => a.selected);
+      if (selected.length === 0) {
+        showToast('कृपया किमान एक मतदार / हरकतदार निवडा!', 'warning');
+        return;
+      }
+
+      const printContainer = document.getElementById('printContainer');
+      let combinedHtml = '';
+
+      selected.forEach((app, idx) => {
+        // Full 5 pages per notice set
+        combinedHtml += buildRoznamaHtml(app, 1);
+        combinedHtml += buildForm13Html(app, 20 + idx);
+        combinedHtml += buildCert1Html(app, 2);
+        combinedHtml += buildForm14Html(app, 4);
+        combinedHtml += buildCert2Html(app, 5);
+      });
+
+      printContainer.innerHTML = combinedHtml;
+      printContainer.style.display = 'block';
+
+      window.print();
+
+      setTimeout(() => {
+        printContainer.style.display = 'none';
+        printContainer.innerHTML = '';
+      }, 1500);
+    }
+
+    /* =========================================================================
+       EXCEL TEMPLATE GENERATION & EXPORT
+       ========================================================================= */
+
+    function downloadSampleExcel() {
+      try {
+        const sampleRows = [
+          {
+            "संदर्भ क्रमांक (Reference No)": "S13268G7O0501241200008",
+            "हरकत क्रमांक (Objection No)": "1",
+            "मतदाराचे नाव (Person Objected)": "Saeeda Sattar Kazi",
+            "मतदाराचा पत्ता (Person Address)": "House No 94, Kazirde, Kharepatan, Kankavli, Sindhudurg, Maharashtra- 416703",
+            "यादी अनुक्रमांक (Serial No)": "486",
+            "भाग क्रमांक / नाव (Part No)": "karjirde",
+            "हरकतदाराचे नाव (Objector Name)": "Ankita Atul Kambli",
+            "हरकतदाराचा पत्ता (Objector Address)": "175 , Maharashtra-",
+            "मतदारसंघ (Constituency)": "268 Kankavli Constituency",
+            "सुनावणी ठिकाण (Hearing Place)": "At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602",
+            "सुनावणी दिनांक (Hearing Date)": "10/01/2024",
+            "सुनावणी वेळ (Hearing Time)": "10:30:00",
+            "नोटीस दिनांक (Notice Date)": "05/01/2024",
+            "मतदार तामिली दिनांक (Service Date Voter)": "06/01/2024",
+            "हरकतीचे कारण (Grounds of Objection)": "Absent/Permanently shifted",
+            "ERO पदनाम व कार्यालय": "Electoral Registration Officer, 268 Kankavli Constituency",
+            "बजावणी अधिकारी / BLO": "BLO-195 karjirde",
+            "सुनावणी रोजनामा शेरा (Proceeding Notes)": "पुकारणी केली. BLO केंद्र क्र. 195 काजिर्डे उपस्थित. सईदा सत्तार काझी यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत. सबब निर्णयावर."
+          },
+          {
+            "संदर्भ क्रमांक (Reference No)": "S13268G7O0501241200012",
+            "हरकत क्रमांक (Objection No)": "2",
+            "मतदाराचे नाव (Person Objected)": "Ramesh Vithal Sawant",
+            "मतदाराचा पत्ता (Person Address)": "House No 42, Kasal, Kankavli, Sindhudurg, Maharashtra- 416603",
+            "यादी अनुक्रमांक (Serial No)": "124",
+            "भाग क्रमांक / नाव (Part No)": "kasal",
+            "हरकतदाराचे नाव (Objector Name)": "Prakash Narayan Parab",
+            "हरकतदाराचा पत्ता (Objector Address)": "Kasal, Kankavli, Sindhudurg- 416603",
+            "मतदारसंघ (Constituency)": "268 Kankavli Constituency",
+            "सुनावणी ठिकाण (Hearing Place)": "Office of the Electoral Registration Officer, Kankavli",
+            "सुनावणी दिनांक (Hearing Date)": "10/01/2024",
+            "सुनावणी वेळ (Hearing Time)": "11:00:00",
+            "नोटीस दिनांक (Notice Date)": "05/01/2024",
+            "मतदार तामिली दिनांक (Service Date Voter)": "06/01/2024",
+            "हरकतीचे कारण (Grounds of Objection)": "मयत (Deceased)",
+            "ERO पदनाम व कार्यालय": "Electoral Registration Officer, 268 Kankavli Constituency",
+            "बजावणी अधिकारी / BLO": "BLO-104 kasal",
+            "सुनावणी रोजनामा शेरा (Proceeding Notes)": "पुकारणी केली. BLO केंद्र क्र. 104 कसाल उपस्थित. मतदार मयत असल्याचे प्रमाणपत्र BLO यांनी सादर केले. सबब निर्णयावर."
+          },
+          {
+            "संदर्भ क्रमांक (Reference No)": "S13268G7O0501241200025",
+            "हरकत क्रमांक (Objection No)": "3",
+            "मतदाराचे नाव (Person Objected)": "Sunil Mahadev Rane",
+            "मतदाराचा पत्ता (Person Address)": "A/P Oros, Kudal, Sindhudurg- 416812",
+            "यादी अनुक्रमांक (Serial No)": "315",
+            "भाग क्रमांक / नाव (Part No)": "oros",
+            "हरकतदाराचे नाव (Objector Name)": "Suresh Balkrishna Rane",
+            "हरकतदाराचा पत्ता (Objector Address)": "Oros, Kudal, Sindhudurg- 416812",
+            "मतदारसंघ (Constituency)": "268 Kankavli Constituency",
+            "सुनावणी ठिकाण (Hearing Place)": "Office of the Electoral Registration Officer, Kankavli",
+            "सुनावणी दिनांक (Hearing Date)": "10/01/2024",
+            "सुनावणी वेळ (Hearing Time)": "11:30:00",
+            "नोटीस दिनांक (Notice Date)": "05/01/2024",
+            "मतदार तामिली दिनांक (Service Date Voter)": "06/01/2024",
+            "हरकतीचे कारण (Grounds of Objection)": "दुबार नोंदणी (Already Registered Elsewhere)",
+            "ERO पदनाम व कार्यालय": "Electoral Registration Officer, 268 Kankavli Constituency",
+            "बजावणी अधिकारी / BLO": "BLO-89 oros",
+            "सुनावणी रोजनामा शेरा (Proceeding Notes)": "पुकारणी केली. BLO केंद्र क्र. 89 ओरोस उपस्थित. मतदार दुबार नोंदणीबाबत नोटीस तामिली अहवाल सादर. सबब निर्णयावर."
+          }
+        ];
+
+        const ws = XLSX.utils.json_to_sheet(sampleRows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "ERO_Hearing_Notices");
+
+        XLSX.writeFile(wb, "ERO_Hearing_Notice_Sample_Template.xlsx");
+        showToast('नमुना एक्सेल टेम्पलेट डाऊनलोड झाले!', 'success');
+      } catch (err) {
+        console.error(err);
+        showToast('एक्सेल तयार करताना त्रुटी: ' + err.message, 'warning');
+      }
+    }
+
+    /* Export Current List to Excel */
+    function exportCurrentToExcel() {
+      if (applicantsList.length === 0) {
+        showToast('एक्सपोर्ट करण्यासाठी कोणताही डेटा नाही!', 'warning');
+        return;
+      }
+
+      const rows = applicantsList.map((app, i) => ({
+        "अनुक्रमांक": i + 1,
+        "संदर्भ क्रमांक": app.refNo,
+        "हरकत क्रमांक": app.objectionNo,
+        "मतदाराचे नाव": app.personName,
+        "मतदाराचा पत्ता": app.personAddress,
+        "यादी अनुक्रमांक": app.serialNo,
+        "भाग क्रमांक": app.partNo,
+        "हरकतदाराचे नाव": app.objectorName,
+        "हरकतदाराचा पत्ता": app.objectorAddress,
+        "मतदारसंघ": app.constituency,
+        "सुनावणी ठिकाण": app.hearingPlace,
+        "सुनावणी दिनांक": app.hearingDate,
+        "सुनावणी वेळ": app.hearingTime,
+        "नोटीस दिनांक": app.noticeDate,
+        "मतदार तामिली दिनांक": app.serviceDateVoter,
+        "हरकतीचे कारण": app.grounds,
+        "ERO पदनाम": app.eroTitle,
+        "बजावणी अधिकारी": app.servingOfficer,
+        "सुनावणी रोजनामा शेरा": app.roznamaNotes
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Notices_Export");
+
+      XLSX.writeFile(wb, `ERO_Notices_Export_${new Date().toISOString().slice(0,10)}.xlsx`);
+      showToast('एक्सेल फाईल डाऊनलोड झाली!', 'success');
+    }
+
+    /* Load Default Sample Data (Matches user's exact uploaded PDF) */
+    function loadSampleData(notify = true) {
+      applicantsList = [
+        {
+          selected: true,
+          refNo: "S13268G7O0501241200008",
+          objectionNo: "1",
+          personName: "Saeeda Sattar Kazi",
+          personAddress: "House No 94, Kazirde, Kharepatan, Kankavli, Sindhudurg, Maharashtra- 416703",
+          serialNo: "486",
+          partNo: "karjirde",
+          objectorName: "Ankita Atul Kambli",
+          objectorAddress: "175 , Maharashtra-",
+          constituency: "268 Kankavli Constituency",
+          hearingPlace: "At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602",
+          hearingDate: "10/01/2024",
+          hearingTime: "10:30:00",
+          noticeDate: "05/01/2024",
+          serviceDateVoter: "06/01/2024",
+          grounds: "Absent/Permanently shifted",
+          eroTitle: "Electoral Registration Officer,\n268 Kankavli Constituency",
+          servingOfficer: "BLO-195 Kazirde",
+          roznamaNotes: "पुकारणी केली. BLO केंद्र क्र. 195 काजिर्डे उपस्थित.\nसईदा सत्तार काझी यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत.\nसबब निर्णयावर."
+        },
+        {
+          selected: true,
+          refNo: "S13268G7O0501241200014",
+          objectionNo: "2",
+          personName: "Ramesh Vithal Sawant",
+          personAddress: "House No 42, Kasal, Kankavli, Sindhudurg, Maharashtra- 416603",
+          serialNo: "124",
+          partNo: "kasal",
+          objectorName: "Prakash Narayan Parab",
+          objectorAddress: "Kasal, Kankavli, Sindhudurg- 416603",
+          constituency: "268 Kankavli Constituency",
+          hearingPlace: "At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602",
+          hearingDate: "10/01/2024",
+          hearingTime: "11:00:00",
+          noticeDate: "05/01/2024",
+          serviceDateVoter: "06/01/2024",
+          grounds: "मयत (Deceased)",
+          eroTitle: "Electoral Registration Officer,\n268 Kankavli Constituency",
+          servingOfficer: "BLO-104 Kasal",
+          roznamaNotes: "पुकारणी केली. BLO केंद्र क्र. 104 कसाल उपस्थित.\nमतदार मयत असल्याचा मृत्यू दाखला सादर केला.\nसबब निर्णयावर."
+        },
+        {
+          selected: true,
+          refNo: "S13268G7O0501241200021",
+          objectionNo: "3",
+          personName: "Sunil Mahadev Rane",
+          personAddress: "A/P Oros, Kudal, Sindhudurg- 416812",
+          serialNo: "315",
+          partNo: "oros",
+          objectorName: "Suresh Balkrishna Rane",
+          objectorAddress: "Oros, Kudal, Sindhudurg- 416812",
+          constituency: "268 Kankavli Constituency",
+          hearingPlace: "At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602",
+          hearingDate: "10/01/2024",
+          hearingTime: "11:30:00",
+          noticeDate: "05/01/2024",
+          serviceDateVoter: "06/01/2024",
+          grounds: "दुबार नोंदणी (Already Registered Elsewhere)",
+          eroTitle: "Electoral Registration Officer,\n268 Kankavli Constituency",
+          servingOfficer: "BLO-89 Oros",
+          roznamaNotes: "पुकारणी केली. BLO केंद्र क्र. 89 ओरोस उपस्थित.\nदुबार नोंदणी पडताळणी अहवाल सादर केला.\nसबब निर्णयावर."
+        }
+      ];
+
+      currentPreviewIndex = 0;
+      renderApplicantTable();
+      renderLivePreview();
+      if (notify) {
+        showToast('नमुना डेटा (सईदा सत्तार काझी व इतर) यशस्वीरीत्या लोड झाला!', 'success');
+      }
+    }
+
+    /* Modal Handlers */
+    function openPasteModal() {
+      document.getElementById('paste-data-textarea').value = '';
+      document.getElementById('modal-paste').classList.add('active');
+    }
+
+    function closePasteModal() {
+      document.getElementById('modal-paste').classList.remove('active');
+    }
+
+    function processPastedData() {
+      const text = document.getElementById('paste-data-textarea').value.trim();
+      if (!text) {
+        showToast('कृपया डेटा पेस्ट करा!', 'warning');
+        return;
+      }
+
+      const lines = text.split('\n').filter(l => l.trim().length > 0);
+      if (lines.length === 0) return;
+
+      const delimiter = lines[0].includes('\t') ? '\t' : ',';
+      const headers = lines[0].split(delimiter).map(h => h.trim());
+
+      const newRows = [];
+      for (let i = 1; i < lines.length; i++) {
+        const parts = lines[i].split(delimiter);
+        const rowObj = {};
+        headers.forEach((h, hIdx) => {
+          rowObj[h] = parts[hIdx] ? parts[hIdx].trim() : '';
+        });
+        newRows.push(mapRowToApplicant(rowObj, applicantsList.length + i));
+      }
+
+      if (newRows.length > 0) {
+        applicantsList = applicantsList.concat(newRows);
+        currentPreviewIndex = 0;
+        renderApplicantTable();
+        renderLivePreview();
+        closePasteModal();
+        showToast(`${newRows.length} नोंदी यशस्वीरीत्या जोडल्या!`, 'success');
+      } else {
+        showToast('डेटा वाचता आला नाही!', 'warning');
+      }
+    }
+
+    function openAddModal() {
+      document.getElementById('modal-add-record').classList.add('active');
+    }
+
+    function closeAddModal() {
+      document.getElementById('modal-add-record').classList.remove('active');
+    }
+
+    function saveNewRecord() {
+      const personName = document.getElementById('add-person-name').value.trim();
+      const objectorName = document.getElementById('add-objector-name').value.trim();
+
+      if (!personName || !objectorName) {
+        showToast('कृपया मतदाराचे नाव आणि हरकतदाराचे नाव भरा!', 'warning');
+        return;
+      }
+
+      const newRec = {
+        selected: true,
+        refNo: document.getElementById('add-ref-no').value.trim(),
+        objectionNo: document.getElementById('add-objection-no').value.trim(),
+        personName,
+        personAddress: document.getElementById('add-person-address').value.trim(),
+        serialNo: document.getElementById('add-serial-no').value.trim(),
+        partNo: document.getElementById('add-part-no').value.trim(),
+        objectorName,
+        objectorAddress: document.getElementById('add-objector-address').value.trim(),
+        constituency: document.getElementById('def-constituency')?.value || '268 Kankavli Constituency',
+        hearingPlace: document.getElementById('add-hearing-place').value.trim(),
+        hearingDate: document.getElementById('add-hearing-date').value.trim(),
+        hearingTime: document.getElementById('add-hearing-time').value.trim(),
+        noticeDate: '05/01/2024',
+        serviceDateVoter: '06/01/2024',
+        grounds: document.getElementById('add-grounds').value.trim(),
+        eroTitle: 'Electoral Registration Officer,\n268 Kankavli Constituency',
+        servingOfficer: `BLO-${document.getElementById('add-part-no').value.trim()}`,
+        roznamaNotes: `पुकारणी केली. BLO केंद्र क्र. ${document.getElementById('add-part-no').value.trim()} उपस्थित.\n${personName} यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत.\nसबब निर्णयावर.`
+      };
+
+      applicantsList.push(newRec);
+      currentPreviewIndex = applicantsList.length - 1;
+      renderApplicantTable();
+      renderLivePreview();
+      closeAddModal();
+      showToast('नवीन नोटीस नोंद यशस्वीरीत्या जोडली!', 'success');
+    }
+
+    /* Escape HTML utility */
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    /* Toast Notification */
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toastBox');
+      const icon = document.getElementById('toastIcon');
+      const message = document.getElementById('toastMessage');
+
+      toast.className = `toast-box ${type} show`;
+      message.innerText = msg;
+
+      if (type === 'success') {
+        icon.className = 'fa-solid fa-circle-check';
+      } else if (type === 'warning') {
+        icon.className = 'fa-solid fa-triangle-exclamation';
+      } else {
+        icon.className = 'fa-solid fa-circle-info';
+      }
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+  </script>
+</body>
+</html>

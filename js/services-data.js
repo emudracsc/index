@@ -1137,6 +1137,18 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "form12-notice-generator.html",
     isInternal: true
   },
+  // ⚖️ ERO सुनावणी नोटीस जनरेटर (फॉर्म १३, फॉर्म १४, बजावणी दाखला व सुनावणी रोजनामा - संपूर्ण ५-पानी संच)
+  {
+    id: "link-ero-hearing-notice",
+    category: "शासकीय सेवा व शोध",
+    icon: "fa-solid fa-stamp",
+    title_mr: "⚖️ ERO सुनावणी नोटीस जनरेटर (फॉर्म १३, १४, बजावणी दाखला व रोजनामा ५-पानी संच)",
+    title_en: "ERO Hearing Notice Generator (Form 13, Form 14, Service Certs & Roznama 5-Page Dossier)",
+    desc_mr: "Registration of Electors Rules, 1960 अंतर्गत फॉर्म ७ मतदार यादी हरकत सुनावणीसाठी फॉर्म १३ (Duplicate Office Copy), फॉर्म १४ (Original Voter Copy), दोन्ही बजावणी प्रमाणपत्रे व सुनावणी रोजनामा एक्सेल डेटावरून १-क्लिकमध्ये बल्क जनरेट व प्रिंट करा.",
+    desc_en: "Generate complete 5-page ERO voter hearing notice dossiers including Form 13, Form 14, Service Certificates & Hearing Proceeding Roznama from Excel with 1-click bulk print.",
+    url: "ero-hearing-notice-generator.html",
+    isInternal: true
+  },
   // 📋 VB-G RAM G योजना अर्ज जनरेटर (जलतारा / शोष खड्डा / गाय गोठा / शेळी शेड)
   {
     id: "link-vb-gramg-generator",
