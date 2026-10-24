@@ -247,6 +247,112 @@
       background: #047857;
     }
 
+    /* Print Controller Strip */
+    .print-controller-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #ffffff;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+      border: 1.5px solid #3b82f6;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .print-ctrl-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .count-input-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .stepper-wrap {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .btn-step {
+      background: #f1f5f9;
+      border: none;
+      width: 28px;
+      height: 32px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .btn-step:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .count-field {
+      width: 48px;
+      height: 32px;
+      border: none;
+      text-align: center;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      outline: none;
+    }
+
+    .scope-field {
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #1e293b;
+      background: #ffffff;
+      outline: none;
+    }
+
+    .range-inputs {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .range-field {
+      width: 55px;
+      height: 32px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      text-align: center;
+      font-family: inherit;
+      font-weight: 700;
+      outline: none;
+    }
+
     /* Main Grid: Control Panel + Live Preview */
     .view-grid {
       display: grid;
@@ -922,6 +1028,7 @@
       .gov-top-bar,
       .header-nav,
       .mode-tab-bar,
+      .print-controller-bar,
       .view-grid > .panel-card,
       .preview-toolbar,
       .toast-box,
@@ -1145,10 +1252,67 @@
         <button class="btn-quick" onclick="loadSampleData(true)" title="सईदा सत्तार काझी व इतर नमुना डेटा लोड करा">
           <i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> नमुना डेटा लोड
         </button>
-        <button class="btn-quick success" onclick="printAllSelected()" title="निवडलेल्या सर्व मतदारांच्या नोटिसा एकाच वेळी A4 वर प्रिंट करा">
-          <i class="fa-solid fa-print"></i> <strong>सर्व निवडलेले प्रिंट करा</strong>
+        <button class="btn-quick success" onclick="executeCustomPrint()" title="निवडलेल्या सेटिंगनुसार १ प्रत किंवा मॅन्युअल काउंट प्रिंट करा">
+          <i class="fa-solid fa-print"></i> <strong>प्रिंट करा (१ प्रत)</strong>
         </button>
       </div>
+    </div>
+
+    <!-- 🖨️ Dedicated Print Settings & Manual Count Strip -->
+    <div class="print-controller-bar">
+      <div class="print-ctrl-title">
+        <i class="fa-solid fa-print" style="color: #2563eb; font-size: 1.1rem;"></i>
+        <span><strong>प्रिंट काउंट व कॉपी सेटिंग्ज:</strong></span>
+      </div>
+
+      <!-- Scope of records -->
+      <div class="count-input-group">
+        <label>नोंदी व्याप्ती:</label>
+        <select id="print-scope-select" class="scope-field" onchange="onPrintScopeChange()">
+          <option value="current" selected>चालू नोंद (फक्त १ प्रत)</option>
+          <option value="count">मॅन्युअल संख्या (पहिली N नोंदी)</option>
+          <option value="range">मॅन्युअल श्रेणी (पासून ते पर्यंत)</option>
+          <option value="selected">सर्व निवडलेले मतदार</option>
+        </select>
+      </div>
+
+      <!-- Dynamic Range/Count Inputs -->
+      <div class="range-inputs" id="print-range-inputs" style="display: none;">
+        <span id="range-label-from">क्र.</span>
+        <input type="number" id="print-range-from" class="range-field" value="1" min="1" oninput="updatePrintBadge()">
+        <span id="range-label-to">ते:</span>
+        <input type="number" id="print-range-to" class="range-field" value="1" min="1" oninput="updatePrintBadge()">
+      </div>
+
+      <!-- Copies Count Input -->
+      <div class="count-input-group">
+        <label>प्रती संख्या (Copies):</label>
+        <div class="stepper-wrap">
+          <button type="button" class="btn-step" onclick="changePrintCopies(-1)">-</button>
+          <input type="number" id="print-copies-count" class="count-field" value="1" min="1" max="100" oninput="updatePrintBadge()">
+          <button type="button" class="btn-step" onclick="changePrintCopies(1)">+</button>
+        </div>
+      </div>
+
+      <!-- Which Page/Form to Generate -->
+      <div class="count-input-group">
+        <label>प्रत प्रकार:</label>
+        <select id="print-pages-choice" class="scope-field" onchange="updatePrintBadge()">
+          <option value="preview" selected>चालू दृश्य (Active Preview Mode)</option>
+          <option value="form14">फक्त फॉर्म १४ (१ पान)</option>
+          <option value="form14_cert">फॉर्म १४ + तामिली (२ पाने)</option>
+          <option value="form13">फक्त फॉर्म १३ (१ पान)</option>
+          <option value="form13_cert">फॉर्म १३ + तामिली (२ पाने)</option>
+          <option value="roznama">फक्त रोजनामा (१ पान)</option>
+          <option value="all">सर्व ५ पाने (संपूर्ण संच)</option>
+        </select>
+      </div>
+
+      <!-- The Master Print Button -->
+      <button class="btn-quick success" onclick="executeCustomPrint()" id="btn-master-print" style="padding: 7px 16px;">
+        <i class="fa-solid fa-print"></i> <strong>प्रिंट करा</strong>
+        <span id="print-calc-badge" style="background: rgba(0,0,0,0.25); padding: 2px 8px; border-radius: 12px; font-size: 0.78rem; margin-left: 6px;">१ प्रत</span>
+      </button>
     </div>
 
     <!-- Main View Grid -->
@@ -2312,68 +2476,158 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
     }
 
     /* =========================================================================
-       PRINT FUNCTIONS
+       PRINT CONTROLLER FUNCTIONS (MANUAL COUNT & COPIES)
        ========================================================================= */
 
-    /* Print Active Record */
-    function printCurrentActiveRecord() {
-      const app = applicantsList[currentPreviewIndex];
-      if (!app) {
+    function changePrintCopies(delta) {
+      const field = document.getElementById('print-copies-count');
+      let val = (parseInt(field.value) || 1) + delta;
+      if (val < 1) val = 1;
+      if (val > 100) val = 100;
+      field.value = val;
+      updatePrintBadge();
+    }
+
+    function onPrintScopeChange() {
+      const scope = document.getElementById('print-scope-select').value;
+      const rangeWrap = document.getElementById('print-range-inputs');
+      const fromLabel = document.getElementById('range-label-from');
+      const fromInput = document.getElementById('print-range-from');
+      const toLabel = document.getElementById('range-label-to');
+      const toInput = document.getElementById('print-range-to');
+
+      if (scope === 'count') {
+        rangeWrap.style.display = 'inline-flex';
+        fromLabel.style.display = 'none';
+        fromInput.style.display = 'none';
+        toLabel.innerText = 'पहिली संख्या:';
+        toInput.value = Math.min(5, applicantsList.length || 1);
+      } else if (scope === 'range') {
+        rangeWrap.style.display = 'inline-flex';
+        fromLabel.style.display = 'inline';
+        fromInput.style.display = 'inline';
+        fromInput.value = 1;
+        toLabel.innerText = 'ते:';
+        toInput.value = Math.min(applicantsList.length || 1, 5);
+      } else {
+        rangeWrap.style.display = 'none';
+      }
+
+      updatePrintBadge();
+    }
+
+    function updatePrintBadge() {
+      const badge = document.getElementById('print-calc-badge');
+      if (!badge) return;
+
+      const copies = Math.max(1, parseInt(document.getElementById('print-copies-count')?.value) || 1);
+      const scope = document.getElementById('print-scope-select')?.value || 'current';
+
+      let recCount = 1;
+      if (scope === 'current') {
+        recCount = 1;
+      } else if (scope === 'count') {
+        recCount = Math.max(1, parseInt(document.getElementById('print-range-to')?.value) || 1);
+        if (applicantsList.length > 0) recCount = Math.min(recCount, applicantsList.length);
+      } else if (scope === 'range') {
+        const from = Math.max(1, parseInt(document.getElementById('print-range-from')?.value) || 1);
+        const to = Math.max(from, parseInt(document.getElementById('print-range-to')?.value) || 1);
+        recCount = (to - from + 1);
+      } else if (scope === 'selected') {
+        recCount = applicantsList.filter(a => a.selected).length;
+      }
+
+      const totalPrints = recCount * copies;
+      badge.innerText = `${totalPrints} प्रत${totalPrints > 1 ? 'ी' : ''}`;
+    }
+
+    /* Master Unified Print Engine */
+    function executeCustomPrint() {
+      if (applicantsList.length === 0) {
         showToast('प्रिंट करण्यासाठी कोणतीही नोंद उपलब्ध नाही!', 'warning');
         return;
       }
 
-      const printContainer = document.getElementById('printContainer');
-      let html = '';
+      const copiesCount = Math.max(1, parseInt(document.getElementById('print-copies-count')?.value) || 1);
+      const scope = document.getElementById('print-scope-select')?.value || 'current';
+      const pageChoice = document.getElementById('print-pages-choice')?.value || 'preview';
 
-      if (previewDisplayMode === 'all') {
-        html += buildRoznamaHtml(app, 1);
-        html += buildForm13Html(app, 20);
-        html += buildCert1Html(app, 2);
-        html += buildForm14Html(app, 4);
-        html += buildCert2Html(app, 5);
-      } else if (previewDisplayMode === 'roznama') {
-        html += buildRoznamaHtml(app, 1);
-      } else if (previewDisplayMode === 'form13') {
-        html += buildForm13Html(app, 20);
-      } else if (previewDisplayMode === 'cert1') {
-        html += buildCert1Html(app, 2);
-      } else if (previewDisplayMode === 'form14') {
-        html += buildForm14Html(app, 4);
-      } else if (previewDisplayMode === 'cert2') {
-        html += buildCert2Html(app, 5);
+      let targetList = [];
+
+      if (scope === 'current') {
+        const currentApp = applicantsList[currentPreviewIndex];
+        if (currentApp) targetList = [currentApp];
+      } else if (scope === 'count') {
+        const count = Math.max(1, parseInt(document.getElementById('print-range-to')?.value) || 1);
+        targetList = applicantsList.slice(0, count);
+      } else if (scope === 'range') {
+        const from = Math.max(1, parseInt(document.getElementById('print-range-from')?.value) || 1);
+        const to = Math.max(from, parseInt(document.getElementById('print-range-to')?.value) || 1);
+        targetList = applicantsList.slice(from - 1, to);
+      } else if (scope === 'selected') {
+        targetList = applicantsList.filter(a => a.selected);
+        if (targetList.length === 0) {
+          showToast('कृपया किमान एक नोंद निवडा!', 'warning');
+          return;
+        }
       }
 
-      printContainer.innerHTML = html;
-      printContainer.style.display = 'block';
-
-      window.print();
-
-      setTimeout(() => {
-        printContainer.style.display = 'none';
-        printContainer.innerHTML = '';
-      }, 1000);
-    }
-
-    /* Batch Print All Selected Applicants */
-    function printAllSelected() {
-      const selected = applicantsList.filter(a => a.selected);
-      if (selected.length === 0) {
-        showToast('कृपया किमान एक मतदार / हरकतदार निवडा!', 'warning');
+      if (targetList.length === 0) {
+        showToast('प्रिंट करण्यासाठी कोणतीही नोंद सापडली नाही!', 'warning');
         return;
       }
+
+      // Helper to build selected pages for an applicant
+      const buildPagesForApp = (app, recIdx) => {
+        let p = '';
+        if (pageChoice === 'preview') {
+          if (previewDisplayMode === 'all') {
+            p += buildRoznamaHtml(app, 1);
+            p += buildForm13Html(app, 20 + recIdx);
+            p += buildCert1Html(app, 2);
+            p += buildForm14Html(app, 4);
+            p += buildCert2Html(app, 5);
+          } else if (previewDisplayMode === 'roznama') {
+            p += buildRoznamaHtml(app, 1);
+          } else if (previewDisplayMode === 'form13') {
+            p += buildForm13Html(app, 20 + recIdx);
+          } else if (previewDisplayMode === 'cert1') {
+            p += buildCert1Html(app, 2);
+          } else if (previewDisplayMode === 'form14') {
+            p += buildForm14Html(app, 4);
+          } else if (previewDisplayMode === 'cert2') {
+            p += buildCert2Html(app, 5);
+          }
+        } else if (pageChoice === 'form14') {
+          p += buildForm14Html(app, 4);
+        } else if (pageChoice === 'form14_cert') {
+          p += buildForm14Html(app, 4);
+          p += buildCert2Html(app, 5);
+        } else if (pageChoice === 'form13') {
+          p += buildForm13Html(app, 20 + recIdx);
+        } else if (pageChoice === 'form13_cert') {
+          p += buildForm13Html(app, 20 + recIdx);
+          p += buildCert1Html(app, 2);
+        } else if (pageChoice === 'roznama') {
+          p += buildRoznamaHtml(app, 1);
+        } else if (pageChoice === 'all') {
+          p += buildRoznamaHtml(app, 1);
+          p += buildForm13Html(app, 20 + recIdx);
+          p += buildCert1Html(app, 2);
+          p += buildForm14Html(app, 4);
+          p += buildCert2Html(app, 5);
+        }
+        return p;
+      };
 
       const printContainer = document.getElementById('printContainer');
       let combinedHtml = '';
 
-      selected.forEach((app, idx) => {
-        // Full 5 pages per notice set
-        combinedHtml += buildRoznamaHtml(app, 1);
-        combinedHtml += buildForm13Html(app, 20 + idx);
-        combinedHtml += buildCert1Html(app, 2);
-        combinedHtml += buildForm14Html(app, 4);
-        combinedHtml += buildCert2Html(app, 5);
-      });
+      for (let copy = 1; copy <= copiesCount; copy++) {
+        targetList.forEach((app, idx) => {
+          combinedHtml += buildPagesForApp(app, idx);
+        });
+      }
 
       printContainer.innerHTML = combinedHtml;
       printContainer.style.display = 'block';
@@ -2384,6 +2638,19 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
         printContainer.style.display = 'none';
         printContainer.innerHTML = '';
       }, 1500);
+    }
+
+    /* Print Active Record */
+    function printCurrentActiveRecord() {
+      executeCustomPrint();
+    }
+
+    /* Batch Print All Selected Applicants */
+    function printAllSelected() {
+      const select = document.getElementById('print-scope-select');
+      if (select) select.value = 'selected';
+      onPrintScopeChange();
+      executeCustomPrint();
     }
 
     /* =========================================================================
