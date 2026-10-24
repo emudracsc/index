@@ -1149,6 +1149,18 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "ero-hearing-notice-generator.html",
     isInternal: true
   },
+  // 📊 Disposal Report Generator (ERO / AERO दैनिक अहवाल जनरेटर - Part-wise Report 2 व Summary Report 3)
+  {
+    id: "link-disposal-report-generator",
+    category: "शासकीय सेवा व शोध",
+    icon: "fa-solid fa-chart-pie",
+    title_mr: "📊 Disposal Report Generator (ERO / AERO दैनिक अहवाल जनरेटर)",
+    title_en: "Disposal Report Generator (ERO / AERO Part-wise Report 2 & Summary Report 3)",
+    desc_mr: "Sheet1 एक्सेल डेटा पेस्ट किंवा अपलोड करून ERO/AERO पार्टनिहाय Report 2 व समरी Report 3 A3 Landscape मध्ये आपोआप तयार व प्रिंट करा.",
+    desc_en: "Automatic ERO/AERO Part-wise Disposal Report 2 and Summary Report 3 generator from Sheet1 Excel data paste/upload with A3 Landscape print/PDF.",
+    url: "disposal-report-generator.html",
+    isInternal: true
+  },
   // 📋 VB-G RAM G योजना अर्ज जनरेटर (जलतारा / शोष खड्डा / गाय गोठा / शेळी शेड)
   {
     id: "link-vb-gramg-generator",
