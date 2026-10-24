@@ -586,15 +586,9 @@
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-    }
-
-    /* In Form 13 & 14, let content and footer flow naturally from top to bottom */
-    .sheet-inner.form13-inner,
-    .sheet-inner.form14-inner {
       justify-content: flex-start;
       gap: 0;
+      position: relative;
     }
 
     /* Page number watermark / top-right mark */
@@ -2077,51 +2071,47 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
         <div class="a4-sheet">
           <div class="sheet-corner-num">${pageNum}</div>
           <div class="sheet-inner">
-            <div>
-              <div class="cert-title-block">
-                <div class="cert-rules">Registration of Electors Rules, 1960</div>
-                <div class="cert-order">(Statutory Rules and Order)</div>
-                <div class="cert-main-head">CERTIFICATE OF SERVICE OF NOTICE</div>
-                <div class="cert-sub-head">Received notice of the date of hearing</div>
-              </div>
+            <div class="cert-title-block">
+              <div class="cert-rules">Registration of Electors Rules, 1960</div>
+              <div class="cert-order">(Statutory Rules and Order)</div>
+              <div class="cert-main-head">CERTIFICATE OF SERVICE OF NOTICE</div>
+              <div class="cert-sub-head">Received notice of the date of hearing</div>
+            </div>
 
-              <!-- Top Row: Date on Left, Objector Name on Right -->
-              <div class="cert-top-row">
-                <div>
-                  Date: <span class="dotted-val left-align" style="min-width: 110px;">${escapeHtml(app.noticeDate)}</span>
-                </div>
-                <div style="text-align: right; min-width: 220px;">
-                  <div style="font-weight: 700;">${escapeHtml(app.objectorName)}</div>
-                  <div style="border-bottom: 1px dotted #000; width: 100%; height: 16px;"></div>
-                  <div style="margin-top: 2px;">Objector</div>
-                </div>
+            <!-- Top Row: Date on Left, Objector Name on Right -->
+            <div class="cert-top-row">
+              <div>
+                Date: <span class="dotted-val left-align" style="min-width: 110px;">${escapeHtml(app.noticeDate)}</span>
               </div>
-
-              <!-- Main Certification Paragraph -->
-              <div class="cert-body-para">
-                Certified that the notice on the objector has been duly served by me this <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> on (name) <span class="dotted-val left-align" style="min-width: 200px;">${escapeHtml(app.objectorName)}</span> personally / by affixing on residence.
+              <div style="text-align: right; min-width: 220px;">
+                <div style="font-weight: 700;">${escapeHtml(app.objectorName)}</div>
+                <div style="border-bottom: 1px dotted #000; width: 100%; height: 16px;"></div>
+                <div style="margin-top: 2px;">Objector</div>
               </div>
             </div>
 
-            <!-- Footer: Place, Date & Serving Officer -->
-            <div>
-              <div class="doc-footer-grid">
-                <div class="doc-footer-left">
-                  <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
-                  <div style="margin-top: 4px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
-                </div>
+            <!-- Main Certification Paragraph -->
+            <div class="cert-body-para">
+              Certified that the notice on the objector has been duly served by me this <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> on (name) <span class="dotted-val left-align" style="min-width: 200px;">${escapeHtml(app.objectorName)}</span> personally / by affixing on residence.
+            </div>
 
-                <div class="doc-footer-right">
-                  <div class="sig-space"></div>
-                  <div style="border-bottom: 1px dotted #000; width: 180px; margin-left: auto; height: 1px;"></div>
-                  <div style="font-weight: 700; margin-top: 4px;">Serving Officer.</div>
-                  <div style="font-size: 10pt; color: #333;">(निवडणूक नायब तहसिलदार / प्राधिकृत अधिकारी)</div>
-                </div>
+            <!-- Footer: Place, Date & Serving Officer (Moved Up with Dedicated Signing Space) -->
+            <div class="doc-footer-grid" style="margin-top: 32px;">
+              <div class="doc-footer-left">
+                <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
+                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
               </div>
 
-              <div class="post-receipt-box">
-                N.B.- If this notice is served by post, attach the receipt here.
+              <div class="doc-footer-right">
+                <div class="sig-space" style="height: 60px;"></div>
+                <div style="border-bottom: 1px dotted #000; width: 190px; margin-left: auto; height: 1px;"></div>
+                <div style="font-weight: 700; font-size: 11pt; margin-top: 5px;">Serving Officer.</div>
+                <div style="font-size: 10pt; color: #333;">(निवडणूक नायब तहसिलदार / प्राधिकृत अधिकारी)</div>
               </div>
+            </div>
+
+            <div class="post-receipt-box" style="margin-top: 24px;">
+              N.B.- If this notice is served by post, attach the receipt here.
             </div>
 
           </div>
@@ -2222,51 +2212,47 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
         <div class="a4-sheet">
           <div class="sheet-corner-num">${pageNum}</div>
           <div class="sheet-inner">
-            <div>
-              <div class="cert-title-block">
-                <div class="cert-rules">Registration of Electors Rules, 1960</div>
-                <div class="cert-order">(Statutory Rules and Order)</div>
-                <div class="cert-main-head">CERTIFICATE OF SERVICE OF NOTICE</div>
-                <div class="cert-sub-head">Received notice of the date of hearing</div>
-              </div>
+            <div class="cert-title-block">
+              <div class="cert-rules">Registration of Electors Rules, 1960</div>
+              <div class="cert-order">(Statutory Rules and Order)</div>
+              <div class="cert-main-head">CERTIFICATE OF SERVICE OF NOTICE</div>
+              <div class="cert-sub-head">Received notice of the date of hearing</div>
+            </div>
 
-              <!-- Top Row: Date on Left, Person Name on Right -->
-              <div class="cert-top-row">
-                <div>
-                  Date: <span class="dotted-val left-align" style="min-width: 110px;">${escapeHtml(voterServeDate)}</span>
-                </div>
-                <div style="text-align: right; min-width: 220px;">
-                  <div style="font-weight: 700;">${escapeHtml(app.personName)}</div>
-                  <div style="border-bottom: 1px dotted #000; width: 100%; height: 16px;"></div>
-                  <div style="margin-top: 2px;">Person objected to</div>
-                </div>
+            <!-- Top Row: Date on Left, Person Name on Right -->
+            <div class="cert-top-row">
+              <div>
+                Date: <span class="dotted-val left-align" style="min-width: 110px;">${escapeHtml(voterServeDate)}</span>
               </div>
-
-              <!-- Main Certification Paragraph -->
-              <div class="cert-body-para">
-                Certified that the notice on the person, the entry relating to whose name has been objected to, has been duly served by me this <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> on (name) <span class="dotted-val left-align" style="min-width: 200px;">${escapeHtml(app.personName)}</span> personally / by affixing on residence.
+              <div style="text-align: right; min-width: 220px;">
+                <div style="font-weight: 700;">${escapeHtml(app.personName)}</div>
+                <div style="border-bottom: 1px dotted #000; width: 100%; height: 16px;"></div>
+                <div style="margin-top: 2px;">Person objected to</div>
               </div>
             </div>
 
-            <!-- Footer: Place, Date & Serving Officer -->
-            <div>
-              <div class="doc-footer-grid">
-                <div class="doc-footer-left">
-                  <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
-                  <div style="margin-top: 4px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(voterServeDate)}</span></div>
-                </div>
+            <!-- Main Certification Paragraph -->
+            <div class="cert-body-para">
+              Certified that the notice on the person, the entry relating to whose name has been objected to, has been duly served by me this <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> on (name) <span class="dotted-val left-align" style="min-width: 200px;">${escapeHtml(app.personName)}</span> personally / by affixing on residence.
+            </div>
 
-                <div class="doc-footer-right">
-                  <div class="sig-space"></div>
-                  <div style="border-bottom: 1px dotted #000; width: 180px; margin-left: auto; height: 1px;"></div>
-                  <div style="font-weight: 700; margin-top: 4px;">Serving Officer.</div>
-                  <div style="font-size: 10pt; color: #333;">${escapeHtml(app.servingOfficer || `BLO-${app.partNo}`)}</div>
-                </div>
+            <!-- Footer: Place, Date & Serving Officer (Moved Up with Dedicated Signing Space) -->
+            <div class="doc-footer-grid" style="margin-top: 32px;">
+              <div class="doc-footer-left">
+                <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
+                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(voterServeDate)}</span></div>
               </div>
 
-              <div class="post-receipt-box">
-                N.B.- If this notice is served by post, attach the receipt here.
+              <div class="doc-footer-right">
+                <div class="sig-space" style="height: 60px;"></div>
+                <div style="border-bottom: 1px dotted #000; width: 190px; margin-left: auto; height: 1px;"></div>
+                <div style="font-weight: 700; font-size: 11pt; margin-top: 5px;">Serving Officer.</div>
+                <div style="font-size: 10pt; color: #333;">${escapeHtml(app.servingOfficer || `BLO-${app.partNo}`)}</div>
               </div>
+            </div>
+
+            <div class="post-receipt-box" style="margin-top: 24px;">
+              N.B.- If this notice is served by post, attach the receipt here.
             </div>
 
           </div>
