@@ -1464,8 +1464,9 @@
                   <input type="text" id="se-serial-no" class="form-control" oninput="liveUpdateActive()">
                 </div>
                 <div class="form-field">
-                  <label>भाग / केंद्र (Part Name/No.):</label>
-                  <input type="text" id="se-part-no" class="form-control" oninput="liveUpdateActive()">
+                  <label>भाग क्रमांक / नाव (Part No):</label>
+                  <input type="text" id="se-part-no" class="form-control" oninput="liveUpdateActive()" placeholder="उदा. 195 काजिर्डे">
+                  <small style="color: #64748b; font-size: 0.72rem; margin-top: 2px; display: block;">बजावणी अधिकारी प्रिंटवर: <strong>BLO - [भाग क्रमांक/नाव]</strong></small>
                 </div>
               </div>
             </div>
@@ -1820,19 +1821,23 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
       const personName = getVal(['personobjectedname', 'personname', 'votername', 'मतदाराचेनाव', 'नाव', 'person']) || 'Saeeda Sattar Kazi';
       const personAddress = getVal(['personobjectedaddress', 'personaddress', 'voteraddress', 'मतदाराचापत्ता', 'पत्ता']) || 'House No 94, Kazirde, Kharepatan, Kankavli, Sindhudurg, Maharashtra- 416703';
       const serialNo = getVal(['serialno', 'serial', 'अनुक्रमांक', 'srno', 'slno']) || '486';
-      const partNo = getVal(['partno', 'partname', 'भागक्र', 'भागनाव', 'गाव', 'karjirde']) || 'karjirde';
+      const partNo = getVal(['partno', 'partname', 'भागक्र', 'भागनाव', 'गाव', 'karjirde']) || '195 काजिर्डे';
       const objectorName = getVal(['objectorname', 'objector', 'हरकतदाराचेनाव', 'अर्जदाराचेनाव']) || 'Ankita Atul Kambli';
       const objectorAddress = getVal(['objectoraddress', 'हरकतदाराचापत्ता']) || '175 , Maharashtra-';
       const constituency = getVal(['constituency', 'मतदारसंघ', 'विधानसभा']) || '268 Kankavli Constituency';
       const hearingPlace = getVal(['hearingplace', 'place', 'सुनावणीठिकाण', 'ठिकाण']) || 'At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602';
       const hearingTime = getVal(['hearingtime', 'time', 'सुनावणीवेळ', 'वेळ']) || '10:30:00';
-      const hearingDate = getVal(['hearingdate', 'सुनावणीदिनांक', 'दिनांक']) || '10/01/2024';
-      const noticeDate = getVal(['noticedate', 'नोटीसदिनांक']) || '05/01/2024';
-      const serviceDateVoter = getVal(['servicedatevoter', 'तामिलीदिनांकमतदार']) || '06/01/2024';
+      const rawHearingDate = getVal(['hearingdate', 'सुनावणीदिनांक', 'दिनांक']) || '10/01/2024';
+      const rawNoticeDate = getVal(['noticedate', 'नोटीसदिनांक']) || '05/01/2024';
+      const rawServiceDateVoter = getVal(['servicedatevoter', 'तामिलीदिनांकमतदार']) || '06/01/2024';
+      const hearingDate = formatDateDDMMYYYY(rawHearingDate);
+      const noticeDate = formatDateDDMMYYYY(rawNoticeDate);
+      const serviceDateVoter = formatDateDDMMYYYY(rawServiceDateVoter);
       const grounds = getVal(['grounds', 'ground', 'कारण', 'हरकतीचेकारण']) || 'Absent/Permanently shifted';
       const eroTitle = getVal(['erotitle', 'ero', 'अधिकारी']) || 'Electoral Registration Officer,\n268 Kankavli Constituency';
-      const servingOfficer = getVal(['servingofficer', 'बजावणीअधिकारी', 'blo']) || `BLO-195 ${partNo}`;
-      const roznamaNotes = getVal(['roznama', 'कार्यवाही', 'शेरा']) || `पुकारणी केली. BLO केंद्र क्र. 195 ${partNo} उपस्थित.\n${personName} यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत.\nसबब निर्णयावर.`;
+      const rawServingOfficer = getVal(['servingofficer', 'बजावणीअधिकारी', 'blo']) || '';
+      const servingOfficer = rawServingOfficer ? formatServingOfficer({ partNo, servingOfficer: rawServingOfficer }) : `BLO - ${partNo}`;
+      const roznamaNotes = getVal(['roznama', 'कार्यवाही', 'शेरा']) || `पुकारणी केली. BLO - ${partNo} उपस्थित.\n${personName} यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत.\nसबब निर्णयावर.`;
 
       return {
         selected: true,
@@ -1857,34 +1862,52 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
       };
     }
 
-    /* Convert date string (DD/MM/YYYY or YYYY-MM-DD) to Day with Ordinal, Month Name, and Year */
+    /* Convert date string (DD/MM/YYYY, YYYY-MM-DD, dots, or Excel serial) to Day with Ordinal, Month Name, and Year */
     function parseDateParts(dateStr) {
-      if (!dateStr) return { dayOrdinal: '10th', monthName: 'January', year: '2024', formatted: '' };
+      if (!dateStr) return { day: 10, month: 1, year: '2024', dayOrdinal: '10th', monthName: 'January', formatted: '10/01/2024' };
 
       let d = 10, m = 1, y = 2024;
-      const clean = dateStr.trim();
+      const clean = String(dateStr).trim();
 
-      if (clean.includes('/')) {
+      // Excel serial date number
+      if (/^\d{5}$/.test(clean)) {
+        const serial = parseInt(clean, 10);
+        const utcDays = serial - 25569;
+        const dateObj = new Date(utcDays * 86400 * 1000);
+        if (!isNaN(dateObj.getTime())) {
+          d = dateObj.getUTCDate();
+          m = dateObj.getUTCMonth() + 1;
+          y = dateObj.getUTCFullYear();
+        }
+      } else if (clean.includes('/')) {
         const parts = clean.split('/');
         if (parts.length >= 3) {
-          d = parseInt(parts[0]) || 10;
-          m = parseInt(parts[1]) || 1;
-          y = parseInt(parts[2]) || 2024;
+          d = parseInt(parts[0], 10) || 10;
+          m = parseInt(parts[1], 10) || 1;
+          y = parseInt(parts[2], 10) || 2024;
           if (y < 100) y += 2000;
         }
       } else if (clean.includes('-')) {
         const parts = clean.split('-');
         if (parts.length >= 3) {
           if (parts[0].length === 4) {
-            y = parseInt(parts[0]) || 2024;
-            m = parseInt(parts[1]) || 1;
-            d = parseInt(parts[2]) || 10;
+            y = parseInt(parts[0], 10) || 2024;
+            m = parseInt(parts[1], 10) || 1;
+            d = parseInt(parts[2], 10) || 10;
           } else {
-            d = parseInt(parts[0]) || 10;
-            m = parseInt(parts[1]) || 1;
-            y = parseInt(parts[2]) || 2024;
+            d = parseInt(parts[0], 10) || 10;
+            m = parseInt(parts[1], 10) || 1;
+            y = parseInt(parts[2], 10) || 2024;
             if (y < 100) y += 2000;
           }
+        }
+      } else if (clean.includes('.')) {
+        const parts = clean.split('.');
+        if (parts.length >= 3) {
+          d = parseInt(parts[0], 10) || 10;
+          m = parseInt(parts[1], 10) || 1;
+          y = parseInt(parts[2], 10) || 2024;
+          if (y < 100) y += 2000;
         }
       }
 
@@ -1898,11 +1921,38 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
       const monthName = MONTH_NAMES[Math.max(0, Math.min(11, m - 1))] || 'January';
 
       return {
+        day: d,
+        month: m,
+        year: String(y),
         dayOrdinal: getOrdinal(d),
         monthName,
-        year: String(y),
         formatted: `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`
       };
+    }
+
+    /* Strict DD/MM/YYYY Formatter for All Print & Display Dates */
+    function formatDateDDMMYYYY(val) {
+      if (val === null || val === undefined) return '';
+      const str = String(val).trim();
+      if (!str) return '';
+      const p = parseDateParts(str);
+      return p.formatted || str;
+    }
+
+    /* Serving Officer Formatter: BLO - [भाग क्रमांक / नाव (Part No)] */
+    function formatServingOfficer(app) {
+      if (!app) return 'BLO';
+      let val = (app.partNo || '').trim();
+      if (!val && app.servingOfficer) {
+        val = app.servingOfficer.trim();
+      }
+      if (!val) return 'BLO';
+
+      // If it already starts with 'BLO' or 'BLO-' or 'BLO -', normalize to 'BLO - '
+      if (/^blo\b[\s\-_:]*/i.test(val)) {
+        return val.replace(/^blo\b[\s\-_:]*/i, 'BLO - ');
+      }
+      return `BLO - ${val}`;
     }
 
     /* Render Applicant Table */
@@ -2018,8 +2068,8 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
       applicantsList.forEach(app => {
         if (hearingPlace) app.hearingPlace = hearingPlace;
         if (hearingTime) app.hearingTime = hearingTime;
-        if (hearingDate) app.hearingDate = hearingDate;
-        if (noticeDate) app.noticeDate = noticeDate;
+        if (hearingDate) app.hearingDate = formatDateDDMMYYYY(hearingDate);
+        if (noticeDate) app.noticeDate = formatDateDDMMYYYY(noticeDate);
         if (constituency) app.constituency = constituency;
         if (eroTitle) app.eroTitle = eroTitle;
       });
@@ -2093,7 +2143,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
         formattedNotes = notesLines.map(l => `<div>${escapeHtml(l)}</div>`).join('');
       } else {
         formattedNotes = `
-          <div>पुकारणी केली. BLO केंद्र क्र. ${escapeHtml(app.partNo)} उपस्थित.</div>
+          <div>पुकारणी केली. ${escapeHtml(formatServingOfficer(app))} उपस्थित.</div>
           <div>${escapeHtml(app.personName)} यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत.</div>
           <div>सबब निर्णयावर.</div>
         `;
@@ -2119,7 +2169,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
               <tbody>
                 <tr>
                   <td class="roznama-date-col">
-                    <div style="font-weight: 700; margin-bottom: 8px;">${escapeHtml(app.hearingDate)}</div>
+                    <div style="font-weight: 700; margin-bottom: 8px;">${escapeHtml(formatDateDDMMYYYY(app.hearingDate))}</div>
                   </td>
                   <td>
                     <div class="roznama-content">
@@ -2134,10 +2184,10 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
                   </td>
                   <td class="roznama-sign-col">
                     <div style="height: 40px;"></div>
-                    <div style="font-weight: 700; border-bottom: 1px dotted #000; padding-bottom: 4px;">
-                      ${escapeHtml(app.servingOfficer || `BLO-${app.partNo}`)}
+                    <div style="font-weight: 700; border-bottom: 1px dotted #000; padding-bottom: 4px; font-size: 10pt;">
+                      ${escapeHtml(formatServingOfficer(app))}
                     </div>
-                    <div style="font-size: 9pt; color: #444; margin-top: 4px;">(BLO / अधिकारी स्वाक्षरी)</div>
+                    <div style="font-size: 9pt; color: #444; margin-top: 4px;">(बजावणी अधिकारी स्वाक्षरी)</div>
                   </td>
                 </tr>
               </tbody>
@@ -2206,7 +2256,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             <div class="doc-footer-grid" style="margin-top: 32px;">
               <div class="doc-footer-left">
                 <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
-                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
+                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(formatDateDDMMYYYY(app.noticeDate))}</span></div>
 
                 <div style="margin-top: 35px;">
                   <span style="font-size: 12pt; font-weight: 700; margin-right: 6px;">X</span>
@@ -2245,7 +2295,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             <!-- Top Row: Date on Left, Objector Name on Right -->
             <div class="cert-top-row">
               <div>
-                Date: <span class="dotted-val left-align" style="min-width: 110px;">${escapeHtml(app.noticeDate)}</span>
+                Date: <span class="dotted-val left-align" style="min-width: 110px;">${escapeHtml(formatDateDDMMYYYY(app.noticeDate))}</span>
               </div>
               <div style="text-align: right; min-width: 220px;">
                 <div style="font-weight: 700;">${escapeHtml(app.objectorName)}</div>
@@ -2263,14 +2313,15 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             <div class="doc-footer-grid" style="margin-top: 32px;">
               <div class="doc-footer-left">
                 <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
-                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
+                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(formatDateDDMMYYYY(app.noticeDate))}</span></div>
               </div>
 
               <div class="doc-footer-right">
                 <div class="sig-space" style="height: 60px;"></div>
-                <div style="border-bottom: 1px dotted #000; width: 190px; margin-left: auto; height: 1px;"></div>
+                <div style="border-bottom: 1px dotted #000; width: 220px; margin-left: auto; height: 1px;"></div>
                 <div style="font-weight: 700; font-size: 11pt; margin-top: 5px;">Serving Officer.</div>
-                <div style="font-size: 10pt; color: #333;">(निवडणूक नायब तहसिलदार / प्राधिकृत अधिकारी)</div>
+                <div style="font-size: 10.5pt; font-weight: 700; margin-top: 4px; color: #111;">${escapeHtml(formatServingOfficer(app))}</div>
+                <div style="font-size: 9pt; color: #444; margin-top: 2px;">(निवडणूक नायब तहसिलदार / प्राधिकृत अधिकारी)</div>
               </div>
             </div>
 
@@ -2352,7 +2403,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             <div class="doc-footer-grid" style="margin-top: 30px;">
               <div class="doc-footer-left">
                 <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
-                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
+                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(formatDateDDMMYYYY(app.noticeDate))}</span></div>
               </div>
 
               <div class="doc-footer-right">
@@ -2386,7 +2437,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             <!-- Top Row: Date on Left, Person Name on Right -->
             <div class="cert-top-row">
               <div>
-                Date: <span class="dotted-val left-align" style="min-width: 110px;">${escapeHtml(voterServeDate)}</span>
+                Date: <span class="dotted-val left-align" style="min-width: 110px;">${escapeHtml(formatDateDDMMYYYY(voterServeDate))}</span>
               </div>
               <div style="text-align: right; min-width: 220px;">
                 <div style="font-weight: 700;">${escapeHtml(app.personName)}</div>
@@ -2404,14 +2455,15 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             <div class="doc-footer-grid" style="margin-top: 32px;">
               <div class="doc-footer-left">
                 <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
-                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(voterServeDate)}</span></div>
+                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(formatDateDDMMYYYY(voterServeDate))}</span></div>
               </div>
 
               <div class="doc-footer-right">
                 <div class="sig-space" style="height: 60px;"></div>
-                <div style="border-bottom: 1px dotted #000; width: 190px; margin-left: auto; height: 1px;"></div>
+                <div style="border-bottom: 1px dotted #000; width: 220px; margin-left: auto; height: 1px;"></div>
                 <div style="font-weight: 700; font-size: 11pt; margin-top: 5px;">Serving Officer.</div>
-                <div style="font-size: 10pt; color: #333;">${escapeHtml(app.servingOfficer || `BLO-${app.partNo}`)}</div>
+                <div style="font-size: 10.5pt; font-weight: 700; margin-top: 4px; color: #111;">${escapeHtml(formatServingOfficer(app))}</div>
+                <div style="font-size: 9pt; color: #444; margin-top: 2px;">(निवडणूक नायब तहसिलदार / प्राधिकृत अधिकारी)</div>
               </div>
             </div>
 
@@ -2666,7 +2718,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             "मतदाराचे नाव (Person Objected)": "Saeeda Sattar Kazi",
             "मतदाराचा पत्ता (Person Address)": "House No 94, Kazirde, Kharepatan, Kankavli, Sindhudurg, Maharashtra- 416703",
             "यादी अनुक्रमांक (Serial No)": "486",
-            "भाग क्रमांक / नाव (Part No)": "karjirde",
+            "भाग क्रमांक / नाव (Part No)": "195 काजिर्डे",
             "हरकतदाराचे नाव (Objector Name)": "Ankita Atul Kambli",
             "हरकतदाराचा पत्ता (Objector Address)": "175 , Maharashtra-",
             "मतदारसंघ (Constituency)": "268 Kankavli Constituency",
@@ -2677,8 +2729,8 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             "मतदार तामिली दिनांक (Service Date Voter)": "06/01/2024",
             "हरकतीचे कारण (Grounds of Objection)": "Absent/Permanently shifted",
             "ERO पदनाम व कार्यालय": "Electoral Registration Officer, 268 Kankavli Constituency",
-            "बजावणी अधिकारी / BLO": "BLO-195 karjirde",
-            "सुनावणी रोजनामा शेरा (Proceeding Notes)": "पुकारणी केली. BLO केंद्र क्र. 195 काजिर्डे उपस्थित. सईदा सत्तार काझी यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत. सबब निर्णयावर."
+            "बजावणी अधिकारी (Serving Officer)": "BLO - 195 काजिर्डे",
+            "सुनावणी रोजनामा शेरा (Proceeding Notes)": "पुकारणी केली. BLO - 195 काजिर्डे उपस्थित. सईदा सत्तार काझी यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत. सबब निर्णयावर."
           },
           {
             "संदर्भ क्रमांक (Reference No)": "S13268G7O0501241200012",
@@ -2686,7 +2738,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             "मतदाराचे नाव (Person Objected)": "Ramesh Vithal Sawant",
             "मतदाराचा पत्ता (Person Address)": "House No 42, Kasal, Kankavli, Sindhudurg, Maharashtra- 416603",
             "यादी अनुक्रमांक (Serial No)": "124",
-            "भाग क्रमांक / नाव (Part No)": "kasal",
+            "भाग क्रमांक / नाव (Part No)": "104 कसाल",
             "हरकतदाराचे नाव (Objector Name)": "Prakash Narayan Parab",
             "हरकतदाराचा पत्ता (Objector Address)": "Kasal, Kankavli, Sindhudurg- 416603",
             "मतदारसंघ (Constituency)": "268 Kankavli Constituency",
@@ -2697,8 +2749,8 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             "मतदार तामिली दिनांक (Service Date Voter)": "06/01/2024",
             "हरकतीचे कारण (Grounds of Objection)": "मयत (Deceased)",
             "ERO पदनाम व कार्यालय": "Electoral Registration Officer, 268 Kankavli Constituency",
-            "बजावणी अधिकारी / BLO": "BLO-104 kasal",
-            "सुनावणी रोजनामा शेरा (Proceeding Notes)": "पुकारणी केली. BLO केंद्र क्र. 104 कसाल उपस्थित. मतदार मयत असल्याचे प्रमाणपत्र BLO यांनी सादर केले. सबब निर्णयावर."
+            "बजावणी अधिकारी (Serving Officer)": "BLO - 104 कसाल",
+            "सुनावणी रोजनामा शेरा (Proceeding Notes)": "पुकारणी केली. BLO - 104 कसाल उपस्थित. मतदार मयत असल्याचे प्रमाणपत्र BLO यांनी सादर केले. सबब निर्णयावर."
           },
           {
             "संदर्भ क्रमांक (Reference No)": "S13268G7O0501241200025",
@@ -2706,7 +2758,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             "मतदाराचे नाव (Person Objected)": "Sunil Mahadev Rane",
             "मतदाराचा पत्ता (Person Address)": "A/P Oros, Kudal, Sindhudurg- 416812",
             "यादी अनुक्रमांक (Serial No)": "315",
-            "भाग क्रमांक / नाव (Part No)": "oros",
+            "भाग क्रमांक / नाव (Part No)": "89 ओरोस",
             "हरकतदाराचे नाव (Objector Name)": "Suresh Balkrishna Rane",
             "हरकतदाराचा पत्ता (Objector Address)": "Oros, Kudal, Sindhudurg- 416812",
             "मतदारसंघ (Constituency)": "268 Kankavli Constituency",
@@ -2717,8 +2769,8 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             "मतदार तामिली दिनांक (Service Date Voter)": "06/01/2024",
             "हरकतीचे कारण (Grounds of Objection)": "दुबार नोंदणी (Already Registered Elsewhere)",
             "ERO पदनाम व कार्यालय": "Electoral Registration Officer, 268 Kankavli Constituency",
-            "बजावणी अधिकारी / BLO": "BLO-89 oros",
-            "सुनावणी रोजनामा शेरा (Proceeding Notes)": "पुकारणी केली. BLO केंद्र क्र. 89 ओरोस उपस्थित. मतदार दुबार नोंदणीबाबत नोटीस तामिली अहवाल सादर. सबब निर्णयावर."
+            "बजावणी अधिकारी (Serving Officer)": "BLO - 89 ओरोस",
+            "सुनावणी रोजनामा शेरा (Proceeding Notes)": "पुकारणी केली. BLO - 89 ओरोस उपस्थित. मतदार दुबार नोंदणीबाबत नोटीस तामिली अहवाल सादर. सबब निर्णयावर."
           }
         ];
 
@@ -2748,18 +2800,18 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
         "मतदाराचे नाव": app.personName,
         "मतदाराचा पत्ता": app.personAddress,
         "यादी अनुक्रमांक": app.serialNo,
-        "भाग क्रमांक": app.partNo,
+        "भाग क्रमांक / नाव": app.partNo,
         "हरकतदाराचे नाव": app.objectorName,
         "हरकतदाराचा पत्ता": app.objectorAddress,
         "मतदारसंघ": app.constituency,
         "सुनावणी ठिकाण": app.hearingPlace,
-        "सुनावणी दिनांक": app.hearingDate,
+        "सुनावणी दिनांक": formatDateDDMMYYYY(app.hearingDate),
         "सुनावणी वेळ": app.hearingTime,
-        "नोटीस दिनांक": app.noticeDate,
-        "मतदार तामिली दिनांक": app.serviceDateVoter,
+        "नोटीस दिनांक": formatDateDDMMYYYY(app.noticeDate),
+        "मतदार तामिली दिनांक": formatDateDDMMYYYY(app.serviceDateVoter),
         "हरकतीचे कारण": app.grounds,
         "ERO पदनाम": app.eroTitle,
-        "बजावणी अधिकारी": app.servingOfficer,
+        "बजावणी अधिकारी (Serving Officer)": formatServingOfficer(app),
         "सुनावणी रोजनामा शेरा": app.roznamaNotes
       }));
 
@@ -2781,7 +2833,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
           personName: "Saeeda Sattar Kazi",
           personAddress: "House No 94, Kazirde, Kharepatan, Kankavli, Sindhudurg, Maharashtra- 416703",
           serialNo: "486",
-          partNo: "karjirde",
+          partNo: "195 काजिर्डे",
           objectorName: "Ankita Atul Kambli",
           objectorAddress: "175 , Maharashtra-",
           constituency: "268 Kankavli Constituency",
@@ -2792,8 +2844,8 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
           serviceDateVoter: "06/01/2024",
           grounds: "Absent/Permanently shifted",
           eroTitle: "Electoral Registration Officer,\n268 Kankavli Constituency",
-          servingOfficer: "BLO-195 Kazirde",
-          roznamaNotes: "पुकारणी केली. BLO केंद्र क्र. 195 काजिर्डे उपस्थित.\nसईदा सत्तार काझी यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत.\nसबब निर्णयावर."
+          servingOfficer: "BLO - 195 काजिर्डे",
+          roznamaNotes: "पुकारणी केली. BLO - 195 काजिर्डे उपस्थित.\nसईदा सत्तार काझी यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत.\nसबब निर्णयावर."
         },
         {
           selected: true,
@@ -2802,7 +2854,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
           personName: "Ramesh Vithal Sawant",
           personAddress: "House No 42, Kasal, Kankavli, Sindhudurg, Maharashtra- 416603",
           serialNo: "124",
-          partNo: "kasal",
+          partNo: "104 कसाल",
           objectorName: "Prakash Narayan Parab",
           objectorAddress: "Kasal, Kankavli, Sindhudurg- 416603",
           constituency: "268 Kankavli Constituency",
@@ -2813,8 +2865,8 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
           serviceDateVoter: "06/01/2024",
           grounds: "मयत (Deceased)",
           eroTitle: "Electoral Registration Officer,\n268 Kankavli Constituency",
-          servingOfficer: "BLO-104 Kasal",
-          roznamaNotes: "पुकारणी केली. BLO केंद्र क्र. 104 कसाल उपस्थित.\nमतदार मयत असल्याचा मृत्यू दाखला सादर केला.\nसबब निर्णयावर."
+          servingOfficer: "BLO - 104 कसाल",
+          roznamaNotes: "पुकारणी केली. BLO - 104 कसाल उपस्थित.\nमतदार मयत असल्याचा मृत्यू दाखला सादर केला.\nसबब निर्णयावर."
         },
         {
           selected: true,
@@ -2823,7 +2875,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
           personName: "Sunil Mahadev Rane",
           personAddress: "A/P Oros, Kudal, Sindhudurg- 416812",
           serialNo: "315",
-          partNo: "oros",
+          partNo: "89 ओरोस",
           objectorName: "Suresh Balkrishna Rane",
           objectorAddress: "Oros, Kudal, Sindhudurg- 416812",
           constituency: "268 Kankavli Constituency",
@@ -2834,8 +2886,8 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
           serviceDateVoter: "06/01/2024",
           grounds: "दुबार नोंदणी (Already Registered Elsewhere)",
           eroTitle: "Electoral Registration Officer,\n268 Kankavli Constituency",
-          servingOfficer: "BLO-89 Oros",
-          roznamaNotes: "पुकारणी केली. BLO केंद्र क्र. 89 ओरोस उपस्थित.\nदुबार नोंदणी पडताळणी अहवाल सादर केला.\nसबब निर्णयावर."
+          servingOfficer: "BLO - 89 ओरोस",
+          roznamaNotes: "पुकारणी केली. BLO - 89 ओरोस उपस्थित.\nदुबार नोंदणी पडताळणी अहवाल सादर केला.\nसबब निर्णयावर."
         }
       ];
 
