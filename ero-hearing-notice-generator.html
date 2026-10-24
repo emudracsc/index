@@ -590,6 +590,13 @@
       position: relative;
     }
 
+    /* In Form 13 & 14, let content and footer flow naturally from top to bottom */
+    .sheet-inner.form13-inner,
+    .sheet-inner.form14-inner {
+      justify-content: flex-start;
+      gap: 0;
+    }
+
     /* Page number watermark / top-right mark */
     .sheet-corner-num {
       position: absolute;
@@ -1990,60 +1997,58 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
       return `
         <div class="a4-sheet">
           <div class="sheet-corner-num">${pageNum}</div>
-          <div class="sheet-inner">
-            <div>
-              <div class="doc-statutory-heading">
-                <div class="stat-rules">Registration of Electors Rules, 1960</div>
-                <div class="stat-order">(Statutory Rules and Order)</div>
-                <div class="stat-form-title">FORM 13</div>
-                <div class="stat-sub-rule">[See rule 19(1)(b)(ii)]</div>
-                <div class="stat-notice-purpose">Notice to the objector</div>
-              </div>
+          <div class="sheet-inner form13-inner">
+            <div class="doc-statutory-heading">
+              <div class="stat-rules">Registration of Electors Rules, 1960</div>
+              <div class="stat-order">(Statutory Rules and Order)</div>
+              <div class="stat-form-title">FORM 13</div>
+              <div class="stat-sub-rule">[See rule 19(1)(b)(ii)]</div>
+              <div class="stat-notice-purpose">Notice to the objector</div>
+            </div>
 
-              <!-- Recipient Grid -->
-              <div class="recipient-grid">
-                <div class="recipient-left">
-                  <div class="copy-type">Duplicate</div>
-                  <div class="office-note">(Office Copy)</div>
-                  <div>To</div>
-                  <div>(Full name and address of objector)</div>
-                </div>
-                <div class="recipient-right">
-                  <div class="name-bold">${escapeHtml(app.objectorName)}</div>
-                  <div>${escapeHtml(app.objectorAddress)}</div>
-                </div>
+            <!-- Recipient Grid -->
+            <div class="recipient-grid">
+              <div class="recipient-left">
+                <div class="copy-type">Duplicate</div>
+                <div class="office-note">(Office Copy)</div>
+                <div>To</div>
+                <div>(Full name and address of objector)</div>
               </div>
-
-              <!-- Reference & Objection No Row -->
-              <div class="ref-objection-row">
-                <div>Reference: <span class="dotted-val left-align" style="min-width: 190px;">${escapeHtml(app.refNo)}</span></div>
-                <div>Objection No. <span class="dotted-val" style="min-width: 45px;">${escapeHtml(app.objectionNo)}</span></div>
-              </div>
-
-              <!-- Body Paragraph -->
-              <div class="doc-body-para">
-                Take notice that your objection to the inclusion of the name of -
-              </div>
-
-              <div class="indented-target-box">
-                <div style="font-weight: 700; font-size: 11.5pt;">${escapeHtml(app.personName)}</div>
-                <div>${escapeHtml(app.personAddress)}</div>
-              </div>
-
-              <div class="doc-body-para" style="margin-top: 14px;">
-                will be heard at <span class="dotted-val left-align" style="min-width: 280px;">${escapeHtml(app.hearingPlace)}</span> (place) at <span class="dotted-val" style="min-width: 75px;">${escapeHtml(app.hearingTime)}</span> O'clock on the <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> ${escapeHtml(hDate.year)} .
-              </div>
-
-              <div class="doc-body-para">
-                You are directed to be present at the hearing with such evidence as you may like to adduce.
+              <div class="recipient-right">
+                <div class="name-bold">${escapeHtml(app.objectorName)}</div>
+                <div>${escapeHtml(app.objectorAddress)}</div>
               </div>
             </div>
 
-            <!-- Footer: Place, Date & ERO Signature -->
-            <div class="doc-footer-grid">
+            <!-- Reference & Objection No Row -->
+            <div class="ref-objection-row">
+              <div>Reference: <span class="dotted-val left-align" style="min-width: 190px;">${escapeHtml(app.refNo)}</span></div>
+              <div>Objection No. <span class="dotted-val" style="min-width: 45px;">${escapeHtml(app.objectionNo)}</span></div>
+            </div>
+
+            <!-- Body Paragraph -->
+            <div class="doc-body-para">
+              Take notice that your objection to the inclusion of the name of -
+            </div>
+
+            <div class="indented-target-box">
+              <div style="font-weight: 700; font-size: 11.5pt;">${escapeHtml(app.personName)}</div>
+              <div>${escapeHtml(app.personAddress)}</div>
+            </div>
+
+            <div class="doc-body-para" style="margin-top: 14px;">
+              will be heard at <span class="dotted-val left-align" style="min-width: 280px;">${escapeHtml(app.hearingPlace)}</span> (place) at <span class="dotted-val" style="min-width: 75px;">${escapeHtml(app.hearingTime)}</span> O'clock on the <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> ${escapeHtml(hDate.year)} .
+            </div>
+
+            <div class="doc-body-para">
+              You are directed to be present at the hearing with such evidence as you may like to adduce.
+            </div>
+
+            <!-- Footer: Place, Date & ERO Signature (Moved Up with Dedicated Signing Space) -->
+            <div class="doc-footer-grid" style="margin-top: 32px;">
               <div class="doc-footer-left">
                 <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
-                <div style="margin-top: 4px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
+                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
 
                 <div style="margin-top: 35px;">
                   <span style="font-size: 12pt; font-weight: 700; margin-right: 6px;">X</span>
@@ -2052,9 +2057,9 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
               </div>
 
               <div class="doc-footer-right">
-                <div class="sig-space"></div>
-                <div style="font-weight: 700;">Electoral Registration Officer,</div>
-                <div>${escapeHtml(app.constituency)}</div>
+                <div class="sig-space" style="height: 60px;"></div>
+                <div style="font-weight: 700; font-size: 11pt;">Electoral Registration Officer,</div>
+                <div style="font-size: 10.5pt;">${escapeHtml(app.constituency)}</div>
               </div>
             </div>
 
@@ -2132,76 +2137,74 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
       return `
         <div class="a4-sheet">
           <div class="sheet-corner-num">${pageNum}</div>
-          <div class="sheet-inner">
-            <div>
-              <div class="doc-statutory-heading">
-                <div class="stat-form-title" style="font-size: 15pt;">FORM 14</div>
-                <div class="stat-sub-rule">[See rule 19(1)(b)(ii)]</div>
-                <div class="stat-notice-purpose">[Notice to the person in respect of whom objection has been made]</div>
-              </div>
+          <div class="sheet-inner form14-inner">
+            <div class="doc-statutory-heading">
+              <div class="stat-form-title" style="font-size: 15pt;">FORM 14</div>
+              <div class="stat-sub-rule">[See rule 19(1)(b)(ii)]</div>
+              <div class="stat-notice-purpose">[Notice to the person in respect of whom objection has been made]</div>
+            </div>
 
-              <!-- Recipient Grid -->
-              <div class="recipient-grid">
-                <div class="recipient-left">
-                  <div class="copy-type">Original</div>
-                  <div class="office-note">To be served on the person objected to</div>
-                  <div style="margin-top: 6px;">To</div>
-                  <div>(Full name and address of person objected to)</div>
-                </div>
-                <div class="recipient-right">
-                  <div class="name-bold">${escapeHtml(app.personName)}</div>
-                  <div>${escapeHtml(app.personAddress)}</div>
-                </div>
+            <!-- Recipient Grid -->
+            <div class="recipient-grid">
+              <div class="recipient-left">
+                <div class="copy-type">Original</div>
+                <div class="office-note">To be served on the person objected to</div>
+                <div style="margin-top: 6px;">To</div>
+                <div>(Full name and address of person objected to)</div>
               </div>
-
-              <!-- Reference & Objection No Row -->
-              <div class="ref-objection-row">
-                <div>Reference: <span class="dotted-val left-align" style="min-width: 190px;">${escapeHtml(app.refNo)}</span></div>
-                <div>Objection No. <span class="dotted-val" style="min-width: 45px;">${escapeHtml(app.objectionNo)}</span></div>
-              </div>
-
-              <!-- Body Paragraph -->
-              <div class="doc-body-para">
-                Take notice that the objection to the inclusion of your name at Serial No <span class="dotted-val" style="min-width: 50px;">${escapeHtml(app.serialNo)}</span> in part <span class="dotted-val left-align" style="min-width: 100px;">${escapeHtml(app.partNo)}</span> of the electoral roll for <span class="dotted-val left-align" style="min-width: 130px;">${escapeHtml(extractConstituencyName(app.constituency))}</span> constituency filed by
-              </div>
-
-              <div style="font-family: var(--font-legal); font-size: 10.5pt; margin-left: 20px;">
-                (Full name and address of objector):
-              </div>
-              <div class="indented-target-box" style="margin-top: 3px;">
-                <div style="font-weight: 700;">${escapeHtml(app.objectorName)}</div>
-                <div>${escapeHtml(app.objectorAddress)}</div>
-              </div>
-
-              <div class="doc-body-para" style="margin-top: 10px;">
-                will be heard at <span class="dotted-val left-align" style="min-width: 270px;">${escapeHtml(app.hearingPlace)}</span> (place) at <span class="dotted-val" style="min-width: 75px;">${escapeHtml(app.hearingTime)}</span> O'clock on the <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> ${escapeHtml(hDate.year)} .
-              </div>
-
-              <div class="doc-body-para">
-                You are directed to be present at the hearing with such evidence as you may like to adduce.
-              </div>
-
-              <div class="doc-body-para" style="margin-bottom: 4px;">
-                The grounds of objection (in brief) are:-
-              </div>
-              <div class="grounds-list">
-                <div>(a) <span class="dotted-val left-align" style="min-width: 280px;">${escapeHtml(app.grounds || 'Absent/Permanently shifted')}</span></div>
-                <div style="margin-top: 3px;">(b) <span class="dotted-val" style="min-width: 280px;">&nbsp;</span></div>
-                <div style="margin-top: 3px;">(c) <span class="dotted-val" style="min-width: 280px;">&nbsp;</span></div>
+              <div class="recipient-right">
+                <div class="name-bold">${escapeHtml(app.personName)}</div>
+                <div>${escapeHtml(app.personAddress)}</div>
               </div>
             </div>
 
-            <!-- Footer: Place, Date & ERO Signature -->
-            <div class="doc-footer-grid">
+            <!-- Reference & Objection No Row -->
+            <div class="ref-objection-row">
+              <div>Reference: <span class="dotted-val left-align" style="min-width: 190px;">${escapeHtml(app.refNo)}</span></div>
+              <div>Objection No. <span class="dotted-val" style="min-width: 45px;">${escapeHtml(app.objectionNo)}</span></div>
+            </div>
+
+            <!-- Body Paragraph -->
+            <div class="doc-body-para">
+              Take notice that the objection to the inclusion of your name at Serial No <span class="dotted-val" style="min-width: 50px;">${escapeHtml(app.serialNo)}</span> in part <span class="dotted-val left-align" style="min-width: 100px;">${escapeHtml(app.partNo)}</span> of the electoral roll for <span class="dotted-val left-align" style="min-width: 130px;">${escapeHtml(extractConstituencyName(app.constituency))}</span> constituency filed by
+            </div>
+
+            <div style="font-family: var(--font-legal); font-size: 10.5pt; margin-left: 20px;">
+              (Full name and address of objector):
+            </div>
+            <div class="indented-target-box" style="margin-top: 3px;">
+              <div style="font-weight: 700;">${escapeHtml(app.objectorName)}</div>
+              <div>${escapeHtml(app.objectorAddress)}</div>
+            </div>
+
+            <div class="doc-body-para" style="margin-top: 10px;">
+              will be heard at <span class="dotted-val left-align" style="min-width: 270px;">${escapeHtml(app.hearingPlace)}</span> (place) at <span class="dotted-val" style="min-width: 75px;">${escapeHtml(app.hearingTime)}</span> O'clock on the <span class="dotted-val" style="min-width: 50px;">${escapeHtml(hDate.dayOrdinal)}</span> day of <span class="dotted-val" style="min-width: 80px;">${escapeHtml(hDate.monthName)}</span> ${escapeHtml(hDate.year)} .
+            </div>
+
+            <div class="doc-body-para">
+              You are directed to be present at the hearing with such evidence as you may like to adduce.
+            </div>
+
+            <div class="doc-body-para" style="margin-bottom: 4px;">
+              The grounds of objection (in brief) are:-
+            </div>
+            <div class="grounds-list">
+              <div>(a) <span class="dotted-val left-align" style="min-width: 280px;">${escapeHtml(app.grounds || 'Absent/Permanently shifted')}</span></div>
+              <div style="margin-top: 3px;">(b) <span class="dotted-val" style="min-width: 280px;">&nbsp;</span></div>
+              <div style="margin-top: 3px;">(c) <span class="dotted-val" style="min-width: 280px;">&nbsp;</span></div>
+            </div>
+
+            <!-- Footer: Place, Date & ERO Signature (Moved Up directly below grounds with dedicated signature space) -->
+            <div class="doc-footer-grid" style="margin-top: 30px;">
               <div class="doc-footer-left">
                 <div>Place <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
-                <div style="margin-top: 4px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
+                <div style="margin-top: 6px;">Date <span class="dotted-val left-align" style="min-width: 120px;">${escapeHtml(app.noticeDate)}</span></div>
               </div>
 
               <div class="doc-footer-right">
-                <div class="sig-space"></div>
-                <div style="font-weight: 700;">Electoral Registration Officer,</div>
-                <div>${escapeHtml(app.constituency)}</div>
+                <div class="sig-space" style="height: 60px;"></div>
+                <div style="font-weight: 700; font-size: 11pt;">Electoral Registration Officer,</div>
+                <div style="font-size: 10.5pt;">${escapeHtml(app.constituency)}</div>
               </div>
             </div>
 
