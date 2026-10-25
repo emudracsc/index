@@ -1161,6 +1161,18 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "disposal-report-generator.html",
     isInternal: true
   },
+  // 🗳️ Election Formula & Taluka Report Generator (फॉर्म ६, ७, ८ पेंडन्सी अहवाल)
+  {
+    id: "link-election-report-generator",
+    category: "शासकीय सेवा व शोध",
+    icon: "fa-solid fa-square-poll-vertical",
+    title_mr: "🗳️ निवडणूक अहवाल जनरेटर (फॉर्म ६, ७, ८ तालुकावार व एकत्रित अहवाल)",
+    title_en: "Election Report Generator - Form 6, 7, 8 (Devgad, Vaibhavwadi, Kankavli)",
+    desc_mr: "२६८-कणकवली विधानसभा मतदारसंघ: देवगड (१-१३६), वैभववाडी (१३७-१९४), कणकवली (१९५-३३२) साठी फॉर्म ६, ७, ८ एक्सेल फाइल्सवरून तालुकावार व एकत्रित अहवाल १-क्लिकमध्ये जनरेट व प्रिंट करा.",
+    desc_en: "Generate Form 6, 7, 8 pendency reports for AC 268 Kankavli: Devgad (1-136), Vaibhavwadi (137-194), Kankavli (195-332) with common and taluka-wise views.",
+    url: "election-report-generator.html",
+    isInternal: true
+  },
   // 📋 VB-G RAM G योजना अर्ज जनरेटर (जलतारा / शोष खड्डा / गाय गोठा / शेळी शेड)
   {
     id: "link-vb-gramg-generator",
