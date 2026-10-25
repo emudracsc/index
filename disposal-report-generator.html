@@ -78,7 +78,7 @@ function build(){const dt=$('dt').value.split('-').reverse().join('-');let h='',
   for(let q=0;q<e.s.length;q+=2){const ch=e.s.slice(q,q+2),span=ch.reduce((a,s)=>a+s.p.length+1,0);let h='',first=1;
    ch.forEach(s=>{const sv=z();s.p.forEach((r,i)=>{const v=vec(r[0]);add(sv,v);n++;all++;
     h+='<tr><td>'+n+'</td>'+(first?'<td rowspan="'+span+'"><div class="vt" style="height:'+span*20+'px"><b>'+esc(e.n)+'</b></div></td>':'')+(i?'':'<td rowspan="'+s.p.length+'"><div class="vt" style="height:'+s.p.length*20+'px">'+esc(s.n)+'</div></td>')+'<td>'+r[0]+'</td><td class="l">'+esc(r[1])+'</td><td class="l">'+esc(r[2])+'</td><td>'+esc(mob(r[0]))+'</td>'+cells(v)+'</tr>';first=0});
-    h+='<tr class="s"><td colspan="5">Supervisor Total</td>'+cells(sv)+'</tr>';sum(ev,sv)});
+    h+='<tr class="s"><td></td><td colspan="5">Supervisor Total</td>'+cells(sv)+'</tr>';sum(ev,sv)});
    if(q+2>=e.s.length)h+='<tr class="e"><td></td><td colspan="6">AERO Total</td>'+cells(ev)+'</tr>';
    pg.push(h)}
   sum(G,ev);T.push([e.n,ev])});
