@@ -1245,14 +1245,17 @@
       </div>
 
       <div class="quick-settings-wrap">
-        <button class="btn-quick" onclick="downloadSampleExcel()" title="नमुना एक्सेल फाईल डाऊनलोड करा व त्यामध्ये स्वतःचा डेटा भरून अपलोड करा">
-          <i class="fa-solid fa-download" style="color: #059669;"></i> <strong>नमुना एक्सेल टेम्पलेट</strong>
+        <button class="btn-quick success" onclick="downloadBlankExcel()" title="कोरा एक्सेल फॉरमॅट डाऊनलोड करा (नवीन डेटा भरण्यासाठी)" style="background: #059669; color: #fff; border: 1px solid #059669;">
+          <i class="fa-solid fa-file-excel"></i> <strong>कोरा फॉरमॅट डाऊनलोड (Blank Excel)</strong>
+        </button>
+        <button class="btn-quick" onclick="printBlankNoticeSet()" title="हस्ते भरण्यासाठी कोरा ५-पानी नोटीस संच प्रिंट करा">
+          <i class="fa-solid fa-print" style="color: #6366f1;"></i> कोरा नोटीस प्रिंट
         </button>
         <button class="btn-quick" onclick="openPasteModal()" title="एक्सेल किंवा गुगल शीटमधून डेटा थेट कॉपी-पेस्ट करा">
           <i class="fa-solid fa-paste" style="color: #2563eb;"></i> जलद पेस्ट
         </button>
         <button class="btn-quick" onclick="loadSampleData(true)" title="सईदा सत्तार काझी व इतर नमुना डेटा लोड करा">
-          <i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> नमुना डेटा लोड
+          <i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> नमुना डेटा पहा
         </button>
         <button class="btn-quick success" onclick="executeCustomPrint()" title="निवडलेल्या सेटिंगनुसार १ प्रत किंवा मॅन्युअल काउंट प्रिंट करा">
           <i class="fa-solid fa-print"></i> <strong>प्रिंट करा (१ प्रत)</strong>
@@ -1339,6 +1342,16 @@
               <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
               <div class="upload-text">एक्सेल फाईल येथे ड्रॅग करा किंवा निवडा (.xlsx, .xls)</div>
               <div class="upload-sub">सर्व ५ पाने (फॉर्म १३, १४, तामिली दाखला व रोजनामा) १-क्लिकमध्ये तयार होतील</div>
+            </div>
+
+            <!-- Quick Download Blank Format Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 16px 0; background: #ecfdf5; padding: 10px 14px; border-radius: 8px; border: 1px solid #a7f3d0; flex-wrap: wrap; gap: 8px;">
+              <span style="font-size: 13px; color: #065f46; font-weight: 600;">
+                <i class="fa-solid fa-circle-info" style="color: #059669;"></i> नवीन मतदार डेटा भरण्यासाठी कोरा फॉरमॅट हवा आहे?
+              </span>
+              <button type="button" class="btn-quick success" onclick="downloadBlankExcel()" style="padding: 5px 12px; font-size: 12.5px; background: #059669; color: #fff; border: none; cursor: pointer;">
+                <i class="fa-solid fa-download"></i> कोरा एक्सेल फॉरमॅट डाऊनलोड करा
+              </button>
             </div>
 
             <!-- Global Defaults Collapsible for Quick Hearing Date & Officer Assignment -->
@@ -1608,11 +1621,11 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
         <div class="form-group-grid">
           <div class="form-field">
             <label>संदर्भ क्रमांक (Reference No.): *</label>
-            <input type="text" id="add-ref-no" class="form-control" value="S13268G7O0501241200008">
+            <input type="text" id="add-ref-no" class="form-control" placeholder="उदा. S13268G7O...">
           </div>
           <div class="form-field">
             <label>हरकत क्र. (Objection No.): *</label>
-            <input type="text" id="add-objection-no" class="form-control" value="1">
+            <input type="text" id="add-objection-no" class="form-control" placeholder="उदा. 1">
           </div>
         </div>
 
@@ -1624,7 +1637,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
           </div>
           <div class="form-field" style="margin-top: 6px;">
             <label>मतदाराचा पत्ता:</label>
-            <input type="text" id="add-person-address" class="form-control" placeholder="House No 94, Kazirde, Kharepatan, Kankavli, Sindhudurg, Maharashtra- 416703">
+            <input type="text" id="add-person-address" class="form-control" placeholder="उदा. घर क्र. ९४, काजिर्डे, कणकवली">
           </div>
           <div class="form-group-grid" style="margin-top: 6px;">
             <div class="form-field">
@@ -1633,7 +1646,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             </div>
             <div class="form-field">
               <label>भाग / गाव (Part No/Name):</label>
-              <input type="text" id="add-part-no" class="form-control" placeholder="उदा. 195 किंवा karjirde">
+              <input type="text" id="add-part-no" class="form-control" placeholder="उदा. 195 किंवा काजिर्डे">
             </div>
           </div>
         </div>
@@ -1646,29 +1659,29 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
           </div>
           <div class="form-field" style="margin-top: 6px;">
             <label>हरकतदाराचा पत्ता:</label>
-            <input type="text" id="add-objector-address" class="form-control" placeholder="175 , Maharashtra-">
+            <input type="text" id="add-objector-address" class="form-control" placeholder="उदा. १७५, महाराष्ट्र">
           </div>
         </div>
 
         <div class="form-group-grid">
           <div class="form-field">
             <label>सुनावणी दिनांक:</label>
-            <input type="text" id="add-hearing-date" class="form-control" value="10/01/2024">
+            <input type="text" id="add-hearing-date" class="form-control" placeholder="DD/MM/YYYY">
           </div>
           <div class="form-field">
             <label>सुनावणी वेळ:</label>
-            <input type="text" id="add-hearing-time" class="form-control" value="10:30:00">
+            <input type="text" id="add-hearing-time" class="form-control" placeholder="10:30:00">
           </div>
         </div>
 
         <div class="form-field">
           <label>सुनावणीचे ठिकाण:</label>
-          <input type="text" id="add-hearing-place" class="form-control" value="At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602">
+          <input type="text" id="add-hearing-place" class="form-control" placeholder="सुनावणी ठिकाण">
         </div>
 
         <div class="form-field">
           <label>हरकतीचे कारण (Grounds):</label>
-          <input type="text" id="add-grounds" class="form-control" value="Absent/Permanently shifted">
+          <input type="text" id="add-grounds" class="form-control" placeholder="उदा. Absent/Permanently shifted किंवा मयत / दुबार">
         </div>
       </div>
       <div class="modal-footer">
@@ -1704,7 +1717,11 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
     /* Initialize Application on DOM Ready */
     window.addEventListener('DOMContentLoaded', () => {
       setupDragDrop();
-      loadSampleData(false); // Load sample matching user's PDF
+      // Start with clean slate - do NOT auto-load demo data!
+      applicantsList = [];
+      currentPreviewIndex = 0;
+      renderApplicantTable();
+      renderLivePreview();
     });
 
     /* Toggle Collapsible Sections */
@@ -1818,28 +1835,28 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
         return '';
       };
 
-      const refNo = getVal(['reference', 'refno', 'संदर्भ', 'applicationno']) || `S13268G7O050124${String(defaultIdx).padStart(6, '0')}`;
-      const objectionNo = getVal(['objectionno', 'objection', 'हरकतक्र', 'हरकत']) || String(defaultIdx);
-      const personName = getVal(['personobjectedname', 'personname', 'votername', 'मतदाराचेनाव', 'नाव', 'person']) || 'Saeeda Sattar Kazi';
-      const personAddress = getVal(['personobjectedaddress', 'personaddress', 'voteraddress', 'मतदाराचापत्ता', 'पत्ता']) || 'House No 94, Kazirde, Kharepatan, Kankavli, Sindhudurg, Maharashtra- 416703';
-      const serialNo = getVal(['serialno', 'serial', 'अनुक्रमांक', 'srno', 'slno']) || '486';
-      const partNo = getVal(['partno', 'partname', 'भागक्र', 'भागनाव', 'गाव', 'karjirde']) || '195 काजिर्डे';
-      const objectorName = getVal(['objectorname', 'objector', 'हरकतदाराचेनाव', 'अर्जदाराचेनाव']) || 'Ankita Atul Kambli';
-      const objectorAddress = getVal(['objectoraddress', 'हरकतदाराचापत्ता']) || '175 , Maharashtra-';
-      const constituency = getVal(['constituency', 'मतदारसंघ', 'विधानसभा']) || '268 Kankavli Constituency';
-      const hearingPlace = getVal(['hearingplace', 'place', 'सुनावणीठिकाण', 'ठिकाण']) || 'At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602';
-      const hearingTime = getVal(['hearingtime', 'time', 'सुनावणीवेळ', 'वेळ']) || '10:30:00';
-      const rawHearingDate = getVal(['hearingdate', 'सुनावणीदिनांक', 'दिनांक']) || '10/01/2024';
-      const rawNoticeDate = getVal(['noticedate', 'नोटीसदिनांक']) || '05/01/2024';
-      const rawServiceDateVoter = getVal(['servicedatevoter', 'तामिलीदिनांकमतदार']) || '06/01/2024';
+      const refNo = getVal(['reference', 'refno', 'संदर्भ', 'applicationno']) || (defaultIdx ? `REF-${String(defaultIdx).padStart(4, '0')}` : '');
+      const objectionNo = getVal(['objectionno', 'objection', 'हरकतक्र', 'हरकत']) || String(defaultIdx || '');
+      const personName = getVal(['personobjectedname', 'personname', 'votername', 'मतदाराचेनाव', 'नाव', 'person']) || '';
+      const personAddress = getVal(['personobjectedaddress', 'personaddress', 'voteraddress', 'मतदाराचापत्ता', 'पत्ता']) || '';
+      const serialNo = getVal(['serialno', 'serial', 'अनुक्रमांक', 'srno', 'slno']) || '';
+      const partNo = getVal(['partno', 'partname', 'भागक्र', 'भागनाव', 'गाव', 'karjirde']) || '';
+      const objectorName = getVal(['objectorname', 'objector', 'हरकतदाराचेनाव', 'अर्जदाराचेनाव']) || '';
+      const objectorAddress = getVal(['objectoraddress', 'हरकतदाराचापत्ता']) || '';
+      const constituency = getVal(['constituency', 'मतदारसंघ', 'विधानसभा']) || document.getElementById('def-constituency')?.value || '268 Kankavli Constituency';
+      const hearingPlace = getVal(['hearingplace', 'place', 'सुनावणीठिकाण', 'ठिकाण']) || document.getElementById('def-hearing-place')?.value || 'At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602';
+      const hearingTime = getVal(['hearingtime', 'time', 'सुनावणीवेळ', 'वेळ']) || document.getElementById('def-hearing-time')?.value || '10:30:00';
+      const rawHearingDate = getVal(['hearingdate', 'सुनावणीदिनांक', 'दिनांक']) || document.getElementById('def-hearing-date')?.value || '';
+      const rawNoticeDate = getVal(['noticedate', 'नोटीसदिनांक']) || document.getElementById('def-notice-date')?.value || '';
+      const rawServiceDateVoter = getVal(['servicedatevoter', 'तामिलीदिनांकमतदार']) || '';
       const hearingDate = formatDateDDMMYYYY(rawHearingDate);
       const noticeDate = formatDateDDMMYYYY(rawNoticeDate);
       const serviceDateVoter = formatDateDDMMYYYY(rawServiceDateVoter);
-      const grounds = getVal(['grounds', 'ground', 'कारण', 'हरकतीचेकारण']) || 'Absent/Permanently shifted';
-      const eroTitle = getVal(['erotitle', 'ero', 'अधिकारी']) || 'Electoral Registration Officer,\n268 Kankavli Constituency';
+      const grounds = getVal(['grounds', 'ground', 'कारण', 'हरकतीचेकारण']) || '';
+      const eroTitle = getVal(['erotitle', 'ero', 'अधिकारी']) || document.getElementById('def-ero-title')?.value || 'Electoral Registration Officer,\n268 Kankavli Constituency';
       const rawServingOfficer = getVal(['servingofficer', 'बजावणीअधिकारी', 'blo']) || '';
-      const servingOfficer = rawServingOfficer ? formatServingOfficer({ partNo, servingOfficer: rawServingOfficer }) : `BLO - ${partNo}`;
-      const roznamaNotes = getVal(['roznama', 'कार्यवाही', 'शेरा']) || `पुकारणी केली. BLO - ${partNo} उपस्थित.\n${personName} यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत.\nसबब निर्णयावर.`;
+      const servingOfficer = rawServingOfficer ? formatServingOfficer({ partNo, servingOfficer: rawServingOfficer }) : (partNo ? `BLO - ${partNo}` : 'BLO');
+      const roznamaNotes = getVal(['roznama', 'कार्यवाही', 'शेरा']) || (personName ? `पुकारणी केली. ${servingOfficer} उपस्थित.\n${personName} यांनी उपस्थित राहून कागदपत्रे / पुरावे सादर केलेले नाहीत.\nसबब निर्णयावर.` : '');
 
       return {
         selected: true,
@@ -2499,9 +2516,20 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
       if (!app) {
         container.innerHTML = `
           <div style="text-align: center; color: #64748b; padding: 60px 20px;">
-            <i class="fa-solid fa-file-circle-question" style="font-size: 48px; color: #94a3b8; margin-bottom: 12px;"></i>
-            <h3>कोणतीही नोटीस निवडलेली नाही</h3>
-            <p style="margin-top: 6px;">कृपया डावीकडील पॅनेलमधून एक्सेल फाईल अपलोड करा किंवा नमुना डेटा लोड करा.</p>
+            <i class="fa-solid fa-file-circle-check" style="font-size: 48px; color: #059669; margin-bottom: 12px;"></i>
+            <h3 style="color: #0f172a; font-size: 1.2rem;">ERO सुनावणी नोटीस जनरेटर सज्ज आहे</h3>
+            <p style="margin-top: 6px; font-size: 14px; color: #64748b;">कृपया डावीकडील पॅनेलमधून भरलेली एक्सेल फाईल अपलोड करा किंवा खालील बटणावरून <b>कोरा फॉरमॅट</b> डाऊनलोड करा.</p>
+            <div style="margin-top: 24px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+              <button type="button" class="btn-quick" onclick="downloadBlankExcel()" style="padding: 10px 20px; font-size: 14px; background: #059669; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 6px rgba(5,150,105,0.2);">
+                <i class="fa-solid fa-file-excel"></i> <strong>कोरा एक्सेल फॉरमॅट डाऊनलोड (Blank Excel)</strong>
+              </button>
+              <button type="button" class="btn-quick" onclick="printBlankNoticeSet()" style="padding: 10px 20px; font-size: 14px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 6px rgba(37,99,235,0.2);">
+                <i class="fa-solid fa-print"></i> <strong>कोरा नोटीस संच प्रिंट करा (Blank Forms)</strong>
+              </button>
+              <button type="button" class="btn-quick" onclick="loadSampleData(true)" style="padding: 10px 18px; font-size: 13.5px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                <i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> नमुना डेटा तपासा
+              </button>
+            </div>
           </div>
         `;
         return;
@@ -2710,6 +2738,89 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
     /* =========================================================================
        EXCEL TEMPLATE GENERATION & EXPORT
        ========================================================================= */
+
+    /* Download Blank Excel Format (Empty table with clean headers for user data entry) */
+    function downloadBlankExcel() {
+      try {
+        const headers = [
+          "संदर्भ क्रमांक (Reference No)",
+          "हरकत क्रमांक (Objection No)",
+          "मतदाराचे नाव (Person Objected)",
+          "मतदाराचा पत्ता (Person Address)",
+          "यादी अनुक्रमांक (Serial No)",
+          "भाग क्रमांक / नाव (Part No)",
+          "हरकतदाराचे नाव (Objector Name)",
+          "हरकतदाराचा पत्ता (Objector Address)",
+          "मतदारसंघ (Constituency)",
+          "सुनावणी ठिकाण (Hearing Place)",
+          "सुनावणी दिनांक (Hearing Date)",
+          "सुनावणी वेळ (Hearing Time)",
+          "नोटीस दिनांक (Notice Date)",
+          "मतदार तामिली दिनांक (Service Date Voter)",
+          "हरकतीचे कारण (Grounds of Objection)",
+          "ERO पदनाम व कार्यालय",
+          "बजावणी अधिकारी (Serving Officer)",
+          "सुनावणी रोजनामा शेरा (Proceeding Notes)"
+        ];
+
+        // Create empty sheet with only headers
+        const ws = XLSX.utils.aoa_to_sheet([headers]);
+        
+        // Auto set column widths for clean readability in Excel
+        ws['!cols'] = headers.map(h => ({ wch: Math.max(h.length + 3, 20) }));
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "ERO_Notices_Data");
+
+        XLSX.writeFile(wb, "ERO_Hearing_Notice_Blank_Format.xlsx");
+        showToast('कोरा एक्सेल फॉरमॅट यशस्वीरीत्या डाऊनलोड झाला!', 'success');
+      } catch (err) {
+        console.error(err);
+        showToast('एक्सेल तयार करताना त्रुटी: ' + err.message, 'warning');
+      }
+    }
+
+    /* Print Blank Notice Set (Empty 5-page legal set for manual handwriting) */
+    function printBlankNoticeSet() {
+      const blankApp = {
+        refNo: "........................................",
+        objectionNo: "........",
+        personName: "................................................................",
+        personAddress: "................................................................................................",
+        serialNo: "................",
+        partNo: "................",
+        objectorName: "................................................................",
+        objectorAddress: "................................................................................................",
+        constituency: document.getElementById('def-constituency')?.value || '268 Kankavli Constituency',
+        hearingPlace: document.getElementById('def-hearing-place')?.value || 'At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602',
+        hearingDate: document.getElementById('def-hearing-date')?.value || '',
+        hearingTime: document.getElementById('def-hearing-time')?.value || '10:30:00',
+        noticeDate: document.getElementById('def-notice-date')?.value || '',
+        serviceDateVoter: '',
+        grounds: "................................................................................................",
+        eroTitle: document.getElementById('def-ero-title')?.value || 'Electoral Registration Officer,\n268 Kankavli Constituency',
+        servingOfficer: "........................................",
+        roznamaNotes: "पुकारणी केली. ....................................................\n.......................................................................................................\nसबब निर्णयावर."
+      };
+
+      const printContainer = document.getElementById('printContainer');
+      let combinedHtml = '';
+      combinedHtml += buildRoznamaHtml(blankApp, 1);
+      combinedHtml += buildForm13Html(blankApp, 20);
+      combinedHtml += buildCert1Html(blankApp, 2);
+      combinedHtml += buildForm14Html(blankApp, 4);
+      combinedHtml += buildCert2Html(blankApp, 5);
+
+      printContainer.innerHTML = combinedHtml;
+      printContainer.style.display = 'block';
+
+      window.print();
+
+      setTimeout(() => {
+        printContainer.style.display = 'none';
+        printContainer.innerHTML = '';
+      }, 1500);
+    }
 
     function downloadSampleExcel() {
       try {
