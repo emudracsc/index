@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "Universal Table Copy & Excel Exporter | १-क्लिक टेबल कॉपी व एक्सेल",
+  "version": "1.1.0",
+  "description": "कोणत्याही HTML वेब पेजवरील टेबल १-क्लिकमध्ये कॉपी (Ctrl+V) करा किंवा Excel (.xlsx / .csv) मध्ये एक्सपोर्ट करा.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "१-क्लिक टेबल कॉपी व एक्सेल एक्सपोर्टर",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "contextMenus",
+    "clipboardWrite"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["lib/xlsx.full.min.js", "content.js"],
+      "css": ["content.css"],
+      "all_frames": true,
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["lib/xlsx.full.min.js", "icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

@@ -1772,13 +1772,17 @@ function loadCombinedLinks() {
   try {
     const defaults = [...DEFAULT_IMPORTANT_LINKS];
     const raw = localStorage.getItem(LINKS_STORAGE_KEY);
-    if (!raw) return defaults;
-    const customList = JSON.parse(raw);
-    if (!Array.isArray(customList)) return defaults;
-
-    // Filter only user-added custom links and append after defaults
-    const onlyCustom = customList.filter(custom => custom && custom.isCustom && !defaults.some(d => d.id === custom.id));
-    return [...defaults, ...onlyCustom];
+    let result = defaults;
+    if (raw) {
+      try {
+        const customList = JSON.parse(raw);
+        if (Array.isArray(customList)) {
+          const onlyCustom = customList.filter(custom => custom && custom.isCustom && !defaults.some(d => d.id === custom.id));
+          result = [...defaults, ...onlyCustom];
+        }
+      } catch (e) {}
+    }
+    return result;
   } catch (err) {
     console.error("Error loading links from storage:", err);
     return [...DEFAULT_IMPORTANT_LINKS];
