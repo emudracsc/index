@@ -965,6 +965,17 @@
       margin-top: 3px;
     }
 
+    /* Statutory Page 266 Certificate Inner Container */
+    .page266-inner {
+      padding: 16mm 20mm 10mm 20mm !important;
+      height: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      font-family: var(--font-legal);
+      color: #000000;
+    }
+
     /* Certificate of Service of Notice Specifics */
     .cert-title-block {
       text-align: center;
@@ -1371,11 +1382,17 @@
         <button class="btn-quick" onclick="setPreviewDisplayMode('annexure17')" title="Annexure 17 (Duplicate + Form 13 Original हरकतदार नोटीस एकत्र) दृश्य पहा" style="background: #b45309; color: #fff; border: 1px solid #b45309;">
           <i class="fa-solid fa-file-invoice"></i> <strong>Annexure 17 (हरकतदार नोटीस)</strong>
         </button>
+        <button class="btn-quick" onclick="setPreviewDisplayMode('cert266')" title="तामिली प्रमाणपत्र (पृ. २६६) दृश्य पहा" style="background: #047857; color: #fff; border: 1px solid #047857;">
+          <i class="fa-solid fa-certificate"></i> <strong>तामिली पृ. २६६</strong>
+        </button>
         <button class="btn-quick" onclick="printBlankAnnexure18()" title="हस्ते भरण्यासाठी कोरा Annexure 18 (Duplicate + Original एकत्र) प्रिंट करा (१ पान)">
           <i class="fa-solid fa-print" style="color: #059669;"></i> कोरा Annexure 18
         </button>
         <button class="btn-quick" onclick="printBlankAnnexure17()" title="हस्ते भरण्यासाठी कोरा Annexure 17 (Duplicate + Original एकत्र) प्रिंट करा (१ पान)">
           <i class="fa-solid fa-print" style="color: #b45309;"></i> कोरा Annexure 17
+        </button>
+        <button class="btn-quick" onclick="printBlankCert266()" title="हस्ते भरण्यासाठी कोरा तामिली प्रमाणपत्र (पृ. २६६) प्रिंट करा (१ पान)">
+          <i class="fa-solid fa-print" style="color: #047857;"></i> कोरा पृ. २६६
         </button>
         <button class="btn-quick" onclick="printBlankNoticeSet()" title="हस्ते भरण्यासाठी कोरा सुनावणी नोटीस (फॉर्म १४) प्रिंट करा (१ पान)">
           <i class="fa-solid fa-print" style="color: #6366f1;"></i> कोरा फॉर्म १४
@@ -1435,6 +1452,8 @@
           <option value="preview" selected>चालू दृश्य (Active Preview Mode)</option>
           <option value="annexure18">Annexure 18 (Duplicate + Original मतदार नोटीस - १ पान)</option>
           <option value="annexure17">Annexure 17 (Duplicate + Form 13 हरकतदार नोटीस - १ पान)</option>
+          <option value="cert266">तामिली प्रमाणपत्र (पृ. २६६ - १ पान)</option>
+          <option value="annexure17_cert">Annexure 17 + तामिली पृ. २६६ (२ पाने)</option>
           <option value="form14">फक्त फॉर्म १४ (१ पान)</option>
           <option value="form14_cert">फॉर्म १४ + तामिली (२ पाने)</option>
           <option value="form13">फक्त फॉर्म १३ (१ पान)</option>
@@ -1686,6 +1705,9 @@
             </button>
             <button class="p-mode-btn" id="btn-pmode-annexure17" onclick="setPreviewDisplayMode('annexure17')" style="font-weight: 700; color: #b45309;">
               <i class="fa-solid fa-file-invoice"></i> Annexure 17 (Duplicate + Form 13 एकत्र)
+            </button>
+            <button class="p-mode-btn" id="btn-pmode-cert266" onclick="setPreviewDisplayMode('cert266')" style="font-weight: 700; color: #047857;">
+              <i class="fa-solid fa-stamp"></i> पृ. २६६ तामिली (Objector)
             </button>
             <button class="p-mode-btn" id="btn-pmode-roznama" onclick="setPreviewDisplayMode('roznama')">
               <i class="fa-solid fa-list-check"></i> पृ. १ रोजनामा
@@ -2490,6 +2512,85 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
       `;
     }
 
+    /* STATUTORY CERTIFICATE OF SERVICE OF NOTICE (PAGE 266 - Objector) */
+    function buildCert266Html(app, pageNum = 266, isSinglePage = false) {
+      const hDate = parseDateParts(app.hearingDate);
+      const nDate = parseDateParts(app.noticeDate);
+
+      const isBlank = app.isBlankForm || (!app.hearingDate && !app.noticeDate);
+      const dayStr = isBlank ? '..............' : (hDate.dayOrdinal || '..............');
+      const monthStr = isBlank ? '........' : (hDate.monthName || '........');
+      const noticeDateStr = isBlank ? '...............' : formatDateDDMMYYYY(app.noticeDate);
+
+      const singlePageClass = isSinglePage ? ' single-page-only' : '';
+
+      return `
+        <div class="a4-sheet${singlePageClass}">
+          <div class="sheet-inner page266-inner">
+            
+            <!-- Centered Statutory Title Block -->
+            <div style="text-align: center; margin-top: 20px; margin-bottom: 30px;">
+              <div style="font-family: var(--font-legal); font-size: 11.5pt; font-weight: 700; letter-spacing: 0.5px;">CERTIFICATE OF SERVICE OF NOTICE</div>
+              <div style="font-family: var(--font-legal); font-size: 11pt; font-style: italic; margin-top: 3px;">Received notice of the date of hearing</div>
+            </div>
+
+            <!-- Date on Left, Objector Signature Line on Right -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; font-family: var(--font-legal); font-size: 11pt;">
+              <div>
+                ${isBlank ? 'Date...............' : `Date <span class="dotted-val left-align" style="min-width: 100px;">${escapeHtml(noticeDateStr)}</span>`}
+              </div>
+              <div style="text-align: center; min-width: 220px;">
+                ${!isBlank && app.objectorName ? `<div style="font-weight: 700; font-size: 10.5pt; margin-bottom: 2px;">${escapeHtml(app.objectorName)}</div>` : ''}
+                <div style="border-bottom: 1px dotted #000; width: 100%; height: ${!isBlank && app.objectorName ? '12px' : '18px'};"></div>
+                <div style="margin-top: 4px; font-size: 11pt;">Objector</div>
+              </div>
+            </div>
+
+            <!-- Main Statutory Paragraph -->
+            <div style="font-family: var(--font-legal); font-size: 11pt; line-height: 1.85; text-align: justify; text-indent: 40px; margin-bottom: 32px;">
+              ${isBlank ? 
+                `Certified that the notice on the objector has been duly served by me this..............day of........on (name)..........................................................................personally/by affixing on residence.` :
+                `Certified that the notice on the objector has been duly served by me this <span class="dotted-val" style="min-width: 45px;">${escapeHtml(dayStr)}</span> day of <span class="dotted-val" style="min-width: 75px;">${escapeHtml(monthStr)}</span> on (name) <span class="dotted-val left-align" style="min-width: 200px;">${escapeHtml(app.objectorName || '........................................')}</span> personally/by affixing on residence.`
+              }
+            </div>
+
+            <!-- Footer: Place & Date on Left, Serving Officer on Right -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; font-family: var(--font-legal); font-size: 11pt;">
+              <div style="line-height: 1.6;">
+                <div>${isBlank ? 'Place..........' : `Place <span class="dotted-val left-align" style="min-width: 90px;">${escapeHtml(extractPlace(app.hearingPlace))}</span>`}</div>
+                <div>${isBlank ? 'Date...........' : `Date <span class="dotted-val left-align" style="min-width: 90px;">${escapeHtml(noticeDateStr)}</span>`}</div>
+              </div>
+
+              <div style="text-align: center; min-width: 230px;">
+                <div style="height: 38px;"></div>
+                <div style="border-bottom: 1px dotted #000; width: 100%; height: 1px;"></div>
+                <div style="margin-top: 5px; font-size: 11pt;">Serving Officer.</div>
+                ${!isBlank && app.servingOfficer ? `
+                  <div style="font-size: 10pt; font-weight: 700; margin-top: 3px; color: #111;">${escapeHtml(formatServingOfficer(app))}</div>
+                  <div style="font-size: 8.5pt; color: #444;">(निवडणूक नायब तहसिलदार / प्राधिकृत अधिकारी)</div>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Horizontal Rule Divider & Postal Receipt Note -->
+            <div style="border-top: 1px solid #000; margin: 12px 0 6px 0;"></div>
+            <div style="font-family: var(--font-legal); font-size: 10pt;">
+              <strong>N.B.—</strong> If this notice is served by post, attach the receipt here.
+            </div>
+
+            <!-- Large Empty White Space for Physical Postal Receipt / Stamp -->
+            <div style="flex: 1; min-height: 250px;"></div>
+
+            <!-- Statutory Centered Bottom Page Number (266) -->
+            <div class="annexure18-page-num" style="margin-top: auto; padding-bottom: 6px; font-size: 10.5pt;">
+              ${pageNum}
+            </div>
+
+          </div>
+        </div>
+      `;
+    }
+
     /* PAGE 4: FORM 14 (Notice to the Person Objected to) */
     function buildForm14Html(app, pageNum = 4, isSinglePage = false) {
       const hDate = parseDateParts(app.hearingDate);
@@ -2999,6 +3100,9 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
               <button type="button" class="btn-quick" onclick="printBlankAnnexure17()" style="padding: 10px 20px; font-size: 14px; background: #b45309; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 6px rgba(180,83,9,0.2);">
                 <i class="fa-solid fa-print"></i> <strong>कोरा Annexure 17 प्रिंट करा (१ पान)</strong>
               </button>
+              <button type="button" class="btn-quick" onclick="printBlankCert266()" style="padding: 10px 20px; font-size: 14px; background: #047857; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 6px rgba(4,120,87,0.2);">
+                <i class="fa-solid fa-print"></i> <strong>कोरा पृ. २६६ तामिली (१ पान)</strong>
+              </button>
               <button type="button" class="btn-quick" onclick="loadSampleData(true)" style="padding: 10px 18px; font-size: 13.5px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 600; cursor: pointer;">
                 <i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> नमुना डेटा तपासा
               </button>
@@ -3019,6 +3123,8 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
         html += buildAnnexure18Html(app, 267, true);
       } else if (previewDisplayMode === 'annexure17') {
         html += buildAnnexure17Html(app, true);
+      } else if (previewDisplayMode === 'cert266') {
+        html += buildCert266Html(app, 266, true);
       } else if (previewDisplayMode === 'roznama') {
         html += buildRoznamaHtml(app, 1);
       } else if (previewDisplayMode === 'form13') {
@@ -3150,6 +3256,8 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
             p += buildAnnexure18Html(app, 267, true);
           } else if (previewDisplayMode === 'annexure17') {
             p += buildAnnexure17Html(app, true);
+          } else if (previewDisplayMode === 'cert266') {
+            p += buildCert266Html(app, 266, true);
           } else if (previewDisplayMode === 'roznama') {
             p += buildRoznamaHtml(app, 1);
           } else if (previewDisplayMode === 'form13') {
@@ -3165,6 +3273,11 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
           p += buildAnnexure18Html(app, 267, true);
         } else if (pageChoice === 'annexure17') {
           p += buildAnnexure17Html(app, true);
+        } else if (pageChoice === 'cert266') {
+          p += buildCert266Html(app, 266, true);
+        } else if (pageChoice === 'annexure17_cert') {
+          p += buildAnnexure17Html(app, false);
+          p += buildCert266Html(app, 266, false);
         } else if (pageChoice === 'form14') {
           p += buildForm14Html(app, 4);
         } else if (pageChoice === 'form14_cert') {
@@ -3400,6 +3513,54 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
 
       // Print strictly 1 single page Annexure 17 (Duplicate Office Copy + Original Form 13)
       printContainer.innerHTML = buildAnnexure17Html(blankApp, true);
+      printContainer.style.display = 'block';
+
+      window.print();
+
+      const cleanup = () => {
+        document.body.classList.remove('printing-from-container');
+        printContainer.style.display = 'none';
+        printContainer.innerHTML = '';
+        window.removeEventListener('afterprint', cleanup);
+      };
+      window.addEventListener('afterprint', cleanup);
+      setTimeout(cleanup, 2000);
+    }
+
+    /* Print Blank Certificate of Service of Notice (Page 266 - Objector) */
+    function printBlankCert266() {
+      const defHearingPlace = document.getElementById('def-hearing-place')?.value || 'At Post Kankvali MKG Road Ta Kankvali Dist Sindhudurg Pin 416602';
+      const defConstituency = document.getElementById('def-constituency')?.value || '268 Kankavli Constituency';
+      const defHearingDate = document.getElementById('def-hearing-date')?.value || '';
+      const defHearingTime = document.getElementById('def-hearing-time')?.value || '';
+      const defNoticeDate = document.getElementById('def-notice-date')?.value || '';
+
+      const blankApp = {
+        isBlankForm: true,
+        refNo: "........................................",
+        objectionNo: "........",
+        personName: "....................................................................................................",
+        personAddress: "....................................................................................................",
+        serialNo: "................",
+        partNo: "................",
+        objectorName: "....................................................................................................",
+        objectorAddress: "....................................................................................................",
+        constituency: defConstituency,
+        hearingPlace: defHearingPlace,
+        hearingDate: defHearingDate,
+        hearingTime: defHearingTime,
+        noticeDate: defNoticeDate,
+        serviceDateVoter: '',
+        grounds: "Absent/Permanently shifted",
+        eroTitle: document.getElementById('def-ero-title')?.value || ('Electoral Registration Officer,\n' + defConstituency),
+        servingOfficer: "........................................"
+      };
+
+      const printContainer = document.getElementById('printContainer');
+      document.body.classList.add('printing-from-container');
+
+      // Print strictly 1 single page Certificate (Page 266)
+      printContainer.innerHTML = buildCert266Html(blankApp, 266, true);
       printContainer.style.display = 'block';
 
       window.print();
