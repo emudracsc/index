@@ -883,22 +883,26 @@
        Dual Copy (Duplicate Office Copy + Original Form 14 on Single Page)
        ========================================================================= */
     .annexure18-inner {
-      padding: 7mm 15mm 5mm 15mm !important;
+      padding: 6mm 15mm 4mm 15mm !important;
       height: 100%;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       font-family: var(--font-legal);
       font-size: 9.2pt;
-      line-height: 1.34;
+      line-height: 1.32;
       color: #000000;
     }
 
     .annexure18-half {
+      flex: 1 1 0;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
+      box-sizing: border-box;
+      padding: 1px 0;
     }
 
     .annexure18-head-main {
@@ -920,15 +924,15 @@
 
     .annexure18-rule {
       font-family: var(--font-legal);
-      font-size: 9.5pt;
+      font-size: 9.2pt;
       font-style: italic;
       text-align: center;
-      margin-top: 6px;
+      margin-top: 3px;
     }
 
     .annexure18-purpose {
       font-family: var(--font-legal);
-      font-size: 9.5pt;
+      font-size: 9.2pt;
       font-style: italic;
       font-weight: 700;
       text-align: center;
@@ -940,19 +944,21 @@
       grid-template-columns: 155px 1fr;
       gap: 12px;
       align-items: flex-start;
-      margin-top: 6px;
+      margin-top: 4px;
       font-family: var(--font-legal);
       font-size: 9.2pt;
     }
 
     .annexure18-divider {
       border-top: 1.5px solid #000000;
-      margin: 6px 0 6px 0;
+      margin: 4px 0 4px 0;
       width: 100%;
+      flex-shrink: 0;
     }
 
     .annexure18-page-num {
       text-align: center;
+      flex-shrink: 0;
       font-family: var(--font-legal);
       font-size: 10pt;
       font-weight: 700;
@@ -2706,7 +2712,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
               </div>
 
               <!-- Footer Duplicate: Place, Date & ERO Signature -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: flex-end; margin-top: 8px; font-family: var(--font-legal); font-size: 9.2pt;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: flex-end; margin-top: auto; padding-top: 4px; font-family: var(--font-legal); font-size: 9.2pt;">
                 <div style="line-height: 1.4;">
                   <div>Place <span class="dotted-val left-align" style="min-width: 85px; font-size: 8.8pt;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
                   <div>Date <span class="dotted-val left-align" style="min-width: 85px; font-size: 8.8pt;">${escapeHtml(noticeDateStr)}</span></div>
@@ -2724,11 +2730,10 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
 
             <!-- BOTTOM HALF: FORM 13 (ORIGINAL) -->
             <div class="annexure18-half">
-              <!-- 1 blank line space below center divider line -->
-              <div style="text-align: center; margin-top: 18px; margin-bottom: 6px;">
+              <div style="text-align: center; margin-top: 2px; margin-bottom: 4px;">
                 <div class="annexure18-head-main" style="font-size: 13pt;">FORM 13</div>
-                <div class="annexure18-rule" style="margin-top: 3px;">[See rule 19(1)(b)(ii)]</div>
-                <div class="annexure18-purpose" style="margin-top: 3px;">Notice to the objector</div>
+                <div class="annexure18-rule" style="margin-top: 2px;">[See rule 19(1)(b)(ii)]</div>
+                <div class="annexure18-purpose" style="margin-top: 2px;">Notice to the objector</div>
               </div>
 
               <!-- Recipient Section Original -->
@@ -2774,7 +2779,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
               </div>
 
               <!-- Footer Original: Place, Date & ERO Signature -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: flex-end; margin-top: 8px; font-family: var(--font-legal); font-size: 9.2pt;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: flex-end; margin-top: auto; padding-top: 4px; font-family: var(--font-legal); font-size: 9.2pt;">
                 <div style="line-height: 1.4;">
                   <div>Place <span class="dotted-val left-align" style="min-width: 85px; font-size: 8.8pt;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
                   <div>Date <span class="dotted-val left-align" style="min-width: 85px; font-size: 8.8pt;">${escapeHtml(noticeDateStr)}</span></div>
@@ -2855,7 +2860,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
               </div>
 
               <!-- Footer Duplicate: Place, Date & ERO Signature -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: flex-end; margin-top: 4px; font-family: var(--font-legal); font-size: 9.2pt;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: flex-end; margin-top: auto; padding-top: 4px; font-family: var(--font-legal); font-size: 9.2pt;">
                 <div style="line-height: 1.4;">
                   <div>Place <span class="dotted-val left-align" style="min-width: 85px; font-size: 8.8pt;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
                   <div>Date <span class="dotted-val left-align" style="min-width: 85px; font-size: 8.8pt;">${escapeHtml(noticeDateStr)}</span></div>
@@ -2873,7 +2878,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
 
             <!-- BOTTOM HALF: FORM 14 (ORIGINAL) -->
             <div class="annexure18-half">
-              <div style="text-align: center; margin-top: 12px; margin-bottom: 4px;">
+              <div style="text-align: center; margin-top: 2px; margin-bottom: 4px;">
                 <div class="annexure18-head-main" style="font-size: 13pt;">FORM 14</div>
                 <div class="annexure18-rule" style="margin-top: 2px;">[See rule 19(1)(b)(ii)]</div>
                 <div class="annexure18-purpose">1[Notice to the person in respect of whom objection has been made]</div>
@@ -2934,7 +2939,7 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
               </div>
 
               <!-- Footer Original: Place, Date & ERO Signature -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: flex-end; margin-top: 4px; font-family: var(--font-legal); font-size: 9.2pt;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: flex-end; margin-top: auto; padding-top: 4px; font-family: var(--font-legal); font-size: 9.2pt;">
                 <div style="line-height: 1.4;">
                   <div>Place <span class="dotted-val left-align" style="min-width: 85px; font-size: 8.8pt;">${escapeHtml(extractPlace(app.hearingPlace))}</span></div>
                   <div>Date <span class="dotted-val left-align" style="min-width: 85px; font-size: 8.8pt;">${escapeHtml(noticeDateStr)}</span></div>
