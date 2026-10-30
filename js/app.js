@@ -383,6 +383,11 @@ function renderServicesCatalog(filterCategory = "all", searchQuery = "") {
         </div>
       </div>
       <div class="service-card-actions">
+        ${service.form_url ? `
+          <a href="${service.form_url}" target="_blank" class="btn-card-apply" style="background: linear-gradient(135deg, #1e3a8a, #0f172a); color: #fff; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; border: 1px solid #3b82f6;" title="अर्ज जनरेटर उघडा">
+            <i class="fa-solid fa-file-signature"></i> ${isMr ? "अर्ज भरा" : "Fill Form"}
+          </a>
+        ` : ""}
         <button class="btn-card-doc" onclick="openDocsModal('${service.id}')">
           <i class="fa-solid fa-list-check"></i> ${t("btn_view_docs")}
         </button>

@@ -537,8 +537,10 @@
     .letter-subject-text {
       display: inline-block;
       text-decoration: none;
-      border-bottom: 1.5px solid #000000;
       padding-bottom: 2px;
+    }
+    .letter-subject-text.underlined {
+      border-bottom: 1.5px solid #000000;
     }
 
     .letter-reference-block {
@@ -903,8 +905,9 @@
           <div class="field-item">
             <label class="field-label">जलद अधिकारी निवडा (Quick Preset):</label>
             <div class="quick-chips">
-              <span class="quick-chip" onclick="setRecipient('मा. पोलिस अधिक्षक', 'सिंधुदुर्ग')">मा. पोलिस अधिक्षक</span>
+              <span class="quick-chip" onclick="setRecipient('मा. पोलिस अधीक्षक', 'सिंधुदुर्ग')">मा. पोलिस अधीक्षक</span>
               <span class="quick-chip" onclick="setRecipient('मा. पोलीस निरीक्षक साहेब', 'पोलीस ठाणे कणकवली')">मा. पोलीस निरीक्षक</span>
+              <span class="quick-chip" onclick="setRecipient('मा. उपविभागीय पोलीस अधिकारी (SDPO)', 'उपविभाग कणकवली')">मा. SDPO साहेब</span>
               <span class="quick-chip" onclick="setRecipient('मा. तहसीलदार साहेब', 'तहसील कार्यालय कणकवली')">मा. तहसीलदार साहेब</span>
               <span class="quick-chip" onclick="setRecipient('मा. तलाठी साहेब', 'सजा डामरे, ता. कणकवली')">मा. तलाठी साहेब</span>
               <span class="quick-chip" onclick="setRecipient('मा. सरपंच / ग्रामसेवक साहेब', 'ग्रामपंचायत कार्यालय डामरे')">मा. ग्रामसेवक साहेब</span>
@@ -915,7 +918,7 @@
 
           <div class="field-item">
             <label class="field-label">प्रति / अधिकारी पदनाम:</label>
-            <input type="text" id="recipientTitle" class="field-input" value="मा. पोलिस अधिक्षक" placeholder="उदा. मा. पोलिस अधिक्षक" oninput="updateLetterPreview()">
+            <input type="text" id="recipientTitle" class="field-input" value="मा. पोलिस अधीक्षक" placeholder="उदा. मा. पोलिस अधीक्षक" oninput="updateLetterPreview()">
           </div>
 
           <div class="field-item">
@@ -950,6 +953,20 @@
           <div class="field-item">
             <label class="field-label">संबोधन (Salutation):</label>
             <input type="text" id="letterSalutation" class="field-input" value="महोदय," placeholder="उदा. महोदय, किंवा महोदया," oninput="updateLetterPreview()">
+          </div>
+
+          <div class="field-item">
+            <label class="field-label">दाखल्याचे कारण निवडा (Quick Reason):</label>
+            <div class="quick-chips">
+              <span class="quick-chip" onclick="setLetterReason('नोकरी कारणासाठी')">💼 नोकरी कारणासाठी</span>
+              <span class="quick-chip" onclick="setLetterReason('खाजगी कंपनी नोकरी कारणासाठी')">🏢 खाजगी नोकरी</span>
+              <span class="quick-chip" onclick="setLetterReason('शासकीय नोकरी / भरती कारणासाठी')">🏛️ शासकीय भरती</span>
+              <span class="quick-chip" onclick="setLetterReason('पोलीस भरती कारणासाठी')">👮 पोलीस भरती</span>
+              <span class="quick-chip" onclick="setLetterReason('पासपोर्ट / परदेश गमन कारणासाठी')">🛂 पासपोर्ट / व्हिसा</span>
+              <span class="quick-chip" onclick="setLetterReason('सरकारी कंत्राटदार / लायसन्स नोंदणीसाठी')">🏗️ कंत्राटदार लायसन्स</span>
+              <span class="quick-chip" onclick="setLetterReason('सुरक्षा रक्षक भरतीसाठी')">🛡️ सुरक्षा रक्षक</span>
+              <span class="quick-chip" onclick="setLetterReason('महाविद्यालयीन / उच्च शिक्षण प्रवेशासाठी')">🎓 कॉलेज प्रवेश</span>
+            </div>
           </div>
 
           <div class="field-item">
@@ -1075,6 +1092,13 @@
             <i class="fa-solid fa-arrow-right-arrow-left"></i> देवनागरी अंक
           </button>
         </div>
+
+        <div class="toolbar-group">
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 700; color: #475569; cursor: pointer; user-select: none;">
+            <input type="checkbox" id="subjectUnderlineToggle" onchange="toggleSubjectUnderline(this.checked)">
+            <span>विषय अधोरेखित</span>
+          </label>
+        </div>
       </div>
 
       <!-- A4 Page Viewport -->
@@ -1164,7 +1188,7 @@
         district: "सिंधुदुर्ग",
         date: "२२/०८/२०१८",
         gender: "female",
-        recipientTitle: "मा. पोलिस अधिक्षक",
+        recipientTitle: "मा. पोलिस अधीक्षक",
         recipientOffice: "सिंधुदुर्ग",
         subject: "पूर्व चारित्र्य व चालवर्तन दाखला मिळण्याबाबत.",
         reference: "",
@@ -1403,7 +1427,39 @@
       document.getElementById("signSalutation").value = t.signSalutation;
       document.getElementById("signName").value = t.signName;
 
+      try {
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('template', key);
+        window.history.replaceState({}, '', newUrl);
+      } catch (e) {}
+
       updateLetterPreview();
+    }
+
+    // Set Quick Reason for Police Character Certificate
+    function setLetterReason(reason) {
+      const p1 = document.getElementById("para1");
+      const name = document.getElementById("applicantName").value.trim() || "ज्योत्स्ना सिताराम कानडे";
+      const addr = document.getElementById("applicantAddress").value.trim() || "डामरे, कानडेवाडी";
+      const taluka = document.getElementById("applicantTaluka").value.trim() || "कणकवली";
+      const dist = document.getElementById("applicantDistrict").value.trim() || "सिंधुदुर्ग";
+      const isFemale = document.getElementById("genderFemale").checked;
+      const verb = isFemale ? "करते" : "करतो";
+
+      p1.value = `अर्जदार ${name} रा- ${addr} तालुका -${taluka} जि-${dist} सदर अर्ज करीता किंवा ${verb} की मला ${reason} पूर्व चारीत्र्य व चालवर्तन दाखल्याची आवश्यकता आहे.`;
+      updateLetterPreview();
+    }
+
+    // Toggle Subject Underline
+    function toggleSubjectUnderline(isChecked) {
+      const subjElem = document.querySelector(".letter-subject-text");
+      if (subjElem) {
+        if (isChecked) {
+          subjElem.classList.add("underlined");
+        } else {
+          subjElem.classList.remove("underlined");
+        }
+      }
     }
 
     // Load exact sample matching user's uploaded image
@@ -1684,7 +1740,14 @@ ${phone ? `संपर्क नंबर : ${phone}` : 'संपर्क न
 
     // Initialize on page load
     window.addEventListener("DOMContentLoaded", () => {
-      updateLetterPreview();
+      const params = new URLSearchParams(window.location.search);
+      const tmpl = params.get("template") || params.get("t");
+      if (tmpl && TEMPLATES[tmpl]) {
+        document.getElementById("templateSelector").value = tmpl;
+        applyTemplate(tmpl);
+      } else {
+        updateLetterPreview();
+      }
     });
   </script>
 
