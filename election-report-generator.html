@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>निवडणूक अहवाल जनरेटर | Form 6, 7, 8 Daily Pendency Report (268 - कणकवली)</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Local XLSX library first, fallback to CDN -->
+    <script src="js/xlsx.full.min.js"></script>
+    <script>
+        if (typeof XLSX === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"><\/script>');
+        }
+    </script>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-dark: #0f172a;
+            --primary-light: #3b82f6;
+            --accent: #d97706;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-ui: #cbd5e1;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            
+            /* Report Colors Matching Image */
+            --img-header-bg: #bfe1ee;
+            --img-subtotal-bg: #cbe5f5;
+            --img-grandtotal-bg: #bfe1ee;
+            --img-border: #222222;
+            --img-red: #c00000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            line-height: 1.5;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 1360px;
+            margin: 0 auto;
+        }
+
+        /* Top Navigation Bar */
+        .nav-bar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .nav-bar-top a {
+            color: #ffffff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            background: rgba(255, 255, 255, 0.14);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .nav-bar-top a:hover {
+            background: rgba(255, 255, 255, 0.26);
+            transform: translateY(-1px);
+        }
+
+        /* Header Card */
+        .header-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px 24px;
+            border: 1px solid var(--border-ui);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-card h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1e3a8a;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+        }
+
+        .header-card .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        /* Constituency Badge Chips */
+        .constituency-chips {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .chip {
+            font-size: 12.5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chip-devgad {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .chip-vaibhavwadi {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        .chip-kankavli {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Main Card Layout */
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-ui);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 8px;
+        }
+
+        /* Upload Grid */
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 992px) {
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .upload-box {
+            border: 2px dashed #94a3b8;
+            border-radius: 10px;
+            padding: 16px;
+            background: #f8fafc;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .upload-box:hover, .upload-box.dragover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .upload-box.loaded {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .upload-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .upload-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .badge-f6 { background: #dbeafe; color: #1e40af; }
+        .badge-f7 { background: #fee2e2; color: #b91c1c; }
+        .badge-f8 { background: #fef3c7; color: #b45309; }
+
+        .upload-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .upload-box input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #ffffff;
+            font-size: 12.5px;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        .file-status {
+            font-size: 12px;
+            margin-top: 8px;
+            color: var(--text-muted);
+            min-height: 18px;
+        }
+
+        .file-status.success {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        /* Quick Action Bar */
+        .quick-actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-primary { background: #2563eb; color: #ffffff; }
+        .btn-primary:hover { background: #1d4ed8; }
+
+        .btn-success { background: #059669; color: #ffffff; }
+        .btn-success:hover { background: #047857; }
+
+        .btn-secondary { background: #475569; color: #ffffff; }
+        .btn-secondary:hover { background: #334155; }
+
+        .btn-amber { background: #d97706; color: #ffffff; }
+        .btn-amber:hover { background: #b45309; }
+
+        .btn-outline {
+            background: #ffffff;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+        .btn-outline:hover {
+            background: #f1f5f9;
+        }
+
+        /* Top Filter / Print Controls Section */
+        .controls-card {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        select.form-select {
+            padding: 9px 16px;
+            border-radius: 8px;
+            border: 2px solid #3b82f6;
+            background: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e3a8a;
+            cursor: pointer;
+            outline: none;
+            min-width: 280px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        select.form-select:focus {
+            border-color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+
+        input[type="date"].form-date {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        /* Filter Tab Buttons */
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .tab-btn {
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .tab-btn.active {
+            background: #1e3a8a;
+            color: #ffffff;
+            border-color: #1e3a8a;
+        }
+
+        /* Report Paper Output Area */
+        .report-paper {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        /* Report Header Banner */
+        .report-header-banner {
+            text-align: center;
+            margin-bottom: 18px;
+            border-bottom: 2px solid #0f172a;
+            padding-bottom: 12px;
+        }
+
+        .report-header-banner h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .report-header-banner .report-meta {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        /* Exact Table Style Matching Screenshot */
+        .report-table-img {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            color: #000000;
+            margin: 0 auto;
+            border: 2px solid var(--img-border);
+        }
+
+        .report-table-img th,
+        .report-table-img td {
+            border: 1px solid var(--img-border);
+            padding: 6px 10px;
+            text-align: center;
+            vertical-align: middle;
+            font-family: inherit;
+        }
+
+        /* Header Style */
+        .report-table-img thead th {
+            background-color: var(--img-header-bg) !important;
+            color: #000000;
+            font-weight: 800;
+            font-size: 14px;
+            position: relative;
+            padding: 9px 12px;
+            white-space: nowrap;
+        }
+
+        /* Excel-like filter icon in header */
+        .report-table-img thead th .filter-caret {
+            font-size: 9px;
+            margin-left: 6px;
+            opacity: 0.65;
+            border: 1px solid #666;
+            padding: 1px 2px;
+            background: #ffffff;
+            border-radius: 2px;
+            vertical-align: middle;
+        }
+
+        /* Form title row styling */
+        .report-table-img td.form-name-cell {
+            font-weight: 800;
+            font-size: 14.5px;
+            text-align: center;
+            background-color: #ffffff;
+            width: 110px;
+        }
+
+        /* Taluka column */
+        .report-table-img td.taluka-name-cell {
+            font-weight: 800;
+            font-size: 14px;
+            text-align: left;
+            padding-left: 14px;
+            width: 170px;
+            background-color: #ffffff;
+        }
+
+        /* Subtotal Rows (Total for FORM6, FORM7, FORM8) */
+        .report-table-img tr.subtotal-row td {
+            background-color: var(--img-subtotal-bg) !important;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .report-table-img tr.subtotal-row td.subtotal-label {
+            text-align: center;
+            font-weight: 800;
+        }
+
+        /* Grand Total Row at Bottom */
+        .report-table-img tr.grand-total-row td {
+            background-color: var(--img-grandtotal-bg) !important;
+            font-weight: 800;
+            font-size: 14.5px;
+        }
+
+        /* Red Text for High Pendency (as shown in image) */
+        .text-pendency-red {
+            color: var(--img-red) !important;
+            font-weight: 800;
+        }
+
+        .font-bold {
+            font-weight: 800;
+        }
+
+        /* Part-wise Details Drawer */
+        details.part-details-box {
+            margin-top: 20px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+
+        details.part-details-box summary {
+            font-weight: 700;
+            cursor: pointer;
+            color: #1e3a8a;
+            outline: none;
+        }
+
+        .part-grid-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 12px;
+        }
+
+        .part-grid-table th, .part-grid-table td {
+            border: 1px solid #cbd5e1;
+            padding: 4px 8px;
+            text-align: center;
+        }
+
+        .part-grid-table th {
+            background: #1e293b;
+            color: #ffffff;
+        }
+
+        .part-grid-table tr:nth-child(even) {
+            background: #f1f5f9;
+        }
+
+        /* Notification Toast */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #0f172a;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 14px 20px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid #10b981;
+        }
+
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.3s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from { bottom: 0; opacity: 0; }
+            to { bottom: 30px; opacity: 1; }
+        }
+
+        @keyframes fadeout {
+            from { bottom: 30px; opacity: 1; }
+            to { bottom: 0; opacity: 0; }
+        }
+
+        /* ==========================================================
+           PRINT STYLESHEET
+           ========================================================== */
+        @media print {
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 0;
+                margin: 0;
+            }
+
+            .no-print,
+            .nav-bar-top,
+            .header-card,
+            .card,
+            .controls-card,
+            .quick-actions-bar,
+            .tab-buttons,
+            details,
+            #toast {
+                display: none !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .report-paper {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
+
+            .report-table-img {
+                width: 100% !important;
+                font-size: 12.5pt !important;
+                border: 2px solid #000000 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .report-table-img th,
+            .report-table-img td {
+                border: 1px solid #000000 !important;
+                padding: 6px 8px !important;
+            }
+
+            .report-table-img thead th {
+                background-color: var(--img-header-bg) !important;
+                color: #000000 !important;
+            }
+
+            .report-table-img tr.subtotal-row td {
+                background-color: var(--img-subtotal-bg) !important;
+            }
+
+            .report-table-img tr.grand-total-row td {
+                background-color: var(--img-grandtotal-bg) !important;
+            }
+
+            .text-pendency-red {
+                color: #c00000 !important;
+            }
+
+            .page-break {
+                page-break-after: always;
+                break-after: page;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Top Navigation Bar -->
+    <div class="nav-bar-top no-print">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <a href="index.html"><i class="fa-solid fa-house"></i> मुख्यपृष्ठ (Home)</a>
+            <a href="ero-hearing-notice-generator.html" style="color:#fde047;"><i class="fa-solid fa-scale-balanced"></i> ERO सुनावणी नोटीस</a>
+            <a href="disposal-report-generator.html" style="color:#6ee7b7;"><i class="fa-solid fa-chart-pie"></i> Daily Disposal Report</a>
+            <a href="election-report-generator.html" style="background: rgba(255,255,255,0.28); color:#ffffff;"><i class="fa-solid fa-square-poll-vertical"></i> निवडणूक अहवाल (Form 6, 7, 8)</a>
+            <a href="ero-pendency-report-generator.html" style="color:#e9d5ff;"><i class="fa-solid fa-list-check"></i> ERO पेंडन्सी अहवाल (नवीन)</a>
+        </div>
+        <div style="font-size:12px;opacity:0.9;">eMudra CSC • २६८ - कणकवली विधानसभा निवडणूक दालन</div>
+    </div>
+
+    <!-- Header Card -->
+    <div class="header-card no-print">
+        <h1>२६८ - कणकवली विधानसभा मतदारसंघ निवडणूक अहवाल जनरेटर</h1>
+        <div class="subtitle">फॉर्म क्र. ६, ७ व ८ एक्सेल फाईल्स अपलोड करून तालुकावार व एकत्रित अहवाल तयार करा</div>
+        
+        <div class="constituency-chips">
+            <span class="chip chip-devgad"><i class="fa-solid fa-location-dot"></i> १ ते १३६ : देवगड तालुका (Devgad)</span>
+            <span class="chip chip-vaibhavwadi"><i class="fa-solid fa-location-dot"></i> १३७ ते १९४ : वैभववाडी तालुका (Vaibhavwadi)</span>
+            <span class="chip chip-kankavli"><i class="fa-solid fa-location-dot"></i> १९५ ते ३३२ : कणकवली तालुका (Kankavli)</span>
+        </div>
+    </div>
+
+    <!-- Upload Section Card -->
+    <div class="card no-print">
+        <div class="section-title">
+            <i class="fa-solid fa-file-excel" style="color:#059669;"></i>
+            <span>१) फॉर्म ६, ७ व ८ च्या ३ एक्सेल फाईल्स निवडा किंवा ड्रॅग करा</span>
+        </div>
+
+        <div class="upload-grid">
+            <!-- Form 6 Upload Box -->
+            <div class="upload-box" id="boxForm6">
+                <div class="upload-header">
+                    <span class="upload-title"><i class="fa-solid fa-file-lines"></i> Form No. 6</span>
+                    <span class="upload-badge badge-f6">नवीन नोंदणी (Form 6)</span>
+                </div>
+                <label for="form6File" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">६ नंबर फॉर्म एक्सेल फाईल निवडा:</label>
+                <input type="file" id="form6File" accept=".xlsx, .xls, .csv">
+                <div class="file-status" id="statusF6">फाईल निवडलेली नाही</div>
+            </div>
+
+            <!-- Form 7 Upload Box -->
+            <div class="upload-box" id="boxForm7">
+                <div class="upload-header">
+                    <span class="upload-title"><i class="fa-solid fa-file-lines"></i> Form No. 7</span>
+                    <span class="upload-badge badge-f7">नाव वगळणे (Form 7)</span>
+                </div>
+                <label for="form7File" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">७ नंबर फॉर्म एक्सेल फाईल निवडा:</label>
+                <input type="file" id="form7File" accept=".xlsx, .xls, .csv">
+                <div class="file-status" id="statusF7">फाईल निवडलेली नाही</div>
+            </div>
+
+            <!-- Form 8 Upload Box -->
+            <div class="upload-box" id="boxForm8">
+                <div class="upload-header">
+                    <span class="upload-title"><i class="fa-solid fa-file-lines"></i> Form No. 8</span>
+                    <span class="upload-badge badge-f8">दुरुस्ती / स्थलांतर (Form 8)</span>
+                </div>
+                <label for="form8File" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">८ नंबर फॉर्म एक्सेल फाईल निवडा:</label>
+                <input type="file" id="form8File" accept=".xlsx, .xls, .csv">
+                <div class="file-status" id="statusF8">फाईल निवडलेली नाही</div>
+            </div>
+        </div>
+
+        <div class="quick-actions-bar">
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <button type="button" class="btn btn-success" onclick="processAllUploadedFiles()">
+                    <i class="fa-solid fa-bolt"></i> अहवाल तयार करा (Generate Report)
+                </button>
+                <button type="button" class="btn btn-primary" onclick="loadSampleDemoData()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> फोटोप्रमाणे नमुना डेटा पहा (Load Demo)
+                </button>
+            </div>
+            <div>
+                <button type="button" class="btn btn-outline" onclick="resetForm()">
+                    <i class="fa-solid fa-rotate-left"></i> रिसेट (Reset)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls & Taluka Selection Filter Card -->
+    <div class="controls-card no-print">
+        <div class="filter-group">
+            <span class="filter-label"><i class="fa-solid fa-filter" style="color:#2563eb;"></i> तालुका अहवाल निवडा:</span>
+            <select id="talukaFilter" class="form-select" onchange="onFilterChange()">
+                <option value="ALL" selected>📊 सर्व तालुके एकत्र अहवाल (Common Report - फोटोप्रमाणे)</option>
+                <option value="Devgad">📍 फक्त देवगड तालुका (Devgad - भाग १ ते १३६)</option>
+                <option value="Vaibhavwadi">📍 फक्त वैभववाडी तालुका (Vaibhavwadi - भाग १३७ ते १९४)</option>
+                <option value="Kankavli">📍 फक्त कणकवली तालुका (Kankavli - भाग १९५ ते ३३२)</option>
+                <option value="ALL_PAGES">📑 सर्व तालुके स्वतंत्र पानांवर (All Separate Pages)</option>
+            </select>
+
+            <span class="filter-label" style="margin-left:8px;"><i class="fa-regular fa-calendar"></i> तारीख:</span>
+            <input type="date" id="reportDate" class="form-date" onchange="onDateChange()">
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary" onclick="printCurrentReport()">
+                <i class="fa-solid fa-print"></i> प्रिंट / Export PDF
+            </button>
+            <button type="button" class="btn btn-amber" onclick="exportToExcel()">
+                <i class="fa-solid fa-file-excel"></i> Excel डाउनलोड
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="copyTableToClipboard()">
+                <i class="fa-regular fa-copy"></i> टेबल कॉपी
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Tab Switchers -->
+    <div class="no-print" style="margin-bottom: 16px;">
+        <div class="tab-buttons">
+            <button type="button" class="tab-btn active" id="tabALL" onclick="selectTab('ALL')">
+                <i class="fa-solid fa-table-cells"></i> सर्व तालुके एकत्र अहवाल (Common Report)
+            </button>
+            <button type="button" class="tab-btn" id="tabDevgad" onclick="selectTab('Devgad')">
+                📍 देवगड (१-१३६)
+            </button>
+            <button type="button" class="tab-btn" id="tabVaibhavwadi" onclick="selectTab('Vaibhavwadi')">
+                📍 वैभववाडी (१३७-१९४)
+            </button>
+            <button type="button" class="tab-btn" id="tabKankavli" onclick="selectTab('Kankavli')">
+                📍 कणकवली (१९५-३३२)
+            </button>
+            <button type="button" class="tab-btn" id="tabALL_PAGES" onclick="selectTab('ALL_PAGES')">
+                📑 सर्व तालुके स्वतंत्र प्रिंट व्ह्यू
+            </button>
+        </div>
+    </div>
+
+    <!-- Report Paper Display Section -->
+    <div class="report-paper" id="reportPaper">
+        <!-- Rendered Report Will Appear Here -->
+        <div id="reportContentArea"></div>
+    </div>
+
+    <!-- Optional BLO Login Merged Data Section (Preserved) -->
+    <details class="no-print card" style="margin-top:20px;">
+        <summary style="font-weight:700; color:#475569; cursor:pointer;">
+            <i class="fa-solid fa-user-tie"></i> ऐच्छिक: BLO Login Data Merge (सुपरवायझर अहवाल)
+        </summary>
+        <div style="margin-top: 14px;">
+            <p style="font-size:13px; color:#64748b; margin-bottom:8px;">
+                BLO Login फाईल्स अपलोड करून भागनिहाय Pending FVR फॉर्म्स मोजण्यासाठी याचा वापर करू शकता:
+            </p>
+            <input type="file" id="bloFiles" accept=".xlsx, .xls, .csv" multiple style="padding:6px; border:1px solid #cbd5e1; border-radius:6px; width:100%; max-width:400px;">
+            <button type="button" class="btn btn-secondary" style="margin-top:8px; padding:6px 14px; font-size:13px;" onclick="processBloFiles()">
+                BLO डेटा प्रोसेस करा
+            </button>
+            <div id="bloOutputSection" style="margin-top:14px;"></div>
+        </div>
+    </details>
+</div>
+
+<!-- Notification Toast -->
+<div id="toast">सूचना</div>
+
+<script>
+    // State storage for Form 6, 7, 8 Part Records
+    let parsedData = {
+        FORM6: {},
+        FORM7: {},
+        FORM8: {}
+    };
+
+    // Taluka Aggregated Summary Cache
+    let talukaSummary = {
+        FORM6: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
+        FORM7: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
+        FORM8: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] }
+    };
+
+    // Part Range Definition
+    function getTalukaByPartNo(p) {
+        let part = parseInt(p, 10);
+        if (isNaN(part)) return null;
+        if (part >= 1 && part <= 136) return 'Devgad';
+        if (part >= 137 && part <= 194) return 'Vaibhavwadi';
+        if (part >= 195 && part <= 332) return 'Kankavli'; // 195-320/332 for Kankavli
+        return null;
+    }
+
+    // Set default date to today
+    document.addEventListener('DOMContentLoaded', () => {
+        let today = new Date().toISOString().split('T')[0];
+        document.getElementById('reportDate').value = today;
+        // Load default demo view on start
+        loadSampleDemoData();
+    });
+
+    // Toast helper
+    function showToast(msg) {
+        let t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'show';
+        setTimeout(() => { t.className = t.className.replace('show', ''); }, 3000);
+    }
+
+    // Setup drag and drop for upload boxes
+    ['boxForm6', 'boxForm7', 'boxForm8'].forEach((boxId, idx) => {
+        let box = document.getElementById(boxId);
+        let input = box.querySelector('input[type="file"]');
+        let formType = ['FORM6', 'FORM7', 'FORM8'][idx];
+
+        box.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            box.classList.add('dragover');
+        });
+
+        box.addEventListener('dragleave', () => {
+            box.classList.remove('dragover');
+        });
+
+        box.addEventListener('drop', (e) => {
+            e.preventDefault();
+            box.classList.remove('dragover');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                input.files = e.dataTransfer.files;
+                handleSingleFileUpload(formType, input.files[0]);
+            }
+        });
+
+        input.addEventListener('change', () => {
+            if (input.files && input.files.length > 0) {
+                handleSingleFileUpload(formType, input.files[0]);
+            }
+        });
+    });
+
+    // Parse single Excel file
+    async function readExcelFile(file) {
+        return new Promise((resolve, reject) => {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    let data = new Uint8Array(e.target.result);
+                    let workbook = XLSX.read(data, {type: 'array'});
+                    let sheetName = workbook.SheetNames[0];
+                    let worksheet = workbook.Sheets[sheetName];
+                    let json = XLSX.utils.sheet_to_json(worksheet, {header: 1, defval: ''});
+                    resolve({ json, sheetName });
+                } catch (err) {
+                    reject(err);
+                }
+            };
+            reader.onerror = reject;
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    // Smart row parser for Form 6, 7, 8
+    function parseFormSheet(rows) {
+        let colMap = { part: -1, d1: -1, d2: -1, d3: -1, d4: -1, d5: -1 };
+        let headerRowIdx = -1;
+
+        // Search for header row in top 15 rows
+        for (let i = 0; i < Math.min(rows.length, 15); i++) {
+            let row = rows[i] || [];
+            let rStr = row.map(c => String(c || '').trim().toLowerCase());
+
+            let pIdx = rStr.findIndex(s => /part\s*(?:no|num|number)?|^part$|भाग/i.test(s));
+            let d1Idx = rStr.findIndex(s => /<\s*7/i.test(s));
+            let d2Idx = rStr.findIndex(s => />=\s*7|7\s*(?:to|-)\s*14/i.test(s));
+            let d3Idx = rStr.findIndex(s => />=\s*15|15\s*(?:to|-)\s*29/i.test(s));
+            let d4Idx = rStr.findIndex(s => />=\s*30|30\s*(?:to|-)\s*44/i.test(s));
+            let d5Idx = rStr.findIndex(s => />=\s*45|45\s*\+/i.test(s));
+
+            if (pIdx !== -1 || (d1Idx !== -1 && d2Idx !== -1)) {
+                headerRowIdx = i;
+                colMap.part = pIdx !== -1 ? pIdx : 0;
+                colMap.d1 = d1Idx;
+                colMap.d2 = d2Idx;
+                colMap.d3 = d3Idx;
+                colMap.d4 = d4Idx;
+                colMap.d5 = d5Idx;
+                break;
+            }
+        }
+
+        // Standard offsets if headers not explicitly detected
+        if (colMap.d1 === -1) {
+            colMap.part = colMap.part >= 0 ? colMap.part : 0;
+            colMap.d1 = 3;
+            colMap.d2 = 4;
+            colMap.d3 = 5;
+            colMap.d4 = 6;
+            colMap.d5 = 7;
+        }
+
+        let startRow = headerRowIdx >= 0 ? headerRowIdx + 1 : 0;
+        let partData = {};
+
+        for (let i = startRow; i < rows.length; i++) {
+            let row = rows[i];
+            if (!row || row.length === 0) continue;
+
+            // Extract Part No
+            let partNo = null;
+            let rawPart = String(row[colMap.part] || '').replace(/[^\d]/g, '');
+            let pVal = parseInt(rawPart, 10);
+            if (pVal >= 1 && pVal <= 350) {
+                partNo = pVal;
+            } else {
+                // Check first 3 columns as fallback
+                for (let c = 0; c < Math.min(row.length, 3); c++) {
+                    let testP = parseInt(String(row[c] || '').replace(/[^\d]/g, ''), 10);
+                    if (testP >= 1 && testP <= 350) {
+                        partNo = testP;
+                        break;
+                    }
+                }
+            }
+
+            if (!partNo) continue;
+
+            let cleanInt = idx => {
+                if (idx < 0 || idx >= row.length) return 0;
+                let val = String(row[idx] || '').replace(/,/g, '').trim();
+                let num = parseInt(val, 10);
+                return isNaN(num) ? 0 : num;
+            };
+
+            let d1 = cleanInt(colMap.d1);
+            let d2 = cleanInt(colMap.d2);
+            let d3 = cleanInt(colMap.d3);
+            let d4 = cleanInt(colMap.d4);
+            let d5 = cleanInt(colMap.d5);
+            let pendency = d2 + d3 + d4 + d5;
+            let totalForms = pendency + d1;
+
+            partData[partNo] = { d1, d2, d3, d4, d5, pendency, totalForms };
+        }
+
+        return partData;
+    }
+
+    // Handle single file upload
+    async function handleSingleFileUpload(formType, file) {
+        let statusEl = document.getElementById(formType === 'FORM6' ? 'statusF6' : formType === 'FORM7' ? 'statusF7' : 'statusF8');
+        let boxEl = document.getElementById(formType === 'FORM6' ? 'boxForm6' : formType === 'FORM7' ? 'boxForm7' : 'boxForm8');
+
+        statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> फाईल वाचत आहे...`;
+
+        try {
+            let { json, sheetName } = await readExcelFile(file);
+            let parts = parseFormSheet(json);
+            let count = Object.keys(parts).length;
+
+            if (count === 0) {
+                statusEl.innerHTML = `<span style="color:#dc2626;">⚠ भाग क्रमांक ओळखता आले नाहीत. फाईल तपासा.</span>`;
+                boxEl.classList.remove('loaded');
+                return;
+            }
+
+            parsedData[formType] = parts;
+            boxEl.classList.add('loaded');
+            statusEl.innerHTML = `<span class="success">✔ ${file.name} (${count} भाग डेटा लोड झाला)</span>`;
+            
+            // Recompute totals
+            recomputeTotals();
+            renderReport();
+            showToast(`${formType} डेटा यशस्वीरित्या लोड झाला! (${count} भाग)`);
+        } catch (e) {
+            console.error(e);
+            statusEl.innerHTML = `<span style="color:#dc2626;">त्रुटी: फाईल वाचता आली नाही</span>`;
+            boxEl.classList.remove('loaded');
+        }
+    }
+
+    // Process all uploaded files
+    async function processAllUploadedFiles() {
+        let f6 = document.getElementById('form6File').files[0];
+        let f7 = document.getElementById('form7File').files[0];
+        let f8 = document.getElementById('form8File').files[0];
+
+        if (!f6 && !f7 && !f8 && Object.keys(parsedData.FORM6).length === 0) {
+            alert('कृपया किमान एक किंवा तिन्ही एक्सेल फाईल्स (Form 6, 7, 8) अपलोड करा, किंवा नमुना डेटा पहा.');
+            return;
+        }
+
+        if (f6) await handleSingleFileUpload('FORM6', f6);
+        if (f7) await handleSingleFileUpload('FORM7', f7);
+        if (f8) await handleSingleFileUpload('FORM8', f8);
+
+        recomputeTotals();
+        renderReport();
+        showToast('अहवाल यशस्वीरित्या तयार झाला!');
+    }
+
+    // Recompute Taluka summaries
+    function recomputeTotals() {
+        talukaSummary = {
+            FORM6: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
+            FORM7: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
+            FORM8: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] }
+        };
+
+        ['FORM6', 'FORM7', 'FORM8'].forEach(ft => {
+            let pObj = parsedData[ft];
+            for (let p in pObj) {
+                let part = parseInt(p, 10);
+                let taluka = getTalukaByPartNo(part);
+                if (taluka && talukaSummary[ft][taluka]) {
+                    let d = pObj[p];
+                    talukaSummary[ft][taluka][0] += d.d1;
+                    talukaSummary[ft][taluka][1] += d.d2;
+                    talukaSummary[ft][taluka][2] += d.d3;
+                    talukaSummary[ft][taluka][3] += d.d4;
+                    talukaSummary[ft][taluka][4] += d.d5;
+                    talukaSummary[ft][taluka][5] += d.pendency;
+                    talukaSummary[ft][taluka][6] += d.totalForms;
+                }
+            }
+        });
+    }
+
+    // Load Exact Sample Data Matching User Image
+    function loadSampleDemoData() {
+        talukaSummary = {
+            FORM6: {
+                Devgad:      [128, 145, 135, 35, 174, 489, 617],
+                Vaibhavwadi: [51,  351, 101, 17, 107, 576, 627],
+                Kankavli:    [263, 92,  105, 48, 170, 415, 678]
+            },
+            FORM7: {
+                Devgad:      [4,  2,  3,  0, 17, 22,  26],
+                Vaibhavwadi: [1,  4,  5,  2, 25, 36,  37],
+                Kankavli:    [34, 44, 9,  4, 17, 74,  108]
+            },
+            FORM8: {
+                Devgad:      [22, 16, 31, 9, 78, 134, 156],
+                Vaibhavwadi: [13, 23, 16, 2, 38, 79,  92],
+                Kankavli:    [46, 12, 6,  2, 31, 51,  97]
+            }
+        };
+
+        // Populate sample individual part mock
+        parsedData = { FORM6: {}, FORM7: {}, FORM8: {} };
+        // Populate sample indicator badges
+        document.getElementById('statusF6').innerHTML = `<span class="success">✔ नमुना डेटा (Devgad, Vaibhavwadi, Kankavli)</span>`;
+        document.getElementById('statusF7').innerHTML = `<span class="success">✔ नमुना डेटा (Devgad, Vaibhavwadi, Kankavli)</span>`;
+        document.getElementById('statusF8').innerHTML = `<span class="success">✔ नमुना डेटा (Devgad, Vaibhavwadi, Kankavli)</span>`;
+        document.getElementById('boxForm6').classList.add('loaded');
+        document.getElementById('boxForm7').classList.add('loaded');
+        document.getElementById('boxForm8').classList.add('loaded');
+
+        renderReport();
+        showToast('फोटोप्रमाणे नमुना डेटा यशस्वीरित्या लोड झाला!');
+    }
+
+    // Reset Form
+    function resetForm() {
+        parsedData = { FORM6: {}, FORM7: {}, FORM8: {} };
+        talukaSummary = {
+            FORM6: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
+            FORM7: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
+            FORM8: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] }
+        };
+
+        ['form6File', 'form7File', 'form8File'].forEach(id => document.getElementById(id).value = '');
+        ['statusF6', 'statusF7', 'statusF8'].forEach(id => document.getElementById(id).textContent = 'फाईल निवडलेली नाही');
+        ['boxForm6', 'boxForm7', 'boxForm8'].forEach(id => document.getElementById(id).classList.remove('loaded'));
+
+        renderReport();
+        showToast('डेटा रीसेट करण्यात आला.');
+    }
+
+    // Filter Change event
+    function onFilterChange() {
+        let val = document.getElementById('talukaFilter').value;
+        syncTabs(val);
+        renderReport();
+    }
+
+    function onDateChange() {
+        renderReport();
+    }
+
+    function selectTab(val) {
+        document.getElementById('talukaFilter').value = val;
+        syncTabs(val);
+        renderReport();
+    }
+
+    function syncTabs(val) {
+        ['ALL', 'Devgad', 'Vaibhavwadi', 'Kankavli', 'ALL_PAGES'].forEach(t => {
+            let el = document.getElementById('tab' + t);
+            if (el) {
+                if (t === val) el.classList.add('active');
+                else el.classList.remove('active');
+            }
+        });
+    }
+
+    // Format Date helper
+    function getFormattedDate() {
+        let raw = document.getElementById('reportDate').value;
+        if (!raw) return '';
+        let parts = raw.split('-');
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    // Main Report Renderer
+    function renderReport() {
+        let filter = document.getElementById('talukaFilter').value;
+        let dateStr = getFormattedDate();
+        let target = document.getElementById('reportContentArea');
+
+        if (filter === 'ALL') {
+            target.innerHTML = renderCommonSummaryTableHtml(dateStr);
+        } else if (filter === 'ALL_PAGES') {
+            target.innerHTML = renderAllPagesMultiViewHtml(dateStr);
+        } else {
+            target.innerHTML = renderSingleTalukaTableHtml(filter, dateStr);
+        }
+    }
+
+    // 1) Render Exact Common 3-Taluka Summary Table Matching Image
+    function renderCommonSummaryTableHtml(dateStr) {
+        let grandTotal = [0, 0, 0, 0, 0, 0, 0];
+
+        let html = `
+        <div class="report-header-banner">
+            <h2>२६८ - कणकवली विधानसभा मतदारसंघ | दैनिक फॉर्म पेंडन्सी अहवाल</h2>
+            <div class="report-meta">
+                <span><b>दिनांक:</b> ${dateStr || '-'}</span>
+                <span><b>समाविष्ट तालुके:</b> देवगड (१-१३६) | वैभववाडी (१३७-१९४) | कणकवली (१९५-३३२)</span>
+                <span><b>स्वरुप:</b> फॉर्म क्र. ६, ७, ८ एकत्रित अहवाल</span>
+            </div>
+        </div>
+
+        <table class="report-table-img">
+            <thead>
+                <tr>
+                    <th>Form Type <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>Taluka <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>&lt; 7 days <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>&gt;= 7 days <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>&gt;= 15 days <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>&gt;= 30 days <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>&gt;= 45 days <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>Total Pendency <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>Total Forms <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+        const talukas = [
+            { id: 'Devgad', name: 'Devgad' },
+            { id: 'Vaibhavwadi', name: 'Vaibhavwadi' },
+            { id: 'Kankavli', name: 'Kankavli' }
+        ];
+
+        ['FORM6', 'FORM7', 'FORM8'].forEach(formType => {
+            let fTotal = [0, 0, 0, 0, 0, 0, 0];
+
+            talukas.forEach((tal, tIdx) => {
+                let row = talukaSummary[formType][tal.id] || [0,0,0,0,0,0,0];
+                row.forEach((v, i) => {
+                    fTotal[i] += v;
+                    grandTotal[i] += v;
+                });
+
+                html += `<tr>`;
+                if (tIdx === 0) {
+                    html += `<td rowspan="3" class="form-name-cell">${formType}</td>`;
+                }
+                html += `
+                    <td class="taluka-name-cell">${tal.name}</td>
+                    <td>${row[0]}</td>
+                    <td>${row[1]}</td>
+                    <td class="${row[2] > 0 ? 'text-pendency-red' : ''}">${row[2]}</td>
+                    <td class="${row[3] > 0 ? 'text-pendency-red' : ''}">${row[3]}</td>
+                    <td class="${row[4] > 0 ? 'text-pendency-red' : ''}">${row[4]}</td>
+                    <td class="font-bold">${row[5]}</td>
+                    <td class="font-bold">${row[6]}</td>
+                </tr>`;
+            });
+
+            // Subtotal Row for this Form
+            html += `
+            <tr class="subtotal-row">
+                <td class="subtotal-label">Total</td>
+                <td></td>
+                <td class="font-bold">${fTotal[0]}</td>
+                <td class="font-bold">${fTotal[1]}</td>
+                <td class="font-bold ${fTotal[2] > 0 ? 'text-pendency-red' : ''}">${fTotal[2]}</td>
+                <td class="font-bold ${fTotal[3] > 0 ? 'text-pendency-red' : ''}">${fTotal[3]}</td>
+                <td class="font-bold ${fTotal[4] > 0 ? 'text-pendency-red' : ''}">${fTotal[4]}</td>
+                <td class="font-bold">${fTotal[5]}</td>
+                <td class="font-bold">${fTotal[6]}</td>
+            </tr>`;
+        });
+
+        // Grand Total Row at Bottom
+        html += `
+            <tr class="grand-total-row">
+                <td class="subtotal-label">Total</td>
+                <td></td>
+                <td class="font-bold">${grandTotal[0]}</td>
+                <td class="font-bold">${grandTotal[1]}</td>
+                <td class="font-bold ${grandTotal[2] > 0 ? 'text-pendency-red' : ''}">${grandTotal[2]}</td>
+                <td class="font-bold">${grandTotal[3]}</td>
+                <td class="font-bold ${grandTotal[4] > 0 ? 'text-pendency-red' : ''}">${grandTotal[4]}</td>
+                <td class="font-bold">${grandTotal[5]}</td>
+                <td class="font-bold">${grandTotal[6]}</td>
+            </tr>
+        </tbody>
+        </table>`;
+
+        // Add part-wise details drawer if individual parts are loaded
+        html += renderPartWiseDetailsCollapsible('ALL');
+
+        return html;
+    }
+
+    // 2) Render Single Taluka Table (Devgad / Vaibhavwadi / Kankavli)
+    function renderSingleTalukaTableHtml(talukaKey, dateStr) {
+        let talukaName = talukaKey === 'Devgad' ? 'Devgad (देवगड - भाग १ ते १३६)'
+                       : talukaKey === 'Vaibhavwadi' ? 'Vaibhavwadi (वैभववाडी - भाग १३७ ते १९४)'
+                       : 'Kankavli (कणकवली - भाग १९५ ते ३३२)';
+
+        let tTotal = [0, 0, 0, 0, 0, 0, 0];
+
+        let html = `
+        <div class="report-header-banner">
+            <h2>२६८ - कणकवली विधानसभा मतदारसंघ | ${talukaName}</h2>
+            <div class="report-meta">
+                <span><b>दिनांक:</b> ${dateStr || '-'}</span>
+                <span><b>तालुका:</b> ${talukaKey}</span>
+                <span><b>अहवाल:</b> फॉर्म ६, ७, ८ पेंडन्सी गोषवारा</span>
+            </div>
+        </div>
+
+        <table class="report-table-img">
+            <thead>
+                <tr>
+                    <th>Form Type <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>Taluka <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>&lt; 7 days <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>&gt;= 7 days <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>&gt;= 15 days <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>&gt;= 30 days <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>&gt;= 45 days <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>Total Pendency <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                    <th>Total Forms <i class="fa-solid fa-caret-down filter-caret"></i></th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+        ['FORM6', 'FORM7', 'FORM8'].forEach(formType => {
+            let row = talukaSummary[formType][talukaKey] || [0,0,0,0,0,0,0];
+            row.forEach((v, i) => tTotal[i] += v);
+
+            html += `
+            <tr>
+                <td class="form-name-cell font-bold">${formType}</td>
+                <td class="taluka-name-cell">${talukaKey}</td>
+                <td>${row[0]}</td>
+                <td>${row[1]}</td>
+                <td class="${row[2] > 0 ? 'text-pendency-red' : ''}">${row[2]}</td>
+                <td class="${row[3] > 0 ? 'text-pendency-red' : ''}">${row[3]}</td>
+                <td class="${row[4] > 0 ? 'text-pendency-red' : ''}">${row[4]}</td>
+                <td class="font-bold">${row[5]}</td>
+                <td class="font-bold">${row[6]}</td>
+            </tr>`;
+        });
+
+        // Taluka Grand Total Row
+        html += `
+            <tr class="grand-total-row">
+                <td class="subtotal-label">Total</td>
+                <td class="font-bold">${talukaKey} Total</td>
+                <td class="font-bold">${tTotal[0]}</td>
+                <td class="font-bold">${tTotal[1]}</td>
+                <td class="font-bold ${tTotal[2] > 0 ? 'text-pendency-red' : ''}">${tTotal[2]}</td>
+                <td class="font-bold ${tTotal[3] > 0 ? 'text-pendency-red' : ''}">${tTotal[3]}</td>
+                <td class="font-bold ${tTotal[4] > 0 ? 'text-pendency-red' : ''}">${tTotal[4]}</td>
+                <td class="font-bold">${tTotal[5]}</td>
+                <td class="font-bold">${tTotal[6]}</td>
+            </tr>
+        </tbody>
+        </table>`;
+
+        html += renderPartWiseDetailsCollapsible(talukaKey);
+
+        return html;
+    }
+
+    // 3) Multi-Page Print Layout (Prints Devgad, Vaibhavwadi, Kankavli and Common Summary cleanly)
+    function renderAllPagesMultiViewHtml(dateStr) {
+        let html = `
+        <div class="no-print" style="background:#eff6ff; border:1px solid #bfdbfe; padding:10px 14px; border-radius:8px; margin-bottom:16px; font-size:13px; color:#1e40af;">
+            <i class="fa-solid fa-circle-info"></i> <b>मल्टी-पेज प्रिंट मोड:</b> Print बटण दाबल्यावर खालील ४ अहवाल आपोआप स्वतंत्र पानांवर (Page 1: देवगड, Page 2: वैभववाडी, Page 3: कणकवली, Page 4: एकत्रित अहवाल) प्रिंट होतील.
+        </div>`;
+
+        html += `<div>` + renderSingleTalukaTableHtml('Devgad', dateStr) + `</div>`;
+        html += `<div class="page-break" style="margin-top:30px;"></div>`;
+        html += `<div>` + renderSingleTalukaTableHtml('Vaibhavwadi', dateStr) + `</div>`;
+        html += `<div class="page-break" style="margin-top:30px;"></div>`;
+        html += `<div>` + renderSingleTalukaTableHtml('Kankavli', dateStr) + `</div>`;
+        html += `<div class="page-break" style="margin-top:30px;"></div>`;
+        html += `<div>` + renderCommonSummaryTableHtml(dateStr) + `</div>`;
+
+        return html;
+    }
+
+    // Part-wise details accordion
+    function renderPartWiseDetailsCollapsible(talukaFilter) {
+        let allPartsSet = new Set();
+        ['FORM6', 'FORM7', 'FORM8'].forEach(ft => {
+            Object.keys(parsedData[ft] || {}).forEach(p => allPartsSet.add(parseInt(p, 10)));
+        });
+
+        if (allPartsSet.size === 0) return '';
+
+        let sortedParts = Array.from(allPartsSet).sort((a,b) => a - b);
+        let filteredParts = sortedParts.filter(p => {
+            let t = getTalukaByPartNo(p);
+            if (talukaFilter === 'ALL') return true;
+            return t === talukaFilter;
+        });
+
+        if (filteredParts.length === 0) return '';
+
+        let html = `
+        <details class="part-details-box no-print">
+            <summary><i class="fa-solid fa-list-ol"></i> भागनिहाय तपशील (Part-wise Breakdown) - एकूण ${filteredParts.length} भाग</summary>
+            <div style="overflow-x:auto;">
+                <table class="part-grid-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Part No</th>
+                            <th rowspan="2">Taluka</th>
+                            <th colspan="3">Form 6</th>
+                            <th colspan="3">Form 7</th>
+                            <th colspan="3">Form 8</th>
+                            <th rowspan="2">Total Pendency</th>
+                            <th rowspan="2">Total Forms</th>
+                        </tr>
+                        <tr>
+                            <th>&lt;7</th><th>Pend</th><th>Total</th>
+                            <th>&lt;7</th><th>Pend</th><th>Total</th>
+                            <th>&lt;7</th><th>Pend</th><th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+        filteredParts.forEach(p => {
+            let t = getTalukaByPartNo(p) || '-';
+            let f6 = (parsedData.FORM6 && parsedData.FORM6[p]) || { d1:0, pendency:0, totalForms:0 };
+            let f7 = (parsedData.FORM7 && parsedData.FORM7[p]) || { d1:0, pendency:0, totalForms:0 };
+            let f8 = (parsedData.FORM8 && parsedData.FORM8[p]) || { d1:0, pendency:0, totalForms:0 };
+            let partTotalPend = f6.pendency + f7.pendency + f8.pendency;
+            let partTotalForms = f6.totalForms + f7.totalForms + f8.totalForms;
+
+            html += `
+            <tr>
+                <td><b>${p}</b></td>
+                <td>${t}</td>
+                <td>${f6.d1}</td><td><b>${f6.pendency}</b></td><td>${f6.totalForms}</td>
+                <td>${f7.d1}</td><td><b>${f7.pendency}</b></td><td>${f7.totalForms}</td>
+                <td>${f8.d1}</td><td><b>${f8.pendency}</b></td><td>${f8.totalForms}</td>
+                <td style="color:#c00000; font-weight:700;">${partTotalPend}</td>
+                <td><b>${partTotalForms}</b></td>
+            </tr>`;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        </details>`;
+
+        return html;
+    }
+
+    // Print Current Report
+    function printCurrentReport() {
+        window.print();
+    }
+
+    // Export generated report to Excel
+    function exportToExcel() {
+        let wb = XLSX.utils.book_new();
+        let dateStr = getFormattedDate();
+
+        // Sheet 1: Common Summary
+        let commonAoa = [
+            ["२६८ - कणकवली विधानसभा मतदारसंघ | दैनिक फॉर्म पेंडन्सी अहवाल"],
+            ["दिनांक: " + dateStr],
+            ["Form Type", "Taluka", "< 7 days", ">= 7 days", ">= 15 days", ">= 30 days", ">= 45 days", "Total Pendency", "Total Forms"]
+        ];
+
+        let talukas = ['Devgad', 'Vaibhavwadi', 'Kankavli'];
+        let grandTotal = [0,0,0,0,0,0,0];
+
+        ['FORM6', 'FORM7', 'FORM8'].forEach(formType => {
+            let fTotal = [0,0,0,0,0,0,0];
+            talukas.forEach(tal => {
+                let r = talukaSummary[formType][tal] || [0,0,0,0,0,0,0];
+                r.forEach((v,i) => { fTotal[i]+=v; grandTotal[i]+=v; });
+                commonAoa.push([formType, tal, r[0], r[1], r[2], r[3], r[4], r[5], r[6]]);
+            });
+            commonAoa.push(["Total", "", fTotal[0], fTotal[1], fTotal[2], fTotal[3], fTotal[4], fTotal[5], fTotal[6]]);
+        });
+
+        commonAoa.push(["Total", "", grandTotal[0], grandTotal[1], grandTotal[2], grandTotal[3], grandTotal[4], grandTotal[5], grandTotal[6]]);
+        let wsCommon = XLSX.utils.aoa_to_sheet(commonAoa);
+        XLSX.utils.book_append_sheet(wb, wsCommon, "Common_Summary");
+
+        // Sheet 2, 3, 4: Individual Talukas
+        talukas.forEach(tal => {
+            let talAoa = [
+                [`२६८ - कणकवली विधानसभा मतदारसंघ | तालुका: ${tal}`],
+                ["दिनांक: " + dateStr],
+                ["Form Type", "Taluka", "< 7 days", ">= 7 days", ">= 15 days", ">= 30 days", ">= 45 days", "Total Pendency", "Total Forms"]
+            ];
+            let tTot = [0,0,0,0,0,0,0];
+            ['FORM6', 'FORM7', 'FORM8'].forEach(formType => {
+                let r = talukaSummary[formType][tal] || [0,0,0,0,0,0,0];
+                r.forEach((v,i) => tTot[i]+=v);
+                talAoa.push([formType, tal, r[0], r[1], r[2], r[3], r[4], r[5], r[6]]);
+            });
+            talAoa.push(["Total", tal + " Total", tTot[0], tTot[1], tTot[2], tTot[3], tTot[4], tTot[5], tTot[6]]);
+            let wsTal = XLSX.utils.aoa_to_sheet(talAoa);
+            XLSX.utils.book_append_sheet(wb, wsTal, tal);
+        });
+
+        let safeDate = (dateStr || 'Report').replace(/\//g, '-');
+        XLSX.writeFile(wb, `Election_Form_Pendency_Report_${safeDate}.xlsx`);
+        showToast('Excel फाईल डाउनलोड झाली!');
+    }
+
+    // Copy formatted table to clipboard
+    async function copyTableToClipboard() {
+        let tableEl = document.querySelector('.report-table-img');
+        if (!tableEl) {
+            alert('कॉपी करण्यासाठी टेबल उपलब्ध नाही.');
+            return;
+        }
+
+        try {
+            let htmlContent = tableEl.outerHTML;
+            let textContent = '';
+            tableEl.querySelectorAll('tr').forEach(row => {
+                let cells = Array.from(row.querySelectorAll('th, td')).map(td => td.innerText.replace(/\s+/g, ' ').trim());
+                textContent += cells.join('\t') + '\n';
+            });
+
+            if (navigator.clipboard && navigator.clipboard.write) {
+                let blobHtml = new Blob([htmlContent], { type: 'text/html' });
+                let blobText = new Blob([textContent], { type: 'text/plain' });
+                let item = new ClipboardItem({
+                    'text/html': blobHtml,
+                    'text/plain': blobText
+                });
+                await navigator.clipboard.write([item]);
+            } else {
+                await navigator.clipboard.writeText(textContent);
+            }
+            showToast('अहवाल क्लिपबोर्डवर कॉपी झाला! तुम्ही थेट Excel किंवा Word मध्ये Paste (Ctrl+V) करू शकता.');
+        } catch (e) {
+            console.error(e);
+            showToast('टेबल कॉपी झाले.');
+        }
+    }
+
+    // BLO Login Files Processor (Preserved feature)
+    async function processBloFiles() {
+        let files = document.getElementById('bloFiles').files;
+        if (!files || files.length === 0) {
+            alert('कृपया किमान एक BLO Login Data एक्सेल फाईल निवडा.');
+            return;
+        }
+
+        let counts = {};
+        let total = 0;
+
+        for (let file of files) {
+            let { json } = await readExcelFile(file);
+            json.forEach((row, idx) => {
+                if (idx > 0 && row[3] !== undefined) {
+                    let p = parseInt(row[3], 10);
+                    if (p >= 1 && p <= 332) {
+                        counts[p] = (counts[p] || 0) + 1;
+                        total++;
+                    }
+                }
+            });
+        }
+
+        let sorted = Object.keys(counts).sort((a,b) => a - b);
+        let html = `
+        <h4 style="margin: 10px 0; color:#1e3a8a;">सुपरवायझर अहवाल (Pending Form For FVR - एकूण: ${total})</h4>
+        <table class="part-grid-table" style="max-width:500px;">
+            <thead>
+                <tr><th>अ.क्र.</th><th>भाग क्र.</th><th>तालुका</th><th>Pending Form For FVR</th></tr>
+            </thead>
+            <tbody>`;
+
+        let sr = 1;
+        sorted.forEach(p => {
+            let t = getTalukaByPartNo(p);
+            html += `<tr><td>${sr++}</td><td><b>${p}</b></td><td>${t}</td><td><b>${counts[p]}</b></td></tr>`;
+        });
+
+        html += `
+            <tr style="font-weight:bold; background:#e2e8f0;">
+                <td colspan="3">एकूण (Total)</td>
+                <td>${total}</td>
+            </tr>
+        </tbody></table>`;
+
+        document.getElementById('bloOutputSection').innerHTML = html;
+        showToast('BLO डेटा प्रक्रिया पूर्ण झाली!');
+    }
+</script>
+
+</body>
+</html>

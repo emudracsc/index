@@ -2245,13 +2245,17 @@ function renderUsefulLinksGrid(searchQuery = "") {
     const url = item.url || "#";
     const icon = item.icon || "fa-solid fa-link";
     const category = item.category || "शासकीय सेवा";
-    const actionLabel = item.isInternal 
-      ? (isMr ? 'उघडा' : 'Open in New Tab')
-      : (isMr ? 'पोर्टल उघडा' : 'Open Portal');
+    const isDl = !!item.isDownload;
+    const actionLabel = isDl
+      ? (isMr ? 'डाऊनलोड (Zip)' : 'Download Zip')
+      : item.isInternal 
+        ? (isMr ? 'उघडा' : 'Open in New Tab')
+        : (isMr ? 'पोर्टल उघडा' : 'Open Portal');
+    const actionIcon = isDl ? 'fa-solid fa-download' : 'fa-solid fa-arrow-up-right-from-square';
     const themeClass = colorThemes[index % colorThemes.length];
       
     return `
-      <a href="${url}" target="_blank" rel="noopener noreferrer" class="useful-link-card ${themeClass}" title="${title}">
+      <a href="${url}" ${isDl ? 'download="table-to-excel-extension.zip"' : 'target="_blank" rel="noopener noreferrer"'} class="useful-link-card ${themeClass}" title="${title}">
         <div class="useful-link-card-main">
           <div class="useful-link-card-top">
             <div class="useful-link-icon-box">
@@ -2266,7 +2270,7 @@ function renderUsefulLinksGrid(searchQuery = "") {
         </div>
         <div class="useful-link-action">
           <span>${actionLabel}</span>
-          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          <i class="${actionIcon}"></i>
         </div>
       </a>
     `;
@@ -3267,7 +3271,8 @@ function renderHeroLinksTicker() {
     return list.map(link => {
       const title = isMr ? (link.title_mr || link.title_en) : (link.title_en || link.title_mr);
       const icon = link.icon || 'fa-solid fa-link';
-      return `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="marquee-link-item" title="${title}"><i class="${icon}"></i> <span>${title}</span></a>`;
+      const isDl = !!link.isDownload;
+      return `<a href="${link.url}" ${isDl ? 'download="table-to-excel-extension.zip"' : 'target="_blank" rel="noopener noreferrer"'} class="marquee-link-item" title="${title}"><i class="${icon}"></i> <span>${title}</span></a>`;
     }).join('');
   };
 

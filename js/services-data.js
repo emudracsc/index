@@ -1183,6 +1183,42 @@ const DEFAULT_IMPORTANT_LINKS = [
     url: "form12-notice-generator.html",
     isInternal: true
   },
+  // ⚖️ ERO सुनावणी नोटीस जनरेटर (फॉर्म १३, फॉर्म १४, बजावणी दाखला व सुनावणी रोजनामा - संपूर्ण ५-पानी संच)
+  {
+    id: "link-ero-hearing-notice",
+    category: "शासकीय सेवा व शोध",
+    icon: "fa-solid fa-stamp",
+    title_mr: "⚖️ ERO सुनावणी नोटीस जनरेटर (फॉर्म १३, १४, बजावणी दाखला व रोजनामा ५-पानी संच)",
+    title_en: "ERO Hearing Notice Generator (Form 13, Form 14, Service Certs & Roznama 5-Page Dossier)",
+    desc_mr: "Registration of Electors Rules, 1960 अंतर्गत फॉर्म ७ मतदार यादी हरकत सुनावणीसाठी फॉर्म १३ (Duplicate Office Copy), फॉर्म १४ (Original Voter Copy), दोन्ही बजावणी प्रमाणपत्रे व सुनावणी रोजनामा एक्सेल डेटावरून १-क्लिकमध्ये बल्क जनरेट व प्रिंट करा.",
+    desc_en: "Generate complete 5-page ERO voter hearing notice dossiers including Form 13, Form 14, Service Certificates & Hearing Proceeding Roznama from Excel with 1-click bulk print.",
+    url: "ero-hearing-notice-generator.html",
+    isInternal: true
+  },
+  // 📊 Disposal Report Generator (ERO / AERO दैनिक अहवाल जनरेटर - Part-wise Report 2 व Summary Report 3)
+  {
+    id: "link-disposal-report-generator",
+    category: "शासकीय सेवा व शोध",
+    icon: "fa-solid fa-chart-pie",
+    title_mr: "📊 Disposal Report Generator (ERO / AERO दैनिक अहवाल जनरेटर)",
+    title_en: "Disposal Report Generator (ERO / AERO Part-wise Report 2 & Summary Report 3)",
+    desc_mr: "Sheet1 एक्सेल डेटा पेस्ट किंवा अपलोड करून ERO/AERO पार्टनिहाय Report 2 व समरी Report 3 A3 Landscape मध्ये आपोआप तयार व प्रिंट करा.",
+    desc_en: "Automatic ERO/AERO Part-wise Disposal Report 2 and Summary Report 3 generator from Sheet1 Excel data paste/upload with A3 Landscape print/PDF.",
+    url: "disposal-report-generator.html",
+    isInternal: true
+  },
+  // 🗳️ Election Formula & Taluka Report Generator (फॉर्म ६, ७, ८ पेंडन्सी अहवाल)
+  {
+    id: "link-election-report-generator",
+    category: "शासकीय सेवा व शोध",
+    icon: "fa-solid fa-square-poll-vertical",
+    title_mr: "🗳️ निवडणूक अहवाल जनरेटर (फॉर्म ६, ७, ८ तालुकावार व एकत्रित अहवाल)",
+    title_en: "Election Report Generator - Form 6, 7, 8 (Devgad, Vaibhavwadi, Kankavli)",
+    desc_mr: "२६८-कणकवली विधानसभा मतदारसंघ: देवगड (१-१३६), वैभववाडी (१३७-१९४), कणकवली (१९५-३३२) साठी फॉर्म ६, ७, ८ एक्सेल फाइल्सवरून तालुकावार व एकत्रित अहवाल १-क्लिकमध्ये जनरेट व प्रिंट करा.",
+    desc_en: "Generate Form 6, 7, 8 pendency reports for AC 268 Kankavli: Devgad (1-136), Vaibhavwadi (137-194), Kankavli (195-332) with common and taluka-wise views.",
+    url: "election-report-generator.html",
+    isInternal: true
+  },
   // 📋 VB-G RAM G योजना अर्ज जनरेटर (जलतारा / शोष खड्डा / गाय गोठा / शेळी शेड)
   {
     id: "link-vb-gramg-generator",
@@ -1782,13 +1818,17 @@ function loadCombinedLinks() {
   try {
     const defaults = [...DEFAULT_IMPORTANT_LINKS];
     const raw = localStorage.getItem(LINKS_STORAGE_KEY);
-    if (!raw) return defaults;
-    const customList = JSON.parse(raw);
-    if (!Array.isArray(customList)) return defaults;
-
-    // Filter only user-added custom links and append after defaults
-    const onlyCustom = customList.filter(custom => custom && custom.isCustom && !defaults.some(d => d.id === custom.id));
-    return [...defaults, ...onlyCustom];
+    let result = defaults;
+    if (raw) {
+      try {
+        const customList = JSON.parse(raw);
+        if (Array.isArray(customList)) {
+          const onlyCustom = customList.filter(custom => custom && custom.isCustom && !defaults.some(d => d.id === custom.id));
+          result = [...defaults, ...onlyCustom];
+        }
+      } catch (e) {}
+    }
+    return result;
   } catch (err) {
     console.error("Error loading links from storage:", err);
     return [...DEFAULT_IMPORTANT_LINKS];
