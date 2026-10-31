@@ -110,6 +110,40 @@ const DEFAULT_SERVICES_DATA = [
     ]
   },
 
+  // 2B. पोलीस पूर्व चारित्र्य व चालवर्तन दाखला (Police Character Verification Certificate)
+  {
+    id: "police-character-cert",
+    category: "revenue",
+    icon: "fa-solid fa-shield-halved",
+    title_mr: "पोलीस पूर्व चारित्र्य व चालवर्तन दाखला (Police Character Certificate)",
+    title_en: "Police Character & Conduct Verification Certificate",
+    desc_mr: "नोकरी, पासपोर्ट, कंत्राटदार नोंदणीसाठी पोलीस अधीक्षक / पोलीस ठाण्याकडून मिळणारा चारित्र्य दाखला व विहित नमुन्यातील अर्ज.",
+    desc_en: "Official Police Character and Conduct Verification Certificate & Application Form Generator.",
+    timeline_mr: "१५ ते २१ दिवस",
+    timeline_en: "15 to 21 Days",
+    govt_fee: 100.00,
+    csc_fee: 100.00,
+    total_fee: 200.00,
+    popular: true,
+    form_url: "application-generator.html?template=police-character",
+    fee_breakdown: {
+      govt_fee: 100.00,
+      form_fee: 30.00,
+      scanning_fee: 30.00,
+      filing_fee: 40.00,
+      lamination_fee: 0.00,
+      total: 200.00
+    },
+    documents: [
+      { group: "ओळखीचा पुरावा (कोणतेही एक)", name_mr: "आधार कार्ड", name_en: "Aadhaar Card", required: true },
+      { group: "ओळखीचा पुरावा (कोणतेही एक)", name_mr: "पॅन कार्ड", name_en: "PAN Card", required: false },
+      { group: "ओळखीचा पुरावा (कोणतेही एक)", name_mr: "मतदार ओळखपत्र", name_en: "Voter ID Card", required: false },
+      { group: "पत्त्याचा पुरावा (कोणतेही एक)", name_mr: "आधार कार्ड / रेशन कार्ड / वीज बिल", name_en: "Aadhaar / Ration Card / Light Bill", required: true },
+      { group: "शैक्षणिक पुरावा", name_mr: "शाळा सोडल्याचा दाखला (LC) किंवा अंतिम गुणपत्रिका", name_en: "School Leaving Certificate (LC) / Marksheet", required: true },
+      { group: "आवश्यक कागदपत्रे", name_mr: "पासपोर्ट आकाराचे २ फोटो व कंपनी मागणी पत्र / जाहिरात प्रत", name_en: "2 Passport Size Photos & Job Offer / Advertisement Copy", required: true }
+    ]
+  },
+
   // 3. जातीचा दाखला
   {
     id: "caste-cert",
@@ -1029,6 +1063,18 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
+  // 👮 पोलीस पूर्व चारित्र्य व चालवर्तन दाखला अर्ज जनरेटर (Police Character Verification Generator)
+  {
+    id: "link-police-character-cert",
+    category: "अधिकृत शासकीय टूल्स व दाखले",
+    icon: "fa-solid fa-shield-halved",
+    title_mr: "👮 पोलीस पूर्व चारित्र्य व चालवर्तन दाखला अर्ज जनरेटर",
+    title_en: "Police Character & Conduct Verification Application Generator",
+    desc_mr: "पोलीस अधीक्षक / पोलीस ठाण्याकडे नोकरी, पासपोर्ट व इतर कामांसाठी पूर्व चारित्र्य व चालवर्तन दाखला मागणी अर्ज A4 वर त्वरित तयार व प्रिंट करा.",
+    desc_en: "Official Marathi application letter generator for Police Character Verification Certificate with 1-click A4 print and PDF.",
+    url: "application-generator.html?template=police-character",
+    isInternal: true
+  },
   // 📝 मराठी शासकीय अर्ज जनरेटर प्रो (Official Marathi Application Letter Generator - Police / Tahsil / Grampanchayat)
   {
     id: "link-application-generator",
