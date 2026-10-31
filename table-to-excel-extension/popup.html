@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>१-क्लिक टेबल कॉपी व एक्सेल एक्सपोर्टर</title>
+  <title>Excel Auto Checkbox Filler</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
@@ -13,12 +13,12 @@
       <div class="brand">
         <div class="logo-box">
           <svg viewBox="0 0 24 24" class="logo-icon">
-            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14v-4H8l4-4 4 4h-3v4h-1z"/>
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
           </svg>
         </div>
         <div class="brand-text">
-          <h1>Universal Table Exporter</h1>
-          <p>१-क्लिक टेबल कॉपी व एक्सेल</p>
+          <h1>Excel Auto Checkbox</h1>
+          <p>एक्सेल नुसार चेकबॉक्स ऑटो-सिलेक्टर</p>
         </div>
       </div>
       <button id="btnRefresh" class="icon-btn" title="पुन्हा स्कॅन करा (Refresh)">
@@ -32,40 +32,32 @@
       <span id="pageTitle" class="page-title-text" title="सध्याचे पान">शोधत आहे...</span>
     </div>
 
-    <!-- Quick Shortcuts Tip -->
-    <div class="quick-tip-banner">
-      <span class="tip-badge">सुपरफास्ट</span>
-      <span>पानावर कोणत्याही टेबलवर <b>Alt + Click</b> केल्यास टेबल १-क्लिकमध्ये कॉपी होते!</span>
+    <!-- Hero Launch Button -->
+    <div class="hero-card">
+      <button id="btnOpenModal" class="btn btn-hero">
+        <span class="bolt-icon">⚡</span>
+        <div class="btn-text-group">
+          <strong>पानावरील ऑटो चेकबॉक्स टूल उघडा</strong>
+          <span>(Open On-Page Floating Tool)</span>
+        </div>
+      </button>
+      <p class="hero-subtext">पानावरील कोणत्याही टेबलवर थेट फ्लोटिंग पॅनेल उघडते व चेकबॉक्स आपोआप भरले जातात.</p>
     </div>
 
-    <!-- Quick Controls -->
-    <div class="controls-card">
-      <div class="primary-btn-row">
-        <button id="btnStartPicker" class="btn btn-picker">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-          <span>🎯 पानावरील टेबल निवडा (Pick)</span>
-        </button>
-        <button id="btnExportAll" class="btn btn-primary" disabled>
-          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14v-4H8l4-4 4 4h-3v4h-1z"/></svg>
-          <span>सर्व टेबल्स (.xlsx)</span>
-        </button>
+    <!-- Floating Bar Toggle Card -->
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+      <div>
+        <div style="font-weight: 700; font-size: 12px; color: #1e293b;">पानावरील फ्लोटिंग बार (Floating Bar)</div>
+        <div style="font-size: 11px; color: #64748b;">टेबलच्या वर दिसणारी पट्टी दाखवा / लपवा</div>
       </div>
-
-      <div class="toggle-row">
-        <label class="toggle-label" for="toggleBars">
-          <span>टेबलवर १-क्लिक कॉपी बटन दाखवा</span>
-          <span class="subtext">प्रत्येक टेबलवर थेट कॉपी व एक्सेल फ्लोटिंग बार</span>
-        </label>
-        <label class="switch">
-          <input type="checkbox" id="toggleBars" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
+      <button id="btnToggleFloatingBar" style="padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid #cbd5e1; background: #f1f5f9; cursor: pointer; color: #334155; transition: all 0.15s;">
+        चालू (ON)
+      </button>
     </div>
 
-    <!-- Tables List Section -->
+    <!-- Detected Tables Section -->
     <div class="section-header">
-      <h2 id="sectionTitle">सापडलेली टेबल्स (<span id="tableCount">0</span>)</h2>
+      <h2>पानावरील टेबल्स (<span id="tableCount">०</span>)</h2>
       <span id="scanStatus" class="status-badge">तयार</span>
     </div>
 
@@ -79,16 +71,26 @@
       <!-- Empty state -->
       <div id="emptyState" class="state-card" style="display: none;">
         <div class="empty-icon">📋</div>
-        <h3>या पानावर टेबल आढळले नाही</h3>
-        <p>जर टेबल फॉर्म भरल्यावर किंवा बटणावर क्लिक केल्यावर तयार होत असेल, तर आधी टेबल तयार करा किंवा वरील <b>'🎯 पानावरील टेबल निवडा'</b> बटन वापरा.</p>
-        <button id="btnRetry" class="btn btn-outline btn-sm">पुन्हा स्कॅन करा (Retry)</button>
+        <h3>या पानावर टेबल किंवा चेकबॉक्स आढळले नाहीत</h3>
+        <p>जर टेबल फॉर्म भरल्यावर दिसत असेल, तर आधी फॉर्म सबमिट करा किंवा पान रिफ्रेश करा.</p>
+        <button id="btnRetry" class="btn btn-outline btn-sm">पुन्हा स्कॅन करा</button>
       </div>
+    </div>
+
+    <!-- Quick Instructions -->
+    <div class="instructions-card">
+      <h4>💡 सोप्या ३ पायऱ्या:</h4>
+      <ol>
+        <li>टेबलवरील <b>[ ⚡ ऑटो चेकबॉक्स ]</b> बटनावर क्लिक करा.</li>
+        <li>तुमची <b>एक्सेल फाईल (.xlsx/.csv)</b> ड्रॅग करून अपलोड करा.</li>
+        <li>कॉलम निवडून <b>'ऑटो चेकबॉक्स भरा'</b> वर क्लिक करा!</li>
+      </ol>
     </div>
 
     <!-- Footer -->
     <footer class="app-footer">
-      <span>Right Click किंवा Alt+Click = १-क्लिक कॉपी!</span>
-      <span class="badge-v">v1.1</span>
+      <span>१००% सुरक्षित व ऑफलाइन</span>
+      <span class="badge-v">v1.0</span>
     </footer>
   </div>
 

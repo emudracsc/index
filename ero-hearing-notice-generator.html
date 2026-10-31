@@ -1952,8 +1952,16 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
+          const res = e.target && e.target.result;
+          let workbook;
+          if (typeof res === 'string') {
+            const b64 = res.indexOf(',') >= 0 ? res.split(',')[1] : res;
+            workbook = XLSX.read(b64, { type: 'base64', cellDates: true });
+          } else {
+            const data = new Uint8Array(res);
+            workbook = XLSX.read(data, { type: 'array' });
+          }
+
           const firstSheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[firstSheetName];
           const rawRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
@@ -1972,10 +1980,10 @@ S13268G7...	1	Saeeda Sattar Kazi	House No 94, Kazirde...	486	195	Ankita Atul Kam
           showToast(`${applicantsList.length} नोंदी यशस्वीरीत्या आयात केल्या!`, 'success');
         } catch (err) {
           console.error(err);
-          showToast('एक्सेल वाचताना त्रुटी: ' + err.message, 'warning');
+          showToast('एक्सेल वाचताना त्रुटी: ' + (err.message || err), 'warning');
         }
       };
-      reader.readAsArrayBuffer(file);
+      reader.readAsDataURL(file);
     }
 
     /* Map Flexible Header Names to Standard Object */

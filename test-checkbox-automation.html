@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ॲग्रीस्टॅक पिकपेरा / नुकसान भरपाई पोर्टल (Farmer ID & Farm ID Checkbox Automation)</title>
+  <link rel="stylesheet" href="table-to-excel-extension/content.css">
+  <style>
+    :root {
+      --primary: #15803d;
+      --primary-dark: #166534;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px 16px;
+      margin: 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .header-banner {
+      background: linear-gradient(135deg, #15803d, #047857);
+      color: #ffffff;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-banner h1 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .header-banner p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      opacity: 0.95;
+    }
+    .btn-download-sample {
+      background: #ffffff;
+      color: #15803d !important;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .btn-download-sample:hover {
+      background: #f0fdf4;
+    }
+    .instructions-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #166534;
+    }
+    .table-responsive {
+      overflow-x: auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    th {
+      background: #f1f5f9;
+      padding: 8px 10px;
+      font-weight: 700;
+      color: #334155;
+      border-bottom: 2px solid #cbd5e1;
+      border-right: 1px solid #e2e8f0;
+    }
+    td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #e2e8f0;
+      border-right: 1px solid #f1f5f9;
+    }
+    tr:hover {
+      background: #f8fafc;
+    }
+    .chk-affected {
+      width: 17px;
+      height: 17px;
+      accent-color: #15803d;
+      cursor: pointer;
+    }
+    .filter-btn {
+      display: inline-block;
+      margin-left: 3px;
+      font-size: 9px;
+      color: #64748b;
+    }
+    .badge-gat {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-banner">
+      <div>
+        <h1>🌾 ई-पीक पाहणी / शेतकरी नुकसान भरपाई यादी (Agri Portal)</h1>
+        <p><b>Farmer ID</b> आणि <b>Farm ID</b> मॅच करून <b>Affected Area More than 33%</b> पुढील चेकबॉक्स आपोआप सिलेक्ट / अनसिलेक्ट करा.</p>
+      </div>
+      <div>
+        <a href="sample_farmer_farm_data.csv" download="sample_farmer_farm_data.csv" class="btn-download-sample">
+          📥 नमुना शेतकरी एक्सेल/CSV डाऊनलोड
+        </a>
+      </div>
+    </div>
+
+    <div class="instructions-box">
+      <b>💡 कसे वापरायचे:</b>
+      <ol style="margin: 4px 0 0 18px; padding: 0;">
+        <li>टेबलवर माऊस नेताच वर उजवीकडे येणाऱ्या <b>`[ ⚡ ऑटो चेकबॉक्स ]`</b> बटणावर क्लिक करा.</li>
+        <li>तुमची एक्सेल/CSV फाईल ड्रॅग करून टाका. एक्स्टेंशन आपोआप <b>दुहेरी की (Farmer ID + Farm ID)</b> ओळखेल.</li>
+        <li><b>'🚀 एक्सेल डेटा नुसार चेकबॉक्स भरा'</b> दाबा — एक्सेलमध्ये असलेले सर्व फार्म चेक (Tick) होतील व उर्वरित सर्व आपोआप अनचेक (Untick) राहतील!</li>
+      </ol>
+    </div>
+
+    <div class="table-responsive">
+      <table id="farmerTable">
+        <thead>
+          <tr>
+            <th>Sr.No <span class="filter-btn">▼</span></th>
+            <th>District <span class="filter-btn">▼</span></th>
+            <th>Taluka <span class="filter-btn">▼</span></th>
+            <th>Village <span class="filter-btn">▼</span></th>
+            <th>GAT Num <span class="filter-btn">▼</span></th>
+            <th>Farmer ID <span class="filter-btn">▼</span></th>
+            <th>Farmer Name <span class="filter-btn">▼</span></th>
+            <th>Farm ID <span class="filter-btn">▼</span></th>
+            <th>Farm Area <span class="filter-btn">▼</span></th>
+            <th style="text-align: center;">Affected Area More than 33% <span class="filter-btn">▼</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Pune</td>
+            <td>Haveli</td>
+            <td>Wagholi</td>
+            <td><span class="badge-gat">142</span></td>
+            <td><strong>MH-FRM-008121</strong></td>
+            <td>रमेश बापूराव कदम</td>
+            <td><strong>FM-9021</strong></td>
+            <td>1.45 Ha</td>
+            <td style="text-align: center;"><input type="checkbox" class="chk-affected" id="chk_1"></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Pune</td>
+            <td>Haveli</td>
+            <td>Wagholi</td>
+            <td><span class="badge-gat">142</span></td>
+            <td><strong>MH-FRM-008121</strong></td>
+            <td>रमेश बापूराव कदम</td>
+            <td><strong>FM-9022</strong></td>
+            <td>0.80 Ha</td>
+            <td style="text-align: center;"><input type="checkbox" class="chk-affected" id="chk_2"></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Pune</td>
+            <td>Haveli</td>
+            <td>Wagholi</td>
+            <td><span class="badge-gat">155/1</span></td>
+            <td><strong>MH-FRM-008122</strong></td>
+            <td>आनंद प्रकाश पाटील</td>
+            <td><strong>FM-9023</strong></td>
+            <td>2.10 Ha</td>
+            <td style="text-align: center;"><input type="checkbox" class="chk-affected" id="chk_3"></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Pune</td>
+            <td>Haveli</td>
+            <td>Wagholi</td>
+            <td><span class="badge-gat">155/2</span></td>
+            <td><strong>MH-FRM-008122</strong></td>
+            <td>आनंद प्रकाश पाटील</td>
+            <td><strong>FM-9024</strong></td>
+            <td>1.25 Ha</td>
+            <td style="text-align: center;"><input type="checkbox" class="chk-affected" id="chk_4"></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Pune</td>
+            <td>Haveli</td>
+            <td>Wagholi</td>
+            <td><span class="badge-gat">160</span></td>
+            <td><strong>MH-FRM-008123</strong></td>
+            <td>सुरेश विठ्ठल जाधव</td>
+            <td><strong>FM-9025</strong></td>
+            <td>0.95 Ha</td>
+            <td style="text-align: center;"><input type="checkbox" class="chk-affected" id="chk_5"></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Pune</td>
+            <td>Haveli</td>
+            <td>Wagholi</td>
+            <td><span class="badge-gat">164</span></td>
+            <td><strong>MH-FRM-008124</strong></td>
+            <td>दीपक गजानन चव्हाण</td>
+            <td><strong>FM-9026</strong></td>
+            <td>1.60 Ha</td>
+            <td style="text-align: center;"><input type="checkbox" class="chk-affected" id="chk_6"></td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>Pune</td>
+            <td>Haveli</td>
+            <td>Wagholi</td>
+            <td><span class="badge-gat">168</span></td>
+            <td><strong>MH-FRM-008125</strong></td>
+            <td>मंगेश दत्तात्रय पवार</td>
+            <td><strong>FM-9027</strong></td>
+            <td>3.40 Ha</td>
+            <td style="text-align: center;"><input type="checkbox" class="chk-affected" id="chk_7"></td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>Pune</td>
+            <td>Haveli</td>
+            <td>Wagholi</td>
+            <td><span class="badge-gat">168</span></td>
+            <td><strong>MH-FRM-008125</strong></td>
+            <td>मंगेश दत्तात्रय पवार</td>
+            <td><strong>FM-9028</strong></td>
+            <td>1.15 Ha</td>
+            <td style="text-align: center;"><input type="checkbox" class="chk-affected" id="chk_8"></td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td>Pune</td>
+            <td>Haveli</td>
+            <td>Wagholi</td>
+            <td><span class="badge-gat">172</span></td>
+            <td><strong>MH-FRM-008126</strong></td>
+            <td>विकास भगवान मोरे</td>
+            <td><strong>FM-9029</strong></td>
+            <td>0.75 Ha</td>
+            <td style="text-align: center;"><input type="checkbox" class="chk-affected" id="chk_9"></td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>Pune</td>
+            <td>Haveli</td>
+            <td>Wagholi</td>
+            <td><span class="badge-gat">175</span></td>
+            <td><strong>MH-FRM-008127</strong></td>
+            <td>संजय बाळू शिंदे</td>
+            <td><strong>FM-9030</strong></td>
+            <td>2.20 Ha</td>
+            <td style="text-align: center;"><input type="checkbox" class="chk-affected" id="chk_10"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Live Portal Response Monitor Box -->
+    <div style="margin-top: 16px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 14px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <strong style="color: #0f172a; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+          <span>📡</span> <span>पोर्टल रिस्पॉन्स मॉनिटर (Live Server/Portal Response Tracker):</span>
+        </strong>
+        <span id="responseStatusBadge" style="background: #e2e8f0; color: #475569; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700;">
+          अपडेट झालेले रिस्पॉन्स: ० / १०
+        </span>
+      </div>
+      <div id="responseLogBox" style="max-height: 120px; overflow-y: auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; font-family: monospace; font-size: 11px; color: #334155;">
+        <div style="color: #94a3b8;">येथे चेकबॉक्स बदलल्यावर पोर्टलला मिळालेला रिस्पॉन्स दिसेल (Live Event Listener Active)...</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 14px; text-align: center; font-size: 12px; color: #64748b;">
+      AgriStack Farmer ID & Farm ID Auto-Tick Extension &copy; 2026
+    </div>
+  </div>
+
+  <script>
+    // Live Server/Portal Response Handler
+    const responseLogBox = document.getElementById('responseLogBox');
+    const responseStatusBadge = document.getElementById('responseStatusBadge');
+    const allChks = document.querySelectorAll('.chk-affected');
+
+    function updatePortalResponseCount() {
+      const checkedCount = document.querySelectorAll('.chk-affected:checked').length;
+      if (responseStatusBadge) {
+        responseStatusBadge.textContent = `अपडेट झालेले रिस्पॉन्स: ${checkedCount} / ${allChks.length}`;
+        responseStatusBadge.style.background = checkedCount > 0 ? '#dcfce7' : '#e2e8f0';
+        responseStatusBadge.style.color = checkedCount > 0 ? '#15803d' : '#475569';
+      }
+    }
+
+    allChks.forEach((chk, i) => {
+      const row = chk.closest('tr');
+      const cells = row ? row.querySelectorAll('td') : [];
+      const fId = cells[5] ? cells[5].textContent.trim() : `Row ${i+1}`;
+      const name = cells[6] ? cells[6].textContent.trim() : '';
+      const farmId = cells[7] ? cells[7].textContent.trim() : '';
+
+      ['change', 'input'].forEach(evtType => {
+        chk.addEventListener(evtType, (e) => {
+          if (evtType === 'change') {
+            const time = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.style.padding = '3px 0';
+            logEntry.style.borderBottom = '1px solid #f1f5f9';
+            if (chk.checked) {
+              logEntry.style.color = '#15803d';
+              logEntry.innerHTML = `<b>[${time}] ✓</b> रिस्पॉन्स सेव्ह झाला: <b>${fId}</b> (${name} - ${farmId}) ➔ <b>Checked (Tick)</b>`;
+            } else {
+              logEntry.style.color = '#dc2626';
+              logEntry.innerHTML = `<b>[${time}] ✗</b> रिस्पॉन्स सेव्ह झाला: <b>${fId}</b> (${name} - ${farmId}) ➔ <b>Unchecked (Untick)</b>`;
+            }
+            if (responseLogBox.firstElementChild && responseLogBox.firstElementChild.textContent.includes('येथे चेकबॉक्स')) {
+              responseLogBox.innerHTML = '';
+            }
+            responseLogBox.appendChild(logEntry);
+            responseLogBox.scrollTop = responseLogBox.scrollHeight;
+            updatePortalResponseCount();
+          }
+        });
+      });
+    });
+  </script>
+
+  <script src="excel-auto-checkbox-firefox/lib/xlsx.full.min.js"></script>
+  <script src="excel-auto-checkbox-firefox/content.js"></script>
+</body>
+</html>

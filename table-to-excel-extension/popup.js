@@ -1,5 +1,5 @@
 /**
- * Universal Table Copy & Excel Exporter - Popup Controller
+ * Excel Auto Checkbox Filler - Popup Controller
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,18 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const tableListEl = document.getElementById('tableList');
   const loadingStateEl = document.getElementById('loadingState');
   const emptyStateEl = document.getElementById('emptyState');
-  const btnExportAll = document.getElementById('btnExportAll');
-  const btnStartPicker = document.getElementById('btnStartPicker');
+  const btnOpenModal = document.getElementById('btnOpenModal');
   const btnRefresh = document.getElementById('btnRefresh');
   const btnRetry = document.getElementById('btnRetry');
-  const toggleBars = document.getElementById('toggleBars');
 
   let currentTabId = null;
   let detectedTables = [];
 
-  /**
-   * Ensure content scripts and styles are injected
-   */
   async function ensureInjected(tabId) {
     try {
       await chrome.tabs.sendMessage(tabId, { action: 'ping' });
@@ -40,13 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /**
-   * Scan active tab for tables
-   */
   async function scanActiveTab() {
     loadingStateEl.style.display = 'flex';
     emptyStateEl.style.display = 'none';
-    btnExportAll.disabled = true;
     scanStatusEl.textContent = 'स्कॅन होत आहे...';
 
     document.querySelectorAll('.table-card').forEach(c => c.remove());
@@ -62,8 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pageTitleEl.textContent = tab.title || tab.url || 'Web Page';
       pageTitleEl.title = tab.url || '';
 
-      if (tab.url && (tab.url.startsWith('chrome://') || tab.url.startsWith('edge://') || tab.url.startsWith('chrome-extension://'))) {
-        showEmptyState('ब्राउझरच्या सिस्टम पानांवर (chrome://) एक्स्टेंशन चालत नाही.');
+      if (tab.url && (tab.url.startsWith('chrome://') || tab.url.startsWith('edge://') || tab.url.startsWith('about:') || tab.url.startsWith('chrome-extension://') || tab.url.startsWith('moz-extension://'))) {
+        showEmptyState('ब्राउझरच्या अंतर्गत सिस्टम पानांवर (about:) एक्स्टेंशन चालत नाही. कृपया वेब पेजवर वापरा.');
         return;
       }
 
@@ -79,24 +70,18 @@ document.addEventListener('DOMContentLoaded', () => {
         detectedTables = response.tables || [];
         tableCountEl.textContent = detectedTables.length;
 
-        if (response.barsVisible !== undefined) {
-          toggleBars.checked = response.barsVisible;
-        }
-
         if (detectedTables.length === 0) {
           emptyStateEl.style.display = 'flex';
           scanStatusEl.textContent = '० टेबल';
-          btnExportAll.disabled = true;
         } else {
           emptyStateEl.style.display = 'none';
           scanStatusEl.textContent = `${detectedTables.length} टेबल सापडले`;
-          btnExportAll.disabled = false;
           renderTableCards(detectedTables);
         }
       });
     } catch (err) {
       console.error('Scan error:', err);
-      showEmptyState('स्कॅन करताना एरर: ' + (err.message || err));
+      showEmptyState('स्कॅन त्रुटी: ' + (err.message || err));
     }
   }
 
@@ -106,12 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (msg) emptyStateEl.querySelector('p').textContent = msg;
     scanStatusEl.textContent = '० टेबल';
     tableCountEl.textContent = '0';
-    btnExportAll.disabled = true;
   }
 
-  /**
-   * Render table cards in popup
-   */
   function renderTableCards(tables) {
     tables.forEach((tbl) => {
       const card = document.createElement('div');
@@ -125,53 +106,28 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="card-top">
           <div class="card-title">${escapeHtml(tbl.title)}</div>
           <div class="badges-group">
-            <span class="pill pill-green">${tbl.rows} ओळी (Rows)</span>
+            <span class="pill pill-green">${tbl.rows} ओळी</span>
             <span class="pill">${tbl.cols} कॉलम्स</span>
           </div>
         </div>
         <div class="preview-text" title="${escapeHtml(previewStr)}">${escapeHtml(previewStr)}</div>
         <div class="card-actions">
-          <button class="btn btn-copy-card btn-sm btn-copy" data-index="${tbl.index}">
-            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-            १-क्लिक कॉपी
+          <button class="btn btn-primary-sm btn-autocheck-card" data-index="${tbl.index}">
+            ⚡ ऑटो चेकबॉक्स टूल उघडा
           </button>
-          <button class="btn btn-outline btn-sm btn-export-xlsx" data-index="${tbl.index}">
-            📊 Excel (.xlsx)
-          </button>
-          <button class="btn btn-outline btn-sm btn-export-csv" data-index="${tbl.index}">
-            📄 CSV
-          </button>
-          <button class="btn btn-outline btn-sm btn-icon-only btn-focus" data-index="${tbl.index}" title="पेजवर हे टेबल हायलाइट करा">
+          <button class="btn btn-outline-sm btn-focus" data-index="${tbl.index}" title="पेजवर हे टेबल हायलाइट करा">
             🎯
           </button>
         </div>
       `;
 
-      // 1-Click Copy
-      const copyBtn = card.querySelector('.btn-copy');
-      copyBtn.addEventListener('click', () => {
+      card.querySelector('.btn-autocheck-card').addEventListener('click', () => {
         if (currentTabId == null) return;
-        chrome.tabs.sendMessage(currentTabId, { action: 'copyTable', index: tbl.index });
-        const originalText = copyBtn.innerHTML;
-        copyBtn.innerHTML = `<span>✔ कॉपी झाले!</span>`;
-        setTimeout(() => {
-          copyBtn.innerHTML = originalText;
-        }, 1800);
+        chrome.tabs.sendMessage(currentTabId, { action: 'openAutoCheckbox', index: tbl.index }, () => {
+          window.close();
+        });
       });
 
-      // Export XLSX
-      card.querySelector('.btn-export-xlsx').addEventListener('click', () => {
-        if (currentTabId == null) return;
-        chrome.tabs.sendMessage(currentTabId, { action: 'exportTable', index: tbl.index, format: 'xlsx' });
-      });
-
-      // Export CSV
-      card.querySelector('.btn-export-csv').addEventListener('click', () => {
-        if (currentTabId == null) return;
-        chrome.tabs.sendMessage(currentTabId, { action: 'exportTable', index: tbl.index, format: 'csv' });
-      });
-
-      // Focus
       card.querySelector('.btn-focus').addEventListener('click', () => {
         if (currentTabId == null) return;
         chrome.tabs.sendMessage(currentTabId, { action: 'highlightTable', index: tbl.index });
@@ -181,32 +137,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Pick Table Mode (closes popup and lets user click table on page)
-  btnStartPicker.addEventListener('click', () => {
+  // Hero Launch Button
+  btnOpenModal.addEventListener('click', () => {
     if (currentTabId == null) return;
-    chrome.tabs.sendMessage(currentTabId, { action: 'startPicker' }, () => {
-      window.close(); // Close popup so user can click on page immediately
+    chrome.tabs.sendMessage(currentTabId, { action: 'openAutoCheckbox', index: 0 }, () => {
+      window.close();
     });
-  });
-
-  // Export All
-  btnExportAll.addEventListener('click', () => {
-    if (currentTabId == null) return;
-    btnExportAll.disabled = true;
-    btnExportAll.innerHTML = `<span>⏳ एक्सपोर्ट होत आहे...</span>`;
-    chrome.tabs.sendMessage(currentTabId, { action: 'exportAll' }, () => {
-      btnExportAll.disabled = false;
-      btnExportAll.innerHTML = `
-        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14v-4H8l4-4 4 4h-3v4h-1z"/></svg>
-        <span>सर्व टेबल्स (.xlsx)</span>
-      `;
-    });
-  });
-
-  // Toggle On-page floating bars
-  toggleBars.addEventListener('change', () => {
-    if (currentTabId == null) return;
-    chrome.tabs.sendMessage(currentTabId, { action: 'toggleBars', show: toggleBars.checked });
   });
 
   btnRefresh.addEventListener('click', scanActiveTab);
@@ -220,6 +156,40 @@ document.addEventListener('DOMContentLoaded', () => {
       "'": '&#39;',
       '"': '&quot;'
     }[tag] || tag));
+  }
+
+  // Floating Bar Global Toggle
+  const btnToggleBar = document.getElementById('btnToggleFloatingBar');
+  if (btnToggleBar) {
+    if (chrome.storage && chrome.storage.local) {
+      chrome.storage.local.get({ showBars: true }, (items) => {
+        let isShown = items.showBars !== false;
+        updateToggleBtn(isShown);
+
+        btnToggleBar.addEventListener('click', () => {
+          isShown = !isShown;
+          chrome.storage.local.set({ showBars: isShown });
+          updateToggleBtn(isShown);
+          if (currentTabId) {
+            chrome.tabs.sendMessage(currentTabId, { action: 'toggleBars', show: isShown });
+          }
+        });
+      });
+    }
+
+    function updateToggleBtn(shown) {
+      if (shown) {
+        btnToggleBar.textContent = 'चालू (ON)';
+        btnToggleBar.style.background = '#dcfce7';
+        btnToggleBar.style.color = '#15803d';
+        btnToggleBar.style.borderColor = '#86efac';
+      } else {
+        btnToggleBar.textContent = 'बंद (OFF)';
+        btnToggleBar.style.background = '#fee2e2';
+        btnToggleBar.style.color = '#b91c1c';
+        btnToggleBar.style.borderColor = '#fca5a5';
+      }
+    }
   }
 
   scanActiveTab();

@@ -1,0 +1,949 @@
+/* Universal Table Copy & Excel Exporter - Content Styling */
+
+.t2e-table-relative {
+  position: relative !important;
+}
+
+/* Floating Action Bar above each Table */
+.t2e-floating-bar {
+  position: absolute;
+  top: -16px;
+  right: 12px;
+  z-index: 9999999;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  padding: 3px 6px;
+  border-radius: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid #cbd5e1;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  user-select: none;
+  opacity: 0.95;
+  transition: opacity 0.2s ease, box-shadow 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.t2e-floating-bar:hover {
+  opacity: 1;
+  box-shadow: 0 8px 22px rgba(16, 124, 65, 0.25);
+  border-color: #107c41;
+}
+
+/* Drag Handle on Floating Bar */
+.t2e-bar-drag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 24px;
+  cursor: grab;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 900;
+  border-radius: 12px;
+  transition: all 0.15s ease;
+  padding: 0 2px;
+}
+
+.t2e-bar-drag:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.t2e-bar-drag:active, .t2e-bar-dragging .t2e-bar-drag {
+  cursor: grabbing !important;
+  color: #2563eb;
+}
+
+.t2e-bar-dragging {
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35) !important;
+  border-color: #2563eb !important;
+  opacity: 0.98 !important;
+  transition: none !important;
+}
+
+/* Close Button on Floating Bar */
+.t2e-bar-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 2px;
+  transition: all 0.15s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.t2e-bar-close:hover {
+  background: #fee2e2;
+  color: #dc2626;
+  transform: scale(1.1);
+}
+
+/* 1-Click Copy Button */
+.t2e-btn-copy-instant {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #107c41, #0a5c30);
+  color: #ffffff !important;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 6px 11px;
+  border-radius: 18px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(16, 124, 65, 0.35);
+}
+
+.t2e-btn-copy-instant:hover {
+  background: linear-gradient(135deg, #0e6b37, #084926);
+  transform: scale(1.03);
+}
+
+.t2e-btn-copy-instant:active {
+  transform: scale(0.97);
+}
+
+/* Secondary Action Buttons (Excel / CSV) */
+.t2e-btn-sec {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #f1f5f9;
+  color: #334155 !important;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 5px 8px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.t2e-btn-sec:hover {
+  background: #e2e8f0;
+  color: #0f172a !important;
+}
+
+.t2e-btn-sec.t2e-btn-excel:hover {
+  background: #e6f4ea;
+  color: #137333 !important;
+  border-color: #a8dab5;
+}
+
+/* ⚡ Auto Checkbox Button on Floating Bar */
+.t2e-btn-sec.t2e-btn-autocheck {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: #ffffff !important;
+  border-color: #4338ca;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
+}
+
+.t2e-btn-sec.t2e-btn-autocheck:hover {
+  background: linear-gradient(135deg, #4338ca, #3730a3);
+  color: #ffffff !important;
+  transform: scale(1.03);
+}
+
+/* Table Hover Highlight */
+.t2e-table-hovered {
+  outline: 2px dashed #107c41 !important;
+  outline-offset: 2px !important;
+}
+
+/* Highlighted Table on Scroll / Focus */
+.t2e-highlighted-table {
+  outline: 3px solid #107c41 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 25px rgba(16, 124, 65, 0.35) !important;
+  animation: t2e-pulse-glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes t2e-pulse-glow {
+  from { box-shadow: 0 0 10px rgba(16, 124, 65, 0.2); }
+  to { box-shadow: 0 0 25px rgba(16, 124, 65, 0.5); }
+}
+
+/* Picker Banner at Top of Screen */
+.t2e-picker-banner {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000002;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 2px solid #107c41;
+  animation: t2e-slide-down 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.t2e-picker-banner button {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.t2e-picker-banner button:hover {
+  background: #ef4444;
+}
+
+/* Toast Notifications */
+.t2e-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000005;
+  background: #111827;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  border-left: 5px solid #107c41;
+  animation: t2e-slide-up 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.t2e-toast-success {
+  border-left-color: #10b981;
+}
+
+.t2e-toast-error {
+  border-left-color: #ef4444;
+}
+
+@keyframes t2e-slide-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes t2e-slide-down {
+  from { opacity: 0; transform: translate(-50%, -14px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media print {
+  .t2e-floating-bar,
+  .t2e-picker-banner,
+  .t2e-toast,
+  .t2e-ac-modal {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   ⚡ Auto Checkbox Modal / Drawer System
+   ========================================================================== */
+
+@keyframes t2e-modal-in {
+  from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.t2e-ac-modal {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  width: 580px;
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 60px);
+  background: #ffffff;
+  color: #1e293b;
+  border-radius: 16px;
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(15, 23, 42, 0.08);
+  border: 1px solid #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  z-index: 10000030;
+  overflow: hidden;
+  animation: t2e-modal-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.t2e-ac-modal *, .t2e-ac-modal *::before, .t2e-ac-modal *::after {
+  box-sizing: border-box;
+}
+
+/* Drag Handle Bar */
+.t2e-ac-drag-handle {
+  background: #090d16;
+  color: #94a3b8;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  letter-spacing: 0.3px;
+  transition: all 0.15s ease;
+}
+
+.t2e-ac-drag-handle:hover {
+  background: #1e293b;
+  color: #60a5fa;
+}
+
+.t2e-drag-icon {
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #3b82f6;
+  font-weight: 900;
+}
+
+.t2e-is-dragging {
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 2px #3b82f6 !important;
+  opacity: 0.96;
+  transition: none !important;
+}
+
+/* Modal Header */
+.t2e-ac-header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  border-bottom: 2px solid #3b82f6;
+}
+
+.t2e-is-dragging .t2e-ac-header,
+.t2e-is-dragging .t2e-ac-drag-handle {
+  cursor: grabbing !important;
+}
+
+.t2e-ac-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.t2e-ac-badge-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+}
+
+.t2e-ac-title-text h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.t2e-ac-title-text p {
+  margin: 2px 0 0 0;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.t2e-ac-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.t2e-ac-hdr-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #e2e8f0;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s ease;
+}
+
+.t2e-ac-hdr-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.t2e-ac-hdr-btn.t2e-ac-close:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* Modal Body */
+.t2e-ac-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+  max-height: calc(85vh - 70px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #f8fafc;
+}
+
+/* Step Card */
+.t2e-ac-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.t2e-ac-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+.t2e-ac-step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* Drag & Drop Upload Zone */
+.t2e-dropzone {
+  border: 2px dashed #94a3b8;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  background: #f1f5f9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.t2e-dropzone:hover, .t2e-dropzone.t2e-dragover {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.t2e-dropzone-icon {
+  font-size: 26px;
+  margin-bottom: 4px;
+}
+
+.t2e-dropzone-text {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 13px;
+}
+
+.t2e-dropzone-sub {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.t2e-file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Uploaded File Info Banner */
+.t2e-file-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+.t2e-file-info-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+/* Form Controls & Dropdowns */
+.t2e-form-group {
+  margin-bottom: 10px;
+}
+
+.t2e-form-label {
+  display: block;
+  font-weight: 600;
+  font-size: 12px;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+.t2e-form-select, .t2e-form-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 12px;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.t2e-form-select:focus, .t2e-form-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.t2e-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Action Mode Radios */
+.t2e-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.t2e-radio-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.t2e-radio-option:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.t2e-radio-option.t2e-active {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  box-shadow: 0 1px 4px rgba(59, 130, 246, 0.12);
+}
+
+.t2e-radio-option input[type="radio"] {
+  margin-top: 3px;
+  accent-color: #2563eb;
+}
+
+.t2e-radio-content strong {
+  display: block;
+  font-size: 12px;
+  color: #0f172a;
+}
+
+.t2e-radio-content span {
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* Buttons */
+.t2e-btn-primary-action {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.t2e-btn-primary-action:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+}
+
+.t2e-btn-primary-action:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.t2e-btn-row {
+  display: flex;
+  gap: 8px;
+}
+
+.t2e-btn-secondary {
+  flex: 1;
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.t2e-btn-secondary:hover:not(:disabled) {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.t2e-btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Progress Tracker */
+.t2e-progress-container {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.t2e-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.t2e-progress-track {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.t2e-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+  transition: width 0.15s linear;
+}
+
+/* Metrics Badges Grid */
+.t2e-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.t2e-metric-pill {
+  border-radius: 8px;
+  padding: 6px 4px;
+  text-align: center;
+  border: 1px solid transparent;
+}
+
+.t2e-metric-num {
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.t2e-metric-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+
+.t2e-pill-total { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+.t2e-pill-success { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.t2e-pill-uncheck { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+.t2e-pill-warn { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+
+/* Log Results Table */
+.t2e-log-box {
+  max-height: 140px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+.t2e-log-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.t2e-log-table th {
+  background: #f8fafc;
+  padding: 5px 8px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475569;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.t2e-log-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+}
+
+.t2e-badge-chk {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 10px;
+}
+
+.t2e-badge-unchk {
+  background: #dbeafe;
+  color: #1d4ed8;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 10px;
+}
+
+.t2e-badge-miss {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 10px;
+}
+
+/* Page Row Live Highlights */
+.t2e-row-checked {
+  background-color: rgba(34, 197, 94, 0.22) !important;
+  transition: background-color 0.4s ease;
+}
+
+.t2e-row-unchecked {
+  background-color: rgba(59, 130, 246, 0.18) !important;
+  transition: background-color 0.4s ease;
+}
+
+.t2e-row-unmatched {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Export Results & Unticked Section */
+.t2e-export-section {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.t2e-export-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.t2e-export-badge {
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  border: 1px solid #fecaca;
+}
+
+.t2e-btn-download-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  transition: all 0.15s ease;
+}
+
+.t2e-btn-download-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(220, 38, 38, 0.4);
+}
+
+.t2e-btn-download-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.t2e-btn-download-outline {
+  background: #f8fafc;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.t2e-btn-download-outline:hover:not(:disabled) {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+.t2e-btn-download-outline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.t2e-log-filters {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0 6px 0;
+  overflow-x: auto;
+}
+
+.t2e-filter-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.t2e-filter-btn:hover {
+  background: #e2e8f0;
+}
+
+.t2e-filter-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.t2e-badge-err {
+  background: #fef3c7;
+  color: #b45309;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 10px;
+}
+
+/* Match Verification & Preview Styling */
+.t2e-prev-tab {
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.t2e-prev-tab:hover {
+  filter: brightness(0.95);
+}
+.t2e-btn-preview-action:hover {
+  background: #15803d !important;
+  transform: translateY(-1px);
+}
+

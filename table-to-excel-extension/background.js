@@ -22,6 +22,12 @@ chrome.runtime.onInstalled.addListener(() => {
     title: "📄 CSV डाऊनलोड करा (.csv)",
     contexts: ["all"]
   });
+
+  chrome.contextMenus.create({
+    id: "table_autocheck",
+    title: "⚡ एक्सेल नुसार चेकबॉक्स भरा (Auto Checkbox)",
+    contexts: ["all"]
+  });
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {

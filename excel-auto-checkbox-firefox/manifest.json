@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "Excel Auto Checkbox | ऑटो चेकबॉक्स",
+  "version": "1.0.0",
+  "description": "वेब पेजवरील टेबलमधील चेकबॉक्स एक्सेल फाईल (.xlsx/.csv) अपलोड करून आपोआप सिलेक्ट/अनसिलेक्ट करा.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "excel-checkbox-automator@emudracsc.in",
+      "strict_min_version": "109.0"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "एक्सेल ऑटो चेकबॉक्स सिलेक्टर",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "contextMenus"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["lib/xlsx.full.min.js", "content.js"],
+      "css": ["content.css"],
+      "all_frames": true,
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["lib/xlsx.full.min.js", "icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
