@@ -20,6 +20,7 @@
       --primary-dark: #0369a1;
       --primary-light: #f0f9ff;
       --emerald: #059669;
+      --emerald-dark: #047857;
       --saffron: #f59e0b;
       --navy: #0f172a;
       --navy-light: #1e293b;
@@ -101,7 +102,7 @@
       margin-top: 2px;
     }
 
-    /* Action Bar */
+    /* Action Toolbar */
     .action-toolbar {
       background: #ffffff;
       border-bottom: 1px solid var(--border-color);
@@ -265,13 +266,61 @@
       box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
     }
 
+    /* Quick Suggestion Chips */
+    .quick-chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .chip-btn {
+      background: #e2e8f0;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+
+    .chip-btn:hover {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+    }
+
+    /* Notification Box */
+    .info-callout-box {
+      background: #f0fdf4;
+      border: 1.5px solid #86efac;
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .info-callout-box p {
+      font-size: 0.84rem;
+      color: #166534;
+      font-weight: 600;
+      margin: 0;
+    }
+
     /* Co-holders Table Editor */
     .coholder-editor-table-wrap {
       overflow-x: auto;
-      border: 1px solid var(--border-color);
+      border: 1.5px solid var(--border-color);
       border-radius: var(--radius-sm);
       margin-top: 8px;
       margin-bottom: 8px;
+      max-height: 280px;
+      overflow-y: auto;
     }
 
     .coholder-editor-table {
@@ -288,6 +337,9 @@
       padding: 8px 10px;
       border: 1px solid var(--border-color);
       text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 2;
     }
 
     .coholder-editor-table td {
@@ -327,31 +379,11 @@
       background: #fecaca;
     }
 
-    /* Notification Box */
-    .info-callout-box {
-      background: #f0fdf4;
-      border: 1.5px solid #86efac;
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .info-callout-box p {
-      font-size: 0.84rem;
-      color: #166534;
-      font-weight: 600;
-      margin: 0;
-    }
-
     /* Right Preview Pane (A4 Paper Container) */
     .preview-pane {
-      background: #64748b;
+      background: #475569;
       border-radius: var(--radius-md);
-      padding: 20px;
+      padding: 16px;
       box-shadow: inset 0 2px 8px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
@@ -360,40 +392,80 @@
       max-height: calc(100vh - 120px);
     }
 
-    .preview-top-notice {
-      color: #ffffff;
-      font-size: 0.84rem;
-      margin-bottom: 12px;
+    /* Preview Toolbar */
+    .preview-toolbar-box {
+      width: 100%;
+      max-width: 210mm;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      color: #ffffff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      flex-wrap: wrap;
       gap: 8px;
-      font-weight: 600;
+    }
+
+    .preview-zoom-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.45);
+      padding: 3px 6px;
+      border-radius: 6px;
+    }
+
+    .btn-zoom {
+      background: transparent;
+      border: none;
+      color: #e2e8f0;
+      padding: 3px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .btn-zoom:hover, .btn-zoom.active {
+      background: #0284c7;
+      color: #ffffff;
     }
 
     /* The A4 Printable Paper */
     .paper-a4-sheet {
       width: 210mm;
-      min-height: 297mm;
+      height: 297mm;
+      max-height: 297mm;
       background: #ffffff;
-      padding: 10mm 12mm;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+      padding: 7mm 8mm;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
       box-sizing: border-box;
       position: relative;
       color: #000000;
       margin: 0 auto;
+      font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+      display: flex;
+      flex-direction: column;
+      transform-origin: top center;
+      transition: transform 0.2s ease;
+      page-break-after: avoid !important;
+      page-break-inside: avoid !important;
     }
 
-    /* Double Border Framing standard in official documents */
+    /* Double Border Framing standard in official Maharashtra revenue documents */
     .paper-outer-border {
       border: 2px solid #000000;
-      padding: 3px;
+      padding: 2.5px;
       height: 100%;
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
     }
 
     .paper-inner-border {
       border: 1.2px solid #000000;
-      padding: 16px 18px;
+      padding: 14px 18px 12px 18px;
       height: 100%;
       box-sizing: border-box;
       display: flex;
@@ -404,17 +476,17 @@
     /* Top Scheme Pill */
     .scheme-pill-header {
       border: 1.5px solid #000000;
-      border-radius: 40px;
+      border-radius: 30px;
       text-align: center;
-      padding: 5px 18px;
-      margin: 0 auto 12px auto;
+      padding: 4px 16px;
+      margin: 0 auto 10px auto;
       width: fit-content;
-      max-width: 90%;
+      max-width: 95%;
       background: #f8fafc;
     }
 
     .scheme-pill-header h3 {
-      font-size: 1.25rem;
+      font-size: 1.22rem;
       font-weight: 800;
       color: #000000;
       letter-spacing: 0.3px;
@@ -424,21 +496,21 @@
     /* Form Title */
     .doc-main-title {
       text-align: center;
-      font-size: 1.65rem;
+      font-size: 1.55rem;
       font-weight: 900;
       text-decoration: underline;
       text-underline-offset: 5px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       color: #000000;
       letter-spacing: 0.5px;
     }
 
     /* Farmer Preamble Paragraph */
     .farmer-preamble-text {
-      font-size: 1.08rem;
-      line-height: 1.75;
+      font-size: 1.04rem;
+      line-height: 1.7;
       text-align: justify;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
       color: #000000;
     }
 
@@ -448,60 +520,129 @@
       font-weight: 800;
       padding: 0 4px;
       color: #000000;
-      min-height: 20px;
+      min-height: 18px;
     }
 
     /* Official Co-holders Table */
     .official-coholder-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 10px 0 14px 0;
+      margin: 8px 0 10px 0;
       font-size: 1.02rem;
       color: #000000;
     }
 
     .official-coholder-table th {
       border: 1.5px solid #000000;
-      padding: 6px 6px;
+      padding: 6px 8px;
       text-align: center;
       font-weight: 800;
-      background: #ffffff;
-      line-height: 1.3;
+      background: #f8fafc;
+      line-height: 1.25;
+      font-size: 1rem;
     }
 
     .official-coholder-table td {
-      border: 1.2px solid #000000;
+      border: 1.5px solid #000000;
       padding: 4px 8px;
       font-weight: 700;
-      height: 31px;
+      vertical-align: middle;
       line-height: 1.3;
+      transition: height 0.15s ease;
+    }
+
+    /* Dynamic Row Height Classes for ample Signature and Thumbprint Room */
+    /* When 1-2 rows: Huge 85px room for physical thumb stamp */
+    .table-density-huge td {
+      height: 85px !important;
+      min-height: 85px !important;
+    }
+
+    /* When 3 rows: Spacious 68px */
+    .table-density-spacious td {
+      height: 68px !important;
+      min-height: 68px !important;
+    }
+
+    /* When 4 rows: Medium 54px */
+    .table-density-medium td {
+      height: 54px !important;
+      min-height: 54px !important;
+    }
+
+    /* When 5+ rows: Compact 38px */
+    .table-density-compact td {
+      height: 38px !important;
+      min-height: 38px !important;
     }
 
     .td-sr {
       text-align: center;
-      width: 12%;
+      width: 10%;
       font-weight: 800;
+      font-size: 1.05rem;
     }
 
     .td-name {
       text-align: left;
-      width: 58%;
+      width: 50%;
       padding-left: 12px !important;
+      font-size: 1.06rem;
+      font-weight: 700;
+      color: #000000;
     }
 
     .td-sign {
       text-align: center;
-      width: 30%;
-      color: #64748b;
-      font-weight: 500;
+      width: 40%;
+      padding: 3px 6px !important;
+    }
+
+    /* Dedicated Thumb Impression and Signature Slot */
+    .thumb-sign-slot {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .thumb-box-guideline {
+      width: 94%;
+      height: 86%;
+      min-height: 44px;
+      max-width: 230px;
+      border: 1.2px dashed #64748b;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(248, 250, 252, 0.5);
+      padding: 2px 6px;
+      box-sizing: border-box;
+    }
+
+    .thumb-box-guideline.no-guide {
+      border: none !important;
+      background: transparent !important;
+    }
+
+    .thumb-label {
+      font-size: 0.82rem;
+      color: #475569;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      user-select: none;
     }
 
     /* Legal Undertaking / Penal Code Paragraph */
     .legal-undertaking-text {
-      font-size: 0.98rem;
-      line-height: 1.55;
+      font-size: 0.96rem;
+      line-height: 1.5;
       text-align: justify;
-      margin: 12px 0 16px 0;
+      margin: 8px 0 12px 0;
       color: #000000;
       font-weight: 600;
     }
@@ -511,9 +652,9 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      margin-top: 10px;
-      padding-top: 8px;
-      font-size: 1.05rem;
+      margin-top: 6px;
+      padding-top: 6px;
+      font-size: 1.02rem;
       font-weight: 700;
       color: #000000;
     }
@@ -521,7 +662,7 @@
     .footer-place-date {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .footer-signature-block {
@@ -529,7 +670,7 @@
       min-width: 250px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .sig-field-row {
@@ -550,25 +691,93 @@
       height: 18px;
     }
 
-    /* Print Styles: Exact A4 output */
+    /* Simple Modal Overlay for Bulk Paste & Blank Setup */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-body {
+      padding: 16px 18px;
+    }
+
+    .modal-footer {
+      background: #f8fafc;
+      border-top: 1px solid var(--border-color);
+      padding: 10px 18px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* Print Styles: Strict 1-Page A4 output */
     @media print {
       @page {
         size: A4 portrait;
-        margin: 6mm 8mm 6mm 8mm;
+        margin: 5mm 6mm 5mm 6mm;
       }
 
-      body {
-        background: #ffffff !important;
-        padding: 0 !important;
+      html, body {
+        width: 100% !important;
+        height: 100% !important;
         margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
 
       .gov-tricolor-stripe,
       .brand-navbar,
       .action-toolbar,
       .form-pane,
-      .preview-top-notice,
-      .no-print {
+      .preview-toolbar-box,
+      .no-print,
+      .modal-overlay {
         display: none !important;
       }
 
@@ -589,26 +798,29 @@
 
       .paper-a4-sheet {
         width: 100% !important;
-        height: auto !important;
-        min-height: auto !important;
-        max-height: none !important;
+        height: 287mm !important;
+        max-height: 287mm !important;
+        margin: 0 auto !important;
         padding: 0 !important;
         box-shadow: none !important;
         border: none !important;
+        transform: none !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
       }
 
       .paper-outer-border {
         border: 2px solid #000000 !important;
         padding: 2.5px !important;
-        min-height: auto !important;
-        height: auto !important;
+        height: 100% !important;
+        box-sizing: border-box !important;
       }
 
       .paper-inner-border {
         border: 1.2px solid #000000 !important;
-        padding: 14px 18px !important;
-        min-height: auto !important;
-        height: auto !important;
+        padding: 12px 16px 12px 16px !important;
+        height: 100% !important;
+        box-sizing: border-box !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
@@ -616,6 +828,37 @@
 
       .scheme-pill-header {
         background: #f8fafc !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .official-coholder-table th {
+        background: #f8fafc !important;
+        border: 1.5px solid #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .official-coholder-table td {
+        border: 1.5px solid #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .thumb-box-guideline {
+        border: 1.2px dashed #64748b !important;
+        background: transparent !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .thumb-box-guideline.no-guide {
+        border: none !important;
+      }
+
+      .thumb-label {
+        color: #94a3b8 !important;
+        font-size: 0.74rem !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
@@ -638,7 +881,7 @@
         <div class="brand-sub">सामाईक खातेदार सहमतीपत्र जनरेटर • आपले सरकार सेवा केंद्र (e-Mudra CSC, कणकवली)</div>
       </div>
     </div>
-    <div style="display: flex; gap: 8px; align-items: center;">
+    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
       <a href="Pikpera.html" class="btn-act" style="background: rgba(255,255,255,0.2); color: #ffffff; border: 1px solid rgba(255,255,255,0.3); font-weight: 700;">
         <i class="fa-solid fa-wheat-awn"></i> <span>पिकपेरा स्वयंघोषणापत्र</span>
       </a>
@@ -675,7 +918,7 @@
         <i class="fa-solid fa-print"></i> <span>सहमतीपत्र प्रिंट (Print / PDF)</span>
       </button>
 
-      <button type="button" class="btn-act btn-act-amber" onclick="printBlankForm()" title="शेतकऱ्याला हाताने भरण्यासाठी कोरी प्रत प्रिंट करा">
+      <button type="button" class="btn-act btn-act-amber" onclick="openBlankFormModal()" title="शेतकऱ्याला हाताने भरण्यासाठी कोरी प्रत प्रिंट करा">
         <i class="fa-solid fa-file-pen"></i> <span>कोरा फॉर्म प्रिंट</span>
       </button>
 
@@ -708,8 +951,17 @@
       </div>
 
       <div class="inp-group">
-        <label>योजनेचे शीर्षक (Form Header Title):</label>
-        <input type="text" id="inpSchemeTitle" class="inp-control" value="हवामान आधारीत फळ पिक विमा योजना" oninput="updateLivePreview()">
+        <label>योजना निवडा (Select Scheme):</label>
+        <select id="selScheme" class="inp-control" onchange="handleSchemeChange(this.value)">
+          <option value="हवामान आधारीत फळपिक विमा योजना २०२६-२७">हवामान आधारीत फळपिक विमा योजना २०२६-२७</option>
+          <option value="हवामान आधारीत फळपिक विमा योजना २०२६-२७ (मृग बहार)">हवामान आधारीत फळपिक विमा योजना २०२६-२७ (मृग बहार)</option>
+          <option value="हवामान आधारीत फळपिक विमा योजना २०२६-२७ (आंबिया बहार)">हवामान आधारीत फळपिक विमा योजना २०२६-२७ (आंबिया बहार)</option>
+          <option value="प्रधानमंत्री पीक विमा योजना (PMFBY) खरीप / रब्बी २०२६-२७">प्रधानमंत्री पीक विमा योजना (PMFBY) खरीप / रब्बी २०२६-२७</option>
+          <option value="नानाजी देशमुख कृषी संजीवनी प्रकल्प (PoCRA)">नानाजी देशमुख कृषी संजीवनी प्रकल्प (PoCRA)</option>
+          <option value="मागेल त्याला शेततळे / फळबाग लागवड अनुदान योजना">मागेल त्याला शेततळे / फळबाग लागवड अनुदान योजना</option>
+          <option value="custom">इतर योजना (Custom)</option>
+        </select>
+        <input type="text" id="inpSchemeTitle" class="inp-control" style="display: none; margin-top: 6px;" placeholder="योजनेचे नाव स्वतः लिहा" value="हवामान आधारीत फळपिक विमा योजना २०२६-२७" oninput="updateLivePreview()">
       </div>
 
       <!-- Section 2: Farmer Particulars -->
@@ -725,8 +977,58 @@
         </div>
 
         <div class="inp-group">
+          <label>मोबाईल नंबर (Mobile No):</label>
+          <input type="tel" id="inpMobile" class="inp-control" placeholder="१० अंकी मोबाईल नंबर" maxlength="10" oninput="updateLivePreview()">
+        </div>
+
+        <div class="inp-group">
           <label>राहणार मु.पो. (Residence Village):</label>
-          <input type="text" id="inpResidenceVillage" class="inp-control" placeholder="उदा. कलमठ" oninput="handleVillageChange(this.value)">
+          <input type="text" id="inpResidenceVillage" class="inp-control" list="sindhudurgVillages" placeholder="उदा. कलमठ" oninput="handleVillageChange(this.value)">
+          <div class="quick-chips-row">
+            <span class="chip-btn" onclick="setQuickVillage('कलमठ')">कलमठ</span>
+            <span class="chip-btn" onclick="setQuickVillage('कणकवली')">कणकवली</span>
+            <span class="chip-btn" onclick="setQuickVillage('नांदगाव')">नांदगाव</span>
+            <span class="chip-btn" onclick="setQuickVillage('ओरोस')">ओरोस</span>
+            <span class="chip-btn" onclick="setQuickVillage('कुडाळ')">कुडाळ</span>
+            <span class="chip-btn" onclick="setQuickVillage('फोंडाघाट')">फोंडाघाट</span>
+            <span class="chip-btn" onclick="setQuickVillage('तळेरे')">तळेरे</span>
+          </div>
+        </div>
+
+        <div class="inp-group">
+          <label>जिल्हा (District):</label>
+          <select id="selDistrict" class="inp-control" onchange="handleDistrictChange(this.value)">
+            <option value="सिंधुदुर्ग" selected>सिंधुदुर्ग (Sindhudurg)</option>
+            <option value="रत्नागिरी">रत्नागिरी (Ratnagiri)</option>
+            <option value="कोल्हापूर">कोल्हापूर (Kolhapur)</option>
+            <option value="सांगली">सांगली (Sangli)</option>
+            <option value="सातारा">सातारा (Satara)</option>
+            <option value="पुणे">पुणे (Pune)</option>
+            <option value="नाशिक">नाशिक (Nashik)</option>
+            <option value="अहमदनगर">अहमदनगर (Ahilyanagar)</option>
+            <option value="सोलापूर">सोलापूर (Solapur)</option>
+            <option value="छत्रपती संभाजीनगर">छत्रपती संभाजीनगर</option>
+            <option value="बीड">बीड (Beed)</option>
+            <option value="धाराशिव">धाराशिव (Dharashiv)</option>
+            <option value="लातूर">लातूर (Latur)</option>
+            <option value="परभणी">परभणी (Parbhani)</option>
+            <option value="जालना">जालना (Jalna)</option>
+            <option value="नांदेड">नांदेड (Nanded)</option>
+            <option value="नागपूर">नागपूर (Nagpur)</option>
+            <option value="अमरावती">अमरावती (Amravati)</option>
+            <option value="यवतमाळ">यवतमाळ (Yavatmal)</option>
+            <option value="बुलढाणा">बुलढाणा (Buldhana)</option>
+            <option value="वाशिम">वाशिम (Washim)</option>
+            <option value="अकोला">अकोला (Akola)</option>
+            <option value="धुळे">धुळे (Dhule)</option>
+            <option value="जळगाव">जळगाव (Jalgaon)</option>
+            <option value="नंदुरबार">नंदुरबार (Nandurbar)</option>
+            <option value="रायगड">रायगड (Raigad)</option>
+            <option value="ठाणे">ठाणे (Thane)</option>
+            <option value="पालघर">पालघर (Palghar)</option>
+            <option value="custom">इतर जिल्हा (Custom)</option>
+          </select>
+          <input type="text" id="inpDistrict" class="inp-control" style="display: none; margin-top: 4px;" placeholder="जिल्ह्याचे नाव लिहा" value="सिंधुदुर्ग" oninput="updateLivePreview()">
         </div>
 
         <div class="inp-group">
@@ -747,19 +1049,38 @@
           </div>
         </div>
 
-        <div class="inp-group">
-          <label>जिल्हा (District):</label>
-          <input type="text" id="inpDistrict" class="inp-control" value="सिंधुदुर्ग" oninput="updateLivePreview()">
-        </div>
-
-        <div class="inp-group">
+        <div class="inp-group" style="grid-column: 1 / -1;">
           <label>मौजे - शेतीचे गाव (Mouje Farm Village):</label>
-          <div style="display: flex; gap: 4px;">
-            <input type="text" id="inpMouje" class="inp-control" placeholder="उदा. कलमठ" style="flex: 1;" oninput="updateLivePreview()">
-            <button type="button" class="btn-act" style="padding: 4px 8px; font-size: 0.74rem;" onclick="copyVillageToMouje()" title="राहत्या गावासारखेच करा">सारखेच</button>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="inpMouje" class="inp-control" list="sindhudurgVillages" placeholder="उदा. कलमठ" style="flex: 1;" oninput="updateLivePreview()">
+            <button type="button" class="btn-act" style="padding: 4px 10px; font-size: 0.78rem;" onclick="copyVillageToMouje()" title="राहत्या गावासारखेच करा">
+              <i class="fa-solid fa-clone"></i> सारखेच
+            </button>
           </div>
         </div>
       </div>
+
+      <!-- Datalist for Sindhudurg Villages -->
+      <datalist id="sindhudurgVillages">
+        <option value="कलमठ"></option>
+        <option value="कणकवली"></option>
+        <option value="नांदगाव"></option>
+        <option value="वरवडे"></option>
+        <option value="कासार्डे"></option>
+        <option value="तळेरे"></option>
+        <option value="फोंडाघाट"></option>
+        <option value="शिरगाव"></option>
+        <option value="ओरोस"></option>
+        <option value="कुडाळ"></option>
+        <option value="देवगड"></option>
+        <option value="जामसंडे"></option>
+        <option value="मालवण"></option>
+        <option value="आचरा"></option>
+        <option value="सावंतवाडी"></option>
+        <option value="वेंगुर्ला"></option>
+        <option value="दोडामार्ग"></option>
+        <option value="वैभववाडी"></option>
+      </datalist>
 
       <!-- Section 3: Joint Khata & Land Details -->
       <div class="form-section-title">
@@ -779,23 +1100,65 @@
         </div>
 
         <div class="inp-group">
-          <label>एकूण क्षेत्र (Total Area):</label>
+          <label>एकूण क्षेत्र (Total Area हे.आर.):</label>
           <input type="text" id="inpTotalArea" class="inp-control" placeholder="उदा. १.५० किंवा ०.८०" oninput="updateLivePreview()">
         </div>
       </div>
 
-      <!-- Section 4: Co-Holders Table Editor -->
-      <div class="form-section-title">
+      <div class="quick-chips-row" style="margin-top: 4px;">
+        <span style="font-size: 0.74rem; color: #64748b; font-weight: 700; align-self: center;">त्वरित क्षेत्र (हे.आर.):</span>
+        <span class="chip-btn" onclick="setQuickArea('०.२०')">०.२०</span>
+        <span class="chip-btn" onclick="setQuickArea('०.४०')">०.४०</span>
+        <span class="chip-btn" onclick="setQuickArea('०.५०')">०.५०</span>
+        <span class="chip-btn" onclick="setQuickArea('०.८०')">०.८०</span>
+        <span class="chip-btn" onclick="setQuickArea('१.००')">१.००</span>
+        <span class="chip-btn" onclick="setQuickArea('१.२०')">१.२०</span>
+        <span class="chip-btn" onclick="setQuickArea('१.५०')">१.५०</span>
+        <span class="chip-btn" onclick="setQuickArea('२.००')">२.००</span>
+      </div>
+
+      <!-- Section 4: Co-Holders Table Editor & Row Size Settings -->
+      <div class="form-section-title" style="margin-top: 18px;">
         <i class="fa-solid fa-users"></i>
-        <span>४. सहखातेदारांची नावे (List of Co-holders)</span>
+        <span>४. सहखातेदारांची नावे व सही/अंगठा जागा (Co-holders & Signature Space)</span>
         <span id="coholderCountBadge" style="margin-left: auto; font-size: 0.78rem; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 12px;"></span>
       </div>
 
+      <!-- Row Size / Thumb Space Selector -->
+      <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px;">
+        <div class="grid-2">
+          <div class="inp-group">
+            <label style="color: #0369a1;"><i class="fa-solid fa-arrows-up-down"></i> रो उंची / अंगठ्यासाठी जागा (Row Height & Thumb Space):</label>
+            <select id="selRowSpacing" class="inp-control" onchange="handleRowSpacingChange(this.value)">
+              <option value="auto" selected>⚡ आपोआप (Auto Smart - कमी नावांसाठी कमाल जागा)</option>
+              <option value="huge">🖐️ अति-मोठी जागा (85px - २ ते ३ नावांच्या अंगठ्यासाठी सर्वोत्तम)</option>
+              <option value="spacious">✍️ मोठी जागा (68px - स्वाक्षरी व अंगठ्यासाठी)</option>
+              <option value="medium">📋 मध्यम (54px)</option>
+              <option value="compact">📄 सुबक / कॉम्पॅक्ट (38px - जास्त नावांसासाठी)</option>
+            </select>
+          </div>
+
+          <div class="inp-group" style="justify-content: center;">
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 700; margin-top: 16px;">
+              <input type="checkbox" id="chkShowGuideBox" checked onchange="updateLivePreview()" style="width: 17px; height: 17px; accent-color: #0284c7;">
+              <span>सही/अंगठ्यासाठी मार्गदर्शक चौकट दाखवा</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Add Buttons -->
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 6px;">
-        <span style="font-size: 0.78rem; color: #64748b; font-weight: 600;">सहखातेदारांची नावे लिहा (जेवढी नावे जोडाल तेवढ्याच ओळी अर्जावर दिसतील):</span>
-        <div style="display: flex; gap: 6px;">
-          <button type="button" class="btn-act" style="padding: 3px 8px; font-size: 0.76rem;" onclick="addCoHolderRow()" title="नवीन सहखातेदार ओळ जोडा">
-            <i class="fa-solid fa-plus"></i> ओळ जोडा
+        <span style="font-size: 0.78rem; color: #64748b; font-weight: 700;">सहखातेदारांची नावे जोडा:</span>
+        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+          <button type="button" class="btn-act" style="padding: 3px 8px; font-size: 0.76rem; background: #f0fdf4; border-color: #86efac; color: #166534;" onclick="addSpecificRows(2)" title="२ सहखातेदार जोडा (अंगठ्यासाठी मोठी जागा)">
+            <i class="fa-solid fa-plus"></i> २ ओळी
+          </button>
+          <button type="button" class="btn-act" style="padding: 3px 8px; font-size: 0.76rem;" onclick="addCoHolderRow()" title="१ ओळ जोडा">
+            <i class="fa-solid fa-plus"></i> १ ओळ
+          </button>
+          <button type="button" class="btn-act" style="padding: 3px 8px; font-size: 0.76rem;" onclick="openBulkPasteModal()" title="सातबारावरून किंवा मजकुरातून नावे एकत्र पेस्ट करा">
+            <i class="fa-solid fa-paste"></i> नावे पेस्ट करा
           </button>
           <button type="button" class="btn-act" style="padding: 3px 8px; font-size: 0.76rem; color: #dc2626;" onclick="clearAllCoHolders()" title="सर्व ओळी पुसा">
             <i class="fa-solid fa-trash-can"></i> सर्व पुसा
@@ -821,7 +1184,7 @@
       <!-- Section 5: Date and Place -->
       <div class="form-section-title">
         <i class="fa-solid fa-location-dot"></i>
-        <span>५. ठिकाण, दिनांक व स्वाक्षरी (Place, Date & Sign)</span>
+        <span>५. ठिकाण व दिनांक (Place, Date & Sign)</span>
       </div>
 
       <div class="grid-2">
@@ -841,9 +1204,23 @@
     <!-- RIGHT PANE: LIVE EXACT OFFICIAL PRINTABLE A4 PREVIEW -->
     <section class="preview-pane">
       
-      <div class="preview-top-notice no-print">
-        <i class="fa-solid fa-eye"></i>
-        <span>थेट अधिकृत A4 प्रिंट पूर्वावलोकन (Live Exact Document Preview - १ पानावर बिनचूक बसते)</span>
+      <!-- Preview Toolbar with Zoom & Row Space Status -->
+      <div class="preview-toolbar-box no-print">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-eye" style="color: #38bdf8;"></i>
+          <span id="previewStatusBadge">A4 प्रिंट पूर्वावलोकन • १ पानावर अचूक फिट</span>
+        </div>
+
+        <div class="preview-zoom-group">
+          <span style="font-size: 0.74rem; color: #94a3b8; margin-right: 4px;">झूम:</span>
+          <button type="button" class="btn-zoom" onclick="setPreviewZoom(0.8)">80%</button>
+          <button type="button" class="btn-zoom active" id="btnZoom90" onclick="setPreviewZoom(0.9)">90%</button>
+          <button type="button" class="btn-zoom" onclick="setPreviewZoom(1.0)">100%</button>
+          <button type="button" class="btn-zoom" onclick="setPreviewZoom('fit')">Fit</button>
+          <button type="button" class="btn-act btn-act-primary" style="padding: 3px 10px; font-size: 0.76rem; margin-left: 6px;" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> प्रिंट
+          </button>
+        </div>
       </div>
 
       <!-- A4 Sheet Container -->
@@ -855,7 +1232,7 @@
             <div>
               <!-- Scheme Header Box (Rounded Pill) -->
               <div class="scheme-pill-header">
-                <h3 id="prevSchemeTitle">हवामान आधारीत फळ पिक विमा योजना</h3>
+                <h3 id="prevSchemeTitle">हवामान आधारीत फळपिक विमा योजना २०२६-२७</h3>
               </div>
 
               <!-- Main Title -->
@@ -870,20 +1247,20 @@
                 मौजे <span class="fill-line" id="prevMouje" style="min-width: 130px;">________________</span> येथे शेतीचे 
                 सामाईक खाते क्र. <span class="fill-line" id="prevKhateNo" style="min-width: 80px;">___________</span> 
                 गट क्र. <span class="fill-line" id="prevGatNo" style="min-width: 80px;">___________</span> 
-                एकूण क्षेत्र <span class="fill-line" id="prevTotalArea" style="min-width: 75px;">________</span> हे.आर. असून यामध्ये आम्ही खातेदार आहोत. तरी मला हवामान आधारीत फळ पिक विमा योजनेअंतर्गत पिक विमा काढण्यासाठी खालील सहखातेदार सहमती देत आहेत. करिता सादर,
+                एकूण क्षेत्र <span class="fill-line" id="prevTotalArea" style="min-width: 75px;">________</span> हे.आर. असून यामध्ये आम्ही खातेदार आहोत. तरी मला <span id="prevSchemeSpan">हवामान आधारीत फळ पिक विमा योजने</span>अंतर्गत पिक विमा काढण्यासाठी खालील सहखातेदार सहमती देत आहेत. करिता सादर,
               </p>
 
-              <!-- Official Co-holders Table (Dynamic Rows) -->
-              <table class="official-coholder-table">
+              <!-- Official Co-holders Table (Dynamic Rows with Ample Thumb/Signature Room) -->
+              <table class="official-coholder-table table-density-huge" id="officialCoholderTable">
                 <thead>
                   <tr>
-                    <th style="width: 12%;">अ.क्र.</th>
-                    <th style="width: 58%;">सहखातेदाराचे नाव</th>
-                    <th style="width: 30%;">सहमती सही / अंगठा</th>
+                    <th style="width: 10%;">अ.क्र.</th>
+                    <th style="width: 50%;">सहखातेदाराचे संपूर्ण नाव</th>
+                    <th style="width: 40%;">सहमती स्वाक्षरी / अंगठा</th>
                   </tr>
                 </thead>
                 <tbody id="prevTableBody">
-                  <!-- Dynamically rendered rows - exactly matching added names -->
+                  <!-- Dynamically rendered rows - exactly matching added names with spacious thumb slots -->
                 </tbody>
               </table>
 
@@ -898,16 +1275,18 @@
               <div class="footer-place-date">
                 <div>ठिकाण : <span class="fill-line" id="prevPlace" style="min-width: 120px;">कणकवली</span></div>
                 <div>दिनांक : <span class="fill-line" id="prevDate" style="min-width: 120px;">-</span></div>
+                <div id="prevMobileWrap" style="display: none; margin-top: 4px; font-size: 0.95rem;">
+                  मोबाईल : <span class="fill-line" id="prevMobile" style="min-width: 120px;">-</span>
+                </div>
               </div>
 
               <div class="footer-signature-block">
-                <div class="sig-field-row">
-                  <b>सही :</b>
-                  <span class="sig-underline"></span>
+                <div style="font-weight: 800; margin-bottom: 25px; text-align: center;">
+                  अर्जदार खातेदाराची स्वाक्षरी / अंगठा
                 </div>
                 <div class="sig-field-row">
                   <b>नाव :</b>
-                  <span class="fill-line" id="prevSignName" style="flex: 1; min-width: 170px;">____________________</span>
+                  <span class="fill-line" id="prevSignName" style="flex: 1; min-width: 180px;">____________________</span>
                 </div>
               </div>
             </div>
@@ -920,6 +1299,60 @@
 
   </main>
 
+  <!-- Modal: Bulk Paste Co-holders Names -->
+  <div class="modal-overlay" id="modalBulkPaste">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-paste"></i> सहखातेदारांची नावे एकत्र पेस्ट करा (Bulk Paste)</h3>
+        <button type="button" onclick="closeBulkPasteModal()" style="background: none; border: none; color: #ffffff; font-size: 1.2rem; cursor: pointer;">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: #475569; margin-bottom: 8px;">
+          सातबारा किंवा कागदपत्रावरून नावे कॉपी करून येथे पेस्ट करा (प्रत्येक ओळीवर १ नाव किंवा स्वल्पविरामाने [,] वेगळे केलेले नाव चालतील):
+        </p>
+        <textarea id="txtBulkNames" rows="6" class="inp-control" style="width: 100%; resize: vertical;" placeholder="उदा.&#10;१) श्री. नामदेव सखाराम सावंत&#10;२) श्री. बाळकृष्ण सखाराम सावंत"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-act" onclick="closeBulkPasteModal()">रद्द करा</button>
+        <button type="button" class="btn-act btn-act-primary" onclick="applyBulkPaste()">
+          <i class="fa-solid fa-check"></i> नावे जोडा (Import Names)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Print Blank Form Options -->
+  <div class="modal-overlay" id="modalBlankForm">
+    <div class="modal-card">
+      <div class="modal-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+        <h3><i class="fa-solid fa-file-pen"></i> कोरा फॉर्म प्रिंट पर्याय (Blank Form Setup)</h3>
+        <button type="button" onclick="closeBlankFormModal()" style="background: none; border: none; color: #ffffff; font-size: 1.2rem; cursor: pointer;">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.88rem; color: #334155; margin-bottom: 12px; font-weight: 600;">
+          शेतकऱ्याला हाताने भरून देण्यासाठी कोऱ्या फॉर्ममध्ये किती सहखातेदारांसाठी जागा हवी आहे?
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" class="btn-act" style="justify-content: flex-start; padding: 10px 14px; font-weight: 700;" onclick="executeBlankPrint(2)">
+            🖐️ <b>२ सहखातेदार (२ ओळी)</b> - <span style="color: #0284c7; margin-left: 4px;">अंगठ्यासाठी अत्यंत मुबलक जागा (85px) [शिफारस]</span>
+          </button>
+          <button type="button" class="btn-act" style="justify-content: flex-start; padding: 10px 14px; font-weight: 700;" onclick="executeBlankPrint(3)">
+            🖐️ <b>३ सहखातेदार (३ ओळी)</b> - <span style="color: #059669; margin-left: 4px;">मोठी जागा (68px)</span>
+          </button>
+          <button type="button" class="btn-act" style="justify-content: flex-start; padding: 10px 14px; font-weight: 700;" onclick="executeBlankPrint(4)">
+            📋 <b>४ सहखातेदार (४ ओळी)</b> - <span style="color: #475569; margin-left: 4px;">मध्यम जागा (54px)</span>
+          </button>
+          <button type="button" class="btn-act" style="justify-content: flex-start; padding: 10px 14px; font-weight: 700;" onclick="executeBlankPrint(6)">
+            📄 <b>६ सहखातेदार (६ ओळी)</b> - <span style="color: #475569; margin-left: 4px;">सुबक जागा (38px)</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-act" onclick="closeBlankFormModal()">रद्द करा</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Marathi / Devanagari numerals
     const devanagariDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
@@ -928,12 +1361,16 @@
     }
 
     // Co-holders Data List (Dynamic - जेवढी नावे जोडाल तेवढ्याच ओळी दिसतील)
+    // Default initial state: 2 empty rows with ample thumb room
     let coholdersList = [
       { name: '' },
       { name: '' }
     ];
+    window.coholdersList = coholdersList;
 
     let isBlankPrintMode = false;
+    let blankRowsCount = 2;
+    let currentZoom = 0.9;
 
     // Initialization on Page Load
     window.addEventListener('DOMContentLoaded', () => {
@@ -943,6 +1380,9 @@
       const mm = String(today.getMonth() + 1).padStart(2, '0');
       const dd = String(today.getDate()).padStart(2, '0');
       document.getElementById('inpDate').value = `${yyyy}-${mm}-${dd}`;
+
+      // Set initial zoom
+      applyPreviewZoom(0.9);
 
       // Check URL parameters or LocalStorage
       const urlParams = new URLSearchParams(window.location.search);
@@ -956,12 +1396,65 @@
         if (hasDraft) {
           loadFromLocalStorage();
         } else {
-          // If no draft, check if Pikpera draft exists and offer sample or auto-init
           renderEditorTable();
           updateLivePreview();
         }
       }
     });
+
+    // Preview Zoom Functionality
+    function setPreviewZoom(val) {
+      document.querySelectorAll('.btn-zoom').forEach(b => b.classList.remove('active'));
+      if (val === 'fit') {
+        const previewPane = document.querySelector('.preview-pane');
+        const containerWidth = previewPane.clientWidth - 40;
+        const a4WidthPx = 210 * 3.7795275591; // ~794px
+        let fitScale = Math.min(1.0, Math.max(0.65, containerWidth / a4WidthPx));
+        applyPreviewZoom(fitScale);
+      } else {
+        applyPreviewZoom(val);
+      }
+    }
+
+    function applyPreviewZoom(scale) {
+      currentZoom = scale;
+      const sheet = document.getElementById('printableA4Document');
+      if (sheet) {
+        sheet.style.transform = `scale(${scale})`;
+      }
+      // Highlight matching button if standard
+      document.querySelectorAll('.btn-zoom').forEach(b => {
+        if (scale === 0.8 && b.textContent.includes('80%')) b.classList.add('active');
+        if (scale === 0.9 && b.textContent.includes('90%')) b.classList.add('active');
+        if (scale === 1.0 && b.textContent.includes('100%')) b.classList.add('active');
+      });
+    }
+
+    // Handle Scheme Dropdown
+    function handleSchemeChange(val) {
+      const customInp = document.getElementById('inpSchemeTitle');
+      if (val === 'custom') {
+        customInp.style.display = 'block';
+        customInp.focus();
+      } else {
+        customInp.style.display = 'none';
+        customInp.value = val;
+      }
+      updateLivePreview();
+    }
+
+    // Handle District Dropdown
+    function handleDistrictChange(val) {
+      const customInp = document.getElementById('inpDistrict');
+      if (val === 'custom') {
+        customInp.style.display = 'block';
+        customInp.focus();
+      } else {
+        customInp.style.display = 'none';
+        customInp.value = val;
+      }
+      updateLivePreview();
+    }
 
     // Handle Taluka Dropdown Change
     function handleTalukaSelect(val) {
@@ -985,6 +1478,20 @@
       updateLivePreview();
     }
 
+    function setQuickVillage(vName) {
+      document.getElementById('inpResidenceVillage').value = vName;
+      const moujeInp = document.getElementById('inpMouje');
+      if (!moujeInp.value || moujeInp.value === 'कलमठ') {
+        moujeInp.value = vName;
+      }
+      updateLivePreview();
+    }
+
+    function setQuickArea(areaVal) {
+      document.getElementById('inpTotalArea').value = areaVal;
+      updateLivePreview();
+    }
+
     function copyVillageToMouje() {
       const resVal = document.getElementById('inpResidenceVillage').value;
       if (resVal) {
@@ -993,14 +1500,33 @@
       }
     }
 
+    // Handle Row Spacing / Density Change
+    function handleRowSpacingChange() {
+      updateLivePreview();
+    }
+
+    // Calculate Dynamic Table Density
+    function computeTableDensity(count) {
+      const sel = document.getElementById('selRowSpacing').value;
+      if (sel !== 'auto') {
+        return sel; // User forced huge, spacious, medium, or compact
+      }
+      // Auto Smart calculation
+      if (count <= 2) return 'huge';       // 85px row height for 1 or 2 rows
+      if (count === 3) return 'spacious';  // 68px row height for 3 rows
+      if (count === 4) return 'medium';    // 54px row height for 4 rows
+      return 'compact';                   // 38px row height for 5+ rows
+    }
+
     // Co-holder Editor Table Rendering
     function renderEditorTable() {
       const tbody = document.getElementById('coholderEditorBody');
       tbody.innerHTML = '';
 
+      const count = coholdersList.length;
       const badge = document.getElementById('coholderCountBadge');
       if (badge) {
-        badge.textContent = `एकूण: ${toDevanagari(coholdersList.length)} सहखातेदार`;
+        badge.textContent = `एकूण: ${toDevanagari(count)} सहखातेदार`;
       }
 
       coholdersList.forEach((item, index) => {
@@ -1018,6 +1544,7 @@
         `;
         tbody.appendChild(tr);
       });
+      window.coholdersList = coholdersList;
     }
 
     function updateCoHolderName(idx, val) {
@@ -1033,9 +1560,17 @@
       updateLivePreview();
     }
 
+    function addSpecificRows(num) {
+      for (let i = 0; i < num; i++) {
+        coholdersList.push({ name: '' });
+      }
+      renderEditorTable();
+      updateLivePreview();
+    }
+
     function clearAllCoHolders() {
       if (confirm('सर्व सहखातेदारांची नावे पुसायची आहेत का?')) {
-        coholdersList = [{ name: '' }];
+        coholdersList = [{ name: '' }, { name: '' }];
         renderEditorTable();
         updateLivePreview();
       }
@@ -1049,6 +1584,75 @@
       }
       renderEditorTable();
       updateLivePreview();
+    }
+
+    // Modal Bulk Paste
+    function openBulkPasteModal() {
+      document.getElementById('txtBulkNames').value = '';
+      document.getElementById('modalBulkPaste').style.display = 'flex';
+      setTimeout(() => document.getElementById('txtBulkNames').focus(), 100);
+    }
+
+    function closeBulkPasteModal() {
+      document.getElementById('modalBulkPaste').style.display = 'none';
+    }
+
+    function applyBulkPaste() {
+      const raw = document.getElementById('txtBulkNames').value.trim();
+      if (!raw) {
+        closeBulkPasteModal();
+        return;
+      }
+
+      // Split lines or commas
+      const rawLines = raw.split(/[\r\n,]+/);
+      const cleanNames = [];
+
+      rawLines.forEach(line => {
+        let name = line.trim();
+        // Remove leading serial numbers like '1)', '१)', '1.', '-', etc.
+        name = name.replace(/^[\d०-९]+[\.\)\-\s]+/i, '').trim();
+        if (name.length > 1) {
+          cleanNames.push(name);
+        }
+      });
+
+      if (cleanNames.length > 0) {
+        // If current list only has blank items, replace them
+        const hasOnlyBlanks = coholdersList.every(i => !i.name || !i.name.trim());
+        if (hasOnlyBlanks) {
+          coholdersList = cleanNames.map(n => ({ name: n }));
+        } else {
+          cleanNames.forEach(n => coholdersList.push({ name: n }));
+        }
+        renderEditorTable();
+        updateLivePreview();
+      }
+
+      closeBulkPasteModal();
+    }
+
+    // Modal Blank Print Options
+    function openBlankFormModal() {
+      document.getElementById('modalBlankForm').style.display = 'flex';
+    }
+
+    function closeBlankFormModal() {
+      document.getElementById('modalBlankForm').style.display = 'none';
+    }
+
+    function executeBlankPrint(rowsCount) {
+      closeBlankFormModal();
+      isBlankPrintMode = true;
+      blankRowsCount = rowsCount || 2;
+      renderBlankPreview();
+      setTimeout(() => {
+        window.print();
+        setTimeout(() => {
+          isBlankPrintMode = false;
+          updateLivePreview();
+        }, 800);
+      }, 300);
     }
 
     // Format Date to DD/MM/YYYY
@@ -1069,8 +1673,16 @@
       }
 
       // Scheme Title
-      const schemeTitle = document.getElementById('inpSchemeTitle').value.trim() || 'हवामान आधारीत फळ पिक विमा योजना';
+      const selScheme = document.getElementById('selScheme').value;
+      const customScheme = document.getElementById('inpSchemeTitle').value.trim();
+      const schemeTitle = (selScheme === 'custom') ? (customScheme || 'हवामान आधारीत फळपिक विमा योजना २०२६-२७') : selScheme;
       document.getElementById('prevSchemeTitle').textContent = schemeTitle;
+
+      // Also update scheme mention in preamble text
+      const schemeSpan = document.getElementById('prevSchemeSpan');
+      if (schemeSpan) {
+        schemeSpan.textContent = schemeTitle;
+      }
 
       // Farmer Name
       const farmerName = document.getElementById('inpFarmerName').value.trim();
@@ -1080,6 +1692,17 @@
       // Also update signature name block
       const prevSignName = document.getElementById('prevSignName');
       prevSignName.textContent = farmerName || '____________________';
+
+      // Mobile
+      const mobileVal = document.getElementById('inpMobile').value.trim();
+      const prevMobileWrap = document.getElementById('prevMobileWrap');
+      const prevMobile = document.getElementById('prevMobile');
+      if (mobileVal) {
+        prevMobileWrap.style.display = 'block';
+        prevMobile.textContent = mobileVal;
+      } else {
+        prevMobileWrap.style.display = 'none';
+      }
 
       // Residence Village
       const village = document.getElementById('inpResidenceVillage').value.trim();
@@ -1092,7 +1715,9 @@
       document.getElementById('prevTaluka').textContent = taluka || 'कणकवली';
 
       // District
-      const district = document.getElementById('inpDistrict').value.trim() || 'सिंधुदुर्ग';
+      const selDistrict = document.getElementById('selDistrict').value;
+      const customDistrict = document.getElementById('inpDistrict').value.trim();
+      const district = (selDistrict === 'custom') ? (customDistrict || 'सिंधुदुर्ग') : selDistrict;
       document.getElementById('prevDistrict').textContent = district;
 
       // Mouje
@@ -1119,7 +1744,27 @@
       const dateVal = document.getElementById('inpDate').value;
       document.getElementById('prevDate').textContent = dateVal ? formatDateDisplay(dateVal) : '____________________';
 
-      // Render Exactly the added Co-holders Rows in Live Preview (जेवढी नावे जोडली तेवढ्याच ओळी)
+      // Co-holders Count and Dynamic Density
+      const count = coholdersList.length;
+      const density = computeTableDensity(count);
+      const table = document.getElementById('officialCoholderTable');
+      
+      // Update Table Density Class
+      table.className = `official-coholder-table table-density-${density}`;
+
+      // Update Preview Status Badge in Toolbar
+      const statusBadge = document.getElementById('previewStatusBadge');
+      if (statusBadge) {
+        let densityLabel = '८५ px (अंगठ्यासाठी मुबलक)';
+        if (density === 'spacious') densityLabel = '६८ px (मोठी)';
+        if (density === 'medium') densityLabel = '५४ px (मध्यम)';
+        if (density === 'compact') densityLabel = '३८ px (सुबक)';
+        statusBadge.textContent = `A4 पूर्वावलोकन • ${toDevanagari(count)} सहखातेदार • ओळ उंची: ${densityLabel}`;
+      }
+
+      const showGuide = document.getElementById('chkShowGuideBox').checked;
+
+      // Render Table Rows
       const tbody = document.getElementById('prevTableBody');
       tbody.innerHTML = '';
 
@@ -1130,13 +1775,19 @@
         tr.innerHTML = `
           <td class="td-sr">${toDevanagari(index + 1)})</td>
           <td class="td-name">${nameText ? escapeHtml(nameText) : '&nbsp;'}</td>
-          <td class="td-sign">&nbsp;</td>
+          <td class="td-sign">
+            <div class="thumb-sign-slot">
+              <div class="thumb-box-guideline ${showGuide ? '' : 'no-guide'}">
+                <span class="thumb-label"><i class="fa-solid fa-fingerprint" style="margin-right: 4px; opacity: 0.6;"></i>स्वाक्षरी / अंगठा</span>
+              </div>
+            </div>
+          </td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // Render Completely Blank Preview for Hand-filling (जेवढ्या ओळी आहेत तेवढ्याच कोऱ्या ओळी)
+    // Render Completely Blank Preview for Hand-filling
     function renderBlankPreview() {
       document.getElementById('prevFarmerName').textContent = '__________________________________________________';
       document.getElementById('prevResidenceVillage').textContent = '__________________________________';
@@ -1149,42 +1800,46 @@
       document.getElementById('prevPlace').textContent = '____________________';
       document.getElementById('prevDate').textContent = '____________________';
       document.getElementById('prevSignName').textContent = '____________________';
+      document.getElementById('prevMobileWrap').style.display = 'none';
+
+      const count = blankRowsCount || 2;
+      const density = computeTableDensity(count);
+      const table = document.getElementById('officialCoholderTable');
+      table.className = `official-coholder-table table-density-${density}`;
 
       const tbody = document.getElementById('prevTableBody');
       tbody.innerHTML = '';
 
-      coholdersList.forEach((item, index) => {
+      for (let i = 0; i < count; i++) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="td-sr">${toDevanagari(index + 1)})</td>
+          <td class="td-sr">${toDevanagari(i + 1)})</td>
           <td class="td-name">&nbsp;</td>
-          <td class="td-sign">&nbsp;</td>
+          <td class="td-sign">
+            <div class="thumb-sign-slot">
+              <div class="thumb-box-guideline">
+                <span class="thumb-label"><i class="fa-solid fa-fingerprint" style="margin-right: 4px; opacity: 0.6;"></i>स्वाक्षरी / अंगठा</span>
+              </div>
+            </div>
+          </td>
         `;
         tbody.appendChild(tr);
-      });
-    }
-
-    // Print Blank Form
-    function printBlankForm() {
-      isBlankPrintMode = true;
-      renderBlankPreview();
-      setTimeout(() => {
-        window.print();
-        setTimeout(() => {
-          isBlankPrintMode = false;
-          updateLivePreview();
-        }, 800);
-      }, 250);
+      }
     }
 
     // Sample Data Demonstration
     function fillSampleData() {
-      document.getElementById('inpSchemeTitle').value = 'हवामान आधारीत फळ पिक विमा योजना २०२६-२७';
+      document.getElementById('selScheme').value = 'हवामान आधारीत फळपिक विमा योजना २०२६-२७';
+      document.getElementById('inpSchemeTitle').style.display = 'none';
+      document.getElementById('inpSchemeTitle').value = 'हवामान आधारीत फळपिक विमा योजना २०२६-२७';
       document.getElementById('inpFarmerName').value = 'श्री. आप्पासाहेब यशवंत पाटील';
+      document.getElementById('inpMobile').value = '9822123456';
       document.getElementById('inpResidenceVillage').value = 'कलमठ';
+      document.getElementById('selDistrict').value = 'सिंधुदुर्ग';
+      document.getElementById('inpDistrict').style.display = 'none';
+      document.getElementById('inpDistrict').value = 'सिंधुदुर्ग';
       document.getElementById('selTaluka').value = 'कणकवली';
       document.getElementById('inpTaluka').style.display = 'none';
-      document.getElementById('inpDistrict').value = 'सिंधुदुर्ग';
       document.getElementById('inpMouje').value = 'कलमठ';
       document.getElementById('inpKhateNo').value = '४५';
       document.getElementById('inpGatNo').value = '१०२/१अ';
@@ -1197,12 +1852,10 @@
       const dd = String(today.getDate()).padStart(2, '0');
       document.getElementById('inpDate').value = `${yyyy}-${mm}-${dd}`;
 
+      // Default sample with 2 co-holders demonstrating ample thumb room
       coholdersList = [
         { name: 'श्री. बाळकृष्ण यशवंत पाटील' },
-        { name: 'श्री. पांडुरंग यशवंत पाटील' },
-        { name: 'श्रीमती. सुहासिनी यशवंत पाटील' },
-        { name: 'श्री. विनायक पांडुरंग पाटील' },
-        { name: 'श्रीमती. सुनंदा बाळकृष्ण पाटील' }
+        { name: 'श्रीमती. सुहासिनी यशवंत पाटील' }
       ];
 
       renderEditorTable();
@@ -1212,18 +1865,24 @@
     // Reset Form
     function resetForm() {
       if (confirm('तुम्हाला सर्व माहिती पुसून नवीन कोरा अर्ज सुरू करायचा आहे का?')) {
-        document.getElementById('inpSchemeTitle').value = 'हवामान आधारीत फळ पिक विमा योजना';
+        document.getElementById('selScheme').value = 'हवामान आधारीत फळपिक विमा योजना २०२६-२७';
+        document.getElementById('inpSchemeTitle').style.display = 'none';
+        document.getElementById('inpSchemeTitle').value = 'हवामान आधारीत फळपिक विमा योजना २०२६-२७';
         document.getElementById('inpFarmerName').value = '';
+        document.getElementById('inpMobile').value = '';
         document.getElementById('inpResidenceVillage').value = '';
+        document.getElementById('selDistrict').value = 'सिंधुदुर्ग';
+        document.getElementById('inpDistrict').style.display = 'none';
         document.getElementById('selTaluka').value = 'कणकवली';
         document.getElementById('inpTaluka').value = '';
         document.getElementById('inpTaluka').style.display = 'none';
-        document.getElementById('inpDistrict').value = 'सिंधुदुर्ग';
         document.getElementById('inpMouje').value = '';
         document.getElementById('inpKhateNo').value = '';
         document.getElementById('inpGatNo').value = '';
         document.getElementById('inpTotalArea').value = '';
         document.getElementById('inpPlace').value = 'कणकवली';
+        document.getElementById('selRowSpacing').value = 'auto';
+        document.getElementById('chkShowGuideBox').checked = true;
         
         coholdersList = [
           { name: '' },
@@ -1246,7 +1905,21 @@
 
         const data = JSON.parse(raw);
         if (data.farmerName) document.getElementById('inpFarmerName').value = data.farmerName;
+        if (data.mobile) document.getElementById('inpMobile').value = data.mobile;
         if (data.residenceVillage) document.getElementById('inpResidenceVillage').value = data.residenceVillage;
+        
+        if (data.district) {
+          const distSel = document.getElementById('selDistrict');
+          if (Array.from(distSel.options).some(o => o.value === data.district)) {
+            distSel.value = data.district;
+            document.getElementById('inpDistrict').style.display = 'none';
+          } else {
+            distSel.value = 'custom';
+            document.getElementById('inpDistrict').style.display = 'block';
+            document.getElementById('inpDistrict').value = data.district;
+          }
+        }
+
         if (data.talukaSel) {
           document.getElementById('selTaluka').value = data.talukaSel;
           if (data.talukaSel === 'custom') {
@@ -1254,7 +1927,7 @@
             document.getElementById('inpTaluka').value = data.talukaCustom || '';
           }
         }
-        if (data.district) document.getElementById('inpDistrict').value = data.district;
+        
         if (data.mouje) document.getElementById('inpMouje').value = data.mouje;
         if (data.totalArea) document.getElementById('inpTotalArea').value = data.totalArea;
         if (data.place) document.getElementById('inpPlace').value = data.place;
@@ -1272,7 +1945,7 @@
         }
 
         updateLivePreview();
-        alert('🌾 पिकपेरा अर्जातील माहिती यशस्वीपणे भरण्यात आली आहे!');
+        alert('🌾 पिकपेरा अर्जातील शेतकरी व गट नंबर माहिती यशस्वीपणे भरण्यात आली आहे!');
       } catch (err) {
         console.error(err);
         alert('माहिती आयात करताना त्रुटी आली.');
@@ -1283,32 +1956,58 @@
     function getFormState() {
       return {
         schemeTitle: document.getElementById('inpSchemeTitle').value,
+        schemeSel: document.getElementById('selScheme').value,
         farmerName: document.getElementById('inpFarmerName').value,
+        mobile: document.getElementById('inpMobile').value,
         residenceVillage: document.getElementById('inpResidenceVillage').value,
+        districtSel: document.getElementById('selDistrict').value,
+        districtCustom: document.getElementById('inpDistrict').value,
         talukaSel: document.getElementById('selTaluka').value,
         talukaCustom: document.getElementById('inpTaluka').value,
-        district: document.getElementById('inpDistrict').value,
         mouje: document.getElementById('inpMouje').value,
         khateNo: document.getElementById('inpKhateNo').value,
         gatNo: document.getElementById('inpGatNo').value,
         totalArea: document.getElementById('inpTotalArea').value,
         place: document.getElementById('inpPlace').value,
         date: document.getElementById('inpDate').value,
+        rowSpacing: document.getElementById('selRowSpacing').value,
+        showGuideBox: document.getElementById('chkShowGuideBox').checked,
         coholders: coholdersList
       };
     }
 
     function restoreFormState(state) {
       if (!state) return;
-      document.getElementById('inpSchemeTitle').value = state.schemeTitle || 'हवामान आधारीत फळ पिक विमा योजना';
-      document.getElementById('inpFarmerName').value = state.farmerName || '';
-      document.getElementById('inpResidenceVillage').value = state.residenceVillage || '';
-      document.getElementById('selTaluka').value = state.talukaSel || 'कणकवली';
-      document.getElementById('inpTaluka').value = state.talukaCustom || '';
-      if (state.talukaSel === 'custom') {
-        document.getElementById('inpTaluka').style.display = 'block';
+      if (state.schemeSel) {
+        document.getElementById('selScheme').value = state.schemeSel;
+        if (state.schemeSel === 'custom') {
+          document.getElementById('inpSchemeTitle').style.display = 'block';
+          document.getElementById('inpSchemeTitle').value = state.schemeTitle || '';
+        } else {
+          document.getElementById('inpSchemeTitle').style.display = 'none';
+        }
       }
-      document.getElementById('inpDistrict').value = state.district || 'सिंधुदुर्ग';
+      
+      document.getElementById('inpFarmerName').value = state.farmerName || '';
+      document.getElementById('inpMobile').value = state.mobile || '';
+      document.getElementById('inpResidenceVillage').value = state.residenceVillage || '';
+      
+      if (state.districtSel) {
+        document.getElementById('selDistrict').value = state.districtSel;
+        if (state.districtSel === 'custom') {
+          document.getElementById('inpDistrict').style.display = 'block';
+          document.getElementById('inpDistrict').value = state.districtCustom || '';
+        }
+      }
+
+      if (state.talukaSel) {
+        document.getElementById('selTaluka').value = state.talukaSel;
+        if (state.talukaSel === 'custom') {
+          document.getElementById('inpTaluka').style.display = 'block';
+          document.getElementById('inpTaluka').value = state.talukaCustom || '';
+        }
+      }
+
       document.getElementById('inpMouje').value = state.mouje || '';
       document.getElementById('inpKhateNo').value = state.khateNo || '';
       document.getElementById('inpGatNo').value = state.gatNo || '';
@@ -1316,7 +2015,14 @@
       document.getElementById('inpPlace').value = state.place || 'कणकवली';
       document.getElementById('inpDate').value = state.date || '';
 
-      if (state.coholders && Array.isArray(state.coholders)) {
+      if (state.rowSpacing) {
+        document.getElementById('selRowSpacing').value = state.rowSpacing;
+      }
+      if (typeof state.showGuideBox !== 'undefined') {
+        document.getElementById('chkShowGuideBox').checked = state.showGuideBox;
+      }
+
+      if (state.coholders && Array.isArray(state.coholders) && state.coholders.length > 0) {
         coholdersList = state.coholders;
       }
       renderEditorTable();
