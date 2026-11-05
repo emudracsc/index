@@ -17,9 +17,9 @@ function initNavSliderDrag() {
 
   let isDown = false;
   let startX = 0;
-  let scrollLeft = 0;
-  let hasDragged = false;
-  let startPos = { x: 0, y: 0 };
+  let scrollLeftStart = 0;
+  let isDragging = false;
+  let dragDistance = 0;
 
   // Update arrow buttons visibility
   function updateArrows() {
@@ -47,21 +47,29 @@ function initNavSliderDrag() {
     }
   }
 
-  // Mouse Down: Start dragging
+  // Mouse Down: Record start, do not mark as dragging yet
   track.addEventListener("mousedown", (e) => {
-    if (e.button !== 0) return; // Only main left click
+    if (e.button !== 0) return; // Left click only
     isDown = true;
-    hasDragged = false;
-    startX = e.pageX - track.offsetLeft;
-    scrollLeft = track.scrollLeft;
-    startPos = { x: e.pageX, y: e.pageY };
-    track.classList.add("is-dragging");
+    isDragging = false;
+    dragDistance = 0;
+    startX = e.pageX;
+    scrollLeftStart = track.scrollLeft;
   });
 
-  // Mouse Leave: Cancel drag
-  track.addEventListener("mouseleave", () => {
-    isDown = false;
-    track.classList.remove("is-dragging");
+  // Mouse Move on window so user can drag freely
+  window.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    const delta = e.pageX - startX;
+    dragDistance = Math.abs(delta);
+
+    // Only initiate actual dragging if moved more than 8 pixels
+    if (dragDistance > 8) {
+      isDragging = true;
+      track.classList.add("is-dragging");
+      track.scrollLeft = scrollLeftStart - (delta * 1.5);
+      updateArrows();
+    }
   });
 
   // Mouse Up: Stop drag
@@ -69,29 +77,20 @@ function initNavSliderDrag() {
     if (isDown) {
       isDown = false;
       track.classList.remove("is-dragging");
+      // Keep isDragging flag briefly so click event knows whether it was a drag
+      setTimeout(() => {
+        isDragging = false;
+        dragDistance = 0;
+      }, 50);
     }
   });
 
-  // Mouse Move: Drag to slide horizontally
-  track.addEventListener("mousemove", (e) => {
-    if (!isDown) return;
-    const x = e.pageX - track.offsetLeft;
-    const walk = (x - startX) * 1.6; // Speed multiplier
-
-    if (Math.abs(e.pageX - startPos.x) > 6) {
-      hasDragged = true;
-    }
-
-    track.scrollLeft = scrollLeft - walk;
-    updateArrows();
-  });
-
-  // Prevent link click if the user was actively dragging
+  // Prevent link click ONLY if user intentionally dragged
   track.addEventListener("click", (e) => {
-    if (hasDragged) {
+    if (isDragging || dragDistance > 8) {
       e.preventDefault();
       e.stopPropagation();
-      hasDragged = false;
+      return false;
     }
   }, true);
 
@@ -105,14 +104,31 @@ function initNavSliderDrag() {
   }, { passive: false });
 
   // Arrow Buttons Click
-  prevBtn?.addEventListener("click", () => {
+  prevBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
     track.scrollBy({ left: -280, behavior: "smooth" });
     setTimeout(updateArrows, 320);
   });
 
-  nextBtn?.addEventListener("click", () => {
+  nextBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
     track.scrollBy({ left: 280, behavior: "smooth" });
     setTimeout(updateArrows, 320);
+  });
+
+  // Smooth scrolling and active state for anchor pills (#home, #services, #citizen-charter, #contact)
+  track.querySelectorAll("a[href^='#']").forEach(anchor => {
+    anchor.addEventListener("click", (e) => {
+      const targetId = anchor.getAttribute("href").slice(1);
+      if (!targetId) return;
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        e.preventDefault();
+        targetEl.scrollIntoView({ behavior: "smooth" });
+        track.querySelectorAll(".nav-pill-btn").forEach(b => b.classList.remove("active"));
+        anchor.classList.add("active");
+      }
+    });
   });
 
   // Native scroll and resize listeners
