@@ -583,20 +583,21 @@
       width: 100%;
       max-width: 210mm;
       min-height: 297mm;
-      padding: 20mm 22mm;
+      padding: 14mm 18mm 14mm 18mm;
       box-shadow: 0 8px 24px rgba(0,0,0,0.15);
       box-sizing: border-box;
       position: relative;
       font-family: var(--font-legal);
       color: #000000;
-      font-size: 14pt;
-      line-height: 1.55;
+      font-size: 11pt;
+      line-height: 1.38;
+      overflow: hidden;
     }
 
     .a4-page-badge {
       position: absolute;
-      top: 8px;
-      right: 12px;
+      top: 6px;
+      right: 10px;
       font-size: 0.72rem;
       background: #e2e8f0;
       color: #475569;
@@ -609,62 +610,62 @@
     /* LEGAL ORDER DOCUMENT FORMATTING (Matching the Official Court/ERO Order) */
     .legal-heading-center {
       text-align: center;
-      font-size: 1.08rem;
+      font-size: 1.02rem;
       font-weight: 700;
-      line-height: 1.45;
-      margin-bottom: 12px;
+      line-height: 1.35;
+      margin-bottom: 8px;
     }
 
     .legal-meta-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 600;
-      margin-top: 14px;
-      margin-bottom: 12px;
+      margin-top: 8px;
+      margin-bottom: 6px;
       border-bottom: 1px dashed #94a3b8;
-      padding-bottom: 4px;
+      padding-bottom: 3px;
     }
 
     .legal-party-line {
-      font-size: 1.05rem;
-      margin-bottom: 4px;
-      line-height: 1.45;
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+      line-height: 1.35;
     }
 
     .legal-vs-center {
       text-align: left;
-      padding-left: 55px;
-      margin: 4px 0;
+      padding-left: 45px;
+      margin: 2px 0;
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
     }
 
     .legal-ref-title {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 700;
-      margin-top: 12px;
-      margin-bottom: 4px;
+      margin-top: 6px;
+      margin-bottom: 2px;
     }
 
     .legal-ref-list {
-      margin-left: 28px;
-      line-height: 1.45;
-      font-size: 0.98rem;
-      margin-bottom: 12px;
+      margin-left: 24px;
+      line-height: 1.32;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
     }
 
     .legal-ref-list li {
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
 
     .legal-para {
       text-align: justify;
       text-justify: inter-word;
-      font-size: 1.02rem;
-      line-height: 1.52;
-      margin-bottom: 10px;
+      font-size: 0.95rem;
+      line-height: 1.38;
+      margin-bottom: 6px;
     }
 
     .legal-para strong {
@@ -673,32 +674,32 @@
 
     .legal-order-title {
       text-align: center;
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       font-weight: 800;
-      margin: 18px 0 14px 0;
+      margin: 12px 0 10px 0;
       letter-spacing: 2px;
     }
 
     .legal-order-item {
       text-align: justify;
       text-justify: inter-word;
-      font-size: 1.02rem;
-      line-height: 1.52;
-      margin-bottom: 8px;
+      font-size: 0.95rem;
+      line-height: 1.38;
+      margin-bottom: 6px;
     }
 
     .legal-footer-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: 28px;
-      padding-top: 6px;
+      margin-top: 20px;
+      padding-top: 4px;
     }
 
     .legal-sign-box {
       text-align: center;
-      font-size: 1.02rem;
-      line-height: 1.4;
+      font-size: 0.95rem;
+      line-height: 1.35;
       min-width: 250px;
     }
 
@@ -706,7 +707,7 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 18mm 20mm 18mm 20mm;
+        margin: 12mm 16mm 12mm 16mm;
       }
 
       html, body {
@@ -764,8 +765,8 @@
         margin: 0 !important;
         page-break-after: always !important;
         break-after: page !important;
-        font-size: 12.8pt !important;
-        line-height: 1.48 !important;
+        font-size: 11pt !important;
+        line-height: 1.38 !important;
       }
 
       .a4-sheet:last-child {
@@ -1122,13 +1123,26 @@
       <div class="preview-column">
         <div class="preview-sticky-wrap">
           
-          <!-- Toolbar -->
+          <!-- Toolbar with Font Controls -->
           <div class="preview-toolbar no-print">
             <div class="preview-toolbar-title">
               <i class="fa-solid fa-file-lines"></i>
-              <span>अधिकृत आदेश पूर्वावलोकन (Official A4 Format)</span>
+              <span>अधिकृत आदेश पूर्वावलोकन (Official A4)</span>
             </div>
-            <div style="display:flex; gap:8px; align-items:center;">
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <!-- Font Size Quick Adjuster -->
+              <div style="display:inline-flex; align-items:center; gap:4px; background:#f1f5f9; padding:2px 8px; border-radius:6px; border:1px solid #cbd5e1;">
+                <span style="font-size:0.75rem; font-weight:700; color:#475569;">फॉन्ट:</span>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="adjustOrderFontSize(-0.5)" title="फॉन्ट लहान करा (Fit on Page)" style="padding:2px 6px; font-weight:800; font-size:0.78rem;">A-</button>
+                <span id="fontSizeBadge" style="font-size:0.8rem; font-weight:700; color:#1e3a8a; min-width:34px; text-align:center;">11pt</span>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="adjustOrderFontSize(0.5)" title="फॉन्ट मोठा करा" style="padding:2px 6px; font-weight:800; font-size:0.78rem;">A+</button>
+              </div>
+
+              <!-- Line Spacing Toggle -->
+              <button type="button" class="btn btn-sm btn-secondary" id="spacingToggleBtn" onclick="toggleLineSpacing()" title="ओळींमधील अंतर बदला">
+                <i class="fa-solid fa-text-height"></i> सामान्य अंतर
+              </button>
+
               <button type="button" class="btn btn-sm btn-primary" onclick="triggerDirectPrint()">
                 <i class="fa-solid fa-print"></i> प्रिंट करा (Print)
               </button>
@@ -1197,7 +1211,7 @@
 
               <!-- Paragraph 3 -->
               <div class="legal-para">
-                <strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसtarget तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.
+                <strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसल्या तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.
               </div>
 
               <!-- Paragraph 4 (Page 1 part) -->
@@ -2007,7 +2021,7 @@
               <strong>2.</strong> &nbsp;&nbsp; हरकतदाराने संबंधित मतदार सदर पत्त्यावर राहत नसून स्थलांतरित झालेला असल्याचे नमुना क्र. 7 मध्ये नमूद केले आहे. तथापि संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करण्यासाठी हरकतदाराने कोणताही स्वतंत्र दस्तऐवज, प्रत्यक्ष साक्ष, नवीन रहिवासाचा पत्ता, स्थानिक अभिलेख अथवा अन्य विश्वासार्ह पुरावा सादर केलेला नाही. भारत निवडणूक आयोगाच्या Form 7 संबंधी मार्गदर्शक सूचनांनुसार, हरकतीमध्ये नमूद केलेल्या deletion च्या कारणाची सत्यता सिद्ध करण्याचे प्राथमिक ओझे हरकतदारावर आहे.
             </div>
             <div class="legal-para">
-              <strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसtarget तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.
+              <strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसल्या तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.
             </div>
             <div class="legal-para" style="margin-bottom:0;">
               <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार
@@ -2055,6 +2069,7 @@
       });
 
       container.innerHTML = combinedHtml;
+      applyDocumentStyling();
 
       setTimeout(() => {
         window.print();
@@ -2085,10 +2100,48 @@
       }, 3500);
     }
 
+    
+    let currentFontSize = 11;
+    let isCompactSpacing = false;
+
+    function adjustOrderFontSize(delta) {
+      currentFontSize = Math.min(13, Math.max(9.5, Number((currentFontSize + delta).toFixed(1))));
+      applyDocumentStyling();
+    }
+
+    function toggleLineSpacing() {
+      isCompactSpacing = !isCompactSpacing;
+      const btn = document.getElementById('spacingToggleBtn');
+      if (btn) {
+        btn.innerHTML = isCompactSpacing ? '<i class="fa-solid fa-compress"></i> कॉम्पॅक्ट अंतर' : '<i class="fa-solid fa-text-height"></i> सामान्य अंतर';
+      }
+      applyDocumentStyling();
+    }
+
+    function applyDocumentStyling() {
+      const badge = document.getElementById('fontSizeBadge');
+      if (badge) badge.textContent = currentFontSize + 'pt';
+
+      const sheets = document.querySelectorAll('.a4-sheet');
+      sheets.forEach(sheet => {
+        sheet.style.fontSize = currentFontSize + 'pt';
+        sheet.style.lineHeight = isCompactSpacing ? '1.32' : '1.38';
+      });
+
+      let styleEl = document.getElementById('dynamicPrintOverrideStyle');
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'dynamicPrintOverrideStyle';
+        document.head.appendChild(styleEl);
+      }
+      styleEl.innerHTML = `@media print { .a4-sheet { font-size: ${currentFontSize}pt !important; line-height: ${isCompactSpacing ? '1.32' : '1.38'} !important; } }`;
+    }
+
     // Auto Initialize on Load
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('orderDate').value = formatTodayDate();
       syncPreview();
+      applyDocumentStyling();
       updateHistoryBadge();
     });
 
