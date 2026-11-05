@@ -984,6 +984,45 @@
                 </div>
               </div>
 
+              <!-- Font Size & Spacing Option in Form -->
+              <div class="form-group" style="background:#f0fdf4; border:1.5px solid #86efac; border-radius:10px; padding:14px; margin-top:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <span style="font-weight:800; font-size:0.9rem; color:#14532d;">
+                    <i class="fa-solid fa-text-height" style="color:#16a34a;"></i> मजकूर फॉन्ट साईझ व अंतर (Font Size & Spacing)
+                  </span>
+                  <span id="formFontSizeBadge" style="background:#16a34a; color:#ffffff; font-size:0.78rem; padding:2px 10px; border-radius:12px; font-weight:800;">12pt</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:10px;">
+                  <div>
+                    <label style="font-size:0.78rem; font-weight:700; color:#374151; display:block; margin-bottom:4px;">फॉन्ट आकार (Font Size):</label>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <button type="button" class="btn btn-sm btn-secondary" onclick="adjustOrderFontSize(-0.5)" title="फॉन्ट लहान करा" style="padding:6px 12px; font-weight:800; font-size:0.85rem;">A-</button>
+                      <select id="fontSizeSelect" class="form-control" style="padding:6px 8px; font-weight:700; color:#1e3a8a;" onchange="setFontSizeDirectly(this.value)">
+                        <option value="11">11 pt (कॉम्पॅक्ट)</option>
+                        <option value="11.5">11.5 pt (संतुलित)</option>
+                        <option value="12" selected>12 pt (शिफारस केलेले - पान पूर्ण)</option>
+                        <option value="12.5">12.5 pt (मोठा फॉन्ट)</option>
+                        <option value="13">13 pt (अति मोठा)</option>
+                        <option value="13.5">13.5 pt (जम्बो)</option>
+                        <option value="14">14 pt (मॅक्सिमम)</option>
+                      </select>
+                      <button type="button" class="btn btn-sm btn-secondary" onclick="adjustOrderFontSize(0.5)" title="फॉन्ट मोठा करा" style="padding:6px 12px; font-weight:800; font-size:0.85rem;">A+</button>
+                    </div>
+                  </div>
+                  <div>
+                    <label style="font-size:0.78rem; font-weight:700; color:#374151; display:block; margin-bottom:4px;">ओळींमधील अंतर (Spacing):</label>
+                    <select id="lineSpacingSelect" class="form-control" style="padding:6px 8px; font-weight:700; color:#1e3a8a;" onchange="setLineSpacingDirectly(this.value)">
+                      <option value="1.35">कॉम्पॅक्ट अंतर (1.35)</option>
+                      <option value="1.42" selected>सामान्य अंतर (1.42)</option>
+                      <option value="1.50">मोकळे अंतर (1.50)</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="margin-top:10px; font-size:0.78rem; color:#15803d; font-weight:600; display:flex; align-items:center; gap:6px;">
+                  <i class="fa-solid fa-circle-check"></i> पहिल्या पानावरील कोरा भाग पूर्ण भरण्यासाठी मुद्दा 4 संपूर्ण पहिल्या पानावर आणला आहे.
+                </div>
+              </div>
+
               <!-- Action Buttons -->
               <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px;">
                 <button type="submit" class="btn btn-primary" style="flex:1;">
@@ -1129,18 +1168,18 @@
               <i class="fa-solid fa-file-lines"></i>
               <span>अधिकृत आदेश पूर्वावलोकन (Official A4)</span>
             </div>
-            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
               <!-- Font Size Quick Adjuster -->
               <div style="display:inline-flex; align-items:center; gap:4px; background:#f1f5f9; padding:2px 8px; border-radius:6px; border:1px solid #cbd5e1;">
                 <span style="font-size:0.75rem; font-weight:700; color:#475569;">फॉन्ट:</span>
-                <button type="button" class="btn btn-sm btn-secondary" onclick="adjustOrderFontSize(-0.5)" title="फॉन्ट लहान करा (Fit on Page)" style="padding:2px 6px; font-weight:800; font-size:0.78rem;">A-</button>
-                <span id="fontSizeBadge" style="font-size:0.8rem; font-weight:700; color:#1e3a8a; min-width:34px; text-align:center;">11pt</span>
-                <button type="button" class="btn btn-sm btn-secondary" onclick="adjustOrderFontSize(0.5)" title="फॉन्ट मोठा करा" style="padding:2px 6px; font-weight:800; font-size:0.78rem;">A+</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="adjustOrderFontSize(-0.5)" title="फॉन्ट लहान करा" style="padding:3px 8px; font-weight:800; font-size:0.82rem;">A-</button>
+                <span id="fontSizeBadge" style="font-size:0.82rem; font-weight:800; color:#1e3a8a; min-width:38px; text-align:center;">12pt</span>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="adjustOrderFontSize(0.5)" title="फॉन्ट मोठा करा" style="padding:3px 8px; font-weight:800; font-size:0.82rem;">A+</button>
               </div>
 
-              <!-- Line Spacing Toggle -->
-              <button type="button" class="btn btn-sm btn-secondary" id="spacingToggleBtn" onclick="toggleLineSpacing()" title="ओळींमधील अंतर बदला">
-                <i class="fa-solid fa-text-height"></i> सामान्य अंतर
+              <!-- Toggle Split Mode -->
+              <button type="button" class="btn btn-sm btn-secondary" id="splitModeBtn" onclick="toggleSplitMode()" title="पहिल्या पानावरील कोरा भाग भरण्यासाठी मजकूर नियंत्रण" style="font-size:0.8rem;">
+                <i class="fa-solid fa-arrows-up-down"></i> <span id="splitModeText">मुद्दा 4 पहिल्या पानावर पूर्ण</span>
               </button>
 
               <button type="button" class="btn btn-sm btn-primary" onclick="triggerDirectPrint()">
@@ -1214,9 +1253,9 @@
                 <strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसल्या तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.
               </div>
 
-              <!-- Paragraph 4 (Page 1 part) -->
-              <div class="legal-para" style="margin-bottom:0;">
-                <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार
+              <!-- Paragraph 4 (Unified Full on Page 1 to eliminate empty blank space) -->
+              <div class="legal-para" id="para4ContainerP1" style="margin-bottom:0;">
+                <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.
               </div>
 
             </div>
@@ -1225,10 +1264,8 @@
             <div class="a4-sheet" id="orderPage2">
               <div class="a4-page-badge no-print">पान 2 (Page 2)</div>
 
-              <!-- Paragraph 4 Continuation -->
-              <div class="legal-para" style="margin-top:0;">
-                आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.
-              </div>
+              <!-- Paragraph 4 Continuation container (Only shown if split mode is toggled) -->
+              <div class="legal-para" id="para4ContainerP2" style="margin-top:0; display:none;"></div>
 
               <!-- Paragraph 5 -->
               <div class="legal-para">
@@ -2024,15 +2061,12 @@
               <strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसल्या तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.
             </div>
             <div class="legal-para" style="margin-bottom:0;">
-              <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार
+              <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.
             </div>
           </div>
 
           <!-- Order #${idx + 1} Page 2 -->
           <div class="a4-sheet bulk-order-set">
-            <div class="legal-para" style="margin-top:0;">
-              आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.
-            </div>
             <div class="legal-para">
               <strong>5.</strong> &nbsp;&nbsp; वरील सर्व अभिलेख, हरकतदाराचे म्हणणे, संबंधित मतदाराची SIR नोंद, Enumeration Form, BLO पडताळणी, ASDD स्थिती तसेच उपलब्ध इतर अभिलेख यांचे एकत्रित परीक्षण करता, संबंधित मतदाराने विधानसभा मतदारसंघ क्र. <span>${item.constituency}</span> येथील आपला ordinary residence सोडून कायमस्वरूपी अन्यत्र स्थलांतर केले आहे, असे सिद्ध होत नाही. हरकतदाराने Form 7 मध्ये घेतलेली “Absent/Permanently shifted” ही हरकत कोणत्याही स्वतंत्र व विश्वासार्ह पुराव्याने सिद्ध केलेली नाही. त्यामुळे संबंधित मतदाराचे नाव मतदार यादीतून वगळण्यासाठी आवश्यक तथ्यात्मक व कायदेशीर आधार उपलब्ध नाही.
             </div>
@@ -2101,31 +2135,81 @@
     }
 
     
-    let currentFontSize = 11;
-    let isCompactSpacing = false;
+    let currentFontSize = 12;
+    let currentLineSpacing = 1.42;
+    let isPoint4FullOnP1 = true;
+
+    const p4FullPart1 = '<strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार';
+    const p4FullPart2 = 'आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.';
 
     function adjustOrderFontSize(delta) {
-      currentFontSize = Math.min(13, Math.max(9.5, Number((currentFontSize + delta).toFixed(1))));
+      currentFontSize = Math.min(14, Math.max(10, Number((currentFontSize + delta).toFixed(1))));
       applyDocumentStyling();
     }
 
-    function toggleLineSpacing() {
-      isCompactSpacing = !isCompactSpacing;
-      const btn = document.getElementById('spacingToggleBtn');
-      if (btn) {
-        btn.innerHTML = isCompactSpacing ? '<i class="fa-solid fa-compress"></i> कॉम्पॅक्ट अंतर' : '<i class="fa-solid fa-text-height"></i> सामान्य अंतर';
-      }
+    function setFontSizeDirectly(val) {
+      currentFontSize = Number(val);
       applyDocumentStyling();
+    }
+
+    function setLineSpacingDirectly(val) {
+      currentLineSpacing = Number(val);
+      applyDocumentStyling();
+    }
+
+    function toggleSplitMode() {
+      isPoint4FullOnP1 = !isPoint4FullOnP1;
+      updatePoint4Placement();
+    }
+
+    function updatePoint4Placement() {
+      const p1El = document.getElementById('para4ContainerP1');
+      const p2El = document.getElementById('para4ContainerP2');
+      const textEl = document.getElementById('splitModeText');
+
+      if (isPoint4FullOnP1) {
+        if (p1El) p1El.innerHTML = p4FullPart1 + ' ' + p4FullPart2;
+        if (p2El) {
+          p2El.innerHTML = '';
+          p2El.style.display = 'none';
+        }
+        if (textEl) textEl.textContent = 'मुद्दा 4 पहिल्या पानावर पूर्ण (कोरा भाग भरला)';
+      } else {
+        if (p1El) p1El.innerHTML = p4FullPart1;
+        if (p2El) {
+          p2El.innerHTML = p4FullPart2;
+          p2El.style.display = 'block';
+        }
+        if (textEl) textEl.textContent = 'मुद्दा 4 अर्धा विभागणी मोड';
+      }
     }
 
     function applyDocumentStyling() {
       const badge = document.getElementById('fontSizeBadge');
       if (badge) badge.textContent = currentFontSize + 'pt';
 
+      const formBadge = document.getElementById('formFontSizeBadge');
+      if (formBadge) formBadge.textContent = currentFontSize + 'pt';
+
+      const select = document.getElementById('fontSizeSelect');
+      if (select) {
+        select.value = String(currentFontSize);
+        if (!select.value) {
+          const opt = document.createElement('option');
+          opt.value = String(currentFontSize);
+          opt.textContent = currentFontSize + ' pt (कस्टम)';
+          select.appendChild(opt);
+          select.value = String(currentFontSize);
+        }
+      }
+
+      const spacingSelect = document.getElementById('lineSpacingSelect');
+      if (spacingSelect) spacingSelect.value = String(currentLineSpacing);
+
       const sheets = document.querySelectorAll('.a4-sheet');
       sheets.forEach(sheet => {
         sheet.style.fontSize = currentFontSize + 'pt';
-        sheet.style.lineHeight = isCompactSpacing ? '1.32' : '1.38';
+        sheet.style.lineHeight = String(currentLineSpacing);
       });
 
       let styleEl = document.getElementById('dynamicPrintOverrideStyle');
@@ -2134,7 +2218,7 @@
         styleEl.id = 'dynamicPrintOverrideStyle';
         document.head.appendChild(styleEl);
       }
-      styleEl.innerHTML = `@media print { .a4-sheet { font-size: ${currentFontSize}pt !important; line-height: ${isCompactSpacing ? '1.32' : '1.38'} !important; } }`;
+      styleEl.innerHTML = `@media print { .a4-sheet { font-size: ${currentFontSize}pt !important; line-height: ${currentLineSpacing} !important; } }`;
     }
 
     // Auto Initialize on Load
