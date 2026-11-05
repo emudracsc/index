@@ -6028,3 +6028,208 @@ a.useful-link-card * {
 }
 
 
+
+
+/* ==========================================================================
+   Horizontal Draggable Navigation Slider (Mouse Click & Drag-to-Slide)
+   ========================================================================== */
+.main-navbar {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1.5px solid rgba(77, 40, 133, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(26, 5, 51, 0.08);
+  width: 100%;
+}
+
+.nav-slider-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  width: 100%;
+  padding: 0 6px;
+  overflow: hidden;
+}
+
+.nav-slider-track {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  padding: 8px 6px;
+  width: 100%;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-slider-track::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.nav-slider-track.is-dragging {
+  cursor: grabbing !important;
+  scroll-behavior: auto !important;
+}
+
+.nav-slider-track.is-dragging * {
+  cursor: grabbing !important;
+  user-select: none !important;
+  pointer-events: none !important;
+}
+
+/* Slide Arrow Buttons */
+.nav-slide-arrow {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #1e293b;
+  border: 1.5px solid rgba(77, 40, 133, 0.2);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.nav-slide-arrow.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-slide-arrow:hover {
+  background: #ff9500;
+  color: #ffffff;
+  border-color: #ff9500;
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.4);
+}
+
+.nav-slide-prev {
+  margin-right: 4px;
+}
+
+.nav-slide-next {
+  margin-left: 4px;
+}
+
+/* Edge Fade Gradients */
+.nav-slider-wrapper::before,
+.nav-slider-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 25px;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.nav-slider-wrapper::before {
+  left: 38px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%);
+}
+
+.nav-slider-wrapper::after {
+  right: 38px;
+  background: linear-gradient(270deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%);
+}
+
+.nav-slider-wrapper.can-scroll-left::before {
+  opacity: 1;
+}
+
+.nav-slider-wrapper.can-scroll-right::after {
+  opacity: 1;
+}
+
+/* Nav Item Pill Buttons on the Slider Track */
+.nav-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  flex-shrink: 0;
+}
+
+.nav-pill-btn:hover {
+  background: #ffffff;
+  border-color: #ff9500;
+  color: #d97706;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.nav-pill-btn.active {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.25);
+}
+
+.nav-pill-btn.active i {
+  color: #f59e0b;
+}
+
+/* Dark Mode Styles */
+body.dark-mode .main-navbar {
+  background: rgba(15, 23, 42, 0.96) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode .nav-slide-arrow {
+  background: #1e293b;
+  color: #f1f5f9;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .nav-slider-wrapper::before {
+  background: linear-gradient(90deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0) 100%);
+}
+
+body.dark-mode .nav-slider-wrapper::after {
+  background: linear-gradient(270deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0) 100%);
+}
+
+body.dark-mode .nav-pill-btn {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+}
+
+body.dark-mode .nav-pill-btn:hover {
+  background: #334155;
+  border-color: #f59e0b;
+  color: #fbbf24;
+}

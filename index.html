@@ -87,154 +87,97 @@
     </div>
   </header>
 
-  <!-- Sticky Main Navigation -->
-  <nav class="main-navbar">
-    <div class="container">
-      <ul class="nav-links" id="main-nav-links">
-        <li class="nav-item active"><a href="#home"><i class="fa-solid fa-house"></i> <span data-i18n="nav_home">मुख्यपृष्ठ</span></a></li>
-        <li class="nav-item"><a href="#services"><i class="fa-solid fa-grid-2"></i> <span data-i18n="nav_services">नागरिक सेवा</span></a></li>
+  <!-- Sticky Main Navigation with Horizontal Mouse Drag-to-Slide -->
+  <nav class="main-navbar" id="main-navbar">
+    <div class="nav-slider-wrapper">
+      <!-- Left Slide Button -->
+      <button type="button" class="nav-slide-arrow nav-slide-prev" id="navSlidePrev" aria-label="Slide Left" title="डावीकडे सरकवा (Slide Left)">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
 
-        <!-- Dropdown 1: निवडणूक व ERO टूल्स -->
-        <li class="nav-item nav-dropdown">
-          <a href="javascript:void(0)" class="nav-dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
-            <i class="fa-solid fa-stamp" style="color: #dc2626;"></i>
-            <span>निवडणूक व ERO टूल्स</span>
-            <i class="fa-solid fa-chevron-down chevron"></i>
-          </a>
-          <div class="nav-dropdown-menu">
-            <a href="hearing-register.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #d97706;"><i class="fa-solid fa-clipboard-check"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">सुनावणी नोंदवही</span>
-                <span class="dropdown-item-desc">नोंदणी, यादी व दैनिक व्यवस्थापन</span>
-              </div>
-            </a>
-            <a href="hearing-search.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(6, 182, 212, 0.15); color: #0891b2;"><i class="fa-solid fa-magnifying-glass"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">सुनावणी शोध</span>
-                <span class="dropdown-item-desc">दाखल सुनावणी प्रकरणे त्वरित शोधा</span>
-              </div>
-            </a>
-            <a href="form12-notice-generator.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #059669;"><i class="fa-solid fa-file-signature"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">फॉर्म १२ नोटीस जनरेटर</span>
-                <span class="dropdown-item-desc">अधिसूचित फॉर्म १२ नोटीस तयार करा</span>
-              </div>
-            </a>
-            <a href="ero-hearing-notice-generator.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(220, 38, 38, 0.15); color: #dc2626;"><i class="fa-solid fa-stamp"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">ERO नोटीस (फॉर्म १३ व १४)</span>
-                <span class="dropdown-item-desc">सुनावणी नोटीस व हजेरी अहवाल</span>
-              </div>
-            </a>
-            <a href="disposal-report-generator.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(4, 120, 87, 0.15); color: #047857;"><i class="fa-solid fa-chart-pie"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">Disposal Report (ERO/AERO)</span>
-                <span class="dropdown-item-desc">दैनिक व साप्ताहिक डिस्पोजल अहवाल</span>
-              </div>
-            </a>
-            <a href="attendance-report-generator.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(30, 58, 138, 0.15); color: #1e3a8a;"><i class="fa-solid fa-clipboard-user"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">हजेरी पत्रक जनरेटर</span>
-                <span class="dropdown-item-desc">BLO व कर्मचारी उपस्थिती अहवाल</span>
-              </div>
-            </a>
-            <a href="election-report-generator.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(30, 64, 175, 0.15); color: #1e40af;"><i class="fa-solid fa-square-poll-vertical"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">निवडणूक अहवाल</span>
-                <span class="dropdown-item-desc">विधानसभा / लोकसभा निवडणूक अहवाल</span>
-              </div>
-            </a>
-            <a href="ero-pendency-report-generator.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(124, 58, 237, 0.15); color: #7c3aed;"><i class="fa-solid fa-list-check"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">ERO फॉर्म पेंडन्सी अहवाल</span>
-                <span class="dropdown-item-desc">Form 6, 7, 8 प्रलंबित अर्ज अहवाल</span>
-              </div>
-            </a>
-          </div>
-        </li>
+      <!-- Drag & Scroll Slider Track (Mouse Drag-to-Slide) -->
+      <div class="nav-slider-track" id="navSliderTrack">
+        <!-- 1. Home -->
+        <a href="#home" class="nav-pill-btn active"><i class="fa-solid fa-house"></i> <span>मुख्यपृष्ठ</span></a>
 
-        <!-- Dropdown 2: शासकीय अर्ज व संमतीपत्रे -->
-        <li class="nav-item nav-dropdown">
-          <a href="javascript:void(0)" class="nav-dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
-            <i class="fa-solid fa-file-signature" style="color: #059669;"></i>
-            <span>शासकीय अर्ज व संमतीपत्रे</span>
-            <i class="fa-solid fa-chevron-down chevron"></i>
-          </a>
-          <div class="nav-dropdown-menu">
-            <a href="application-generator.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(30, 58, 138, 0.15); color: #1e3a8a;"><i class="fa-solid fa-file-lines"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">मराठी शासकीय अर्ज जनरेटर</span>
-                <span class="dropdown-item-desc">तहसील, तलाठी, पंचायत सर्व अर्ज</span>
-              </div>
-            </a>
-            <a href="Pikpera.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #d97706;"><i class="fa-solid fa-wheat-awn"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">पीकपेरा स्वयंघोषणापत्र २०२६-२७</span>
-                <span class="dropdown-item-desc">ई-पीक पाहणी / फळपिक १-क्लिक A4 प्रिंट</span>
-              </div>
-            </a>
-            <a href="samaik-sahmatipatra.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(2, 132, 199, 0.15); color: #0284c7;"><i class="fa-solid fa-users"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">सामाईक सहमतीपत्र जनरेटर</span>
-                <span class="dropdown-item-desc">फळपिक विमा सहमतीपत्र (अंगठा/स्वाक्षरी)</span>
-              </div>
-            </a>
-            <a href="bhumi-abhilekh-nakal.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #059669;"><i class="fa-solid fa-scroll"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">भूमि अभिलेख डिजिटल नकल</span>
-                <span class="dropdown-item-desc">७/१२, ८अ, फेरफार अधिकृत डिजिटल उतारा</span>
-              </div>
-            </a>
-            <a href="vb-gramg-form-generator.html" class="nav-dropdown-item">
-              <span class="dropdown-icon-box" style="background: rgba(37, 99, 235, 0.15); color: #2563eb;"><i class="fa-solid fa-file-invoice"></i></span>
-              <div class="dropdown-item-texts">
-                <span class="dropdown-item-title">VB-G RAM G अर्ज</span>
-                <span class="dropdown-item-desc">ग्रामपंचायत अधिकृत योजना अर्ज</span>
-              </div>
-            </a>
-          </div>
-        </li>
+        <!-- 2. Services -->
+        <a href="#services" class="nav-pill-btn"><i class="fa-solid fa-grid-2"></i> <span>नागरिक सेवा</span></a>
 
-        <li class="nav-item"><a href="#citizen-charter"><i class="fa-solid fa-scroll"></i> <span data-i18n="nav_charter">नागरिक सनद</span></a></li>
-        <li class="nav-item"><a href="#contact"><i class="fa-solid fa-headset"></i> <span data-i18n="nav_contact">संपर्क</span></a></li>
-
-        <!-- Mobile-only quick shortcuts -->
-        <li class="nav-item mobile-only"><a href="emudra-hub.html" style="color: #d97706; font-weight: 800;"><i class="fa-solid fa-wand-magic-sparkles"></i> <span>🌟 eMudra Hub (ई मुद्रा हब)</span></a></li>
-        <li class="nav-item mobile-only"><a href="javascript:void(0)" onclick="openSoftwareModal()"><i class="fa-solid fa-box-archive"></i> <span data-i18n="nav_softwares">उपयुक्त सॉफ्टवेअर</span></a></li>
-        <li class="nav-item mobile-only"><a href="javascript:void(0)" onclick="openUsefulLinksModal()"><i class="fa-solid fa-link"></i> <span data-i18n="nav_useful_links">महत्त्वाच्या लिंक्स</span></a></li>
-        <li class="nav-item mobile-only"><a href="javascript:void(0)" onclick="if(window.UserAuth){ if(window.UserAuth.getCurrentUser()){ window.UserAuth.openMyApplicationsModal(); } else { window.UserAuth.openLoginModal(); } }"><i class="fa-solid fa-user-circle"></i> <span>नागरिक लॉगिन / माझे अर्ज</span></a></li>
-      </ul>
-      <div class="nav-actions-cluster">
-        <a href="emudra-hub.html" class="nav-hub-btn" style="background: linear-gradient(135deg, #ff9500 0%, #e07400 50%, #d97706 100%); color: #ffffff !important; border: 1.5px solid #fde68a; border-radius: var(--radius-sm); padding: 6px 13px; font-size: 0.82rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(255, 149, 0, 0.4); cursor: pointer;" title="eMudra Hub - ऑल-इन-वन डिजिटल टूल्स दालन">
-          <i class="fa-solid fa-wand-magic-sparkles" style="color: #ffffff;"></i> <span>eMudra Hub</span>
+        <!-- 3. eMudra Hub (Featured Glow Pill) -->
+        <a href="emudra-hub.html" class="nav-hub-btn" style="background: linear-gradient(135deg, #ff9500 0%, #e07400 50%, #d97706 100%); color: #ffffff !important; border: 1.5px solid #fde68a; border-radius: 8px; padding: 6px 13px; font-size: 0.82rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(255, 149, 0, 0.4); cursor: pointer; flex-shrink: 0;" title="eMudra Hub - ऑल-इन-वन डिजिटल प्रिंटिंग, QR प्रिंट, स्कॅनर व शासकीय टूल्स दालन">
+          <i class="fa-solid fa-wand-magic-sparkles" style="color: #ffffff;"></i>
+          <span style="color: #ffffff;">🌟 eMudra Hub</span>
+          <span style="background: #ffffff; color: #d97706; font-size: 0.65rem; font-weight: 900; padding: 1px 5px; border-radius: 4px;">NEW</span>
         </a>
-        <button class="nav-softwares-btn" onclick="openSoftwareModal()" title="सर्व शासकीय व सीएससी सॉफ्टवेअर्स डाउनलोड करा">
-          <i class="fa-solid fa-box-archive"></i> <span data-i18n="nav_softwares">सॉफ्टवेअर</span>
+
+        <!-- 4. सुनावणी नोंदवही -->
+        <a href="hearing-register.html" class="nav-pill-btn" style="background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.35); color: #b45309;"><i class="fa-solid fa-clipboard-check" style="color: #d97706;"></i> <span>सुनावणी नोंदवही</span></a>
+
+        <!-- 5. सुनावणी शोध -->
+        <a href="hearing-search.html" class="nav-pill-btn" style="background: rgba(6, 182, 212, 0.12); border-color: rgba(6, 182, 212, 0.35); color: #0e7490;"><i class="fa-solid fa-magnifying-glass" style="color: #0891b2;"></i> <span>सुनावणी शोध</span></a>
+
+        <!-- 6. फॉर्म १२ नोटीस -->
+        <a href="form12-notice-generator.html" class="nav-pill-btn" style="background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.35); color: #047857;"><i class="fa-solid fa-file-signature" style="color: #059669;"></i> <span>फॉर्म १२ नोटीस</span></a>
+
+        <!-- 7. ERO नोटीस (१३ व १४) -->
+        <a href="ero-hearing-notice-generator.html" class="nav-pill-btn" style="background: rgba(220, 38, 38, 0.12); border-color: rgba(220, 38, 38, 0.35); color: #b91c1c;"><i class="fa-solid fa-stamp" style="color: #dc2626;"></i> <span>ERO नोटीस (१३ व १४)</span></a>
+
+        <!-- 8. Disposal Report -->
+        <a href="disposal-report-generator.html" class="nav-pill-btn" style="background: rgba(4, 120, 87, 0.12); border-color: rgba(4, 120, 87, 0.35); color: #065f46;"><i class="fa-solid fa-chart-pie" style="color: #047857;"></i> <span>Disposal Report (ERO/AERO)</span></a>
+
+        <!-- 9. हजेरी पत्रक -->
+        <a href="attendance-report-generator.html" class="nav-pill-btn" style="background: rgba(30, 58, 138, 0.12); border-color: rgba(30, 58, 138, 0.35); color: #1e3a8a;"><i class="fa-solid fa-clipboard-user" style="color: #1e3a8a;"></i> <span>हजेरी पत्रक जनरेटर</span></a>
+
+        <!-- 10. निवडणूक अहवाल -->
+        <a href="election-report-generator.html" class="nav-pill-btn" style="background: rgba(30, 64, 175, 0.12); border-color: rgba(30, 64, 175, 0.35); color: #1d4ed8;"><i class="fa-solid fa-square-poll-vertical" style="color: #2563eb;"></i> <span>निवडणूक अहवाल</span></a>
+
+        <!-- 11. ERO पेंडन्सी -->
+        <a href="ero-pendency-report-generator.html" class="nav-pill-btn" style="background: rgba(124, 58, 237, 0.12); border-color: rgba(124, 58, 237, 0.35); color: #6d28d9;"><i class="fa-solid fa-list-check" style="color: #7c3aed;"></i> <span>ERO पेंडन्सी अहवाल</span></a>
+
+        <!-- 12. मराठी अर्ज जनरेटर -->
+        <a href="application-generator.html" class="nav-pill-btn" style="background: rgba(79, 70, 229, 0.12); border-color: rgba(79, 70, 229, 0.35); color: #4338ca;"><i class="fa-solid fa-file-lines" style="color: #4f46e5;"></i> <span>मराठी अर्ज जनरेटर</span></a>
+
+        <!-- 13. पीकपेरा स्वयंघोषणापत्र २०२६-२७ -->
+        <a href="Pikpera.html" class="nav-pill-btn" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #b45309;"><i class="fa-solid fa-wheat-awn" style="color: #d97706;"></i> <span>🌾 पीकपेरा स्वयंघोषणापत्र</span></a>
+
+        <!-- 14. सामाईक सहमतीपत्र जनरेटर -->
+        <a href="samaik-sahmatipatra.html" class="nav-pill-btn" style="background: rgba(2, 132, 199, 0.12); border-color: rgba(2, 132, 199, 0.35); color: #0369a1;"><i class="fa-solid fa-users" style="color: #0284c7;"></i> <span>🤝 सामाईक सहमतीपत्र</span></a>
+
+        <!-- 15. भूमि अभिलेख डिजिटल नकल -->
+        <a href="bhumi-abhilekh-nakal.html" class="nav-pill-btn" style="background: rgba(5, 150, 105, 0.12); border-color: rgba(5, 150, 105, 0.35); color: #047857;"><i class="fa-solid fa-scroll" style="color: #059669;"></i> <span>📜 भूमि अभिलेख नकल</span></a>
+
+        <!-- 16. VB-G RAM G अर्ज -->
+        <a href="vb-gramg-form-generator.html" class="nav-pill-btn" style="background: rgba(37, 99, 235, 0.12); border-color: rgba(37, 99, 235, 0.35); color: #1d4ed8;"><i class="fa-solid fa-file-invoice" style="color: #2563eb;"></i> <span>VB-G RAM G अर्ज</span></a>
+
+        <!-- 17. नागरिक सनद -->
+        <a href="#citizen-charter" class="nav-pill-btn"><i class="fa-solid fa-scroll"></i> <span>नागरिक सनद</span></a>
+
+        <!-- 18. संपर्क -->
+        <a href="#contact" class="nav-pill-btn"><i class="fa-solid fa-headset"></i> <span>संपर्क</span></a>
+
+        <!-- 19. उपयुक्त सॉफ्टवेअर -->
+        <button type="button" class="nav-softwares-btn" onclick="openSoftwareModal()" title="सर्व शासकीय व सीएससी सॉफ्टवेअर्स डाउनलोड करा" style="flex-shrink: 0;">
+          <i class="fa-solid fa-box-archive"></i> <span>उपयुक्त सॉफ्टवेअर</span>
         </button>
-        <button class="nav-links-btn" onclick="openUsefulLinksModal()" title="सर्व शासकीय व ई-मुद्रा अधिकृत लिंक्स">
-          <i class="fa-solid fa-link"></i> <span data-i18n="nav_useful_links">महत्त्वाच्या लिंक्स</span>
+
+        <!-- 20. महत्त्वाच्या लिंक्स -->
+        <button type="button" class="nav-links-btn" onclick="openUsefulLinksModal()" title="सर्व शासकीय व ई-मुद्रा अधिकृत लिंक्स" style="flex-shrink: 0;">
+          <i class="fa-solid fa-link"></i> <span>महत्त्वाच्या लिंक्स</span>
         </button>
-        <!-- Citizen / User Login & Applications Slot -->
-        <div class="citizen-auth-slot" id="citizen-auth-slot"></div>
-        <button class="nav-admin-btn" id="nav-admin-login-btn" onclick="handleNavAdminClick()" title="अधिकारी लॉगिन">
+
+        <!-- 21. Citizen / User Login & Applications Slot -->
+        <div class="citizen-auth-slot" id="citizen-auth-slot" style="flex-shrink: 0;"></div>
+
+        <!-- 22. अधिकारी लॉगिन (Admin Login) -->
+        <button type="button" class="nav-admin-btn" id="nav-admin-login-btn" onclick="handleNavAdminClick()" title="अधिकारी लॉगिन" style="flex-shrink: 0; background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%) !important; border: 1.5px solid #818cf8 !important; box-shadow: 0 2px 10px rgba(49, 46, 129, 0.4) !important;">
           <span id="nav-admin-btn-text"><i class="fa-solid fa-user-lock"></i> अधिकारी लॉगिन</span>
         </button>
-        <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Toggle Menu">
-          <i class="fa-solid fa-bars"></i>
-        </button>
       </div>
+
+      <!-- Right Slide Button -->
+      <button type="button" class="nav-slide-arrow nav-slide-next" id="navSlideNext" aria-label="Slide Right" title="उजवीकडे सरकवा (Slide Right)">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
     </div>
   </nav>
 

@@ -3,12 +3,134 @@
  * Main Interactive Application Logic
  */
 
+
+/**
+ * Horizontal Drag-to-Slide Navigation (Mouse Click & Drag + Wheel + Arrows)
+ */
+function initNavSliderDrag() {
+  const track = document.getElementById("navSliderTrack");
+  const prevBtn = document.getElementById("navSlidePrev");
+  const nextBtn = document.getElementById("navSlideNext");
+  const wrapper = document.querySelector(".nav-slider-wrapper");
+
+  if (!track) return;
+
+  let isDown = false;
+  let startX = 0;
+  let scrollLeft = 0;
+  let hasDragged = false;
+  let startPos = { x: 0, y: 0 };
+
+  // Update arrow buttons visibility
+  function updateArrows() {
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    const current = track.scrollLeft;
+
+    if (prevBtn) {
+      if (current > 12) {
+        prevBtn.classList.add("visible");
+        wrapper?.classList.add("can-scroll-left");
+      } else {
+        prevBtn.classList.remove("visible");
+        wrapper?.classList.remove("can-scroll-left");
+      }
+    }
+
+    if (nextBtn) {
+      if (current < maxScroll - 12) {
+        nextBtn.classList.add("visible");
+        wrapper?.classList.add("can-scroll-right");
+      } else {
+        nextBtn.classList.remove("visible");
+        wrapper?.classList.remove("can-scroll-right");
+      }
+    }
+  }
+
+  // Mouse Down: Start dragging
+  track.addEventListener("mousedown", (e) => {
+    if (e.button !== 0) return; // Only main left click
+    isDown = true;
+    hasDragged = false;
+    startX = e.pageX - track.offsetLeft;
+    scrollLeft = track.scrollLeft;
+    startPos = { x: e.pageX, y: e.pageY };
+    track.classList.add("is-dragging");
+  });
+
+  // Mouse Leave: Cancel drag
+  track.addEventListener("mouseleave", () => {
+    isDown = false;
+    track.classList.remove("is-dragging");
+  });
+
+  // Mouse Up: Stop drag
+  window.addEventListener("mouseup", () => {
+    if (isDown) {
+      isDown = false;
+      track.classList.remove("is-dragging");
+    }
+  });
+
+  // Mouse Move: Drag to slide horizontally
+  track.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    const x = e.pageX - track.offsetLeft;
+    const walk = (x - startX) * 1.6; // Speed multiplier
+
+    if (Math.abs(e.pageX - startPos.x) > 6) {
+      hasDragged = true;
+    }
+
+    track.scrollLeft = scrollLeft - walk;
+    updateArrows();
+  });
+
+  // Prevent link click if the user was actively dragging
+  track.addEventListener("click", (e) => {
+    if (hasDragged) {
+      e.preventDefault();
+      e.stopPropagation();
+      hasDragged = false;
+    }
+  }, true);
+
+  // Mouse Wheel: Smooth horizontal slide
+  track.addEventListener("wheel", (e) => {
+    if (Math.abs(e.deltaY) > 0) {
+      e.preventDefault();
+      track.scrollLeft += e.deltaY * 1.1;
+      updateArrows();
+    }
+  }, { passive: false });
+
+  // Arrow Buttons Click
+  prevBtn?.addEventListener("click", () => {
+    track.scrollBy({ left: -280, behavior: "smooth" });
+    setTimeout(updateArrows, 320);
+  });
+
+  nextBtn?.addEventListener("click", () => {
+    track.scrollBy({ left: 280, behavior: "smooth" });
+    setTimeout(updateArrows, 320);
+  });
+
+  // Native scroll and resize listeners
+  track.addEventListener("scroll", updateArrows);
+  window.addEventListener("resize", updateArrows);
+
+  // Initial check
+  setTimeout(updateArrows, 200);
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
   // Always trigger Welcome Modal first
   try { initWelcomeModal(); } catch (e) { console.error("Error in initWelcomeModal:", e); }
   try { initClock(); } catch (e) { console.error("Error in initClock:", e); }
   try { initAccessibility(); } catch (e) { console.error("Error in initAccessibility:", e); }
-  try { initNavigation(); } catch (e) { console.error("Error in initNavigation:", e); }
+  try { initNavigation();
+  initNavSliderDrag(); } catch (e) { console.error("Error in initNavigation:", e); }
   try { renderServicesCatalog(); } catch (e) { console.error("Error in renderServicesCatalog:", e); }
   try { initServiceFilters(); } catch (e) { console.error("Error in initServiceFilters:", e); }
   try { initDocsCalculator(); } catch (e) { console.error("Error in initDocsCalculator:", e); }
