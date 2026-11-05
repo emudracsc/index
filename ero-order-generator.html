@@ -591,9 +591,6 @@
       color: #000000;
       font-size: 11.5pt;
       line-height: 1.42;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
       overflow: hidden;
     }
 
@@ -656,7 +653,7 @@
       margin-left: 24px;
       line-height: 1.32;
       font-size: 0.9rem;
-      margin-bottom: 8px;
+      margin-bottom: 18px; /* 1 full line space after 'प्रकरणातील उपलब्ध सर्व संबंधित अभिलेख' */
     }
 
     .legal-ref-list li {
@@ -695,8 +692,8 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: 20px;
-      padding-top: 4px;
+      margin-top: 32px; /* 3 lines space right after paragraph */
+      padding-top: 0;
     }
 
     .legal-sign-box {
@@ -763,29 +760,25 @@
         box-shadow: none !important;
         width: 100% !important;
         max-width: 100% !important;
-        height: 269mm !important;
-        min-height: 269mm !important;
+        min-height: auto !important;
         padding: 0 !important;
         margin: 0 !important;
         page-break-after: always !important;
         break-after: page !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
       }
 
       .bulk-order-set {
         page-break-after: always !important;
         break-after: page !important;
-        height: 269mm !important;
-        min-height: 269mm !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
+      }
+
+      .legal-ref-list {
+        margin-bottom: 18px !important; /* 1 line space after ref 8 in print */
       }
 
       .legal-footer-row {
-        margin-top: auto !important;
+        margin-top: 32px !important; /* 3 lines space right after paragraph */
+        padding-top: 0 !important;
       }
 
       .a4-sheet:last-child {
@@ -1347,7 +1340,7 @@
               </div>
 
               <!-- Signatures & Place / Date -->
-              <div class="legal-footer-row" style="margin-top: auto; padding-top: 16px;">
+              <div class="legal-footer-row" style="margin-top: 32px;">
                 <div style="font-size:1.05rem; line-height:1.7;">
                   <div>स्थळ : <span class="pv-place">कणकवली</span></div>
                   <div>दिनांक : <span class="pv-date">05-11-2026</span></div>
@@ -1394,7 +1387,7 @@
     function toEnglishDigits(str) {
       if (str === null || str === undefined) return '';
       const map = {'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'};
-      return String(str).replace(/[\s_.:\/-]/g, d => map[d]);
+      return String(str).replace(/[०-९]/g, d => (map[d] !== undefined ? map[d] : d));
     }
 
     function sanitizeInput(el) {
@@ -2373,7 +2366,6 @@
         combinedHtml += `
           <!-- Order #${idx + 1} Page 1 -->
           <div class="a4-sheet bulk-order-set">
-            <div>
               <div class="legal-heading-center">
                 मतदार नोंदणी अधिकारी, विधानसभा मतदारसंघ क्र. <span>${item.constituency}</span> तथा उपविभागीय अधिकारी, <span>${item.subdiv}</span> यांचे समोर
               </div>
@@ -2412,12 +2404,10 @@
               <div class="legal-para" style="margin-bottom:0;">
                 ${isPoint4FullOnP1 ? (p.para4P1 + ' ' + p.para4P2) : p.para4P1}
               </div>
-            </div>
           </div>
 
           <!-- Order #${idx + 1} Page 2 -->
           <div class="a4-sheet bulk-order-set">
-            <div>
               ${!isPoint4FullOnP1 ? `<div class="legal-para" style="margin-top:0;">${p.para4P2}</div>` : ''}
               <div class="legal-para">
                 ${p.para5}
@@ -2438,10 +2428,9 @@
               <div class="legal-order-item" style="margin-bottom:20px;">
                 <strong>4.</strong> आदेशाची माहिती हरकतदार यांना नियमानुसार कळविण्यात यावी.
               </div>
-            </div>
 
             <!-- Page 2 Footer Pinned to equal bottom margin -->
-            <div class="legal-footer-row" style="margin-top:auto; padding-top:16px;">
+            <div class="legal-footer-row" style="margin-top: 32px;">
               <div style="font-size:1.05rem; line-height:1.7;">
                 <div>स्थळ : <span>${item.place}</span></div>
                 <div>दिनांक : <span>${item.date}</span></div>
