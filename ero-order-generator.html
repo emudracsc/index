@@ -935,6 +935,30 @@
                 <input type="text" id="voterName" class="form-control" placeholder="उदा. श्री. महेश शांताराम गावडे" required oninput="syncPreview()">
               </div>
 
+              <!-- Objection / Deletion Reason -->
+              <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-tag" style="color:#0284c7;"></i> हरकतीचे / वगळणीचे कारण (Reason for Objection / Deletion) <span class="req">*</span></label>
+                <select id="objectionReasonSelect" class="form-control" onchange="handleReasonChange(); syncPreview();" style="font-weight:600; border-color:#93c5fd; background-color:#f0f9ff;">
+                  <option value="Absent / Permanently Shifted" selected>Absent / Permanently Shifted (कायमस्वरूपी स्थलांतरित / अनुपस्थित)</option>
+                  <option value="Duplicate">Duplicate (दुबार मतदार नोंदणी)</option>
+                  <option value="Dead">Dead (मयत मतदार)</option>
+                  <option value="Already Enrolled Elsewhere">Already Enrolled Elsewhere (अन्यत्र नोंदणीकृत)</option>
+                  <option value="custom">-- इतर कस्टम कारण (Custom Reason) --</option>
+                </select>
+                <div id="customReasonWrapper" style="display:none; margin-top:8px;">
+                  <input type="text" id="customReasonInput" class="form-control" placeholder="उदा. Under-age / Not an Indian Citizen / इतर कारण" oninput="syncPreview()">
+                </div>
+              </div>
+
+              <!-- Harkatdar Hearing Attendance -->
+              <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-user-check" style="color:#059669;"></i> हरकतदार सुनावणी उपस्थिती (Hearing Attendance) <span class="req">*</span></label>
+                <select id="harkatdarAttendance" class="form-control" onchange="syncPreview();" style="font-weight:600; border-color:#86efac; background-color:#f0fdf4;">
+                  <option value="हजर" selected>हजर (प्रस्तुत सुनावणीचे कामी हरकतदार स्वतः हजर होते)</option>
+                  <option value="गैरहजर">गैरहजर (प्रस्तुत सुनावणीचे कामी हरकतदार स्वतः गैरहजर होते)</option>
+                </select>
+              </div>
+
               <!-- Part No & Serial No -->
               <div class="form-row-2">
                 <div class="form-group">
@@ -1097,6 +1121,8 @@
                       <th>मतदाराचे नाव</th>
                       <th>भाग क्र.</th>
                       <th>अनुक्रमांक</th>
+                      <th>कारण (Reason)</th>
+                      <th>उपस्थिती</th>
                       <th>हरकतदार</th>
                       <th style="text-align:right;">कृती</th>
                     </tr>
@@ -1143,6 +1169,8 @@
                     <th>मतदाराचे नाव</th>
                     <th>भाग क्र.</th>
                     <th>अनुक्रमांक</th>
+                    <th>कारण (Reason)</th>
+                    <th>उपस्थिती</th>
                     <th>तारीख</th>
                     <th style="text-align:right;">कृती (Action)</th>
                   </tr>
@@ -1239,23 +1267,23 @@
               </ol>
 
               <!-- Paragraph 1 -->
-              <div class="legal-para">
-                <strong>1.</strong> &nbsp;&nbsp; विशेष सखोल पुनरीक्षण (SIR–2026) अंतर्गत प्रसिद्ध करण्यात आलेल्या प्रारूप मतदार यादीमध्ये संबंधित मतदाराचे नाव भाग क्र. <span class="pv-bhag">-----</span> अनुक्रमांक <span class="pv-anukramank">------</span> येथे समाविष्ट आहे. सदर नावाबाबत हरकतदाराने नमुना क्र. 7 सादर करून संबंधित मतदार “Absent / Permanently Shifted” असल्याच्या कारणावरून त्याचे नाव मतदार यादीतून वगळण्याची हरकत घेतली आहे. सदर हरकत Registration of Electors Rules, 1960 मधील Rule 19(1)(b)(ii) अन्वये सुनावणीस ठेवण्यात येऊन हरकतदारास Form 13 द्वारे आवश्यक नोटीस देण्यात आली. त्यानंतर Rule 20 अन्वये संक्षिप्त चौकशी व सुनावणी करण्यात आली.
+              <div class="legal-para" id="orderPara1">
+                <strong>1.</strong> &nbsp;&nbsp; विशेष सखोल पुनरीक्षण (SIR–2026) अंतर्गत प्रसिद्ध करण्यात आलेल्या प्रारूप मतदार यादीमध्ये संबंधित मतदाराचे नाव भाग क्र. <span class="pv-bhag">-----</span> अनुक्रमांक <span class="pv-anukramank">------</span> येथे समाविष्ट आहे. सदर नावाबाबत हरकतदाराने नमुना क्र. 7 सादर करून संबंधित मतदार “Absent / Permanently Shifted” असल्याच्या कारणावरून त्याचे नाव मतदार यादीतून वगळण्याची हरकत घेतली आहे. सदर हरकत Registration of Electors Rules, 1960 मधील Rule 19(1)(b)(ii) अन्वये सुनावणीस ठेवण्यात येऊन हरकतदारास Form 13 द्वारे आवश्यक नोटीस देण्यात आली. त्यानंतर Rule 20 अन्वये संक्षिप्त चौकशी व सुनावणी करण्यात आली. प्रस्तुत सुनावणीचे कामी हरकतदार स्वतः हजर होते तसेच संबंधित BLO कागदपत्रांसह हजर होते.
               </div>
 
               <!-- Paragraph 2 -->
-              <div class="legal-para">
+              <div class="legal-para" id="orderPara2">
                 <strong>2.</strong> &nbsp;&nbsp; हरकतदाराने संबंधित मतदार सदर पत्त्यावर राहत नसून स्थलांतरित झालेला असल्याचे नमुना क्र. 7 मध्ये नमूद केले आहे. तथापि संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करण्यासाठी हरकतदाराने कोणताही स्वतंत्र दस्तऐवज, प्रत्यक्ष साक्ष, नवीन रहिवासाचा पत्ता, स्थानिक अभिलेख अथवा अन्य विश्वासार्ह पुरावा सादर केलेला नाही. भारत निवडणूक आयोगाच्या Form 7 संबंधी मार्गदर्शक सूचनांनुसार, हरकतीमध्ये नमूद केलेल्या deletion च्या कारणाची सत्यता सिद्ध करण्याचे प्राथमिक ओझे हरकतदारावर आहे.
               </div>
 
               <!-- Paragraph 3 -->
-              <div class="legal-para">
-                <strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसल्या तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.
+              <div class="legal-para" id="orderPara3">
+                <strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसली तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.
               </div>
 
               <!-- Paragraph 4 (Unified Full on Page 1 to eliminate empty blank space) -->
               <div class="legal-para" id="para4ContainerP1" style="margin-bottom:0;">
-                <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.
+                <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार
               </div>
 
             </div>
@@ -1265,10 +1293,12 @@
               <div class="a4-page-badge no-print">पान 2 (Page 2)</div>
 
               <!-- Paragraph 4 Continuation container (Only shown if split mode is toggled) -->
-              <div class="legal-para" id="para4ContainerP2" style="margin-top:0; display:none;"></div>
+              <div class="legal-para" id="para4ContainerP2" style="margin-top:0;">
+                आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.
+              </div>
 
               <!-- Paragraph 5 -->
-              <div class="legal-para">
+              <div class="legal-para" id="orderPara5">
                 <strong>5.</strong> &nbsp;&nbsp; वरील सर्व अभिलेख, हरकतदाराचे म्हणणे, संबंधित मतदाराची SIR नोंद, Enumeration Form, BLO पडताळणी, ASDD स्थिती तसेच उपलब्ध इतर अभिलेख यांचे एकत्रित परीक्षण करता, संबंधित मतदाराने विधानसभा मतदारसंघ क्र. <span class="pv-constituency">268 – कणकवली</span> येथील आपला ordinary residence सोडून कायमस्वरूपी अन्यत्र स्थलांतर केले आहे, असे सिद्ध होत नाही. हरकतदाराने Form 7 मध्ये घेतलेली “Absent/Permanently shifted” ही हरकत कोणत्याही स्वतंत्र व विश्वासार्ह पुराव्याने सिद्ध केलेली नाही. त्यामुळे संबंधित मतदाराचे नाव मतदार यादीतून वगळण्यासाठी आवश्यक तथ्यात्मक व कायदेशीर आधार उपलब्ध नाही.
               </div>
 
@@ -1283,7 +1313,7 @@
               </div>
 
               <!-- Operative Points 1 to 4 -->
-              <div class="legal-order-item">
+              <div class="legal-order-item" id="orderOperative1">
                 <strong>1.</strong> हरकतदाराने नमुना क्र. 7 मध्ये संबंधित मतदार “Absent/Permanently Shifted” असल्याच्या कारणावरून घेतलेली हरकत पुराव्याअभावी सिद्ध होत नसल्याने नामंजूर करण्यात येते.
               </div>
 
@@ -1339,6 +1369,9 @@
     // State Variables
     let currentEditingId = null;
     let bulkRecords = [];
+    let currentFontSize = 11.5;
+    let currentLineSpacing = 1.42;
+    let isPoint4FullOnP1 = false; // Default split across Page 1 & Page 2 matching official format in PDF
 
     // Helper: Convert any Marathi numerals to English digits
     function toEnglishDigits(str) {
@@ -1353,13 +1386,184 @@
       }
     }
 
-    // Helper: Format Date to Marathi digits
+    // Helper: Format Date to English digits
     function formatTodayDate() {
       const now = new Date();
       const dd = String(now.getDate()).padStart(2, '0');
       const mm = String(now.getMonth() + 1).padStart(2, '0');
       const yyyy = String(now.getFullYear());
-      return toMarathiDigits(`${dd}-${mm}-${yyyy}`);
+      return dd + '-' + mm + '-' + yyyy;
+    }
+
+    // Reason Helper: Normalize any incoming reason string (Marathi or English)
+    function normalizeReason(raw) {
+      if (!raw) return 'Absent / Permanently Shifted';
+      const str = String(raw).trim();
+      const lower = str.toLowerCase();
+      if (lower.includes('duplicate') || lower.includes('दुबार') || lower.includes('डुप्लिकेट')) {
+        return 'Duplicate';
+      }
+      if (lower.includes('dead') || lower.includes('मयत') || lower.includes('मृत') || lower.includes('मृत्यू')) {
+        return 'Dead';
+      }
+      if (lower.includes('absent') || lower.includes('shift') || lower.includes('स्थलांतरित') || lower.includes('अनुपस्थित') || lower.includes('कायमस्वरूपी')) {
+        return 'Absent / Permanently Shifted';
+      }
+      if (lower.includes('elsewhere') || lower.includes('अन्यत्र')) {
+        return 'Already Enrolled Elsewhere';
+      }
+      return str;
+    }
+
+    // Attendance Helper: Normalize attendance string (हजर vs गैरहजर)
+    function normalizeAttendance(raw) {
+      if (!raw) return 'हजर';
+      const s = String(raw).trim().toLowerCase();
+      if (s.includes('गैर') || s.includes('absent') || s.includes('not present') || s.includes('नाही')) {
+        return 'गैरहजर';
+      }
+      return 'हजर';
+    }
+
+    // Reason Badge HTML generator
+    function getReasonBadgeHtml(reason) {
+      const norm = normalizeReason(reason);
+      if (norm === 'Duplicate') {
+        return '<span class="badge" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-weight:700;"><i class="fa-solid fa-copy"></i> Duplicate</span>';
+      }
+      if (norm === 'Dead') {
+        return '<span class="badge" style="background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; font-weight:700;"><i class="fa-solid fa-ribbon"></i> Dead</span>';
+      }
+      if (norm === 'Absent / Permanently Shifted') {
+        return '<span class="badge badge-blue" style="font-weight:700;"><i class="fa-solid fa-person-walking-luggage"></i> Shifted</span>';
+      }
+      return '<span class="badge" style="background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; font-weight:700;">' + norm + '</span>';
+    }
+
+    // Attendance Badge HTML generator
+    function getAttendanceBadgeHtml(att) {
+      const norm = normalizeAttendance(att);
+      if (norm === 'गैरहजर') {
+        return '<span class="badge" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; font-weight:700;"><i class="fa-solid fa-user-xmark"></i> गैरहजर</span>';
+      }
+      return '<span class="badge" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; font-weight:700;"><i class="fa-solid fa-user-check"></i> हजर</span>';
+    }
+
+    // Handle Form Reason Select Change
+    function handleReasonChange() {
+      const sel = document.getElementById('objectionReasonSelect');
+      const customWrap = document.getElementById('customReasonWrapper');
+      if (sel && customWrap) {
+        customWrap.style.display = (sel.value === 'custom') ? 'block' : 'none';
+      }
+    }
+
+    function getCurrentReason() {
+      const sel = document.getElementById('objectionReasonSelect');
+      if (!sel) return 'Absent / Permanently Shifted';
+      if (sel.value === 'custom') {
+        const cust = document.getElementById('customReasonInput').value.trim();
+        return cust || 'Custom Reason';
+      }
+      return sel.value;
+    }
+
+    function setReasonInForm(reason) {
+      const norm = normalizeReason(reason);
+      const sel = document.getElementById('objectionReasonSelect');
+      const customWrap = document.getElementById('customReasonWrapper');
+      const customInput = document.getElementById('customReasonInput');
+      if (!sel) return;
+
+      const validOptions = ['Absent / Permanently Shifted', 'Duplicate', 'Dead', 'Already Enrolled Elsewhere'];
+      if (validOptions.includes(norm)) {
+        sel.value = norm;
+        if (customWrap) customWrap.style.display = 'none';
+      } else {
+        sel.value = 'custom';
+        if (customWrap) customWrap.style.display = 'block';
+        if (customInput) customInput.value = reason || '';
+      }
+    }
+
+    function getCurrentAttendance() {
+      const sel = document.getElementById('harkatdarAttendance');
+      return sel ? normalizeAttendance(sel.value) : 'हजर';
+    }
+
+    function setAttendanceInForm(attendance) {
+      const sel = document.getElementById('harkatdarAttendance');
+      if (sel) {
+        sel.value = normalizeAttendance(attendance);
+      }
+    }
+
+    // Dynamic Legal Paragraph Generator based on Objection Reason & Attendance
+    function getOrderParagraphs(reason, bhag, anukramank, constituency, attendance) {
+      const norm = normalizeReason(reason);
+      const attNorm = normalizeAttendance(attendance);
+      const b = bhag || '_____';
+      const a = anukramank || '_____';
+      const c = constituency || '268 – कणकवली';
+
+      const attendanceSentence = (attNorm === 'गैरहजर')
+        ? 'प्रस्तूत सुनावणीचे कामी हरकतदार स्वतः गैरहजर होते तसेच संबंधित BLO कागदपत्रांसह हजर होते.'
+        : 'प्रस्तुत सुनावणीचे कामी हरकतदार स्वतः हजर होते तसेच संबंधित BLO कागदपत्रांसह हजर होते.';
+
+      if (norm === 'Duplicate') {
+        return {
+          reason: 'Duplicate',
+          attendance: attNorm,
+          para1: '<strong>1.</strong> &nbsp;&nbsp; विशेष सखोल पुनरीक्षण (SIR–2026) अंतर्गत प्रसिद्ध करण्यात आलेल्या प्रारूप मतदार यादीमध्ये संबंधित मतदाराचे नाव भाग क्र. <span>' + b + '</span> अनुक्रमांक <span>' + a + '</span> येथे समाविष्ट आहे. सदर नावाबाबत हरकतदाराने नमुना क्र. 7 सादर करून संबंधित मतदार “Duplicate” (दुबार मतदार नोंदणी) असल्याच्या कारणावरून त्याचे नाव मतदार यादीतून वगळण्याची हरकत घेतली आहे. सदर हरकत Registration of Electors Rules, 1960 मधील Rule 19(1)(b)(ii) अन्वये सुनावणीस ठेवण्यात येऊन हरकतदारास Form 13 द्वारे आवश्यक नोटीस देण्यात आली. त्यानंतर Rule 20 अन्वये संक्षिप्त चौकशी व सुनावणी करण्यात आली. ' + attendanceSentence,
+          para2: '<strong>2.</strong> &nbsp;&nbsp; हरकतदाराने संबंधित मतदाराचे नाव मतदार यादीत अन्य ठिकाणी दुबार नोंदविले असल्याचा दावा नमुना क्र. 7 मध्ये केला आहे. तथापि संबंधित मतदार इतर कोणत्याही भागात अथवा अन्य मतदारसंघात Duplicate नोंदविला असल्याचे सिद्ध करणारा दुसऱ्या मतदार यादीचा भाग क्र., अनुक्रमांक, EPIC क्रमांक, अथवा अन्य कोणताही अधिकृत पुरावा हरकतदाराने सादर केलेला नाही. भारत निवडणूक आयोगाच्या Form 7 संबंधी मार्गदर्शक सूचनांनुसार, हरकतीमध्ये नमूद केलेल्या दुबार (Duplicate) नोंदीच्या कारणाची सत्यता सिद्ध करण्याचे प्राथमिक ओझे हरकतदारावर आहे.',
+          para3: '<strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे व निवडणूक डेटाबेसचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संगणकीय पडताळणी व De-duplication छाननीमध्ये सदर मतदाराची कोणतीही अवैध दुबार नोंद आढळत नाही. 4. BLO स्तरावरील प्रत्यक्ष क्षेत्रीय पडताळणीमध्ये संबंधित मतदार याच पत्त्यावर राहत असून त्याची अन्यत्र दुबार नोंद नसल्याचा अहवाल आहे. 5. BLO–BLA बैठकीदरम्यानही सदर मतदाराच्या दुबार नोंदीबाबत कोणतीही स्वतंत्र प्रतिकूल नोंद आढळलेली नाही. वरील बाबींवरून हरकतदाराच्या दुबार नोंदीच्या आरोपास समर्थन देणारा कोणताही ठोस पुरावा उपलब्ध नसल्याचे स्पष्ट होते.',
+          para4P1: '<strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 17 व 18 नुसार कोणतीही व्यक्ती एकापेक्षा जास्त मतदारसंघात किंवा एकाच मतदारसंघातील एकापेक्षा जास्त भागात मतदार म्हणून नोंदणीस पात्र नाही. तथापि एखाद्या मतदाराचे नाव दुबार नोंदविले असल्याचा आक्षेप घेताना दुसऱ्या नोंदीचा निश्चित तपशील सादर करणे आवश्यक असते. Registration of Electors Rules, 1960 च्या Rule 19 नुसार',
+          para4P2: 'आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांनुसार “Duplicate” हे वगळणीचे कारण सिद्ध करण्याचे प्राथमिक ओझे हरकतदारावर असते. सदर प्रकरणात हरकतदाराने संबंधित मतदार “Duplicate” असल्याचे सिद्ध करणारा कोणताही पुरावा सादर केलेला नाही. उलट, उपलब्ध SIR अभिलेख व प्रणाली तपासणीनुसार संबंधित मतदार याच भागातील वैध मतदार असल्याचे दिसून येते.',
+          para5: '<strong>5.</strong> &nbsp;&nbsp; वरील सर्व अभिलेख, हरकतदाराचे म्हणणे, संबंधित मतदाराची SIR नोंद, Enumeration Form, BLO पडताळणी, ई-प्रणालीतील De-duplication अहवाल तसेच उपलब्ध इतर अभिलेख यांचे एकत्रित परीक्षण करता, संबंधित मतदार विधानसभा मतदारसंघ क्र. <span>' + c + '</span> मध्ये अन्यत्र दुबार नोंदविला असल्याचे निष्पन्न होत नाही. हरकतदाराने Form 7 मध्ये घेतलेली “Duplicate” ही हरकत कोणत्याही स्वतंत्र व विश्वासार्ह पुराव्याने सिद्ध केलेली नाही. त्यामुळे संबंधित मतदाराचे नाव मतदार यादीतून वगळण्यासाठी आवश्यक तथ्यात्मक व कायदेशीर आधार उपलब्ध नाही.',
+          operative1: '<strong>1.</strong> हरकतदाराने नमुना क्र. 7 मध्ये संबंधित मतदार “Duplicate” असल्याच्या कारणावरून घेतलेली हरकत पुराव्याअभावी सिद्ध होत नसल्याने नामंजूर करण्यात येते.'
+        };
+      }
+
+      if (norm === 'Dead') {
+        return {
+          reason: 'Dead',
+          attendance: attNorm,
+          para1: '<strong>1.</strong> &nbsp;&nbsp; विशेष सखोल पुनरीक्षण (SIR–2026) अंतर्गत प्रसिद्ध करण्यात आलेल्या प्रारूप मतदार यादीमध्ये संबंधित मतदाराचे नाव भाग क्र. <span>' + b + '</span> अनुक्रमांक <span>' + a + '</span> येथे समाविष्ट आहे. सदर नावाबाबत हरकतदाराने नमुना क्र. 7 सादर करून संबंधित मतदार “Dead” (मयत) असल्याच्या कारणावरून त्याचे नाव मतदार यादीतून वगळण्याची हरकत घेतली आहे. सदर हरकत Registration of Electors Rules, 1960 मधील Rule 19(1)(b)(ii) अन्वये सुनावणीस ठेवण्यात येऊन हरकतदारास Form 13 द्वारे आवश्यक नोटीस देण्यात आली. त्यानंतर Rule 20 अन्वये संक्षिप्त चौकशी व सुनावणी करण्यात आली. ' + attendanceSentence,
+          para2: '<strong>2.</strong> &nbsp;&nbsp; हरकतदाराने संबंधित मतदार मयत झाल्याचे नमुना क्र. 7 मध्ये नमूद केले आहे. तथापि संबंधित मतदाराचा अधिकृत मृत्यू दाखला (Death Certificate), स्थानिक नागरी स्वराज्य संस्था अथवा ग्रामपंचायतीकडील मृत्यू नोंदवहीचा उतारा किंवा अन्य कोणताही कायदेशीर व सक्षम पुरावा हरकतदाराने सादर केलेला नाही. भारत निवडणूक आयोगाच्या मार्गदर्शक सूचनांनुसार मयत कारणास्तव नाव वगळण्यासाठी अधिकृत मृत्यू दाखला किंवा सक्षम पुरावा सादर करण्याचे प्राथमिक ओझे हरकतदारावर आहे.',
+          para3: '<strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form प्रत्यक्ष स्वाक्षरीसह भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा प्रत्यक्ष स्वाक्षरी केलेला Enumeration Form प्राप्त आहे. 3. BLO क्षेत्रीय पडताळणीमध्ये संबंधित मतदार हयात असल्याचे व त्याच पत्त्यावर वास्तव्य करीत असल्याचे निष्पन्न झाले आहे. 4. नागरी नोंदणी प्रणालीत मतदाराच्या मृत्यूची कोणतीही नोंद आढळलेली नाही. वरील बाबींवरून हरकतदाराचा दावा पूर्णपणे निराधार असल्याचे स्पष्ट होते.',
+          para4P1: '<strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 तसेच Registration of Electors Rules, 1960 च्या नियमांनुसार मयत मतदाराचे नाव मतदार यादीतून वगळण्यापूर्वी मृत्यूची अधिकृत व निःसंदिग्ध खात्री करणे निवडणूक प्रशासनावर बंधनकारक आहे. केवळ हरकतीत मयत असा दावा केल्याने अथवा तोंडी विधानाने व्यक्ती मयत असल्याचे मानले जाऊ शकत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार',
+          para4P2: 'आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या मार्गदर्शक सूचनांनुसार मयत कारणास्तव नाव वगळण्यासाठी अधिकृत मृत्यू दाखला सादर करण्याचे प्राथमिक ओझे हरकतदारावर आहे. सदर प्रकरणात हरकतदाराने कोणताही अधिकृत पुरावा सादर केलेला नाही. उलट, मतदाराने Enumeration Form सादर केला असून BLO अहवालात मतदार हयात असल्याची पुष्टी करण्यात आली आहे.',
+          para5: '<strong>5.</strong> &nbsp;&nbsp; वरील सर्व अभिलेख, BLO पडताळणी अहवाल, प्रत्यक्ष Enumeration Form तसेच स्थानिक अभिलेख यांचे एकत्रित परीक्षण करता, संबंधित मतदार विधानसभा मतदारसंघ क्र. <span>' + c + '</span> येथे हयात असल्याचे स्पष्ट होते. हरकतदाराने Form 7 मध्ये घेतलेली “Dead” ही हरकत पूर्णपणे निराधार व पुराव्याअभावी सिद्ध न झालेली आहे. त्यामुळे संबंधित मतदाराचे नाव मतदार यादीतून वगळण्यासाठी कोणताही कायदेशीर आधार उपलब्ध नाही.',
+          operative1: '<strong>1.</strong> हरकतदाराने नमुना क्र. 7 मध्ये संबंधित मतदार “Dead” असल्याच्या कारणावरून घेतलेली हरकत पुराव्याअभावी सिद्ध होत नसल्याने नामंजूर करण्यात येते.'
+        };
+      }
+
+      if (norm === 'Absent / Permanently Shifted') {
+        return {
+          reason: 'Absent / Permanently Shifted',
+          attendance: attNorm,
+          para1: '<strong>1.</strong> &nbsp;&nbsp; विशेष सखोल पुनरीक्षण (SIR–2026) अंतर्गत प्रसिद्ध करण्यात आलेल्या प्रारूप मतदार यादीमध्ये संबंधित मतदाराचे नाव भाग क्र. <span>' + b + '</span> अनुक्रमांक <span>' + a + '</span> येथे समाविष्ट आहे. सदर नावाबाबत हरकतदाराने नमुना क्र. 7 सादर करून संबंधित मतदार “Absent / Permanently Shifted” असल्याच्या कारणावरून त्याचे नाव मतदार यादीतून वगळण्याची हरकत घेतली आहे. सदर हरकत Registration of Electors Rules, 1960 मधील Rule 19(1)(b)(ii) अन्वये सुनावणीस ठेवण्यात येऊन हरकतदारास Form 13 द्वारे आवश्यक नोटीस देण्यात आली. त्यानंतर Rule 20 अन्वये संक्षिप्त चौकशी व सुनावणी करण्यात आली. ' + attendanceSentence,
+          para2: '<strong>2.</strong> &nbsp;&nbsp; हरकतदाराने संबंधित मतदार सदर पत्त्यावर राहत नसून स्थलांतरित झालेला असल्याचे नमुना क्र. 7 मध्ये नमूद केले आहे. तथापि संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करण्यासाठी हरकतदाराने कोणताही स्वतंत्र दस्तऐवज, प्रत्यक्ष साक्ष, नवीन रहिवासाचा पत्ता, स्थानिक अभिलेख अथवा अन्य विश्वासार्ह पुरावा सादर केलेला नाही. भारत निवडणूक आयोगाच्या Form 7 संबंधी मार्गदर्शक सूचनांनुसार, हरकतीमध्ये नमूद केलेल्या deletion च्या कारणाची सत्यता सिद्ध करण्याचे प्राथमिक ओझे हरकतदारावर आहे.',
+          para3: '<strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसली तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.',
+          para4P1: '<strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार',
+          para4P2: 'आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.',
+          para5: '<strong>5.</strong> &nbsp;&nbsp; वरील सर्व अभिलेख, हरकतदाराचे म्हणणे, संबंधित मतदाराची SIR नोंद, Enumeration Form, BLO पडताळणी, ASDD स्थिती तसेच उपलब्ध इतर अभिलेख यांचे एकत्रित परीक्षण करता, संबंधित मतदाराने विधानसभा मतदारसंघ क्र. <span>' + c + '</span> येथील आपला ordinary residence सोडून कायमस्वरूपी अन्यत्र स्थलांतर केले आहे, असे सिद्ध होत नाही. हरकतदाराने Form 7 मध्ये घेतलेली “Absent/Permanently shifted” ही हरकत कोणत्याही स्वतंत्र व विश्वासार्ह पुराव्याने सिद्ध केलेली नाही. त्यामुळे संबंधित मतदाराचे नाव मतदार यादीतून वगळण्यासाठी आवश्यक तथ्यात्मक व कायदेशीर आधार उपलब्ध नाही.',
+          operative1: '<strong>1.</strong> हरकतदाराने नमुना क्र. 7 मध्ये संबंधित मतदार “Absent / Permanently Shifted” असल्याच्या कारणावरून घेतलेली हरकत पुराव्याअभावी सिद्ध होत नसल्याने नामंजूर करण्यात येते.'
+        };
+      }
+
+      // Fallback for custom reason
+      return {
+        reason: norm,
+        attendance: attNorm,
+        para1: '<strong>1.</strong> &nbsp;&nbsp; विशेष सखोल पुनरीक्षण (SIR–2026) अंतर्गत प्रसिद्ध करण्यात आलेल्या प्रारूप मतदार यादीमध्ये संबंधित मतदाराचे नाव भाग क्र. <span>' + b + '</span> अनुक्रमांक <span>' + a + '</span> येथे समाविष्ट आहे. सदर नावाबाबत हरकतदाराने नमुना क्र. 7 सादर करून संबंधित मतदार “' + norm + '” असल्याच्या कारणावरून त्याचे नाव मतदार यादीतून वगळण्याची हरकत घेतली आहे. सदर हरकत Registration of Electors Rules, 1960 मधील Rule 19(1)(b)(ii) अन्वये सुनावणीस ठेवण्यात येऊन हरकतदारास Form 13 द्वारे आवश्यक नोटीस देण्यात आली. त्यानंतर Rule 20 अन्वये संक्षिप्त चौकशी व सुनावणी करण्यात आली. ' + attendanceSentence,
+        para2: '<strong>2.</strong> &nbsp;&nbsp; हरकतदाराने संबंधित मतदाराचे नाव मतदार यादीतून वगळण्यासाठी “' + norm + '” हे कारण नमुना क्र. 7 मध्ये नमूद केले आहे. तथापि नमूद कारणाच्या समर्थनार्थ हरकतदाराने कोणताही स्वतंत्र दस्तऐवज, प्रत्यक्ष साक्ष अथवा अन्य विश्वासार्ह पुरावा सादर केलेला नाही. भारत निवडणूक आयोगाच्या Form 7 संबंधी मार्गदर्शक सूचनांनुसार, हरकतीमध्ये नमूद केलेल्या deletion च्या कारणाची सत्यता सिद्ध करण्याचे प्राथमिक ओझे हरकतदारावर आहे.',
+        para3: '<strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. BLO स्तरावरील पडताळणीमध्ये हरकतीमधील कारणास पुष्टी देणारी कोणतीही प्रतिकूल नोंद आढळत नाही. 4. BLO–BLA बैठकीदरम्यानही कोणतीही स्वतंत्र प्रतिकूल नोंद आढळलेली नाही. वरील बाबींवरून हरकतदाराच्या आरोपास समर्थन देणारा कोणताही ठोस पुरावा उपलब्ध नसल्याचे स्पष्ट होते.',
+        para4P1: '<strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 व 20 अन्वये नागरिकाचा मतदानाचा हक्क आणि मतदार यादीतील नोंद अत्यंत मूलभूत आहे. कोणत्याही मतदाराचे नाव यादीतून वगळण्यापूर्वी कायदेशीर चौकशी पूर्ण करणे आवश्यक आहे. Registration of Electors Rules, 1960 च्या Rule 19 नुसार',
+        para4P2: 'आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांनुसार “' + norm + '” हे वगळणीचे कारण सिद्ध करण्याचे ओझे हरकतदारावर असते. सदर प्रकरणात हरकतदाराने नमूद केलेल्या कारणाच्या समर्थनार्थ कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला असून उपलब्ध अभिलेखात हरकतीस समर्थन देणारी प्रतिकूल नोंद नाही.',
+        para5: '<strong>5.</strong> &nbsp;&nbsp; वरील सर्व अभिलेख, हरकतदाराचे म्हणणे, संबंधित मतदाराची SIR नोंद, Enumeration Form, BLO पडताळणी तसेच उपलब्ध इतर अभिलेख यांचे एकत्रित परीक्षण करता, विधानसभा मतदारसंघ क्र. <span>' + c + '</span> च्या यादीतून संबंधित मतदाराचे नाव वगळण्यासाठी हरकतदाराने घेतलेली “' + norm + '” ही हरकत पुराव्याने सिद्ध होत नाही. त्यामुळे संबंधित मतदाराचे नाव मतदार यादीतून वगळण्यासाठी आवश्यक कायदेशीर आधार उपलब्ध नाही.',
+        operative1: '<strong>1.</strong> हरकतदाराने नमुना क्र. 7 मध्ये संबंधित मतदार “' + norm + '” असल्याच्या कारणावरून घेतलेली हरकत पुराव्याअभावी सिद्ध होत नसल्याने नामंजूर करण्यात येते.'
+      };
     }
 
     // Switch Main Tabs (Single, Bulk, History)
@@ -1417,6 +1621,43 @@
       document.querySelectorAll('.pv-subdiv').forEach(el => el.textContent = subdiv);
       document.querySelectorAll('.pv-officer-name').forEach(el => el.textContent = officer);
       document.querySelectorAll('.pv-officer-desig').forEach(el => el.textContent = desig);
+
+      // Dynamic Paragraphs based on reason and attendance
+      const reason = getCurrentReason();
+      const attendance = getCurrentAttendance();
+      const p = getOrderParagraphs(reason, bhag, anukramank, constituency, attendance);
+
+      const p1El = document.getElementById('orderPara1');
+      if (p1El) p1El.innerHTML = p.para1;
+
+      const p2El = document.getElementById('orderPara2');
+      if (p2El) p2El.innerHTML = p.para2;
+
+      const p3El = document.getElementById('orderPara3');
+      if (p3El) p3El.innerHTML = p.para3;
+
+      const para4P1El = document.getElementById('para4ContainerP1');
+      const para4P2El = document.getElementById('para4ContainerP2');
+
+      if (isPoint4FullOnP1) {
+        if (para4P1El) para4P1El.innerHTML = p.para4P1 + ' ' + p.para4P2;
+        if (para4P2El) {
+          para4P2El.innerHTML = '';
+          para4P2El.style.display = 'none';
+        }
+      } else {
+        if (para4P1El) para4P1El.innerHTML = p.para4P1;
+        if (para4P2El) {
+          para4P2El.innerHTML = p.para4P2;
+          para4P2El.style.display = 'block';
+        }
+      }
+
+      const p5El = document.getElementById('orderPara5');
+      if (p5El) p5El.innerHTML = p.para5;
+
+      const op1El = document.getElementById('orderOperative1');
+      if (op1El) op1El.innerHTML = p.operative1;
     }
 
     // Demo Data
@@ -1427,6 +1668,8 @@
       document.getElementById('voterName').value = 'श्री. महेश शांताराम गावडे';
       document.getElementById('bhagNo').value = '142';
       document.getElementById('anukramank').value = '587';
+      setReasonInForm('Absent / Permanently Shifted');
+      setAttendanceInForm('हजर');
       document.getElementById('orderDate').value = '05-11-2026';
       document.getElementById('orderPlace').value = 'कणकवली';
       syncPreview();
@@ -1441,6 +1684,8 @@
       document.getElementById('voterName').value = '';
       document.getElementById('bhagNo').value = '';
       document.getElementById('anukramank').value = '';
+      setReasonInForm('Absent / Permanently Shifted');
+      setAttendanceInForm('हजर');
       document.getElementById('orderDate').value = formatTodayDate();
       syncPreview();
       showToast('फॉर्म रीसेट केला गेला आहे.', 'info');
@@ -1469,6 +1714,8 @@
       document.getElementById('voterName').value = record.voter || '';
       document.getElementById('bhagNo').value = record.bhag || '';
       document.getElementById('anukramank').value = record.anukramank || '';
+      setReasonInForm(record.reason || 'Absent / Permanently Shifted');
+      setAttendanceInForm(record.attendance || 'हजर');
       document.getElementById('orderDate').value = record.date || formatTodayDate();
       document.getElementById('orderPlace').value = record.place || 'कणकवली';
       document.getElementById('constituencyName').value = record.constituency || '268 – कणकवली';
@@ -1476,14 +1723,14 @@
       document.getElementById('officerName').value = record.officer || 'श्री. जगदीश कातकर';
       document.getElementById('officerDesig').value = record.desig || 'उपविभागीय अधिकारी, कणकवली';
 
-      document.getElementById('editingCaseText').textContent = `${record.caseNo || ''} / ${record.voter || ''}`;
+      document.getElementById('editingCaseText').textContent = (record.caseNo || '') + ' / ' + (record.voter || '');
       document.getElementById('editModeBanner').style.display = 'flex';
       document.getElementById('saveBtnText').textContent = 'अद्ययावत करा व प्रिंट करा';
 
       syncPreview();
       switchMainTab('single');
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      showToast(`प्रकरण क्र. ${record.caseNo} संपादन करण्यासाठी लोड केले.`, 'warning');
+      showToast('प्रकरण क्र. ' + record.caseNo + ' संपादन करण्यासाठी लोड केले.', 'warning');
     }
 
     // Collect Current Form Data as Object
@@ -1496,6 +1743,8 @@
         voter: document.getElementById('voterName').value.trim(),
         bhag: toEnglishDigits(document.getElementById('bhagNo').value.trim()),
         anukramank: toEnglishDigits(document.getElementById('anukramank').value.trim()),
+        reason: getCurrentReason(),
+        attendance: getCurrentAttendance(),
         date: toEnglishDigits(document.getElementById('orderDate').value.trim()) || '05-11-2026',
         place: document.getElementById('orderPlace').value.trim(),
         constituency: toEnglishDigits(document.getElementById('constituencyName').value.trim()) || '268 – कणकवली',
@@ -1576,7 +1825,7 @@
       tbody.innerHTML = '';
 
       if (history.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#94a3b8;"><i class="fa-regular fa-folder-open" style="font-size:2rem; margin-bottom:8px; display:block;"></i>कोणतेही जतन केलेले आदेश उपलब्ध नाहीत. नवीन आदेश तयार केल्यावर तो आपोआप येथे दिसेल.</td></tr>`;
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#94a3b8;"><i class="fa-regular fa-folder-open" style="font-size:2rem; margin-bottom:8px; display:block;"></i>कोणतेही जतन केलेले आदेश उपलब्ध नाहीत. नवीन आदेश तयार केल्यावर तो आपोआप येथे दिसेल.</td></tr>';
         return;
       }
 
@@ -1588,12 +1837,14 @@
           (r.harkatdar && r.harkatdar.toLowerCase().includes(q)) ||
           (r.caseNo && r.caseNo.toLowerCase().includes(q)) ||
           (r.bhag && r.bhag.toLowerCase().includes(q)) ||
+          (r.reason && r.reason.toLowerCase().includes(q)) ||
+          (r.attendance && r.attendance.toLowerCase().includes(q)) ||
           (r.anukramank && r.anukramank.toLowerCase().includes(q))
         );
       }
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">दिलेल्या शोध निकषांनुसार कोणतेही आदेश सापडले नाहीत.</td></tr>`;
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; color:#94a3b8;">दिलेल्या शोध निकषांनुसार कोणतेही आदेश सापडले नाहीत.</td></tr>';
         return;
       }
 
@@ -1604,6 +1855,8 @@
           <td><strong>${record.voter || '-'}</strong></td>
           <td><span class="badge badge-blue">भाग: ${record.bhag || '-'}</span></td>
           <td>अनु.: ${record.anukramank || '-'}</td>
+          <td>${getReasonBadgeHtml(record.reason || 'Absent / Permanently Shifted')}</td>
+          <td>${getAttendanceBadgeHtml(record.attendance || 'हजर')}</td>
           <td style="font-size:0.8rem; color:#64748b;">${record.date || '-'}</td>
           <td style="text-align:right; white-space:nowrap;">
             <button type="button" class="btn btn-sm btn-secondary" onclick="loadRecordToPreview('${record.id}')" title="पूर्वावलोकन पहा">
@@ -1634,20 +1887,23 @@
       const r = history.find(item => item.id === id);
       if (!r) return;
 
-      document.querySelectorAll('.pv-case-no').forEach(el => el.textContent = r.caseNo || '____');
-      document.querySelectorAll('.pv-year').forEach(el => el.textContent = r.year || '2026');
-      document.querySelectorAll('.pv-harkatdar').forEach(el => el.textContent = r.harkatdar || '__________');
-      document.querySelectorAll('.pv-voter').forEach(el => el.textContent = r.voter || '__________');
-      document.querySelectorAll('.pv-bhag').forEach(el => el.textContent = r.bhag || '__');
-      document.querySelectorAll('.pv-anukramank').forEach(el => el.textContent = r.anukramank || '__');
-      document.querySelectorAll('.pv-date').forEach(el => el.textContent = r.date || '05-11-2026');
-      document.querySelectorAll('.pv-place').forEach(el => el.textContent = r.place || 'कणकवली');
-      document.querySelectorAll('.pv-constituency').forEach(el => el.textContent = r.constituency || '268 – कणकवली');
-      document.querySelectorAll('.pv-subdiv').forEach(el => el.textContent = r.subdiv || 'कणकवली');
-      document.querySelectorAll('.pv-officer-name').forEach(el => el.textContent = r.officer || 'श्री. जगदीश कातकर');
-      document.querySelectorAll('.pv-officer-desig').forEach(el => el.textContent = r.desig || 'उपविभागीय अधिकारी, कणकवली');
+      setReasonInForm(r.reason || 'Absent / Permanently Shifted');
+      setAttendanceInForm(r.attendance || 'हजर');
+      document.getElementById('caseNo').value = r.caseNo || '';
+      document.getElementById('orderYear').value = r.year || '2026';
+      document.getElementById('harkatdarName').value = r.harkatdar || '';
+      document.getElementById('voterName').value = r.voter || '';
+      document.getElementById('bhagNo').value = r.bhag || '';
+      document.getElementById('anukramank').value = r.anukramank || '';
+      document.getElementById('orderDate').value = r.date || formatTodayDate();
+      document.getElementById('orderPlace').value = r.place || 'कणकवली';
+      document.getElementById('constituencyName').value = r.constituency || '268 – कणकवली';
+      document.getElementById('subdivOffice').value = r.subdiv || 'कणकवली';
+      document.getElementById('officerName').value = r.officer || 'श्री. जगदीश कातकर';
+      document.getElementById('officerDesig').value = r.desig || 'उपविभागीय अधिकारी, कणकवली';
 
-      showToast(`प्रकरण क्र. ${r.caseNo} चा पूर्वावलोकन उजव्या बाजूला लोड केला.`, 'info');
+      syncPreview();
+      showToast('प्रकरण क्र. ' + r.caseNo + ' चा पूर्वावलोकन उजव्या बाजूला लोड केला.', 'info');
     }
 
     function directPrintHistoryRecord(id) {
@@ -1658,43 +1914,39 @@
     }
 
     function deleteHistoryRecord(id) {
-      if (!confirm('हा आदेश इतिहासामधून कायमचा हटवायचा आहे का?')) return;
+      if (!confirm('हा आदेश इतिहासामधून कायमस्वरूपी हटवायचा आहे का?')) return;
       let history = getHistory();
       history = history.filter(r => r.id !== id);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-      updateHistoryBadge();
       renderHistoryTable();
-      showToast('आदेश इतिहासामधून हटविण्यात आला.', 'warning');
+      updateHistoryBadge();
+      showToast('आदेश हटविण्यात आला.', 'info');
     }
 
     function clearAllHistory() {
-      const history = getHistory();
-      if (history.length === 0) {
-        showToast('इतिहास आधीच रिकामा आहे.', 'info');
-        return;
-      }
-      if (!confirm(`तुम्हाला इतिहासामधील सर्व ${history.length} आदेश कायमचे हटवायचे आहेत का?`)) return;
+      if (!confirm('इतिहासामधील सर्व आदेश कायमस्वरूपी हटवायचे आहेत का? ही क्रिया पूर्ववत करता येणार नाही!')) return;
       localStorage.removeItem(STORAGE_KEY);
-      updateHistoryBadge();
       renderHistoryTable();
-      showToast('सर्व इतिहास यशस्वीरित्या साफ करण्यात आला.', 'warning');
+      updateHistoryBadge();
+      showToast('सर्व इतिहास साफ करण्यात आला.', 'warning');
     }
 
     function exportHistoryToExcel() {
       const history = getHistory();
       if (history.length === 0) {
-        showToast('डाउनलोड करण्यासाठी इतिहासामध्ये कोणताही डेटा नाही!', 'error');
+        showToast('डाउनलोड करण्यासाठी कोणताही इतिहास उपलब्ध नाही!', 'error');
         return;
       }
 
-      const rows = history.map((r, i) => ({
-        "अ.क्र.": i + 1,
+      const rows = history.map(r => ({
         "प्रकरण_क्रमांक": r.caseNo,
         "वर्ष": r.year,
         "हरकतदाराचे_नाव": r.harkatdar,
         "मतदाराचे_नाव": r.voter,
         "भाग_क्रमांक": r.bhag,
         "अनुक्रमांक": r.anukramank,
+        "हरकतीचे_कारण": r.reason || 'Absent / Permanently Shifted',
+        "हरकतदार_उपस्थिती": r.attendance || 'हजर',
         "आदेश_दिनांक": r.date,
         "स्थळ": r.place,
         "विधानसभा_मतदारसंघ": r.constituency,
@@ -1705,7 +1957,7 @@
       const ws = XLSX.utils.json_to_sheet(rows);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Saved_ERO_Orders");
-      XLSX.writeFile(wb, `ERO_Orders_History_${new Date().toISOString().slice(0,10)}.xlsx`);
+      XLSX.writeFile(wb, 'ERO_Orders_History_' + new Date().toISOString().slice(0,10) + '.xlsx');
       showToast('इतिहास एक्सेल फाईल यशस्वीरित्या डाउनलोड झाली!', 'success');
     }
 
@@ -1713,7 +1965,7 @@
        Excel Bulk Upload & Generation Logic
        ========================================================================== */
 
-    // Download Sample or Blank Excel Template
+    // Download Sample or Blank Excel Template with Objection_Reason & Harkatdar_Attendance Column
     function downloadSampleExcel(withSampleData) {
       const sampleRows = withSampleData ? [
         {
@@ -1723,6 +1975,8 @@
           "Voter_Name": "श्री. महेश शांताराम गावडे",
           "Bhag_No": "142",
           "Anukramank": "587",
+          "Objection_Reason": "Absent / Permanently Shifted",
+          "Harkatdar_Attendance": "हजर",
           "Order_Date": "05-11-2026",
           "Place": "कणकवली",
           "Constituency": "268 – कणकवली",
@@ -1736,6 +1990,8 @@
           "Voter_Name": "सौ. स्नेहा महेश गावडे",
           "Bhag_No": "142",
           "Anukramank": "588",
+          "Objection_Reason": "Duplicate",
+          "Harkatdar_Attendance": "गैरहजर",
           "Order_Date": "05-11-2026",
           "Place": "कणकवली",
           "Constituency": "268 – कणकवली",
@@ -1749,6 +2005,8 @@
           "Voter_Name": "श्री. विठ्ठल सखाराम कदम",
           "Bhag_No": "156",
           "Anukramank": "214",
+          "Objection_Reason": "Absent / Permanently Shifted",
+          "Harkatdar_Attendance": "हजर",
           "Order_Date": "05-11-2026",
           "Place": "कणकवली",
           "Constituency": "268 – कणकवली",
@@ -1762,6 +2020,8 @@
           "Voter_Name": "श्री. प्रकाश बाळकृष्ण सावंत",
           "Bhag_No": "156",
           "Anukramank": "219",
+          "Objection_Reason": "Duplicate",
+          "Harkatdar_Attendance": "गैरहजर",
           "Order_Date": "05-11-2026",
           "Place": "कणकवली",
           "Constituency": "268 – कणकवली",
@@ -1776,6 +2036,8 @@
           "Voter_Name": "",
           "Bhag_No": "",
           "Anukramank": "",
+          "Objection_Reason": "Absent / Permanently Shifted",
+          "Harkatdar_Attendance": "हजर",
           "Order_Date": "05-11-2026",
           "Place": "कणकवली",
           "Constituency": "268 – कणकवली",
@@ -1789,7 +2051,7 @@
       XLSX.utils.book_append_sheet(wb, ws, "ERO_Orders_Template");
       const filename = withSampleData ? "ERO_Order_SIR2026_Sample_Template.xlsx" : "ERO_Order_Blank_Template.xlsx";
       XLSX.writeFile(wb, filename);
-      showToast(`टेम्पलेट फाईल (${filename}) यशस्वीरित्या डाऊनलोड झाली.`, 'success');
+      showToast('टेम्पलेट फाईल (' + filename + ') यशस्वीरित्या डाऊनलोड झाली.', 'success');
     }
 
     // Handle File Drop / Select
@@ -1801,23 +2063,25 @@
 
     // Drag and Drop listeners
     const dropZone = document.getElementById('dropZone');
-    ['dragenter', 'dragover'].forEach(eventName => {
-      dropZone.addEventListener(eventName, e => {
-        e.preventDefault();
-        dropZone.classList.add('drag-over');
-      }, false);
-    });
-    ['dragleave', 'drop'].forEach(eventName => {
-      dropZone.addEventListener(eventName, e => {
-        e.preventDefault();
-        dropZone.classList.remove('drag-over');
-      }, false);
-    });
-    dropZone.addEventListener('drop', e => {
-      const dt = e.dataTransfer;
-      const file = dt.files[0];
-      if (file) processExcelFile(file);
-    });
+    if (dropZone) {
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, e => {
+          e.preventDefault();
+          dropZone.classList.add('drag-over');
+        }, false);
+      });
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, e => {
+          e.preventDefault();
+          dropZone.classList.remove('drag-over');
+        }, false);
+      });
+      dropZone.addEventListener('drop', e => {
+        const dt = e.dataTransfer;
+        const file = dt.files[0];
+        if (file) processExcelFile(file);
+      });
+    }
 
     // Parse Excel File
     function processExcelFile(file) {
@@ -1846,6 +2110,10 @@
             const voter = getColVal(row, ['Voter_Name', 'मतदाराचे_नाव', 'मतदार', 'voter', 'VoterName', 'voter_name', 'नाव']);
             const bhag = getColVal(row, ['Bhag_No', 'भाग_क्रमांक', 'भाग क्र', 'bhag', 'part', 'PartNo', 'BhagNo', 'part_no']);
             const anukramank = getColVal(row, ['Anukramank', 'अनुक्रमांक', 'अनु.', 'sr_no', 'serial', 'SerialNo', 'srno']);
+            const rawReason = getColVal(row, ['Objection_Reason', 'Reason', 'हरकतीचे_कारण', 'कारण', 'objection_reason', 'reason', 'ObjectionReason', 'Harkatiche_Karan', 'Deletion_Reason', 'vagalniche_karan', 'वगळणीचे_कारण', 'Type', 'प्रकार']);
+            const reason = normalizeReason(rawReason);
+            const rawAttendance = getColVal(row, ['Harkatdar_Attendance', 'हरकतदार_उपस्थिती', 'उपस्थिती', 'Attendance', 'attendance', 'HarkatdarAttendance', 'Status', 'हरकतदार_स्थिती']);
+            const attendance = normalizeAttendance(rawAttendance);
             const date = getColVal(row, ['Order_Date', 'आदेश_दिनांक', 'दिनांक', 'date', 'OrderDate']) || formatTodayDate();
             const place = getColVal(row, ['Place', 'स्थळ', 'place']) || 'कणकवली';
             const constituency = getColVal(row, ['Constituency', 'विधानसभा_मतदारसंघ', 'मतदारसंघ', 'constituency']) || '268 – कणकवली';
@@ -1862,6 +2130,8 @@
                 voter: String(voter || 'श्री. मतदार'),
                 bhag: toEnglishDigits(String(bhag || '1')),
                 anukramank: toEnglishDigits(String(anukramank || (idx + 1))),
+                reason: reason,
+                attendance: attendance,
                 date: toEnglishDigits(String(date || formatTodayDate())),
                 place: String(place),
                 constituency: toEnglishDigits(String(constituency || '268 – कणकवली')),
@@ -1880,7 +2150,7 @@
           document.getElementById('bulkControls').style.display = 'block';
           renderBulkTable();
           updateBulkCounters();
-          showToast(`एकूण ${bulkRecords.length} नोंदी यशस्वीरित्या लोड झाल्या!`, 'success');
+          showToast('एकूण ' + bulkRecords.length + ' नोंदी यशस्वीरित्या लोड झाल्या!', 'success');
 
         } catch (err) {
           console.error(err);
@@ -1910,6 +2180,8 @@
           const match = item.voter.toLowerCase().includes(query) ||
                         item.harkatdar.toLowerCase().includes(query) ||
                         item.caseNo.toLowerCase().includes(query) ||
+                        item.reason.toLowerCase().includes(query) ||
+                        item.attendance.toLowerCase().includes(query) ||
                         item.bhag.toLowerCase().includes(query);
           if (!match) return;
         }
@@ -1921,6 +2193,8 @@
           <td><strong>${item.voter}</strong></td>
           <td><span class="badge badge-blue">भाग ${item.bhag}</span></td>
           <td>अनु. ${item.anukramank}</td>
+          <td>${getReasonBadgeHtml(item.reason)}</td>
+          <td>${getAttendanceBadgeHtml(item.attendance)}</td>
           <td>${item.harkatdar}</td>
           <td style="text-align:right;">
             <button type="button" class="btn btn-sm btn-secondary" onclick="previewBulkItem(${index})" title="पूर्वावलोकन पहा">
@@ -1968,20 +2242,23 @@
       const item = bulkRecords[index];
       if (!item) return;
 
-      document.querySelectorAll('.pv-case-no').forEach(el => el.textContent = item.caseNo);
-      document.querySelectorAll('.pv-year').forEach(el => el.textContent = item.year);
-      document.querySelectorAll('.pv-harkatdar').forEach(el => el.textContent = item.harkatdar);
-      document.querySelectorAll('.pv-voter').forEach(el => el.textContent = item.voter);
-      document.querySelectorAll('.pv-bhag').forEach(el => el.textContent = item.bhag);
-      document.querySelectorAll('.pv-anukramank').forEach(el => el.textContent = item.anukramank);
-      document.querySelectorAll('.pv-date').forEach(el => el.textContent = item.date);
-      document.querySelectorAll('.pv-place').forEach(el => el.textContent = item.place);
-      document.querySelectorAll('.pv-constituency').forEach(el => el.textContent = item.constituency);
-      document.querySelectorAll('.pv-subdiv').forEach(el => el.textContent = item.subdiv);
-      document.querySelectorAll('.pv-officer-name').forEach(el => el.textContent = item.officer);
-      document.querySelectorAll('.pv-officer-desig').forEach(el => el.textContent = item.desig);
+      setReasonInForm(item.reason);
+      setAttendanceInForm(item.attendance);
+      document.getElementById('caseNo').value = item.caseNo;
+      document.getElementById('orderYear').value = item.year;
+      document.getElementById('harkatdarName').value = item.harkatdar;
+      document.getElementById('voterName').value = item.voter;
+      document.getElementById('bhagNo').value = item.bhag;
+      document.getElementById('anukramank').value = item.anukramank;
+      document.getElementById('orderDate').value = item.date;
+      document.getElementById('orderPlace').value = item.place;
+      document.getElementById('constituencyName').value = item.constituency;
+      document.getElementById('subdivOffice').value = item.subdiv;
+      document.getElementById('officerName').value = item.officer;
+      document.getElementById('officerDesig').value = item.desig;
 
-      showToast(`प्रकरण क्र. ${item.caseNo} चा आदेश पूर्वावलोकनात उघडला.`, 'info');
+      syncPreview();
+      showToast('प्रकरण क्र. ' + item.caseNo + ' चा आदेश (' + item.reason + ' - ' + item.attendance + ') पूर्वावलोकनात उघडला.', 'info');
     }
 
     /* ==========================================================================
@@ -1995,7 +2272,7 @@
         return;
       }
 
-      showToast(`एकूण ${selectedList.length} आदेश प्रिंटसाठी तयार होत आहेत...`, 'info');
+      showToast('एकूण ' + selectedList.length + ' आदेश प्रिंटसाठी तयार होत आहेत...', 'info');
 
       // Auto save all selected records into History!
       selectedList.forEach(item => {
@@ -2007,6 +2284,8 @@
           voter: item.voter,
           bhag: item.bhag,
           anukramank: item.anukramank,
+          reason: item.reason,
+          attendance: item.attendance,
           date: item.date,
           place: item.place,
           constituency: item.constituency,
@@ -2022,6 +2301,10 @@
       let combinedHtml = '';
 
       selectedList.forEach((item, idx) => {
+        const itemReason = normalizeReason(item.reason);
+        const itemAttendance = normalizeAttendance(item.attendance);
+        const p = getOrderParagraphs(itemReason, item.bhag, item.anukramank, item.constituency, itemAttendance);
+
         combinedHtml += `
           <!-- Order #${idx + 1} Page 1 -->
           <div class="a4-sheet bulk-order-set">
@@ -2052,30 +2335,31 @@
               <li>प्रकरणातील उपलब्ध सर्व संबंधित अभिलेख.</li>
             </ol>
             <div class="legal-para">
-              <strong>1.</strong> &nbsp;&nbsp; विशेष सखोल पुनरीक्षण (SIR–2026) अंतर्गत प्रसिद्ध करण्यात आलेल्या प्रारूप मतदार यादीमध्ये संबंधित मतदाराचे नाव भाग क्र. <span>${item.bhag}</span> अनुक्रमांक <span>${item.anukramank}</span> येथे समाविष्ट आहे. सदर नावाबाबत हरकतदाराने नमुना क्र. 7 सादर करून संबंधित मतदार “Absent / Permanently Shifted” असल्याच्या कारणावरून त्याचे नाव मतदार यादीतून वगळण्याची हरकत घेतली आहे. सदर हरकत Registration of Electors Rules, 1960 मधील Rule 19(1)(b)(ii) अन्वये सुनावणीस ठेवण्यात येऊन हरकतदारास Form 13 द्वारे आवश्यक नोटीस देण्यात आली. त्यानंतर Rule 20 अन्वये संक्षिप्त चौकशी व सुनावणी करण्यात आली.
+              ${p.para1}
             </div>
             <div class="legal-para">
-              <strong>2.</strong> &nbsp;&nbsp; हरकतदाराने संबंधित मतदार सदर पत्त्यावर राहत नसून स्थलांतरित झालेला असल्याचे नमुना क्र. 7 मध्ये नमूद केले आहे. तथापि संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करण्यासाठी हरकतदाराने कोणताही स्वतंत्र दस्तऐवज, प्रत्यक्ष साक्ष, नवीन रहिवासाचा पत्ता, स्थानिक अभिलेख अथवा अन्य विश्वासार्ह पुरावा सादर केलेला नाही. भारत निवडणूक आयोगाच्या Form 7 संबंधी मार्गदर्शक सूचनांनुसार, हरकतीमध्ये नमूद केलेल्या deletion च्या कारणाची सत्यता सिद्ध करण्याचे प्राथमिक ओझे हरकतदारावर आहे.
+              ${p.para2}
             </div>
             <div class="legal-para">
-              <strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसल्या तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.
+              ${p.para3}
             </div>
             <div class="legal-para" style="margin-bottom:0;">
-              <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.
+              ${isPoint4FullOnP1 ? (p.para4P1 + ' ' + p.para4P2) : p.para4P1}
             </div>
           </div>
 
           <!-- Order #${idx + 1} Page 2 -->
           <div class="a4-sheet bulk-order-set">
+            ${!isPoint4FullOnP1 ? `<div class="legal-para" style="margin-top:0;">${p.para4P2}</div>` : ''}
             <div class="legal-para">
-              <strong>5.</strong> &nbsp;&nbsp; वरील सर्व अभिलेख, हरकतदाराचे म्हणणे, संबंधित मतदाराची SIR नोंद, Enumeration Form, BLO पडताळणी, ASDD स्थिती तसेच उपलब्ध इतर अभिलेख यांचे एकत्रित परीक्षण करता, संबंधित मतदाराने विधानसभा मतदारसंघ क्र. <span>${item.constituency}</span> येथील आपला ordinary residence सोडून कायमस्वरूपी अन्यत्र स्थलांतर केले आहे, असे सिद्ध होत नाही. हरकतदाराने Form 7 मध्ये घेतलेली “Absent/Permanently shifted” ही हरकत कोणत्याही स्वतंत्र व विश्वासार्ह पुराव्याने सिद्ध केलेली नाही. त्यामुळे संबंधित मतदाराचे नाव मतदार यादीतून वगळण्यासाठी आवश्यक तथ्यात्मक व कायदेशीर आधार उपलब्ध नाही.
+              ${p.para5}
             </div>
             <div class="legal-order-title">आदेश</div>
             <div class="legal-para" style="margin-bottom:12px;">
               त्याअर्थी, लोकप्रतिनिधित्व अधिनियम, 1950 मधील कलम 19, 20 व 22, Registration of Electors Rules, 1960 मधील Rules 19 व 20 तसेच भारत निवडणूक आयोग व मुख्य निवडणूक अधिकारी, महाराष्ट्र यांच्या SIR–2026 संबंधी लागू निर्देशांचा विचार करून पुढीलप्रमाणे आदेश देण्यात येतो :—
             </div>
             <div class="legal-order-item">
-              <strong>1.</strong> हरकतदाराने नमुना क्र. 7 मध्ये संबंधित मतदार “Absent/Permanently Shifted” असल्याच्या कारणावरून घेतलेली हरकत पुराव्याअभावी सिद्ध होत नसल्याने नामंजूर करण्यात येते.
+              ${p.operative1}
             </div>
             <div class="legal-order-item">
               <strong>2.</strong> संबंधित मतदाराचे प्रारूप मतदार यादीतील नाव कायम ठेवण्यात यावे व अंतिम मतदार यादीत समाविष्ट करण्यास सदर हरकतीमुळे कोणताही अडथळा राहणार नाही.
@@ -2107,7 +2391,6 @@
 
       setTimeout(() => {
         window.print();
-        // After print completes or user cancels, restore single preview
         syncPreview();
       }, 400);
     }
@@ -2116,14 +2399,14 @@
     function showToast(message, type = 'info') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
-      toast.className = `toast-item ${type}`;
+      toast.className = 'toast-item ' + type;
 
       let icon = 'fa-circle-info';
       if (type === 'success') icon = 'fa-circle-check';
       if (type === 'error') icon = 'fa-triangle-exclamation';
       if (type === 'warning') icon = 'fa-circle-exclamation';
 
-      toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+      toast.innerHTML = '<i class="fa-solid ' + icon + '"></i> <span>' + message + '</span>';
       container.appendChild(toast);
 
       setTimeout(() => {
@@ -2133,14 +2416,6 @@
         setTimeout(() => toast.remove(), 250);
       }, 3500);
     }
-
-    
-    let currentFontSize = 12;
-    let currentLineSpacing = 1.42;
-    let isPoint4FullOnP1 = true;
-
-    const p4FullPart1 = '<strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार';
-    const p4FullPart2 = 'आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.';
 
     function adjustOrderFontSize(delta) {
       currentFontSize = Math.min(14, Math.max(10, Number((currentFontSize + delta).toFixed(1))));
@@ -2159,28 +2434,10 @@
 
     function toggleSplitMode() {
       isPoint4FullOnP1 = !isPoint4FullOnP1;
-      updatePoint4Placement();
-    }
-
-    function updatePoint4Placement() {
-      const p1El = document.getElementById('para4ContainerP1');
-      const p2El = document.getElementById('para4ContainerP2');
+      syncPreview();
       const textEl = document.getElementById('splitModeText');
-
-      if (isPoint4FullOnP1) {
-        if (p1El) p1El.innerHTML = p4FullPart1 + ' ' + p4FullPart2;
-        if (p2El) {
-          p2El.innerHTML = '';
-          p2El.style.display = 'none';
-        }
-        if (textEl) textEl.textContent = 'मुद्दा 4 पहिल्या पानावर पूर्ण (कोरा भाग भरला)';
-      } else {
-        if (p1El) p1El.innerHTML = p4FullPart1;
-        if (p2El) {
-          p2El.innerHTML = p4FullPart2;
-          p2El.style.display = 'block';
-        }
-        if (textEl) textEl.textContent = 'मुद्दा 4 अर्धा विभागणी मोड';
+      if (textEl) {
+        textEl.textContent = isPoint4FullOnP1 ? 'मुद्दा 4 पहिल्या पानावर पूर्ण' : 'मुद्दा 4 पान 1 व 2 वर विभागणी (अधिकृत फॉरमॅट)';
       }
     }
 
@@ -2218,7 +2475,7 @@
         styleEl.id = 'dynamicPrintOverrideStyle';
         document.head.appendChild(styleEl);
       }
-      styleEl.innerHTML = `@media print { .a4-sheet { font-size: ${currentFontSize}pt !important; line-height: ${currentLineSpacing} !important; } }`;
+      styleEl.innerHTML = '@media print { .a4-sheet { font-size: ' + currentFontSize + 'pt !important; line-height: ' + currentLineSpacing + ' !important; } }';
     }
 
     // Auto Initialize on Load
@@ -2230,11 +2487,6 @@
     });
 
   </script>
-
-  <!-- Universal Form History Auto-Save Integration -->
-  <script src="js/universal-form-history.js"></script>
-  <!-- Citizen User Auth Script -->
-  <script src="js/user-auth.js"></script>
 
 </body>
 </html>
