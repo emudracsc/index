@@ -585,8 +585,8 @@ button, input, select, textarea {
   justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
-  gap: 0.4rem;
-  max-width: 1440px;
+  gap: 0.5rem;
+  max-width: 1560px;
   width: 100%;
 }
 
@@ -620,6 +620,148 @@ button, input, select, textarea {
   color: #ff9500;
   border-bottom-color: #ff9500;
   background: linear-gradient(180deg, rgba(255,149,0,0.06) 0%, rgba(255,149,0,0.12) 100%);
+}
+/* ==========================================================================
+   Advanced Navigation Dropdown Architecture & Anti-Overflow System
+   ========================================================================== */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  padding: 0.75rem 0.55rem !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  color: var(--primary-navy) !important;
+  border-bottom: 3px solid transparent !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+}
+
+.nav-dropdown-toggle i.chevron {
+  font-size: 0.65rem !important;
+  transition: transform 0.25s ease !important;
+  opacity: 0.7 !important;
+  margin-left: 2px !important;
+}
+
+.nav-dropdown:hover .nav-dropdown-toggle,
+.nav-dropdown.active .nav-dropdown-toggle,
+.nav-dropdown.open .nav-dropdown-toggle {
+  color: #ff9500 !important;
+  border-bottom-color: #ff9500 !important;
+  background: linear-gradient(180deg, rgba(255,149,0,0.06) 0%, rgba(255,149,0,0.12) 100%) !important;
+}
+
+.nav-dropdown:hover .nav-dropdown-toggle i.chevron,
+.nav-dropdown.open .nav-dropdown-toggle i.chevron {
+  transform: rotate(180deg) !important;
+  opacity: 1 !important;
+}
+
+/* Floating Glassmorphic Dropdown Menu */
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #ffffff;
+  border: 1.5px solid rgba(77, 40, 133, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 16px 36px rgba(26, 5, 51, 0.16), 0 4px 12px rgba(0, 0, 0, 0.06);
+  min-width: 300px;
+  max-width: 340px;
+  padding: 8px 6px;
+  display: none;
+  z-index: 1050;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu,
+.nav-dropdown.open .nav-dropdown-menu {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Dropdown Item Styling */
+.nav-dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 7px 10px !important;
+  border-radius: 8px !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+  border-left: 3px solid transparent !important;
+  background: transparent !important;
+  transition: all 0.18s ease !important;
+  margin-bottom: 2px !important;
+  white-space: normal !important;
+}
+
+.nav-dropdown-item:hover {
+  background: #f8fafc !important;
+  border-left-color: #ff9500 !important;
+  transform: translateX(3px) !important;
+}
+
+.dropdown-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.dropdown-item-texts {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.dropdown-item-title {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.nav-dropdown-item:hover .dropdown-item-title {
+  color: #d97706;
+}
+
+.dropdown-item-desc {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+@media (max-width: 1400px) and (min-width: 1081px) {
+  .nav-item a, .nav-dropdown-toggle {
+    padding: 0.75rem 0.42rem !important;
+    font-size: 0.79rem !important;
+  }
+  .nav-actions-cluster {
+    gap: 0.3rem !important;
+  }
+  .nav-actions-cluster button, .nav-hub-btn {
+    padding: 5px 9px !important;
+    font-size: 0.76rem !important;
+  }
 }
 
 .nav-item.mobile-only {
@@ -3952,6 +4094,29 @@ body.dark-mode .main-navbar {
 
 body.dark-mode .nav-item a {
   color: #cbd5e1 !important;
+}
+body.dark-mode .nav-dropdown-toggle {
+  color: #cbd5e1 !important;
+}
+body.dark-mode .nav-dropdown-menu {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+}
+body.dark-mode .nav-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+body.dark-mode .dropdown-item-title {
+  color: #f1f5f9;
+}
+body.dark-mode .nav-dropdown-item:hover .dropdown-item-title {
+  color: #f59e0b;
+}
+body.dark-mode .dropdown-item-desc {
+  color: #94a3b8;
+}
+body.dark-mode .nav-dropdown-menu {
+  border-left-color: #38bdf8 !important;
 }
 
 body.dark-mode .nav-item a:hover,

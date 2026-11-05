@@ -286,10 +286,35 @@ function initNavigation() {
     navLinks.classList.toggle("show");
   });
 
-  // Close nav on item click
-  document.querySelectorAll(".nav-item a").forEach(link => {
+  // Handle dropdown toggle clicks (mobile & touch friendly)
+  document.querySelectorAll(".nav-dropdown-toggle").forEach(toggleBtn => {
+    toggleBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const parentDropdown = toggleBtn.closest(".nav-dropdown");
+      const isAlreadyOpen = parentDropdown?.classList.contains("open");
+
+      // Close other dropdowns
+      document.querySelectorAll(".nav-dropdown").forEach(d => {
+        if (d !== parentDropdown) d.classList.remove("open");
+      });
+
+      parentDropdown?.classList.toggle("open", !isAlreadyOpen);
+    });
+  });
+
+  // Close dropdowns when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".nav-dropdown")) {
+      document.querySelectorAll(".nav-dropdown").forEach(d => d.classList.remove("open"));
+    }
+  });
+
+  // Close nav on regular link click or dropdown item click
+  document.querySelectorAll(".nav-item > a:not(.nav-dropdown-toggle), .nav-dropdown-item").forEach(link => {
     link.addEventListener("click", () => {
       navLinks?.classList.remove("show");
+      document.querySelectorAll(".nav-dropdown").forEach(d => d.classList.remove("open"));
     });
   });
 
