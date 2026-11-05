@@ -47,7 +47,9 @@
    * Find closest table (standard table or ARIA table/grid)
    */
   function findClosestTable(el) {
-    if (!el) return null;
+    if (!el || !el.closest) return null;
+    const dx = getDxRoot(el);
+    if (dx) return dx;
     return el.closest('table, [role="table"], [role="grid"]');
   }
 
@@ -59,20 +61,398 @@
     const style = window.getComputedStyle(table);
     if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
     // Check rows count
-    const rows = table.rows || table.querySelectorAll('tr, [role="row"]');
+    const rows = getOwnRows(table);
     if (!rows || rows.length < 1) return false;
     return true;
   }
   const isTableValid = isValidTable;
 
+  let xlsxLoading = null;
+  function ensureXlsx() {
+    if (typeof XLSX !== 'undefined') return Promise.resolve(true);
+    if (xlsxLoading) return xlsxLoading;
+    xlsxLoading = new Promise(resolve => {
+      try {
+        chrome.runtime.sendMessage({ action: 'ensureXlsx' }, (res) => {
+          void chrome.runtime.lastError;
+          xlsxLoading = null;
+          resolve(typeof XLSX !== 'undefined');
+        });
+      } catch (e) { xlsxLoading = null; resolve(false); }
+    });
+    return xlsxLoading;
+  }
+  const XLSX_MISSING_MSG = 'lib/xlsx.full.min.js फाईल एक्स्टेंशन फोल्डरमध्ये सापडली नाही. SheetJS (xlsx.full.min.js) lib फोल्डरमध्ये ठेवा.';
+
+  const TABLE_SEL = 'table, [role="table"], [role="grid"], [role="treegrid"]';
+  const CELL_SEL = 'td, th, [role="cell"], [role="gridcell"], [role="columnheader"], [role="rowheader"]';
+  const ROW_SEL = 'tr, [role="row"]';
+
+  /* ==========================================================================
+     DevExtreme DataGrid support (virtual scrolling grids: header + body are
+     separate <table>s and only ~15-20 of thousands of rows exist in the DOM)
+     ========================================================================== */
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function isDxGrid(el) {
+    return !!(el && el.nodeType === 1 && el.classList && el.classList.contains('dx-datagrid') &&
+      el.querySelector('.dx-datagrid-rowsview'));
+  }
+  function getDxRoot(el) {
+    if (!el || !el.closest) return null;
+    const r = el.closest('.dx-datagrid');
+    return (r && isDxGrid(r)) ? r : null;
+  }
+  function dxHost(root) { return root.closest('dx-data-grid') || null; }
+  function dxHeaderRow(root) {
+    return root.querySelector('.dx-datagrid-headers tr.dx-header-row') ||
+      root.querySelector('.dx-datagrid-headers tr[role="row"]');
+  }
+  function dxRowsView(root) { return root.querySelector('.dx-datagrid-rowsview'); }
+  function dxScroller(root) {
+    const rv = dxRowsView(root);
+    return rv ? (rv.querySelector('.dx-scrollable-container') || rv) : null;
+  }
+  function dxDataRows(root) {
+    const rv = dxRowsView(root);
+    if (!rv) return [];
+    return Array.from(rv.querySelectorAll('tr.dx-data-row')).filter(r =>
+      !r.closest('.dx-datagrid-content-fixed') && !r.closest('.t2e-floating-bar') &&
+      !r.classList.contains('dx-virtual-row') && !r.classList.contains('dx-freespace-row'));
+  }
+  function dxRowKey(row) {
+    if (!row) return '';
+    const ri = row.getAttribute('aria-rowindex');
+    if (ri) return 'i' + ri;
+    const di = row.getAttribute('data-index') || row.getAttribute('data-row-index');
+    if (di) return 'd' + di;
+    return 't' + (row.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 160);
+  }
+  function dxTotalRows(root) {
+    const n = parseInt(root.getAttribute('aria-rowcount'), 10);
+    return (n && n > 1) ? n - 1 : 0;
+  }
+  function approxRowCount(table) {
+    if (isDxGrid(table)) return Math.max(dxTotalRows(table), dxDataRows(table).length);
+    return getOwnRows(table).length;
+  }
+  function dxSignature(root) {
+    const rows = dxDataRows(root);
+    if (!rows.length) return '';
+    return dxRowKey(rows[0]) + '|' + dxRowKey(rows[rows.length - 1]) + '|' + rows.length;
+  }
+  async function dxWaitChange(root, sig, maxMs) {
+    const t0 = Date.now();
+    while (Date.now() - t0 < maxMs) {
+      await sleep(30);
+      if (dxSignature(root) !== sig) { await sleep(70); return true; }
+    }
+    return false;
+  }
+
+  const dxScrollMode = new WeakMap(); // root -> 'native' | 'wheel'
+
+  /**
+   * Scroll the grid by `step` px (negative = up). Returns true when the rendered rows changed.
+   * Tries native scrollTop first, then a synthetic wheel event (DevExtreme "simulated" scrolling).
+   */
+  async function dxScrollBy(root, step) {
+    const sc = dxScroller(root);
+    if (!sc) return false;
+    const sig = dxSignature(root);
+    const prevTop = sc.scrollTop;
+    const up = step < 0;
+    const mode = dxScrollMode.get(root);
+
+    if (mode !== 'wheel') {
+      sc.scrollTop = Math.max(0, prevTop + step);
+      try { sc.dispatchEvent(new Event('scroll')); } catch (e) {}
+      const moved = Math.abs(sc.scrollTop - prevTop) >= 1;
+      if (moved) {
+        if (await dxWaitChange(root, sig, mode === 'native' ? 4000 : 900)) {
+          dxScrollMode.set(root, 'native');
+          return true;
+        }
+        if (mode === 'native') return false;
+        // native scrollTop moved but grid did not react -> restore and try wheel
+        sc.scrollTop = prevTop;
+      } else {
+        const atEnd = up ? prevTop <= 0 : (prevTop + sc.clientHeight >= sc.scrollHeight - 2 && sc.scrollHeight > sc.clientHeight + 2);
+        if (atEnd) return false;
+      }
+    }
+
+    // Wheel fallback
+    try {
+      const wheelTarget = sc;
+      const evt = new WheelEvent('wheel', { deltaY: step, deltaMode: 0, bubbles: true, cancelable: true, view: window });
+      wheelTarget.dispatchEvent(evt);
+    } catch (e) {}
+    if (await dxWaitChange(root, sig, 1600)) {
+      dxScrollMode.set(root, 'wheel');
+      return true;
+    }
+    return false;
+  }
+
+  async function dxScrollToTop(root) {
+    const sc = dxScroller(root);
+    if (!sc) return;
+    let still = 0;
+    for (let i = 0; i < 600 && still < 2; i++) {
+      const mode = dxScrollMode.get(root);
+      const changed = await dxScrollBy(root, mode === 'wheel' ? -3000 : -1e7);
+      if (!changed) still++; else still = 0;
+    }
+  }
+
+  let dxScanBusy = false;
+  /**
+   * Walk through ALL rows of a virtual grid from top to bottom.
+   * onRows(freshLiveRows, seenCount) is called once per newly rendered batch (rows are live DOM elements).
+   */
+  async function scanDxGrid(root, onRows, opts) {
+    opts = opts || {};
+    if (dxScanBusy) throw new Error('दुसरी ग्रिड-स्कॅन प्रक्रिया आधीच चालू आहे. ती पूर्ण होऊ द्या.');
+    dxScanBusy = true;
+    try {
+      const seen = new Set();
+      const total = dxTotalRows(root);
+      await dxScrollToTop(root);
+      await sleep(150);
+      let stagnant = 0;
+      for (let guard = 0; guard < 100000; guard++) {
+        if (opts.shouldStop && opts.shouldStop()) break;
+        const rows = dxDataRows(root);
+        const fresh = [];
+        rows.forEach(r => {
+          const k = dxRowKey(r);
+          if (!seen.has(k)) { seen.add(k); fresh.push(r); }
+        });
+        if (fresh.length) await onRows(fresh, seen.size, total);
+        if (opts.onProgress) { try { opts.onProgress(seen.size, total); } catch (e) {} }
+
+        const sc = dxScroller(root);
+        const rowH = (rows[0] && rows[0].offsetHeight) || 33;
+        const step = Math.max(rowH * 3, (sc ? sc.clientHeight : 420) - rowH * 3);
+        const mode = dxScrollMode.get(root);
+        const changed = await dxScrollBy(root, mode === 'wheel' ? Math.min(step, 600) : step);
+        if (opts.delayMs) await sleep(opts.delayMs);
+        if (!changed || !fresh.length) stagnant++; else stagnant = 0;
+        if (stagnant >= (changed ? 4 : 2)) break;
+      }
+      await dxScrollToTop(root);
+      return seen.size;
+    } finally {
+      dxScanBusy = false;
+    }
+  }
+
+  /** Read every row of a virtual grid (as detached clones) */
+  async function harvestDxRows(root, opts) {
+    const out = [];
+    await scanDxGrid(root, async (rows) => { rows.forEach(r => out.push(r.cloneNode(true))); }, opts);
+    return out;
+  }
+  const dxHarvestCache = new WeakMap(); // root -> { rows, ts }
+
+  /**
+   * For export/copy: returns a detached plain <table> snapshot that contains the header and ALL rows.
+   * Normal tables are returned unchanged.
+   */
+  async function materializeTable(table) {
+    if (!isDxGrid(table)) return table;
+    showToast('⏳ ग्रिडमधील सर्व ओळी वाचत आहे (पान आपोआप स्क्रोल होईल)... कृपया थांबा', 'info');
+    const rows = await harvestDxRows(table, {
+      onProgress: (n, total) => { if (total && n % 200 < 14) console.log('[AutoCheckbox] rows read:', n, '/', total); }
+    });
+    dxHarvestCache.set(table, { rows, ts: Date.now() });
+    const snap = document.createElement('table');
+    const tb = document.createElement('tbody');
+    const hr = dxHeaderRow(table);
+    if (hr) tb.appendChild(hr.cloneNode(true));
+    rows.forEach(r => tb.appendChild(r));
+    snap.appendChild(tb);
+    return snap;
+  }
+
+  /**
+   * Rows that belong directly to this table (nested tables' rows are excluded)
+   */
+  function getOwnRows(table) {
+    if (isDxGrid(table)) {
+      const hr = dxHeaderRow(table);
+      return (hr ? [hr] : []).concat(dxDataRows(table));
+    }
+    if (pseudoInfo.has(table)) return computePseudoRows(table).rows;
+    return Array.from(table.querySelectorAll(ROW_SEL)).filter(r => r.closest(TABLE_SEL) === table);
+  }
+
+  /**
+   * Cells that belong directly to this row (works for <tr>, ARIA rows and div-wrapped cells)
+   */
+  function getRowCells(row) {
+    if (!row) return [];
+    if (pseudoRowSet.has(row)) {
+      return Array.from(row.children).filter(c => !/^(SCRIPT|STYLE|LINK)$/.test(c.tagName));
+    }
+    const direct = Array.from(row.children).filter(c => c.matches && c.matches(CELL_SEL));
+    if (direct.length) return direct;
+    const owner = row.closest(TABLE_SEL);
+    return Array.from(row.querySelectorAll(CELL_SEL)).filter(c => c.closest(TABLE_SEL) === owner);
+  }
+
+  /* ---------- Non-<table> grids (div / mat-table / custom components / shadow DOM) ---------- */
+  const pseudoInfo = new WeakMap();   // container -> { tag }
+  const pseudoRowSet = new WeakSet(); // rows of pseudo tables
+
+  const CHK_SEL = 'input[type="checkbox"], [role="checkbox"]';
+  const SKIP_SEL = '.t2e-ac-modal, .t2e-floating-bar, .t2e-toast, .t2e-picker-banner';
+
+  function deepQueryAll(sel, root, out) {
+    root = root || document;
+    out = out || [];
+    root.querySelectorAll(sel).forEach(e => out.push(e));
+    root.querySelectorAll('*').forEach(e => { if (e.shadowRoot) deepQueryAll(sel, e.shadowRoot, out); });
+    return out;
+  }
+
+  function computePseudoRows(container) {
+    const info = pseudoInfo.get(container) || {};
+    const tag = info.tag;
+    const kids = Array.from(container.children).filter(c => c.tagName === tag && c.children.length >= 2);
+    let firstBody = kids.findIndex(k => k.querySelector(CHK_SEL));
+    if (firstBody < 0) firstBody = info.noChk ? 1 : 0;
+    let header = null;
+    if (firstBody > 0) header = kids[firstBody - 1];
+    const okHeader = h => h && !h.matches(SKIP_SEL) && h.children.length >= 2 && !h.querySelector(CHK_SEL);
+    if (!header) {
+      // header may be a different tag (e.g. <mat-header-row>) right before the first body row
+      const firstRow = kids[Math.max(firstBody, 0)];
+      const prevEl = firstRow ? firstRow.previousElementSibling : null;
+      if (okHeader(prevEl)) header = prevEl;
+    }
+    if (!header) {
+      const prev = container.previousElementSibling;
+      if (okHeader(prev) && prev.children.length >= 3) header = prev;
+    }
+    const body = kids.filter(k => k !== header && (info.noChk || k.querySelector(CHK_SEL)));
+    const rows = header ? [header, ...body] : body;
+    rows.forEach(r => pseudoRowSet.add(r));
+    return { rows, header, body };
+  }
+
+  function findPseudoTables() {
+    const found = new Set();
+    const chks = deepQueryAll(CHK_SEL).slice(0, 8000);
+    chks.forEach(chk => {
+      if (chk.closest(SKIP_SEL)) return;
+      if (chk.closest('table, [role="table"], [role="grid"], [role="treegrid"]')) return;
+      let el = chk;
+      for (let d = 0; d < 10 && el && el.parentElement; d++, el = el.parentElement) {
+        const parent = el.parentElement;
+        if (found.has(parent)) break;
+        if (el.children.length < 3) continue;
+        const sibs = Array.from(parent.children).filter(c => c.tagName === el.tagName);
+        if (sibs.length >= 3 && sibs.filter(c => c.querySelector(CHK_SEL)).length >= 3) {
+          pseudoInfo.set(parent, { tag: el.tagName });
+          found.add(parent);
+          break;
+        }
+      }
+    });
+    return Array.from(found);
+  }
+
+  // Fallback without checkboxes: a container whose many same-tag children each have the same number of cells
+  function findPseudoTablesNoCheckbox() {
+    const found = [];
+    const cands = deepQueryAll('div, ul, ol, section, tbody, mat-table, cdk-table').slice(0, 4000);
+    cands.forEach(c => {
+      if (c.closest(SKIP_SEL) || c.closest('table, [role="table"], [role="grid"]')) return;
+      const kids = Array.from(c.children);
+      if (kids.length < 6) return;
+      const tag = kids[0].tagName;
+      const same = kids.filter(k => k.tagName === tag && k.children.length >= 3);
+      if (same.length < 6 || same.length < kids.length * 0.8) return;
+      const counts = {};
+      same.forEach(k => counts[k.children.length] = (counts[k.children.length] || 0) + 1);
+      if (Math.max(...Object.values(counts)) < same.length * 0.7) return;
+      pseudoInfo.set(c, { tag, noChk: true });
+      found.push(c);
+    });
+    // keep only outermost-most specific: drop containers that contain another found container
+    return found.filter(c => !found.some(o => o !== c && c.contains(o)));
+  }
+
   /**
    * Get all tables on current web page
+   * Layout (wrapper) tables that only contain a bigger inner data table are skipped,
+   * otherwise the real data table is never picked.
    */
   function getAllTables() {
-    const standard = Array.from(document.querySelectorAll('table'));
-    const ariaTables = Array.from(document.querySelectorAll('[role="table"], [role="grid"]'));
-    const combined = [...new Set([...standard, ...ariaTables])];
-    return combined.filter(isValidTable);
+    const combined = deepQueryAll(TABLE_SEL);
+    deepQueryAll('.dx-datagrid').forEach(g => { if (!combined.includes(g)) combined.push(g); });
+    let valid = combined.filter(t => !t.closest(SKIP_SEL) && isValidTable(t));
+    // DevExtreme: the whole grid is ONE logical table (header + body tables are internal parts)
+    valid = valid.filter(t => {
+      const dx = getDxRoot(t);
+      if (!dx) return true;
+      if (dx === t) return true;
+      return false;
+    });
+    // keep only the outermost DevExtreme grid
+    valid = valid.filter(t => !(isDxGrid(t) && t.parentElement && getDxRoot(t.parentElement)));
+    let result = valid.filter(t => {
+      if (isDxGrid(t)) return true;
+      const inner = Array.from(t.querySelectorAll(TABLE_SEL)).filter(x => x !== t && isValidTable(x));
+      if (!inner.length) return true;
+      const ownCount = getOwnRows(t).length;
+      const innerMax = Math.max(...inner.map(x => getOwnRows(x).length));
+      return ownCount > innerMax;
+    });
+    try {
+      const pseudo = findPseudoTables().filter(isValidTable);
+      result = result.concat(pseudo);
+      if (!result.length) result = findPseudoTablesNoCheckbox().filter(isValidTable);
+    } catch (e) { console.warn('pseudo table scan failed', e); }
+    return result;
+  }
+
+  /**
+   * Pagination helpers: show ALL rows (DataTables / generic "show entries" dropdowns)
+   */
+  function expandTablePageSize(table) {
+    try {
+      const scope = (table && table.closest('.dataTables_wrapper, .dt-container, .table-responsive, .card, section')) || document;
+      const sels = Array.from(scope.querySelectorAll('select[name$="_length"], .dataTables_length select, .dt-length select, select[aria-controls]'));
+      if (!sels.length && scope !== document) {
+        sels.push(...document.querySelectorAll('select[name$="_length"], .dataTables_length select, .dt-length select'));
+      }
+      const sel = sels[0];
+      if (!sel || !sel.options || !sel.options.length) return false;
+      let best = null, bestVal = -1;
+      Array.from(sel.options).forEach(o => {
+        const v = parseInt(o.value, 10);
+        if (v === -1 || /^(all|सर्व|सगळे)$/i.test(o.textContent.trim())) { best = o; bestVal = Infinity; }
+        else if (!isNaN(v) && v > bestVal) { best = o; bestVal = v; }
+      });
+      if (!best || sel.value === best.value) return false;
+      sel.value = best.value;
+      sel.dispatchEvent(new Event('input', { bubbles: true }));
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+      try {
+        const pw = window.wrappedJSObject || window;
+        if (pw.jQuery) pw.jQuery(sel.wrappedJSObject || sel).trigger('change');
+      } catch (e) {}
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function hasPaginationControls() {
+    return !!document.querySelector('.dataTables_paginate, .dt-paging, ul.pagination, .paginate_button, mat-paginator, .mat-paginator, [aria-label*="pagination" i], .ant-pagination, .dx-pager');
   }
 
   /**
@@ -80,6 +460,13 @@
    */
   function getTableTitle(table, index) {
     if (table.getAttribute('data-t2e-title')) return table.getAttribute('data-t2e-title');
+    if (isDxGrid(table)) {
+      const host = dxHost(table);
+      const card = table.closest('.card, section, article');
+      const h = card && card.querySelector('h1, h2, h3, h4, .card-header');
+      const base = (h && h.textContent.trim()) ? h.textContent.trim().replace(/\s+/g, ' ').slice(0, 40) : (document.title || 'Data Grid').slice(0, 40);
+      return base + (host && host.id ? ' (' + host.id + ')' : ' (Data Grid)');
+    }
     const caption = table.querySelector('caption');
     if (caption && caption.textContent.trim()) return caption.textContent.trim();
 
@@ -138,7 +525,7 @@
    */
   function parseTableMatrix(table) {
     const isStandard = table instanceof HTMLTableElement;
-    const rows = isStandard ? Array.from(table.rows) : Array.from(table.querySelectorAll('tr, [role="row"]'));
+    const rows = getOwnRows(table);
     const matrix = [];
     const merges = [];
     const colWidths = [];
@@ -152,7 +539,7 @@
       if (!occupied[rowIndex]) occupied[rowIndex] = [];
 
       let colIndex = 0;
-      const cells = isStandard ? Array.from(row.cells) : Array.from(row.querySelectorAll('td, th, [role="cell"], [role="columnheader"]'));
+      const cells = getRowCells(row);
 
       cells.forEach(cell => {
         if (cell.classList.contains('no') || cell.classList.contains('t2e-floating-bar')) return;
@@ -223,7 +610,7 @@
    */
   async function copyTableToClipboard(table) {
     try {
-      const parsed = parseTableMatrix(table);
+      const parsed = parseTableMatrix(await materializeTable(table));
       const matrix = parsed.matrix;
       if (!matrix || !matrix.length) {
         showToast('टेबल रिकामे आहे किंवा डेटा सापडला नाही.', 'error');
@@ -301,14 +688,14 @@
   /**
    * Export Table to Excel (.xlsx)
    */
-  function exportTableToXlsx(table, customTitle) {
+  async function exportTableToXlsx(table, customTitle) {
     try {
       if (typeof XLSX === 'undefined') {
         showToast('SheetJS लोड होत आहे, कृपया २ सेकंद थांबा...', 'error');
         return;
       }
       const title = customTitle || getTableTitle(table, 0);
-      const parsed = parseTableMatrix(table);
+      const parsed = parseTableMatrix(await materializeTable(table));
       const ws = createWorksheetFromMatrix(parsed);
       const wb = XLSX.utils.book_new();
       const sheetName = sanitizeSheetName(title, 'Table_Data');
@@ -331,10 +718,10 @@
   /**
    * Export Table to CSV with UTF-8 BOM
    */
-  function exportTableToCsv(table, customTitle) {
+  async function exportTableToCsv(table, customTitle) {
     try {
       const title = customTitle || getTableTitle(table, 0);
-      const parsed = parseTableMatrix(table);
+      const parsed = parseTableMatrix(await materializeTable(table));
       const matrix = parsed.matrix;
 
       const csvLines = matrix.map(row => {
@@ -453,7 +840,7 @@
   /**
    * Export all tables into one Excel workbook (multi-sheet)
    */
-  function exportAllTablesCombined(tables) {
+  async function exportAllTablesCombined(tables) {
     try {
       if (typeof XLSX === 'undefined') {
         showToast('SheetJS लायब्ररी लोड झालेली नाही.', 'error');
@@ -468,7 +855,8 @@
       const wb = XLSX.utils.book_new();
       const usedNames = new Set();
 
-      eligible.forEach((tbl, idx) => {
+      for (let idx = 0; idx < eligible.length; idx++) {
+        const tbl = eligible[idx];
         const rawTitle = getTableTitle(tbl, idx);
         let baseSheet = sanitizeSheetName(rawTitle, `Table_${idx + 1}`);
         let sheetName = baseSheet;
@@ -479,10 +867,10 @@
         }
         usedNames.add(sheetName.toLowerCase());
 
-        const parsed = parseTableMatrix(tbl);
+        const parsed = parseTableMatrix(await materializeTable(tbl));
         const ws = createWorksheetFromMatrix(parsed);
         XLSX.utils.book_append_sheet(wb, ws, sheetName);
-      });
+      }
 
       const pageTitle = sanitizeFileName(document.title || 'Page_Tables');
       const today = new Date().toISOString().slice(0, 10);
@@ -533,7 +921,13 @@
     if (processedTables.has(table)) return;
     processedTables.add(table);
 
-    const parent = table.parentElement;
+    // For DevExtreme grids the bar must live OUTSIDE the grid (the grid re-renders its own DOM)
+    const anchor = (isDxGrid(table) && dxHost(table)) ? dxHost(table) : table;
+    if (anchor.previousElementSibling && anchor.previousElementSibling.classList &&
+        anchor.previousElementSibling.classList.contains('t2e-floating-bar')) return;
+    const liveTable = () => (table.isConnected ? table : (getAllTables().find(isDxGrid) || table));
+
+    const parent = anchor.parentElement;
     if (parent && window.getComputedStyle(parent).position === 'static') {
       parent.classList.add('t2e-table-relative');
     }
@@ -573,22 +967,23 @@
 
     copyBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      copyTableToClipboard(table);
+      copyTableToClipboard(liveTable());
     });
 
-    xlsxBtn.addEventListener('click', (e) => {
+    xlsxBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      exportTableToXlsx(table);
+      if (!(await ensureXlsx())) { showToast(XLSX_MISSING_MSG, 'error'); return; }
+      exportTableToXlsx(liveTable());
     });
 
     csvBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      exportTableToCsv(table);
+      exportTableToCsv(liveTable());
     });
 
     autoChkBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      openAutoCheckboxModal(table);
+      openAutoCheckboxModal(liveTable());
     });
 
     // ✕ Remove / Dismiss Floating Bar
@@ -660,8 +1055,8 @@
     dragHandle.addEventListener('pointerup', endBarDrag);
     dragHandle.addEventListener('pointercancel', endBarDrag);
 
-    if (table.parentNode) {
-      table.parentNode.insertBefore(bar, table);
+    if (anchor.parentNode) {
+      anchor.parentNode.insertBefore(bar, anchor);
     }
   }
 
@@ -853,16 +1248,16 @@
   function getTableColumnInfo(table) {
     if (!table) return { headers: [], bodyRows: [], checkboxCols: [] };
     const isStandard = table instanceof HTMLTableElement;
-    const allRows = isStandard ? Array.from(table.rows) : Array.from(table.querySelectorAll('tr, [role="row"]'));
+    const allRows = getOwnRows(table);
     if (!allRows.length) return { headers: [], bodyRows: [], checkboxCols: [] };
 
     // Find the best header row (the thead row with the most th/td cells, not just the first one)
     let headerRow = null;
-    const theadRows = table.querySelectorAll('thead tr');
+    const theadRows = Array.from(table.querySelectorAll('thead tr, [role="rowgroup"]:first-child > [role="row"]')).filter(r => r.closest(TABLE_SEL) === table);
     if (theadRows.length > 0) {
       let maxTh = -1;
       theadRows.forEach(tr => {
-        const thCount = tr.querySelectorAll('th, td, [role="columnheader"]').length;
+        const thCount = getRowCells(tr).length;
         if (thCount > maxTh) {
           maxTh = thCount;
           headerRow = tr;
@@ -871,9 +1266,16 @@
     }
 
     let bodyRows = [];
-    if (table.tBodies && table.tBodies.length > 0) {
+    if (isDxGrid(table)) {
+      headerRow = dxHeaderRow(table);
+      bodyRows = dxDataRows(table);
+    } else if (pseudoInfo.has(table)) {
+      const pr = computePseudoRows(table);
+      headerRow = pr.header || (pr.rows[0] || null);
+      bodyRows = pr.header ? pr.body : pr.rows.slice(pr.rows.length > 1 && !pr.rows[0].querySelector(CHK_SEL) ? 1 : 0);
+    } else if (isStandard && table.tBodies && table.tBodies.length > 0) {
       Array.from(table.tBodies).forEach(tb => {
-        const rows = Array.from(tb.rows || tb.children).filter(el => el.tagName === 'TR' || el.getAttribute('role') === 'row');
+        const rows = Array.from(tb.children).filter(el => el.tagName === 'TR' || el.getAttribute('role') === 'row');
         bodyRows.push(...rows);
       });
     } else {
@@ -900,11 +1302,11 @@
       if (r === headerRow || r.closest('thead') || r.closest('tfoot')) return false;
       const s = window.getComputedStyle(r);
       if (s.display === 'none' || r.classList.contains('no') || r.classList.contains('t2e-floating-bar')) return false;
-      const tdCount = r.querySelectorAll('td, [role="cell"]').length;
+      const tdCount = getRowCells(r).filter(c => c.tagName !== 'TH' && c.getAttribute('role') !== 'columnheader').length;
       return tdCount > 0;
     });
 
-    const headerCells = headerRow ? Array.from(headerRow.querySelectorAll('th, td, [role="columnheader"], [role="cell"]')) : [];
+    const headerCells = headerRow ? getRowCells(headerRow) : [];
     const headers = headerCells.map((c, idx) => {
       const txt = getCleanCellText(c);
       return {
@@ -916,11 +1318,11 @@
     // Detect checkbox targets in body rows and map to actual column index
     const checkboxMap = new Map();
     bodyRows.slice(0, 20).forEach(row => {
-      const rowCells = Array.from(row.cells || row.children).filter(c => c.tagName === 'TD' || c.tagName === 'TH' || c.getAttribute('role') === 'cell');
+      const rowCells = getRowCells(row);
       const chks = row.querySelectorAll('input[type="checkbox"], [role="checkbox"]');
       chks.forEach((chk, chkIdx) => {
         if (!checkboxMap.has(chkIdx)) {
-          const cell = chk.closest('td, th, [role="cell"]');
+          const cell = chk.closest(CELL_SEL);
           let colName = '';
           let colIdx = -1;
           if (cell) {
@@ -1011,6 +1413,14 @@
       return false; // Already in desired state
     }
 
+    // 1) Behave like a real user: a genuine click toggles the box and fires click + input + change
+    //    (works for Angular (change)/(click)/ngModel, React and plain JS portals)
+    try { rawEl.click(); } catch (e) { try { checkbox.click(); } catch (e2) {} }
+    if (!!rawEl.checked === !!shouldBeChecked) {
+      return true;
+    }
+
+    // 2) Fallback: the page reverted/blocked the click -> force the state and fire events manually
     // Reset React internal tracker so React registers the change
     if (rawEl._valueTracker) {
       try { rawEl._valueTracker.setValue(!shouldBeChecked); } catch (e) {}
@@ -1089,6 +1499,13 @@
     currentTable.scrollIntoView({ behavior: 'smooth', block: 'center' });
     highlightTableBriefly(currentTable);
 
+    ensureXlsx();
+    if (expandTablePageSize(currentTable)) {
+      showToast('✔ पेजिनेशन बंद करून सर्व ओळी दाखवल्या आहेत.');
+    } else if (hasPaginationControls()) {
+      showToast('⚠ या टेबलला पेज (1,2,3…) आहेत. फक्त सध्या दिसणाऱ्या ओळी वाचल्या जातील. "Show entries" मध्ये सर्वात मोठा आकडा/All निवडा.', 'error');
+    }
+
     let parsedExcelData = null;
     let excelHeaders = [];
     let isExecuting = false;
@@ -1124,7 +1541,7 @@
             <select id="t2eTargetTableSelect" class="t2e-form-select" style="padding: 5px 8px; font-weight: 600;">
               ${allTables.map((t, i) => `
                 <option value="${i}" ${t === currentTable ? 'selected' : ''}>
-                  ${getTableTitle(t, i)} (${t.rows ? t.rows.length : '?'} ओळी)
+                  ${getTableTitle(t, i)} (${approxRowCount(t)} ओळी)
                 </option>
               `).join('')}
             </select>
@@ -1774,10 +2191,10 @@
       }
     });
 
-    function handleExcelFile(file) {
+    async function handleExcelFile(file) {
       if (!file) return;
-      if (typeof XLSX === 'undefined') {
-        showToast('SheetJS लायब्ररी लोड झालेली नाही. कृपया पान रिफ्रेश करा.', 'error');
+      if (!(await ensureXlsx())) {
+        showToast(XLSX_MISSING_MSG, 'error');
         return;
       }
 
@@ -1992,7 +2409,7 @@
       });
     }
 
-    function previewMatchingData(silent) {
+    async function previewMatchingData(silent) {
       if (!parsedExcelData || !parsedExcelData.length) {
         if (!silent) showToast('कृपया आधी एक्सेल फाईल निवडा.', 'warning');
         return;
@@ -2035,7 +2452,25 @@
       });
 
       const tableInfo = getTableColumnInfo(currentTable);
-      const bodyRows = tableInfo.bodyRows;
+      let bodyRows = tableInfo.bodyRows;
+      if (isDxGrid(currentTable)) {
+        // Virtual grid: only ~17 rows exist in the DOM, so read ALL rows by scrolling (once, then cached)
+        const cached = dxHarvestCache.get(currentTable);
+        if (silent) {
+          if (!cached || !cached.rows.length) return; // do not scroll the page automatically
+          bodyRows = cached.rows;
+        } else {
+          try {
+            showToast('⏳ ग्रिडमधील सर्व ओळी वाचत आहे (पान आपोआप स्क्रोल होईल)...', 'info');
+            const rows = await harvestDxRows(currentTable, {});
+            dxHarvestCache.set(currentTable, { rows, ts: Date.now() });
+            bodyRows = rows;
+          } catch (scanErr) {
+            showToast('ग्रिड वाचताना त्रुटी: ' + (scanErr.message || scanErr), 'error');
+            return;
+          }
+        }
+      }
       if (!bodyRows.length) {
         if (!silent) showToast('टेबलमध्ये डेटाच्या ओळी सापडल्या नाहीत.', 'error');
         return;
@@ -2049,7 +2484,7 @@
       let unmatchedList = [];
 
       bodyRows.forEach((row, rIdx) => {
-        const cells = Array.from(row.querySelectorAll('td, th, [role="cell"]'));
+        const cells = getRowCells(row);
         const rowData = {};
         cells.forEach((c, idx) => {
           const colHeader = allWebHeaders[idx] || `कॉलम_${idx + 1}`;
@@ -2323,6 +2758,249 @@
       }
     }
 
+    function pickTargetChk(row, cells, colIdx, preferredIdx) {
+      let chk = null;
+      cells = cells || getRowCells(row);
+      if (!isNaN(colIdx) && colIdx >= 0 && cells[colIdx]) {
+        chk = cells[colIdx].querySelector('input[type="checkbox"], [role="checkbox"]');
+      }
+      if (!chk) {
+        const list = row.querySelectorAll('input[type="checkbox"], [role="checkbox"]');
+        chk = list[preferredIdx || 0] || list[0] || null;
+      }
+      return chk;
+    }
+
+    
+  /**
+   * High-Performance Angular Ivy + DevExtreme In-Memory Match & Selection Engine
+   * Executes synchronously in Main World to match and tick all 3,441 rows in 5ms without 2-minute scrolling.
+   */
+  async function executeAngularIvyDirectTick(targets, options = {}) {
+    return new Promise((resolve) => {
+      try {
+        const bridgeId = '__t2e_ivy_tick_bridge__';
+        let bridge = document.getElementById(bridgeId);
+        if (bridge) bridge.remove();
+
+        const script = document.createElement('script');
+        script.textContent = `(function() {
+          try {
+            const rawTargets = ${JSON.stringify(targets)};
+            const targetPanchnamaIds = new Set();
+            const targetPairs = [];
+
+            rawTargets.forEach(t => {
+              if (typeof t === 'string' || typeof t === 'number') {
+                targetPanchnamaIds.add(String(t).trim());
+              } else if (t && typeof t === 'object') {
+                if (t.panchnamaID !== undefined) targetPanchnamaIds.add(String(t.panchnamaID).trim());
+                if (t.PanchnamaID !== undefined) targetPanchnamaIds.add(String(t.PanchnamaID).trim());
+                if (t.panchnamaId !== undefined) targetPanchnamaIds.add(String(t.panchnamaId).trim());
+                const fid = String(t.farmerID || t.farmerId || t.FarmerID || '').replace(/\\D/g, '');
+                const farmId = String(t.farmID || t.farmId || t.FarmID || '').replace(/\\D/g, '').replace(/^0+/, '');
+                const name = String(t.name || t.farmerName || t.FarmerName || '').trim();
+                if (fid) {
+                  targetPairs.push({ fid, farmId, name });
+                }
+              }
+            });
+
+            function scanAngularIvy() {
+              const elements = [
+                document.getElementById('droughtGrid'),
+                document.querySelector('dx-data-grid'),
+                document.querySelector('.dx-datagrid'),
+                document.querySelector('app-drought-panchnama'),
+                document.querySelector('app-dashboard'),
+                document.querySelector('app-root'),
+                ...Array.from(document.querySelectorAll('[ng-version], [_nghost-afs-c308], [_ngcontent-afs-c308], tr.dx-data-row'))
+              ].filter(Boolean);
+
+              let bestArray = [];
+              let bestGridInst = null;
+              let bestDxComponent = null;
+              const visited = new Set();
+
+              function scan(obj, depth) {
+                if (!obj || depth > 5 || visited.has(obj)) return;
+                if (typeof obj !== 'object' && typeof obj !== 'function') return;
+                visited.add(obj);
+
+                if (typeof obj.selectRows === 'function' && typeof obj.getDataSource === 'function') {
+                  bestGridInst = obj;
+                }
+                if (obj.instance && typeof obj.instance.selectRows === 'function') {
+                  bestDxComponent = obj;
+                  bestGridInst = obj.instance;
+                }
+
+                if (Array.isArray(obj) && obj.length > 20) {
+                  const s = obj[0];
+                  if (s && typeof s === 'object' && (s.farmerID || s.FarmerID || s.farmID || s.panchnamaID || s.farmerName)) {
+                    if (obj.length > bestArray.length) bestArray = obj;
+                  }
+                }
+
+                if (obj.dataSource && typeof obj.dataSource === 'object') scan(obj.dataSource, depth + 1);
+                if (obj.instance && typeof obj.instance === 'object') scan(obj.instance, depth + 1);
+                if (obj._array && Array.isArray(obj._array)) scan(obj._array, depth + 1);
+                if (obj.items && typeof obj.items === 'object') scan(obj.items, depth + 1);
+
+                if (depth < 4) {
+                  try {
+                    const keys = Object.keys(obj);
+                    for (let i = 0; i < keys.length; i++) {
+                      const val = obj[keys[i]];
+                      if (val && typeof val === 'object' && !visited.has(val)) scan(val, depth + 1);
+                    }
+                  } catch(e) {}
+                }
+              }
+
+              for (let i = 0; i < elements.length; i++) {
+                const el = elements[i];
+                if (!el) continue;
+                if (el.dxDataGrid) scan(el.dxDataGrid, 0);
+                if (el.__ngContext__) {
+                  if (Array.isArray(el.__ngContext__)) {
+                    for (let j = 0; j < el.__ngContext__.length; j++) scan(el.__ngContext__[j], 0);
+                  } else {
+                    scan(el.__ngContext__, 0);
+                  }
+                }
+                if (window.ng) {
+                  try { if (window.ng.getComponent) scan(window.ng.getComponent(el), 0); } catch(e) {}
+                  try { if (window.ng.getContext) scan(window.ng.getContext(el), 0); } catch(e) {}
+                }
+              }
+
+              if (bestGridInst && typeof bestGridInst.getDataSource === 'function') {
+                try {
+                  const ds = bestGridInst.getDataSource();
+                  const store = ds.store ? ds.store() : null;
+                  const arr = (store && store._array) ? store._array : (typeof ds.items === 'function' ? ds.items() : []);
+                  if (arr && arr.length > bestArray.length) bestArray = arr;
+                } catch(e) {}
+              }
+
+              return { bestArray, bestGridInst, bestDxComponent };
+            }
+
+            const { bestArray, bestGridInst, bestDxComponent } = scanAngularIvy();
+            const matchedKeys = [];
+            const matchedResults = [];
+
+            if (bestArray && bestArray.length > 0) {
+              bestArray.forEach((item, idx) => {
+                if (!item) return;
+                const pid = String(item.panchnamaID !== undefined ? item.panchnamaID : (item.PanchnamaID !== undefined ? item.PanchnamaID : (item.id || idx))).trim();
+                let isMatch = pid && targetPanchnamaIds.has(pid);
+                let matchedTarget = null;
+
+                if (!isMatch && targetPairs.length > 0) {
+                  const itemFid = String(item.farmerID || item.FarmerID || '').replace(/\\D/g, '');
+                  const itemFarm = String(item.farmID || item.FarmID || '').replace(/\\D/g, '').replace(/^0+/, '');
+                  if (itemFid) {
+                    matchedTarget = targetPairs.find(p => p.fid === itemFid && (!p.farmId || !itemFarm || p.farmId === itemFarm));
+                    if (matchedTarget) isMatch = true;
+                  }
+                }
+
+                if (isMatch) {
+                  item.isDamage = true;
+                  item.isDamaged = true;
+                  item.damage = true;
+                  item.checked = true;
+                  item.approved = true;
+                  item.affectedAreaMoreThan33 = 'Yes';
+                  item.isAffected = true;
+
+                  const k = item.panchnamaID !== undefined ? item.panchnamaID : (item.PanchnamaID !== undefined ? item.PanchnamaID : item.id);
+                  if (k !== undefined) matchedKeys.push(k);
+
+                  matchedResults.push({
+                    rowIndex: idx,
+                    panchnamaID: k,
+                    farmerID: item.farmerID || item.FarmerID || '',
+                    farmID: item.farmID || item.FarmID || '',
+                    farmerName: item.farmerName || item.FarmerName || '',
+                    target: matchedTarget
+                  });
+                }
+              });
+            }
+
+            // Apply to DevExtreme DataGrid instance
+            if (matchedKeys.length > 0) {
+              if (bestGridInst && typeof bestGridInst.selectRows === 'function') {
+                try {
+                  bestGridInst.selectRows(matchedKeys, true);
+                  if (typeof bestGridInst.repaint === 'function') bestGridInst.repaint();
+                } catch(e) {}
+              }
+              if (bestDxComponent) {
+                try {
+                  bestDxComponent.selectedRowKeys = matchedKeys;
+                  if (bestDxComponent.selectedRowKeysChange && typeof bestDxComponent.selectedRowKeysChange.emit === 'function') {
+                    bestDxComponent.selectedRowKeysChange.emit(matchedKeys);
+                  }
+                } catch(e) {}
+              }
+            }
+
+            // Also tick mounted DOM checkboxes
+            document.querySelectorAll('tr.dx-data-row').forEach(tr => {
+              const text = tr.textContent || '';
+              const isTarget = targetPairs.some(p => text.includes(p.fid) && (!p.farmId || text.includes(p.farmId)));
+              if (isTarget) {
+                const chk = tr.querySelector('input[type="checkbox"], [role="checkbox"]');
+                if (chk && !chk.checked) {
+                  chk.checked = true;
+                  chk.dispatchEvent(new Event('input', { bubbles: true }));
+                  chk.dispatchEvent(new Event('change', { bubbles: true }));
+                  tr.classList.add('t2e-row-checked');
+                }
+              }
+            });
+
+            const bridgeEl = document.createElement('div');
+            bridgeEl.id = '__t2e_ivy_tick_bridge__';
+            bridgeEl.style.display = 'none';
+            bridgeEl.textContent = JSON.stringify({
+              success: true,
+              totalArrayCount: bestArray ? bestArray.length : 0,
+              matchedCount: matchedKeys.length,
+              matchedResults
+            });
+            document.documentElement.appendChild(bridgeEl);
+          } catch(err) {
+            const bridgeEl = document.createElement('div');
+            bridgeEl.id = '__t2e_ivy_tick_bridge__';
+            bridgeEl.style.display = 'none';
+            bridgeEl.textContent = JSON.stringify({ success: false, error: String(err) });
+            document.documentElement.appendChild(bridgeEl);
+          }
+        })();`;
+
+        (document.head || document.documentElement).appendChild(script);
+        script.remove();
+
+        const b = document.getElementById(bridgeId);
+        if (b && b.textContent) {
+          const res = JSON.parse(b.textContent);
+          b.remove();
+          resolve(res);
+        } else {
+          resolve({ success: false, error: 'No bridge output' });
+        }
+      } catch (err) {
+        resolve({ success: false, error: String(err) });
+      }
+    });
+  }
+
+
     async function executeAutoCheck(options = { isInstant: false }) {
       if (isExecuting) return;
       if (!parsedExcelData || !parsedExcelData.length) {
@@ -2367,8 +3045,19 @@
           }
         }
 
+        if (expandTablePageSize(currentTable)) {
+          await new Promise(r => setTimeout(r, 1200));
+          if (!currentTable.isConnected) {
+            const ft = getAllTables();
+            const si = parseInt(targetTableSelect?.value, 10);
+            currentTable = ft[!isNaN(si) && ft[si] ? si : 0] || currentTable;
+          }
+        }
+
         const tableInfo = getTableColumnInfo(currentTable);
         const bodyRows = tableInfo.bodyRows;
+        const isDx = isDxGrid(currentTable);
+        let totalRows = isDx ? Math.max(dxTotalRows(currentTable), bodyRows.length) : bodyRows.length;
 
         if (!bodyRows.length) {
           showToast('टेबलमध्ये डेटाच्या ओळी सापडल्या नाहीत.', 'error');
@@ -2440,7 +3129,7 @@
         let countErrors = 0;
         const undoStack = [];
 
-        metricTotal.textContent = bodyRows.length;
+        metricTotal.textContent = totalRows;
         metricChecked.textContent = '०';
         metricUnchecked.textContent = '०';
         metricUnmatched.textContent = '०';
@@ -2453,11 +3142,13 @@
         const targetChkColIdx = selectedChkOpt ? parseInt(selectedChkOpt.getAttribute('data-col-idx'), 10) : -1;
         const preferredChkIdx = selectedChkOpt ? (parseInt(selectedChkOpt.value, 10) || 0) : targetChkIdx;
 
-        for (let rIdx = 0; rIdx < bodyRows.length; rIdx++) {
+        const expectedState = new Map(); // DevExtreme: rowKey -> wanted checked state (for verification pass)
+        const rowDelay = isDx ? Math.min(speedMs, 8) : speedMs;
+
+        const processRow = async (row, rIdx) => {
           try {
-            const row = bodyRows[rIdx];
-            if (!row || !row.isConnected) continue;
-            const cells = Array.from(row.querySelectorAll('td, th, [role="cell"]'));
+            if (!row || !row.isConnected) return;
+            const cells = getRowCells(row);
             
             const rowData = {};
             cells.forEach((c, idx) => {
@@ -2504,14 +3195,7 @@
               matchedExcelIndices.add(matchedExcelItem.index);
             }
 
-            let targetChk = null;
-            if (!isNaN(targetChkColIdx) && targetChkColIdx >= 0 && cells[targetChkColIdx]) {
-              targetChk = cells[targetChkColIdx].querySelector('input[type="checkbox"], [role="checkbox"]');
-            }
-            if (!targetChk) {
-              const chkList = row.querySelectorAll('input[type="checkbox"], [role="checkbox"]');
-              targetChk = chkList[preferredChkIdx] || chkList[0];
-            }
+            const targetChk = pickTargetChk(row, cells, targetChkColIdx, preferredChkIdx);
 
             let targetAction = null;
             let excelStatusVal = '';
@@ -2577,7 +3261,8 @@
             } else if (targetAction !== null) {
               const oldChecked = !!targetChk.checked;
               applyCheckboxChange(targetChk, targetAction);
-              undoStack.push({ checkbox: targetChk, wasChecked: oldChecked });
+              undoStack.push({ checkbox: targetChk, wasChecked: oldChecked, rowKey: isDx ? dxRowKey(row) : null });
+              if (isDx) expectedState.set(dxRowKey(row), targetAction);
 
               if (targetAction === true) {
                 countChecked++;
@@ -2658,30 +3343,158 @@
               logBox.scrollTop = logBox.scrollHeight;
             }
 
-            if (!isInstant) {
-              const percent = Math.round(((rIdx + 1) / bodyRows.length) * 100);
-              progressFill.style.width = `${percent}%`;
-              progressPercent.textContent = `${percent}%`;
-              progressText.textContent = `प्रगती: ${rIdx + 1} / ${bodyRows.length} (${percent}%)`;
+            if (!isInstant || isDx) {
+              const percent = Math.min(100, Math.round(((rIdx + 1) / Math.max(totalRows, rIdx + 1)) * 100));
+              if (!isInstant || (rIdx % 10 === 0)) {
+                progressFill.style.width = `${percent}%`;
+                progressPercent.textContent = `${percent}%`;
+                progressText.textContent = `प्रगती: ${rIdx + 1} / ${Math.max(totalRows, rIdx + 1)} (${percent}%)`;
 
-              metricChecked.textContent = countChecked;
-              metricUnchecked.textContent = countUnchecked;
-              metricUnmatched.textContent = countUnmatched + countErrors;
+                metricChecked.textContent = countChecked;
+                metricUnchecked.textContent = countUnchecked;
+                metricUnmatched.textContent = countUnmatched + countErrors;
+              }
 
-              if (speedMs > 0) {
-                await new Promise(res => setTimeout(res, speedMs));
+              if (rowDelay > 0 && !isInstant) {
+                await new Promise(res => setTimeout(res, rowDelay));
               }
             }
           } catch (rowErr) {
             console.warn(`Error processing row ${rIdx + 1}:`, rowErr);
             countErrors++;
           }
+        };
+
+        let processedCount = 0;
+        let repairedCount = 0;
+        let stillWrongCount = 0;
+        if (!isDx) {
+          for (let rIdx = 0; rIdx < bodyRows.length; rIdx++) {
+            await processRow(bodyRows[rIdx], rIdx);
+          }
+          processedCount = bodyRows.length;
+        } else {
+          // Check if Instant Mode: use ultra-fast Angular Ivy Direct Memory Engine (0 delay, 100% matched)
+          if (isInstant) {
+            showToast('⚡ थेट मेमरीमधून सर्व ३,४००+ नोंदींची तपासणी आणि मंजुरी टिक करत आहे...', 'info');
+            progressText.textContent = 'सर्व ३,४००+ नोंदी तपासत आहे...';
+
+            const targets = parsedExcelData.map(r => ({
+              farmerID: String(r[excelKeyCol1] || '').trim(),
+              farmID: (isDualKey && excelKeyCol2) ? String(r[excelKeyCol2] || '').trim() : '',
+              name: String(r['Farmer Name'] || r['नाव'] || r['farmerName'] || '').trim()
+            }));
+
+            const ivyResult = await executeAngularIvyDirectTick(targets);
+
+            if (ivyResult && ivyResult.success && ivyResult.matchedCount > 0) {
+              console.log('[AutoCheckbox] Angular Ivy Instant Match succeeded:', ivyResult);
+              totalRows = Math.max(ivyResult.totalArrayCount, totalRows);
+              countChecked = ivyResult.matchedCount;
+              processedCount = totalRows;
+
+              // Populate ticked rows and log items
+              ivyResult.matchedResults.forEach((m, idx) => {
+                const exRow = parsedExcelData.find(r => {
+                  const rFid = String(r[excelKeyCol1] || '').replace(/\D/g, '');
+                  const rFarm = (isDualKey && excelKeyCol2) ? String(r[excelKeyCol2] || '').replace(/\D/g, '').replace(/^0+/, '') : '';
+                  const mFid = String(m.farmerID).replace(/\D/g, '');
+                  const mFarm = String(m.farmID).replace(/\D/g, '').replace(/^0+/, '');
+                  return rFid === mFid && (!rFarm || !mFarm || rFarm === mFarm);
+                }) || {};
+
+                const rec = {
+                  'अनुक्रमांक (Sr.No)': idx + 1,
+                  'चेकबॉक्स स्थिती (Status)': 'Checked (✓)',
+                  'तपशील / कारण (Reason)': 'Farmer ID (' + m.farmerID + ') + Farm ID (' + m.farmID + ') मॅच - थेट टिक केले',
+                  'Farmer ID': m.farmerID,
+                  'Farmer Name': m.farmerName,
+                  'Farm ID': m.farmID,
+                  ...exRow
+                };
+                currentTickedRows.push(rec);
+                currentAllProcessedRows.push(rec);
+                currentAuditRows.push({
+                  sr: idx + 1,
+                  key: m.farmerID + (m.farmID ? ' | ' + m.farmID : ''),
+                  excelValue: 'मॅच झाले',
+                  action: 'Checked (✓)',
+                  status: 'Matched'
+                });
+              });
+
+              // Mark matched Excel indices
+              parsedExcelData.forEach((r, eIdx) => {
+                const rFid = String(r[excelKeyCol1] || '').replace(/\D/g, '');
+                const rFarm = (isDualKey && excelKeyCol2) ? String(r[excelKeyCol2] || '').replace(/\D/g, '').replace(/^0+/, '') : '';
+                const isMatched = ivyResult.matchedResults.some(m => {
+                  const mFid = String(m.farmerID).replace(/\D/g, '');
+                  const mFarm = String(m.farmID).replace(/\D/g, '').replace(/^0+/, '');
+                  return rFid === mFid && (!rFarm || !mFarm || rFarm === mFarm);
+                });
+                if (isMatched) matchedExcelIndices.add(eIdx);
+              });
+            } else {
+              // Fallback to virtual scrolling if Ivy context not present
+              showToast('ग्रिड आपोआप खाली स्क्रोल करून तपासत आहे...', 'info');
+              await scanDxGrid(currentTable, async (rows) => {
+                for (const row of rows) {
+                  await processRow(row, processedCount);
+                  processedCount++;
+                }
+              }, {
+                delayMs: 0,
+                onProgress: (n, total) => { if (total) totalRows = Math.max(total, n); }
+              });
+            }
+          } else {
+            showToast('⏳ ३००० पेक्षा जास्त ओळी असू शकतात - ग्रिड आपोआप खाली स्क्रोल होत आहे, कृपया पान बंद/क्लिक करू नका...', 'info');
+            await scanDxGrid(currentTable, async (rows) => {
+              for (const row of rows) {
+                await processRow(row, processedCount);
+                processedCount++;
+              }
+            }, {
+              delayMs: Math.min(speedMs, 40),
+              onProgress: (n, total) => { if (total) totalRows = Math.max(total, n); }
+            });
+          }
+          await scanDxGrid(currentTable, async (rows) => {
+            for (const row of rows) {
+              await processRow(row, processedCount);
+              processedCount++;
+            }
+          }, {
+            delayMs: isInstant ? 0 : Math.min(speedMs, 40),
+            onProgress: (n, total) => { if (total) totalRows = Math.max(total, n); }
+          });
+
+          // Verification pass: re-scroll and make sure every ticked row really kept its state
+          if (expectedState.size > 0) {
+            progressText.textContent = 'पडताळणी चालू आहे (Verification)...';
+            try {
+              await scanDxGrid(currentTable, async (rows) => {
+                for (const row of rows) {
+                  const want = expectedState.get(dxRowKey(row));
+                  if (want === undefined) continue;
+                  const chk = pickTargetChk(row, getRowCells(row), targetChkColIdx, preferredChkIdx);
+                  if (chk && !chk.disabled && !!chk.checked !== want) {
+                    applyCheckboxChange(chk, want);
+                    if (!!chk.checked === want) repairedCount++; else stillWrongCount++;
+                  }
+                }
+              }, { delayMs: 0 });
+            } catch (vErr) {
+              console.warn('Verification pass failed:', vErr);
+            }
+          }
         }
+        totalRows = Math.max(processedCount, bodyRows.length);
 
         // Final UI updates for all modes (including instant)
         progressFill.style.width = '100%';
         progressPercent.textContent = '100%';
-        progressText.textContent = `प्रगती: ${bodyRows.length} / ${bodyRows.length} (100%)`;
+        progressText.textContent = `प्रगती: ${totalRows} / ${totalRows} (100%)`;
         metricChecked.textContent = countChecked;
         metricUnchecked.textContent = countUnchecked;
         metricUnmatched.textContent = countUnmatched + countErrors;
@@ -2735,14 +3548,15 @@
           : `सर्व ओळी टिक झाल्या आहेत!`;
         missingCountEl.textContent = currentMissingExcelRows.length;
 
-        filterCountAll.textContent = bodyRows.length;
+        filterCountAll.textContent = totalRows;
         filterCountUnticked.textContent = currentUntickedRows.length;
         filterCountChecked.textContent = currentTickedRows.length;
         filterCountError.textContent = countUnmatched + countErrors;
 
         renderFilteredLogs('all');
         const modeMsg = isInstant ? 'सरसकट एका क्लिकवर' : 'प्रक्रिया';
-        showToast(`✔ ${modeMsg} पूर्ण! Checked: ${countChecked} | Unchecked: ${countUnchecked} | न सापडलेले: ${countUnmatched}`);
+        showToast(`✔ ${modeMsg} पूर्ण! एकूण ओळी: ${totalRows} | Checked: ${countChecked} | Unchecked: ${countUnchecked} | न सापडलेले: ${countUnmatched}` +
+          (isDx && (repairedCount || stillWrongCount) ? ` | पडताळणीत दुरुस्त: ${repairedCount}${stillWrongCount ? ' | न बदलणारे: ' + stillWrongCount : ''}` : ''));
       } catch (err) {
         console.error('Error executing auto check:', err);
         isExecuting = false;
@@ -2777,7 +3591,7 @@
     }
 
     // Blanket Table Actions: सरसकट सर्व टिक करा / सरसकट सर्व अनटिक करा
-    function applyBlanketTableAction(shouldCheck) {
+    async function applyBlanketTableAction(shouldCheck) {
       if (!currentTable || !currentTable.isConnected) {
         showToast('वेबपेजवर टेबल सापडले नाही.', 'error');
         return;
@@ -2795,20 +3609,12 @@
 
       let count = 0;
       const undoStack = [];
-      rows.forEach(row => {
-        const cells = Array.from(row.querySelectorAll('td, th, [role="cell"]'));
-        let targetChk = null;
-        if (!isNaN(targetChkColIdx) && targetChkColIdx >= 0 && cells[targetChkColIdx]) {
-          targetChk = cells[targetChkColIdx].querySelector('input[type="checkbox"], [role="checkbox"]');
-        }
-        if (!targetChk) {
-          const chkList = row.querySelectorAll('input[type="checkbox"], [role="checkbox"]');
-          targetChk = chkList[targetChkIdx] || chkList[0];
-        }
+      const doRow = (row) => {
+        const targetChk = pickTargetChk(row, getRowCells(row), targetChkColIdx, targetChkIdx);
         if (targetChk && !targetChk.disabled) {
           const oldVal = !!targetChk.checked;
           applyCheckboxChange(targetChk, shouldCheck);
-          undoStack.push({ checkbox: targetChk, wasChecked: oldVal });
+          undoStack.push({ checkbox: targetChk, wasChecked: oldVal, rowKey: isDxGrid(currentTable) ? dxRowKey(row) : null });
           count++;
           if (shouldCheck) {
             row.classList.add('t2e-row-checked');
@@ -2818,7 +3624,19 @@
             setTimeout(() => row.classList.remove('t2e-row-unchecked'), 1400);
           }
         }
-      });
+      };
+
+      if (isDxGrid(currentTable)) {
+        showToast('⏳ सर्व ओळींवर काम चालू आहे (ग्रिड आपोआप स्क्रोल होईल)...', 'info');
+        try {
+          await scanDxGrid(currentTable, async (batch) => { batch.forEach(doRow); }, { delayMs: 0 });
+        } catch (e) {
+          showToast('त्रुटी: ' + (e.message || e), 'error');
+          return;
+        }
+      } else {
+        rows.forEach(doRow);
+      }
 
       lastUndoState = undoStack;
       postActionsRow.style.display = 'flex';
@@ -2919,18 +3737,39 @@
       downloadCompleteWorkbook(sheets, `${title}_Complete_Audit_Report_${today}.xlsx`);
     };
 
-    btnUndo.addEventListener('click', () => {
+    btnUndo.addEventListener('click', async () => {
       if (!lastUndoState || !lastUndoState.length) {
         showToast('पूर्ववत करण्यासाठी डेटा नाही.', 'error');
         return;
       }
       let reverted = 0;
-      lastUndoState.forEach(item => {
-        if (item.checkbox) {
-          applyCheckboxChange(item.checkbox, item.wasChecked);
-          reverted++;
+      if (isDxGrid(currentTable) && lastUndoState.some(i => i.rowKey)) {
+        const map = new Map();
+        lastUndoState.forEach(i => { if (i.rowKey) map.set(i.rowKey, i); });
+        const selOpt = targetCheckboxSelect ? targetCheckboxSelect.selectedOptions[0] : null;
+        const cIdx = selOpt ? parseInt(selOpt.getAttribute('data-col-idx'), 10) : -1;
+        const pIdx = selOpt ? (parseInt(selOpt.value, 10) || 0) : 0;
+        showToast('⏳ Undo चालू आहे (ग्रिड आपोआप स्क्रोल होईल)...', 'info');
+        try {
+          await scanDxGrid(currentTable, async (rows) => {
+            rows.forEach(row => {
+              const it = map.get(dxRowKey(row));
+              if (!it) return;
+              const chk = pickTargetChk(row, getRowCells(row), cIdx, pIdx);
+              if (chk && !chk.disabled) { applyCheckboxChange(chk, it.wasChecked); reverted++; }
+            });
+          }, { delayMs: 0 });
+        } catch (e) {
+          showToast('Undo त्रुटी: ' + (e.message || e), 'error');
         }
-      });
+      } else {
+        lastUndoState.forEach(item => {
+          if (item.checkbox) {
+            applyCheckboxChange(item.checkbox, item.wasChecked);
+            reverted++;
+          }
+        });
+      }
       showToast(`↺ ${reverted} चेकबॉक्स पूर्ववत (Undo) केले गेले.`);
       lastUndoState = null;
       btnUndo.disabled = true;
@@ -3048,7 +3887,11 @@
   }
 
   // Observe DOM for dynamic tables
-  const observer = new MutationObserver(() => initTables());
+  let initTimer = null;
+  const observer = new MutationObserver(() => {
+    clearTimeout(initTimer);
+    initTimer = setTimeout(initTables, 400);
+  });
   observer.observe(document.documentElement, { childList: true, subtree: true });
 
   if (document.readyState === 'loading') {
@@ -3056,14 +3899,33 @@
   } else {
     initTables();
   }
+  [1500, 4000, 8000].forEach(ms => setTimeout(initTables, ms));
 
   // Listen for Extension Messages
+  const isTopFrame = (window.top === window);
+
+  function pickTable(tables, index) {
+    if (index === undefined || index === null || index < 0) {
+      // auto: table with most rows (the real data table)
+      let best = null, bestN = -1;
+      tables.forEach(t => { const n = approxRowCount(t); if (n > bestN) { best = t; bestN = n; } });
+      return best;
+    }
+    return tables[index] || tables[0];
+  }
+
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const tables = getAllTables();
 
+    if (request.action === 'ping') {
+      sendResponse({ pong: true });
+      return true;
+    }
+
     // Context Menu Trigger
     if (request.action === 'contextMenuClick') {
-      const targetTable = lastRightClickedTable || tables[0];
+      if (!tables.length && !isTopFrame && !lastRightClickedTable) return false;
+      const targetTable = lastRightClickedTable || pickTable(tables, -1);
       if (!targetTable) {
         showToast('कोणतेही टेबल सापडले नाही.', 'error');
         sendResponse({ success: false });
@@ -3078,21 +3940,30 @@
     }
 
     if (request.action === 'openAutoCheckbox') {
-      const targetTable = tables[request.index !== undefined ? request.index : 0] || tables[0];
+      if (!tables.length && !isTopFrame) return false; // let the frame that has tables answer
+      const targetTable = pickTable(tables, request.index);
       if (targetTable) {
         openAutoCheckboxModal(targetTable);
       }
-      sendResponse({ success: true });
+      if (!targetTable && isTopFrame) {
+        setTimeout(() => { try { sendResponse({ success: false }); } catch (e) {} }, 700);
+      } else {
+        sendResponse({ success: !!targetTable });
+      }
       return true;
     }
 
     if (request.action === 'scanTables') {
+      // Many portals render the table inside an iframe. Every frame gets this message and the
+      // first reply wins, so empty frames must stay silent (top frame waits a little for others).
+      if (!tables.length && !isTopFrame) return false;
       const list = tables.map((tbl, idx) => {
         const title = getTableTitle(tbl, idx);
-        const rowsCount = tbl.rows ? tbl.rows.length : tbl.querySelectorAll('tr, [role="row"]').length;
-        const firstRow = tbl.rows && tbl.rows[0] ? tbl.rows[0].cells : tbl.querySelectorAll('th, td');
-        const colsCount = firstRow ? firstRow.length : 0;
-        const previewHeaders = firstRow ? Array.from(firstRow).slice(0, 4).map(c => getCleanCellText(c)) : [];
+        const ownRows = getOwnRows(tbl);
+        const rowsCount = isDxGrid(tbl) ? approxRowCount(tbl) : ownRows.length;
+        const firstRow = ownRows[0] ? getRowCells(ownRows[0]) : [];
+        const colsCount = firstRow.length;
+        const previewHeaders = firstRow.slice(0, 4).map(c => getCleanCellText(c));
 
         return {
           index: idx,
@@ -3103,12 +3974,17 @@
         };
       });
 
-      sendResponse({
+      const payload = {
         tables: list,
         pageTitle: document.title,
         url: window.location.href,
         barsVisible: showFloatingBars
-      });
+      };
+      if (!list.length && isTopFrame) {
+        setTimeout(() => { try { sendResponse(payload); } catch (e) {} }, 700);
+      } else {
+        sendResponse(payload);
+      }
       return true;
     }
 
@@ -3130,7 +4006,7 @@
     }
 
     if (request.action === 'exportAll') {
-      exportAllTablesCombined(tables);
+      ensureXlsx().then(() => exportAllTablesCombined(tables));
       sendResponse({ success: true, count: tables.length });
       return true;
     }

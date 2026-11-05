@@ -21,18 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
       await chrome.tabs.sendMessage(tabId, { action: 'ping' });
     } catch (e) {
       try {
-        await chrome.scripting.insertCSS({
-          target: { tabId },
-          files: ['content.css']
-        });
-        await chrome.scripting.executeScript({
-          target: { tabId },
-          files: ['lib/xlsx.full.min.js', 'content.js']
-        });
+        await chrome.scripting.insertCSS({ target: { tabId, allFrames: true }, files: ['content.css'] });
+      } catch (cssErr) {
+        console.warn('CSS injection warning:', cssErr);
+      }
+      try {
+        await chrome.scripting.executeScript({ target: { tabId, allFrames: true }, files: ['lib/xlsx.full.min.js', 'content.js'] });
       } catch (injectErr) {
         console.warn('Script injection warning:', injectErr);
+        return String((injectErr && injectErr.message) || injectErr);
       }
     }
+    return null;
   }
 
   async function scanActiveTab() {
@@ -58,11 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      await ensureInjected(currentTabId);
+      const injectError = await ensureInjected(currentTabId);
 
       chrome.tabs.sendMessage(currentTabId, { action: 'scanTables' }, (response) => {
         if (chrome.runtime.lastError || !response) {
-          showEmptyState('पानावरील टेबल्स शोधता आले नाहीत. कृपया पान रिफ्रेश करा.');
+          showEmptyState('पानावरील टेबल्स शोधता आले नाहीत. कृपया पान रिफ्रेश करा.' + (injectError ? ' [कारण: ' + injectError + ']' : (chrome.runtime.lastError ? ' [' + chrome.runtime.lastError.message + ']' : '')));
           return;
         }
 
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Hero Launch Button
   btnOpenModal.addEventListener('click', () => {
     if (currentTabId == null) return;
-    chrome.tabs.sendMessage(currentTabId, { action: 'openAutoCheckbox', index: 0 }, () => {
+    chrome.tabs.sendMessage(currentTabId, { action: 'openAutoCheckbox', index: -1 }, () => {
       window.close();
     });
   });
