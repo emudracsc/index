@@ -52,7 +52,8 @@
       'samaik-sahmatipatra': 'SMP',
       'eaadhaar-print': 'EAD',
       'aero': 'AER',
-      'aadhaar-annexure': 'ANX'
+      'aadhaar-annexure': 'ANX',
+      'ero-order-generator': 'EOD'
     };
     return map[slug] || 'FRM';
   }
@@ -86,7 +87,8 @@
       'samaik-sahmatipatra': 'फळपिक विमा सामाईक सहमतीपत्र',
       'eaadhaar-print': 'e-Aadhaar PVC कार्ड प्रिंट',
       'aero': 'Aero ई-सेवा अहवाल',
-      'aadhaar-annexure': 'आधार जन्मदिनांक सुधारणा शपथपत्र (लेजर पेपर)'
+      'aadhaar-annexure': 'आधार जन्मदिनांक सुधारणा शपथपत्र (लेजर पेपर)',
+      'ero-order-generator': 'मतदार नोंदणी अधिकारी (ERO) अंतिम आदेश (SIR-2026)'
     };
     if (map[slug]) return map[slug];
 

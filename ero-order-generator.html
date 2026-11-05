@@ -1,0 +1,2103 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERO आदेश जनरेटर (SIR-2026 नमुना क्र. ७ हरकतीवरील अंतिम निर्णय)</title>
+  <meta name="description" content="विधानसभा मतदारसंघ मतदार नोंदणी अधिकारी (ERO) तथा उपविभागीय अधिकारी (SDO) यांच्या समोरील SIR-2026 नमुना क्र. ७ हरकतींवरील अंतिम आदेश जनरेटर, एक्सेल बल्क जनरेशन व हिस्ट्री सेव्हिंग सुविधा.">
+
+  <!-- Google Fonts: Devanagari & Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- SheetJS for Excel Upload & Template Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --primary-navy: #0f172a;
+      --primary-blue: #1e3a8a;
+      --primary-mid: #2563eb;
+      --primary-light: #eff6ff;
+      --saffron-gold: #f59e0b;
+      --saffron-dark: #d97706;
+      --gov-green: #059669;
+      --gov-green-dark: #047857;
+      --gov-red: #dc2626;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg-page: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #cbd5e1;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+      --shadow-md: 0 6px 18px rgba(0,0,0,0.08);
+      --shadow-lg: 0 14px 34px rgba(0,0,0,0.12);
+      --font-marathi: 'Noto Sans Devanagari', 'Mukta', sans-serif;
+      --font-legal: 'Noto Sans Devanagari', 'Tinos', 'Times New Roman', serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-marathi);
+      background-color: var(--bg-page);
+      color: var(--text-dark);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Government Tricolor Top Ribbon */
+    .gov-top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%);
+      width: 100%;
+    }
+
+    /* Navigation Header */
+    .header-nav {
+      background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
+      color: #ffffff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--saffron-gold);
+    }
+
+    .brand-texts h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0;
+      letter-spacing: 0.3px;
+    }
+
+    .brand-texts p {
+      font-size: 0.76rem;
+      color: #94a3b8;
+      margin: 2px 0 0 0;
+      font-weight: 500;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .nav-btn-home {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .nav-btn-home:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .nav-btn-notice {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    .nav-btn-notice:hover {
+      background: rgba(239, 68, 68, 0.25);
+      color: #ffffff;
+    }
+
+    /* Main Container */
+    .app-container {
+      max-width: 1480px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 18px 20px 40px 20px;
+      flex: 1;
+    }
+
+    /* Global Info Banner */
+    .info-strip {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.88rem;
+    }
+
+    .info-strip-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #1e3a8a;
+      font-weight: 600;
+    }
+
+    /* Editing Active Alert Banner */
+    .edit-mode-banner {
+      display: none;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1.5px solid #f59e0b;
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      color: #92400e;
+      font-weight: 700;
+      align-items: center;
+      justify-content: space-between;
+      animation: pulseAlert 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseAlert {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+    }
+
+    /* Navigation Tabs */
+    .tab-nav {
+      display: flex;
+      gap: 6px;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      font-family: inherit;
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      margin-bottom: -2px;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary-mid);
+      background: #f1f5f9;
+    }
+
+    .tab-btn.active {
+      color: var(--primary-blue);
+      border-bottom-color: var(--primary-mid);
+      background: #ffffff;
+    }
+
+    .tab-btn .badge-pill {
+      background: #e2e8f0;
+      color: #334155;
+      font-size: 0.75rem;
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    .tab-btn.active .badge-pill {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    /* Workspace 2-Column Grid (Left: Forms/Tools, Right: Live A4 Preview) */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 560px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Pane: Cards */
+    .card-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .card-header-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 5px;
+    }
+
+    .form-label span.req {
+      color: #dc2626;
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      background: #ffffff;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-mid);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    /* Action Buttons */
+    .btn {
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+      color: #ffffff;
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: #ffffff;
+      box-shadow: 0 3px 10px rgba(5, 150, 105, 0.3);
+    }
+    .btn-success:hover {
+      background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid var(--border-color);
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+    .btn-danger:hover {
+      background: #fecaca;
+      color: #991b1b;
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      border-radius: 5px;
+    }
+
+    /* Excel Bulk Upload Dropzone */
+    .dropzone-box {
+      border: 2px dashed #3b82f6;
+      background: #eff6ff;
+      border-radius: var(--radius-md);
+      padding: 26px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 16px;
+    }
+
+    .dropzone-box:hover, .dropzone-box.drag-over {
+      background: #dbeafe;
+      border-color: #1d4ed8;
+      transform: scale(1.01);
+    }
+
+    .dropzone-icon {
+      font-size: 2.4rem;
+      color: #2563eb;
+      margin-bottom: 8px;
+    }
+
+    .dropzone-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 4px;
+    }
+
+    .dropzone-desc {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    /* Table for Excel Data & History */
+    .data-table-wrap {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+      max-height: 480px;
+      background: #ffffff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      text-align: left;
+    }
+
+    .custom-table th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 700;
+      padding: 9px 12px;
+      border-bottom: 2px solid #cbd5e1;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    .custom-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #1e293b;
+    }
+
+    .custom-table tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .custom-table tbody tr.active-row {
+      background: #e0f2fe !important;
+      font-weight: 600;
+    }
+
+    /* Badge indicators */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-amber { background: #fef3c7; color: #92400e; }
+
+    /* Collapsible Settings Box */
+    .collapsible-header {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 10px;
+    }
+
+    .collapsible-body {
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      background: #ffffff;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .collapsible-body.open {
+      display: block;
+    }
+
+    /* RIGHT PANE: Live A4 Printable Preview */
+    .preview-sticky-wrap {
+      position: sticky;
+      top: 80px;
+    }
+
+    .preview-toolbar {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .preview-toolbar-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #1e3a8a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .preview-scroll-container {
+      max-height: calc(100vh - 170px);
+      overflow-y: auto;
+      background: #cbd5e1;
+      padding: 20px 16px;
+      border: 1px solid var(--border-color);
+      border-top: none;
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* A4 Document Replica (On Screen) */
+    .a4-sheet {
+      background: #ffffff;
+      width: 100%;
+      max-width: 210mm;
+      min-height: 297mm;
+      padding: 20mm 22mm;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      box-sizing: border-box;
+      position: relative;
+      font-family: var(--font-legal);
+      color: #000000;
+      font-size: 14pt;
+      line-height: 1.55;
+    }
+
+    .a4-page-badge {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 0.72rem;
+      background: #e2e8f0;
+      color: #475569;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: var(--font-marathi);
+      font-weight: 600;
+    }
+
+    /* LEGAL ORDER DOCUMENT FORMATTING (Matching the Official Court/ERO Order) */
+    .legal-heading-center {
+      text-align: center;
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    .legal-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-top: 14px;
+      margin-bottom: 12px;
+      border-bottom: 1px dashed #94a3b8;
+      padding-bottom: 4px;
+    }
+
+    .legal-party-line {
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+      line-height: 1.45;
+    }
+
+    .legal-vs-center {
+      text-align: left;
+      padding-left: 55px;
+      margin: 4px 0;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .legal-ref-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+
+    .legal-ref-list {
+      margin-left: 28px;
+      line-height: 1.45;
+      font-size: 0.98rem;
+      margin-bottom: 12px;
+    }
+
+    .legal-ref-list li {
+      margin-bottom: 2px;
+    }
+
+    .legal-para {
+      text-align: justify;
+      text-justify: inter-word;
+      font-size: 1.02rem;
+      line-height: 1.52;
+      margin-bottom: 10px;
+    }
+
+    .legal-para strong {
+      font-weight: 700;
+    }
+
+    .legal-order-title {
+      text-align: center;
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin: 18px 0 14px 0;
+      letter-spacing: 2px;
+    }
+
+    .legal-order-item {
+      text-align: justify;
+      text-justify: inter-word;
+      font-size: 1.02rem;
+      line-height: 1.52;
+      margin-bottom: 8px;
+    }
+
+    .legal-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-top: 28px;
+      padding-top: 6px;
+    }
+
+    .legal-sign-box {
+      text-align: center;
+      font-size: 1.02rem;
+      line-height: 1.4;
+      min-width: 250px;
+    }
+
+    /* PRINT SPECIFIC STYLES - PERFECT 2-PAGE OUTPUT */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 18mm 20mm 18mm 20mm;
+      }
+
+      html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-family: 'Noto Sans Devanagari', 'Tinos', 'Times New Roman', serif !important;
+      }
+
+      /* Hide all UI elements */
+      .gov-top-bar,
+      .header-nav,
+      .info-strip,
+      .edit-mode-banner,
+      .tab-nav,
+      .input-column,
+      .preview-toolbar,
+      .a4-page-badge,
+      .no-print,
+      #citizen-auth-slot,
+      .toast-container {
+        display: none !important;
+      }
+
+      .app-container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .workspace-grid {
+        display: block !important;
+      }
+
+      .preview-sticky-wrap {
+        position: static !important;
+      }
+
+      .preview-scroll-container {
+        max-height: none !important;
+        overflow: visible !important;
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        gap: 0 !important;
+      }
+
+      .a4-sheet {
+        box-shadow: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        font-size: 12.8pt !important;
+        line-height: 1.48 !important;
+      }
+
+      .a4-sheet:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+
+      /* In Bulk Print container, force each 2-page order strictly */
+      .bulk-order-set {
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast-item {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+      border-left: 4px solid #38bdf8;
+      animation: toastIn 0.25s ease-out;
+    }
+
+    .toast-item.success { border-left-color: #10b981; }
+    .toast-item.error { border-left-color: #ef4444; }
+    .toast-item.warning { border-left-color: #f59e0b; }
+
+    @keyframes toastIn {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Government Tricolor Bar -->
+  <div class="gov-top-bar"></div>
+
+  <!-- Main Navigation Header -->
+  <header class="header-nav no-print">
+    <div class="brand-title-wrap">
+      <div class="brand-badge">
+        <i class="fa-solid fa-gavel"></i>
+      </div>
+      <div class="brand-texts">
+        <h1>मतदार नोंदणी अधिकारी (ERO) अंतिम आदेश जनरेटर</h1>
+        <p>SIR–2026 • दावे व हरकती • नमुना क्र. ७ हरकतीवरील निर्णय व आदेश</p>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="index.html" class="nav-btn nav-btn-home" title="मुख्यपृष्ठावर जा">
+        <i class="fa-solid fa-house"></i> <span>मुख्यपृष्ठ</span>
+      </a>
+      <a href="ero-hearing-notice-generator.html" class="nav-btn nav-btn-notice" title="सुनावणी नोटीस जनरेटर (फॉर्म १३ व १४)">
+        <i class="fa-solid fa-stamp"></i> <span>ERO नोटीस (१३ व १४)</span>
+      </a>
+      <!-- Citizen User Auth Slot -->
+      <div class="citizen-auth-slot" id="citizen-auth-slot" style="display:inline-block;"></div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- Information Header Strip -->
+    <div class="info-strip no-print">
+      <div class="info-strip-left">
+        <i class="fa-solid fa-circle-info" style="color: #2563eb; font-size: 1.1rem;"></i>
+        <span>विशेष सखोल पुनरीक्षण (SIR-2026): नमुना क्र. ७ (Absent/Permanently Shifted) हरकतीवरील अंतिम आदेश तयार करा व जतन करा.</span>
+      </div>
+      <div style="font-size: 0.8rem; color: #475569;">
+        <i class="fa-solid fa-database" style="color: #059669;"></i> सर्व आदेश स्थानिक हिस्ट्रिमध्ये सुरक्षित राहतात.
+      </div>
+    </div>
+
+    <!-- Edit Mode Alert Banner (shown when user is editing a past order) -->
+    <div class="edit-mode-banner no-print" id="editModeBanner">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <i class="fa-solid fa-triangle-exclamation" style="font-size:1.3rem;"></i>
+        <div>
+          <div>इतिहासामधून संपादन मोड सुरू आहे: प्रकरण क्र. <span id="editingCaseText"></span></div>
+          <div style="font-size:0.8rem; font-weight:500;">आवश्यक बदल करा आणि खालील <strong>"अद्ययावत करा व प्रिंट करा"</strong> बटणावर क्लिक करा.</div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-secondary" onclick="exitEditMode()">
+        <i class="fa-solid fa-xmark"></i> संपादन रद्द करा
+      </button>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tab-nav no-print">
+      <button type="button" class="tab-btn active" id="tabBtnSingle" onclick="switchMainTab('single')">
+        <i class="fa-solid fa-file-pen"></i> <span>१. एकल आदेश तयार करा (Single Order)</span>
+      </button>
+      <button type="button" class="tab-btn" id="tabBtnBulk" onclick="switchMainTab('bulk')">
+        <i class="fa-solid fa-file-excel"></i> <span>२. एक्सेल बल्क जनरेशन (Excel Upload)</span>
+        <span class="badge-pill" id="bulkCountBadge">०</span>
+      </button>
+      <button type="button" class="tab-btn" id="tabBtnHistory" onclick="switchMainTab('history')">
+        <i class="fa-solid fa-clock-rotate-left"></i> <span>३. जतन केलेले आदेश व इतिहास (History)</span>
+        <span class="badge-pill" id="historyCountBadge">०</span>
+      </button>
+    </div>
+
+    <!-- Workspace Grid -->
+    <div class="workspace-grid">
+
+      <!-- LEFT COLUMN: Forms, Bulk, History -->
+      <div class="input-column no-print">
+
+        <!-- TAB 1: SINGLE ORDER FORM -->
+        <div id="tabContentSingle">
+          <div class="card-panel">
+            <div class="card-header-line">
+              <div class="card-title">
+                <i class="fa-solid fa-pen-fancy" style="color: #2563eb;"></i>
+                <span>प्रकरण व मतदार तपशील भरा</span>
+              </div>
+              <button type="button" class="btn btn-sm btn-secondary" onclick="fillDemoData()" title="चाचणीसाठी नमुना डेटा भरा">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> डेमो डेटा
+              </button>
+            </div>
+
+            <form id="orderForm" onsubmit="handleFormSubmit(event)">
+              
+              <!-- Case No & Year -->
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">प्रकरण क्रमांक (Case No.) <span class="req">*</span></label>
+                  <input type="text" id="caseNo" class="form-control" placeholder="उदा. १२४ किंवा 124" required oninput="syncPreview()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">वर्ष (Year)</label>
+                  <input type="text" id="orderYear" class="form-control" value="2026" oninput="syncPreview()">
+                </div>
+              </div>
+
+              <!-- Harkatdar Name -->
+              <div class="form-group">
+                <label class="form-label">हरकतदाराचे नाव (Objector Name) <span class="req">*</span></label>
+                <input type="text" id="harkatdarName" class="form-control" placeholder="उदा. श्री. संदेश अनंत सावंत" required oninput="syncPreview()">
+              </div>
+
+              <!-- Voter Name -->
+              <div class="form-group">
+                <label class="form-label">संबंधित मतदाराचे नाव (Voter Name) <span class="req">*</span></label>
+                <input type="text" id="voterName" class="form-control" placeholder="उदा. श्री. महेश शांताराम गावडे" required oninput="syncPreview()">
+              </div>
+
+              <!-- Part No & Serial No -->
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">भाग क्रमांक (Part No.) <span class="req">*</span></label>
+                  <input type="text" id="bhagNo" class="form-control" placeholder="उदा. १४२ किंवा 142" required oninput="syncPreview()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">अनुक्रमांक (Serial No.) <span class="req">*</span></label>
+                  <input type="text" id="anukramank" class="form-control" placeholder="उदा. ५८७ किंवा 587" required oninput="syncPreview()">
+                </div>
+              </div>
+
+              <!-- Order Date & Place -->
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">आदेश दिनांक (Order Date)</label>
+                  <input type="text" id="orderDate" class="form-control" placeholder="उदा. ०५-११-२०२६" value="०५-११-२०२६" oninput="syncPreview()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">स्थळ (Place)</label>
+                  <input type="text" id="orderPlace" class="form-control" value="कणकवली" oninput="syncPreview()">
+                </div>
+              </div>
+
+              <!-- Collapsible: Officer & Assembly Settings -->
+              <div class="collapsible-header" onclick="toggleOfficerSettings()">
+                <span><i class="fa-solid fa-sliders"></i> अधिकारी व विधानसभा मतदारसंघ सेटिंग्ज (बदलायचे असल्यास)</span>
+                <i class="fa-solid fa-chevron-down" id="settingsChevron"></i>
+              </div>
+
+              <div class="collapsible-body" id="officerSettingsBody">
+                <div class="form-group">
+                  <label class="form-label">विधानसभा मतदारसंघ क्र. व नाव</label>
+                  <input type="text" id="constituencyName" class="form-control" value="२६८ – कणकवली" oninput="syncPreview()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">उपविभागीय कार्यालय / कार्यक्षेत्र</label>
+                  <input type="text" id="subdivOffice" class="form-control" value="कणकवली" oninput="syncPreview()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">स्वाक्षरी अधिकारी नाव (Officer Name)</label>
+                  <input type="text" id="officerName" class="form-control" value="श्री. जगदीश कातकर" oninput="syncPreview()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">स्वाक्षरी पदनाम (Officer Designation)</label>
+                  <input type="text" id="officerDesig" class="form-control" value="उपविभागीय अधिकारी, कणकवली" oninput="syncPreview()">
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px;">
+                <button type="submit" class="btn btn-primary" style="flex:1;">
+                  <i class="fa-solid fa-print"></i> <span id="saveBtnText">आदेश सेव्ह करा व प्रिंट करा</span>
+                </button>
+                <button type="button" class="btn btn-success" onclick="saveOnlyToHistory()">
+                  <i class="fa-solid fa-floppy-disk"></i> फक्त सेव्ह करा
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetSingleForm()">
+                  <i class="fa-solid fa-rotate-left"></i> रीसेट
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+        <!-- TAB 2: EXCEL BULK GENERATION -->
+        <div id="tabContentBulk" style="display:none;">
+          <div class="card-panel">
+            <div class="card-header-line">
+              <div class="card-title">
+                <i class="fa-solid fa-file-excel" style="color: #059669;"></i>
+                <span>एक्सेल फाईलवरून मल्टिपल आदेश जनरेट करा</span>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button type="button" class="btn btn-sm btn-success" onclick="downloadSampleExcel(true)">
+                  <i class="fa-solid fa-download"></i> नमुना एक्सेल
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="downloadSampleExcel(false)">
+                  <i class="fa-solid fa-file-csv"></i> कोरी एक्सेल
+                </button>
+              </div>
+            </div>
+
+            <!-- Upload Dropzone -->
+            <div class="dropzone-box" id="dropZone" onclick="document.getElementById('excelFileInput').click()">
+              <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;" onchange="handleExcelUpload(event)">
+              <div class="dropzone-icon">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <div class="dropzone-title">येथे एक्सेल फाईल ड्रॅग करा किंवा क्लिक करून निवडा (.xlsx / .csv)</div>
+              <div class="dropzone-desc">कॉलम्स: प्रकरण क्र, हरकतदाराचे नाव, मतदाराचे नाव, भाग क्र, अनुक्रमांक इ.</div>
+            </div>
+
+            <!-- Bulk Toolbar -->
+            <div id="bulkControls" style="display:none; margin-bottom:12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+                <div style="font-weight:700; color:#1e3a8a; font-size:0.9rem;">
+                  लोड झालेली नोंद: <span id="bulkLoadedCount" style="color:#059669;">०</span> (निवडलेले: <span id="bulkSelectedCount" style="color:#2563eb;">०</span>)
+                </div>
+                <div style="display:flex; gap:8px;">
+                  <button type="button" class="btn btn-sm btn-primary" onclick="bulkPrintSelected()">
+                    <i class="fa-solid fa-print"></i> निवडलेले सर्व प्रिंट करा (<span id="bulkPrintBtnCount">०</span>)
+                  </button>
+                  <button type="button" class="btn btn-sm btn-secondary" onclick="clearBulkList()">
+                    <i class="fa-solid fa-trash-can"></i> यादी साफ करा
+                  </button>
+                </div>
+              </div>
+
+              <!-- Filter Search Input -->
+              <input type="text" id="bulkSearchInput" class="form-control" placeholder="यादीमध्ये नाव, भाग क्र. किंवा प्रकरण क्र. शोधा..." oninput="filterBulkTable()" style="margin-bottom:10px;">
+
+              <!-- Bulk Data Table -->
+              <div class="data-table-wrap">
+                <table class="custom-table" id="bulkTable">
+                  <thead>
+                    <tr>
+                      <th style="width:30px;"><input type="checkbox" id="masterBulkCheck" checked onchange="toggleAllBulkChecks(this.checked)"></th>
+                      <th>प्रकरण क्र.</th>
+                      <th>मतदाराचे नाव</th>
+                      <th>भाग क्र.</th>
+                      <th>अनुक्रमांक</th>
+                      <th>हरकतदार</th>
+                      <th style="text-align:right;">कृती</th>
+                    </tr>
+                  </thead>
+                  <tbody id="bulkTableBody">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TAB 3: SAVED ORDERS & HISTORY -->
+        <div id="tabContentHistory" style="display:none;">
+          <div class="card-panel">
+            <div class="card-header-line">
+              <div class="card-title">
+                <i class="fa-solid fa-clock-rotate-left" style="color: #7c3aed;"></i>
+                <span>जतन केलेले आदेश (History & Saved Orders)</span>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button type="button" class="btn btn-sm btn-success" onclick="exportHistoryToExcel()">
+                  <i class="fa-solid fa-file-excel"></i> इतिहास एक्सेल डाऊनलोड
+                </button>
+                <button type="button" class="btn btn-sm btn-danger" onclick="clearAllHistory()">
+                  <i class="fa-solid fa-trash"></i> सर्व इतिहास हटवा
+                </button>
+              </div>
+            </div>
+
+            <!-- History Search -->
+            <div style="margin-bottom:12px;">
+              <input type="text" id="historySearchInput" class="form-control" placeholder="इतिहासामध्ये मतदाराचे नाव, हरकतदार किंवा प्रकरण क्र. शोधा..." oninput="filterHistoryTable()">
+            </div>
+
+            <!-- History Table -->
+            <div class="data-table-wrap">
+              <table class="custom-table" id="historyTable">
+                <thead>
+                  <tr>
+                    <th>प्रकरण क्र.</th>
+                    <th>मतदाराचे नाव</th>
+                    <th>भाग क्र.</th>
+                    <th>अनुक्रमांक</th>
+                    <th>तारीख</th>
+                    <th style="text-align:right;">कृती (Action)</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: LIVE A4 PRINTABLE PREVIEW -->
+      <div class="preview-column">
+        <div class="preview-sticky-wrap">
+          
+          <!-- Toolbar -->
+          <div class="preview-toolbar no-print">
+            <div class="preview-toolbar-title">
+              <i class="fa-solid fa-file-lines"></i>
+              <span>अधिकृत आदेश पूर्वावलोकन (Official A4 Format)</span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button type="button" class="btn btn-sm btn-primary" onclick="triggerDirectPrint()">
+                <i class="fa-solid fa-print"></i> प्रिंट करा (Print)
+              </button>
+            </div>
+          </div>
+
+          <!-- Document Container -->
+          <div class="preview-scroll-container" id="printableArea">
+            
+            <!-- ORDER PAGE 1 -->
+            <div class="a4-sheet" id="orderPage1">
+              <div class="a4-page-badge no-print">पान १ (Page 1)</div>
+
+              <!-- Top Authority Heading -->
+              <div class="legal-heading-center">
+                मतदार नोंदणी अधिकारी, विधानसभा मतदारसंघ क्र. <span class="pv-constituency">२६८ – कणकवली</span> तथा उपविभागीय अधिकारी, <span class="pv-subdiv">कणकवली</span> यांचे समोर
+              </div>
+
+              <!-- Case Line -->
+              <div class="legal-meta-row">
+                <div>SIR–2026 / दावे व हरकती / नमुना क्र. ७</div>
+                <div>प्रकरण क्र. : <span class="pv-case-no" style="font-family: inherit; font-weight:700;">____</span> / <span class="pv-year">2026</span></div>
+              </div>
+
+              <!-- Harkatdar -->
+              <div class="legal-party-line">
+                हरकतदार : श्री./श्रीम. <span class="pv-harkatdar" style="font-weight:700;">__________</span>
+              </div>
+
+              <!-- Viruddha -->
+              <div class="legal-vs-center">
+                विरुद्ध
+              </div>
+
+              <!-- Voter & Part Info -->
+              <div class="legal-party-line" style="display:flex; justify-content:space-between; flex-wrap:wrap;">
+                <div>संबंधित मतदार : श्री./श्रीम. <span class="pv-voter" style="font-weight:700;">__________</span></div>
+                <div>भाग क्र. : <span class="pv-bhag" style="font-weight:700;">__</span> &nbsp;&nbsp;&nbsp;&nbsp; अनुक्रमांक : <span class="pv-anukramank" style="font-weight:700;">__</span></div>
+              </div>
+
+              <!-- References Read / Scrutinized -->
+              <div class="legal-ref-title">
+                वाचले / अवलोकन केले -
+              </div>
+
+              <ol class="legal-ref-list">
+                <li>लोकप्रतिनिधित्व अधिनियम, 1950 चे कलम 19, 20 व 22.</li>
+                <li>Registration of Electors Rules, 1960 चे नियम 13, 19(1)(b)(ii), 19(1)(b)(iii) व 20.</li>
+                <li>भारत निवडणूक आयोग व मुख्य निवडणूक अधिकारी, महाराष्ट्र यांचे SIR–2026 - लागू निर्देश.</li>
+                <li>हरकतदाराचा Form 7 अर्ज व त्यासोबतची कागदपत्रे.</li>
+                <li>संबंधित मतदाराचा Enumeration Form.</li>
+                <li>BLO क्षेत्रीय पडताळणी अहवाल, ASDD स्थिती व BLO–BLA बैठकीतील संबंधित नोंदी.</li>
+                <li>हरकतदारास बजावलेल्या सुनावणी नोटीसा व सुनावणीतील म्हणणे.</li>
+                <li>प्रकरणातील उपलब्ध सर्व संबंधित अभिलेख.</li>
+              </ol>
+
+              <!-- Paragraph 1 -->
+              <div class="legal-para">
+                <strong>1.</strong> &nbsp;&nbsp; विशेष सखोल पुनरीक्षण (SIR–2026) अंतर्गत प्रसिद्ध करण्यात आलेल्या प्रारूप मतदार यादीमध्ये संबंधित मतदाराचे नाव भाग क्र. <span class="pv-bhag">-----</span> अनुक्रमांक <span class="pv-anukramank">------</span> येथे समाविष्ट आहे. सदर नावाबाबत हरकतदाराने नमुना क्र. ७ सादर करून संबंधित मतदार “Absent / Permanently Shifted” असल्याच्या कारणावरून त्याचे नाव मतदार यादीतून वगळण्याची हरकत घेतली आहे. सदर हरकत Registration of Electors Rules, 1960 मधील Rule 19(1)(b)(ii) अन्वये सुनावणीस ठेवण्यात येऊन हरकतदारास Form 13 द्वारे आवश्यक नोटीस देण्यात आली. त्यानंतर Rule 20 अन्वये संक्षिप्त चौकशी व सुनावणी करण्यात आली.
+              </div>
+
+              <!-- Paragraph 2 -->
+              <div class="legal-para">
+                <strong>2.</strong> &nbsp;&nbsp; हरकतदाराने संबंधित मतदार सदर पत्त्यावर राहत नसून स्थलांतरित झालेला असल्याचे नमुना क्र. ७ मध्ये नमूद केले आहे. तथापि संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करण्यासाठी हरकतदाराने कोणताही स्वतंत्र दस्तऐवज, प्रत्यक्ष साक्ष, नवीन रहिवासाचा पत्ता, स्थानिक अभिलेख अथवा अन्य विश्वासार्ह पुरावा सादर केलेला नाही. भारत निवडणूक आयोगाच्या Form 7 संबंधी मार्गदर्शक सूचनांनुसार, हरकतीमध्ये नमूद केलेल्या deletion च्या कारणाची सत्यता सिद्ध करण्याचे प्राथमिक ओझे हरकतदारावर आहे.
+              </div>
+
+              <!-- Paragraph 3 -->
+              <div class="legal-para">
+                <strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसtarget तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.
+              </div>
+
+              <!-- Paragraph 4 (Page 1 part) -->
+              <div class="legal-para" style="margin-bottom:0;">
+                <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार
+              </div>
+
+            </div>
+
+            <!-- ORDER PAGE 2 -->
+            <div class="a4-sheet" id="orderPage2">
+              <div class="a4-page-badge no-print">पान २ (Page 2)</div>
+
+              <!-- Paragraph 4 Continuation -->
+              <div class="legal-para" style="margin-top:0;">
+                आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.
+              </div>
+
+              <!-- Paragraph 5 -->
+              <div class="legal-para">
+                <strong>5.</strong> &nbsp;&nbsp; वरील सर्व अभिलेख, हरकतदाराचे म्हणणे, संबंधित मतदाराची SIR नोंद, Enumeration Form, BLO पडताळणी, ASDD स्थिती तसेच उपलब्ध इतर अभिलेख यांचे एकत्रित परीक्षण करता, संबंधित मतदाराने विधानसभा मतदारसंघ क्र. <span class="pv-constituency">२६८ – कणकवली</span> येथील आपला ordinary residence सोडून कायमस्वरूपी अन्यत्र स्थलांतर केले आहे, असे सिद्ध होत नाही. हरकतदाराने Form 7 मध्ये घेतलेली “Absent/Permanently shifted” ही हरकत कोणत्याही स्वतंत्र व विश्वासार्ह पुराव्याने सिद्ध केलेली नाही. त्यामुळे संबंधित मतदाराचे नाव मतदार यादीतून वगळण्यासाठी आवश्यक तथ्यात्मक व कायदेशीर आधार उपलब्ध नाही.
+              </div>
+
+              <!-- ORDER HEADING -->
+              <div class="legal-order-title">
+                आदेश
+              </div>
+
+              <!-- Operative Order Premise -->
+              <div class="legal-para" style="margin-bottom:12px;">
+                त्याअर्थी, लोकप्रतिनिधित्व अधिनियम, 1950 मधील कलम 19, 20 व 22, Registration of Electors Rules, 1960 मधील Rules 19 व 20 तसेच भारत निवडणूक आयोग व मुख्य निवडणूक अधिकारी, महाराष्ट्र यांच्या SIR–2026 संबंधी लागू निर्देशांचा विचार करून पुढीलप्रमाणे आदेश देण्यात येतो :—
+              </div>
+
+              <!-- Operative Points 1 to 4 -->
+              <div class="legal-order-item">
+                <strong>1.</strong> हरकतदाराने नमुना क्र. ७ मध्ये संबंधित मतदार “Absent/Permanently Shifted” असल्याच्या कारणावरून घेतलेली हरकत पुराव्याअभावी सिद्ध होत नसल्याने नामंजूर करण्यात येते.
+              </div>
+
+              <div class="legal-order-item">
+                <strong>2.</strong> संबंधित मतदाराचे प्रारूप मतदार यादीतील नाव कायम ठेवण्यात यावे व अंतिम मतदार यादीत समाविष्ट करण्यास सदर हरकतीमुळे कोणताही अडथळा राहणार नाही.
+              </div>
+
+              <div class="legal-order-item">
+                <strong>3.</strong> सदर निर्णयाची आवश्यक नोंद SIR–2026 / ECINet प्रणालीमध्ये करण्यात यावी.
+              </div>
+
+              <div class="legal-order-item" style="margin-bottom:20px;">
+                <strong>4.</strong> आदेशाची माहिती हरकतदार यांना नियमानुसार कळविण्यात यावी.
+              </div>
+
+              <!-- Signatures & Place / Date -->
+              <div class="legal-footer-row">
+                <div style="font-size:1.05rem; line-height:1.7;">
+                  <div>स्थळ : <span class="pv-place">कणकवली</span></div>
+                  <div>दिनांक : <span class="pv-date">०५-११-२०२६</span></div>
+                </div>
+                <div class="legal-sign-box">
+                  <div style="font-weight:700;">(<span class="pv-officer-name">श्री. जगदीश कातकर</span>)</div>
+                  <div>मतदार नोंदणी अधिकारी</div>
+                  <div>विधानसभा मतदारसंघ क्र. <span class="pv-constituency">२६८ – कणकवली</span></div>
+                  <div>तथा <span class="pv-officer-desig">उपविभागीय अधिकारी, कणकवली</span></div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Hidden Container for Bulk Printing -->
+  <div id="bulkPrintContainer" style="display:none;"></div>
+
+  <script>
+    /* ==========================================================================
+       ERO Order Generator Application Core Logic
+       ========================================================================== */
+
+    const STORAGE_KEY = 'emudra_ero_orders_history';
+
+    // State Variables
+    let currentEditingId = null;
+    let bulkRecords = [];
+
+    // Helper: Convert to Marathi / English Numerals
+    function toMarathiDigits(str) {
+      if (str === null || str === undefined) return '';
+      const map = ['०','१','२','३','४','५','६','७','८','९'];
+      return String(str).replace(/[0-9]/g, d => map[+d]);
+    }
+
+    function toEnglishDigits(str) {
+      if (!str) return '';
+      const map = {'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'};
+      return String(str).replace(/[०-९]/g, d => map[d]);
+    }
+
+    // Helper: Format Date to Marathi digits
+    function formatTodayMarathiDate() {
+      const now = new Date();
+      const dd = String(now.getDate()).padStart(2, '0');
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const yyyy = String(now.getFullYear());
+      return toMarathiDigits(`${dd}-${mm}-${yyyy}`);
+    }
+
+    // Switch Main Tabs (Single, Bulk, History)
+    function switchMainTab(tab) {
+      document.getElementById('tabContentSingle').style.display = (tab === 'single') ? 'block' : 'none';
+      document.getElementById('tabContentBulk').style.display = (tab === 'bulk') ? 'block' : 'none';
+      document.getElementById('tabContentHistory').style.display = (tab === 'history') ? 'block' : 'none';
+
+      document.getElementById('tabBtnSingle').classList.toggle('active', tab === 'single');
+      document.getElementById('tabBtnBulk').classList.toggle('active', tab === 'bulk');
+      document.getElementById('tabBtnHistory').classList.toggle('active', tab === 'history');
+
+      if (tab === 'history') {
+        renderHistoryTable();
+      }
+    }
+
+    // Toggle Officer Settings Collapsible
+    function toggleOfficerSettings() {
+      const body = document.getElementById('officerSettingsBody');
+      const chev = document.getElementById('settingsChevron');
+      body.classList.toggle('open');
+      if (body.classList.contains('open')) {
+        chev.className = 'fa-solid fa-chevron-up';
+      } else {
+        chev.className = 'fa-solid fa-chevron-down';
+      }
+    }
+
+    // Live Sync Inputs with Right Preview Document
+    function syncPreview() {
+      const caseNo = document.getElementById('caseNo').value.trim() || '____';
+      const year = document.getElementById('orderYear').value.trim() || '2026';
+      const harkatdar = document.getElementById('harkatdarName').value.trim() || '__________';
+      const voter = document.getElementById('voterName').value.trim() || '__________';
+      const bhag = document.getElementById('bhagNo').value.trim() || '__';
+      const anukramank = document.getElementById('anukramank').value.trim() || '__';
+      const date = document.getElementById('orderDate').value.trim() || '०५-११-२०२६';
+      const place = document.getElementById('orderPlace').value.trim() || 'कणकवली';
+      const constituency = document.getElementById('constituencyName').value.trim() || '२६८ – कणकवली';
+      const subdiv = document.getElementById('subdivOffice').value.trim() || 'कणकवली';
+      const officer = document.getElementById('officerName').value.trim() || 'श्री. जगदीश कातकर';
+      const desig = document.getElementById('officerDesig').value.trim() || 'उपविभागीय अधिकारी, कणकवली';
+
+      // Update text in preview sheets
+      document.querySelectorAll('.pv-case-no').forEach(el => el.textContent = caseNo);
+      document.querySelectorAll('.pv-year').forEach(el => el.textContent = year);
+      document.querySelectorAll('.pv-harkatdar').forEach(el => el.textContent = harkatdar);
+      document.querySelectorAll('.pv-voter').forEach(el => el.textContent = voter);
+      document.querySelectorAll('.pv-bhag').forEach(el => el.textContent = bhag);
+      document.querySelectorAll('.pv-anukramank').forEach(el => el.textContent = anukramank);
+      document.querySelectorAll('.pv-date').forEach(el => el.textContent = date);
+      document.querySelectorAll('.pv-place').forEach(el => el.textContent = place);
+      document.querySelectorAll('.pv-constituency').forEach(el => el.textContent = constituency);
+      document.querySelectorAll('.pv-subdiv').forEach(el => el.textContent = subdiv);
+      document.querySelectorAll('.pv-officer-name').forEach(el => el.textContent = officer);
+      document.querySelectorAll('.pv-officer-desig').forEach(el => el.textContent = desig);
+    }
+
+    // Demo Data
+    function fillDemoData() {
+      document.getElementById('caseNo').value = '१२४';
+      document.getElementById('orderYear').value = '2026';
+      document.getElementById('harkatdarName').value = 'श्री. संदेश अनंत सावंत';
+      document.getElementById('voterName').value = 'श्री. महेश शांताराम गावडे';
+      document.getElementById('bhagNo').value = '१४२';
+      document.getElementById('anukramank').value = '५८७';
+      document.getElementById('orderDate').value = '०५-११-२०२६';
+      document.getElementById('orderPlace').value = 'कणकवली';
+      syncPreview();
+      showToast('नमुना डेटा यशस्वीरित्या भरला गेला आहे.', 'info');
+    }
+
+    // Reset Form
+    function resetSingleForm() {
+      exitEditMode();
+      document.getElementById('caseNo').value = '';
+      document.getElementById('harkatdarName').value = '';
+      document.getElementById('voterName').value = '';
+      document.getElementById('bhagNo').value = '';
+      document.getElementById('anukramank').value = '';
+      document.getElementById('orderDate').value = formatTodayMarathiDate();
+      syncPreview();
+      showToast('फॉर्म रीसेट केला गेला आहे.', 'info');
+    }
+
+    // Exit Edit Mode
+    function exitEditMode() {
+      currentEditingId = null;
+      document.getElementById('editModeBanner').style.display = 'none';
+      document.getElementById('saveBtnText').textContent = 'आदेश सेव्ह करा व प्रिंट करा';
+    }
+
+    // Load Record to Edit
+    function loadRecordToEdit(id) {
+      const history = getHistory();
+      const record = history.find(r => r.id === id);
+      if (!record) {
+        showToast('रेकॉर्ड सापडले नाही!', 'error');
+        return;
+      }
+
+      currentEditingId = record.id;
+      document.getElementById('caseNo').value = record.caseNo || '';
+      document.getElementById('orderYear').value = record.year || '2026';
+      document.getElementById('harkatdarName').value = record.harkatdar || '';
+      document.getElementById('voterName').value = record.voter || '';
+      document.getElementById('bhagNo').value = record.bhag || '';
+      document.getElementById('anukramank').value = record.anukramank || '';
+      document.getElementById('orderDate').value = record.date || formatTodayMarathiDate();
+      document.getElementById('orderPlace').value = record.place || 'कणकवली';
+      document.getElementById('constituencyName').value = record.constituency || '२६८ – कणकवली';
+      document.getElementById('subdivOffice').value = record.subdiv || 'कणकवली';
+      document.getElementById('officerName').value = record.officer || 'श्री. जगदीश कातकर';
+      document.getElementById('officerDesig').value = record.desig || 'उपविभागीय अधिकारी, कणकवली';
+
+      document.getElementById('editingCaseText').textContent = `${record.caseNo || ''} / ${record.voter || ''}`;
+      document.getElementById('editModeBanner').style.display = 'flex';
+      document.getElementById('saveBtnText').textContent = 'अद्ययावत करा व प्रिंट करा';
+
+      syncPreview();
+      switchMainTab('single');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast(`प्रकरण क्र. ${record.caseNo} संपादन करण्यासाठी लोड केले.`, 'warning');
+    }
+
+    // Collect Current Form Data as Object
+    function getFormDataObject() {
+      return {
+        id: currentEditingId || ('ORD-' + Date.now()),
+        caseNo: document.getElementById('caseNo').value.trim(),
+        year: document.getElementById('orderYear').value.trim() || '2026',
+        harkatdar: document.getElementById('harkatdarName').value.trim(),
+        voter: document.getElementById('voterName').value.trim(),
+        bhag: document.getElementById('bhagNo').value.trim(),
+        anukramank: document.getElementById('anukramank').value.trim(),
+        date: document.getElementById('orderDate').value.trim(),
+        place: document.getElementById('orderPlace').value.trim(),
+        constituency: document.getElementById('constituencyName').value.trim(),
+        subdiv: document.getElementById('subdivOffice').value.trim(),
+        officer: document.getElementById('officerName').value.trim(),
+        desig: document.getElementById('officerDesig').value.trim(),
+        timestamp: new Date().toISOString()
+      };
+    }
+
+    // Save To History (Local Storage)
+    function saveRecordToHistory(data) {
+      let history = getHistory();
+      const existingIdx = history.findIndex(r => r.id === data.id);
+      if (existingIdx !== -1) {
+        history[existingIdx] = data;
+      } else {
+        history.unshift(data);
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+      updateHistoryBadge();
+    }
+
+    function getHistory() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function updateHistoryBadge() {
+      const history = getHistory();
+      const el = document.getElementById('historyCountBadge');
+      if (el) el.textContent = history.length;
+    }
+
+    // Handle Form Submit (Save + Print)
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const data = getFormDataObject();
+      saveRecordToHistory(data);
+      syncPreview();
+      showToast('आदेश हिस्ट्रीमध्ये सेव्ह झाला! प्रिंट विंडो उघडत आहे...', 'success');
+      setTimeout(() => {
+        window.print();
+        exitEditMode();
+      }, 350);
+    }
+
+    // Save Only Button
+    function saveOnlyToHistory() {
+      const caseNo = document.getElementById('caseNo').value.trim();
+      const voter = document.getElementById('voterName').value.trim();
+      if (!caseNo || !voter) {
+        showToast('कृपया किमान प्रकरण क्र. आणि मतदाराचे नाव भरा!', 'error');
+        return;
+      }
+      const data = getFormDataObject();
+      saveRecordToHistory(data);
+      syncPreview();
+      showToast('आदेश हिस्ट्रीमध्ये यशस्वीरित्या सेव्ह झाला!', 'success');
+      exitEditMode();
+    }
+
+    // Trigger Direct Print of Preview
+    function triggerDirectPrint() {
+      window.print();
+    }
+
+    /* ==========================================================================
+       History Management Tab Functions
+       ========================================================================== */
+
+    function renderHistoryTable(filterQuery) {
+      const tbody = document.getElementById('historyTableBody');
+      const history = getHistory();
+      tbody.innerHTML = '';
+
+      if (history.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#94a3b8;"><i class="fa-regular fa-folder-open" style="font-size:2rem; margin-bottom:8px; display:block;"></i>कोणतेही जतन केलेले आदेश उपलब्ध नाहीत. नवीन आदेश तयार केल्यावर तो आपोआप येथे दिसेल.</td></tr>`;
+        return;
+      }
+
+      let filtered = history;
+      if (filterQuery) {
+        const q = filterQuery.toLowerCase();
+        filtered = history.filter(r => 
+          (r.voter && r.voter.toLowerCase().includes(q)) ||
+          (r.harkatdar && r.harkatdar.toLowerCase().includes(q)) ||
+          (r.caseNo && r.caseNo.toLowerCase().includes(q)) ||
+          (r.bhag && r.bhag.toLowerCase().includes(q)) ||
+          (r.anukramank && r.anukramank.toLowerCase().includes(q))
+        );
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">दिलेल्या शोध निकषांनुसार कोणतेही आदेश सापडले नाहीत.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(record => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong style="color:#1e3a8a;">${record.caseNo || '-'} / ${record.year || '2026'}</strong></td>
+          <td><strong>${record.voter || '-'}</strong></td>
+          <td><span class="badge badge-blue">भाग: ${record.bhag || '-'}</span></td>
+          <td>अनु.: ${record.anukramank || '-'}</td>
+          <td style="font-size:0.8rem; color:#64748b;">${record.date || '-'}</td>
+          <td style="text-align:right; white-space:nowrap;">
+            <button type="button" class="btn btn-sm btn-secondary" onclick="loadRecordToPreview('${record.id}')" title="पूर्वावलोकन पहा">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="loadRecordToEdit('${record.id}')" title="संपादन करा / बदल करा">
+              <i class="fa-solid fa-pen-to-square"></i> संपादन
+            </button>
+            <button type="button" class="btn btn-sm btn-success" onclick="directPrintHistoryRecord('${record.id}')" title="थेट प्रिंट करा">
+              <i class="fa-solid fa-print"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="deleteHistoryRecord('${record.id}')" title="हटवा">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterHistoryTable() {
+      const q = document.getElementById('historySearchInput').value.trim();
+      renderHistoryTable(q);
+    }
+
+    function loadRecordToPreview(id) {
+      const history = getHistory();
+      const r = history.find(item => item.id === id);
+      if (!r) return;
+
+      document.querySelectorAll('.pv-case-no').forEach(el => el.textContent = r.caseNo || '____');
+      document.querySelectorAll('.pv-year').forEach(el => el.textContent = r.year || '2026');
+      document.querySelectorAll('.pv-harkatdar').forEach(el => el.textContent = r.harkatdar || '__________');
+      document.querySelectorAll('.pv-voter').forEach(el => el.textContent = r.voter || '__________');
+      document.querySelectorAll('.pv-bhag').forEach(el => el.textContent = r.bhag || '__');
+      document.querySelectorAll('.pv-anukramank').forEach(el => el.textContent = r.anukramank || '__');
+      document.querySelectorAll('.pv-date').forEach(el => el.textContent = r.date || '०५-११-२०२६');
+      document.querySelectorAll('.pv-place').forEach(el => el.textContent = r.place || 'कणकवली');
+      document.querySelectorAll('.pv-constituency').forEach(el => el.textContent = r.constituency || '२६८ – कणकवली');
+      document.querySelectorAll('.pv-subdiv').forEach(el => el.textContent = r.subdiv || 'कणकवली');
+      document.querySelectorAll('.pv-officer-name').forEach(el => el.textContent = r.officer || 'श्री. जगदीश कातकर');
+      document.querySelectorAll('.pv-officer-desig').forEach(el => el.textContent = r.desig || 'उपविभागीय अधिकारी, कणकवली');
+
+      showToast(`प्रकरण क्र. ${r.caseNo} चा पूर्वावलोकन उजव्या बाजूला लोड केला.`, 'info');
+    }
+
+    function directPrintHistoryRecord(id) {
+      loadRecordToPreview(id);
+      setTimeout(() => {
+        window.print();
+      }, 300);
+    }
+
+    function deleteHistoryRecord(id) {
+      if (!confirm('हा आदेश इतिहासामधून कायमचा हटवायचा आहे का?')) return;
+      let history = getHistory();
+      history = history.filter(r => r.id !== id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+      updateHistoryBadge();
+      renderHistoryTable();
+      showToast('आदेश इतिहासामधून हटविण्यात आला.', 'warning');
+    }
+
+    function clearAllHistory() {
+      const history = getHistory();
+      if (history.length === 0) {
+        showToast('इतिहास आधीच रिकामा आहे.', 'info');
+        return;
+      }
+      if (!confirm(`तुम्हाला इतिहासामधील सर्व ${history.length} आदेश कायमचे हटवायचे आहेत का?`)) return;
+      localStorage.removeItem(STORAGE_KEY);
+      updateHistoryBadge();
+      renderHistoryTable();
+      showToast('सर्व इतिहास यशस्वीरित्या साफ करण्यात आला.', 'warning');
+    }
+
+    function exportHistoryToExcel() {
+      const history = getHistory();
+      if (history.length === 0) {
+        showToast('डाउनलोड करण्यासाठी इतिहासामध्ये कोणताही डेटा नाही!', 'error');
+        return;
+      }
+
+      const rows = history.map((r, i) => ({
+        "अ.क्र.": i + 1,
+        "प्रकरण_क्रमांक": r.caseNo,
+        "वर्ष": r.year,
+        "हरकतदाराचे_नाव": r.harkatdar,
+        "मतदाराचे_नाव": r.voter,
+        "भाग_क्रमांक": r.bhag,
+        "अनुक्रमांक": r.anukramank,
+        "आदेश_दिनांक": r.date,
+        "स्थळ": r.place,
+        "विधानसभा_मतदारसंघ": r.constituency,
+        "स्वाक्षरी_अधिकारी": r.officer,
+        "पदनाम": r.desig
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Saved_ERO_Orders");
+      XLSX.writeFile(wb, `ERO_Orders_History_${new Date().toISOString().slice(0,10)}.xlsx`);
+      showToast('इतिहास एक्सेल फाईल यशस्वीरित्या डाउनलोड झाली!', 'success');
+    }
+
+    /* ==========================================================================
+       Excel Bulk Upload & Generation Logic
+       ========================================================================== */
+
+    // Download Sample or Blank Excel Template
+    function downloadSampleExcel(withSampleData) {
+      const sampleRows = withSampleData ? [
+        {
+          "Prakaran_No": "124",
+          "Year": "2026",
+          "Harkatdar_Name": "श्री. संदेश अनंत सावंत",
+          "Voter_Name": "श्री. महेश शांताराम गावडे",
+          "Bhag_No": "142",
+          "Anukramank": "587",
+          "Order_Date": "05-11-2026",
+          "Place": "कणकवली",
+          "Constituency": "२६८ – कणकवली",
+          "Officer_Name": "श्री. जगदीश कातकर",
+          "Officer_Desig": "उपविभागीय अधिकारी, कणकवली"
+        },
+        {
+          "Prakaran_No": "125",
+          "Year": "2026",
+          "Harkatdar_Name": "श्री. संदेश अनंत सावंत",
+          "Voter_Name": "सौ. स्नेहा महेश गावडे",
+          "Bhag_No": "142",
+          "Anukramank": "588",
+          "Order_Date": "05-11-2026",
+          "Place": "कणकवली",
+          "Constituency": "२६८ – कणकवली",
+          "Officer_Name": "श्री. जगदीश कातकर",
+          "Officer_Desig": "उपविभागीय अधिकारी, कणकवली"
+        },
+        {
+          "Prakaran_No": "126",
+          "Year": "2026",
+          "Harkatdar_Name": "श्री. राजेंद्र बाबाजी पवार",
+          "Voter_Name": "श्री. विठ्ठल सखाराम कदम",
+          "Bhag_No": "156",
+          "Anukramank": "214",
+          "Order_Date": "05-11-2026",
+          "Place": "कणकवली",
+          "Constituency": "२६८ – कणकवली",
+          "Officer_Name": "श्री. जगदीश कातकर",
+          "Officer_Desig": "उपविभागीय अधिकारी, कणकवली"
+        },
+        {
+          "Prakaran_No": "127",
+          "Year": "2026",
+          "Harkatdar_Name": "श्री. राजेंद्र बाबाजी पवार",
+          "Voter_Name": "श्री. प्रकाश बाळकृष्ण सावंत",
+          "Bhag_No": "156",
+          "Anukramank": "219",
+          "Order_Date": "05-11-2026",
+          "Place": "कणकवली",
+          "Constituency": "२६८ – कणकवली",
+          "Officer_Name": "श्री. जगदीश कातकर",
+          "Officer_Desig": "उपविभागीय अधिकारी, कणकवली"
+        }
+      ] : [
+        {
+          "Prakaran_No": "",
+          "Year": "2026",
+          "Harkatdar_Name": "",
+          "Voter_Name": "",
+          "Bhag_No": "",
+          "Anukramank": "",
+          "Order_Date": "05-11-2026",
+          "Place": "कणकवली",
+          "Constituency": "२६८ – कणकवली",
+          "Officer_Name": "श्री. जगदीश कातकर",
+          "Officer_Desig": "उपविभागीय अधिकारी, कणकवली"
+        }
+      ];
+
+      const ws = XLSX.utils.json_to_sheet(sampleRows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "ERO_Orders_Template");
+      const filename = withSampleData ? "ERO_Order_SIR2026_Sample_Template.xlsx" : "ERO_Order_Blank_Template.xlsx";
+      XLSX.writeFile(wb, filename);
+      showToast(`टेम्पलेट फाईल (${filename}) यशस्वीरित्या डाऊनलोड झाली.`, 'success');
+    }
+
+    // Handle File Drop / Select
+    function handleExcelUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      processExcelFile(file);
+    }
+
+    // Drag and Drop listeners
+    const dropZone = document.getElementById('dropZone');
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+      }, false);
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+      }, false);
+    });
+    dropZone.addEventListener('drop', e => {
+      const dt = e.dataTransfer;
+      const file = dt.files[0];
+      if (file) processExcelFile(file);
+    });
+
+    // Parse Excel File
+    function processExcelFile(file) {
+      showToast('एक्सेल फाईल वाचत आहे...', 'info');
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheet];
+          const rawRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+          if (!rawRows || rawRows.length === 0) {
+            showToast('एक्सेल शीटमध्ये कोणताही डेटा सापडला नाही!', 'error');
+            return;
+          }
+
+          bulkRecords = [];
+
+          rawRows.forEach((row, idx) => {
+            // Flexible Column Mapping
+            const caseNo = getColVal(row, ['Prakaran_No', 'प्रकरण_क्रमांक', 'प्रकरण क्र', 'case_no', 'case', 'CaseNo', 'PrakaranNo']);
+            const year = getColVal(row, ['Year', 'वर्ष', 'year']) || '2026';
+            const harkatdar = getColVal(row, ['Harkatdar_Name', 'हरकतदाराचे_नाव', 'हरकतदार', 'objector', 'HarkatdarName', 'objector_name']);
+            const voter = getColVal(row, ['Voter_Name', 'मतदाराचे_नाव', 'मतदार', 'voter', 'VoterName', 'voter_name', 'नाव']);
+            const bhag = getColVal(row, ['Bhag_No', 'भाग_क्रमांक', 'भाग क्र', 'bhag', 'part', 'PartNo', 'BhagNo', 'part_no']);
+            const anukramank = getColVal(row, ['Anukramank', 'अनुक्रमांक', 'अनु.', 'sr_no', 'serial', 'SerialNo', 'srno']);
+            const date = getColVal(row, ['Order_Date', 'आदेश_दिनांक', 'दिनांक', 'date', 'OrderDate']) || formatTodayMarathiDate();
+            const place = getColVal(row, ['Place', 'स्थळ', 'place']) || 'कणकवली';
+            const constituency = getColVal(row, ['Constituency', 'विधानसभा_मतदारसंघ', 'मतदारसंघ', 'constituency']) || '२६८ – कणकवली';
+            const officer = getColVal(row, ['Officer_Name', 'स्वाक्षरी_अधिकारी', 'अधिकारी', 'officer', 'OfficerName']) || 'श्री. जगदीश कातकर';
+            const desig = getColVal(row, ['Officer_Desig', 'पदनाम', 'desig', 'OfficerDesig']) || 'उपविभागीय अधिकारी, कणकवली';
+
+            if (voter || caseNo) {
+              bulkRecords.push({
+                uid: 'BLK-' + idx + '-' + Date.now(),
+                selected: true,
+                caseNo: String(caseNo || (idx + 1)),
+                year: String(year),
+                harkatdar: String(harkatdar || 'श्री. हरकतदार'),
+                voter: String(voter || 'श्री. मतदार'),
+                bhag: String(bhag || '१'),
+                anukramank: String(anukramank || (idx + 1)),
+                date: toMarathiDigits(String(date)),
+                place: String(place),
+                constituency: String(constituency),
+                subdiv: String(place),
+                officer: String(officer),
+                desig: String(desig)
+              });
+            }
+          });
+
+          if (bulkRecords.length === 0) {
+            showToast('एक्सेल शीटमधील कॉलम मॅच झाले नाहीत. कृपया नमुना टेम्पलेट तपासा.', 'error');
+            return;
+          }
+
+          document.getElementById('bulkControls').style.display = 'block';
+          renderBulkTable();
+          updateBulkCounters();
+          showToast(`एकूण ${bulkRecords.length} नोंदी यशस्वीरित्या लोड झाल्या!`, 'success');
+
+        } catch (err) {
+          console.error(err);
+          showToast('एक्सेल फाईल उघडताना त्रुटी आली. कृपया बरोबर फाईल निवडा.', 'error');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function getColVal(row, candidates) {
+      for (const k of candidates) {
+        if (row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== '') {
+          return String(row[k]).trim();
+        }
+      }
+      return '';
+    }
+
+    function renderBulkTable() {
+      const tbody = document.getElementById('bulkTableBody');
+      tbody.innerHTML = '';
+
+      const query = (document.getElementById('bulkSearchInput').value || '').toLowerCase().trim();
+
+      bulkRecords.forEach((item, index) => {
+        if (query) {
+          const match = item.voter.toLowerCase().includes(query) ||
+                        item.harkatdar.toLowerCase().includes(query) ||
+                        item.caseNo.toLowerCase().includes(query) ||
+                        item.bhag.toLowerCase().includes(query);
+          if (!match) return;
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="checkbox" ${item.selected ? 'checked' : ''} onchange="toggleBulkRecordSelect(${index}, this.checked)"></td>
+          <td><strong style="color:#1e3a8a;">${item.caseNo}</strong></td>
+          <td><strong>${item.voter}</strong></td>
+          <td><span class="badge badge-blue">भाग ${item.bhag}</span></td>
+          <td>अनु. ${item.anukramank}</td>
+          <td>${item.harkatdar}</td>
+          <td style="text-align:right;">
+            <button type="button" class="btn btn-sm btn-secondary" onclick="previewBulkItem(${index})" title="पूर्वावलोकन पहा">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function toggleBulkRecordSelect(index, isChecked) {
+      bulkRecords[index].selected = isChecked;
+      updateBulkCounters();
+    }
+
+    function toggleAllBulkChecks(isChecked) {
+      bulkRecords.forEach(r => r.selected = isChecked);
+      renderBulkTable();
+      updateBulkCounters();
+    }
+
+    function updateBulkCounters() {
+      const selected = bulkRecords.filter(r => r.selected).length;
+      document.getElementById('bulkLoadedCount').textContent = bulkRecords.length;
+      document.getElementById('bulkSelectedCount').textContent = selected;
+      document.getElementById('bulkPrintBtnCount').textContent = selected;
+      document.getElementById('bulkCountBadge').textContent = bulkRecords.length;
+    }
+
+    function filterBulkTable() {
+      renderBulkTable();
+    }
+
+    function clearBulkList() {
+      if (!confirm('अपलोड झालेली सर्व यादी साफ करायची आहे का?')) return;
+      bulkRecords = [];
+      document.getElementById('bulkControls').style.display = 'none';
+      document.getElementById('excelFileInput').value = '';
+      updateBulkCounters();
+      showToast('यादी साफ झाली.', 'info');
+    }
+
+    function previewBulkItem(index) {
+      const item = bulkRecords[index];
+      if (!item) return;
+
+      document.querySelectorAll('.pv-case-no').forEach(el => el.textContent = item.caseNo);
+      document.querySelectorAll('.pv-year').forEach(el => el.textContent = item.year);
+      document.querySelectorAll('.pv-harkatdar').forEach(el => el.textContent = item.harkatdar);
+      document.querySelectorAll('.pv-voter').forEach(el => el.textContent = item.voter);
+      document.querySelectorAll('.pv-bhag').forEach(el => el.textContent = item.bhag);
+      document.querySelectorAll('.pv-anukramank').forEach(el => el.textContent = item.anukramank);
+      document.querySelectorAll('.pv-date').forEach(el => el.textContent = item.date);
+      document.querySelectorAll('.pv-place').forEach(el => el.textContent = item.place);
+      document.querySelectorAll('.pv-constituency').forEach(el => el.textContent = item.constituency);
+      document.querySelectorAll('.pv-subdiv').forEach(el => el.textContent = item.subdiv);
+      document.querySelectorAll('.pv-officer-name').forEach(el => el.textContent = item.officer);
+      document.querySelectorAll('.pv-officer-desig').forEach(el => el.textContent = item.desig);
+
+      showToast(`प्रकरण क्र. ${item.caseNo} चा आदेश पूर्वावलोकनात उघडला.`, 'info');
+    }
+
+    /* ==========================================================================
+       BULK PRINT ENGINE (Generates 2 Pages per order sequentially)
+       ========================================================================== */
+
+    function bulkPrintSelected() {
+      const selectedList = bulkRecords.filter(r => r.selected);
+      if (selectedList.length === 0) {
+        showToast('कृपया प्रिंट करण्यासाठी किमान एक आदेश निवडा!', 'error');
+        return;
+      }
+
+      showToast(`एकूण ${selectedList.length} आदेश प्रिंटसाठी तयार होत आहेत...`, 'info');
+
+      // Auto save all selected records into History!
+      selectedList.forEach(item => {
+        saveRecordToHistory({
+          id: item.uid || ('ORD-' + Date.now() + Math.random()),
+          caseNo: item.caseNo,
+          year: item.year,
+          harkatdar: item.harkatdar,
+          voter: item.voter,
+          bhag: item.bhag,
+          anukramank: item.anukramank,
+          date: item.date,
+          place: item.place,
+          constituency: item.constituency,
+          subdiv: item.subdiv,
+          officer: item.officer,
+          desig: item.desig,
+          timestamp: new Date().toISOString()
+        });
+      });
+
+      // Render all into printable container
+      const container = document.getElementById('printableArea');
+      let combinedHtml = '';
+
+      selectedList.forEach((item, idx) => {
+        combinedHtml += `
+          <!-- Order #${idx + 1} Page 1 -->
+          <div class="a4-sheet bulk-order-set">
+            <div class="legal-heading-center">
+              मतदार नोंदणी अधिकारी, विधानसभा मतदारसंघ क्र. <span>${item.constituency}</span> तथा उपविभागीय अधिकारी, <span>${item.subdiv}</span> यांचे समोर
+            </div>
+            <div class="legal-meta-row">
+              <div>SIR–2026 / दावे व हरकती / नमुना क्र. ७</div>
+              <div>प्रकरण क्र. : <strong style="font-family:inherit;">${item.caseNo}</strong> / ${item.year}</div>
+            </div>
+            <div class="legal-party-line">
+              हरकतदार : श्री./श्रीम. <strong>${item.harkatdar}</strong>
+            </div>
+            <div class="legal-vs-center">विरुद्ध</div>
+            <div class="legal-party-line" style="display:flex; justify-content:space-between; flex-wrap:wrap;">
+              <div>संबंधित मतदार : श्री./श्रीम. <strong>${item.voter}</strong></div>
+              <div>भाग क्र. : <strong>${item.bhag}</strong> &nbsp;&nbsp;&nbsp;&nbsp; अनुक्रमांक : <strong>${item.anukramank}</strong></div>
+            </div>
+            <div class="legal-ref-title">वाचले / अवलोकन केले -</div>
+            <ol class="legal-ref-list">
+              <li>लोकप्रतिनिधित्व अधिनियम, 1950 चे कलम 19, 20 व 22.</li>
+              <li>Registration of Electors Rules, 1960 चे नियम 13, 19(1)(b)(ii), 19(1)(b)(iii) व 20.</li>
+              <li>भारत निवडणूक आयोग व मुख्य निवडणूक अधिकारी, महाराष्ट्र यांचे SIR–2026 - लागू निर्देश.</li>
+              <li>हरकतदाराचा Form 7 अर्ज व त्यासोबतची कागदपत्रे.</li>
+              <li>संबंधित मतदाराचा Enumeration Form.</li>
+              <li>BLO क्षेत्रीय पडताळणी अहवाल, ASDD स्थिती व BLO–BLA बैठकीतील संबंधित नोंदी.</li>
+              <li>हरकतदारास बजावलेल्या सुनावणी नोटीसा व सुनावणीतील म्हणणे.</li>
+              <li>प्रकरणातील उपलब्ध सर्व संबंधित अभिलेख.</li>
+            </ol>
+            <div class="legal-para">
+              <strong>1.</strong> &nbsp;&nbsp; विशेष सखोल पुनरीक्षण (SIR–2026) अंतर्गत प्रसिद्ध करण्यात आलेल्या प्रारूप मतदार यादीमध्ये संबंधित मतदाराचे नाव भाग क्र. <span>${item.bhag}</span> अनुक्रमांक <span>${item.anukramank}</span> येथे समाविष्ट आहे. सदर नावाबाबत हरकतदाराने नमुना क्र. ७ सादर करून संबंधित मतदार “Absent / Permanently Shifted” असल्याच्या कारणावरून त्याचे नाव मतदार यादीतून वगळण्याची हरकत घेतली आहे. सदर हरकत Registration of Electors Rules, 1960 मधील Rule 19(1)(b)(ii) अन्वये सुनावणीस ठेवण्यात येऊन हरकतदारास Form 13 द्वारे आवश्यक नोटीस देण्यात आली. त्यानंतर Rule 20 अन्वये संक्षिप्त चौकशी व सुनावणी करण्यात आली.
+            </div>
+            <div class="legal-para">
+              <strong>2.</strong> &nbsp;&nbsp; हरकतदाराने संबंधित मतदार सदर पत्त्यावर राहत नसून स्थलांतरित झालेला असल्याचे नमुना क्र. ७ मध्ये नमूद केले आहे. तथापि संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करण्यासाठी हरकतदाराने कोणताही स्वतंत्र दस्तऐवज, प्रत्यक्ष साक्ष, नवीन रहिवासाचा पत्ता, स्थानिक अभिलेख अथवा अन्य विश्वासार्ह पुरावा सादर केलेला नाही. भारत निवडणूक आयोगाच्या Form 7 संबंधी मार्गदर्शक सूचनांनुसार, हरकतीमध्ये नमूद केलेल्या deletion च्या कारणाची सत्यता सिद्ध करण्याचे प्राथमिक ओझे हरकतदारावर आहे.
+            </div>
+            <div class="legal-para">
+              <strong>3.</strong> &nbsp;&nbsp; संबंधित मतदाराने SIR–2026 प्रक्रियेत आपला Enumeration Form भरून सादर केलेला आहे. तसेच उपलब्ध SIR अभिलेखाचे परीक्षण करता— 1. संबंधित मतदाराचे नाव प्रारूप मतदार यादीत समाविष्ट आहे. 2. संबंधित मतदाराचा Enumeration Form प्राप्त आहे. 3. संबंधित मतदाराचे नाव ASDD (Absent/Shifted/Dead/Duplicate) यादीत समाविष्ट असल्याचे आढळत नाही. 4. BLO स्तरावरील पडताळणीमध्ये संबंधित मतदार कायमस्वरूपी स्थलांतरित असल्याची प्रतिकूल नोंद उपलब्ध नाही. 5. BLO–BLA बैठकीदरम्यानही संबंधित मतदाराच्या रहिवासाबाबत कोणतीही स्वतंत्र प्रतिकूल हरकत/माहिती नोंदविण्यात आलेली नाही. 6. संबंधित मतदाराच्या ordinary residence चा प्रतिवाद करणारा अन्य ठोस अभिलेख उपलब्ध नाही. वरील बाबी स्वतंत्रपणे निर्णायक नसtarget तरी, त्या एकत्रितपणे हरकतदाराच्या स्थलांतराच्या आरोपास समर्थन देणारा ठोस पुरावा उपलब्ध नसल्याचे दर्शवितात.
+            </div>
+            <div class="legal-para" style="margin-bottom:0;">
+              <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार
+            </div>
+          </div>
+
+          <!-- Order #${idx + 1} Page 2 -->
+          <div class="a4-sheet bulk-order-set">
+            <div class="legal-para" style="margin-top:0;">
+              आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.
+            </div>
+            <div class="legal-para">
+              <strong>5.</strong> &nbsp;&nbsp; वरील सर्व अभिलेख, हरकतदाराचे म्हणणे, संबंधित मतदाराची SIR नोंद, Enumeration Form, BLO पडताळणी, ASDD स्थिती तसेच उपलब्ध इतर अभिलेख यांचे एकत्रित परीक्षण करता, संबंधित मतदाराने विधानसभा मतदारसंघ क्र. <span>${item.constituency}</span> येथील आपला ordinary residence सोडून कायमस्वरूपी अन्यत्र स्थलांतर केले आहे, असे सिद्ध होत नाही. हरकतदाराने Form 7 मध्ये घेतलेली “Absent/Permanently shifted” ही हरकत कोणत्याही स्वतंत्र व विश्वासार्ह पुराव्याने सिद्ध केलेली नाही. त्यामुळे संबंधित मतदाराचे नाव मतदार यादीतून वगळण्यासाठी आवश्यक तथ्यात्मक व कायदेशीर आधार उपलब्ध नाही.
+            </div>
+            <div class="legal-order-title">आदेश</div>
+            <div class="legal-para" style="margin-bottom:12px;">
+              त्याअर्थी, लोकप्रतिनिधित्व अधिनियम, 1950 मधील कलम 19, 20 व 22, Registration of Electors Rules, 1960 मधील Rules 19 व 20 तसेच भारत निवडणूक आयोग व मुख्य निवडणूक अधिकारी, महाराष्ट्र यांच्या SIR–2026 संबंधी लागू निर्देशांचा विचार करून पुढीलप्रमाणे आदेश देण्यात येतो :—
+            </div>
+            <div class="legal-order-item">
+              <strong>1.</strong> हरकतदाराने नमुना क्र. ७ मध्ये संबंधित मतदार “Absent/Permanently Shifted” असल्याच्या कारणावरून घेतलेली हरकत पुराव्याअभावी सिद्ध होत नसल्याने नामंजूर करण्यात येते.
+            </div>
+            <div class="legal-order-item">
+              <strong>2.</strong> संबंधित मतदाराचे प्रारूप मतदार यादीतील नाव कायम ठेवण्यात यावे व अंतिम मतदार यादीत समाविष्ट करण्यास सदर हरकतीमुळे कोणताही अडथळा राहणार नाही.
+            </div>
+            <div class="legal-order-item">
+              <strong>3.</strong> सदर निर्णयाची आवश्यक नोंद SIR–2026 / ECINet प्रणालीमध्ये करण्यात यावी.
+            </div>
+            <div class="legal-order-item" style="margin-bottom:20px;">
+              <strong>4.</strong> आदेशाची माहिती हरकतदार यांना नियमानुसार कळविण्यात यावी.
+            </div>
+            <div class="legal-footer-row">
+              <div style="font-size:1.05rem; line-height:1.7;">
+                <div>स्थळ : <span>${item.place}</span></div>
+                <div>दिनांक : <span>${item.date}</span></div>
+              </div>
+              <div class="legal-sign-box">
+                <div style="font-weight:700;">(<span>${item.officer}</span>)</div>
+                <div>मतदार नोंदणी अधिकारी</div>
+                <div>विधानसभा मतदारसंघ क्र. <span>${item.constituency}</span></div>
+                <div>तथा <span>${item.desig}</span></div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = combinedHtml;
+
+      setTimeout(() => {
+        window.print();
+        // After print completes or user cancels, restore single preview
+        syncPreview();
+      }, 400);
+    }
+
+    // Toast Notification Utility
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast-item ${type}`;
+
+      let icon = 'fa-circle-info';
+      if (type === 'success') icon = 'fa-circle-check';
+      if (type === 'error') icon = 'fa-triangle-exclamation';
+      if (type === 'warning') icon = 'fa-circle-exclamation';
+
+      toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
+    // Auto Initialize on Load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('orderDate').value = formatTodayMarathiDate();
+      syncPreview();
+      updateHistoryBadge();
+    });
+
+  </script>
+
+  <!-- Universal Form History Auto-Save Integration -->
+  <script src="js/universal-form-history.js"></script>
+  <!-- Citizen User Auth Script -->
+  <script src="js/user-auth.js"></script>
+
+</body>
+</html>

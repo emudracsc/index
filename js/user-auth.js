@@ -426,7 +426,6 @@
 
         if (user) {
           var firstName = (user.name || '').trim().split(' ')[0] || 'वापरकर्ता';
-          var safeMobile = user.mobile || '';
 
           existingSlot.innerHTML =
             '<div class="citizen-user-dropdown-wrap" style="position:relative;display:inline-block;">' +
@@ -435,31 +434,6 @@
             '<span>' + firstName + '</span>' +
             '<i class="fa-solid fa-chevron-down" style="font-size:0.68rem;opacity:0.85;margin-left:2px;"></i>' +
             '</button>' +
-
-            // Dropdown Menu
-            '<div class="citizen-profile-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:#0f172a;border:1px solid rgba(255,255,255,0.15);border-radius:12px;min-width:200px;box-shadow:0 12px 30px rgba(0,0,0,0.65);z-index:999999;overflow:hidden;padding:6px;font-family:inherit;">' +
-            
-            // Header Info
-            '<div style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:4px;">' +
-            '<div style="font-size:0.85rem;font-weight:700;color:#f8fafc;display:flex;align-items:center;gap:6px;">' +
-            '<i class="fa-solid fa-user-check" style="color:#34d399;font-size:0.85rem;"></i> <span>' + user.name + '</span>' +
-            '</div>' +
-            (safeMobile ? '<div style="font-size:0.75rem;color:#94a3b8;margin-top:2px;padding-left:18px;">📱 ' + safeMobile + '</div>' : '') +
-            '</div>' +
-
-            // "माझे भरलेले अर्ज" Option
-            '<button type="button" onclick="UserAuth.openMyApplicationsModal();UserAuth.closeUserDropdown();" style="width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;background:transparent;border:none;color:#e2e8f0;font-size:0.84rem;font-weight:600;border-radius:8px;cursor:pointer;text-align:left;transition:background 0.2s;" onmouseover="this.style.background=\'rgba(56,189,248,0.15)\';this.style.color=\'#38bdf8\';" onmouseout="this.style.background=\'transparent\';this.style.color=\'#e2e8f0\';">' +
-            '<i class="fa-solid fa-folder-open" style="color:#38bdf8;font-size:0.95rem;width:18px;text-align:center;"></i>' +
-            '<span>माझे भरलेले अर्ज</span>' +
-            '</button>' +
-
-            // "लॉगआउट" Option
-            '<button type="button" onclick="UserAuth.logout();UserAuth.closeUserDropdown();" style="width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;background:transparent;border:none;color:#fca5a5;font-size:0.84rem;font-weight:600;border-radius:8px;cursor:pointer;text-align:left;transition:background 0.2s;margin-top:2px;" onmouseover="this.style.background=\'rgba(239,68,68,0.15)\';this.style.color=\'#ef4444\';" onmouseout="this.style.background=\'transparent\';this.style.color=\'#fca5a5\';">' +
-            '<i class="fa-solid fa-right-from-bracket" style="color:#ef4444;font-size:0.95rem;width:18px;text-align:center;"></i>' +
-            '<span>लॉगआउट करा</span>' +
-            '</button>' +
-
-            '</div>' +
             '</div>';
         } else {
           existingSlot.innerHTML =
@@ -470,20 +444,93 @@
       });
     },
 
+    getOrCreateGlobalDropdown: function () {
+      var menu = document.getElementById('citizen-global-profile-dropdown');
+      if (!menu) {
+        menu = document.createElement('div');
+        menu.id = 'citizen-global-profile-dropdown';
+        menu.className = 'citizen-profile-dropdown';
+        menu.style.cssText =
+          'display:none;position:fixed;background:#0f172a;border:1px solid rgba(255,255,255,0.18);' +
+          'border-radius:12px;min-width:215px;max-width:calc(100vw - 16px);' +
+          'box-shadow:0 16px 38px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.08);' +
+          'z-index:999999999;overflow:hidden;padding:6px;font-family:inherit;color:#f8fafc;' +
+          'backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);';
+        (document.body || document.documentElement).appendChild(menu);
+      }
+      return menu;
+    },
+
     toggleUserDropdown: function (btn, e) {
-      if (e) e.stopPropagation();
-      var wrap = btn ? btn.closest('.citizen-user-dropdown-wrap') : null;
-      if (!wrap) return;
-      var menu = wrap.querySelector('.citizen-profile-dropdown');
-      if (!menu) return;
-      var isOpen = menu.style.display === 'block';
+      if (e) {
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+      }
+      var user = UserAuth.getCurrentUser();
+      if (!user) return;
+
+      var menu = UserAuth.getOrCreateGlobalDropdown();
+      var isCurrentlyOpen = (menu.style.display === 'block' && menu._activeBtn === btn);
+
       UserAuth.closeUserDropdown();
-      if (!isOpen) {
+
+      if (!isCurrentlyOpen) {
+        var safeName = user.name || 'वापरकर्ता';
+        var safeMobile = user.mobile || '';
+
+        menu.innerHTML =
+          // User Info Card
+          '<div style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:6px;background:rgba(255,255,255,0.04);border-radius:8px 8px 4px 4px;">' +
+            '<div style="font-size:0.86rem;font-weight:700;color:#f8fafc;display:flex;align-items:center;gap:8px;">' +
+              '<i class="fa-solid fa-circle-check" style="color:#34d399;font-size:0.95rem;"></i>' +
+              '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:175px;" title="' + safeName + '">' + safeName + '</span>' +
+            '</div>' +
+            (safeMobile ? '<div style="font-size:0.75rem;color:#94a3b8;margin-top:3px;padding-left:22px;letter-spacing:0.3px;">📱 ' + safeMobile + '</div>' : '') +
+          '</div>' +
+
+          // "माझे भरलेले अर्ज" Option
+          '<button type="button" onclick="UserAuth.openMyApplicationsModal();UserAuth.closeUserDropdown();" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;background:transparent;border:none;color:#e2e8f0;font-size:0.85rem;font-weight:600;border-radius:8px;cursor:pointer;text-align:left;transition:all 0.15s;margin-bottom:3px;" onmouseover="this.style.background=\'rgba(56,189,248,0.15)\';this.style.color=\'#38bdf8\';" onmouseout="this.style.background=\'transparent\';this.style.color=\'#e2e8f0\';">' +
+            '<i class="fa-solid fa-folder-open" style="color:#38bdf8;font-size:0.95rem;width:20px;text-align:center;"></i>' +
+            '<span>माझे भरलेले अर्ज</span>' +
+          '</button>' +
+
+          // "लॉगआउट" Option
+          '<button type="button" onclick="UserAuth.logout();UserAuth.closeUserDropdown();" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;background:transparent;border:none;color:#fca5a5;font-size:0.85rem;font-weight:600;border-radius:8px;cursor:pointer;text-align:left;transition:all 0.15s;" onmouseover="this.style.background=\'rgba(239,68,68,0.15)\';this.style.color=\'#ef4444\';" onmouseout="this.style.background=\'transparent\';this.style.color=\'#fca5a5\';">' +
+            '<i class="fa-solid fa-right-from-bracket" style="color:#ef4444;font-size:0.95rem;width:20px;text-align:center;"></i>' +
+            '<span>लॉगआउट करा</span>' +
+          '</button>';
+
+        menu._activeBtn = btn;
+        menu.style.visibility = 'hidden';
         menu.style.display = 'block';
+
+        var btnRect = btn.getBoundingClientRect();
+        var menuRect = menu.getBoundingClientRect();
+
+        var top = btnRect.bottom + 6;
+        if (top + menuRect.height > window.innerHeight && btnRect.top - menuRect.height > 6) {
+          top = btnRect.top - menuRect.height - 6;
+        }
+
+        var left = btnRect.right - menuRect.width;
+        if (left < 8) left = 8;
+        if (left + menuRect.width > window.innerWidth - 8) {
+          left = window.innerWidth - menuRect.width - 8;
+        }
+
+        menu.style.top = top + 'px';
+        menu.style.left = left + 'px';
+        menu.style.right = 'auto';
+        menu.style.visibility = 'visible';
       }
     },
 
     closeUserDropdown: function () {
+      var menu = document.getElementById('citizen-global-profile-dropdown');
+      if (menu) {
+        menu.style.display = 'none';
+        menu._activeBtn = null;
+      }
       document.querySelectorAll('.citizen-profile-dropdown').forEach(function (m) {
         m.style.display = 'none';
       });
@@ -1003,9 +1050,18 @@
 
   // Close citizen profile dropdown on outside click
   document.addEventListener('click', function (e) {
-    if (!e.target.closest('.citizen-user-dropdown-wrap')) {
+    if (!e.target.closest('.citizen-profile-btn') && !e.target.closest('#citizen-global-profile-dropdown') && !e.target.closest('.citizen-user-dropdown-wrap')) {
       UserAuth.closeUserDropdown();
     }
+  });
+
+  // Close dropdown on scroll (including navbar track scroll) and resize
+  window.addEventListener('scroll', function () {
+    UserAuth.closeUserDropdown();
+  }, true);
+
+  window.addEventListener('resize', function () {
+    UserAuth.closeUserDropdown();
   });
 
   // Expose globally
