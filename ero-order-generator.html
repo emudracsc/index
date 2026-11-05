@@ -583,14 +583,17 @@
       width: 100%;
       max-width: 210mm;
       min-height: 297mm;
-      padding: 14mm 18mm 14mm 18mm;
+      padding: 14mm 16mm 14mm 16mm;
       box-shadow: 0 8px 24px rgba(0,0,0,0.15);
       box-sizing: border-box;
       position: relative;
       font-family: var(--font-legal);
       color: #000000;
-      font-size: 11pt;
-      line-height: 1.38;
+      font-size: 11.5pt;
+      line-height: 1.42;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       overflow: hidden;
     }
 
@@ -707,7 +710,7 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 12mm 16mm 12mm 16mm;
+        margin: 14mm 16mm 14mm 16mm; /* Equal 14mm Top & Bottom Margin */
       }
 
       html, body {
@@ -760,13 +763,29 @@
         box-shadow: none !important;
         width: 100% !important;
         max-width: 100% !important;
-        min-height: auto !important;
+        height: 269mm !important;
+        min-height: 269mm !important;
         padding: 0 !important;
         margin: 0 !important;
         page-break-after: always !important;
         break-after: page !important;
-        font-size: 11pt !important;
-        line-height: 1.38 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+      }
+
+      .bulk-order-set {
+        page-break-after: always !important;
+        break-after: page !important;
+        height: 269mm !important;
+        min-height: 269mm !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+      }
+
+      .legal-footer-row {
+        margin-top: auto !important;
       }
 
       .a4-sheet:last-child {
@@ -1283,7 +1302,7 @@
 
               <!-- Paragraph 4 (Unified Full on Page 1 to eliminate empty blank space) -->
               <div class="legal-para" id="para4ContainerP1" style="margin-bottom:0;">
-                <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार
+                <strong>4.</strong> &nbsp;&nbsp; लोकप्रतिनिधित्व अधिनियम, 1950 च्या कलम 19 नुसार एखादी व्यक्ती संबंधित विधानसभा मतदारसंघात ordinarily resident असल्यास, इतर पात्रता पूर्ण केल्यावर तिचे नाव त्या मतदार यादीत नोंदविण्यास ती पात्र आहे. कलम 20 नुसार केवळ तात्पुरती अनुपस्थिती झाल्यामुळे व्यक्तीचा सामान्य रहिवास संपुष्टात येत नाही. त्यामुळे संबंधित व्यक्ती एखाद्या विशिष्ट वेळी घरी उपलब्ध नसणे किंवा तिच्या स्थलांतराबाबत केवळ आरोप करण्यात येणे, एवढ्याने कायमस्वरूपी स्थलांतर सिद्ध होत नाही. Registration of Electors Rules, 1960 च्या Rule 19 नुसार आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.
               </div>
 
             </div>
@@ -1293,9 +1312,7 @@
               <div class="a4-page-badge no-print">पान 2 (Page 2)</div>
 
               <!-- Paragraph 4 Continuation container (Only shown if split mode is toggled) -->
-              <div class="legal-para" id="para4ContainerP2" style="margin-top:0;">
-                आवश्यक नोटीस देण्यात आली असून Rule 20 नुसार हरकतीची संक्षिप्त चौकशी करण्यात आली आहे. Form 7 बाबत भारत निवडणूक आयोगाच्या अधिकृत मार्गदर्शक सूचनांमध्ये “Absent/Permanently shifted” हे deletion चे कारण म्हणून नमूद करता येते; परंतु त्या कारणाच्या समर्थनार्थ पुरावा सादर करण्याचे ओझे हरकतदारावर असल्याचे स्पष्ट आहे. सदर प्रकरणात हरकतदाराने संबंधित मतदार कायमस्वरूपी स्थलांतरित झाल्याचे सिद्ध करणारा कोणताही विश्वासार्ह पुरावा सादर केलेला नाही. उलट, संबंधित मतदाराने Enumeration Form सादर केलेला आहे आणि उपलब्ध SIR/BLO अभिलेखामध्ये संबंधित मतदार स्थलांतरित असल्याची ठोस प्रतिकूल नोंद उपलब्ध नाही.
-              </div>
+              <div class="legal-para" id="para4ContainerP2" style="margin-top:0; display:none;"></div>
 
               <!-- Paragraph 5 -->
               <div class="legal-para" id="orderPara5">
@@ -1330,7 +1347,7 @@
               </div>
 
               <!-- Signatures & Place / Date -->
-              <div class="legal-footer-row">
+              <div class="legal-footer-row" style="margin-top: auto; padding-top: 16px;">
                 <div style="font-size:1.05rem; line-height:1.7;">
                   <div>स्थळ : <span class="pv-place">कणकवली</span></div>
                   <div>दिनांक : <span class="pv-date">05-11-2026</span></div>
@@ -1371,13 +1388,13 @@
     let bulkRecords = [];
     let currentFontSize = 11.5;
     let currentLineSpacing = 1.42;
-    let isPoint4FullOnP1 = false; // Default split across Page 1 & Page 2 matching official format in PDF
+    let isPoint4FullOnP1 = true; // Default: Point 4 full on Page 1 to ensure equal 14mm top & bottom margin!
 
     // Helper: Convert any Marathi numerals to English digits
     function toEnglishDigits(str) {
       if (str === null || str === undefined) return '';
       const map = {'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'};
-      return String(str).replace(/[०-९]/g, d => map[d]);
+      return String(str).replace(/[\s_.:\/-]/g, d => map[d]);
     }
 
     function sanitizeInput(el) {
@@ -1406,7 +1423,7 @@
       if (lower.includes('dead') || lower.includes('मयत') || lower.includes('मृत') || lower.includes('मृत्यू')) {
         return 'Dead';
       }
-      if (lower.includes('absent') || lower.includes('shift') || lower.includes('स्थलांतरित') || lower.includes('अनुपस्थित') || lower.includes('कायमस्वरूपी')) {
+      if (lower.includes('absent') || lower.includes('shift') || lower.includes('स्थलांतरित') || lower.includes('स्थलांतर') || lower.includes('अनुपस्थित') || lower.includes('कायमस्वरूपी')) {
         return 'Absent / Permanently Shifted';
       }
       if (lower.includes('elsewhere') || lower.includes('अन्यत्र')) {
@@ -2083,6 +2100,46 @@
       });
     }
 
+    // Ultra-robust Flexible Column Getter (Space, Case, Underscore & Dash Insensitive)
+    function getColVal(row, candidates) {
+      if (!row || typeof row !== 'object') return '';
+
+      // 1. Direct key lookup
+      for (const k of candidates) {
+        if (row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== '') {
+          return String(row[k]).trim();
+        }
+      }
+
+      // 2. Normalized key lookup
+      const cleanKey = s => String(s).toLowerCase().replace(/[\s_.:\/-]/g, '').trim();
+      const candNorms = candidates.map(cleanKey);
+      const rowKeys = Object.keys(row);
+
+      for (const rk of rowKeys) {
+        const rkNorm = cleanKey(rk);
+        if (candNorms.includes(rkNorm)) {
+          if (row[rk] !== undefined && row[rk] !== null && String(row[rk]).trim() !== '') {
+            return String(row[rk]).trim();
+          }
+        }
+      }
+
+      // 3. Substring key lookup
+      for (const rk of rowKeys) {
+        const rkNorm = cleanKey(rk);
+        for (const cn of candNorms) {
+          if (cn.length >= 3 && (rkNorm.includes(cn) || cn.includes(rkNorm))) {
+            if (row[rk] !== undefined && row[rk] !== null && String(row[rk]).trim() !== '') {
+              return String(row[rk]).trim();
+            }
+          }
+        }
+      }
+
+      return '';
+    }
+
     // Parse Excel File
     function processExcelFile(file) {
       showToast('एक्सेल फाईल वाचत आहे...', 'info');
@@ -2103,17 +2160,28 @@
           bulkRecords = [];
 
           rawRows.forEach((row, idx) => {
-            // Flexible Column Mapping
             const caseNo = getColVal(row, ['Prakaran_No', 'प्रकरण_क्रमांक', 'प्रकरण क्र', 'case_no', 'case', 'CaseNo', 'PrakaranNo']);
             const year = getColVal(row, ['Year', 'वर्ष', 'year']) || '2026';
             const harkatdar = getColVal(row, ['Harkatdar_Name', 'हरकतदाराचे_नाव', 'हरकतदार', 'objector', 'HarkatdarName', 'objector_name']);
             const voter = getColVal(row, ['Voter_Name', 'मतदाराचे_नाव', 'मतदार', 'voter', 'VoterName', 'voter_name', 'नाव']);
             const bhag = getColVal(row, ['Bhag_No', 'भाग_क्रमांक', 'भाग क्र', 'bhag', 'part', 'PartNo', 'BhagNo', 'part_no']);
             const anukramank = getColVal(row, ['Anukramank', 'अनुक्रमांक', 'अनु.', 'sr_no', 'serial', 'SerialNo', 'srno']);
-            const rawReason = getColVal(row, ['Objection_Reason', 'Reason', 'हरकतीचे_कारण', 'कारण', 'objection_reason', 'reason', 'ObjectionReason', 'Harkatiche_Karan', 'Deletion_Reason', 'vagalniche_karan', 'वगळणीचे_कारण', 'Type', 'प्रकार']);
+            
+            // Ultra-flexible matching for Objection_Reason
+            const rawReason = getColVal(row, [
+              'Objection_Reason', 'Objection Reason', 'ObjectionReason', 'Reason', 'reason', 
+              'हरकतीचे_कारण', 'हरकतीचे कारण', 'कारण', 'वगळणीचे_कारण', 'वगळणीचे कारण', 
+              'Type', 'प्रकार', 'objection', 'हरकत', 'हर्करत'
+            ]);
             const reason = normalizeReason(rawReason);
-            const rawAttendance = getColVal(row, ['Harkatdar_Attendance', 'हरकतदार_उपस्थिती', 'उपस्थिती', 'Attendance', 'attendance', 'HarkatdarAttendance', 'Status', 'हरकतदार_स्थिती']);
+
+            // Flexible matching for Harkatdar_Attendance
+            const rawAttendance = getColVal(row, [
+              'Harkatdar_Attendance', 'Harkatdar Attendance', 'हरकतदार_उपस्थिती', 'हरकतदार उपस्थिती', 
+              'उपस्थिती', 'Attendance', 'attendance', 'HarkatdarAttendance', 'Status', 'हरकतदार_स्थिती'
+            ]);
             const attendance = normalizeAttendance(rawAttendance);
+
             const date = getColVal(row, ['Order_Date', 'आदेश_दिनांक', 'दिनांक', 'date', 'OrderDate']) || formatTodayDate();
             const place = getColVal(row, ['Place', 'स्थळ', 'place']) || 'कणकवली';
             const constituency = getColVal(row, ['Constituency', 'विधानसभा_मतदारसंघ', 'मतदारसंघ', 'constituency']) || '268 – कणकवली';
@@ -2131,6 +2199,7 @@
                 bhag: toEnglishDigits(String(bhag || '1')),
                 anukramank: toEnglishDigits(String(anukramank || (idx + 1))),
                 reason: reason,
+                rawReason: String(rawReason || reason),
                 attendance: attendance,
                 date: toEnglishDigits(String(date || formatTodayDate())),
                 place: String(place),
@@ -2160,15 +2229,6 @@
       reader.readAsArrayBuffer(file);
     }
 
-    function getColVal(row, candidates) {
-      for (const k of candidates) {
-        if (row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== '') {
-          return String(row[k]).trim();
-        }
-      }
-      return '';
-    }
-
     function renderBulkTable() {
       const tbody = document.getElementById('bulkTableBody');
       tbody.innerHTML = '';
@@ -2181,10 +2241,15 @@
                         item.harkatdar.toLowerCase().includes(query) ||
                         item.caseNo.toLowerCase().includes(query) ||
                         item.reason.toLowerCase().includes(query) ||
+                        (item.rawReason && item.rawReason.toLowerCase().includes(query)) ||
                         item.attendance.toLowerCase().includes(query) ||
                         item.bhag.toLowerCase().includes(query);
           if (!match) return;
         }
+
+        const rawDisplay = (item.rawReason && item.rawReason !== item.reason)
+          ? '<div style="font-size:0.75rem; color:#64748b; margin-top:2px;">(' + item.rawReason + ')</div>'
+          : '';
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -2193,7 +2258,7 @@
           <td><strong>${item.voter}</strong></td>
           <td><span class="badge badge-blue">भाग ${item.bhag}</span></td>
           <td>अनु. ${item.anukramank}</td>
-          <td>${getReasonBadgeHtml(item.reason)}</td>
+          <td>${getReasonBadgeHtml(item.reason)}${rawDisplay}</td>
           <td>${getAttendanceBadgeHtml(item.attendance)}</td>
           <td>${item.harkatdar}</td>
           <td style="text-align:right;">
@@ -2262,7 +2327,7 @@
     }
 
     /* ==========================================================================
-       BULK PRINT ENGINE (Generates 2 Pages per order sequentially)
+       BULK PRINT ENGINE (Generates 2 Pages per order sequentially with equal margins)
        ========================================================================== */
 
     function bulkPrintSelected() {
@@ -2296,7 +2361,7 @@
         });
       });
 
-      // Render all into printable container
+      // Render all into printable container with equal 14mm margins
       const container = document.getElementById('printableArea');
       let combinedHtml = '';
 
@@ -2308,69 +2373,75 @@
         combinedHtml += `
           <!-- Order #${idx + 1} Page 1 -->
           <div class="a4-sheet bulk-order-set">
-            <div class="legal-heading-center">
-              मतदार नोंदणी अधिकारी, विधानसभा मतदारसंघ क्र. <span>${item.constituency}</span> तथा उपविभागीय अधिकारी, <span>${item.subdiv}</span> यांचे समोर
-            </div>
-            <div class="legal-meta-row">
-              <div>SIR–2026 / दावे व हरकती / नमुना क्र. 7</div>
-              <div>प्रकरण क्र. : <strong style="font-family:inherit;">${item.caseNo}</strong> / ${item.year}</div>
-            </div>
-            <div class="legal-party-line">
-              हरकतदार : श्री./श्रीम. <strong>${item.harkatdar}</strong>
-            </div>
-            <div class="legal-vs-center">विरुद्ध</div>
-            <div class="legal-party-line" style="display:flex; justify-content:space-between; flex-wrap:wrap;">
-              <div>संबंधित मतदार : श्री./श्रीम. <strong>${item.voter}</strong></div>
-              <div>भाग क्र. : <strong>${item.bhag}</strong> &nbsp;&nbsp;&nbsp;&nbsp; अनुक्रमांक : <strong>${item.anukramank}</strong></div>
-            </div>
-            <div class="legal-ref-title">वाचले / अवलोकन केले -</div>
-            <ol class="legal-ref-list">
-              <li>लोकप्रतिनिधित्व अधिनियम, 1950 चे कलम 19, 20 व 22.</li>
-              <li>Registration of Electors Rules, 1960 चे नियम 13, 19(1)(b)(ii), 19(1)(b)(iii) व 20.</li>
-              <li>भारत निवडणूक आयोग व मुख्य निवडणूक अधिकारी, महाराष्ट्र यांचे SIR–2026 - लागू निर्देश.</li>
-              <li>हरकतदाराचा Form 7 अर्ज व त्यासोबतची कागदपत्रे.</li>
-              <li>संबंधित मतदाराचा Enumeration Form.</li>
-              <li>BLO क्षेत्रीय पडताळणी अहवाल, ASDD स्थिती व BLO–BLA बैठकीतील संबंधित नोंदी.</li>
-              <li>हरकतदारास बजावलेल्या सुनावणी नोटीसा व सुनावणीतील म्हणणे.</li>
-              <li>प्रकरणातील उपलब्ध सर्व संबंधित अभिलेख.</li>
-            </ol>
-            <div class="legal-para">
-              ${p.para1}
-            </div>
-            <div class="legal-para">
-              ${p.para2}
-            </div>
-            <div class="legal-para">
-              ${p.para3}
-            </div>
-            <div class="legal-para" style="margin-bottom:0;">
-              ${isPoint4FullOnP1 ? (p.para4P1 + ' ' + p.para4P2) : p.para4P1}
+            <div>
+              <div class="legal-heading-center">
+                मतदार नोंदणी अधिकारी, विधानसभा मतदारसंघ क्र. <span>${item.constituency}</span> तथा उपविभागीय अधिकारी, <span>${item.subdiv}</span> यांचे समोर
+              </div>
+              <div class="legal-meta-row">
+                <div>SIR–2026 / दावे व हरकती / नमुना क्र. 7</div>
+                <div>प्रकरण क्र. : <strong style="font-family:inherit;">${item.caseNo}</strong> / ${item.year}</div>
+              </div>
+              <div class="legal-party-line">
+                हरकतदार : श्री./श्रीम. <strong>${item.harkatdar}</strong>
+              </div>
+              <div class="legal-vs-center">विरुद्ध</div>
+              <div class="legal-party-line" style="display:flex; justify-content:space-between; flex-wrap:wrap;">
+                <div>संबंधित मतदार : श्री./श्रीम. <strong>${item.voter}</strong></div>
+                <div>भाग क्र. : <strong>${item.bhag}</strong> &nbsp;&nbsp;&nbsp;&nbsp; अनुक्रमांक : <strong>${item.anukramank}</strong></div>
+              </div>
+              <div class="legal-ref-title">वाचले / अवलोकन केले -</div>
+              <ol class="legal-ref-list">
+                <li>लोकप्रतिनिधित्व अधिनियम, 1950 चे कलम 19, 20 व 22.</li>
+                <li>Registration of Electors Rules, 1960 चे नियम 13, 19(1)(b)(ii), 19(1)(b)(iii) व 20.</li>
+                <li>भारत निवडणूक आयोग व मुख्य निवडणूक अधिकारी, महाराष्ट्र यांचे SIR–2026 - लागू निर्देश.</li>
+                <li>हरकतदाराचा Form 7 अर्ज व त्यासोबतची कागदपत्रे.</li>
+                <li>संबंधित मतदाराचा Enumeration Form.</li>
+                <li>BLO क्षेत्रीय पडताळणी अहवाल, ASDD स्थिती व BLO–BLA बैठकीतील संबंधित नोंदी.</li>
+                <li>हरकतदारास बजावलेल्या सुनावणी नोटीसा व सुनावणीतील म्हणणे.</li>
+                <li>प्रकरणातील उपलब्ध सर्व संबंधित अभिलेख.</li>
+              </ol>
+              <div class="legal-para">
+                ${p.para1}
+              </div>
+              <div class="legal-para">
+                ${p.para2}
+              </div>
+              <div class="legal-para">
+                ${p.para3}
+              </div>
+              <div class="legal-para" style="margin-bottom:0;">
+                ${isPoint4FullOnP1 ? (p.para4P1 + ' ' + p.para4P2) : p.para4P1}
+              </div>
             </div>
           </div>
 
           <!-- Order #${idx + 1} Page 2 -->
           <div class="a4-sheet bulk-order-set">
-            ${!isPoint4FullOnP1 ? `<div class="legal-para" style="margin-top:0;">${p.para4P2}</div>` : ''}
-            <div class="legal-para">
-              ${p.para5}
+            <div>
+              ${!isPoint4FullOnP1 ? `<div class="legal-para" style="margin-top:0;">${p.para4P2}</div>` : ''}
+              <div class="legal-para">
+                ${p.para5}
+              </div>
+              <div class="legal-order-title">आदेश</div>
+              <div class="legal-para" style="margin-bottom:12px;">
+                त्याअर्थी, लोकप्रतिनिधित्व अधिनियम, 1950 मधील कलम 19, 20 व 22, Registration of Electors Rules, 1960 मधील Rules 19 व 20 तसेच भारत निवडणूक आयोग व मुख्य निवडणूक अधिकारी, महाराष्ट्र यांच्या SIR–2026 संबंधी लागू निर्देशांचा विचार करून पुढीलप्रमाणे आदेश देण्यात येतो :—
+              </div>
+              <div class="legal-order-item">
+                ${p.operative1}
+              </div>
+              <div class="legal-order-item">
+                <strong>2.</strong> संबंधित मतदाराचे प्रारूप मतदार यादीतील नाव कायम ठेवण्यात यावे व अंतिम मतदार यादीत समाविष्ट करण्यास सदर हरकतीमुळे कोणताही अडथळा राहणार नाही.
+              </div>
+              <div class="legal-order-item">
+                <strong>3.</strong> सदर निर्णयाची आवश्यक नोंद SIR–2026 / ECINet प्रणालीमध्ये करण्यात यावी.
+              </div>
+              <div class="legal-order-item" style="margin-bottom:20px;">
+                <strong>4.</strong> आदेशाची माहिती हरकतदार यांना नियमानुसार कळविण्यात यावी.
+              </div>
             </div>
-            <div class="legal-order-title">आदेश</div>
-            <div class="legal-para" style="margin-bottom:12px;">
-              त्याअर्थी, लोकप्रतिनिधित्व अधिनियम, 1950 मधील कलम 19, 20 व 22, Registration of Electors Rules, 1960 मधील Rules 19 व 20 तसेच भारत निवडणूक आयोग व मुख्य निवडणूक अधिकारी, महाराष्ट्र यांच्या SIR–2026 संबंधी लागू निर्देशांचा विचार करून पुढीलप्रमाणे आदेश देण्यात येतो :—
-            </div>
-            <div class="legal-order-item">
-              ${p.operative1}
-            </div>
-            <div class="legal-order-item">
-              <strong>2.</strong> संबंधित मतदाराचे प्रारूप मतदार यादीतील नाव कायम ठेवण्यात यावे व अंतिम मतदार यादीत समाविष्ट करण्यास सदर हरकतीमुळे कोणताही अडथळा राहणार नाही.
-            </div>
-            <div class="legal-order-item">
-              <strong>3.</strong> सदर निर्णयाची आवश्यक नोंद SIR–2026 / ECINet प्रणालीमध्ये करण्यात यावी.
-            </div>
-            <div class="legal-order-item" style="margin-bottom:20px;">
-              <strong>4.</strong> आदेशाची माहिती हरकतदार यांना नियमानुसार कळविण्यात यावी.
-            </div>
-            <div class="legal-footer-row">
+
+            <!-- Page 2 Footer Pinned to equal bottom margin -->
+            <div class="legal-footer-row" style="margin-top:auto; padding-top:16px;">
               <div style="font-size:1.05rem; line-height:1.7;">
                 <div>स्थळ : <span>${item.place}</span></div>
                 <div>दिनांक : <span>${item.date}</span></div>
@@ -2437,7 +2508,7 @@
       syncPreview();
       const textEl = document.getElementById('splitModeText');
       if (textEl) {
-        textEl.textContent = isPoint4FullOnP1 ? 'मुद्दा 4 पहिल्या पानावर पूर्ण' : 'मुद्दा 4 पान 1 व 2 वर विभागणी (अधिकृत फॉरमॅट)';
+        textEl.textContent = isPoint4FullOnP1 ? 'मुद्दा 4 पहिल्या पानावर पूर्ण (समान मार्जिन)' : 'मुद्दा 4 पान 1 व 2 वर विभागणी';
       }
     }
 
