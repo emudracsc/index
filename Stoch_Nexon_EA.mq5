@@ -59,23 +59,25 @@ input ENUM_TIMEFRAMES   TrendEMA_TF       = PERIOD_CURRENT;       // Trend EMA T
 input bool              UseDualEMATrend   = false;                // Require 50 EMA > 200 EMA Golden Stack?
 input int               FastEMA_Period    = 50;                   // Fast EMA Period (if Dual Trend enabled)
 
-input group "=== 🎯 Dynamic ATR Volatility SL & TP (82% Win Engine) ===";
+input group "=== 🎯 Wide & Safe Dynamic ATR Volatility SL & TP ===";
 input bool              UseDynamicATR     = true;                 // Enable Dynamic ATR Stops (Volatility Adaptive)
 input int               ATR_Period        = 14;                   // ATR Period
-input double            ATR_Multiplier_SL = 1.5;                  // Stop Loss ATR Multiplier (e.g. 1.5 * ATR)
-input double            ATR_Multiplier_TP = 2.5;                  // Take Profit ATR Multiplier (e.g. 2.5 * ATR)
-input double            SL_Points         = 400.0;                // Fixed SL in Points (if ATR is Disabled, Gold 400 = $4)
-input double            TP_Points         = 600.0;                // Fixed TP in Points (if ATR is Disabled, Gold 600 = $6)
+input double            ATR_Multiplier_SL = 2.5;                  // Stop Loss ATR Multiplier (Wider 2.5x to avoid noise)
+input double            ATR_Multiplier_TP = 4.5;                  // Take Profit ATR Multiplier (Target 4.5x for big profit)
+input double            MinSL_Points      = 600.0;                // Hard Safety Floor: Min SL Points (Gold 600 = $6.00 min)
+input double            MinTP_Points      = 1200.0;               // Hard Safety Floor: Min TP Points (Gold 1200 = $12.00 min)
+input double            SL_Points         = 800.0;                // Fixed SL in Points (if ATR is Disabled, Gold 800 = $8.00)
+input double            TP_Points         = 1500.0;               // Fixed TP in Points (if ATR is Disabled, Gold 1500 = $15.00)
 
 input group "=== 🛡️ Break-Even Protection (Zero-Risk Trade) ===";
 input bool              UseBreakEven      = true;                 // Enable Break-Even (Move SL to Entry)
-input double            BE_TriggerPoints  = 150.0;                // Profit in Points to Trigger BE (Gold 150 = $1.50)
-input double            BE_LockPoints     = 20.0;                 // Profit in Points to Lock at BE (Covers Spread)
+input double            BE_TriggerPoints  = 450.0;                // Profit in Points to Trigger BE (Gold 450 = $4.50 profit)
+input double            BE_LockPoints     = 50.0;                 // Profit in Points to Lock at BE (Covers Spread + profit)
 
 input group "=== 🚀 Trailing Stop Management ===";
 input bool              UseTrailingStop   = true;                 // Enable Trailing Stop
-input double            TrailStart        = 200.0;                // Trail Start Profit (Points, Gold 200 = $2.0)
-input double            TrailStep         = 100.0;                // Trail Step (Points, Gold 100 = $1.0)
+input double            TrailStart        = 600.0;                // Trail Start Profit (Points, Gold 600 = $6.00 profit)
+input double            TrailStep         = 300.0;                // Trail Step Distance (Points, Gold 300 = $3.00 cushion)
 
 input group "=== 🕯️ Price Action Confirmation ===";
 input bool              UseCandleConfirm  = true;                 // Require Bullish Candle for Buy / Bearish for Sell
@@ -423,19 +425,33 @@ void OnTick()
    int    digits = (int)SymbolInfoInteger(_Symbol, SYMBOL_DIGITS);
    double stops  = SymbolInfoInteger(_Symbol, SYMBOL_TRADE_STOPS_LEVEL) * point;
 
-   // Compute Dynamic ATR or Fixed Stop Levels
+   // Compute Dynamic ATR or Fixed Stop Levels with Wide Safety Floors
    double slDist = 0.0;
    double tpDist = 0.0;
 
    if(UseDynamicATR && currentATR > 0)
    {
-      slDist = MathMax(currentATR * ATR_Multiplier_SL, stops + 5.0 * point);
-      tpDist = MathMax(currentATR * ATR_Multiplier_TP, stops + 5.0 * point);
+      double calcSL = currentATR * ATR_Multiplier_SL;
+      double calcTP = currentATR * ATR_Multiplier_TP;
+
+      // Enforce Minimum Distance Safety Floor (Never allow tight stops)
+      if(MinSL_Points > 0) calcSL = MathMax(calcSL, MinSL_Points * point);
+      if(MinTP_Points > 0) calcTP = MathMax(calcTP, MinTP_Points * point);
+
+      slDist = MathMax(calcSL, stops + 5.0 * point);
+      tpDist = MathMax(calcTP, stops + 5.0 * point);
    }
    else
    {
-      slDist = (SL_Points > 0) ? MathMax(SL_Points * point, stops + 5.0 * point) : 0;
-      tpDist = (TP_Points > 0) ? MathMax(TP_Points * point, stops + 5.0 * point) : 0;
+      double fixedSL = SL_Points * point;
+      double fixedTP = TP_Points * point;
+
+      // Enforce Minimum Distance Safety Floor
+      if(MinSL_Points > 0 && fixedSL > 0) fixedSL = MathMax(fixedSL, MinSL_Points * point);
+      if(MinTP_Points > 0 && fixedTP > 0) fixedTP = MathMax(fixedTP, MinTP_Points * point);
+
+      slDist = (fixedSL > 0) ? MathMax(fixedSL, stops + 5.0 * point) : 0;
+      tpDist = (fixedTP > 0) ? MathMax(fixedTP, stops + 5.0 * point) : 0;
    }
 
    double lot = NormalizeLot(LotSize);
@@ -565,9 +581,9 @@ void UpdateDashboard(string statusMsg)
    text += StringFormat(" Symbol: %s | TF: %s\n", _Symbol, EnumToString(StochTF));
    text += StringFormat(" Stochastic (%d,%d,%d): %%K=%.2f | %%D=%.2f\n", StochK, StochD, StochSlowing, kVal, dVal);
    text += " Trend Direction  : " + trendStr + "\n";
-   text += StringFormat(" Volatility Engine: %s (ATR: %.4f)\n", (UseDynamicATR ? "DYNAMIC ATR (82% Win Rate)" : "FIXED"), atrVal);
-   text += StringFormat(" Break-Even Guard : %s (+%.0f pts trigger)\n", (UseBreakEven ? "ACTIVE 🛡️" : "OFF"), BE_TriggerPoints);
-   text += StringFormat(" Trailing Stop    : %s (+%.0f pts start)\n", (UseTrailingStop ? "ACTIVE 🚀" : "OFF"), TrailStart);
+   text += StringFormat(" Volatility Engine: %s (ATR: %.4f | MinSL: %.0f pts | MinTP: %.0f pts)\n", (UseDynamicATR ? "DYNAMIC ATR WIDE" : "FIXED"), atrVal, MinSL_Points, MinTP_Points);
+   text += StringFormat(" Break-Even Guard : %s (+%.0f pts trigger, +%.0f pts lock)\n", (UseBreakEven ? "ACTIVE 🛡️" : "OFF"), BE_TriggerPoints, BE_LockPoints);
+   text += StringFormat(" Trailing Stop    : %s (+%.0f pts start, %.0f step)\n", (UseTrailingStop ? "ACTIVE 🚀" : "OFF"), TrailStart, TrailStep);
    text += StringFormat(" Cooldown Status  : %s\n", (TimeCurrent() < cooldownUntilTime ? "⏸️ PAUSED" : "🟢 ACTIVE"));
    text += StringFormat(" Spread: %.1f pts (Max: %.1f)\n", (SymbolInfoDouble(_Symbol, SYMBOL_ASK) - curPrice) / _Point, MaxSpreadPoints);
    text += "-------------------------------------------------\n";
