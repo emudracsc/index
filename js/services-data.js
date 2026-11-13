@@ -1063,6 +1063,18 @@ const CENTER_INFO = {
 
 // Official HTML Pages, Forms & Useful Document Tools
 const DEFAULT_IMPORTANT_LINKS = [
+  // 📜 प्रपत्र-अ स्वयंघोषणापत्र जनरेटर (शासन निर्णय प्रसुधा १६१४/३४५/प्र.क्र.७१/१८-अ)
+  {
+    id: "link-swayam-ghoshana-patra",
+    category: "अधिकृत शासकीय टूल्स व दाखले",
+    icon: "fa-solid fa-file-contract",
+    title_mr: "📜 प्रपत्र-अ स्वयंघोषणापत्र जनरेटर (शासन निर्णय प्रसुधा)",
+    title_en: "Prapatra-A Swayam Ghoshana Patra Generator (A4 Print)",
+    desc_mr: "महाराष्ट्र शासन अधिकृत प्रपत्र-अ स्वयंघोषणापत्र (शासन निर्णय क्र: प्रसुधा १६१४/३४५/प्र.क्र.७१/१८-अ). आपले सरकार सेवा, जात प्रमाणपत्र, उत्पन्न, डोमिसाइल साठी १-क्लिक A4 प्रिंट व कोरा फॉर्म.",
+    desc_en: "Official Maharashtra Govt Self-Declaration Form (Prapatra-A) generator for Aaple Sarkar services with instant 1-click A4 print and blank format.",
+    url: "swayam-ghoshana-patra.html",
+    isInternal: true
+  },
   // 👮 पोलीस पूर्व चारित्र्य व चालवर्तन दाखला अर्ज जनरेटर (Police Character Verification Generator)
   {
     id: "link-police-character-cert",
