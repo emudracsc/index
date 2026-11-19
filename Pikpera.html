@@ -172,6 +172,213 @@
       font-weight: 700;
     }
 
+    
+    .btn-act-green {
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+      color: #ffffff;
+      border: none;
+      font-weight: 800;
+      box-shadow: 0 3px 10px rgba(22, 163, 74, 0.35);
+    }
+    .btn-act-green:hover {
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      transform: translateY(-1px);
+    }
+    .autosave-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 12px;
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+    .toast-notice {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999999;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 11px 20px;
+      border-radius: 9px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.35), 0 0 1px 1px rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .toast-notice.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* History Records Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 950px;
+      max-height: 88vh;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      color: #ffffff;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-header h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      color: #ffffff;
+    }
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .modal-close-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .modal-body {
+      padding: 16px 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .history-search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      align-items: center;
+    }
+    .history-search-input {
+      flex: 1;
+      padding: 9px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .history-search-input:focus {
+      border-color: #059669;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+    }
+    .history-records-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+    .history-records-table th {
+      background: #f1f5f9;
+      color: #334155;
+      padding: 8px 10px;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 2px solid #cbd5e1;
+    }
+    .history-records-table td {
+      padding: 10px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+    .history-records-table tr:hover {
+      background: #f8fafc;
+    }
+    .badge-app-id {
+      background: #e0f2fe;
+      color: #0284c7;
+      font-weight: 800;
+      font-size: 0.74rem;
+      padding: 2px 7px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    .badge-cloud-sync {
+      background: #dcfce7;
+      color: #15803d;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .btn-table-action {
+      padding: 5px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-table-load {
+      background: #0284c7;
+      color: #ffffff;
+    }
+    .btn-table-load:hover {
+      background: #0369a1;
+    }
+    .btn-table-print {
+      background: #059669;
+      color: #ffffff;
+    }
+    .btn-table-print:hover {
+      background: #047857;
+    }
+    .btn-table-del {
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fca5a5;
+    }
+    .btn-table-del:hover {
+      background: #ef4444;
+      color: #ffffff;
+    }
+
     .btn-act-sky:hover {
       background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
     }
@@ -794,7 +1001,7 @@
 
   <!-- Sticky Action Toolbar -->
   <section class="action-toolbar no-print">
-    <!-- Left Side: Navigation & Draft -->
+    <!-- Left Side: Navigation & Server Storage -->
     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
       <a href="index.html" class="btn-act" title="मुख्य पृष्ठावर परत जा">
         <i class="fa-solid fa-house"></i> <span>मुख्य पृष्ठ</span>
@@ -802,14 +1009,26 @@
       <a href="samaik-sahmatipatra.html" target="_blank" class="btn-act btn-act-sky" title="सामाईक खातेदारांसाठी सहमतीपत्र जनरेटर उघडा">
         <i class="fa-solid fa-users"></i> <span>सामाईक सहमतीपत्र</span>
       </a>
-      <button type="button" class="btn-act" onclick="saveToLocalStorage()" title="ब्राउझरमध्ये सेव्ह करा">
-        <i class="fa-solid fa-floppy-disk"></i> <span>ड्राफ्ट सेव्ह करा</span>
+
+      <!-- Auto-Save Status Badge -->
+      <div id="pikperaAutoSaveBadge" class="autosave-pill" title="सर्व्हर ऑटो-सेव्ह स्थिती">
+        <i class="fa-solid fa-circle-check" style="color: #16a34a;"></i> सर्व्हर सिंक
+      </div>
+
+      <!-- Save to Server Button -->
+      <button type="button" class="btn-act btn-act-green" onclick="savePikperaToServer(true)" title="माहिती क्लाउड सर्व्हरवर कायमची सुरक्षित सेव्ह करा">
+        <i class="fa-solid fa-cloud-arrow-up"></i> <span>सर्व्हरवर सेव्ह करा</span>
+      </button>
+
+      <!-- History Records Modal Button -->
+      <button type="button" class="btn-act btn-act-sky" onclick="openPikperaHistoryModal()" title="सर्व्हरवर सेव्ह केलेल्या सर्व शेतकऱ्यांच्या नोंदी पहा">
+        <i class="fa-solid fa-list-check"></i> <span id="historyCountBadge">नोंदवही (सेव्ह नोंदी)</span>
       </button>
     </div>
 
     <!-- Right Side: Form Actions & Print -->
     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto;">
-      <button type="button" class="btn-act btn-act-primary" onclick="window.print()" title="A4 कागदावर १ पानात प्रिंट करा">
+      <button type="button" class="btn-act btn-act-primary" onclick="printCurrentPikperaForm()" title="A4 कागदावर १ पानात प्रिंट करा व सर्व्हरवर सेव्ह करा">
         <i class="fa-solid fa-print"></i> <span>फॉर्म प्रिंट करा (१-क्लिक A4)</span>
       </button>
 
@@ -1033,7 +1252,7 @@
 
           <div class="inp-group">
             <label>Farmer ID क्रमांक (AgriStack ID):</label>
-            <input type="text" id="inpFarmerId" class="inp-control" placeholder="उदा. MH2681234567" oninput="updateLivePreview();">
+            <input type="text" id="inpFarmerId" class="inp-control" placeholder="उदा. MH2681234567" oninput="updateLivePreview(); triggerPikperaAutoSave();">
           </div>
 
           <div class="inp-group">
@@ -1294,8 +1513,16 @@
 
       // Load saved draft if exists, else show fresh preview
       loadFromLocalStorage();
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
       setPreviewZoom(0.9);
+      updateHistoryCountBadge();
+
+      // Hook real-time auto-save listeners on form controls
+      const formPane = document.querySelector('.form-pane');
+      if (formPane) {
+        formPane.addEventListener('input', () => triggerPikperaAutoSave());
+        formPane.addEventListener('change', () => triggerPikperaAutoSave());
+      }
     });
 
     // Handle Scheme Select
@@ -1309,7 +1536,7 @@
         customWrap.style.display = 'none';
         titleInp.value = val;
       }
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     // Handle District Select
@@ -1342,7 +1569,7 @@
       }
 
       handleTalukaSelect(selTal.value);
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     // Handle Taluka Select
@@ -1360,7 +1587,7 @@
           placeInp.value = val;
         }
       }
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     // Handle Bank Select
@@ -1388,7 +1615,7 @@
           }
         }
       }
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     // Copy residence village to farm mouje
@@ -1396,7 +1623,7 @@
       const v = document.getElementById('inpResidenceVillage').value.trim();
       if (v) {
         document.getElementById('inpMouje').value = v;
-        updateLivePreview();
+        updateLivePreview(); triggerPikperaAutoSave();
       }
     }
 
@@ -1409,7 +1636,7 @@
         if (!row.village) row.village = val;
       });
       renderCropEditorCards();
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     // Render Clean Crop Cards in Editor
@@ -1495,7 +1722,7 @@
       if (cropsData[idx]) {
         cropsData[idx].crop = val;
         renderCropEditorCards();
-        updateLivePreview();
+        updateLivePreview(); triggerPikperaAutoSave();
       }
     }
 
@@ -1513,7 +1740,7 @@
         date: document.getElementById('inpDate').value || ''
       });
       renderCropEditorCards();
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     function duplicateCropRow(idx) {
@@ -1531,7 +1758,7 @@
           date: src.date
         });
         renderCropEditorCards();
-        updateLivePreview();
+        updateLivePreview(); triggerPikperaAutoSave();
       }
     }
 
@@ -1539,14 +1766,14 @@
       if (cropsData.length > 1) {
         cropsData.splice(idx, 1);
         renderCropEditorCards();
-        updateLivePreview();
+        updateLivePreview(); triggerPikperaAutoSave();
       }
     }
 
     function updateCropField(idx, field, val) {
       if (cropsData[idx]) {
         cropsData[idx][field] = val;
-        updateLivePreview();
+        updateLivePreview(); triggerPikperaAutoSave();
       }
     }
 
@@ -1559,7 +1786,7 @@
         return;
       }
       renderCropEditorCards();
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     // Auto-calculate Total Area from crop rows
@@ -1582,7 +1809,7 @@
       if (totalHa > 0 || totalR > 0) {
         const formatted = `${totalHa}.${String(totalR).padStart(2, '0')} हे.आर.`;
         document.getElementById('inpTotalArea').value = formatted;
-        updateLivePreview();
+        updateLivePreview(); triggerPikperaAutoSave();
       } else {
         alert('कृपया आधी पिकांचे हेक्टर व आर भरा, जेणेकरून एकूण क्षेत्र मोजता येईल.');
       }
@@ -1630,7 +1857,7 @@
         countEl.textContent = `${el.value.length}/12`;
         countEl.classList.toggle('valid', el.value.length === 12);
       }
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     function handleMobileInput(el) {
@@ -1640,7 +1867,7 @@
         countEl.textContent = `${el.value.length}/10`;
         countEl.classList.toggle('valid', el.value.length === 10);
       }
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     function handleAccountInput(el) {
@@ -1649,7 +1876,7 @@
       if (countEl) {
         countEl.textContent = `${el.value.length} अंक`;
       }
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     // Print density setup
@@ -1861,7 +2088,7 @@
       document.getElementById('inpFarmerId').value = 'MH2689201847';
       document.getElementById('inpPlace').value = 'कणकवली';
 
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     // Reset Form to initial fresh state
@@ -1882,7 +2109,7 @@
         document.getElementById('inpAccountNo').value = '';
         handleAccountInput(document.getElementById('inpAccountNo'));
         document.getElementById('inpFarmerId').value = '';
-        updateLivePreview();
+        updateLivePreview(); triggerPikperaAutoSave();
       }
     }
 
@@ -1963,7 +2190,7 @@
       if (state.place) document.getElementById('inpPlace').value = state.place;
       if (state.date) document.getElementById('inpDate').value = state.date;
 
-      updateLivePreview();
+      updateLivePreview(); triggerPikperaAutoSave();
     }
 
     function saveToLocalStorage() {
@@ -1999,7 +2226,31 @@
     }
   </script>
 
+  <!-- Supabase Cloud Server Database Client -->
+  <script src="js/supabase-db.js"></script>
   <!-- Universal Form History Tracker -->
   <script src="js/universal-form-history.js"></script>
+
+  <!-- History Records Modal (नोंदवही) -->
+  <div id="pikperaHistoryModal" class="modal-overlay no-print" onclick="if(event.target === this) closePikperaHistoryModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-wheat-awn"></i> पिकपेरा सेव्ह केलेल्या नोंदी (सर्व्हर नोंदवही)</h3>
+        <button type="button" class="modal-close-btn" onclick="closePikperaHistoryModal()" title="बंद करा">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="history-search-bar">
+          <input type="text" id="pikperaHistorySearch" class="history-search-input" placeholder="🔎 शेतकरी नाव / मोबाईल / गाव / गट नंबरने शोधा..." oninput="filterPikperaHistory(this.value)">
+          <button type="button" class="btn-act" onclick="loadPikperaServerRecords(true)" title="सर्व्हरवरून ताज्या नोंदी रीफ्रेश करा">
+            <i class="fa-solid fa-arrows-rotate"></i> रीफ्रेश
+          </button>
+        </div>
+        <div id="pikperaHistoryListContainer" style="overflow-x: auto;">
+          <!-- Records Table injected dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

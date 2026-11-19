@@ -143,6 +143,9 @@
       if (typeof window.recordsData !== 'undefined' && Array.isArray(window.recordsData)) {
         data._recordsData = JSON.parse(JSON.stringify(window.recordsData));
       }
+      if (typeof window.cropsData !== 'undefined' && Array.isArray(window.cropsData)) {
+        data._cropsData = JSON.parse(JSON.stringify(window.cropsData));
+      }
     } catch (e) {
       console.warn('Table state serialize warning:', e);
     }
@@ -158,8 +161,7 @@
 
     // Check by known IDs first
     var nameKeys = [
-      'deponentName', 'm_name', 'applicant_name', 'applicantName', 'inp_applicant_name', 'inp_app_name',
-      'farmerName', 'print_workerName', 'personName', 'cust_name', 'fullName',
+      'inpFarmerName', 'farmerName', 'deponentName', 'm_name', 'applicant_name', 'applicantName', 'inp_applicant_name', 'inp_app_name', 'print_workerName', 'personName', 'cust_name', 'fullName',
       'full_name', 'resident_name', 'deceased_name', 'head_name', 'person_name',
       'name', 'first_name', 'editNameInput'
     ];
@@ -524,6 +526,15 @@
       if (formData._recordsData && typeof window.recordsData !== 'undefined') {
         window.recordsData = formData._recordsData;
         if (typeof window.initRecordsTable === 'function') window.initRecordsTable();
+      }
+      if (formData._cropsData && typeof window.cropsData !== 'undefined') {
+        window.cropsData = formData._cropsData;
+        if (typeof window.renderCropEditorCards === 'function') window.renderCropEditorCards();
+      }
+      if (typeof window.restoreFormState === 'function') {
+        try {
+          window.restoreFormState(formData._cropsData ? Object.assign({}, formData, { cropsData: formData._cropsData }) : formData);
+        } catch(e) {}
       }
     } catch (tblErr) {
       console.warn('Restore structured tables error:', tblErr);
