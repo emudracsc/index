@@ -120,6 +120,56 @@
         .btn-secondary:hover { background: #cbd5e1; }
 
         .btn-home { background: #334155; color: #fff; }
+
+        .btn-save {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+        }
+        .btn-save:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            transform: translateY(-1px);
+        }
+        .autosave-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            color: #166534;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 12px;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+        .toast-notice {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999999;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 11px 20px;
+            border-radius: 9px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.35), 0 0 1px 1px rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        .toast-notice.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .btn-home:hover { background: #1e293b; }
 
         /* Print Settings & Fine-tune Bar (Ultra Compact Strip) */
@@ -1736,6 +1786,13 @@
                             </button>
                         </div>
 
+                        <!-- AutoSave Indicator & Manual Save Button -->
+                        <div id="autoSaveBadge" class="autosave-pill" title="ऑटो-सेव्ह स्थिती">
+                            <i class="fa-solid fa-circle-check" style="color: #16a34a;"></i> सेव्ह
+                        </div>
+                        <button type="button" class="btn btn-save" onclick="saveFormData(true)" title="भरलेली सर्व माहिती व पुरावे सुरक्षित सेव्ह करा">
+                            <i class="fa-solid fa-floppy-disk"></i> सेव्ह
+                        </button>
                         <button type="button" class="btn btn-sample" onclick="loadSampleData()" title="नमुना डेटा भरा">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना
                         </button>
@@ -2020,8 +2077,11 @@
                 </div>
                 <div class="doc-item-row">
                     <div style="font-weight: 700; width: 25px;">५)</div>
-                    <div style="flex: 1; font-weight: 600; color: #475569; font-size: 0.88rem;">
-                        जात आणि कायम वास्तव्य नमूद केलेले गावच्या सरपंच / पोलीस पाटील / तलाठी यांचे दाखले.
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: #475569; font-size: 0.88rem; margin-bottom: 3px;">
+                            जात आणि कायम वास्तव्य नमूद केलेले गावच्या सरपंच / पोलीस पाटील / तलाठी यांचे दाखले.
+                        </div>
+                        <input type="text" id="inp_doc5_note" placeholder="दाखला देणारा / गाव / क्रमांक (ऐच्छिक)" oninput="syncAll()" style="width: 98%;">
                     </div>
                 </div>
                 <div class="doc-item-row">
@@ -2033,8 +2093,11 @@
                 </div>
                 <div class="doc-item-row">
                     <div style="font-weight: 700; width: 25px;">७)</div>
-                    <div style="flex: 1; font-weight: 600; color: #475569; font-size: 0.88rem;">
-                        इतर पुरावे असल्यास (समाजाचा दाखला, सेवा पुस्तकाच्या पहिल्या पानाची छायांकित प्रत वगैरे)
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: #475569; font-size: 0.88rem; margin-bottom: 3px;">
+                            इतर पुरावे असल्यास (समाजाचा दाखला, सेवा पुस्तकाच्या पहिल्या पानाची छायांकित प्रत वगैरे)
+                        </div>
+                        <input type="text" id="inp_doc7_note" placeholder="इतर जोडलेल्या पुराव्याचे नाव किंवा तपशील (उदा. ७/१२ उतारा, सेवा पुस्तक) (ऐच्छिक)" oninput="syncAll()" style="width: 98%;">
                     </div>
                 </div>
             </div>
@@ -2250,7 +2313,7 @@
                         <li>
                             <span class="doc-sr">५)</span>
                             <span class="doc-content">
-                                जात आणि कायम वास्तव्य नमूद केलेले गावच्या सरपंच /पोलीस पाटील/ तलाठी यांचे दाखले.
+                                जात आणि कायम वास्तव्य नमूद केलेले गावच्या सरपंच /पोलीस पाटील/ तलाठी यांचे दाखले<span id="v_doc5_ext"></span>.
                             </span>
                         </li>
                         <li>
@@ -2262,7 +2325,7 @@
                         <li>
                             <span class="doc-sr">७)</span>
                             <span class="doc-content">
-                                इतर पुरावे असल्यास (समाजाचा दाखला, सेवा पुस्तकाच्या पहिल्या पानाची छायांकित प्रत वगैरे)
+                                इतर पुरावे असल्यास (समाजाचा दाखला, सेवा पुस्तकाच्या पहिल्या पानाची छायांकित प्रत वगैरे)<span id="v_doc7_ext"></span>
                             </span>
                         </li>
                     </ul>
@@ -2989,8 +3052,22 @@
             document.getElementById('v_doc4_place').innerHTML = formatValue(document.getElementById('inp_doc4_place').value);
             document.getElementById('v_doc4_rel').innerHTML = formatValue(document.getElementById('inp_doc4_rel').value);
 
+            const doc5El = document.getElementById('inp_doc5_note');
+            const vDoc5Ext = document.getElementById('v_doc5_ext');
+            if (vDoc5Ext) {
+                const doc5Val = doc5El ? doc5El.value.trim() : '';
+                vDoc5Ext.innerHTML = doc5Val ? ' (' + formatValue(doc5Val) + ')' : '';
+            }
+
             document.getElementById('v_doc6_name').innerHTML = formatValue(document.getElementById('inp_doc6_name').value);
             document.getElementById('v_doc6_rel').innerHTML = formatValue(document.getElementById('inp_doc6_rel').value);
+
+            const doc7El = document.getElementById('inp_doc7_note');
+            const vDoc7Ext = document.getElementById('v_doc7_ext');
+            if (vDoc7Ext) {
+                const doc7Val = doc7El ? doc7El.value.trim() : '';
+                vDoc7Ext.innerHTML = doc7Val ? ' : ' + formatValue(doc7Val) : '';
+            }
 
             // Chart Mode Tree Sync
             const g1 = document.getElementById('inp_tree_g1').value || 'कै. बाबाजी गणपत राणे';
@@ -3944,6 +4021,182 @@
         // =============================================================
         // SAMPLE DATA & INITIALIZATION
         // =============================================================
+        
+        // =============================================================
+        // MASTER FORM DATA AUTO-SAVE & RESTORE SYSTEM
+        // =============================================================
+        const FORM_FIELDS_REGISTRY = [
+            // Sliders & Checkbox
+            { id: 'fontSizeSlider', type: 'value' },
+            { id: 'lineSpacingSlider', type: 'value' },
+            { id: 'treeHeightSlider', type: 'value' },
+            { id: 'chkShowUnderlines', type: 'checkbox' },
+
+            // Court & Exemption
+            { id: 'inp_court_title', type: 'value' },
+            { id: 'inp_sdo_office', type: 'value' },
+            { id: 'inp_exemption_order', type: 'value' },
+
+            // Applicant Details
+            { id: 'inp_app_salutation', type: 'value' },
+            { id: 'inp_app_name', type: 'value' },
+            { id: 'inp_app_age', type: 'value' },
+            { id: 'inp_app_occ', type: 'value' },
+            { id: 'inp_app_village', type: 'value' },
+            { id: 'inp_app_taluka', type: 'value' },
+            { id: 'inp_app_district', type: 'value' },
+
+            // Beneficiary & Caste Details
+            { id: 'inp_ben_relation_type', type: 'value' },
+            { id: 'inp_custom_relation', type: 'value' },
+            { id: 'inp_ben_name', type: 'value' },
+            { id: 'inp_ben_pronoun', type: 'value' },
+            { id: 'inp_caste_name', type: 'value' },
+            { id: 'inp_caste_category', type: 'value' },
+            { id: 'inp_custom_category', type: 'value' },
+
+            // Addresses
+            { id: 'inp_orig_village', type: 'value' },
+            { id: 'inp_orig_taluka', type: 'value' },
+            { id: 'inp_orig_district', type: 'value' },
+            { id: 'inp_curr_village', type: 'value' },
+            { id: 'inp_curr_taluka', type: 'value' },
+            { id: 'inp_curr_district', type: 'value' },
+
+            // Documents (अर्जासोबत जोडलेली पुरावे कागदपत्रे - पान १)
+            { id: 'inp_doc1_name', type: 'value' },
+            { id: 'inp_doc1_caste', type: 'value' },
+            { id: 'inp_doc2_name', type: 'value' },
+            { id: 'inp_doc2_caste', type: 'value' },
+            { id: 'inp_doc3_name', type: 'value' },
+            { id: 'inp_doc3_place', type: 'value' },
+            { id: 'inp_doc4_name', type: 'value' },
+            { id: 'inp_doc4_place', type: 'value' },
+            { id: 'inp_doc4_rel', type: 'value' },
+            { id: 'inp_doc5_note', type: 'value' },
+            { id: 'inp_doc6_name', type: 'value' },
+            { id: 'inp_doc6_rel', type: 'value' },
+            { id: 'inp_doc7_note', type: 'value' },
+
+            // Tree Settings & Generations
+            { id: 'sel_tree_mode', type: 'value' },
+            { id: 'inp_tree_g1', type: 'value' },
+            { id: 'inp_tree_g2', type: 'value' },
+            { id: 'inp_tree_g3', type: 'value' },
+            { id: 'inp_tree_g4', type: 'value' },
+            { id: 'inp_custom_tree_text', type: 'value' },
+
+            // Date & Witness
+            { id: 'inp_aff_date', type: 'value' },
+            { id: 'inp_witness_name', type: 'value' },
+            { id: 'inp_witness_address', type: 'value' }
+        ];
+
+        function showToast(message, type = 'info') {
+            let toast = document.getElementById('toastNotice');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toastNotice';
+                toast.className = 'toast-notice';
+                document.body.appendChild(toast);
+            }
+            const icon = type === 'success' ? '<i class="fa-solid fa-circle-check" style="color: #4ade80;"></i>' :
+                         type === 'error' ? '<i class="fa-solid fa-triangle-exclamation" style="color: #f87171;"></i>' :
+                         '<i class="fa-solid fa-circle-info" style="color: #38bdf8;"></i>';
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            toast.classList.add('show');
+            clearTimeout(window._toastTimeout);
+            window._toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function saveFormData(showFeedback = false) {
+            try {
+                const data = {};
+                FORM_FIELDS_REGISTRY.forEach(field => {
+                    const el = document.getElementById(field.id);
+                    if (!el) return;
+                    if (field.type === 'checkbox') {
+                        data[field.id] = el.checked;
+                    } else {
+                        data[field.id] = el.value;
+                    }
+                });
+
+                localStorage.setItem('caste_affidavit_form_data', JSON.stringify(data));
+
+                const badge = document.getElementById('autoSaveBadge');
+                if (badge) {
+                    badge.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #16a34a;"></i> सेव्ह';
+                    badge.style.borderColor = '#86efac';
+                    badge.style.background = '#f0fdf4';
+                }
+
+                if (showFeedback) {
+                    showToast('✅ सर्व माहिती व पुरावे सुरक्षित सेव्ह झाले आहेत!', 'success');
+                }
+            } catch (err) {
+                console.error('saveFormData error:', err);
+                if (showFeedback) {
+                    showToast('⚠️ माहिती सेव्ह करताना अडचण आली.', 'error');
+                }
+            }
+        }
+
+        let autoSaveDebounceTimer = null;
+        function triggerAutoSave() {
+            const badge = document.getElementById('autoSaveBadge');
+            if (badge) {
+                badge.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin" style="color: #0284c7;"></i> सेव्ह होत आहे...';
+                badge.style.borderColor = '#7dd3fc';
+                badge.style.background = '#f0f9ff';
+            }
+            clearTimeout(autoSaveDebounceTimer);
+            autoSaveDebounceTimer = setTimeout(() => {
+                saveFormData(false);
+            }, 400);
+        }
+
+        function loadSavedFormData() {
+            try {
+                const raw = localStorage.getItem('caste_affidavit_form_data');
+                if (!raw) return false;
+                const data = JSON.parse(raw);
+                if (!data || typeof data !== 'object') return false;
+
+                FORM_FIELDS_REGISTRY.forEach(field => {
+                    const el = document.getElementById(field.id);
+                    if (!el || data[field.id] === undefined) return;
+                    if (field.type === 'checkbox') {
+                        el.checked = Boolean(data[field.id]);
+                    } else {
+                        el.value = data[field.id];
+                    }
+                });
+
+                // Apply sliders if custom
+                if (data.fontSizeSlider && typeof updateFontSize === 'function') {
+                    updateFontSize(data.fontSizeSlider);
+                }
+                if (data.lineSpacingSlider && typeof updateLineSpacing === 'function') {
+                    updateLineSpacing(data.lineSpacingSlider);
+                }
+                if (data.treeHeightSlider && typeof updateTreeHeight === 'function') {
+                    updateTreeHeight(data.treeHeightSlider);
+                }
+
+                // Handle conditional visibility
+                handleRelationChange();
+                handleTreeModeChange();
+
+                return true;
+            } catch (err) {
+                console.error('loadSavedFormData error:', err);
+                return false;
+            }
+        }
+
         function loadSampleData() {
             document.getElementById('inp_court_title').value = "मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे न्यायालयात";
             document.getElementById('inp_sdo_office').value = "कणकवली";
@@ -3986,8 +4239,16 @@
             document.getElementById('inp_doc4_place').value = "वरवडे";
             document.getElementById('inp_doc4_rel').value = "आजोबा";
 
+            if (document.getElementById('inp_doc5_note')) {
+                document.getElementById('inp_doc5_note').value = "ग्रामपंचायत वरवडे दाखला क्र. १२४";
+            }
+
             document.getElementById('inp_doc6_name').value = "रवींद्र पांडुरंग राणे";
             document.getElementById('inp_doc6_rel').value = "चुलते";
+
+            if (document.getElementById('inp_doc7_note')) {
+                document.getElementById('inp_doc7_note').value = "सेवा पुस्तकाच्या पहिल्या पानाची छायांकित प्रत";
+            }
 
             // Date & Witness
             const d = new Date();
@@ -3998,10 +4259,16 @@
 
             loadExtendedTreePreset();
             syncAll();
+            saveFormData(true);
         }
 
         function resetAllData() {
-            if (!confirm("सर्व माहिती रिकामी करायची आहे का?")) return;
+            if (!confirm("सर्व भरलेली माहिती, पुरावे व वंशावळ कायमची रिकामी करायची आहे का?")) return;
+            try {
+                localStorage.removeItem('caste_affidavit_form_data');
+                localStorage.removeItem('caste_affidavit_manual_tree');
+            } catch (e) {}
+
             document.querySelectorAll('.controls-wrapper input[type="text"], .controls-wrapper textarea').forEach(el => el.value = '');
             document.getElementById('inp_app_district').value = "सिंधुदुर्ग";
             document.getElementById('inp_orig_district').value = "सिंधुदुर्ग";
@@ -4009,21 +4276,51 @@
             document.getElementById('inp_court_title').value = "मे. कार्यकारी दंडाधिकारी साहेब कणकवली यांचे न्यायालयात";
             document.getElementById('inp_sdo_office').value = "कणकवली";
             document.getElementById('inp_exemption_order').value = "मुद्रांक २००८/१६३६/ प्र.क्र. ४३६/म-१ दि. १-७-०८";
-            clearAllManualTree();
-            syncAll();
-        }
-
-        window.onload = function() {
+            
             const d = new Date();
             const pad = (n) => String(n).padStart(2, '0');
             document.getElementById('inp_aff_date').value = `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
-            
-            setLayoutMode(currentLayoutMode);
+
+            clearAllManualTree();
+            handleRelationChange();
             handleTreeModeChange();
+            syncAll();
+            showToast('सर्व माहिती रीसेट करण्यात आली आहे.', 'info');
+        }
+
+        window.onload = function() {
+            setLayoutMode(currentLayoutMode);
+
+            // 1. Restore all form data (applicant, beneficiary, village, attached docs, etc.)
+            const hasSavedData = loadSavedFormData();
+
+            // 2. If no saved date or empty, set default today's date
+            const dateEl = document.getElementById('inp_aff_date');
+            if (dateEl && (!hasSavedData || !dateEl.value.trim())) {
+                const d = new Date();
+                const pad = (n) => String(n).padStart(2, '0');
+                dateEl.value = `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+            }
+
+            // 3. Restore manual tree and initial preview
             restoreManualTreeState();
             setPreviewPage(1);
-            updateLineSpacing(1.85);
+            if (!hasSavedData) {
+                updateLineSpacing(1.85);
+            }
             syncAll();
+
+            // 4. Hook real-time auto-save listeners on all form controls
+            const controlsWrapper = document.getElementById('controlsWrapper');
+            if (controlsWrapper) {
+                controlsWrapper.addEventListener('input', () => {
+                    triggerAutoSave();
+                });
+                controlsWrapper.addEventListener('change', () => {
+                    triggerAutoSave();
+                });
+            }
+
             window.addEventListener('resize', () => {
                 resizeFreehandCanvas();
                 if (currentPreviewZoom === 'fit') {
