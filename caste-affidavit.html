@@ -1965,6 +1965,10 @@
                         <option value="माझी काकू">माझी काकू (Aunt)</option>
                         <option value="माझे आजोबा">माझे आजोबा (Grandfather)</option>
                         <option value="माझी आजी">माझी आजी (Grandmother)</option>
+                        <option value="माझे पणजोबा">माझे पणजोबा (Great-grandfather)</option>
+                        <option value="माझे खापरपणजोबा">माझे खापरपणजोबा</option>
+                        <option value="माझे चुलत भाऊ">माझे चुलत भाऊ (Cousin Brother)</option>
+                        <option value="माझी चुलत बहीण">माझी चुलत बहीण (Cousin Sister)</option>
                         <option value="इतर">इतर नाते (Other Relation)</option>
                     </select>
                 </div>
@@ -2070,9 +2074,31 @@
                 <div class="doc-item-row">
                     <div style="font-weight: 700; width: 25px;">४)</div>
                     <div style="flex: 1;">
-                        <input type="text" id="inp_doc4_name" placeholder="घरपत्रक उतारा ज्यांच्या नावे आहे ते नाव" oninput="syncAll()" style="width: 38%;">
-                        <input type="text" id="inp_doc4_place" placeholder="रा. गाव" oninput="syncAll()" style="width: 28%;">
-                        <input type="text" id="inp_doc4_rel" placeholder="नाते (उदा. वडील / आजोबा)" oninput="syncAll()" style="width: 30%;">
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px;">
+                            <input type="text" id="inp_doc4_name" placeholder="घरपत्रक उतारा ज्यांच्या नावे आहे ते नाव" oninput="syncAll()" style="flex: 1.4; min-width: 140px;">
+                            <input type="text" id="inp_doc4_place" placeholder="रा. गाव" oninput="syncAll()" style="flex: 1; min-width: 90px;">
+                            <select id="inp_doc4_rel" onchange="handleDoc4RelChange(); syncAll();" style="flex: 1.3; min-width: 140px; padding: 4px 8px; border: 1.5px solid #cbd5e1; border-radius: 5px; font-weight: 600; color: #1e293b; background: #fff;">
+                                <option value="">-- नाते निवडा --</option>
+                                <option value="वडील">वडील (Father)</option>
+                                <option value="आजोबा">आजोबा (Grandfather)</option>
+                                <option value="पणजोबा">पणजोबा (Great-grandfather)</option>
+                                <option value="खापरपणजोबा">खापरपणजोबा</option>
+                                <option value="चुलते">चुलते (Uncle)</option>
+                                <option value="काका">काका (Uncle)</option>
+                                <option value="आई">आई (Mother)</option>
+                                <option value="आजी">आजी (Grandmother)</option>
+                                <option value="सख्खा भाऊ">सख्खा भाऊ (Brother)</option>
+                                <option value="चुलत भाऊ">चुलत भाऊ (Cousin)</option>
+                                <option value="चुलत आजोबा">चुलत आजोबा</option>
+                                <option value="स्वतः">स्वतः (दाखलाधारक)</option>
+                                <option value="पती">पती (Husband)</option>
+                                <option value="पत्नी">पत्नी (Wife)</option>
+                                <option value="इतर">इतर नाते (Other...)</option>
+                            </select>
+                        </div>
+                        <div id="grp_custom_doc4_rel" style="display: none; margin-top: 4px;">
+                            <input type="text" id="inp_custom_doc4_rel" placeholder="इतर नाते लिहा (उदा. दत्तक वडील, चुलत सासरा इ.)" oninput="syncAll()" style="width: 100%; border: 1.5px solid #f59e0b; background: #fffbeb; padding: 4px 8px; border-radius: 4px;">
+                        </div>
                     </div>
                 </div>
                 <div class="doc-item-row">
@@ -2087,8 +2113,28 @@
                 <div class="doc-item-row">
                     <div style="font-weight: 700; width: 25px;">६)</div>
                     <div style="flex: 1;">
-                        <input type="text" id="inp_doc6_name" placeholder="श्री. (नातेवाईकाचे नाव ज्यांच्या दाखल्यावर जात नमूद आहे)" oninput="syncAll()" style="width: 60%;">
-                        <input type="text" id="inp_doc6_rel" placeholder="दाखलाधारकाशी नाते (उदा. चुलते / आजोबा)" oninput="syncAll()" style="width: 37%;">
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px;">
+                            <input type="text" id="inp_doc6_name" placeholder="श्री. (नातेवाईकाचे नाव ज्यांच्या दाखल्यावर जात नमूद आहे)" oninput="syncAll()" style="flex: 1.8; min-width: 180px;">
+                            <select id="inp_doc6_rel" onchange="handleDoc6RelChange(); syncAll();" style="flex: 1.3; min-width: 150px; padding: 4px 8px; border: 1.5px solid #cbd5e1; border-radius: 5px; font-weight: 600; color: #1e293b; background: #fff;">
+                                <option value="">-- दाखलाधारकाशी नाते निवडा --</option>
+                                <option value="चुलते">चुलते (Uncle)</option>
+                                <option value="काका">काका (Uncle)</option>
+                                <option value="आजोबा">आजोबा (Grandfather)</option>
+                                <option value="पणजोबा">पणजोबा (Great-grandfather)</option>
+                                <option value="खापरपणजोबा">खापरपणजोबा</option>
+                                <option value="वडील">वडील (Father)</option>
+                                <option value="सख्खा भाऊ">सख्खा भाऊ (Brother)</option>
+                                <option value="चुलत भाऊ">चुलत भाऊ (Cousin Brother)</option>
+                                <option value="चुलत चुलते">चुलत चुलते / काका</option>
+                                <option value="चुलत आजोबा">चुलत आजोबा</option>
+                                <option value="आत्या">आत्या (Paternal Aunt)</option>
+                                <option value="स्वतः">स्वतः (दाखलाधारक)</option>
+                                <option value="इतर">इतर नाते (Other...)</option>
+                            </select>
+                        </div>
+                        <div id="grp_custom_doc6_rel" style="display: none; margin-top: 4px;">
+                            <input type="text" id="inp_custom_doc6_rel" placeholder="इतर नाते लिहा (उदा. चुलत आजोबा, सख्खा चुलता इ.)" oninput="syncAll()" style="width: 100%; border: 1.5px solid #f59e0b; background: #fffbeb; padding: 4px 8px; border-radius: 4px;">
+                        </div>
                     </div>
                 </div>
                 <div class="doc-item-row">
@@ -2486,7 +2532,32 @@
         <div class="popup-body" id="popupBody">
             <!-- Main Drawing Elements Grid -->
             <div class="popup-tools-grid">
-                <button type="button" class="tool-btn tool-btn-primary" onclick="addPersonBox('नवीन व्यक्ती', '(नाते)')" title="नवीन व्यक्तीचे नाव जोडा (बॉर्डरलेस)">
+                <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; background: #fffbeb; padding: 5px 8px; border-radius: 6px; border: 1px solid #fde68a; margin-bottom: 2px;">
+                    <label style="font-size: 0.74rem; font-weight: 700; color: #92400e; white-space: nowrap;">
+                        <i class="fa-solid fa-people-arrows"></i> नात्याचा प्रकार:
+                    </label>
+                    <select id="sel_tree_quick_rel" onchange="applySelectedTreeRelation()" style="flex: 1; font-size: 0.76rem; padding: 2px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-weight: 600; background: #fff;">
+                        <option value="(नाते)">(नाते - Default)</option>
+                        <option value="(खापरपणजोबा)">(खापरपणजोबा)</option>
+                        <option value="(पणजोबा)">(पणजोबा)</option>
+                        <option value="(आजोबा)">(आजोबा)</option>
+                        <option value="(चुलत आजोबा)">(चुलत आजोबा)</option>
+                        <option value="(वडील)">(वडील)</option>
+                        <option value="(चुलते)">(चुलते)</option>
+                        <option value="(काका)">(काका)</option>
+                        <option value="(सख्खा भाऊ)">(सख्खा भाऊ)</option>
+                        <option value="(चुलत भाऊ)">(चुलत भाऊ)</option>
+                        <option value="(दाखलाधारक / मुलगा)">(दाखलाधारक / मुलगा)</option>
+                        <option value="(दाखलाधारक)">(दाखलाधारक)</option>
+                        <option value="(मुलगी)">(मुलगी)</option>
+                        <option value="(बहीण)">(बहीण)</option>
+                        <option value="(भाचा / पुतण्या)">(भाचा / पुतण्या)</option>
+                        <option value="(नातू)">(नातू)</option>
+                        <option value="(नात)">(नात)</option>
+                        <option value="(पत्नी)">(पत्नी)</option>
+                    </select>
+                </div>
+                <button type="button" class="tool-btn tool-btn-primary" onclick="addPersonBoxWithSelectedRel()" title="नवीन व्यक्तीचे नाव व निवडलेले नाते जोडा">
                     <i class="fa-solid fa-user-plus"></i> ➕ व्यक्ती
                 </button>
                 <button type="button" class="tool-btn" onclick="addVerticalLine()" title="उभी रेषा जोडा">
@@ -2789,6 +2860,39 @@
         }
 
         // Relation change handler (Self / All Relations)
+        
+        function handleDoc4RelChange() {
+            const relEl = document.getElementById('inp_doc4_rel');
+            const grp = document.getElementById('grp_custom_doc4_rel');
+            if (grp && relEl) {
+                grp.style.display = (relEl.value === 'इतर') ? 'block' : 'none';
+            }
+        }
+
+        function handleDoc6RelChange() {
+            const relEl = document.getElementById('inp_doc6_rel');
+            const grp = document.getElementById('grp_custom_doc6_rel');
+            if (grp && relEl) {
+                grp.style.display = (relEl.value === 'इतर') ? 'block' : 'none';
+            }
+        }
+
+        function addPersonBoxWithSelectedRel() {
+            const relSelect = document.getElementById('sel_tree_quick_rel');
+            const chosenRel = relSelect ? relSelect.value : '(नाते)';
+            addPersonBox('नवीन व्यक्ती', chosenRel);
+        }
+
+        function applySelectedTreeRelation() {
+            const relSelect = document.getElementById('sel_tree_quick_rel');
+            if (!relSelect || !selectedTreeItem) return;
+            const relDiv = selectedTreeItem.querySelector('.tbox-rel');
+            if (relDiv) {
+                relDiv.innerText = relSelect.value;
+                saveManualTreeState();
+            }
+        }
+
         function handleRelationChange() {
             const rel = document.getElementById('inp_ben_relation_type').value;
             const pronounSel = document.getElementById('inp_ben_pronoun');
@@ -3050,7 +3154,12 @@
 
             document.getElementById('v_doc4_name').innerHTML = formatValue(document.getElementById('inp_doc4_name').value);
             document.getElementById('v_doc4_place').innerHTML = formatValue(document.getElementById('inp_doc4_place').value);
-            document.getElementById('v_doc4_rel').innerHTML = formatValue(document.getElementById('inp_doc4_rel').value);
+            let d4Rel = document.getElementById('inp_doc4_rel') ? document.getElementById('inp_doc4_rel').value : '';
+            if (d4Rel === 'इतर') {
+                const cDoc4 = document.getElementById('inp_custom_doc4_rel');
+                d4Rel = (cDoc4 && cDoc4.value.trim()) ? cDoc4.value.trim() : 'नातेवाईक';
+            }
+            document.getElementById('v_doc4_rel').innerHTML = formatValue(d4Rel);
 
             const doc5El = document.getElementById('inp_doc5_note');
             const vDoc5Ext = document.getElementById('v_doc5_ext');
@@ -3060,7 +3169,12 @@
             }
 
             document.getElementById('v_doc6_name').innerHTML = formatValue(document.getElementById('inp_doc6_name').value);
-            document.getElementById('v_doc6_rel').innerHTML = formatValue(document.getElementById('inp_doc6_rel').value);
+            let d6Rel = document.getElementById('inp_doc6_rel') ? document.getElementById('inp_doc6_rel').value : '';
+            if (d6Rel === 'इतर') {
+                const cDoc6 = document.getElementById('inp_custom_doc6_rel');
+                d6Rel = (cDoc6 && cDoc6.value.trim()) ? cDoc6.value.trim() : 'नातेवाईक';
+            }
+            document.getElementById('v_doc6_rel').innerHTML = formatValue(d6Rel);
 
             const doc7El = document.getElementById('inp_doc7_note');
             const vDoc7Ext = document.getElementById('v_doc7_ext');
@@ -4073,9 +4187,11 @@
             { id: 'inp_doc4_name', type: 'value' },
             { id: 'inp_doc4_place', type: 'value' },
             { id: 'inp_doc4_rel', type: 'value' },
+            { id: 'inp_custom_doc4_rel', type: 'value' },
             { id: 'inp_doc5_note', type: 'value' },
             { id: 'inp_doc6_name', type: 'value' },
             { id: 'inp_doc6_rel', type: 'value' },
+            { id: 'inp_custom_doc6_rel', type: 'value' },
             { id: 'inp_doc7_note', type: 'value' },
 
             // Tree Settings & Generations
@@ -4188,6 +4304,8 @@
 
                 // Handle conditional visibility
                 handleRelationChange();
+                handleDoc4RelChange();
+                handleDoc6RelChange();
                 handleTreeModeChange();
 
                 return true;
@@ -4283,6 +4401,8 @@
 
             clearAllManualTree();
             handleRelationChange();
+            handleDoc4RelChange();
+            handleDoc6RelChange();
             handleTreeModeChange();
             syncAll();
             showToast('सर्व माहिती रीसेट करण्यात आली आहे.', 'info');
