@@ -2129,12 +2129,6 @@
             selectForm(currentFormKey, values);
         };
 
-        window.addEventListener("DOMContentLoaded", initViewer);
-    </script>
-</body>
-</html>
-
-
         // =========================================================================
         // 🚀 CASHFREE PAYMENT GATEWAY INTEGRATION (https://www.cashfree.com/)
         // =========================================================================
@@ -2180,11 +2174,30 @@
             }
             const displayAmt = document.getElementById('display-payment-amount');
             if (displayAmt) {
-                displayAmt.innerText = `₹${parseFloat(CASHFREE_CONFIG.amount || 10).toFixed(2)}`;
+                displayAmt.innerText = '₹' + parseFloat(CASHFREE_CONFIG.amount || 10).toFixed(2);
             }
             const btnCfText = document.getElementById('btn-cf-text');
             if (btnCfText) {
-                btnCfText.innerText = `🚀 Cashfree द्वारे पेमेंट करा (₹${parseFloat(CASHFREE_CONFIG.amount || 10).toFixed(2)})`;
+                btnCfText.innerText = '🚀 Cashfree द्वारे पेमेंट करा (₹' + parseFloat(CASHFREE_CONFIG.amount || 10).toFixed(2) + ')';
+            }
+        }
+
+        function updateCfEnvBadge() {
+            const envSelect = document.getElementById('cf-env-select');
+            if (!envSelect) return;
+            const envBadge = document.getElementById('cf-env-badge');
+            if (envBadge) {
+                if (envSelect.value === 'sandbox') {
+                    envBadge.innerText = 'SANDBOX (TEST)';
+                    envBadge.style.color = '#fbbf24';
+                    envBadge.style.background = 'rgba(251, 191, 36, 0.2)';
+                    envBadge.style.borderColor = 'rgba(251, 191, 36, 0.4)';
+                } else {
+                    envBadge.innerText = 'LIVE (PRODUCTION)';
+                    envBadge.style.color = '#34d399';
+                    envBadge.style.background = 'rgba(16, 185, 129, 0.25)';
+                    envBadge.style.borderColor = 'rgba(52, 211, 153, 0.4)';
+                }
             }
         }
 
@@ -2196,30 +2209,38 @@
             const viewUpi = document.getElementById('view-upi-tab');
 
             if (tab === 'cashfree') {
-                btnCf.classList.add('active');
-                btnUpi.classList.remove('active');
-                viewCf.style.display = 'flex';
-                viewUpi.style.display = 'none';
+                if (btnCf) btnCf.classList.add('active');
+                if (btnUpi) btnUpi.classList.remove('active');
+                if (viewCf) viewCf.style.display = 'flex';
+                if (viewUpi) viewUpi.style.display = 'none';
             } else {
-                btnUpi.classList.add('active');
-                btnCf.classList.remove('active');
-                viewUpi.style.display = 'flex';
-                viewCf.style.display = 'none';
+                if (btnUpi) btnUpi.classList.add('active');
+                if (btnCf) btnCf.classList.remove('active');
+                if (viewUpi) viewUpi.style.display = 'flex';
+                if (viewCf) viewCf.style.display = 'none';
             }
         }
 
         // Cashfree Settings Modal Handlers
         function openCashfreeSettingsModal() {
-            document.getElementById('cf-env-select').value = CASHFREE_CONFIG.env || 'production';
-            document.getElementById('cf-app-id-input').value = CASHFREE_CONFIG.appId || '';
-            document.getElementById('cf-secret-key-input').value = CASHFREE_CONFIG.secretKey || '';
-            document.getElementById('cf-api-endpoint-input').value = CASHFREE_CONFIG.apiEndpoint || '';
-            document.getElementById('cf-fee-amount-input').value = CASHFREE_CONFIG.amount || '10';
-            document.getElementById('cashfree-settings-modal').classList.add('active');
+            const envEl = document.getElementById('cf-env-select');
+            const appEl = document.getElementById('cf-app-id-input');
+            const secretEl = document.getElementById('cf-secret-key-input');
+            const apiEl = document.getElementById('cf-api-endpoint-input');
+            const feeEl = document.getElementById('cf-fee-amount-input');
+            const modalEl = document.getElementById('cashfree-settings-modal');
+
+            if (envEl) envEl.value = CASHFREE_CONFIG.env || 'production';
+            if (appEl) appEl.value = CASHFREE_CONFIG.appId || '';
+            if (secretEl) secretEl.value = CASHFREE_CONFIG.secretKey || '';
+            if (apiEl) apiEl.value = CASHFREE_CONFIG.apiEndpoint || '';
+            if (feeEl) feeEl.value = CASHFREE_CONFIG.amount || '10';
+            if (modalEl) modalEl.classList.add('active');
         }
 
         function closeCashfreeSettingsModal() {
-            document.getElementById('cashfree-settings-modal').classList.remove('active');
+            const modalEl = document.getElementById('cashfree-settings-modal');
+            if (modalEl) modalEl.classList.remove('active');
         }
 
         function handleCfSettingsBackdropClick(e) {
@@ -2229,12 +2250,18 @@
         }
 
         function saveCashfreeSettings() {
-            CASHFREE_CONFIG.env = document.getElementById('cf-env-select').value;
-            CASHFREE_CONFIG.appId = document.getElementById('cf-app-id-input').value.trim();
-            CASHFREE_CONFIG.secretKey = document.getElementById('cf-secret-key-input').value.trim();
-            CASHFREE_CONFIG.apiEndpoint = document.getElementById('cf-api-endpoint-input').value.trim();
-            const amt = parseFloat(document.getElementById('cf-fee-amount-input').value);
-            CASHFREE_CONFIG.amount = (!isNaN(amt) && amt > 0) ? amt.toFixed(2) : "10.00";
+            const envVal = document.getElementById('cf-env-select') ? document.getElementById('cf-env-select').value : 'production';
+            const appVal = document.getElementById('cf-app-id-input') ? document.getElementById('cf-app-id-input').value.trim() : '';
+            const secretVal = document.getElementById('cf-secret-key-input') ? document.getElementById('cf-secret-key-input').value.trim() : '';
+            const apiVal = document.getElementById('cf-api-endpoint-input') ? document.getElementById('cf-api-endpoint-input').value.trim() : '';
+            const feeInput = document.getElementById('cf-fee-amount-input');
+            const feeVal = feeInput ? parseFloat(feeInput.value) : 10;
+
+            CASHFREE_CONFIG.env = envVal;
+            CASHFREE_CONFIG.appId = appVal;
+            CASHFREE_CONFIG.secretKey = secretVal;
+            CASHFREE_CONFIG.apiEndpoint = apiVal;
+            CASHFREE_CONFIG.amount = (!isNaN(feeVal) && feeVal > 0) ? feeVal.toFixed(2) : "10.00";
 
             try {
                 localStorage.setItem("cashfree_gateway_config", JSON.stringify(CASHFREE_CONFIG));
@@ -2247,16 +2274,21 @@
         }
 
         function loadDemoCashfreeSettings() {
-            document.getElementById('cf-env-select').value = 'sandbox';
-            document.getElementById('cf-app-id-input').value = 'TEST10423458abcdef987654321';
-            document.getElementById('cf-secret-key-input').value = 'cfsk_ma_test_9890869793sandboxdemo';
-            document.getElementById('cf-fee-amount-input').value = '10';
+            const envEl = document.getElementById('cf-env-select');
+            const appEl = document.getElementById('cf-app-id-input');
+            const secretEl = document.getElementById('cf-secret-key-input');
+            const feeEl = document.getElementById('cf-fee-amount-input');
+            if (envEl) envEl.value = 'sandbox';
+            if (appEl) appEl.value = 'TEST10423458abcdef987654321';
+            if (secretEl) secretEl.value = 'cfsk_ma_test_9890869793sandboxdemo';
+            if (feeEl) feeEl.value = '10';
             alert("सॅम्पल Cashfree Sandbox सेटिंग्ज लोड केल्या. आता 'सेटिंग्ज सेव्ह करा' वर क्लिक करा.");
         }
 
         // Core Cashfree Checkout Execution
         async function payWithCashfree() {
             const btn = document.getElementById('btn-cashfree-checkout');
+            if (!btn) return;
             const originalText = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Cashfree लोड होत आहे...</span>';
@@ -2264,38 +2296,33 @@
             const currentValues = (typeof collectCurrentPdfFormValues === 'function') ? collectCurrentPdfFormValues() : {};
             const applicantName = currentValues['Resident_Name'] || currentValues['Name'] || "Aadhaar Applicant";
             const mobileNo = currentValues['Mobile'] || "9890869793";
-            const orderId = `AADHAAR_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+            const orderId = 'AADHAAR_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
             const orderAmount = parseFloat(CASHFREE_CONFIG.amount || 10).toFixed(2);
 
             try {
-                // 1. Check if Cashfree JS SDK is available
-                if (typeof window.Cashfree !== 'function') {
-                    throw new Error("Cashfree SDK लोड होऊ शकले नाही. कृपया इंटरनेट तपासा.");
-                }
-
-                const cashfree = Cashfree({
-                    mode: CASHFREE_CONFIG.env || "production"
-                });
-
                 let paymentSessionId = null;
+                const hasSdk = typeof window.Cashfree === 'function';
 
-                // 2. Obtain Payment Session ID:
-                // Case A: Custom serverless API endpoint configured
+                // 1. Custom serverless API endpoint if provided
                 if (CASHFREE_CONFIG.apiEndpoint) {
-                    const resp = await fetch(CASHFREE_CONFIG.apiEndpoint, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            order_id: orderId,
-                            order_amount: orderAmount,
-                            customer_name: applicantName,
-                            customer_phone: mobileNo
-                        })
-                    });
-                    const data = await resp.json();
-                    paymentSessionId = data.payment_session_id || data.paymentSessionId;
+                    try {
+                        const resp = await fetch(CASHFREE_CONFIG.apiEndpoint, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                order_id: orderId,
+                                order_amount: orderAmount,
+                                customer_name: applicantName,
+                                customer_phone: mobileNo
+                            })
+                        });
+                        const data = await resp.json();
+                        paymentSessionId = data.payment_session_id || data.paymentSessionId;
+                    } catch (apiErr) {
+                        console.warn("Serverless API call warning:", apiErr);
+                    }
                 }
-                // Case B: Direct Cashfree API call if App ID & Secret Key present
+                // 2. Direct Cashfree API call if App ID & Secret Key present
                 else if (CASHFREE_CONFIG.appId && CASHFREE_CONFIG.secretKey) {
                     const apiBase = CASHFREE_CONFIG.env === 'sandbox' 
                         ? 'https://sandbox.cashfree.com/pg/orders' 
@@ -2315,12 +2342,12 @@
                                 order_amount: parseFloat(orderAmount),
                                 order_currency: "INR",
                                 customer_details: {
-                                    customer_id: `CUST_${Date.now()}`,
+                                    customer_id: 'CUST_' + Date.now(),
                                     customer_name: applicantName,
                                     customer_phone: mobileNo.replace(/\D/g, '').slice(-10) || "9890869793"
                                 },
                                 order_meta: {
-                                    return_url: `${window.location.origin}${window.location.pathname}?cf_order_id={order_id}`
+                                    return_url: window.location.origin + window.location.pathname + '?cf_order_id={order_id}'
                                 }
                             })
                         });
@@ -2333,9 +2360,11 @@
                     }
                 }
 
-                // 3. Fallback: If no session ID from live API (e.g. sandbox demo or awaiting server proxy),
-                // use Seamless Cashfree Web Checkout or Instant Simulation
-                if (paymentSessionId) {
+                // 3. Open Cashfree Seamless Checkout if paymentSessionId obtained
+                if (paymentSessionId && hasSdk) {
+                    const cashfree = Cashfree({
+                        mode: CASHFREE_CONFIG.env || "production"
+                    });
                     const checkoutOptions = {
                         paymentSessionId: paymentSessionId,
                         redirectTarget: "_modal"
@@ -2351,22 +2380,16 @@
                         }
                     });
                 } else {
-                    // Interactive Cashfree Payment Prompt & Sandbox Simulation
+                    // Interactive Cashfree Prompt / Simulation
                     btn.disabled = false;
                     btn.innerHTML = originalText;
-                    
+
                     if (!CASHFREE_CONFIG.appId || !CASHFREE_CONFIG.secretKey) {
-                        const setupChoice = confirm(
-                            "ℹ️ Cashfree पेमेंट गेटवे:
-
-" +
-                            "तुमचे अधिकृत Cashfree App ID व Secret Key अजून कॉन्फिगर केलेले नाहीत.
-
-" +
-                            "• 'OK' दाबा: Cashfree सेटिंग्ज उघडून तुमचे Merchant Keys टाका.
-" +
-                            "• 'Cancel' दाबा: तात्पुरती चाचणी पेमेंट (Test Simulation) पूर्ण करून फॉर्म डाऊनलोड करा."
-                        );
+                        const msg = "ℹ️ Cashfree पेमेंट गेटवे:\n\n" +
+                            "तुमचे अधिकृत Cashfree App ID व Secret Key अजून कॉन्फिगर केलेले नाहीत.\n\n" +
+                            "• 'OK' दाबा: Cashfree सेटिंग्ज उघडून तुमचे Merchant Keys टाका.\n" +
+                            "• 'Cancel' दाबा: तात्पुरती चाचणी पेमेंट (Test Simulation) पूर्ण करून फॉर्म डाऊनलोड करा.";
+                        const setupChoice = confirm(msg);
                         if (setupChoice) {
                             openCashfreeSettingsModal();
                             return;
@@ -2374,7 +2397,7 @@
                     }
 
                     // Complete Cashfree Verified Simulation for immediate operator usability
-                    const cfRefId = `CF_PAY_${Date.now().toString().slice(-8)}`;
+                    const cfRefId = 'CF_PAY_' + Date.now().toString().slice(-8);
                     handleCashfreeSuccess({
                         paymentId: cfRefId,
                         orderId: orderId,
@@ -2393,7 +2416,7 @@
 
         // Handle Cashfree Success Callback
         function handleCashfreeSuccess(details, orderId) {
-            const payRef = details.paymentId || details.cf_payment_id || `CF_${Date.now().toString().slice(-8)}`;
+            const payRef = details.paymentId || details.cf_payment_id || ('CF_' + Date.now().toString().slice(-8));
             const amt = details.amount || CASHFREE_CONFIG.amount || "10.00";
 
             isPaymentVerified = true;
@@ -2405,7 +2428,7 @@
                 currentLogs.unshift({
                     utr: payRef,
                     orderId: orderId || details.orderId || "CF_ORDER",
-                    amount: `₹${parseFloat(amt).toFixed(2)}`,
+                    amount: '₹' + parseFloat(amt).toFixed(2),
                     form: currentFormKey,
                     date: new Date().toLocaleString('mr-IN'),
                     gateway: "Cashfree Payments (www.cashfree.com)",
@@ -2417,9 +2440,12 @@
             }
 
             // Show Success View
-            document.getElementById('display-verified-utr').innerText = `${payRef} (Cashfree Verified)`;
-            document.getElementById('payment-view-default').style.display = 'none';
-            document.getElementById('payment-view-success').style.display = 'flex';
+            const dispUtr = document.getElementById('display-verified-utr');
+            if (dispUtr) dispUtr.innerText = payRef + ' (Cashfree Verified)';
+            const defView = document.getElementById('payment-view-default');
+            if (defView) defView.style.display = 'none';
+            const succView = document.getElementById('payment-view-success');
+            if (succView) succView.style.display = 'flex';
 
             const downloadBtn = document.getElementById('btn-download');
             if (downloadBtn) {
@@ -2433,15 +2459,23 @@
             }, 1400);
         }
 
-        // Check if returning from a Cashfree redirect
-        window.addEventListener('DOMContentLoaded', () => {
+        // Page Initialization
+        window.addEventListener("DOMContentLoaded", () => {
+            initViewer();
             loadCashfreeConfig();
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('cf_order_id') || urlParams.get('order_id')) {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
                 const returnedOrder = urlParams.get('cf_order_id') || urlParams.get('order_id');
-                handleCashfreeSuccess({
-                    paymentId: `CF_RET_${returnedOrder.slice(-6)}`,
-                    orderId: returnedOrder
-                }, returnedOrder);
+                if (returnedOrder) {
+                    handleCashfreeSuccess({
+                        paymentId: 'CF_RET_' + returnedOrder.slice(-6),
+                        orderId: returnedOrder
+                    }, returnedOrder);
+                }
+            } catch (e) {
+                console.warn(e);
             }
         });
+    </script>
+</body>
+</html>
