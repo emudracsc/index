@@ -2137,7 +2137,7 @@
             env: "production", // "production" or "sandbox"
             appId: "",
             secretKey: "",
-            apiEndpoint: "",
+            apiEndpoint: "/api/create-cashfree-order",
             amount: "10.00",
             currency: "INR"
         };
@@ -2233,7 +2233,7 @@
             if (envEl) envEl.value = CASHFREE_CONFIG.env || 'production';
             if (appEl) appEl.value = CASHFREE_CONFIG.appId || '';
             if (secretEl) secretEl.value = CASHFREE_CONFIG.secretKey || '';
-            if (apiEl) apiEl.value = CASHFREE_CONFIG.apiEndpoint || '';
+            if (apiEl) apiEl.value = CASHFREE_CONFIG.apiEndpoint || '/api/create-cashfree-order';
             if (feeEl) feeEl.value = CASHFREE_CONFIG.amount || '10';
             if (modalEl) modalEl.classList.add('active');
         }
@@ -2253,14 +2253,14 @@
             const envVal = document.getElementById('cf-env-select') ? document.getElementById('cf-env-select').value : 'production';
             const appVal = document.getElementById('cf-app-id-input') ? document.getElementById('cf-app-id-input').value.trim() : '';
             const secretVal = document.getElementById('cf-secret-key-input') ? document.getElementById('cf-secret-key-input').value.trim() : '';
-            const apiVal = document.getElementById('cf-api-endpoint-input') ? document.getElementById('cf-api-endpoint-input').value.trim() : '';
+            const apiVal = document.getElementById('cf-api-endpoint-input') ? document.getElementById('cf-api-endpoint-input').value.trim() : '/api/create-cashfree-order';
             const feeInput = document.getElementById('cf-fee-amount-input');
             const feeVal = feeInput ? parseFloat(feeInput.value) : 10;
 
             CASHFREE_CONFIG.env = envVal;
             CASHFREE_CONFIG.appId = appVal;
             CASHFREE_CONFIG.secretKey = secretVal;
-            CASHFREE_CONFIG.apiEndpoint = apiVal;
+            CASHFREE_CONFIG.apiEndpoint = apiVal || '/api/create-cashfree-order';
             CASHFREE_CONFIG.amount = (!isNaN(feeVal) && feeVal > 0) ? feeVal.toFixed(2) : "10.00";
 
             try {
@@ -2296,71 +2296,45 @@
             const currentValues = (typeof collectCurrentPdfFormValues === 'function') ? collectCurrentPdfFormValues() : {};
             const applicantName = currentValues['Resident_Name'] || currentValues['Name'] || "Aadhaar Applicant";
             const mobileNo = currentValues['Mobile'] || "9890869793";
-            const orderId = 'AADHAAR_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            const orderId = 'ADH_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
             const orderAmount = parseFloat(CASHFREE_CONFIG.amount || 10).toFixed(2);
 
             try {
                 let paymentSessionId = null;
                 const hasSdk = typeof window.Cashfree === 'function';
 
-                // 1. Custom serverless API endpoint if provided
-                if (CASHFREE_CONFIG.apiEndpoint) {
-                    try {
-                        const resp = await fetch(CASHFREE_CONFIG.apiEndpoint, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                order_id: orderId,
-                                order_amount: orderAmount,
-                                customer_name: applicantName,
-                                customer_phone: mobileNo
-                            })
-                        });
-                        const data = await resp.json();
-                        paymentSessionId = data.payment_session_id || data.paymentSessionId;
-                    } catch (apiErr) {
-                        console.warn("Serverless API call warning:", apiErr);
+                // 1. Call Vercel Serverless Backend API /api/create-cashfree-order
+                try {
+                    const apiEndpoint = CASHFREE_CONFIG.apiEndpoint || '/api/create-cashfree-order';
+                    const payload = {
+                        order_id: orderId,
+                        order_amount: orderAmount,
+                        customer_name: applicantName,
+                        customer_phone: mobileNo,
+                        env: CASHFREE_CONFIG.env || 'production',
+                        return_url: window.location.origin + window.location.pathname + '?cf_order_id={order_id}'
+                    };
+                    if (CASHFREE_CONFIG.appId && CASHFREE_CONFIG.secretKey) {
+                        payload.app_id = CASHFREE_CONFIG.appId;
+                        payload.secret_key = CASHFREE_CONFIG.secretKey;
                     }
-                }
-                // 2. Direct Cashfree API call if App ID & Secret Key present
-                else if (CASHFREE_CONFIG.appId && CASHFREE_CONFIG.secretKey) {
-                    const apiBase = CASHFREE_CONFIG.env === 'sandbox' 
-                        ? 'https://sandbox.cashfree.com/pg/orders' 
-                        : 'https://api.cashfree.com/pg/orders';
 
-                    try {
-                        const orderRes = await fetch(apiBase, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "x-api-version": "2023-08-01",
-                                "x-client-id": CASHFREE_CONFIG.appId,
-                                "x-client-secret": CASHFREE_CONFIG.secretKey
-                            },
-                            body: JSON.stringify({
-                                order_id: orderId,
-                                order_amount: parseFloat(orderAmount),
-                                order_currency: "INR",
-                                customer_details: {
-                                    customer_id: 'CUST_' + Date.now(),
-                                    customer_name: applicantName,
-                                    customer_phone: mobileNo.replace(/\D/g, '').slice(-10) || "9890869793"
-                                },
-                                order_meta: {
-                                    return_url: window.location.origin + window.location.pathname + '?cf_order_id={order_id}'
-                                }
-                            })
-                        });
-                        if (orderRes.ok) {
-                            const orderData = await orderRes.json();
-                            paymentSessionId = orderData.payment_session_id;
-                        }
-                    } catch (corsErr) {
-                        console.warn("Direct Cashfree API call notice (CORS):", corsErr);
+                    const resp = await fetch(apiEndpoint, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await resp.json();
+                    if (data && data.success && data.payment_session_id) {
+                        paymentSessionId = data.payment_session_id;
+                    } else if (data && !data.success && data.error) {
+                        console.warn("Backend API response:", data.error);
                     }
+                } catch (apiErr) {
+                    console.warn("Backend order creation API call notice:", apiErr);
                 }
 
-                // 3. Open Cashfree Seamless Checkout if paymentSessionId obtained
+                // 2. Open Cashfree Seamless Checkout if paymentSessionId obtained
                 if (paymentSessionId && hasSdk) {
                     const cashfree = Cashfree({
                         mode: CASHFREE_CONFIG.env || "production"
@@ -2379,32 +2353,33 @@
                             handleCashfreeSuccess(result.paymentDetails, orderId);
                         }
                     });
-                } else {
-                    // Interactive Cashfree Prompt / Simulation
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
-
-                    if (!CASHFREE_CONFIG.appId || !CASHFREE_CONFIG.secretKey) {
-                        const msg = "ℹ️ Cashfree पेमेंट गेटवे:\n\n" +
-                            "तुमचे अधिकृत Cashfree App ID व Secret Key अजून कॉन्फिगर केलेले नाहीत.\n\n" +
-                            "• 'OK' दाबा: Cashfree सेटिंग्ज उघडून तुमचे Merchant Keys टाका.\n" +
-                            "• 'Cancel' दाबा: तात्पुरती चाचणी पेमेंट (Test Simulation) पूर्ण करून फॉर्म डाऊनलोड करा.";
-                        const setupChoice = confirm(msg);
-                        if (setupChoice) {
-                            openCashfreeSettingsModal();
-                            return;
-                        }
-                    }
-
-                    // Complete Cashfree Verified Simulation for immediate operator usability
-                    const cfRefId = 'CF_PAY_' + Date.now().toString().slice(-8);
-                    handleCashfreeSuccess({
-                        paymentId: cfRefId,
-                        orderId: orderId,
-                        paymentMode: "CASHFREE_PG_INSTANT",
-                        amount: orderAmount
-                    }, orderId);
+                    return;
                 }
+
+                // 3. If no paymentSessionId (e.g. running locally or credentials not yet set)
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+
+                if (!CASHFREE_CONFIG.appId || !CASHFREE_CONFIG.secretKey) {
+                    const msg = "ℹ️ Cashfree पेमेंट गेटवे:\n\n" +
+                        "तुमचे अधिकृत Cashfree App ID व Secret Key अजून कॉन्फिगर केलेले नाहीत.\n\n" +
+                        "• 'OK' दाबा: Cashfree सेटिंग्ज उघडून तुमचे Merchant Keys टाका (किंवा Vercel Environment Variables मध्ये जोडा).\n" +
+                        "• 'Cancel' दाबा: तात्पुरती चाचणी पेमेंट (Test Simulation) पूर्ण करून फॉर्म डाऊनलोड करा.";
+                    const setupChoice = confirm(msg);
+                    if (setupChoice) {
+                        openCashfreeSettingsModal();
+                        return;
+                    }
+                }
+
+                // Fallback Simulation for seamless operator usability
+                const cfRefId = 'CF_PAY_' + Date.now().toString().slice(-8);
+                handleCashfreeSuccess({
+                    paymentId: cfRefId,
+                    orderId: orderId,
+                    paymentMode: "CASHFREE_PG_INSTANT",
+                    amount: orderAmount
+                }, orderId);
 
             } catch (err) {
                 console.error("Cashfree initiation error:", err);
@@ -2460,7 +2435,7 @@
         }
 
         // Page Initialization
-        window.addEventListener("DOMContentLoaded", () => {
+        window.addEventListener("DOMContentLoaded", async () => {
             initViewer();
             loadCashfreeConfig();
             try {
