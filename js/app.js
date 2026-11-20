@@ -1615,21 +1615,11 @@ function showTokenSlipModal(token) {
 function checkAdminAuthState() {
   const isAuth = sessionStorage.getItem("emudra_admin_auth") === "true" || localStorage.getItem("emudra_admin_auth") === "true";
   const webAppSec = document.getElementById("interactive-app");
-  const navBtn = document.getElementById("nav-admin-login-btn");
-  const navBtnText = document.getElementById("nav-admin-btn-text");
   const headerBtn = document.getElementById("header-admin-login-btn");
   const headerBtnText = document.getElementById("header-admin-btn-text");
 
   if (isAuth) {
     if (webAppSec) webAppSec.style.display = "block";
-    if (navBtn) {
-      navBtn.style.background = "linear-gradient(135deg, #dc2626, #991b1b)";
-      navBtn.style.borderColor = "#fca5a5";
-      navBtn.title = "अधिकारी लॉगआउट करा";
-    }
-    if (navBtnText) {
-      navBtnText.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> लॉगआउट';
-    }
     if (headerBtn) {
       headerBtn.style.background = "linear-gradient(135deg, #dc2626 0%, #991b1b 100%)";
       headerBtn.style.borderColor = "#fca5a5";
@@ -1640,14 +1630,6 @@ function checkAdminAuthState() {
     }
   } else {
     if (webAppSec) webAppSec.style.display = "none";
-    if (navBtn) {
-      navBtn.style.background = "linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%)";
-      navBtn.style.borderColor = "#fdba74";
-      navBtn.title = "अधिकारी लॉगिन";
-    }
-    if (navBtnText) {
-      navBtnText.innerHTML = '<i class="fa-solid fa-user-lock"></i> अधिकारी लॉगिन';
-    }
     if (headerBtn) {
       headerBtn.style.background = "linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%)";
       headerBtn.style.borderColor = "#fdba74";
