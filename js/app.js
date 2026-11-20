@@ -1621,8 +1621,9 @@ function checkAdminAuthState() {
   if (isAuth) {
     if (webAppSec) webAppSec.style.display = "block";
     if (headerBtn) {
-      headerBtn.style.background = "linear-gradient(135deg, #dc2626 0%, #991b1b 100%)";
-      headerBtn.style.borderColor = "#fca5a5";
+      headerBtn.style.background = "linear-gradient(135deg, #1a0533 0%, #2d1b69 100%)";
+      headerBtn.style.borderColor = "rgba(255, 255, 255, 0.25)";
+      headerBtn.style.boxShadow = "0 3px 12px rgba(26,5,51,0.3)";
       headerBtn.title = "अधिकारी लॉगआउट करा";
     }
     if (headerBtnText) {
@@ -1633,6 +1634,7 @@ function checkAdminAuthState() {
     if (headerBtn) {
       headerBtn.style.background = "linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%)";
       headerBtn.style.borderColor = "#fdba74";
+      headerBtn.style.boxShadow = "0 2px 8px rgba(234, 88, 12, 0.35)";
       headerBtn.title = "अधिकारी लॉगिन";
     }
     if (headerBtnText) {
