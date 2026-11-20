@@ -864,22 +864,22 @@
 
           <div class="field-item">
             <label class="field-label">अर्जदाराचे पूर्ण नाव:</label>
-            <input type="text" id="applicantName" class="field-input" value="ज्योत्स्ना सिताराम कानडे" placeholder="उदा. ज्योत्स्ना सिताराम कानडे" oninput="updateLetterPreview()">
+            <input type="text" id="applicantName" class="field-input" value="ज्योत्स्ना सिताराम कानडे" placeholder="उदा. ज्योत्स्ना सिताराम कानडे" oninput="onApplicantNameInput()">
           </div>
 
           <div class="field-item">
             <label class="field-label">पत्ता (मु. पो. / वाडी / घर क्र.):</label>
-            <input type="text" id="applicantAddress" class="field-input" value="मु. पो. डामरे कानडेवाडी" placeholder="उदा. मु. पो. डामरे कानडेवाडी" oninput="updateLetterPreview()">
+            <input type="text" id="applicantAddress" class="field-input" value="मु. पो. डामरे कानडेवाडी" placeholder="उदा. मु. पो. डामरे कानडेवाडी" oninput="onApplicantAddressInput()">
           </div>
 
           <div class="grid-2">
             <div class="field-item">
               <label class="field-label">तालुका:</label>
-              <input type="text" id="applicantTaluka" class="field-input" value="कणकवली" placeholder="उदा. कणकवली" oninput="updateLetterPreview()">
+              <input type="text" id="applicantTaluka" class="field-input" value="कणकवली" placeholder="उदा. कणकवली" oninput="onApplicantAddressInput()">
             </div>
             <div class="field-item">
               <label class="field-label">जिल्हा:</label>
-              <input type="text" id="applicantDistrict" class="field-input" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="updateLetterPreview()">
+              <input type="text" id="applicantDistrict" class="field-input" value="सिंधुदुर्ग" placeholder="उदा. सिंधुदुर्ग" oninput="onApplicantAddressInput()">
             </div>
           </div>
 
@@ -971,7 +971,7 @@
 
           <div class="field-item">
             <label class="field-label">परिच्छेद १ (प्रास्ताविक / कारण):</label>
-            <textarea id="para1" class="field-textarea" style="min-height: 90px;" oninput="updateLetterPreview()">अर्जदार ज्योत्स्ना सिताराम कानडे रा- डामरे, कानडेवाडी तालुका -कणकवली जि-सिंधुदुर्ग सदर अर्ज करीता किंवा करते की मला नोकरी कारणासाठी पूर्व चारीत्र्य व चालवर्तन दाखल्याची आवश्यकता आहे.</textarea>
+            <textarea id="para1" class="field-textarea" style="min-height: 90px;" oninput="onPara1Input()">अर्जदार ज्योत्स्ना सिताराम कानडे रा- डामरे, कानडेवाडी तालुका -कणकवली जि-सिंधुदुर्ग सदर अर्ज करीता किंवा करते की मला नोकरी कारणासाठी पूर्व चारीत्र्य व चालवर्तन दाखल्याची आवश्यकता आहे.</textarea>
           </div>
 
           <div class="field-item">
@@ -1377,6 +1377,80 @@
       updateLetterPreview();
     }
 
+    // 🔄 Auto-Sync Name across 3 places:
+    // 1. Applicant Name (Top Right block: #applicantName & #viewApplicantName)
+    // 2. Paragraph 1 (Body text: #para1 & #viewPara1)
+    // 3. Signature Name (Bottom Right: #signName & #viewSignName)
+    function onApplicantNameInput() {
+      const name = document.getElementById("applicantName")?.value || "";
+      const signInput = document.getElementById("signName");
+      if (signInput) {
+        signInput.value = name;
+      }
+      syncPara1FromInputs();
+      updateLetterPreview();
+    }
+
+    // 🔄 Auto-Sync Address across 2 places:
+    // 1. Top Right block (#applicantAddress, #applicantTaluka, #applicantDistrict & #viewApplicantAddress, #viewApplicantTalukaDist)
+    // 2. Paragraph 1 (Body text: #para1 & #viewPara1)
+    function onApplicantAddressInput() {
+      syncPara1FromInputs();
+      updateLetterPreview();
+    }
+
+    function onPara1Input() {
+      window.selectedLetterReason = null;
+      updateLetterPreview();
+    }
+
+    // 🔄 Synchronize Paragraph 1 with current Name, Address, Taluka, District, and Gender
+    function syncPara1FromInputs() {
+      const tpl = document.getElementById("templateSelector")?.value;
+      const name = document.getElementById("applicantName")?.value.trim() || "";
+      const addr = document.getElementById("applicantAddress")?.value.trim() || "";
+      const taluka = document.getElementById("applicantTaluka")?.value.trim() || "";
+      const dist = document.getElementById("applicantDistrict")?.value.trim() || "";
+      const isFemale = document.getElementById("genderFemale")?.checked;
+      const verb = isFemale ? "करते" : "करतो";
+      const p1Elem = document.getElementById("para1");
+      if (!p1Elem) return;
+
+      if (tpl === "police-character") {
+        let reason = "नोकरी कारणासाठी";
+        if (window.selectedLetterReason) {
+          reason = window.selectedLetterReason;
+        } else {
+          const currentP1 = p1Elem.value;
+          if (currentP1) {
+            const m = currentP1.match(/की मला\s+(.*?)\s+पूर्व\s*चारीत्र्य/i) || currentP1.match(/की मला\s+(.*?)\s+दाखल्याची आवश्यकता/i);
+            if (m && m[1] && m[1].trim()) {
+              reason = m[1].trim();
+            }
+          }
+        }
+
+        const cleanAddr = addr.replace(/^मु\s*[.]?\s*पो\s*[.]?\s*/i, '').trim();
+        const finalAddr = cleanAddr || addr;
+
+        const displayAddr = finalAddr ? `रा- ${finalAddr}` : "रा-";
+        const displayTaluka = taluka ? `तालुका -${taluka}` : "तालुका -";
+        const displayDist = dist ? `जि-${dist}` : "जि-";
+
+        p1Elem.value = `अर्जदार ${name} ${displayAddr} ${displayTaluka} ${displayDist} सदर अर्ज करीता किंवा ${verb} की मला ${reason} पूर्व चारीत्र्य व चालवर्तन दाखल्याची आवश्यकता आहे.`;
+      } else {
+        // Universal replacement for other templates
+        let text = p1Elem.value;
+        if (text) {
+          const nameMatch = text.match(/^(\s*अर्जदार\s+)(.+?)(\s+रा[-.\s]|\s+येथील|\s+सदर अर्ज|\s+तालुका)/);
+          if (nameMatch) {
+            text = text.replace(/^(\s*अर्जदार\s+)(.+?)(\s+रा[-.\s]|\s+येथील|\s+सदर अर्ज|\s+तालुका)/, '$1' + (name || '') + '$3');
+            p1Elem.value = text;
+          }
+        }
+      }
+    }
+
     // Gender toggle helper
     function onGenderChange() {
       const isFemale = document.getElementById("genderFemale").checked;
@@ -1390,6 +1464,7 @@
           document.getElementById("signSalutation").value = "आपला नम्र";
         }
       }
+      syncPara1FromInputs();
       updateLetterPreview();
     }
 
@@ -1397,6 +1472,8 @@
     function applyTemplate(key) {
       const t = TEMPLATES[key];
       if (!t) return;
+
+      window.selectedLetterReason = "नोकरी कारणासाठी";
 
       document.getElementById("applicantName").value = t.applicantName;
       document.getElementById("applicantAddress").value = t.address;
@@ -1438,15 +1515,8 @@
 
     // Set Quick Reason for Police Character Certificate
     function setLetterReason(reason) {
-      const p1 = document.getElementById("para1");
-      const name = document.getElementById("applicantName").value.trim() || "ज्योत्स्ना सिताराम कानडे";
-      const addr = document.getElementById("applicantAddress").value.trim() || "डामरे, कानडेवाडी";
-      const taluka = document.getElementById("applicantTaluka").value.trim() || "कणकवली";
-      const dist = document.getElementById("applicantDistrict").value.trim() || "सिंधुदुर्ग";
-      const isFemale = document.getElementById("genderFemale").checked;
-      const verb = isFemale ? "करते" : "करतो";
-
-      p1.value = `अर्जदार ${name} रा- ${addr} तालुका -${taluka} जि-${dist} सदर अर्ज करीता किंवा ${verb} की मला ${reason} पूर्व चारीत्र्य व चालवर्तन दाखल्याची आवश्यकता आहे.`;
+      window.selectedLetterReason = reason;
+      syncPara1FromInputs();
       updateLetterPreview();
     }
 
