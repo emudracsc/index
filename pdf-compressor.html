@@ -2320,7 +2320,71 @@
     let currentImgToPdfFit = 'margin'; // 'margin' | 'full'
     let currentSingleImgOutputFormat = 'jpg'; // 'jpg' | 'pdf'
     let currentPdfOutputMode = 'separate'; // 'separate' | 'combined'
+    let currentMergeSizeMode = 'target'; // 'as-is' | 'target'
     let generatedSinglePdfs = []; // Array of { id, name, origName, origSize, compSize, gapKb, targetKb, blob, url, thumbUrl }
+
+    function setMergeSizeMode(mode) {
+      currentMergeSizeMode = mode;
+      const btnAsIs = document.getElementById('btn-merge-size-asitis');
+      const btnTarget = document.getElementById('btn-merge-size-target');
+      if (btnAsIs) btnAsIs.classList.toggle('active', mode === 'as-is');
+      if (btnTarget) btnTarget.classList.toggle('active', mode === 'target');
+
+      const targetBox = document.querySelector('.target-size-box');
+      const targetHint = document.getElementById('merge-mode-hint-text');
+      const btnAction = document.getElementById('btn-action-text');
+      const targetLabel = document.getElementById('target-size-label-text');
+
+      if (mode === 'as-is') {
+        if (targetBox) {
+          targetBox.style.opacity = '0.45';
+          targetBox.style.pointerEvents = 'none';
+        }
+        if (targetHint) {
+          targetHint.style.display = 'block';
+          targetHint.innerHTML = '<i class="fa-solid fa-circle-check text-emerald"></i> <strong>मूळ साईझ (As-It-Is Size) निवडले:</strong> फाईल्सचा दर्जा न दाबता मूळ हाय-रिझोल्युशनमध्ये १ सिंगल PDF बनेल.';
+        }
+        if (targetLabel) targetLabel.innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> एकत्रित PDF ची साईझ: <span style="color:#34d399;">(मूळ साईझ - No Downscale)</span>';
+        if (btnAction) {
+          btnAction.textContent = (typeof selectedFiles !== 'undefined' && selectedFiles.length > 0) 
+            ? `सर्व ${selectedFiles.length} फाईल्स जोडून मूळ साईझमध्ये १ PDF बनवा (Merge As-It-Is)` 
+            : 'सर्व फाईल्स जोडून मूळ साईझमध्ये १ PDF बनवा (Merge As-It-Is)';
+        }
+      } else {
+        if (targetBox) {
+          targetBox.style.opacity = '1';
+          targetBox.style.pointerEvents = 'auto';
+        }
+        if (targetHint) {
+          targetHint.style.display = 'none';
+        }
+        const kb = parseInt(document.getElementById('target-kb-input')?.value, 10) || 250;
+        if (targetLabel) targetLabel.innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> एकत्रित PDF ची टार्गेट साईझ (Target KB):';
+        if (btnAction) {
+          btnAction.textContent = (typeof selectedFiles !== 'undefined' && selectedFiles.length > 0) 
+            ? `सर्व ${selectedFiles.length} फाईल्स एकत्र करून अचूक ${kb} KB मध्ये बनवा (Merge & Compress)` 
+            : 'सर्व फाईल्स एकत्र करून अचूक साईझमध्ये कॉम्प्रेस करा';
+        }
+      }
+    }
+    window.setMergeSizeMode = setMergeSizeMode;
+
+    function loadImageFromFile(file) {
+      return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          resolve(img);
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error(`फोटो उघडता आला नाही: ${file.name}`));
+        };
+        img.src = url;
+      });
+    }
+    window.loadImageFromFile = loadImageFromFile;
 
     function setPdfOutputMode(mode) {
       currentPdfOutputMode = mode;
@@ -2353,6 +2417,7 @@
     let finalResultType = 'pdf'; // 'pdf' | 'image' | 'zip' | 'separate-pdfs'
     let finalResultFilename = 'document.pdf';
     let finalResultDimensions = ''; // e.g. '160 x 200 px'
+    let finalResultGapKb = 0;
     let renderedThumbnails = [];
 
     function setImgToPdfOrientation(orient) {
@@ -2678,6 +2743,9 @@
       if (mergeSizeCard) {
         if (mode === 'merge-pdf' || (mode === 'img-to-pdf' && currentPdfOutputMode === 'combined')) {
           mergeSizeCard.style.display = 'block';
+          if (mode === 'merge-pdf') {
+            setMergeSizeMode(currentMergeSizeMode);
+          }
         } else {
           mergeSizeCard.style.display = 'none';
         }
@@ -3097,6 +3165,15 @@
         } else {
           document.getElementById('btn-action-text').textContent = `सर्व ${selectedFiles.length} फोटो जोडून १ एकत्रित PDF बनवा (Start)`;
           document.getElementById('target-size-label-text').innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> एकत्रित PDF ची साईझ (Target KB):';
+        }
+      } else if (currentMode === 'merge-pdf') {
+        const kb = parseInt(document.getElementById('target-kb-input')?.value, 10) || 250;
+        if (currentMergeSizeMode === 'as-is') {
+          document.getElementById('btn-action-text').textContent = `सर्व ${selectedFiles.length} फाईल्स जोडून मूळ साईझमध्ये १ PDF बनवा (Merge As-It-Is)`;
+          document.getElementById('target-size-label-text').innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> एकत्रित PDF ची साईझ: <span style="color:#34d399;">(मूळ साईझ - No Downscale)</span>';
+        } else {
+          document.getElementById('btn-action-text').textContent = `सर्व ${selectedFiles.length} फाईल्स एकत्र करून अचूक ${kb} KB मध्ये बनवा (Merge & Compress)`;
+          document.getElementById('target-size-label-text').innerHTML = '<i class="fa-solid fa-bullseye text-sky"></i> एकत्रित PDF ची टार्गेट साईझ (Target KB):';
         }
       } else {
         document.getElementById('btn-action-text').textContent = MODE_CONFIGS[currentMode].btnAction;
