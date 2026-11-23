@@ -383,12 +383,20 @@
 
     /* Official Document Typography matching scanned copy */
     .doc-header-right {
-      text-align: right;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 24px;
+      color: #000000;
+    }
+
+    .doc-header-box {
+      display: inline-block;
+      text-align: left;
       font-size: 1.05rem;
       font-weight: 700;
-      line-height: 1.45;
-      margin-bottom: 22px;
+      line-height: 1.6;
       color: #000000;
+      min-width: 270px;
     }
 
     .doc-to-block {
@@ -413,11 +421,25 @@
       text-align: left;
       font-size: 1.05rem;
       font-weight: 700;
-      line-height: 1.55;
+      line-height: 1.6;
       margin-bottom: 20px;
       color: #000000;
-      padding-left: 50px;
-      text-indent: -50px;
+    }
+
+    .doc-ref-line1 {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .doc-ref-line2 {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding-left: 60px;
     }
 
     .doc-body-paragraph {
@@ -854,11 +876,19 @@
           <!-- Top Area: Header, To, Subject, Ref, Body, Points -->
           <div>
             
-            <!-- 1. Right Header: Outward No, Office, Date -->
+            <!-- 1. Right Header: Outward No, Office, Date (एका खाली एक) -->
             <div class="doc-header-right" id="prevHeaderRight">
-              <div>क्र.सेतू/स्था.चौ.अहवाल/ <span class="doc-fill" id="prevOutwardNo">-</span> /<span id="prevYear">२०२६</span></div>
-              <div>तहसिलदार कार्यालय कणकवली</div>
-              <div>दि. <span class="doc-fill" id="prevOutwardDate">-</span></div>
+              <div class="doc-header-box">
+                <div>
+                  <span id="prevOutwardPrefix">क्र.सेतू/स्था.चौ.अहवाल/</span>
+                  <span class="doc-fill" id="prevOutwardNo" style="min-width: 40px; text-align: center;">_____</span>
+                  /<span id="prevYear">२०२६</span>
+                </div>
+                <div style="font-weight: 800;">तहसिलदार कार्यालय कणकवली</div>
+                <div>
+                  दि. <span class="doc-fill" id="prevOutwardDate" style="min-width: 75px; text-align: center;">____/____/२०२६</span>
+                </div>
+              </div>
             </div>
 
             <!-- 2. Left: Addressed To (प्रति) -->
@@ -1256,15 +1286,23 @@
       const tmpl = TEMPLATES_CONFIG[d.template];
       if (!tmpl) return;
 
-      // 1. Right Header
-      const outNoStr = d.outwardNo ? escapeHtml(d.outwardNo) : '_____';
+      // 1. Right Header: Outward No, Office, Date (एका खाली एक)
+      const outNoStr = d.outwardNo ? toDevanagari(d.outwardNo) : '_____';
       const outDateStr = d.outwardDate ? formatDateDisplay(d.outwardDate) : '____/____/२०२६';
-      const yrStr = d.year ? escapeHtml(d.year) : '२०२६';
+      const yrStr = d.year ? toDevanagari(d.year) : '२०२६';
 
       document.getElementById('prevHeaderRight').innerHTML = `
-        <div>${tmpl.outwardPrefix} <span class="doc-fill" style="min-width: 40px;">${outNoStr}</span> /<span>${yrStr}</span></div>
-        <div>तहसिलदार कार्यालय कणकवली</div>
-        <div>दि. <span class="doc-fill" style="min-width: 80px;">${outDateStr}</span></div>
+        <div class="doc-header-box">
+          <div>
+            <span>${tmpl.outwardPrefix}</span>
+            <span class="doc-fill" style="min-width: 40px; text-align: center;">${outNoStr}</span>
+            <span>/${yrStr}</span>
+          </div>
+          <div style="font-weight: 800;">तहसिलदार कार्यालय कणकवली</div>
+          <div>
+            दि. <span class="doc-fill" style="min-width: 75px; text-align: center;">${outDateStr}</span>
+          </div>
+        </div>
       `;
 
       // 2. Addressed To (प्रति)
@@ -1280,14 +1318,26 @@
       // 3. Subject
       document.getElementById('prevSubjectBlock').textContent = tmpl.subject;
 
-      // 4. Reference
+      // 4. Reference (२ ओळींमध्ये सुबक व विना-ओव्हरलॅप स्वरूप)
       const appNameStr = d.applicantName ? escapeHtml(d.applicantName) : '_______________________';
       const villStr = d.village ? escapeHtml(d.village) : '________________';
       const talStr = escapeHtml(d.taluka || 'कणकवली');
       const appDateStr = d.appDate ? formatDateDisplay(d.appDate) : '____/____/२०२६';
 
       document.getElementById('prevRefBlock').innerHTML = `
-        संदर्भ – श्री. <span class="doc-fill">${appNameStr}</span> रा. <span class="doc-fill">${villStr}</span> ता. <span>${talStr}</span> यांचा दि. <span class="doc-fill">${appDateStr}</span> ${tmpl.refLabel}
+        <div class="doc-ref-line1">
+          <span>संदर्भ – श्री.</span>
+          <span class="doc-fill" style="min-width: 150px;">${appNameStr}</span>
+          <span style="margin-left: 12px;">रा.</span>
+          <span class="doc-fill" style="min-width: 110px;">${villStr}</span>
+        </div>
+        <div class="doc-ref-line2">
+          <span>ता. ${talStr}</span>
+          <span style="margin-left: 8px;">यांचा</span>
+          <span>दि.</span>
+          <span class="doc-fill" style="min-width: 80px; text-align: center;">${appDateStr}</span>
+          <span style="margin-left: 4px;">${tmpl.refLabel}</span>
+        </div>
       `;
 
       // 5. Body
