@@ -418,12 +418,20 @@
     }
 
     .doc-ref-block {
-      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+      color: #000000;
       font-size: 1.05rem;
       font-weight: 700;
       line-height: 1.6;
-      margin-bottom: 20px;
-      color: #000000;
+    }
+
+    .doc-ref-inner {
+      display: inline-block;
+      text-align: left;
+      max-width: 100%;
     }
 
     .doc-ref-line1 {
@@ -904,9 +912,16 @@
               विषय – जात प्रमाणपत्र स्थानिक चौकशी अहवाल बाबत.
             </div>
 
-            <!-- 4. Reference (संदर्भ) -->
+            <!-- 4. Reference (संदर्भ - विषय च्या खाली) -->
             <div class="doc-ref-block" id="prevRefBlock">
-              संदर्भ – श्री. <span class="doc-fill" id="prevRefApplicant">-</span> रा. <span class="doc-fill" id="prevRefVillage">-</span> ता. <span id="prevRefTaluka">कणकवली</span> यांचा दि. <span class="doc-fill" id="prevRefDate">-</span> चा अर्ज
+              <div class="doc-ref-inner">
+                <div class="doc-ref-line1">
+                  <span>संदर्भ – श्री.</span> <span class="doc-fill" id="prevRefApplicant" style="min-width: 150px;">-</span> <span style="margin-left: 12px;">रा.</span> <span class="doc-fill" id="prevRefVillage" style="min-width: 110px;">-</span>
+                </div>
+                <div class="doc-ref-line2">
+                  <span>ता. <span id="prevRefTaluka">कणकवली</span></span> <span style="margin-left: 8px;">यांचा</span> <span>दि.</span> <span class="doc-fill" id="prevRefDate" style="min-width: 80px; text-align: center;">-</span> <span style="margin-left: 4px;">चा अर्ज</span>
+                </div>
+              </div>
             </div>
 
             <!-- 5. Body Paragraph -->
@@ -1318,25 +1333,27 @@
       // 3. Subject
       document.getElementById('prevSubjectBlock').textContent = tmpl.subject;
 
-      // 4. Reference (२ ओळींमध्ये सुबक व विना-ओव्हरलॅप स्वरूप)
+      // 4. Reference (विषय च्या थेट खाली)
       const appNameStr = d.applicantName ? escapeHtml(d.applicantName) : '_______________________';
       const villStr = d.village ? escapeHtml(d.village) : '________________';
       const talStr = escapeHtml(d.taluka || 'कणकवली');
       const appDateStr = d.appDate ? formatDateDisplay(d.appDate) : '____/____/२०२६';
 
       document.getElementById('prevRefBlock').innerHTML = `
-        <div class="doc-ref-line1">
-          <span>संदर्भ – श्री.</span>
-          <span class="doc-fill" style="min-width: 150px;">${appNameStr}</span>
-          <span style="margin-left: 12px;">रा.</span>
-          <span class="doc-fill" style="min-width: 110px;">${villStr}</span>
-        </div>
-        <div class="doc-ref-line2">
-          <span>ता. ${talStr}</span>
-          <span style="margin-left: 8px;">यांचा</span>
-          <span>दि.</span>
-          <span class="doc-fill" style="min-width: 80px; text-align: center;">${appDateStr}</span>
-          <span style="margin-left: 4px;">${tmpl.refLabel}</span>
+        <div class="doc-ref-inner">
+          <div class="doc-ref-line1">
+            <span>संदर्भ – श्री.</span>
+            <span class="doc-fill" style="min-width: 150px;">${appNameStr}</span>
+            <span style="margin-left: 12px;">रा.</span>
+            <span class="doc-fill" style="min-width: 110px;">${villStr}</span>
+          </div>
+          <div class="doc-ref-line2">
+            <span>ता. ${talStr}</span>
+            <span style="margin-left: 8px;">यांचा</span>
+            <span>दि.</span>
+            <span class="doc-fill" style="min-width: 80px; text-align: center;">${appDateStr}</span>
+            <span style="margin-left: 4px;">${tmpl.refLabel}</span>
+          </div>
         </div>
       `;
 
