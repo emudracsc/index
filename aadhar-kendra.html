@@ -598,7 +598,12 @@
         <div class="glass-card">
           <div class="card-title-row">
             <h3><i class="fas fa-history"></i> नुकतेच अपलोड झालेले अहवाल</h3>
-            <button class="app-btn outline sm" onclick="openTab('register-tab')">
+            <div style="display: flex; gap: 8px;">
+              <button class="app-btn crimson sm" id="btn-admin-del-op-upload" style="display: none;" onclick="openOperatorDataDeleteModal()">
+                <i class="fas fa-trash-alt"></i> ऑपरेटर डेटा हटवा
+              </button>
+              <button class="app-btn outline sm" onclick="openTab('register-tab')">
+            </div>
               नोंदवही पहा <i class="fas fa-arrow-right"></i>
             </button>
           </div>
@@ -661,6 +666,12 @@
               <option value="WCD">WCD</option>
             </select>
 
+            <select id="register-operator-filter" class="select-control"
+              style="width: auto; background: rgba(168, 85, 247, 0.15); border-color: #a855f7; color: #fff; display: none;"
+              onchange="filterRegisterRecords()">
+              <option value="all">👤 सर्व ऑपरेटर (All)</option>
+            </select>
+
             <select id="register-date-preset" class="select-control" style="width: auto;"
               onchange="handleDatePresetChange()">
               <option value="today" selected>📅 आज (Today)</option>
@@ -703,6 +714,9 @@
           </div>
 
           <div class="actions-btn-row" style="margin-top: 0;">
+            <button class="app-btn crimson sm" id="btn-admin-manage-op-data" style="display: none;" onclick="openOperatorDataDeleteModal()">
+              <i class="fas fa-trash-alt"></i> ऑपरेटर डेटा हटवा
+            </button>
             <button class="app-btn warning sm" onclick="openZipImportModal()">
               <i class="fas fa-file-zipper"></i> UIDAI ZIP/CSV इंपोर्ट
             </button>
@@ -725,10 +739,17 @@
         </div>
 
         <!-- Table -->
+        <!-- Batch Delete Bar (Admin Only) -->
+        <div id="tx-selection-bar" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; padding: 8px 14px; margin-bottom: 10px; justify-content: space-between; align-items: center;">
+          <span style="color: #fca5a5; font-size: 0.88rem;"><i class="fas fa-check-square"></i> <strong id="tx-selected-count">0</strong> नोंदी निवडल्या आहेत.</span>
+          <button type="button" class="app-btn crimson sm" onclick="requestDeleteSelectedTransactions()"><i class="fas fa-trash-alt"></i> निवडलेल्या नोंदी हटवा</button>
+        </div>
+
         <div class="data-table-wrap" id="printable-register-area">
           <table class="data-table" id="register-main-table">
             <thead>
               <tr>
+                <th class="no-print admin-only-col" id="th-admin-checkbox" style="width: 38px; text-align: center; display: none;"><input type="checkbox" id="select-all-tx-checkbox" onchange="toggleSelectAllTransactions(this)" title="सर्व निवडा" /></th>
                 <th style="width: 70px;">पावती क्र.</th>
                 <th>दिनांक व वेळ</th>
                 <th>ग्राहकाचे नाव</th>
@@ -890,6 +911,10 @@
               <button class="app-btn crimson sm" id="btn-delete-day-data" onclick="deleteDayData()"
                 style="display: none;">
                 <i class="fas fa-trash"></i> दिवस डेटा हटवा
+              </button>
+              <button class="app-btn crimson sm" id="btn-delete-operator-day-data" onclick="openOperatorDataDeleteModal(document.getElementById('report-date-select')?.value || getTodayDateString())"
+                style="display: none; background: rgba(239, 68, 68, 0.25); border-color: #ef4444;">
+                <i class="fas fa-user-minus"></i> या दिवसाचा ऑपरेटर डेटा हटवा
               </button>
             </div>
           </div>
@@ -1580,6 +1605,7 @@
                   🏦 पिग्मी बचत (Pigmy ₹)</label>
                 <input type="number" id="operator-pigmy" class="input-control" placeholder="उदा. 500" min="0"
                   style="border-color: #34d399; background: rgba(16, 185, 129, 0.1); color: #34d399; font-weight: bold;" />
+                <small style="color: #34d399; font-size: 0.72rem; display: block; margin-top: 2px;">(रोख संकलनातून पिग्मी खात्यात भरलेली ठेव)</small>
               </div>
               <div class="form-field">
                 <label for="operator-expenses" style="color: #f87171;">आजचा खर्च (Expense ₹)</label>
@@ -1588,9 +1614,10 @@
             </div>
             <div class="form-grid-3">
               <div class="form-field">
-                <label for="operator-cash-collection">रोख रक्कम (Cash ₹)</label>
+                <label for="operator-cash-collection">एकूण रोख संकलन (Cash ₹)</label>
                 <input type="number" id="operator-cash-collection" class="input-control" placeholder="उदा. 500"
                   min="0" />
+                <small style="color: #94a3b8; font-size: 0.72rem; display: block; margin-top: 2px;">(पिग्मीची रक्कम या रोख संकलनातच समाविष्ट आहे, वेगळी ॲड करू नये)</small>
               </div>
               <div class="form-field">
                 <label for="operator-online-collection">ऑनलाईन/UPI (₹)</label>
@@ -1684,6 +1711,7 @@
               <input type="number" id="main-operator-pigmy" class="input-control" placeholder="उदा. 500 किंवा 1000"
                 min="0"
                 style="border-color: #34d399; background: rgba(16, 185, 129, 0.12); font-weight: 700; color: #34d399;" />
+              <small style="color: #34d399; font-size: 0.72rem; display: block; margin-top: 2px;">(रोख संकलनातून पिग्मी खात्यात भरलेली ठेव)</small>
             </div>
             <div class="form-field">
               <label for="main-operator-expenses" style="color: #f87171; font-weight: 600;"><i
@@ -1698,10 +1726,11 @@
           </div>
           <div class="form-grid-2">
             <div class="form-field">
-              <label for="main-operator-cash-collection"><i class="fas fa-money-bill-wave"></i> रोख संकलन (Cash
+              <label for="main-operator-cash-collection"><i class="fas fa-money-bill-wave"></i> एकूण रोख संकलन (Cash
                 ₹)</label>
               <input type="number" id="main-operator-cash-collection" class="input-control" placeholder="उदा. 500"
                 min="0" />
+              <small style="color: #94a3b8; font-size: 0.72rem; display: block; margin-top: 2px;">(पिग्मीची रक्कम या रोख संकलनातच समाविष्ट आहे, वेगळी ॲड करू नये)</small>
             </div>
             <div class="form-field">
               <label for="main-operator-online-collection"><i class="fas fa-mobile-alt"></i> ऑनलाईन / UPI संकलन
@@ -1731,7 +1760,103 @@
   <!-- =========================================================================
        MODAL 4: ADMIN PIN SECURITY AUTHENTICATION MODAL
        ========================================================================= -->
-  <div id="admin-pin-modal" class="modal-overlay" onclick="handleModalBackdropClick(event, 'admin-pin-modal')">
+    <!-- =========================================================================
+       MODAL: DELETE OPERATOR UPLOADED DATA (ADMIN DATA MANAGER)
+       ========================================================================= -->
+  <div id="operator-data-delete-modal" class="modal-overlay" onclick="handleModalBackdropClick(event, 'operator-data-delete-modal')">
+    <div class="modal-content-box" style="max-width: 580px;">
+      <div class="modal-header-bar" style="border-bottom-color: rgba(239, 68, 68, 0.3);">
+        <h3 style="color: #fca5a5;"><i class="fas fa-trash-alt"></i> 🗑️ ऑपरेटर अपलोड डेटा हटवा (Admin Data Manager)</h3>
+        <button class="modal-close-x" onclick="closeModal('operator-data-delete-modal')">&times;</button>
+      </div>
+      <div class="modal-inner-body">
+        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 10px 14px; font-size: 0.83rem; color: #6ee7b7; margin-bottom: 14px;">
+          <p><i class="fas fa-shield-alt"></i> <strong>डेटा सुरक्षिततेची हमी:</strong> येथे तुम्ही जो ऑपरेटर आणि दिनांक निवडाल, फक्त <strong>त्याच ऑपरेटरचा डेटा</strong> सुरक्षितपणे हटवला जाईल. इतर सर्व ऑपरेटरचा (उदा. दुसरं केंद्र) आणि इतर तारखांचा डेटा <strong>१००% सुरक्षित व अबाधित ("Data Disturb होणार नाही")</strong> राहील.</p>
+        </div>
+
+        <form id="op-data-delete-form" onsubmit="executeOperatorDataDelete(event)">
+          <div class="form-grid-2">
+            <div class="form-field">
+              <label for="delete-op-select" style="color: #fbbf24; font-weight: 600;"><i class="fas fa-user"></i> १. ऑपरेटर निवडा *</label>
+              <select id="delete-op-select" class="select-control" onchange="updateOperatorDeletePreview()" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="delete-op-center" style="color: #38bdf8; font-weight: 600;"><i class="fas fa-store-alt"></i> २. केंद्र (Center)</label>
+              <select id="delete-op-center" class="select-control" onchange="updateOperatorDeletePreview()">
+                <option value="all">सर्व केंद्रे (All Centers)</option>
+                <option value="DIT (Maha IT)">DIT (Maha IT)</option>
+                <option value="WCD">WCD</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2 mt-2">
+            <div class="form-field">
+              <label for="delete-op-date-scope" style="color: #cbd5e1; font-weight: 600;"><i class="fas fa-calendar-check"></i> ३. तारीख मर्यादा</label>
+              <select id="delete-op-date-scope" class="select-control" onchange="handleDeleteOpDateScopeChange()">
+                <option value="specific" selected>विशिष्ट दिनांक (Specific Date)</option>
+                <option value="today">आजचा डेटा (Today)</option>
+                <option value="yesterday">कालचा डेटा (Yesterday)</option>
+                <option value="all">या ऑपरेटरच्या सर्व नोंदी (All Records of this operator)</option>
+              </select>
+            </div>
+            <div class="form-field" id="delete-op-single-date-wrap">
+              <label for="delete-op-date" style="color: #cbd5e1; font-weight: 600;"><i class="fas fa-calendar-alt"></i> दिनांक निवडा *</label>
+              <input type="date" id="delete-op-date" class="input-control" onchange="updateOperatorDeletePreview()" />
+            </div>
+          </div>
+
+          <!-- Dynamic Impact Preview Card -->
+          <div id="delete-op-impact-card" style="background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 12px; margin-top: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-weight: 600; color: #f87171;"><i class="fas fa-exclamation-triangle"></i> हटवल्या जाणाऱ्या नोंदींचा सारांश:</span>
+              <span id="delete-op-found-count" class="token-chip" style="background: rgba(239,68,68,0.2); color: #fca5a5;">0 नोंदी</span>
+            </div>
+            <div class="fast-calc-box" style="margin-top: 6px; padding: 8px 12px;">
+              <div class="fast-calc-line">
+                <span>एकूण व्यवहार रक्कम:</span>
+                <strong style="color: #fbbf24;">₹<span id="delete-op-found-amount">0</span></strong>
+              </div>
+              <div class="fast-calc-line">
+                <span>दैनिक सारांश / पिग्मी / खर्च:</span>
+                <span id="delete-op-found-summaries" style="color: #cbd5e1;">समाविष्ट</span>
+              </div>
+            </div>
+            <div id="delete-op-preview-sample" style="font-size: 0.78rem; color: #94a3b8; margin-top: 8px; max-height: 100px; overflow-y: auto;">
+              <!-- Sample items -->
+            </div>
+          </div>
+
+          <!-- Admin PIN Requirement -->
+          <div class="form-field mt-3">
+            <label for="delete-op-admin-pin" style="color: #fca5a5; font-weight: 600;"><i class="fas fa-key"></i> ॲडमीन सुरक्षा पिन टाका (Admin PIN) *</label>
+            <div style="position: relative;">
+              <input type="password" id="delete-op-admin-pin" class="input-control font-mono"
+                style="font-size: 1.2rem; letter-spacing: 5px; text-align: center; border-color: rgba(239, 68, 68, 0.5);" maxlength="8" placeholder="••••••"
+                required />
+              <button type="button" class="password-toggle-btn" onclick="toggleDeleteOpPinVisibility()" title="पिन पहा/लपवा">
+                <i class="far fa-eye" id="delete-op-pin-eye"></i>
+              </button>
+            </div>
+            <span class="text-xs text-muted">टीप: अधिकृत ॲडमीन पिन (341992) प्रविष्ट करणे अनिवार्य आहे.</span>
+          </div>
+
+          <div id="delete-op-error-box" style="display: none; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin-top: 10px;"></div>
+
+          <div class="actions-btn-row mt-3">
+            <button type="button" class="app-btn outline" onclick="closeModal('operator-data-delete-modal')">रद्द करा (Cancel)</button>
+            <button type="submit" class="app-btn crimson" id="btn-confirm-delete-op" disabled>
+              <i class="fas fa-trash-alt"></i> होय, हा ऑपरेटर डेटा हटवा
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<div id="admin-pin-modal" class="modal-overlay" onclick="handleModalBackdropClick(event, 'admin-pin-modal')">
     <div class="modal-content-box" style="max-width: 460px;">
       <div class="modal-header-bar" style="border-bottom-color: rgba(239, 68, 68, 0.3);">
         <h3 style="color: #fca5a5;"><i class="fas fa-user-shield"></i> 🔐 ॲडमीन सुरक्षा प्रमाणीकरण</h3>

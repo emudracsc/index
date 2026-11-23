@@ -268,6 +268,24 @@ function isRecordForCurrentUser(rec) {
   return true;
 }
 
+/**
+ * Standardize center identification to avoid mismatch between "DIT", "DIT (Maha IT)", and "WCD".
+ */
+function normalizeCenterKey(center, opName, stationId) {
+  const c = String(center || '').toLowerCase().trim();
+  const o = String(opName || '').toLowerCase().trim();
+  const s = String(stationId || '').trim();
+  if (c.includes('wcd') || o.includes('sakshi') || o.includes('sawant') || s === '73016') {
+    return 'WCD';
+  }
+  return 'DIT (Maha IT)';
+}
+
+function isCenterMatch(c1, c2) {
+  if (!c1 || !c2 || c1 === 'all' || c2 === 'all') return true;
+  return normalizeCenterKey(c1) === normalizeCenterKey(c2);
+}
+
 function applyRoleUI() {
   try {
     const overlay = document.getElementById('app-login-overlay');
@@ -724,9 +742,18 @@ function listenToCloudFirestore() {
             sumList.push(data);
           });
           const localSum = getStoredDailySummaries();
+          const allRaw = [...localSum, ...sumList];
           const sumMap = new Map();
-          localSum.forEach(s => sumMap.set(s.id, s));
-          sumList.forEach(s => sumMap.set(s.id, s));
+          allRaw.sort((a, b) => Number(a.timestamp || 0) - Number(b.timestamp || 0));
+          allRaw.forEach(s => {
+            const d = normalizeDateToISO(s.date);
+            if (d) {
+              const c = normalizeCenterKey(s.center, s.operator, s.stationId);
+              sumMap.set(`${d}__${c}`, s);
+            } else if (s.id) {
+              sumMap.set(s.id, s);
+            }
+          });
           const mergedSum = Array.from(sumMap.values());
           saveStoredDailySummaries(mergedSum);
           refreshAllDataViews();
@@ -874,7 +901,26 @@ function saveStoredTransactions(list) {
 function getStoredExpenses() {
   try {
     const data = localStorage.getItem(STORAGE_KEYS.EXPENSES);
-    return data ? JSON.parse(data) : [];
+    if (!data) return [];
+    const list = JSON.parse(data);
+    if (!Array.isArray(list)) return [];
+    // Deduplicate duplicate pigmy expenses for same date and center, keeping latest
+    const map = new Map();
+    const otherList = [];
+    list.sort((a, b) => Number(a.timestamp || 0) - Number(b.timestamp || 0));
+    list.forEach(e => {
+      const isPigmy = (e.category || '').includes('पिग्मी') || (e.category || '').includes('बचत') || (e.id || '').startsWith('EXP-PIGMY-');
+      const d = normalizeDateToISO(e.date);
+      if (isPigmy && d) {
+        const c = normalizeCenterKey(e.center, e.operator);
+        map.set(`${d}__${c}__pigmy`, e);
+      } else {
+        otherList.push(e);
+      }
+    });
+    const result = [...Array.from(map.values()), ...otherList];
+    result.sort((a, b) => Number(b.timestamp || 0) - Number(a.timestamp || 0));
+    return result;
   } catch (e) {
     return [];
   }
@@ -887,7 +933,22 @@ function saveStoredExpenses(list) {
 function getStoredDailySummaries() {
   try {
     const data = localStorage.getItem('ask_daily_summaries');
-    return data ? JSON.parse(data) : [];
+    if (!data) return [];
+    const list = JSON.parse(data);
+    if (!Array.isArray(list)) return [];
+    // Deduplicate by normalized (date + center)
+    const map = new Map();
+    list.sort((a, b) => Number(a.timestamp || 0) - Number(b.timestamp || 0));
+    list.forEach(s => {
+      const d = normalizeDateToISO(s.date);
+      if (d) {
+        const c = normalizeCenterKey(s.center, s.operator, s.stationId);
+        map.set(`${d}__${c}`, s);
+      } else if (s.id) {
+        map.set(s.id, s);
+      }
+    });
+    return Array.from(map.values());
   } catch (e) {
     return [];
   }
@@ -1396,6 +1457,116 @@ function handleDashPeriodChange() {
   updateMetricsDashboard();
 }
 
+
+/**
+ * Calculate reconciled Cash, Online and Gross income from operator summaries & transactions.
+ * Rules:
+ * 1. Pigmy is already included in Cash collection (पिग्मीची रक्कम ही रोख संकलनातच समाविष्ट आहे, वेगळी ॲड होत नाही).
+ * 2. When operator reports cash & online in daily summary, use those EXACT reported figures. Never change entered cash!
+ * 3. Fall back to transaction payment modes only if no summary was reported for that day & center.
+ * 4. Deduplicate summaries by (date + normalizedCenter), taking the latest update.
+ */
+function calculateReconciledFinances(transactions, summaries, expenses) {
+  // 1. Deduplicate summaries by (date + normalizedCenter), latest timestamp wins
+  const sumMap = new Map();
+  [...(summaries || [])]
+    .sort((a, b) => Number(a.timestamp || 0) - Number(b.timestamp || 0))
+    .forEach(s => {
+      const d = normalizeDateToISO(s.date);
+      if (d) {
+        const normCenter = normalizeCenterKey(s.center, s.operator, s.stationId);
+        const key = `${d}__${normCenter}`;
+        sumMap.set(key, s);
+      }
+    });
+
+  // 2. Group transactions by (date + normalizedCenter)
+  const txGroup = new Map();
+  (transactions || []).forEach(t => {
+    const d = normalizeDateToISO(t.date);
+    if (!d) return;
+    const normCenter = normalizeCenterKey(t.center, t.operatorName || t.operator, t.stationId);
+    const key = `${d}__${normCenter}`;
+    if (!txGroup.has(key)) {
+      txGroup.set(key, { cash: 0, upi: 0, pending: 0, total: 0 });
+    }
+    const g = txGroup.get(key);
+    const amt = Number(t.totalAmount || 0);
+    g.total += amt;
+    const pm = (t.paymentMode || '').toLowerCase();
+    if (pm.includes('रोख') || pm.includes('cash')) {
+      g.cash += amt;
+    } else if (pm.includes('युपीआय') || pm.includes('upi') || pm.includes('online')) {
+      g.upi += amt;
+    } else if (pm.includes('उधारी') || pm.includes('pending')) {
+      g.pending += amt;
+    } else {
+      g.cash += amt;
+    }
+  });
+
+  // 3. Collect all unique keys from both summaries and transactions
+  const allKeys = new Set([...sumMap.keys(), ...txGroup.keys()]);
+
+  let totalCash = 0;
+  let totalUpi = 0;
+  let totalPending = 0;
+
+  allKeys.forEach(key => {
+    const s = sumMap.get(key);
+    const tx = txGroup.get(key) || { cash: 0, upi: 0, pending: 0, total: 0 };
+    totalPending += tx.pending;
+
+    // Check if operator explicitly entered cash / online in summary
+    const hasReportedCash = s && s.cashReported !== undefined && s.cashReported !== null && !isNaN(Number(s.cashReported)) && Number(s.cashReported) > 0;
+    const hasReportedUpi = s && s.onlineReported !== undefined && s.onlineReported !== null && !isNaN(Number(s.onlineReported)) && Number(s.onlineReported) > 0;
+
+    if (hasReportedCash) {
+      // EXACT amount entered by operator in summary - NEVER alter or change!
+      totalCash += Number(s.cashReported);
+    } else {
+      // Fallback to raw transactions from uploaded report
+      totalCash += tx.cash;
+    }
+
+    if (hasReportedUpi) {
+      totalUpi += Number(s.onlineReported);
+    } else {
+      totalUpi += tx.upi;
+    }
+  });
+
+  // 4. Calculate Expenses & Pigmy Outflow
+  let generalExpense = 0;
+  let pigmyTotal = 0;
+  (expenses || []).forEach(e => {
+    const amt = Number(e.amount || 0);
+    const isPigmy = (e.category || '').includes('पिग्मी') || (e.category || '').includes('बचत') || (e.id || '').startsWith('EXP-PIGMY-');
+    if (isPigmy) {
+      pigmyTotal += amt;
+    } else {
+      generalExpense += amt;
+    }
+  });
+
+  const grossIncome = totalCash + totalUpi + totalPending;
+  // Drawer Cash = Cash Collection - General Expenses - Pigmy Deposits
+  const drawerCash = Math.max(0, totalCash - generalExpense - pigmyTotal);
+  const netProfit = grossIncome - generalExpense;
+
+  return {
+    cashTotal: totalCash,
+    upiTotal: totalUpi,
+    pendingTotal: totalPending,
+    grossIncome: grossIncome,
+    generalExpense: generalExpense,
+    pigmyTotal: pigmyTotal,
+    totalExpense: generalExpense + pigmyTotal,
+    drawerCash: drawerCash,
+    netProfit: netProfit
+  };
+}
+
 function updateMetricsDashboard() {
   const transactions = getStoredTransactions();
   const expenses = getStoredExpenses();
@@ -1420,9 +1591,9 @@ function updateMetricsDashboard() {
     filteredExp = filteredExp.filter(e => isRecordForCurrentUser(e));
     filteredSum = filteredSum.filter(s => isRecordForCurrentUser(s));
   } else if (centerSelect !== 'all') {
-    filteredTx = filteredTx.filter(t => t.center === centerSelect);
-    filteredExp = filteredExp.filter(e => e.center === centerSelect || !e.center || e.center.includes('सामायिक'));
-    filteredSum = filteredSum.filter(s => s.center === centerSelect);
+    filteredTx = filteredTx.filter(t => isCenterMatch(t.center, centerSelect));
+    filteredExp = filteredExp.filter(e => isCenterMatch(e.center, centerSelect) || !e.center || e.center.includes('सामायिक'));
+    filteredSum = filteredSum.filter(s => isCenterMatch(s.center, centerSelect));
   }
 
   let periodLabel = 'आज';
@@ -1515,34 +1686,15 @@ function updateMetricsDashboard() {
     }
   });
 
-  // Calculate sum of reported cash & online in daily summaries
-  let sumReportedCash = 0;
-  let sumReportedOnline = 0;
-  filteredSum.forEach(s => {
-    sumReportedCash += Number(s.cashReported || 0);
-    sumReportedOnline += Number(s.onlineReported || 0);
-  });
-
-  const finalCashIncome = Math.max(txCash, sumReportedCash);
-  const finalUpiIncome = Math.max(txUpi, sumReportedOnline);
-  const totalIncome = finalCashIncome + finalUpiIncome;
-
+  // Reconciled cash, upi and drawer balance (Pigmy is included in Cash, not added)
+  const fin = calculateReconciledFinances(filteredTx, filteredSum, filteredExp);
+  const finalCashIncome = fin.cashTotal;
+  const finalUpiIncome = fin.upiTotal;
+  const totalIncome = fin.grossIncome;
+  const totalExpenses = fin.generalExpense;
+  const pigmyTotal = fin.pigmyTotal;
+  const drawerCash = fin.drawerCash;
   const extraMargin = Math.max(0, totalIncome - govtFeeTotal);
-
-  let totalExpenses = 0;
-  let pigmyTotal = 0;
-  filteredExp.forEach(e => {
-    const amt = Number(e.amount || 0);
-    const isPig = (e.category || '').includes('पिग्मी') || (e.category || '').includes('बचत');
-    if (isPig) {
-      pigmyTotal += amt;
-    } else {
-      totalExpenses += amt;
-    }
-  });
-
-  // Net Cash in Drawer = Cash Income - (Total Cash Outflow: General Expenses + Pigmy Deposits)
-  let drawerCash = Math.max(0, finalCashIncome - (totalExpenses + pigmyTotal));
 
   // 1. Govt Report Total
   const elGovt = document.getElementById('metric-govt-report-total');
@@ -1589,12 +1741,21 @@ function updateMetricsDashboard() {
   // Quick Card in Tab 1
   const qCash = document.getElementById('quick-cash-total');
   if (qCash) qCash.textContent = finalCashIncome.toLocaleString('en-IN');
+  const qCashUp = document.getElementById('quick-cash-total-upload');
+  if (qCashUp) qCashUp.textContent = totalIncome.toLocaleString('en-IN');
+
   const qUpi = document.getElementById('quick-upi-total');
   if (qUpi) qUpi.textContent = finalUpiIncome.toLocaleString('en-IN');
+
   const qExp = document.getElementById('quick-expense-total');
   if (qExp) qExp.textContent = totalExpenses.toLocaleString('en-IN');
+  const qExpUp = document.getElementById('quick-expense-total-upload');
+  if (qExpUp) qExpUp.textContent = (totalExpenses + pigmyTotal).toLocaleString('en-IN');
+
   const qDrawer = document.getElementById('quick-drawer-cash');
   if (qDrawer) qDrawer.textContent = drawerCash.toLocaleString('en-IN');
+  const qDrawerUp = document.getElementById('quick-drawer-cash-upload');
+  if (qDrawerUp) qDrawerUp.textContent = drawerCash.toLocaleString('en-IN');
 }
 
 function renderRecentQuickList() {
@@ -1652,13 +1813,14 @@ function filterRegisterRecords() {
   const today = getTodayDateString();
   const now = new Date();
   const centerFilter = document.getElementById('register-center-filter')?.value || 'all';
+  const operatorFilter = document.getElementById('register-operator-filter')?.value || 'all';
 
   const filtered = transactions.filter(t => {
     // Role-based security check for operator
     if (currentUser && currentUser.role === 'operator') {
       if (!isRecordForCurrentUser(t)) return false;
     } else if (currentUser && currentUser.role === 'admin') {
-      if (centerFilter !== 'all' && t.center !== centerFilter) return false;
+      if (centerFilter !== 'all' && !isCenterMatch(t.center, centerFilter)) return false;
     }
 
     const recDate = normalizeDateToISO(t.date);
@@ -2104,8 +2266,8 @@ function generateDailyReport() {
     allTx = allTx.filter(t => isRecordForCurrentUser(t));
     allExp = allExp.filter(e => isRecordForCurrentUser(e));
   } else if (centerSelect !== 'all') {
-    allTx = allTx.filter(t => t.center === centerSelect);
-    allExp = allExp.filter(e => e.center === centerSelect);
+    allTx = allTx.filter(t => isCenterMatch(t.center, centerSelect));
+    allExp = allExp.filter(e => isCenterMatch(e.center, centerSelect));
   }
 
   let transactions = [];
@@ -2286,9 +2448,9 @@ function generateDailyReport() {
   const allSummaries = getStoredDailySummaries();
   let filteredSum = allSummaries;
   if (currentUser && currentUser.role === 'operator') {
-    filteredSum = filteredSum.filter(s => isRecordForCurrentUser(s) && normalizeDateToISO(s.date) === todayStr);
+    filteredSum = filteredSum.filter(s => isRecordForCurrentUser(s));
   } else if (centerSelect !== 'all') {
-    filteredSum = filteredSum.filter(s => s.center === centerSelect);
+    filteredSum = filteredSum.filter(s => isCenterMatch(s.center, centerSelect));
   }
 
   if (scope === 'today') {
@@ -2323,16 +2485,11 @@ function generateDailyReport() {
     });
   }
 
-  let sumReportedCash = 0;
-  let sumReportedOnline = 0;
-  filteredSum.forEach(s => {
-    sumReportedCash += Number(s.cashReported || 0);
-    sumReportedOnline += Number(s.onlineReported || 0);
-  });
-
-  const finalCashTotal = Math.max(txCashTotal, sumReportedCash);
-  const finalUpiTotal = Math.max(txUpiTotal, sumReportedOnline);
-  const finalGrossIncome = finalCashTotal + finalUpiTotal + pendingTotal;
+  // Reconciled finances for report (Pigmy is already inside Total Cash, never added extra)
+  const fin = calculateReconciledFinances(transactions, filteredSum, expenses);
+  const finalCashTotal = fin.cashTotal;
+  const finalUpiTotal = fin.upiTotal;
+  const finalGrossIncome = fin.grossIncome;
   const extraMargin = Math.max(0, finalGrossIncome - govtFeeTotal);
 
   // Render Service Breakdown
@@ -2400,9 +2557,9 @@ function generateDailyReport() {
 
   // Net Balance Calculations
   // Net Profit = Gross Income - General Operational Expenses
-  const netProfit = finalGrossIncome - generalExpense;
+  const netProfit = fin.netProfit;
   // Drawer Cash = Cash Income - Total Cash Outflow (Expenses + Pigmy Deposit)
-  const drawerCash = Math.max(0, finalCashTotal - totalExpense);
+  const drawerCash = fin.drawerCash;
 
   const elFinalGovt = document.getElementById('rep-final-govt');
   if (elFinalGovt) elFinalGovt.textContent = govtFeeTotal.toLocaleString('en-IN');
@@ -3362,68 +3519,118 @@ async function confirmAndImportParsedRecords() {
   combined.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
   saveStoredTransactions(combined);
 
-  // Save Pigmy if entered
+  const normCenter = normalizeCenterKey(opCenter, opName);
+
+  // Save Pigmy if entered (update existing if already saved for this date & center)
   if (pigmyAmt > 0) {
     const expenses = getStoredExpenses();
-    const newPigmyExp = {
-      id: 'EXP-PIGMY-' + Date.now(),
-      date: reportDate,
-      amount: pigmyAmt,
-      category: 'दैनिक पिग्मी / बँक बचत ठेव',
-      description: expNote ? `पिग्मी बचत (${expNote})` : 'दैनिक पिग्मी बचत ठेव',
-      note: expNote ? `पिग्मी बचत (${expNote})` : 'दैनिक पिग्मी बचत ठेव',
-      center: opCenter,
-      operator: opName,
-      paymentMode: 'रोख (Cash)',
-      timestamp: Date.now()
-    };
-    expenses.push(newPigmyExp);
-    saveStoredExpenses(expenses);
-    if (isFirebaseConnected && db) {
-      db.collection('aadhaar_expenses').doc(newPigmyExp.id).set(newPigmyExp).catch(console.error);
+    const existingPigmyExp = expenses.find(e => 
+      normalizeDateToISO(e.date) === normalizeDateToISO(reportDate) && 
+      isCenterMatch(e.center, normCenter) && 
+      ((e.category || '').includes('पिग्मी') || (e.id || '').startsWith('EXP-PIGMY-'))
+    );
+    if (existingPigmyExp) {
+      existingPigmyExp.amount = pigmyAmt;
+      existingPigmyExp.note = expNote ? `पिग्मी बचत (${expNote})` : 'दैनिक पिग्मी बचत ठेव';
+      existingPigmyExp.timestamp = Date.now();
+      saveStoredExpenses(expenses);
+      if (isFirebaseConnected && db) {
+        db.collection('aadhaar_expenses').doc(existingPigmyExp.id).set(existingPigmyExp).catch(console.error);
+      }
+    } else {
+      const newPigmyExp = {
+        id: 'EXP-PIGMY-' + Date.now(),
+        date: reportDate,
+        amount: pigmyAmt,
+        category: 'दैनिक पिग्मी / बँक बचत ठेव',
+        description: expNote ? `पिग्मी बचत (${expNote})` : 'दैनिक पिग्मी बचत ठेव',
+        note: expNote ? `पिग्मी बचत (${expNote})` : 'दैनिक पिग्मी बचत ठेव',
+        center: normCenter,
+        operator: opName,
+        paymentMode: 'रोख (Cash)',
+        timestamp: Date.now()
+      };
+      expenses.push(newPigmyExp);
+      saveStoredExpenses(expenses);
+      if (isFirebaseConnected && db) {
+        db.collection('aadhaar_expenses').doc(newPigmyExp.id).set(newPigmyExp).catch(console.error);
+      }
     }
   }
 
-  // Save other expenses if entered
+  // Save other expenses if entered (update existing if already saved for this date & center)
   if (expAmt > 0) {
     const expenses = getStoredExpenses();
-    const newExp = {
-      id: 'EXP-' + (Date.now() + 1),
-      date: reportDate,
-      amount: expAmt,
-      category: 'इतर आकस्मिक / किरकोळ खर्च',
-      description: expNote || 'दैनिक किरकोळ खर्च',
-      note: expNote || 'दैनिक किरकोळ खर्च',
-      center: opCenter,
-      operator: opName,
-      paymentMode: 'रोख (Cash)',
-      timestamp: Date.now() + 1
-    };
-    expenses.push(newExp);
-    saveStoredExpenses(expenses);
-    if (isFirebaseConnected && db) {
-      db.collection('aadhaar_expenses').doc(newExp.id).set(newExp).catch(console.error);
+    const existingOtherExp = expenses.find(e => 
+      normalizeDateToISO(e.date) === normalizeDateToISO(reportDate) && 
+      isCenterMatch(e.center, normCenter) && 
+      !((e.category || '').includes('पिग्मी') || (e.id || '').startsWith('EXP-PIGMY-'))
+    );
+    if (existingOtherExp) {
+      existingOtherExp.amount = expAmt;
+      existingOtherExp.note = expNote || 'दैनिक किरकोळ खर्च';
+      existingOtherExp.description = expNote || 'दैनिक किरकोळ खर्च';
+      existingOtherExp.timestamp = Date.now();
+      saveStoredExpenses(expenses);
+      if (isFirebaseConnected && db) {
+        db.collection('aadhaar_expenses').doc(existingOtherExp.id).set(existingOtherExp).catch(console.error);
+      }
+    } else {
+      const newExp = {
+        id: 'EXP-' + (Date.now() + 1),
+        date: reportDate,
+        amount: expAmt,
+        category: 'इतर आकस्मिक / किरकोळ खर्च',
+        description: expNote || 'दैनिक किरकोळ खर्च',
+        note: expNote || 'दैनिक किरकोळ खर्च',
+        center: normCenter,
+        operator: opName,
+        paymentMode: 'रोख (Cash)',
+        timestamp: Date.now() + 1
+      };
+      expenses.push(newExp);
+      saveStoredExpenses(expenses);
+      if (isFirebaseConnected && db) {
+        db.collection('aadhaar_expenses').doc(newExp.id).set(newExp).catch(console.error);
+      }
     }
   }
 
   if (cashAmt > 0 || onlineAmt > 0 || pigmyAmt > 0 || expAmt > 0) {
-    const summaries = JSON.parse(localStorage.getItem('ask_daily_summaries') || '[]');
-    const summary = {
-      id: 'SUM-' + Date.now(),
-      date: reportDate,
-      center: opCenter,
-      operator: opName,
-      cashReported: cashAmt,
-      onlineReported: onlineAmt,
-      pigmyReported: pigmyAmt,
-      expenseReported: expAmt,
-      timestamp: Date.now()
-    };
-    summaries.push(summary);
-    localStorage.setItem('ask_daily_summaries', JSON.stringify(summaries));
-    if (isFirebaseConnected && db) {
-      db.collection('daily_summaries').doc(summary.id).set(summary).catch(console.error);
+    const summaries = getStoredDailySummaries();
+    const existingIndex = summaries.findIndex(s => 
+      normalizeDateToISO(s.date) === normalizeDateToISO(reportDate) && 
+      isCenterMatch(s.center, normCenter)
+    );
+    if (existingIndex >= 0) {
+      if (cashAmt > 0) summaries[existingIndex].cashReported = cashAmt;
+      if (onlineAmt > 0) summaries[existingIndex].onlineReported = onlineAmt;
+      if (pigmyAmt >= 0) summaries[existingIndex].pigmyReported = pigmyAmt;
+      if (expAmt >= 0) summaries[existingIndex].expenseReported = expAmt;
+      summaries[existingIndex].operator = opName;
+      summaries[existingIndex].center = normCenter;
+      summaries[existingIndex].timestamp = Date.now();
+      if (isFirebaseConnected && db) {
+        db.collection('daily_summaries').doc(summaries[existingIndex].id).set(summaries[existingIndex]).catch(console.error);
+      }
+    } else {
+      const summary = {
+        id: 'SUM-' + Date.now(),
+        date: reportDate,
+        center: normCenter,
+        operator: opName,
+        cashReported: cashAmt,
+        onlineReported: onlineAmt,
+        pigmyReported: pigmyAmt,
+        expenseReported: expAmt,
+        timestamp: Date.now()
+      };
+      summaries.push(summary);
+      if (isFirebaseConnected && db) {
+        db.collection('daily_summaries').doc(summary.id).set(summary).catch(console.error);
+      }
     }
+    saveStoredDailySummaries(summaries);
   }
 
   // Sync to Firebase Cloud Firestore
@@ -3903,60 +4110,97 @@ async function confirmMainImportedRecords() {
   combined.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
   saveStoredTransactions(combined);
 
-  // 1. Save Pigmy if entered
+  const normCenter = normalizeCenterKey(chosenCenter, chosenOperator);
+
+  // 1. Save Pigmy if entered (update existing if already saved for this date & center)
   if (pigmyAmt > 0) {
     const expenses = getStoredExpenses();
-    const newPigmyExp = {
-      id: 'EXP-PIGMY-' + Date.now(),
-      date: effectiveDate,
-      amount: pigmyAmt,
-      category: 'दैनिक पिग्मी / बँक बचत ठेव',
-      description: expNote ? `पिग्मी बचत (${expNote})` : 'दैनिक पिग्मी बचत ठेव',
-      note: expNote ? `पिग्मी बचत (${expNote})` : 'दैनिक पिग्मी बचत ठेव',
-      center: chosenCenter,
-      operator: chosenOperator,
-      paymentMode: 'रोख (Cash)',
-      timestamp: Date.now()
-    };
-    expenses.push(newPigmyExp);
-    saveStoredExpenses(expenses);
-    if (isFirebaseConnected && db) {
-      db.collection('aadhaar_expenses').doc(newPigmyExp.id).set(newPigmyExp).catch(console.error);
+    const existingPigmyExp = expenses.find(e => 
+      normalizeDateToISO(e.date) === normalizeDateToISO(effectiveDate) && 
+      isCenterMatch(e.center, normCenter) && 
+      ((e.category || '').includes('पिग्मी') || (e.id || '').startsWith('EXP-PIGMY-'))
+    );
+    if (existingPigmyExp) {
+      existingPigmyExp.amount = pigmyAmt;
+      existingPigmyExp.note = expNote ? `पिग्मी बचत (${expNote})` : 'दैनिक पिग्मी बचत ठेव';
+      existingPigmyExp.timestamp = Date.now();
+      saveStoredExpenses(expenses);
+      if (isFirebaseConnected && db) {
+        db.collection('aadhaar_expenses').doc(existingPigmyExp.id).set(existingPigmyExp).catch(console.error);
+      }
+    } else {
+      const newPigmyExp = {
+        id: 'EXP-PIGMY-' + Date.now(),
+        date: effectiveDate,
+        amount: pigmyAmt,
+        category: 'दैनिक पिग्मी / बँक बचत ठेव',
+        description: expNote ? `पिग्मी बचत (${expNote})` : 'दैनिक पिग्मी बचत ठेव',
+        note: expNote ? `पिग्मी बचत (${expNote})` : 'दैनिक पिग्मी बचत ठेव',
+        center: normCenter,
+        operator: chosenOperator,
+        paymentMode: 'रोख (Cash)',
+        timestamp: Date.now()
+      };
+      expenses.push(newPigmyExp);
+      saveStoredExpenses(expenses);
+      if (isFirebaseConnected && db) {
+        db.collection('aadhaar_expenses').doc(newPigmyExp.id).set(newPigmyExp).catch(console.error);
+      }
     }
   }
 
-  // 2. Save other expenses if entered
+  // 2. Save other expenses if entered (update existing if already saved for this date & center)
   if (expAmt > 0) {
     const expenses = getStoredExpenses();
-    const newOtherExp = {
-      id: 'EXP-' + (Date.now() + 1),
-      date: effectiveDate,
-      amount: expAmt,
-      category: 'इतर आकस्मिक / किरकोळ खर्च',
-      description: expNote || 'दैनिक किरकोळ खर्च',
-      note: expNote || 'दैनिक किरकोळ खर्च',
-      center: chosenCenter,
-      operator: chosenOperator,
-      paymentMode: 'रोख (Cash)',
-      timestamp: Date.now() + 1
-    };
-    expenses.push(newOtherExp);
-    saveStoredExpenses(expenses);
-    if (isFirebaseConnected && db) {
-      db.collection('aadhaar_expenses').doc(newOtherExp.id).set(newOtherExp).catch(console.error);
+    const existingOtherExp = expenses.find(e => 
+      normalizeDateToISO(e.date) === normalizeDateToISO(effectiveDate) && 
+      isCenterMatch(e.center, normCenter) && 
+      !((e.category || '').includes('पिग्मी') || (e.id || '').startsWith('EXP-PIGMY-'))
+    );
+    if (existingOtherExp) {
+      existingOtherExp.amount = expAmt;
+      existingOtherExp.note = expNote || 'दैनिक किरकोळ खर्च';
+      existingOtherExp.description = expNote || 'दैनिक किरकोळ खर्च';
+      existingOtherExp.timestamp = Date.now();
+      saveStoredExpenses(expenses);
+      if (isFirebaseConnected && db) {
+        db.collection('aadhaar_expenses').doc(existingOtherExp.id).set(existingOtherExp).catch(console.error);
+      }
+    } else {
+      const newOtherExp = {
+        id: 'EXP-' + (Date.now() + 1),
+        date: effectiveDate,
+        amount: expAmt,
+        category: 'इतर आकस्मिक / किरकोळ खर्च',
+        description: expNote || 'दैनिक किरकोळ खर्च',
+        note: expNote || 'दैनिक किरकोळ खर्च',
+        center: normCenter,
+        operator: chosenOperator,
+        paymentMode: 'रोख (Cash)',
+        timestamp: Date.now() + 1
+      };
+      expenses.push(newOtherExp);
+      saveStoredExpenses(expenses);
+      if (isFirebaseConnected && db) {
+        db.collection('aadhaar_expenses').doc(newOtherExp.id).set(newOtherExp).catch(console.error);
+      }
     }
   }
 
   // 3. Save Daily summary for Collections & Pigmy
   if (cashAmt > 0 || onlineAmt > 0 || pigmyAmt > 0 || expAmt > 0) {
     const summaries = getStoredDailySummaries();
-    const existingIndex = summaries.findIndex(s => normalizeDateToISO(s.date) === normalizeDateToISO(effectiveDate) && s.center === chosenCenter);
+    const existingIndex = summaries.findIndex(s => 
+      normalizeDateToISO(s.date) === normalizeDateToISO(effectiveDate) && 
+      isCenterMatch(s.center, normCenter)
+    );
     if (existingIndex >= 0) {
       if (cashAmt > 0) summaries[existingIndex].cashReported = cashAmt;
       if (onlineAmt > 0) summaries[existingIndex].onlineReported = onlineAmt;
-      if (pigmyAmt > 0) summaries[existingIndex].pigmyReported = (summaries[existingIndex].pigmyReported || 0) + pigmyAmt;
-      if (expAmt > 0) summaries[existingIndex].expenseReported = (summaries[existingIndex].expenseReported || 0) + expAmt;
+      if (pigmyAmt >= 0) summaries[existingIndex].pigmyReported = pigmyAmt;
+      if (expAmt >= 0) summaries[existingIndex].expenseReported = expAmt;
       summaries[existingIndex].operator = chosenOperator;
+      summaries[existingIndex].center = normCenter;
       summaries[existingIndex].timestamp = Date.now();
       if (isFirebaseConnected && db) {
         db.collection('daily_summaries').doc(summaries[existingIndex].id).set(summaries[existingIndex]).catch(console.error);
@@ -3965,7 +4209,7 @@ async function confirmMainImportedRecords() {
       const summary = {
         id: 'SUM-' + Date.now(),
         date: effectiveDate,
-        center: chosenCenter,
+        center: normCenter,
         operator: chosenOperator,
         cashReported: cashAmt,
         onlineReported: onlineAmt,
@@ -4196,7 +4440,26 @@ async function verifyAdminPinAndExecute(event) {
 
   const { type, targetId } = pendingAdminAction;
 
-  if (type === 'delete_tx') {
+  if (type === 'batch_delete_tx') {
+    const deleteSet = new Set(pendingAdminAction.targetIds || []);
+    let transactions = getStoredTransactions();
+    transactions = transactions.filter(t => !deleteSet.has(t.id));
+    saveStoredTransactions(transactions);
+
+    if (isFirebaseConnected && db) {
+      try {
+        const batch = db.batch();
+        deleteSet.forEach(id => {
+          batch.delete(db.collection('aadhaar_transactions').doc(id));
+        });
+        batch.commit().catch(e => console.error('Cloud batch delete error:', e));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    playSound('delete');
+    alert(`✅ निवडलेल्या ${deleteSet.size} नोंदी यशस्वीरित्या हटवण्यात आल्या आहेत!`);
+  } else if (type === 'delete_tx') {
     let transactions = getStoredTransactions();
     transactions = transactions.filter(t => t.id !== targetId);
     saveStoredTransactions(transactions);
@@ -4228,3 +4491,428 @@ async function verifyAdminPinAndExecute(event) {
   refreshAllDataViews();
 }
 
+
+
+// =============================================================================
+// OPERATOR UPLOAD DATA MANAGEMENT & TARGETED DELETION (ADMIN ONLY)
+// =============================================================================
+
+function populateOperatorDropdowns() {
+  const transactions = getStoredTransactions();
+  const summaries = getStoredDailySummaries();
+  const opSet = new Set(['Gauravi Gawade', 'Sakshi Sawant']);
+
+  transactions.forEach(t => {
+    const name = (t.operatorName || (t.center === 'WCD' ? 'Sakshi Sawant' : 'Gauravi Gawade')).trim();
+    if (name) opSet.add(name);
+  });
+  summaries.forEach(s => {
+    const name = (s.operator || '').trim();
+    if (name) opSet.add(name);
+  });
+
+  const sortedOps = Array.from(opSet).sort();
+
+  // 1. Register Filter Dropdown
+  const regOpFilter = document.getElementById('register-operator-filter');
+  if (regOpFilter) {
+    const curVal = regOpFilter.value || 'all';
+    regOpFilter.innerHTML = '<option value="all">👤 सर्व ऑपरेटर (All Operators)</option>' +
+      sortedOps.map(op => `<option value="${escapeHtml(op)}">${escapeHtml(op)}</option>`).join('');
+    if (sortedOps.includes(curVal)) {
+      regOpFilter.value = curVal;
+    }
+  }
+
+  // 2. Delete Modal Operator Select
+  const delOpSelect = document.getElementById('delete-op-select');
+  if (delOpSelect) {
+    const curVal = delOpSelect.value || sortedOps[0];
+    delOpSelect.innerHTML = sortedOps.map(op => `<option value="${escapeHtml(op)}">👤 ${escapeHtml(op)}</option>`).join('');
+    if (curVal && sortedOps.includes(curVal)) {
+      delOpSelect.value = curVal;
+    }
+  }
+}
+
+function toggleSelectAllTransactions(masterBox) {
+  const isChecked = masterBox ? masterBox.checked : false;
+  const checkboxes = document.querySelectorAll('.tx-row-checkbox');
+  checkboxes.forEach(cb => cb.checked = isChecked);
+  onTransactionCheckboxChange();
+}
+
+function onTransactionCheckboxChange() {
+  const checkedBoxes = document.querySelectorAll('.tx-row-checkbox:checked');
+  const count = checkedBoxes.length;
+  const selBar = document.getElementById('tx-selection-bar');
+  const countSpan = document.getElementById('tx-selected-count');
+  if (countSpan) countSpan.textContent = count;
+  if (selBar) selBar.style.display = count > 0 ? 'flex' : 'none';
+
+  const allBoxes = document.querySelectorAll('.tx-row-checkbox');
+  const masterBox = document.getElementById('select-all-tx-checkbox');
+  if (masterBox && allBoxes.length > 0) {
+    masterBox.checked = (checkedBoxes.length === allBoxes.length);
+  }
+}
+
+function requestDeleteSelectedTransactions() {
+  if (!currentUser || currentUser.role !== 'admin') {
+    alert("⚠️ ऑपरेटरला डेटा हटवण्याची परवानगी नाही! फक्त ॲडमीनच डेटा हटवू शकतात.");
+    return;
+  }
+  const checkedBoxes = Array.from(document.querySelectorAll('.tx-row-checkbox:checked'));
+  const targetIds = checkedBoxes.map(cb => cb.value);
+  if (targetIds.length === 0) {
+    alert("कृपया किमान एक नोंद निवडा!");
+    return;
+  }
+
+  const transactions = getStoredTransactions();
+  const selectedTx = transactions.filter(t => targetIds.includes(t.id));
+  const totalAmt = selectedTx.reduce((sum, t) => sum + Number(t.totalAmount || 0), 0);
+
+  pendingAdminAction = {
+    type: 'batch_delete_tx',
+    targetIds: targetIds,
+    description: `<strong>निवडलेल्या ${targetIds.length} ग्राहक नोंदी हटवल्या जातील:</strong><br/>• एकूण रक्कम: <strong>₹${totalAmt.toLocaleString('en-IN')}</strong><br/>• इतर कोणत्याही नोंदी डिस्टर्ब होणार नाहीत.`
+  };
+
+  openAdminPinModal();
+}
+
+function openOperatorDataDeleteModal(presetDate, presetOpName, presetCenter) {
+  if (!currentUser || currentUser.role !== 'admin') {
+    alert("⚠️ ऑपरेटरला डेटा हटवण्याची परवानगी नाही! फक्त अधिकृत ॲडमीनच डेटा हटवू शकतात.");
+    return;
+  }
+
+  populateOperatorDropdowns();
+
+  const opSelect = document.getElementById('delete-op-select');
+  const centerSelect = document.getElementById('delete-op-center');
+  const dateScope = document.getElementById('delete-op-date-scope');
+  const dateInput = document.getElementById('delete-op-date');
+  const pinInput = document.getElementById('delete-op-admin-pin');
+  const errBox = document.getElementById('delete-op-error-box');
+
+  if (pinInput) pinInput.value = '';
+  if (errBox) {
+    errBox.style.display = 'none';
+    errBox.innerHTML = '';
+  }
+
+  if (presetOpName && opSelect) {
+    let found = false;
+    for (let opt of opSelect.options) {
+      if (opt.value === presetOpName) { found = true; break; }
+    }
+    if (!found) {
+      const opt = document.createElement('option');
+      opt.value = presetOpName;
+      opt.textContent = `👤 ${presetOpName}`;
+      opSelect.appendChild(opt);
+    }
+    opSelect.value = presetOpName;
+  }
+
+  if (presetCenter && centerSelect) {
+    centerSelect.value = presetCenter;
+  } else if (centerSelect) {
+    centerSelect.value = 'all';
+  }
+
+  if (presetDate && dateInput) {
+    dateInput.value = normalizeDateToISO(presetDate);
+    if (dateScope) dateScope.value = 'specific';
+  } else {
+    if (dateInput) dateInput.value = getTodayDateString();
+    if (dateScope) dateScope.value = 'today';
+  }
+
+  handleDeleteOpDateScopeChange();
+  updateOperatorDeletePreview();
+  openModal('operator-data-delete-modal');
+
+  setTimeout(() => {
+    if (pinInput) pinInput.focus();
+  }, 100);
+}
+
+function handleDeleteOpDateScopeChange() {
+  const scope = document.getElementById('delete-op-date-scope')?.value || 'specific';
+  const singleWrap = document.getElementById('delete-op-single-date-wrap');
+  const dateInput = document.getElementById('delete-op-date');
+  const todayStr = getTodayDateString();
+
+  if (scope === 'today') {
+    if (singleWrap) singleWrap.style.display = 'none';
+    if (dateInput) dateInput.value = todayStr;
+  } else if (scope === 'yesterday') {
+    if (singleWrap) singleWrap.style.display = 'none';
+    const yDate = new Date();
+    yDate.setDate(yDate.getDate() - 1);
+    const yStr = `${yDate.getFullYear()}-${String(yDate.getMonth() + 1).padStart(2, '0')}-${String(yDate.getDate()).padStart(2, '0')}`;
+    if (dateInput) dateInput.value = yStr;
+  } else if (scope === 'all') {
+    if (singleWrap) singleWrap.style.display = 'none';
+  } else {
+    if (singleWrap) singleWrap.style.display = 'block';
+    if (dateInput && !dateInput.value) dateInput.value = todayStr;
+  }
+
+  updateOperatorDeletePreview();
+}
+
+function toggleDeleteOpPinVisibility() {
+  const pinInput = document.getElementById('delete-op-admin-pin');
+  const eyeIcon = document.getElementById('delete-op-pin-eye');
+  if (!pinInput) return;
+
+  if (pinInput.type === 'password') {
+    pinInput.type = 'text';
+    if (eyeIcon) {
+      eyeIcon.classList.remove('fa-eye');
+      eyeIcon.classList.add('fa-eye-slash');
+    }
+  } else {
+    pinInput.type = 'password';
+    if (eyeIcon) {
+      eyeIcon.classList.remove('fa-eye-slash');
+      eyeIcon.classList.add('fa-eye');
+    }
+  }
+}
+
+function updateOperatorDeletePreview() {
+  const opSelect = document.getElementById('delete-op-select');
+  const centerSelect = document.getElementById('delete-op-center');
+  const dateScope = document.getElementById('delete-op-date-scope');
+  const dateInput = document.getElementById('delete-op-date');
+  const countBadge = document.getElementById('delete-op-found-count');
+  const amountSpan = document.getElementById('delete-op-found-amount');
+  const sumSpan = document.getElementById('delete-op-found-summaries');
+  const sampleDiv = document.getElementById('delete-op-preview-sample');
+  const btnConfirm = document.getElementById('btn-confirm-delete-op');
+
+  const chosenOp = (opSelect?.value || '').trim();
+  const chosenCenter = centerSelect?.value || 'all';
+  const scope = dateScope?.value || 'specific';
+  const chosenDate = normalizeDateToISO(dateInput?.value || '');
+
+  const transactions = getStoredTransactions();
+  const summaries = getStoredDailySummaries();
+  const expenses = getStoredExpenses();
+
+  const matchingTx = transactions.filter(t => {
+    const recOp = (t.operatorName || (t.center === 'WCD' ? 'Sakshi Sawant' : 'Gauravi Gawade')).trim().toLowerCase();
+    if (chosenOp && recOp !== chosenOp.toLowerCase()) return false;
+    if (chosenCenter !== 'all' && t.center !== chosenCenter) return false;
+    if (scope !== 'all') {
+      const recDate = normalizeDateToISO(t.date);
+      if (recDate !== chosenDate) return false;
+    }
+    return true;
+  });
+
+  const matchingSum = summaries.filter(s => {
+    const sOp = (s.operator || '').trim().toLowerCase();
+    if (chosenOp && sOp !== chosenOp.toLowerCase()) return false;
+    if (chosenCenter !== 'all' && s.center !== chosenCenter) return false;
+    if (scope !== 'all') {
+      const sDate = normalizeDateToISO(s.date);
+      if (sDate !== chosenDate) return false;
+    }
+    return true;
+  });
+
+  const matchingExp = expenses.filter(e => {
+    const eOp = (e.operator || '').trim().toLowerCase();
+    if (chosenOp && eOp !== chosenOp.toLowerCase()) return false;
+    if (chosenCenter !== 'all' && e.center !== chosenCenter) return false;
+    if (scope !== 'all') {
+      const eDate = normalizeDateToISO(e.date);
+      if (eDate !== chosenDate) return false;
+    }
+    return true;
+  });
+
+  const totalAmount = matchingTx.reduce((sum, t) => sum + Number(t.totalAmount || 0), 0);
+
+  if (countBadge) countBadge.textContent = `${matchingTx.length} नोंदी`;
+  if (amountSpan) amountSpan.textContent = totalAmount.toLocaleString('en-IN');
+  if (sumSpan) {
+    const sumDetails = [];
+    if (matchingSum.length > 0) sumDetails.push(`${matchingSum.length} दैनिक ताळेबंद`);
+    if (matchingExp.length > 0) sumDetails.push(`${matchingExp.length} खर्च/पिग्मी`);
+    sumSpan.textContent = sumDetails.length > 0 ? sumDetails.join(' + ') : 'समाविष्ट नाही';
+  }
+
+  if (sampleDiv) {
+    if (matchingTx.length === 0) {
+      sampleDiv.innerHTML = `<span style="color: #f87171;">⚠️ या ऑपरेटरच्या या निवडीनुसार एकही नोंद सापडली नाही.</span>`;
+    } else {
+      sampleDiv.innerHTML = `<strong>नमुन्यादाखल नोंदी:</strong><br/>` +
+        matchingTx.slice(0, 4).map(t => `• ${escapeHtml(t.customerName)} (${escapeHtml(t.serviceName)} - ₹${t.totalAmount}) [${formatDateDDMMYYYY(t.date)}]`).join('<br/>') +
+        (matchingTx.length > 4 ? `<br/><em>... आणि आणखी ${matchingTx.length - 4} नोंदी</em>` : '');
+    }
+  }
+
+  const hasDataToDelete = (matchingTx.length > 0 || matchingSum.length > 0 || matchingExp.length > 0);
+  if (btnConfirm) {
+    btnConfirm.disabled = !hasDataToDelete;
+  }
+}
+
+async function executeOperatorDataDelete(event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  if (!currentUser || currentUser.role !== 'admin') {
+    alert("⚠️ ऑपरेटरला डेटा हटवण्याची परवानगी नाही! फक्त अधिकृत ॲडमीनच डेटा हटवू शकतात.");
+    return;
+  }
+
+  const enteredPin = document.getElementById('delete-op-admin-pin')?.value.trim();
+  const correctPin = getAdminPin();
+  const errBox = document.getElementById('delete-op-error-box');
+
+  if (enteredPin !== correctPin) {
+    playSound('delete');
+    if (errBox) {
+      errBox.style.display = 'block';
+      errBox.innerHTML = '<i class="fas fa-times-circle"></i> चुकीचा ॲडमीन सुरक्षा पिन! डेटा हटवण्यास परवानगी नाकारली.';
+    }
+    return;
+  }
+
+  const opSelect = document.getElementById('delete-op-select');
+  const centerSelect = document.getElementById('delete-op-center');
+  const dateScope = document.getElementById('delete-op-date-scope');
+  const dateInput = document.getElementById('delete-op-date');
+
+  const chosenOp = (opSelect?.value || '').trim();
+  const chosenCenter = centerSelect?.value || 'all';
+  const scope = dateScope?.value || 'specific';
+  const chosenDate = normalizeDateToISO(dateInput?.value || '');
+
+  let transactions = getStoredTransactions();
+  let summaries = getStoredDailySummaries();
+  let expenses = getStoredExpenses();
+
+  const txToDelete = transactions.filter(t => {
+    const recOp = (t.operatorName || (t.center === 'WCD' ? 'Sakshi Sawant' : 'Gauravi Gawade')).trim().toLowerCase();
+    if (chosenOp && recOp !== chosenOp.toLowerCase()) return false;
+    if (chosenCenter !== 'all' && t.center !== chosenCenter) return false;
+    if (scope !== 'all') {
+      const recDate = normalizeDateToISO(t.date);
+      if (recDate !== chosenDate) return false;
+    }
+    return true;
+  });
+
+  const sumToDelete = summaries.filter(s => {
+    const sOp = (s.operator || '').trim().toLowerCase();
+    if (chosenOp && sOp !== chosenOp.toLowerCase()) return false;
+    if (chosenCenter !== 'all' && s.center !== chosenCenter) return false;
+    if (scope !== 'all') {
+      const sDate = normalizeDateToISO(s.date);
+      if (sDate !== chosenDate) return false;
+    }
+    return true;
+  });
+
+  const expToDelete = expenses.filter(e => {
+    const eOp = (e.operator || '').trim().toLowerCase();
+    if (chosenOp && eOp !== chosenOp.toLowerCase()) return false;
+    if (chosenCenter !== 'all' && e.center !== chosenCenter) return false;
+    if (scope !== 'all') {
+      const eDate = normalizeDateToISO(e.date);
+      if (eDate !== chosenDate) return false;
+    }
+    return true;
+  });
+
+  if (txToDelete.length === 0 && sumToDelete.length === 0 && expToDelete.length === 0) {
+    alert("⚠️ या निवडीनुसार कोणताही डेटा आढळला नाही.");
+    return;
+  }
+
+  const dateLabel = scope === 'all' ? 'सर्व तारखा' : formatDateDDMMYYYY(chosenDate);
+  const confirmMsg = `तुम्हाला खात्री आहे का?\n\n` +
+    `👤 ऑपरेटर: ${chosenOp}\n` +
+    `🏢 केंद्र: ${chosenCenter === 'all' ? 'सर्व केंद्रे' : chosenCenter}\n` +
+    `📅 दिनांक: ${dateLabel}\n` +
+    `📋 हटवल्या जाणाऱ्या नोंदी: ${txToDelete.length}\n\n` +
+    `🛡️ डेटा सुरक्षिततेची हमी: फक्त या ऑपरेटरचा डेटा हटवला जाईल. इतर सर्व ऑपरेटरचा डेटा सुरक्षित राहील ("Data Disturb होणार नाही")!`;
+
+  if (!confirm(confirmMsg)) {
+    return;
+  }
+
+  const btnConfirm = document.getElementById('btn-confirm-delete-op');
+  if (btnConfirm) {
+    btnConfirm.disabled = true;
+    btnConfirm.innerHTML = '<i class="fas fa-spinner fa-spin"></i> हटवत आहे...';
+  }
+
+  // 1. Remove from transactions
+  const txDeleteIds = new Set(txToDelete.map(t => t.id));
+  transactions = transactions.filter(t => !txDeleteIds.has(t.id));
+  saveStoredTransactions(transactions);
+
+  // 2. Remove from daily summaries
+  const sumDeleteIds = new Set(sumToDelete.map(s => s.id));
+  summaries = summaries.filter(s => !sumDeleteIds.has(s.id));
+  saveStoredDailySummaries(summaries);
+
+  // 3. Remove from expenses
+  const expDeleteIds = new Set(expToDelete.map(e => e.id));
+  expenses = expenses.filter(e => !expDeleteIds.has(e.id));
+  saveStoredExpenses(expenses);
+
+  // 4. Delete from Firebase Firestore if connected
+  if (isFirebaseConnected && db) {
+    try {
+      const batch = db.batch();
+      txToDelete.forEach(t => {
+        batch.delete(db.collection('aadhaar_transactions').doc(t.id));
+      });
+      sumToDelete.forEach(s => {
+        batch.delete(db.collection('daily_summaries').doc(s.id));
+        batch.delete(db.collection('aadhaar_daily_summaries').doc(s.id));
+      });
+      expToDelete.forEach(e => {
+        batch.delete(db.collection('aadhaar_expenses').doc(e.id));
+      });
+      await batch.commit();
+    } catch (err) {
+      console.error('Firebase cloud delete error:', err);
+    }
+  }
+
+  playSound('delete');
+  closeModal('operator-data-delete-modal');
+
+  if (btnConfirm) {
+    btnConfirm.disabled = false;
+    btnConfirm.innerHTML = '<i class="fas fa-trash-alt"></i> होय, हा ऑपरेटर डेटा हटवा';
+  }
+
+  refreshAllDataViews();
+  alert(`🎉 ऑपरेटर "${chosenOp}" चा डेटा (${txToDelete.length} नोंदी) यशस्वीरित्या हटवण्यात आला आहे!\n\nइतर सर्व ऑपरेटरचा डेटा १००% सुरक्षित व अबाधित आहे.`);
+}
+
+// Window Exposures
+window.populateOperatorDropdowns = populateOperatorDropdowns;
+window.openOperatorDataDeleteModal = openOperatorDataDeleteModal;
+window.updateOperatorDeletePreview = updateOperatorDeletePreview;
+window.handleDeleteOpDateScopeChange = handleDeleteOpDateScopeChange;
+window.toggleDeleteOpPinVisibility = toggleDeleteOpPinVisibility;
+window.executeOperatorDataDelete = executeOperatorDataDelete;
+window.toggleSelectAllTransactions = toggleSelectAllTransactions;
+window.onTransactionCheckboxChange = onTransactionCheckboxChange;
+window.requestDeleteSelectedTransactions = requestDeleteSelectedTransactions;
