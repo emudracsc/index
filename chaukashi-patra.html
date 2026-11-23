@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>तहसिलदार कार्यालय कणकवली - चौकशी अहवाल व दाखला आदेश पत्र जनरेटर | Setu Suvidha Kendra</title>
+  <meta name="description" content="तहसिलदार कार्यालय कणकवली अंतर्गत जात प्रमाणपत्र, भूमिहीन, अल्पभूधारक, वारस, शेतकरी व इडब्ल्यूएस चौकशी अहवाल व आदेश पत्रे जनरेटर">
+
+  <!-- Google Fonts: Mukta, Noto Sans Devanagari & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6.5.1 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- SheetJS for Excel Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Firebase App & Firestore SDKs (Compat for guaranteed reliability) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-dark: #0f172a;
+      --primary-light: #eff6ff;
+      --accent: #d97706;
+      --accent-hover: #b45309;
+      --success: #059669;
+      --danger: #dc2626;
+      --border-color: #cbd5e1;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --bg-workspace: #f1f5f9;
+      --font-marathi: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-marathi);
+      background-color: var(--bg-workspace);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Government Tricolor Top Stripe */
+    .gov-top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%);
+      width: 100%;
+    }
+
+    /* Main Navigation Header */
+    .app-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.18);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+    }
+
+    .brand-text h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+      line-height: 1.25;
+    }
+
+    .brand-text p {
+      font-size: 0.78rem;
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-hdr {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .btn-hdr-primary {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-hdr-primary:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-hdr-amber {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #ffffff;
+    }
+
+    .btn-hdr-amber:hover {
+      background: #b45309;
+      transform: translateY(-1px);
+    }
+
+    .btn-hdr-dark {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-hdr-dark:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    /* Main App Layout */
+    .app-body {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 20px;
+      padding: 16px 20px;
+      flex: 1;
+      max-width: 1750px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    @media (max-width: 1100px) {
+      .app-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Form Control Pane */
+    .form-pane {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-bottom: 4px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .form-control {
+      padding: 8px 12px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-family: inherit;
+      color: #0f172a;
+      background: #f8fafc;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #2563eb;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .template-selector-box {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+      border: 1.5px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .template-select {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 2px solid #2563eb;
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-act {
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-print {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-print:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+    }
+
+    .btn-save:hover {
+      background: #047857;
+      transform: translateY(-1px);
+    }
+
+    .btn-clear {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .btn-clear:hover {
+      background: #cbd5e1;
+    }
+
+    /* Right Preview Pane */
+    .preview-pane {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      max-height: calc(100vh - 90px);
+    }
+
+    .preview-toolbar {
+      padding: 8px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .zoom-ctrls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-zm {
+      padding: 4px 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    .btn-zm.active, .btn-zm:hover {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+
+    .paper-scroll-wrap {
+      flex: 1;
+      overflow: auto;
+      padding: 24px;
+      background: #64748b;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* Official A4 Document Sheet (Exact reproduction of PDF format) */
+    .a4-document-sheet {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      color: #000000;
+      padding: 22mm 24mm 22mm 25mm;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      box-sizing: border-box;
+      position: relative;
+      font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+      transform-origin: top center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Official Document Typography matching scanned copy */
+    .doc-header-right {
+      text-align: right;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.45;
+      margin-bottom: 22px;
+      color: #000000;
+    }
+
+    .doc-to-block {
+      text-align: left;
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 18px;
+      color: #000000;
+    }
+
+    .doc-subject-block {
+      text-align: center;
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin: 14px 0 16px 0;
+      color: #000000;
+      letter-spacing: 0.2px;
+    }
+
+    .doc-ref-block {
+      text-align: left;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.55;
+      margin-bottom: 20px;
+      color: #000000;
+      padding-left: 50px;
+      text-indent: -50px;
+    }
+
+    .doc-body-paragraph {
+      text-align: justify;
+      font-size: 1.08rem;
+      line-height: 1.85;
+      color: #000000;
+      margin-bottom: 16px;
+      text-indent: 50px;
+      font-weight: 500;
+    }
+
+    .doc-points-list {
+      margin: 12px 0 18px 0;
+      padding-left: 0;
+      list-style-type: none;
+      font-size: 1.02rem;
+      line-height: 1.75;
+      color: #000000;
+    }
+
+    .doc-points-list li {
+      margin-bottom: 6px;
+      text-align: justify;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .doc-points-list li .pt-num {
+      font-weight: 800;
+      min-width: 26px;
+      flex-shrink: 0;
+    }
+
+    .doc-concluding-note {
+      font-size: 1.04rem;
+      font-weight: 600;
+      line-height: 1.75;
+      text-align: justify;
+      margin-top: 10px;
+      text-indent: 50px;
+    }
+
+    .doc-attachment-note {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-top: 24px;
+      text-align: left;
+    }
+
+    .doc-signature-block {
+      margin-top: 45px;
+      text-align: right;
+      font-size: 1.12rem;
+      font-weight: 800;
+      color: #000000;
+    }
+
+    .doc-fill {
+      font-weight: 800;
+      color: #000000;
+      border-bottom: 1.2px dotted #000000;
+      padding: 0 4px;
+      display: inline-block;
+      min-width: 30px;
+    }
+
+    /* Bottom History Drawer */
+    .history-drawer {
+      background: #ffffff;
+      border-top: 2px solid var(--border-color);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+      padding: 16px 24px;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .history-table th {
+      background: #1e3a8a;
+      color: #ffffff;
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .history-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #1e293b;
+    }
+
+    .history-table tr:hover {
+      background: #f8fafc;
+    }
+
+    .badge-form {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .badge-caste { background: #ede9fe; color: #6d28d9; }
+    .badge-landless { background: #fef3c7; color: #b45309; }
+    .badge-small_farmer { background: #dcfce7; color: #15803d; }
+    .badge-heirship { background: #ffedd5; color: #c2410c; }
+    .badge-farmer { background: #e0f2fe; color: #0369a1; }
+    .badge-ews { background: #fce7f3; color: #be185d; }
+
+    /* Print Styles */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 15mm 20mm 15mm 20mm;
+      }
+
+      html, body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      .gov-top-bar,
+      .app-header,
+      .form-pane,
+      .preview-toolbar,
+      .history-drawer,
+      .no-print {
+        display: none !important;
+      }
+
+      .app-body {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      .preview-pane {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      .paper-scroll-wrap {
+        background: transparent !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+
+      .a4-document-sheet {
+        width: 100% !important;
+        min-height: 100% !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        transform: none !important;
+        page-break-inside: avoid !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-top-bar"></div>
+
+  <!-- Header Navigation -->
+  <header class="app-header">
+    <div class="brand-group">
+      <div class="brand-icon">
+        <i class="fa-solid fa-stamp"></i>
+      </div>
+      <div class="brand-text">
+        <h1>तहसिलदार कार्यालय कणकवली — चौकशी अहवाल व दाखले आदेश पत्र प्रणाली</h1>
+        <p>सेतू सुविधा केंद्र तहसील कार्यालय कणकवली | अधिकृत महसूल पत्र निर्मिती व सर्व्हर संग्रहण</p>
+      </div>
+    </div>
+
+    <div class="header-actions no-print">
+      <button type="button" class="btn-hdr btn-hdr-amber" onclick="fillSampleData()">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> नमुना डेटा भरा
+      </button>
+      <button type="button" class="btn-hdr btn-hdr-primary" onclick="handlePrintAndSave()">
+        <i class="fa-solid fa-print"></i> प्रिंट करा व सेव्ह करा
+      </button>
+      <a href="#savedRecordsSection" class="btn-hdr btn-hdr-dark">
+        <i class="fa-solid fa-clock-rotate-left"></i> जतन केलेले अर्ज (<span id="savedCountBadge">0</span>)
+      </a>
+      <a href="https://setusuvidha.web.app/dashboard" target="_blank" class="btn-hdr btn-hdr-dark" title="सेतू सुविधा डॅशबोर्ड">
+        <i class="fa-solid fa-gauge-high"></i> सेतू डॅशबोर्ड
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Body Studio Layout -->
+  <main class="app-body">
+
+    <!-- LEFT: Form Control & Dynamic Inputs Pane -->
+    <section class="form-pane no-print">
+      
+      <!-- 1. Template Selector -->
+      <div class="template-selector-box">
+        <label class="form-label" style="color: #1e3a8a; font-size: 0.88rem;">
+          <i class="fa-solid fa-file-circle-check" style="color: #2563eb;"></i> १. आवश्यक चौकशी अहवाल / दाखला प्रकार निवडा:
+        </label>
+        <select id="selTemplate" class="template-select" onchange="switchTemplate(this.value)">
+          <option value="caste">📜 १. जात प्रमाणपत्र स्थानिक चौकशी अहवाल (१९६१ पुरावा)</option>
+          <option value="landless">🌾 २. भूमिहीन शेतमजूर दाखला चौकशी पत्र</option>
+          <option value="small_farmer">🌱 ३. अल्पभूधारक दाखला चौकशी पत्र (११ मुद्दे)</option>
+          <option value="heirship">🏛️ ४. वारस प्रमाणपत्र चौकशी पत्र (वृद्धकलाकार मानधन / इतर)</option>
+          <option value="farmer">🚜 ५. शेतकरी असल्याचा दाखला चौकशी पत्र (११ मुद्दे)</option>
+          <option value="ews">📋 ६. इडब्ल्यूएस (EWS) प्रमाणपत्र आरक्षण चौकशी अहवाल (४ मुद्दे)</option>
+        </select>
+      </div>
+
+      <!-- 2. Office & Outward Details -->
+      <div>
+        <div class="section-title">
+          <i class="fa-solid fa-building-columns"></i> २. कार्यालयीन जावक व दिनांक तपशील
+        </div>
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">जावक / अहवाल क्र.:</label>
+            <input type="text" id="inpOutwardNo" class="form-control" placeholder="उदा. १२८ किंवा ४५" oninput="updatePreview()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">जावक दिनांक:</label>
+            <input type="date" id="inpOutwardDate" class="form-control" onchange="updatePreview()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">वर्ष:</label>
+            <input type="text" id="inpYear" class="form-control" value="२०२६" oninput="updatePreview()">
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Addressed To (प्रति) -->
+      <div>
+        <div class="section-title">
+          <i class="fa-solid fa-user-shield"></i> ३. प्रति (कोणास पाठवायचे?)
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">अधिकारी पद:</label>
+            <select id="selOfficerRole" class="form-control" onchange="updatePreview()">
+              <option value="मंडळ अधिकारी">मंडळ अधिकारी</option>
+              <option value="तलाठी">तलाठी</option>
+              <option value="तलाठी सज्जा">तलाठी सज्जा</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">मंडळ / सज्जा / गाव नाव:</label>
+            <input type="text" id="inpOfficerPlace" class="form-control" list="kankavliCircles" placeholder="उदा. कणकवली, नाटळ, कलमठ" oninput="updatePreview()">
+            <datalist id="kankavliCircles">
+              <option value="कणकवली">
+              <option value="नाटळ">
+              <option value="कलमठ">
+              <option value="फोंडाघाट">
+              <option value="वारगाव">
+              <option value="कसर्डे">
+              <option value="तळेरे">
+              <option value="शिरवल">
+              <option value="सांगवे">
+            </datalist>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Applicant & Reference Details -->
+      <div>
+        <div class="section-title">
+          <i class="fa-solid fa-user-check"></i> ४. अर्जदार व संदर्भ तपशील
+        </div>
+        <div class="form-group">
+          <label class="form-label">अर्जदाराचे संपूर्ण नाव (श्री / श्रीम.):</label>
+          <input type="text" id="inpApplicantName" class="form-control" placeholder="उदा. श्री. संतोष विठ्ठल सावंत" oninput="updatePreview()">
+        </div>
+        <div class="grid-3" style="margin-top: 6px;">
+          <div class="form-group">
+            <label class="form-label">राहणार मु.पो. (गाव):</label>
+            <input type="text" id="inpVillage" class="form-control" placeholder="उदा. कलमठ" oninput="updatePreview()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">तालुका:</label>
+            <input type="text" id="inpTaluka" class="form-control" value="कणकवली" oninput="updatePreview()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">अर्जाचा दिनांक:</label>
+            <input type="date" id="inpAppDate" class="form-control" onchange="updatePreview()">
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Dynamic Template-Specific Fields -->
+      <div id="dynamicFieldsSection">
+        
+        <!-- Case 1: Caste Certificate Specifics -->
+        <div id="fieldsCaste" class="dynamic-field-block">
+          <div class="section-title" style="color: #7c3aed;">
+            <i class="fa-solid fa-certificate"></i> जात प्रमाणपत्र विशिष्ट माहिती
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">पाल्याचे लिंग / संबंध:</label>
+              <select id="selChildRelation" class="form-control" onchange="updatePreview()">
+                <option value="मुलगा">मुलगा</option>
+                <option value="मुलगी">मुलगी</option>
+                <option value="कुमारी">कुमारी</option>
+                <option value="स्वतः">स्वतः</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">पाल्याचे / ज्यांचे प्रमाणपत्र हवे त्यांचे नाव:</label>
+              <input type="text" id="inpChildName" class="form-control" placeholder="उदा. कुमार अमित संतोष सावंत" oninput="updatePreview()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Case 4: Heirship Specifics -->
+        <div id="fieldsHeirship" class="dynamic-field-block" style="display: none;">
+          <div class="section-title" style="color: #c2410c;">
+            <i class="fa-solid fa-monument"></i> वारस प्रमाणपत्र विशिष्ट माहिती
+          </div>
+          <div class="form-group">
+            <label class="form-label">मयत व्यक्तीचे नाव (कै. श्री. / श्रीम.):</label>
+            <input type="text" id="inpDeceasedName" class="form-control" placeholder="उदा. कै. श्री. विठ्ठल सखाराम सावंत" oninput="updatePreview()">
+          </div>
+          <div class="grid-3" style="margin-top: 6px;">
+            <div class="form-group">
+              <label class="form-label">मानधन / पेन्शन योजना:</label>
+              <input type="text" id="inpPensionScheme" class="form-control" value="वृध्दकलाकार मानधन" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">मृत्यू दिनांक:</label>
+              <input type="date" id="inpDeathDate" class="form-control" onchange="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">मृत्यूचे गाव:</label>
+              <input type="text" id="inpDeathPlace" class="form-control" placeholder="उदा. कलमठ" oninput="updatePreview()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Case 6: EWS Specifics -->
+        <div id="fieldsEws" class="dynamic-field-block" style="display: none;">
+          <div class="section-title" style="color: #be185d;">
+            <i class="fa-solid fa-id-badge"></i> इडब्ल्यूएस विशिष्ट माहिती
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">अर्जदार कोणासाठी मागत आहेत?</label>
+              <select id="selEwsFor" class="form-control" onchange="updatePreview()">
+                <option value="स्वतःला">स्वतःला</option>
+                <option value="पाल्यास">पाल्यास</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">अर्जदाराची जात (मुद्दा क्र. ४ साठी):</label>
+              <input type="text" id="inpEwsCaste" class="form-control" placeholder="उदा. मराठा, ब्राह्मण इ." oninput="updatePreview()">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+        <button type="button" class="btn-act btn-print" onclick="handlePrintAndSave()">
+          <i class="fa-solid fa-print"></i> 🖨️ प्रिंट करा व सर्व्हरवर सेव्ह करा
+        </button>
+        <div class="grid-2">
+          <button type="button" class="btn-act btn-save" onclick="handleSaveOnly()">
+            <i class="fa-solid fa-cloud-arrow-up"></i> सेव्ह करा
+          </button>
+          <button type="button" class="btn-act btn-clear" onclick="resetForm()">
+            <i class="fa-solid fa-rotate-left"></i> रिसेट करा
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT: Official Printable A4 Live Preview Pane -->
+    <section class="preview-pane">
+      
+      <!-- Preview Controls Bar -->
+      <div class="preview-toolbar no-print">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-eye" style="color: #2563eb;"></i>
+          <span style="font-weight: 700; font-size: 0.85rem;" id="previewStatus">A4 हुबेहूब शासकीय पूर्वावलोकन</span>
+        </div>
+
+        <div class="zoom-ctrls">
+          <span style="font-size: 0.74rem; color: #64748b; margin-right: 4px;">झूम:</span>
+          <button type="button" class="btn-zm" onclick="setZoom(0.8)">80%</button>
+          <button type="button" class="btn-zm active" id="btnZoom90" onclick="setZoom(0.9)">90%</button>
+          <button type="button" class="btn-zm" onclick="setZoom(1.0)">100%</button>
+          <button type="button" class="btn-zm" onclick="setZoom('fit')">Fit</button>
+          <button type="button" class="btn-hdr btn-hdr-primary" style="padding: 4px 12px; margin-left: 6px;" onclick="handlePrintAndSave()">
+            <i class="fa-solid fa-print"></i> प्रिंट
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Paper Container -->
+      <div class="paper-scroll-wrap" id="paperScrollWrap">
+        
+        <!-- The A4 Sheet (Exact layout of the PDF scanned copies) -->
+        <article class="a4-document-sheet" id="printableA4Sheet">
+          
+          <!-- Top Area: Header, To, Subject, Ref, Body, Points -->
+          <div>
+            
+            <!-- 1. Right Header: Outward No, Office, Date -->
+            <div class="doc-header-right" id="prevHeaderRight">
+              <div>क्र.सेतू/स्था.चौ.अहवाल/ <span class="doc-fill" id="prevOutwardNo">-</span> /<span id="prevYear">२०२६</span></div>
+              <div>तहसिलदार कार्यालय कणकवली</div>
+              <div>दि. <span class="doc-fill" id="prevOutwardDate">-</span></div>
+            </div>
+
+            <!-- 2. Left: Addressed To (प्रति) -->
+            <div class="doc-to-block" id="prevToBlock">
+              <div>प्रति,</div>
+              <div style="padding-left: 20px;">
+                <span id="prevOfficerRole">मंडळ अधिकारी</span> <span class="doc-fill" id="prevOfficerPlace" style="min-width: 120px;">-</span>
+              </div>
+            </div>
+
+            <!-- 3. Subject (विषय) -->
+            <div class="doc-subject-block" id="prevSubjectBlock">
+              विषय – जात प्रमाणपत्र स्थानिक चौकशी अहवाल बाबत.
+            </div>
+
+            <!-- 4. Reference (संदर्भ) -->
+            <div class="doc-ref-block" id="prevRefBlock">
+              संदर्भ – श्री. <span class="doc-fill" id="prevRefApplicant">-</span> रा. <span class="doc-fill" id="prevRefVillage">-</span> ता. <span id="prevRefTaluka">कणकवली</span> यांचा दि. <span class="doc-fill" id="prevRefDate">-</span> चा अर्ज
+            </div>
+
+            <!-- 5. Body Paragraph -->
+            <div class="doc-body-paragraph" id="prevBodyParagraph">
+              <!-- Dynamically rendered based on template -->
+            </div>
+
+            <!-- 6. Optional Numbered Points List (Forms 3, 5, 6) -->
+            <div id="prevPointsContainer" style="display: none;">
+              <ol class="doc-points-list" id="prevPointsList"></ol>
+            </div>
+
+            <!-- 7. Concluding directive note if present -->
+            <div class="doc-concluding-note" id="prevConcludingNote" style="display: none;">
+              <!-- Dynamically populated -->
+            </div>
+
+            <!-- 8. Attachment Note (सोबत / संदर्भिय अर्ज) -->
+            <div class="doc-attachment-note" id="prevAttachmentNote">
+              सोबत – मुळ प्रकरण
+            </div>
+
+          </div>
+
+          <!-- Bottom Signature Area -->
+          <div class="doc-signature-block">
+            तहसिलदार कणकवली करिता
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- BOTTOM: Saved Records / History Drawer (Server Synced) -->
+  <section class="history-drawer no-print" id="savedRecordsSection">
+    <div class="history-header">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-server" style="color: #059669; font-size: 1.2rem;"></i>
+        <h3 style="font-size: 1rem; font-weight: 800; color: #0f172a;">
+          जतन केलेले चौकशी अहवाल रेकॉर्ड्स (Cloud Server Database)
+        </h3>
+        <span class="badge-form" style="background: #ecfdf5; color: #059669; font-weight: 700; border: 1px solid #a7f3d0;" id="serverStatusText">
+          ● रिअल-टाइम सिंक
+        </span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input type="text" id="inpSearchHistory" class="form-control" style="width: 250px; padding: 6px 12px; font-size: 0.82rem;" placeholder="अर्जदार नाव किंवा जावक क्र. शोधा..." oninput="renderHistoryTable()">
+        <button type="button" class="btn-hdr btn-hdr-dark" style="color: #0f172a; border-color: #cbd5e1; background: #ffffff;" onclick="exportHistoryToExcel()">
+          <i class="fa-solid fa-file-excel" style="color: #059669;"></i> Excel डाऊनलोड
+        </button>
+      </div>
+    </div>
+
+    <div style="overflow-x: auto; max-height: 280px; overflow-y: auto;">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th style="width: 6%;">अ.क्र.</th>
+            <th style="width: 14%;">तारीख व वेळ</th>
+            <th style="width: 10%;">जावक क्र.</th>
+            <th style="width: 22%;">दाखला / अहवाल प्रकार</th>
+            <th style="width: 22%;">अर्जदाराचे नाव व गाव</th>
+            <th style="width: 14%;">प्रति (अधिकारी)</th>
+            <th style="width: 12%; text-align: center;">कृती</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody">
+          <tr>
+            <td colspan="7" style="text-align: center; color: #94a3b8; padding: 20px;">
+              अजून कोणतेही अहवाल जतन केलेले नाहीत. वरून फॉर्म भरून प्रिंट केल्यावर आपोआप येथे सेव्ह होतील.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    // Firebase Project Configuration (Same as Setu Suvidha Kankavli)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFk8-NWFs9WUBt2iJ3X1tMdmsYFncD6ng",
+      authDomain: "setu-suvidha-kankavli.firebaseapp.com",
+      projectId: "setu-suvidha-kankavli",
+      storageBucket: "setu-suvidha-kankavli.firebasestorage.app",
+      messagingSenderId: "488713192817",
+      appId: "1:488713192817:web:74b707259dee6b685b22d0",
+      measurementId: "G-E39S07RJY7"
+    };
+
+    let db = null;
+    let isFirebaseReady = false;
+
+    try {
+      if (typeof firebase !== 'undefined') {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.firestore();
+        isFirebaseReady = true;
+      }
+    } catch (e) {
+      console.warn("Firebase initialization warning:", e);
+    }
+
+    // Local Storage Fallback Cache Key
+    const LOCAL_STORAGE_KEY = 'setu_tahsildar_inquiry_records_v1';
+    let savedRecords = [];
+    let currentZoom = 0.9;
+
+    // Helper: English to Devanagari numerals
+    function toDevanagari(num) {
+      if (num === null || num === undefined) return '';
+      const str = String(num);
+      const devanagariDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+      return str.replace(/[0-9]/g, d => devanagariDigits[parseInt(d, 10)]);
+    }
+
+    // Helper: Format Date string YYYY-MM-DD to DD/MM/YYYY
+    function formatDateDisplay(dateStr) {
+      if (!dateStr) return '';
+      const p = dateStr.split('-');
+      if (p.length === 3) {
+        return `${p[2]}/${p[1]}/${p[0]}`;
+      }
+      return dateStr;
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Templates Library containing exact legal language from the 6 scanned forms
+    const TEMPLATES_CONFIG = {
+      caste: {
+        id: 'caste',
+        badgeClass: 'badge-caste',
+        shortName: 'जात प्रमाणपत्र चौकशी',
+        outwardPrefix: 'क्र.सेतू/स्था.चौ.अहवाल/',
+        defaultRole: 'मंडळ अधिकारी',
+        subject: 'विषय – जात प्रमाणपत्र स्थानिक चौकशी अहवाल बाबत.',
+        refLabel: 'चा अर्ज',
+        hasPoints: false,
+        attachment: 'सोबत – मुळ प्रकरण',
+        generateBody: (d) => {
+          const appName = d.applicantName || '_______________________';
+          const village = d.village || '________________';
+          const childRelation = d.childRelation || 'मुलगा';
+          const childName = d.childName || '_______________________';
+
+          return `उपरोक्त विषयान्वये श्री <span class="doc-fill">${escapeHtml(appName)}</span> रा. <span class="doc-fill">${escapeHtml(village)}</span> यांनी ${escapeHtml(childRelation)} <span class="doc-fill">${escapeHtml(childName)}</span> यांचे जात प्रमाणपत्र मिळणे बाबतचे अर्ज या कार्यालयाकडे सादर केलेले आहेत. तरी त्यांच्या अर्जाची छाननी केली असता त्यांच्या जात बाबतचा १९६१ पूर्वीचा पुरावा दिसून येत नाही. तरी त्यांच्या स्थानिक वास्तव्याबाबतची सखोल चौकशी करून जबाब पंचयादी सह आपला स्वयंस्पष्ट चौकशी अहवाल विनाविलंब या कार्यालयाकडे सादर करावा.`;
+        }
+      },
+
+      landless: {
+        id: 'landless',
+        badgeClass: 'badge-landless',
+        shortName: 'भूमिहीन शेतमजूर चौकशी',
+        outwardPrefix: 'क्र.भूमिहीन दाखला/आ.क्र./',
+        defaultRole: 'तलाठी',
+        subject: 'विषयः भूमिहीन शेतमजूर मजूर म्हणून दाखला मिळणेबाबत',
+        refLabel: 'रोजीचा अर्ज',
+        hasPoints: false,
+        attachment: 'संदर्भिय अर्ज अधिक माहितीसाठी या सोबत जोडणेत येत आहे',
+        generateBody: (d) => {
+          const appName = d.applicantName || '_______________________';
+          const village = d.village || '________________';
+
+          return `उपरोक्त संदर्भिय अर्जान्वये अर्जदार श्री. <span class="doc-fill">${escapeHtml(appName)}</span> रा. <span class="doc-fill">${escapeHtml(village)}</span> यांनी भूमिहीन शेतमजूर मजूर म्हणून दाखला मिळणेबाबत या कार्यालयाकडे अर्ज सादर केला आहे तरी या बाबत सखोल चौकशी करून आपला स्वयंस्पष्ट अहवाल या कार्यालयास सादर करणेत यावा.`;
+        }
+      },
+
+      small_farmer: {
+        id: 'small_farmer',
+        badgeClass: 'badge-small_farmer',
+        shortName: 'अल्पभूधारक दाखला (११ मुद्दे)',
+        outwardPrefix: 'सेतू जावक क्र. . ',
+        defaultRole: 'मंडळ अधिकारी',
+        subject: 'विषय - अल्पभूधारक दाखला मिळणेबाबत.',
+        refLabel: 'रोजीचा अर्ज',
+        hasPoints: true,
+        attachment: 'संदर्भिय अर्ज व कागदपत्रे सोबत जोडली आहेत.',
+        generateBody: (d) => {
+          return `उपरोक्त संदर्भिय अर्जान्वये अर्जदार यांनी अल्प भूधारक दाखला मिळावा म्हणून मागणी अर्ज प्रकरण केलेले आहे. तरी खालील मुद्यावर सविस्तर चौकशी करून जुने फेरफार, ७/१२ जबाब पंचयादीसह आपल्या स्वंयस्पष्ट अभिप्रायासह अहवाल पाठवावा अपुरा व त्रोटक अहवाल या कार्यालयाकडे सादर करू नये.`;
+        },
+        points: [
+          "अर्जदार यांची मिळकत वडिलोपार्जित किंवा स्वकष्टार्जीत आहे.",
+          "अर्जदार यांचे सध्याचे वास्तव्य कुठे आहे. रेशन कार्ड, आधार कार्ड, पॅनकार्ड उपलब्ध करून घ्यावे",
+          "अर्जदार यांचे मिळकतीचे क्षेत्रात प्रत्यक्ष शेती केली जाते काय ?",
+          "अर्जदार यांचे वय व ज्याच्यासाठी दाखला आवश्यक आहे त्यांचे नाव व वय अहवालात नमूदकरावे.",
+          "अर्जदार यांचे हिस्याचे ८ अ नुसार किती क्षेत्र आहे.",
+          "सदर क्षेत्राची जमिन ही जिराईत/ बागायती / वरकस आहे अगर कशी? तसेच सदर जमिनीचे मध्ये पीक हे हंगामी, किंवा बारमाही आहे अगर कसे ?",
+          "अर्जदार किमान क्षेत्रानुसार अर्जदार हे अल्पभूधारक ठरतात अगर कसे ?व अर्जदार यांना अल्पभूधारक दाखला कोणत्या कारणासाठी आवश्यकता आहे.",
+          "अर्जदार यांचे एकूण वार्षिक उत्पन्न किती आहे.",
+          "अर्जदार यांनी अर्जासोबत जोडलेल्या ८ अ उताऱ्या मधील सर्व मिळकतींचा तपशिल.स.नं. हि.नं./गट नं. निहाय अहवालात नमूद करावा.",
+          "सर्व फेरफार प्रकरणी सादर करावे.",
+          "सदर मिळकत निर्वाहक क्षेत्रापेक्षा कमी आहे अगर कसे ?"
+        ],
+        concludingNote: "वरील प्रमाणे वस्तुस्थितीची चौकशी करून मुददेनिहाय अहवाल दोन दिवसात या कार्यालयाकडे सादर करावा. अपूर्ण अहवाल या कार्यालयाकडे सादर करू नये."
+      },
+
+      heirship: {
+        id: 'heirship',
+        badgeClass: 'badge-heirship',
+        shortName: 'वारस प्रमाणपत्र चौकशी',
+        outwardPrefix: 'क्र. सेतू/वारस प्रमाणपत्र ',
+        defaultRole: 'तलाठी',
+        subject: 'विषयः वारस प्रमाणपत्र मिळणेबाबत',
+        refLabel: 'रोजीचा अर्ज',
+        hasPoints: false,
+        attachment: 'संदर्भिय अर्ज अधिक माहितीसाठी या सोबत जोडणेत येत आहे.',
+        generateBody: (d) => {
+          const appName = d.applicantName || '_______________________';
+          const village = d.village || '________________';
+          const deceased = d.deceasedName || '_______________________';
+          const scheme = d.pensionScheme || 'वृध्दकलाकार मानधन';
+          const deathDate = d.deathDate ? formatDateDisplay(d.deathDate) : '________________';
+          const deathPlace = d.deathPlace || (d.village || '________________');
+          const taluka = d.taluka || 'कणकवली';
+
+          return `उपरोक्त संदर्भिय अर्जान्वये अर्जदार यांचे कै. श्री. <span class="doc-fill">${escapeHtml(deceased)}</span> यांना <span class="doc-fill">${escapeHtml(scheme)}</span> होते. ते दि. <span class="doc-fill">${escapeHtml(deathDate)}</span> रोजी मु. <span class="doc-fill">${escapeHtml(deathPlace)}</span>, ता. <span class="doc-fill">${escapeHtml(taluka)}</span> येथे मयत झालेले असल्याने अर्जदार यांनी वारस प्रमाणपत्राची मागणी केलेली आहे. तरी याबाबत आपला स्वयंस्पष्ट अहवाल, जबाब व पंचयादी सहीत या कार्यालयास सादर करावा.`;
+        }
+      },
+
+      farmer: {
+        id: 'farmer',
+        badgeClass: 'badge-farmer',
+        shortName: 'शेतकरी दाखला (११ मुद्दे)',
+        outwardPrefix: 'क्र. शे.दा. चौकशी/ ',
+        defaultRole: 'मंडळ अधिकारी',
+        subject: 'विषयः- शेतकरी असल्याचा दाखला मिळणेबाबत.',
+        refLabel: 'रोजीचा अर्ज',
+        hasPoints: true,
+        attachment: 'संदर्भिय कागदपत्रे या सोबत जोडणेत येत आहेत.',
+        generateBody: (d) => {
+          const appName = d.applicantName || '_______________________';
+          const village = d.village || '________________';
+
+          return `उपरोक्त संदर्भिय विषयान्वये अर्जदार श्री <span class="doc-fill">${escapeHtml(appName)}</span> रा. <span class="doc-fill">${escapeHtml(village)}</span> यांचा शेतकरी दाखला मिळणेबाबतचा अर्ज या कार्यालयास प्राप्त झाला आहे. तरी अर्जदारांना शैक्षणिक जमीन खरेदी/शासकीय कामी साठी शेतकरी असल्याचा दाखला मिळावा म्हणून मागणी अर्ज प्रकरण केलेले आहे तरी खालील मुद्द्यावर सविस्तर चौकशी करून जबाब पंचयादीसह आपल्या स्वयस्पष्ट अभिप्रायासह अहवाल पाठवावा अपुरा व अस्पष्ट अहवाल या कार्यालयाकडे सादर करू नये.`;
+        },
+        points: [
+          "अर्जदार यांची मिळकत वडिलोपार्जित किंवा स्वकष्टार्जित आहे.",
+          "अर्जदार यांचे कायम वास्तव कुठे आहे.",
+          "अर्जदार यांचे कुटुंबातील शेती कोण करतात अर्जदार शेती करण्यास पात्र आहेत काय.",
+          "अर्जदार यांचे वय अहवालात नमूद करावे.",
+          "अर्जदार हे स्वतंत्रपणे शेती करतात अगर कसे? ते स्वतंत्रपणे शेती करत असतील तर किती क्षेत्रात शेती करतात.",
+          "सदर क्षेत्रात कोणत्या प्रकारचे पिक घेतात.",
+          "शेती करण्यासाठी स्वतःची अवजारे आहेत काय? व शेतीपासून किती उत्पन्न घेतात.",
+          "अर्जदार यांना शेतकरी असल्याच्या दाखल्याची कोणत्या कारणासाठी आवश्यकता आहे.",
+          "अर्जदार यांचे एकूण उत्पन्न किती आहे.",
+          "अर्जदार यांनी अर्जासोबत जोडलेल्या ८ अ उताऱ्यांमधील सर्व मिळकतीचा तपशील सनं. हि.नं./गट नं. निहाय अहवालात नमूद करावा, सर्व फेरफार प्रकरणी सादर करावे.",
+          "सदर व्यक्तीचे नाव असलेली जमिन मुंबई कुळवहिवाट व शेतजमिन अधिनियम १९४८ कलम ७० अ व मुंबई कुळवहिवाट व शेतजमिन (विदर्भ प्रदेश) अधिनियम १९५८ कलम ८९ कमाल धारणेपेक्षा अधिक आहे अगर कसे ?"
+        ],
+        concludingNote: ""
+      },
+
+      ews: {
+        id: 'ews',
+        badgeClass: 'badge-ews',
+        shortName: 'इडब्ल्यूएस (EWS) चौकशी (४ मुद्दे)',
+        outwardPrefix: 'सेतू/इडब्ल्यूस/प्रमाणपत्र/ ',
+        defaultRole: 'मंडळ अधिकारी',
+        subject: 'विषय - इडब्ल्यूस प्रमाणपत्र चौकशी होऊन मिळणेबाबत.',
+        refLabel: 'चा अर्ज',
+        hasPoints: true,
+        attachment: 'संदर्भिय अर्ज अधिक माहितीसाठी या सोबत जोडणेत येत आहे.',
+        generateBody: (d) => {
+          const ewsFor = d.ewsFor || 'स्वतःला/ पाल्यास';
+          return `उपरोक्त संदर्भिय अर्जान्वये अर्जदाराने ${escapeHtml(ewsFor)} इडब्ल्यूएस प्रमाणपत्र आरक्षण (केंद्र) मिळणेसाठी या कार्यालयाकडे अर्ज केलेला आहे. तरी आपला खालील मुद्द्यांबाबतचा स्वयंस्पष्ट अहवाल या कार्यालयाकडे सादर करावा.`;
+        },
+        points: [
+          "अर्जदार यांचे कुटुंबाची एकत्रित जमीन आहे अगरकशी",
+          "ग्रामिण/नगरपंचायत घरपत्रक क्षेत्र याबाबतचा अहवाल,",
+          "अर्जदार यांच्या कुटुंबाचे सर्व मार्गाने मिळणारे एकूण उत्पन्न रु.८/- लाख पेक्षा कमी असणे आवश्यक",
+          "अर्जदार यांची जात {{CASTE}} आहे याची खात्री करणे."
+        ],
+        concludingNote: ""
+      }
+    };
+
+    // On DOM Ready Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set default dates to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('inpOutwardDate').value = today;
+      document.getElementById('inpAppDate').value = today;
+      document.getElementById('inpDeathDate').value = today;
+
+      // Check URL query parameters
+      const params = new URLSearchParams(window.location.search);
+      const urlTmpl = params.get('t') || params.get('template');
+      if (urlTmpl && TEMPLATES_CONFIG[urlTmpl]) {
+        document.getElementById('selTemplate').value = urlTmpl;
+      }
+
+      switchTemplate(document.getElementById('selTemplate').value);
+      initHistoryStorage();
+      setZoom(0.9);
+    });
+
+    // Switch Form Template
+    function switchTemplate(tmplKey) {
+      const tmpl = TEMPLATES_CONFIG[tmplKey];
+      if (!tmpl) return;
+
+      // Auto update role if not customized
+      document.getElementById('selOfficerRole').value = tmpl.defaultRole;
+
+      // Show/Hide specific field blocks
+      document.getElementById('fieldsCaste').style.display = (tmplKey === 'caste') ? 'block' : 'none';
+      document.getElementById('fieldsHeirship').style.display = (tmplKey === 'heirship') ? 'block' : 'none';
+      document.getElementById('fieldsEws').style.display = (tmplKey === 'ews') ? 'block' : 'none';
+
+      updatePreview();
+    }
+
+    // Collect Current Form Data
+    function getFormData() {
+      const template = document.getElementById('selTemplate').value;
+      const outwardNo = document.getElementById('inpOutwardNo').value.trim();
+      const outwardDate = document.getElementById('inpOutwardDate').value;
+      const year = document.getElementById('inpYear').value.trim() || '२०२६';
+      const officerRole = document.getElementById('selOfficerRole').value;
+      const officerPlace = document.getElementById('inpOfficerPlace').value.trim();
+      const applicantName = document.getElementById('inpApplicantName').value.trim();
+      const village = document.getElementById('inpVillage').value.trim();
+      const taluka = document.getElementById('inpTaluka').value.trim() || 'कणकवली';
+      const appDate = document.getElementById('inpAppDate').value;
+
+      // Template Specifics
+      const childRelation = document.getElementById('selChildRelation')?.value || 'मुलगा';
+      const childName = document.getElementById('inpChildName')?.value.trim() || '';
+      const deceasedName = document.getElementById('inpDeceasedName')?.value.trim() || '';
+      const pensionScheme = document.getElementById('inpPensionScheme')?.value.trim() || 'वृध्दकलाकार मानधन';
+      const deathDate = document.getElementById('inpDeathDate')?.value || '';
+      const deathPlace = document.getElementById('inpDeathPlace')?.value.trim() || '';
+      const ewsFor = document.getElementById('selEwsFor')?.value || 'स्वतःला';
+      const ewsCaste = document.getElementById('inpEwsCaste')?.value.trim() || '';
+
+      return {
+        template,
+        outwardNo,
+        outwardDate,
+        year,
+        officerRole,
+        officerPlace,
+        applicantName,
+        village,
+        taluka,
+        appDate,
+        childRelation,
+        childName,
+        deceasedName,
+        pensionScheme,
+        deathDate,
+        deathPlace,
+        ewsFor,
+        ewsCaste
+      };
+    }
+
+    // Update Live A4 Preview
+    function updatePreview() {
+      const d = getFormData();
+      const tmpl = TEMPLATES_CONFIG[d.template];
+      if (!tmpl) return;
+
+      // 1. Right Header
+      const outNoStr = d.outwardNo ? escapeHtml(d.outwardNo) : '_____';
+      const outDateStr = d.outwardDate ? formatDateDisplay(d.outwardDate) : '____/____/२०२६';
+      const yrStr = d.year ? escapeHtml(d.year) : '२०२६';
+
+      document.getElementById('prevHeaderRight').innerHTML = `
+        <div>${tmpl.outwardPrefix} <span class="doc-fill" style="min-width: 40px;">${outNoStr}</span> /<span>${yrStr}</span></div>
+        <div>तहसिलदार कार्यालय कणकवली</div>
+        <div>दि. <span class="doc-fill" style="min-width: 80px;">${outDateStr}</span></div>
+      `;
+
+      // 2. Addressed To (प्रति)
+      const roleStr = escapeHtml(d.officerRole || 'मंडळ अधिकारी');
+      const placeStr = d.officerPlace ? escapeHtml(d.officerPlace) : '_______________________';
+      document.getElementById('prevToBlock').innerHTML = `
+        <div>प्रति,</div>
+        <div style="padding-left: 20px;">
+          ${roleStr} <span class="doc-fill" style="min-width: 140px;">${placeStr}</span>
+        </div>
+      `;
+
+      // 3. Subject
+      document.getElementById('prevSubjectBlock').textContent = tmpl.subject;
+
+      // 4. Reference
+      const appNameStr = d.applicantName ? escapeHtml(d.applicantName) : '_______________________';
+      const villStr = d.village ? escapeHtml(d.village) : '________________';
+      const talStr = escapeHtml(d.taluka || 'कणकवली');
+      const appDateStr = d.appDate ? formatDateDisplay(d.appDate) : '____/____/२०२६';
+
+      document.getElementById('prevRefBlock').innerHTML = `
+        संदर्भ – श्री. <span class="doc-fill">${appNameStr}</span> रा. <span class="doc-fill">${villStr}</span> ता. <span>${talStr}</span> यांचा दि. <span class="doc-fill">${appDateStr}</span> ${tmpl.refLabel}
+      `;
+
+      // 5. Body
+      document.getElementById('prevBodyParagraph').innerHTML = tmpl.generateBody(d);
+
+      // 6. Numbered Points (If applicable)
+      const ptsContainer = document.getElementById('prevPointsContainer');
+      const ptsList = document.getElementById('prevPointsList');
+      if (tmpl.hasPoints && tmpl.points) {
+        ptsContainer.style.display = 'block';
+        ptsList.innerHTML = '';
+
+        tmpl.points.forEach((pt, idx) => {
+          let ptText = pt;
+          if (d.template === 'ews' && pt.includes('{{CASTE}}')) {
+            const cStr = d.ewsCaste ? `<span class="doc-fill">${escapeHtml(d.ewsCaste)}</span>` : '_______________________';
+            ptText = pt.replace('{{CASTE}}', cStr);
+          }
+
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span class="pt-num">${toDevanagari(idx + 1)})</span>
+            <span>${ptText}</span>
+          `;
+          ptsList.appendChild(li);
+        });
+      } else {
+        ptsContainer.style.display = 'none';
+        ptsList.innerHTML = '';
+      }
+
+      // 7. Concluding Note
+      const concNote = document.getElementById('prevConcludingNote');
+      if (tmpl.concludingNote) {
+        concNote.style.display = 'block';
+        concNote.textContent = tmpl.concludingNote;
+      } else {
+        concNote.style.display = 'none';
+      }
+
+      // 8. Attachment Note
+      document.getElementById('prevAttachmentNote').textContent = tmpl.attachment;
+    }
+
+    // Zoom Controls
+    function setZoom(val) {
+      document.querySelectorAll('.btn-zm').forEach(b => b.classList.remove('active'));
+      const sheet = document.getElementById('printableA4Sheet');
+      const wrap = document.getElementById('paperScrollWrap');
+
+      if (val === 'fit') {
+        const wrapWidth = wrap.clientWidth - 48;
+        const a4WidthPx = 210 * 3.7795275591; // ~794px
+        let fitScale = Math.min(1.0, Math.max(0.6, wrapWidth / a4WidthPx));
+        currentZoom = fitScale;
+        sheet.style.transform = `scale(${fitScale})`;
+      } else {
+        currentZoom = val;
+        sheet.style.transform = `scale(${val})`;
+        if (val === 0.9) document.getElementById('btnZoom90')?.classList.add('active');
+      }
+    }
+
+    // Fill Sample Data for testing / quick operator workflow
+    function fillSampleData() {
+      const current = document.getElementById('selTemplate').value;
+      document.getElementById('inpOutwardNo').value = '१२८';
+      document.getElementById('inpYear').value = '२०२६';
+      document.getElementById('inpOfficerPlace').value = 'कलमठ';
+      document.getElementById('inpApplicantName').value = 'श्री. बाळकृष्ण सखाराम सावंत';
+      document.getElementById('inpVillage').value = 'कलमठ';
+      document.getElementById('inpTaluka').value = 'कणकवली';
+
+      if (current === 'caste') {
+        document.getElementById('selChildRelation').value = 'मुलगा';
+        document.getElementById('inpChildName').value = 'कुमार अमित बाळकृष्ण सावंत';
+      } else if (current === 'heirship') {
+        document.getElementById('inpDeceasedName').value = 'कै. श्री. सखाराम विठ्ठल सावंत';
+        document.getElementById('inpPensionScheme').value = 'वृध्दकलाकार मानधन';
+        document.getElementById('inpDeathPlace').value = 'कलमठ';
+      } else if (current === 'ews') {
+        document.getElementById('selEwsFor').value = 'पाल्यास';
+        document.getElementById('inpEwsCaste').value = 'मराठा';
+      }
+
+      updatePreview();
+    }
+
+    // Reset Form
+    function resetForm() {
+      if (confirm("सर्व माहिती कोरी करायची आहे का?")) {
+        document.getElementById('inpOutwardNo').value = '';
+        document.getElementById('inpApplicantName').value = '';
+        document.getElementById('inpVillage').value = '';
+        document.getElementById('inpOfficerPlace').value = '';
+        document.getElementById('inpChildName').value = '';
+        document.getElementById('inpDeceasedName').value = '';
+        document.getElementById('inpEwsCaste').value = '';
+        updatePreview();
+      }
+    }
+
+    // SAVE & HISTORY PERSISTENCE (Cloud Firestore + LocalStorage)
+    function initHistoryStorage() {
+      // 1. Read from localStorage initially
+      try {
+        const local = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (local) {
+          savedRecords = JSON.parse(local);
+          renderHistoryTable();
+          document.getElementById('savedCountBadge').textContent = toDevanagari(savedRecords.length);
+        }
+      } catch (e) {
+        console.warn("Local storage read error", e);
+      }
+
+      // 2. Real-time Firestore sync
+      if (isFirebaseReady && db) {
+        try {
+          db.collection('tahsildar_inquiry_forms')
+            .orderBy('createdAt', 'desc')
+            .limit(60)
+            .onSnapshot(snapshot => {
+              const list = [];
+              snapshot.forEach(doc => {
+                const data = doc.data();
+                list.push({ id: doc.id, ...data });
+              });
+
+              if (list.length > 0) {
+                savedRecords = list;
+                try {
+                  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(savedRecords));
+                } catch (err) {}
+                renderHistoryTable();
+                document.getElementById('savedCountBadge').textContent = toDevanagari(savedRecords.length);
+                document.getElementById('serverStatusText').innerHTML = `● सर्व्हर सिंक (${toDevanagari(savedRecords.length)})`;
+              }
+            }, err => {
+              console.warn("Firestore onSnapshot error:", err);
+              document.getElementById('serverStatusText').innerHTML = `● स्थानिक मेमरी (Offline)`;
+            });
+        } catch (err) {
+          console.warn("Firestore subscription error", err);
+        }
+      }
+    }
+
+    // Save record to Server & LocalStorage
+    async function saveCurrentRecord() {
+      const d = getFormData();
+      const tmpl = TEMPLATES_CONFIG[d.template];
+
+      const record = {
+        template: d.template,
+        templateName: tmpl.shortName,
+        outwardNo: d.outwardNo || '-',
+        outwardDate: d.outwardDate || new Date().toISOString().split('T')[0],
+        officerRole: d.officerRole,
+        officerPlace: d.officerPlace || '-',
+        applicantName: d.applicantName || 'नाव न दिलेले',
+        village: d.village || '-',
+        taluka: d.taluka || 'कणकवली',
+        fullData: d,
+        clientTimestamp: new Date().toISOString()
+      };
+
+      // 1. Save to Local Storage immediately
+      try {
+        savedRecords.unshift(record);
+        if (savedRecords.length > 100) savedRecords = savedRecords.slice(0, 100);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(savedRecords));
+        renderHistoryTable();
+        document.getElementById('savedCountBadge').textContent = toDevanagari(savedRecords.length);
+      } catch (e) {
+        console.warn("LocalStorage save error", e);
+      }
+
+      // 2. Save to Cloud Firestore
+      if (isFirebaseReady && db) {
+        try {
+          await db.collection('tahsildar_inquiry_forms').add({
+            ...record,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        } catch (err) {
+          console.warn("Firestore write error, kept in local storage:", err);
+        }
+      }
+    }
+
+    // Handle Print & Save (Main User Action)
+    async function handlePrintAndSave() {
+      // Save data first
+      await saveCurrentRecord();
+
+      // Ensure 100% zoom for print fidelity
+      const sheet = document.getElementById('printableA4Sheet');
+      const originalTransform = sheet.style.transform;
+      sheet.style.transform = 'none';
+
+      setTimeout(() => {
+        window.print();
+        setTimeout(() => {
+          sheet.style.transform = originalTransform;
+        }, 500);
+      }, 200);
+    }
+
+    // Save Only Button
+    async function handleSaveOnly() {
+      await saveCurrentRecord();
+      alert("✅ अर्ज सर्व्हरवर यशस्वीरित्या जतन (Save) झाला आहे!");
+    }
+
+    // Render Saved Records Table
+    function renderHistoryTable() {
+      const tbody = document.getElementById('historyTableBody');
+      const query = (document.getElementById('inpSearchHistory')?.value || '').toLowerCase().trim();
+
+      let filtered = savedRecords;
+      if (query) {
+        filtered = savedRecords.filter(r => {
+          const name = (r.applicantName || '').toLowerCase();
+          const out = (r.outwardNo || '').toLowerCase();
+          const vill = (r.village || '').toLowerCase();
+          const tname = (r.templateName || '').toLowerCase();
+          return name.includes(query) || out.includes(query) || vill.includes(query) || tname.includes(query);
+        });
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; color: #94a3b8; padding: 20px;">
+              ${query ? 'शोध जुळणारा कोणताही अर्ज सापडला नाही.' : 'अजून कोणतेही अर्ज सेव्ह केलेले नाहीत.'}
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      filtered.forEach((r, idx) => {
+        const tmpl = TEMPLATES_CONFIG[r.template] || { shortName: r.templateName, badgeClass: 'badge-caste' };
+        const timeStr = r.clientTimestamp ? new Date(r.clientTimestamp).toLocaleString('mr-IN', { dateStyle: 'short', timeStyle: 'short' }) : '-';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><b>${toDevanagari(idx + 1)}</b></td>
+          <td style="font-size: 0.8rem; color: #64748b;">${timeStr}</td>
+          <td><span style="font-weight: 700; color: #1e3a8a;">${toDevanagari(r.outwardNo)}</span></td>
+          <td><span class="badge-form ${tmpl.badgeClass}">${tmpl.shortName}</span></td>
+          <td><b>${escapeHtml(r.applicantName)}</b><br><small style="color: #64748b;">मु. ${escapeHtml(r.village)}</small></td>
+          <td>${escapeHtml(r.officerRole || 'मंडळ अधिकारी')} (${escapeHtml(r.officerPlace || '-')})</td>
+          <td style="text-align: center;">
+            <div style="display: flex; gap: 4px; justify-content: center;">
+              <button type="button" class="btn-hdr btn-hdr-primary" style="padding: 3px 8px; font-size: 0.72rem;" onclick="loadRecordAndPrint('${escapeHtml(r.id || idx)}')" title="हा अर्ज पुन्हा प्रिंट करा">
+                <i class="fa-solid fa-print"></i> प्रिंट
+              </button>
+              <button type="button" class="btn-hdr btn-hdr-dark" style="padding: 3px 8px; font-size: 0.72rem; color: #0f172a; border-color: #cbd5e1;" onclick="loadRecordIntoForm('${escapeHtml(r.id || idx)}')" title="माहिती पुन्हा लोड करून सुधारा">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Load an existing record into the form inputs
+    function loadRecordIntoForm(recordIdOrIndex) {
+      let r = savedRecords.find(x => x.id === recordIdOrIndex);
+      if (!r && !isNaN(recordIdOrIndex)) {
+        r = savedRecords[parseInt(recordIdOrIndex, 10)];
+      }
+      if (!r || !r.fullData) return;
+
+      const d = r.fullData;
+      document.getElementById('selTemplate').value = d.template || 'caste';
+      switchTemplate(d.template || 'caste');
+
+      document.getElementById('inpOutwardNo').value = d.outwardNo || '';
+      document.getElementById('inpOutwardDate').value = d.outwardDate || '';
+      document.getElementById('inpYear').value = d.year || '२०२६';
+      document.getElementById('selOfficerRole').value = d.officerRole || 'मंडळ अधिकारी';
+      document.getElementById('inpOfficerPlace').value = d.officerPlace || '';
+      document.getElementById('inpApplicantName').value = d.applicantName || '';
+      document.getElementById('inpVillage').value = d.village || '';
+      document.getElementById('inpTaluka').value = d.taluka || 'कणकवली';
+      document.getElementById('inpAppDate').value = d.appDate || '';
+
+      if (d.childRelation) document.getElementById('selChildRelation').value = d.childRelation;
+      if (d.childName) document.getElementById('inpChildName').value = d.childName;
+      if (d.deceasedName) document.getElementById('inpDeceasedName').value = d.deceasedName;
+      if (d.pensionScheme) document.getElementById('inpPensionScheme').value = d.pensionScheme;
+      if (d.deathDate) document.getElementById('inpDeathDate').value = d.deathDate;
+      if (d.deathPlace) document.getElementById('inpDeathPlace').value = d.deathPlace;
+      if (d.ewsFor) document.getElementById('selEwsFor').value = d.ewsFor;
+      if (d.ewsCaste) document.getElementById('inpEwsCaste').value = d.ewsCaste;
+
+      updatePreview();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Load and Trigger Print immediately
+    function loadRecordAndPrint(recordIdOrIndex) {
+      loadRecordIntoForm(recordIdOrIndex);
+      setTimeout(() => {
+        handlePrintAndSave();
+      }, 300);
+    }
+
+    // Export History records to Excel
+    function exportHistoryToExcel() {
+      if (savedRecords.length === 0) {
+        alert("डाउनलोड करण्यासाठी कोणतेही रेकॉर्ड उपलब्ध नाही.");
+        return;
+      }
+
+      const rows = savedRecords.map((r, i) => ({
+        "अ.क्र.": i + 1,
+        "दिनांक व वेळ": r.clientTimestamp || '',
+        "जावक क्रमांक": r.outwardNo || '',
+        "दाखला / अहवाल प्रकार": r.templateName || '',
+        "अर्जदाराचे नाव": r.applicantName || '',
+        "गाव": r.village || '',
+        "तालुका": r.taluka || '',
+        "प्रति अधिकारी": r.officerRole || '',
+        "मंडळ / सज्जा": r.officerPlace || ''
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "चौकशी अहवाल नोंदी");
+      XLSX.writeFile(wb, `तहसिलदार_चौकशी_अहवाल_नोंदी_${new Date().toISOString().split('T')[0]}.xlsx`);
+    }
+  </script>
+
+</body>
+</html>
