@@ -9,7 +9,7 @@
   <!-- Google Fonts: Mukta, Noto Sans Devanagari & Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@400;500;600;700;800&family=Gotu&family=Hind:wght@400;500;600;700&family=Martel:wght@400;600;700;800&family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Noto+Serif+Devanagari:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=Tiro+Devanagari+Marathi:ital@0;1&family=Yatra+One&display=swap" rel="stylesheet">
 
   <!-- Font Awesome 6.5.1 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -370,7 +370,7 @@
       min-height: 297mm;
       background: #ffffff;
       color: #000000;
-      padding: 22mm 24mm 22mm 25mm;
+      padding: 20mm 14mm 20mm 22mm;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
       box-sizing: border-box;
       position: relative;
@@ -619,7 +619,7 @@
         min-height: 297mm !important;
         max-height: 297mm !important;
         margin: 0 !important;
-        padding: 22mm 24mm 22mm 25mm !important;
+        padding: 20mm 14mm 20mm 22mm !important;
         background: #ffffff !important;
         color: #000000 !important;
         box-shadow: none !important;
@@ -866,8 +866,25 @@
           <span style="font-weight: 700; font-size: 0.85rem;" id="previewStatus">A4 हुबेहूब शासकीय पूर्वावलोकन</span>
         </div>
 
-        <div class="zoom-ctrls">
-          <span style="font-size: 0.74rem; color: #64748b; margin-right: 4px;">झूम:</span>
+        <div class="zoom-ctrls" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <!-- Font Selector -->
+          <div style="display: flex; align-items: center; gap: 4px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; padding: 2px 6px;">
+            <i class="fa-solid fa-font" style="color: #6d28d9; font-size: 0.75rem;"></i>
+            <span style="font-size: 0.74rem; color: #475569; font-weight: 600;">फॉन्ट:</span>
+            <select id="selFontFamily" onchange="changeFontFamily(this.value)" style="border: none; background: transparent; font-size: 0.75rem; font-weight: 700; color: #0f172a; outline: none; cursor: pointer;">
+              <option value="'Mukta', sans-serif">मुक्ता (Mukta - शिफारसीय)</option>
+              <option value="'Tiro Devanagari Marathi', serif">तिरो मराठी (Tiro Devanagari Marathi - शासकीय)</option>
+              <option value="'Noto Sans Devanagari', sans-serif">नोटो सॅन्स (Noto Sans)</option>
+              <option value="'Noto Serif Devanagari', serif">नोटो सेरिफ (Noto Serif - पारंपरिक)</option>
+              <option value="'Hind', sans-serif">हिंद (Hind - सेतू मानक)</option>
+              <option value="'Anek Devanagari', sans-serif">अनेक देवनागरी (Anek Devanagari)</option>
+              <option value="'Martel', serif">मार्टेल (Martel - राजपत्र)</option>
+              <option value="'Gotu', sans-serif">गोटू (Gotu)</option>
+              <option value="'Yatra One', cursive">यात्रा वन (Yatra One)</option>
+            </select>
+          </div>
+
+          <span style="font-size: 0.74rem; color: #64748b; margin-right: 2px;">झूम:</span>
           <button type="button" class="btn-zm" onclick="setZoom(0.8)">80%</button>
           <button type="button" class="btn-zm active" id="btnZoom90" onclick="setZoom(0.9)">90%</button>
           <button type="button" class="btn-zm" onclick="setZoom(1.0)">100%</button>
@@ -1234,6 +1251,18 @@
 
       switchTemplate(document.getElementById('selTemplate').value);
       initHistoryStorage();
+      
+      // Load saved font preference
+      try {
+        const savedFont = localStorage.getItem('setu_chaukashi_font_v1');
+        if (savedFont) {
+          const sel = document.getElementById('selFontFamily');
+          if (sel) sel.value = savedFont;
+          const sheet = document.getElementById('printableA4Sheet');
+          if (sheet) sheet.style.fontFamily = savedFont;
+        }
+      } catch (e) {}
+
       setZoom(0.9);
     });
 
@@ -1400,6 +1429,17 @@
 
       // 8. Attachment Note
       document.getElementById('prevAttachmentNote').textContent = tmpl.attachment;
+    }
+
+    // Font Family Controls
+    function changeFontFamily(fontFamilyStr) {
+      const sheet = document.getElementById('printableA4Sheet');
+      if (sheet) {
+        sheet.style.fontFamily = fontFamilyStr;
+      }
+      try {
+        localStorage.setItem('setu_chaukashi_font_v1', fontFamilyStr);
+      } catch (e) {}
     }
 
     // Zoom Controls
