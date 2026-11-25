@@ -17,6 +17,9 @@
             document.write('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"><\/script>');
         }
     </script>
+    <!-- Firebase App & Firestore SDKs for Cloud Date-Wise Report Persistence -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --primary: #1e3a8a;
@@ -600,6 +603,148 @@
             to { bottom: 0; opacity: 0; }
         }
 
+        /* Server Sync Badge & Date Status Banner */
+        .server-sync-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.45);
+        }
+
+        .server-sync-pill.offline {
+            background: rgba(245, 158, 11, 0.22);
+            color: #fde68a;
+            border-color: rgba(245, 158, 11, 0.45);
+        }
+
+        .server-sync-pill.saving {
+            background: rgba(59, 130, 246, 0.25);
+            color: #bfdbfe;
+            border-color: rgba(96, 165, 250, 0.6);
+        }
+
+        .date-status-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            font-size: 13.5px;
+            font-weight: 600;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        .date-status-banner.status-saved {
+            background: #ecfdf5;
+            border-color: #6ee7b7;
+            color: #065f46;
+        }
+
+        .date-status-banner.status-pending {
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #1e40af;
+        }
+
+        .date-status-banner.status-demo {
+            background: #fffbeb;
+            border-color: #fcd34d;
+            color: #92400e;
+        }
+
+        .date-status-banner.status-empty {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #991b1b;
+        }
+
+        /* Back-Dated Server Reports History Table */
+        .history-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .history-table-wrap {
+            overflow-x: auto;
+            max-height: 420px;
+            overflow-y: auto;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .history-table th {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 10px 12px;
+            text-align: center;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            white-space: nowrap;
+        }
+
+        .history-table td {
+            padding: 9px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .history-table tr:hover td {
+            background: #f1f5f9;
+        }
+
+        .history-table tr.active-date-row td {
+            background: #dbeafe !important;
+            font-weight: 700;
+        }
+
+        .btn-xs {
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-xs:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-xs-view { background: #2563eb; color: #fff; }
+        .btn-xs-print { background: #059669; color: #fff; }
+        .btn-xs-excel { background: #d97706; color: #fff; }
+        .btn-xs-del { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+        .btn-xs-del:hover { background: #dc2626; color: #fff; }
+
         /* ==========================================================
            PRINT STYLESHEET
            ========================================================== */
@@ -618,6 +763,9 @@
             .controls-card,
             .quick-actions-bar,
             .tab-buttons,
+            .date-status-banner,
+            .history-card,
+            .server-sync-pill,
             details,
             #toast {
                 display: none !important;
@@ -687,13 +835,18 @@
             <a href="election-report-generator.html" style="background: rgba(255,255,255,0.28); color:#ffffff;"><i class="fa-solid fa-square-poll-vertical"></i> निवडणूक अहवाल (Form 6, 7, 8)</a>
             <a href="ero-pendency-report-generator.html" style="color:#e9d5ff;"><i class="fa-solid fa-list-check"></i> ERO पेंडन्सी अहवाल (नवीन)</a>
         </div>
-        <div style="font-size:12px;opacity:0.9;">eMudra CSC • २६८ - कणकवली विधानसभा निवडणूक दालन</div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <span id="serverSyncBadge" class="server-sync-pill offline" title="क्लाउड सर्व्हर सिंक स्थिती">
+                <i class="fa-solid fa-cloud"></i> सर्व्हर जोडत आहे...
+            </span>
+            <div style="font-size:12px;opacity:0.9;">eMudra CSC • २६८ - कणकवली विधानसभा निवडणूक दालन</div>
+        </div>
     </div>
 
     <!-- Header Card -->
     <div class="header-card no-print">
         <h1>२६८ - कणकवली विधानसभा मतदारसंघ निवडणूक अहवाल जनरेटर</h1>
-        <div class="subtitle">फॉर्म क्र. ६, ७ व ८ एक्सेल फाईल्स अपलोड करून तालुकावार व एकत्रित अहवाल तयार करा</div>
+        <div class="subtitle">फॉर्म क्र. ६, ७ व ८ एक्सेल फाईल्स अपलोड करून तालुकावार व एकत्रित अहवाल तयार करा — प्रत्येक तारखेचा शेवटचा अहवाल सर्व्हरवर आपोआप सेव्ह होतो</div>
         
         <div class="constituency-chips">
             <span class="chip chip-devgad"><i class="fa-solid fa-location-dot"></i> १ ते १३६ : देवगड तालुका (Devgad)</span>
@@ -707,6 +860,9 @@
         <div class="section-title">
             <i class="fa-solid fa-file-excel" style="color:#059669;"></i>
             <span>१) फॉर्म ६, ७ व ८ च्या ३ एक्सेल फाईल्स निवडा किंवा ड्रॅग करा</span>
+            <span id="uploadTargetDateBadge" style="margin-left:auto; font-size:12.5px; background:#dbeafe; color:#1e40af; padding:4px 12px; border-radius:20px; border:1px solid #93c5fd;">
+                📅 सेव्ह तारीख: --
+            </span>
         </div>
 
         <div class="upload-grid">
@@ -747,7 +903,7 @@
         <div class="quick-actions-bar">
             <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
                 <button type="button" class="btn btn-success" onclick="processAllUploadedFiles()">
-                    <i class="fa-solid fa-bolt"></i> अहवाल तयार करा (Generate Report)
+                    <i class="fa-solid fa-bolt"></i> अहवाल तयार करा व सर्व्हरवर सेव्ह करा
                 </button>
                 <button type="button" class="btn btn-primary" onclick="loadSampleDemoData()">
                     <i class="fa-solid fa-wand-magic-sparkles"></i> फोटोप्रमाणे नमुना डेटा पहा (Load Demo)
@@ -773,11 +929,18 @@
                 <option value="ALL_PAGES">📑 सर्व तालुके स्वतंत्र पानांवर (All Separate Pages)</option>
             </select>
 
-            <span class="filter-label" style="margin-left:8px;"><i class="fa-regular fa-calendar"></i> तारीख:</span>
+            <span class="filter-label" style="margin-left:4px;"><i class="fa-regular fa-calendar"></i> तारीख:</span>
             <input type="date" id="reportDate" class="form-date" onchange="onDateChange()">
+
+            <select id="savedDateQuickSelect" class="form-date" onchange="onQuickSavedDateSelect()" title="सर्व्हरवर जतन केलेल्या मागील तारखेचा अहवाल झटपट पहा" style="min-width:195px; border-color:#10b981; background:#f0fdf4; color:#065f46; font-weight:600; cursor:pointer;">
+                <option value="">📂 जतन केलेल्या तारखा (०)</option>
+            </select>
         </div>
 
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-success" id="btnManualSaveServer" onclick="saveCurrentReportToServer({ manual: true })" title="सध्याचा अहवाल निवडलेल्या तारखेसाठी सर्व्हरवर सेव्ह करा">
+                <i class="fa-solid fa-cloud-arrow-up"></i> सर्व्हरवर सेव्ह करा
+            </button>
             <button type="button" class="btn btn-primary" onclick="printCurrentReport()">
                 <i class="fa-solid fa-print"></i> प्रिंट / Export PDF
             </button>
@@ -791,7 +954,7 @@
     </div>
 
     <!-- Quick Tab Switchers -->
-    <div class="no-print" style="margin-bottom: 16px;">
+    <div class="no-print" style="margin-bottom: 14px;">
         <div class="tab-buttons">
             <button type="button" class="tab-btn active" id="tabALL" onclick="selectTab('ALL')">
                 <i class="fa-solid fa-table-cells"></i> सर्व तालुके एकत्र अहवाल (Common Report)
@@ -811,10 +974,58 @@
         </div>
     </div>
 
+    <!-- Current Date Status Banner -->
+    <div id="dateStatusBanner" class="date-status-banner no-print status-demo">
+        <span><i class="fa-solid fa-circle-info"></i> नमुना डेटा लोड केला आहे...</span>
+    </div>
+
     <!-- Report Paper Display Section -->
     <div class="report-paper" id="reportPaper">
         <!-- Rendered Report Will Appear Here -->
         <div id="reportContentArea"></div>
+    </div>
+
+    <!-- Saved Date-Wise Server Reports History Card -->
+    <div class="card no-print history-card" id="savedReportsHistoryCard">
+        <div class="section-title" style="margin-bottom:12px;">
+            <i class="fa-solid fa-server" style="color:#2563eb;"></i>
+            <span>सर्व्हरवर जतन केलेले दिनांकनिहाय अहवाल (Back-Dated Reports History)</span>
+            <span id="savedReportsCountBadge" style="background:#dbeafe; color:#1e40af; padding:2px 10px; border-radius:16px; font-size:12px;">० दिवस</span>
+            <span style="margin-left:auto; font-size:12px; color:#64748b; font-weight:500;">प्रत्येक तारखेला शेवटचा तयार केलेला अहवाल कायमस्वरूपी जतन राहतो</span>
+        </div>
+
+        <div class="history-toolbar">
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <label for="historySearchInput" style="font-size:13px; font-weight:600; color:#334155;">महिना / तारीख शोधा:</label>
+                <input type="text" id="historySearchInput" placeholder="उदा. 2026-11 किंवा 25/11..." oninput="renderSavedReportsHistory()" style="padding:7px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; min-width:220px;">
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <button type="button" class="btn btn-outline" style="padding:7px 14px; font-size:13px;" onclick="fetchServerReports(true)">
+                    <i class="fa-solid fa-arrows-rotate"></i> सर्व्हर रिफ्रेश करा
+                </button>
+            </div>
+        </div>
+
+        <div class="history-table-wrap">
+            <table class="history-table" id="savedReportsTable">
+                <thead>
+                    <tr>
+                        <th>दिनांक (Date)</th>
+                        <th>Form 6 (Pend / Total)</th>
+                        <th>Form 7 (Pend / Total)</th>
+                        <th>Form 8 (Pend / Total)</th>
+                        <th>एकूण पेंडन्सी / फॉर्म्स</th>
+                        <th>शेवटचे सेव्ह व फाईल्स</th>
+                        <th>कृती (Back-Dated Print / View)</th>
+                    </tr>
+                </thead>
+                <tbody id="savedReportsTbody">
+                    <tr>
+                        <td colspan="7" style="padding:20px; color:#64748b;">सर्व्हरवरून जतन केलेले अहवाल लोड होत आहेत...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Optional BLO Login Merged Data Section (Preserved) -->
@@ -839,19 +1050,739 @@
 <div id="toast">सूचना</div>
 
 <script>
-    // State storage for Form 6, 7, 8 Part Records
-    let parsedData = {
-        FORM6: {},
-        FORM7: {},
-        FORM8: {}
+    // ==========================================================
+    // FIREBASE CLOUD SERVER CONFIG & DATE-WISE PERSISTENCE
+    // ==========================================================
+    const FIREBASE_CONFIG = {
+        apiKey: "AIzaSyA1OWHOywqX6Hs7GR60PMCBfOrflk4G-Nw",
+        authDomain: "e-mudra-aadhar-center.firebaseapp.com",
+        projectId: "e-mudra-aadhar-center",
+        storageBucket: "e-mudra-aadhar-center.firebasestorage.app",
+        messagingSenderId: "689091171416",
+        appId: "1:689091171416:web:fb56bcbf0d247509b7262d"
     };
+    const FIRESTORE_COLLECTION = 'election_daily_reports';
+    const FIRESTORE_REST_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/${FIRESTORE_COLLECTION}`;
+    const LOCAL_REPORTS_KEY = 'emudra_election_daily_reports_v1';
 
-    // Taluka Aggregated Summary Cache
-    let talukaSummary = {
-        FORM6: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
-        FORM7: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
-        FORM8: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] }
-    };
+    let db = null;
+    let isFirebaseReady = false;
+    let savedReportsMap = {}; // { 'YYYY-MM-DD': reportRecord }
+    let currentReportSource = 'demo'; // 'demo' | 'fresh_upload' | 'server_loaded' | 'empty'
+    let loadedReportDate = null;
+    let loadedReportUpdatedAtMs = 0;
+    let uploadedFileNames = { FORM6: '', FORM7: '', FORM8: '' };
+    let initialServerSyncDone = false;
+
+    function createEmptyParsedData() {
+        return { FORM6: {}, FORM7: {}, FORM8: {} };
+    }
+
+    function createEmptyTalukaSummary() {
+        return {
+            FORM6: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
+            FORM7: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
+            FORM8: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] }
+        };
+    }
+
+    // State storage for Form 6, 7, 8 Part Records
+    let parsedData = createEmptyParsedData();
+    let talukaSummary = createEmptyTalukaSummary();
+
+    function escapeHtml(str) {
+        return String(str || '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+    }
+
+    function getLocalTodayISO() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    function formatISOToDisplay(isoDate) {
+        if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return isoDate || '-';
+        const parts = isoDate.split('-');
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function formatTimestampDisplay(ms) {
+        if (!ms) return '-';
+        try {
+            return new Date(Number(ms)).toLocaleString('en-IN', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', hour12: true
+            });
+        } catch (e) {
+            return new Date(Number(ms)).toISOString();
+        }
+    }
+
+    function getSelectedDateISO() {
+        const el = document.getElementById('reportDate');
+        return (el && el.value) ? el.value : getLocalTodayISO();
+    }
+
+    function isReportNonEmpty(ts) {
+        if (!ts) return false;
+        const talukas = ['Devgad', 'Vaibhavwadi', 'Kankavli'];
+        return ['FORM6', 'FORM7', 'FORM8'].some(ft =>
+            talukas.some(tal => {
+                const row = (ts[ft] && ts[ft][tal]) || [];
+                return row.some(v => Number(v) > 0);
+            })
+        );
+    }
+
+    function packParsedData(pd) {
+        const out = { FORM6: {}, FORM7: {}, FORM8: {} };
+        ['FORM6', 'FORM7', 'FORM8'].forEach(ft => {
+            const src = (pd && pd[ft]) || {};
+            Object.keys(src).forEach(p => {
+                const r = src[p];
+                if (r) {
+                    out[ft][p] = [
+                        Number(r.d1) || 0,
+                        Number(r.d2) || 0,
+                        Number(r.d3) || 0,
+                        Number(r.d4) || 0,
+                        Number(r.d5) || 0
+                    ];
+                }
+            });
+        });
+        return out;
+    }
+
+    function unpackParsedData(packed) {
+        const out = { FORM6: {}, FORM7: {}, FORM8: {} };
+        ['FORM6', 'FORM7', 'FORM8'].forEach(ft => {
+            const src = (packed && packed[ft]) || {};
+            Object.keys(src).forEach(p => {
+                const val = src[p];
+                if (Array.isArray(val)) {
+                    const d1 = Number(val[0]) || 0;
+                    const d2 = Number(val[1]) || 0;
+                    const d3 = Number(val[2]) || 0;
+                    const d4 = Number(val[3]) || 0;
+                    const d5 = Number(val[4]) || 0;
+                    const pendency = d2 + d3 + d4 + d5;
+                    out[ft][p] = { d1, d2, d3, d4, d5, pendency, totalForms: d1 + pendency };
+                } else if (val && typeof val === 'object') {
+                    out[ft][p] = val;
+                }
+            });
+        });
+        return out;
+    }
+
+    function computeSummaryMetrics(ts) {
+        const metrics = {
+            f6Pend: 0, f6Tot: 0,
+            f7Pend: 0, f7Tot: 0,
+            f8Pend: 0, f8Tot: 0,
+            totalPend: 0, totalForms: 0
+        };
+        const talukas = ['Devgad', 'Vaibhavwadi', 'Kankavli'];
+        const map = { FORM6: ['f6Pend', 'f6Tot'], FORM7: ['f7Pend', 'f7Tot'], FORM8: ['f8Pend', 'f8Tot'] };
+        ['FORM6', 'FORM7', 'FORM8'].forEach(ft => {
+            const [pKey, tKey] = map[ft];
+            talukas.forEach(tal => {
+                const row = (ts && ts[ft] && ts[ft][tal]) || [0,0,0,0,0,0,0];
+                metrics[pKey] += Number(row[5] || 0);
+                metrics[tKey] += Number(row[6] || 0);
+            });
+        });
+        metrics.totalPend = metrics.f6Pend + metrics.f7Pend + metrics.f8Pend;
+        metrics.totalForms = metrics.f6Tot + metrics.f7Tot + metrics.f8Tot;
+        return metrics;
+    }
+
+    function parseServerDoc(docId, data) {
+        if (!data) return null;
+        const dateISO = data.date || docId;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dateISO)) return null;
+
+        let payload = {};
+        if (typeof data.payloadJson === 'string') {
+            try { payload = JSON.parse(data.payloadJson); } catch (e) { payload = {}; }
+        } else if (data.payload && typeof data.payload === 'object') {
+            payload = data.payload;
+        } else {
+            payload = data;
+        }
+
+        const ts = payload.talukaSummary || createEmptyTalukaSummary();
+        const pd = unpackParsedData(payload.packedParts || payload.parsedData || {});
+        const fNames = payload.fileNames || { FORM6: '', FORM7: '', FORM8: '' };
+        const updatedAtMs = Number(data.updatedAtMs || Date.now());
+
+        return {
+            date: dateISO,
+            dateFormatted: data.dateFormatted || formatISOToDisplay(dateISO),
+            updatedAtMs: updatedAtMs,
+            updatedAtDisplay: data.updatedAtDisplay || formatTimestampDisplay(updatedAtMs),
+            talukaSummary: ts,
+            parsedData: pd,
+            fileNames: fNames,
+            summaryMetrics: payload.summaryMetrics || computeSummaryMetrics(ts),
+            syncedToServer: data.syncedToServer !== false
+        };
+    }
+
+    function loadLocalReportsCache() {
+        try {
+            const raw = localStorage.getItem(LOCAL_REPORTS_KEY);
+            if (!raw) return {};
+            const parsed = JSON.parse(raw);
+            return (parsed && typeof parsed === 'object') ? parsed : {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function saveLocalReportsCache() {
+        try {
+            const slimMap = {};
+            Object.keys(savedReportsMap).forEach(dateKey => {
+                const rec = savedReportsMap[dateKey];
+                if (!rec) return;
+                slimMap[dateKey] = {
+                    date: rec.date,
+                    dateFormatted: rec.dateFormatted,
+                    updatedAtMs: rec.updatedAtMs,
+                    updatedAtDisplay: rec.updatedAtDisplay,
+                    talukaSummary: rec.talukaSummary,
+                    packedParts: packParsedData(rec.parsedData),
+                    fileNames: rec.fileNames,
+                    summaryMetrics: rec.summaryMetrics,
+                    syncedToServer: rec.syncedToServer !== false
+                };
+            });
+            localStorage.setItem(LOCAL_REPORTS_KEY, JSON.stringify(slimMap));
+        } catch (e) {
+            console.warn('LocalStorage write warning:', e);
+        }
+    }
+
+    function hydrateLocalReportsCache() {
+        const rawMap = loadLocalReportsCache();
+        const hydrated = {};
+        Object.keys(rawMap).forEach(k => {
+            const rec = parseServerDoc(k, rawMap[k]);
+            if (rec) hydrated[rec.date] = rec;
+        });
+        savedReportsMap = hydrated;
+    }
+
+    function setServerBadge(state, text) {
+        const badge = document.getElementById('serverSyncBadge');
+        if (!badge) return;
+        badge.className = 'server-sync-pill' + (state === 'offline' ? ' offline' : state === 'saving' ? ' saving' : '');
+        const icon = state === 'saving' ? 'fa-spinner fa-spin' : (state === 'offline' ? 'fa-triangle-exclamation' : 'fa-cloud-check');
+        badge.innerHTML = `<i class="fa-solid ${icon}"></i> ${escapeHtml(text)}`;
+    }
+
+    function initFirebasePersistence() {
+        try {
+            if (typeof firebase !== 'undefined') {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(FIREBASE_CONFIG);
+                }
+                db = firebase.firestore();
+                isFirebaseReady = true;
+                attachRealtimeListener();
+                return;
+            }
+        } catch (e) {
+            console.warn('Firebase SDK init fallback to REST:', e);
+        }
+        // Fallback if Firebase CDN SDK was blocked/slow
+        fetchServerReports(false);
+    }
+
+    function attachRealtimeListener() {
+        if (!isFirebaseReady || !db) return;
+        db.collection(FIRESTORE_COLLECTION).onSnapshot(async (snapshot) => {
+            const serverDates = new Set();
+            snapshot.forEach(doc => {
+                const rec = parseServerDoc(doc.id, doc.data());
+                if (rec) {
+                    serverDates.add(rec.date);
+                    const localExisting = savedReportsMap[rec.date];
+                    if (!localExisting || localExisting.syncedToServer !== false || rec.updatedAtMs >= localExisting.updatedAtMs) {
+                        savedReportsMap[rec.date] = rec;
+                    }
+                }
+            });
+
+            // Remove docs deleted on server, retry pushing unsynced local-only docs
+            const pendingPush = [];
+            Object.keys(savedReportsMap).forEach(k => {
+                if (!serverDates.has(k)) {
+                    if (savedReportsMap[k].syncedToServer === false) {
+                        pendingPush.push(savedReportsMap[k]);
+                    } else {
+                        delete savedReportsMap[k];
+                    }
+                }
+            });
+
+            saveLocalReportsCache();
+            const count = Object.keys(savedReportsMap).length;
+            setServerBadge('connected', `सर्व्हर सिंक सुरू (${count} दिवस)`);
+            renderSavedReportsHistory();
+            updateSavedDateQuickSelect();
+
+            // Auto-load today's / selected date's report on startup if user hasn't started manual editing
+            const selDate = getSelectedDateISO();
+            if (!initialServerSyncDone) {
+                initialServerSyncDone = true;
+                if ((currentReportSource === 'demo' || currentReportSource === 'empty') && savedReportsMap[selDate]) {
+                    loadSavedReportForDate(selDate, { silent: true, scrollToReport: false });
+                } else if (currentReportSource === 'server_loaded' && savedReportsMap[selDate] && savedReportsMap[selDate].updatedAtMs > loadedReportUpdatedAtMs) {
+                    loadSavedReportForDate(selDate, { silent: true, scrollToReport: false });
+                } else {
+                    updateDateStatusBanner();
+                }
+            } else if (currentReportSource === 'server_loaded' && loadedReportDate && savedReportsMap[loadedReportDate]) {
+                // Only reload if a newer update arrived from another device/session (ignore own save echo)
+                const latestRec = savedReportsMap[loadedReportDate];
+                if (latestRec.updatedAtMs > loadedReportUpdatedAtMs) {
+                    loadSavedReportForDate(loadedReportDate, { silent: true, scrollToReport: false });
+                } else {
+                    updateDateStatusBanner();
+                }
+            } else {
+                updateDateStatusBanner();
+            }
+
+            // Retry any offline unsynced records
+            for (const rec of pendingPush) {
+                await pushRecordToServer(rec);
+            }
+        }, (err) => {
+            console.warn('Firestore listener warning, trying REST fetch:', err);
+            fetchServerReports(false);
+        });
+    }
+
+    async function fetchServerReports(showUserToast = false) {
+        setServerBadge('saving', 'सर्व्हरवरून डेटा आणत आहे...');
+        try {
+            let serverRecords = [];
+            if (isFirebaseReady && db) {
+                const snap = await db.collection(FIRESTORE_COLLECTION).get();
+                snap.forEach(doc => {
+                    const rec = parseServerDoc(doc.id, doc.data());
+                    if (rec) serverRecords.push(rec);
+                });
+            } else {
+                const res = await fetch(`${FIRESTORE_REST_URL}?pageSize=300`);
+                if (!res.ok) throw new Error('REST HTTP ' + res.status);
+                const json = await res.json();
+                (json.documents || []).forEach(doc => {
+                    const parts = doc.name.split('/');
+                    const docId = parts[parts.length - 1];
+                    const f = doc.fields || {};
+                    const plain = {
+                        date: f.date ? f.date.stringValue : docId,
+                        dateFormatted: f.dateFormatted ? f.dateFormatted.stringValue : '',
+                        updatedAtMs: f.updatedAtMs ? Number(f.updatedAtMs.integerValue || f.updatedAtMs.doubleValue || 0) : 0,
+                        updatedAtDisplay: f.updatedAtDisplay ? f.updatedAtDisplay.stringValue : '',
+                        payloadJson: f.payloadJson ? f.payloadJson.stringValue : ''
+                    };
+                    const rec = parseServerDoc(docId, plain);
+                    if (rec) serverRecords.push(rec);
+                });
+            }
+
+            serverRecords.forEach(rec => {
+                const local = savedReportsMap[rec.date];
+                if (!local || local.syncedToServer !== false || rec.updatedAtMs >= local.updatedAtMs) {
+                    savedReportsMap[rec.date] = rec;
+                }
+            });
+            saveLocalReportsCache();
+            renderSavedReportsHistory();
+            updateSavedDateQuickSelect();
+            setServerBadge('connected', `सर्व्हर सिंक सुरू (${Object.keys(savedReportsMap).length} दिवस)`);
+
+            const selDate = getSelectedDateISO();
+            if (!initialServerSyncDone) {
+                initialServerSyncDone = true;
+                if ((currentReportSource === 'demo' || currentReportSource === 'empty') && savedReportsMap[selDate]) {
+                    loadSavedReportForDate(selDate, { silent: true, scrollToReport: false });
+                }
+            }
+            if (showUserToast) showToast('सर्व्हरवरील सर्व दिनांकनिहाय अहवाल ताजेतवाने झाले!');
+        } catch (err) {
+            console.warn('Server fetch fallback to localStorage:', err);
+            setServerBadge('offline', `ऑफलाईन कॅश (${Object.keys(savedReportsMap).length} दिवस)`);
+            if (showUserToast) showToast('सर्व्हर संपर्क होऊ शकला नाही; स्थानिक कॅश दाखवत आहे.');
+        }
+    }
+
+    async function pushRecordToServer(rec) {
+        const docPayload = {
+            date: rec.date,
+            dateFormatted: rec.dateFormatted,
+            updatedAtMs: Number(rec.updatedAtMs),
+            updatedAtDisplay: rec.updatedAtDisplay,
+            payloadJson: JSON.stringify({
+                talukaSummary: rec.talukaSummary,
+                packedParts: packParsedData(rec.parsedData),
+                fileNames: rec.fileNames || {},
+                summaryMetrics: rec.summaryMetrics
+            })
+        };
+
+        if (isFirebaseReady && db) {
+            await db.collection(FIRESTORE_COLLECTION).doc(rec.date).set({
+                ...docPayload,
+                serverUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            return true;
+        }
+
+        // Firestore REST API fallback
+        const restBody = {
+            fields: {
+                date: { stringValue: docPayload.date },
+                dateFormatted: { stringValue: docPayload.dateFormatted },
+                updatedAtMs: { integerValue: String(docPayload.updatedAtMs) },
+                updatedAtDisplay: { stringValue: docPayload.updatedAtDisplay },
+                payloadJson: { stringValue: docPayload.payloadJson }
+            }
+        };
+        const res = await fetch(`${FIRESTORE_REST_URL}/${encodeURIComponent(rec.date)}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(restBody)
+        });
+        if (!res.ok) throw new Error('Firestore REST PATCH failed: ' + res.status);
+        return true;
+    }
+
+    async function saveCurrentReportToServer({ silent = false, manual = false } = {}) {
+        const dateISO = getSelectedDateISO();
+        if (currentReportSource === 'demo') {
+            if (manual) {
+                alert('हा नमुना डेटा (Demo) आहे. कृपया सर्व्हरवर सेव्ह करण्यासाठी Form 6, 7, 8 एक्सेल फाईल्स अपलोड करा.');
+            }
+            return false;
+        }
+        if (!isReportNonEmpty(talukaSummary)) {
+            if (manual) {
+                alert('सेव्ह करण्यासाठी डेटा उपलब्ध नाही. कृपया आधी Form 6, 7 किंवा 8 ची एक्सेल फाईल अपलोड करा.');
+            }
+            return false;
+        }
+
+        const nowMs = Date.now();
+        const record = {
+            date: dateISO,
+            dateFormatted: formatISOToDisplay(dateISO),
+            updatedAtMs: nowMs,
+            updatedAtDisplay: formatTimestampDisplay(nowMs),
+            talukaSummary: JSON.parse(JSON.stringify(talukaSummary)),
+            parsedData: JSON.parse(JSON.stringify(parsedData)),
+            fileNames: { ...uploadedFileNames },
+            summaryMetrics: computeSummaryMetrics(talukaSummary),
+            syncedToServer: false
+        };
+
+        // 1. Save immediately in memory & LocalStorage
+        savedReportsMap[dateISO] = record;
+        loadedReportDate = dateISO;
+        loadedReportUpdatedAtMs = nowMs;
+        currentReportSource = 'server_loaded';
+        saveLocalReportsCache();
+        renderSavedReportsHistory();
+        updateSavedDateQuickSelect();
+        updateDateStatusBanner();
+
+        // 2. Push to Cloud Firestore
+        setServerBadge('saving', `${formatISOToDisplay(dateISO)} सेव्ह होत आहे...`);
+        try {
+            await pushRecordToServer(record);
+            record.syncedToServer = true;
+            savedReportsMap[dateISO] = record;
+            saveLocalReportsCache();
+            setServerBadge('connected', `सर्व्हर सिंक सुरू (${Object.keys(savedReportsMap).length} दिवस)`);
+            renderSavedReportsHistory();
+            updateDateStatusBanner();
+            if (!silent) {
+                showToast(`✅ दिनांक ${record.dateFormatted} चा शेवटचा अहवाल सर्व्हरवर सेव्ह झाला!`);
+            }
+            return true;
+        } catch (err) {
+            console.error('Server save error (kept in localStorage):', err);
+            setServerBadge('offline', `स्थानिक सेव्ह (${Object.keys(savedReportsMap).length} दिवस)`);
+            updateDateStatusBanner();
+            if (!silent) {
+                showToast(`⚠ ऑफलाईन मोड: अहवाल स्थानिक मेमरीमध्ये सेव्ह झाला (${record.dateFormatted}).`);
+            }
+            return false;
+        }
+    }
+
+    function updateTargetDateUI() {
+        const dateISO = getSelectedDateISO();
+        const badge = document.getElementById('uploadTargetDateBadge');
+        if (badge) {
+            badge.innerHTML = `📅 सेव्ह तारीख: <b>${formatISOToDisplay(dateISO)}</b>`;
+        }
+        const quickSel = document.getElementById('savedDateQuickSelect');
+        if (quickSel) {
+            quickSel.value = savedReportsMap[dateISO] ? dateISO : '';
+        }
+    }
+
+    function updateDateStatusBanner() {
+        const banner = document.getElementById('dateStatusBanner');
+        if (!banner) return;
+        const dateISO = getSelectedDateISO();
+        const dispDate = formatISOToDisplay(dateISO);
+        const existingRec = savedReportsMap[dateISO];
+
+        if (currentReportSource === 'fresh_upload') {
+            let btns = `<button type="button" class="btn-xs btn-xs-print" onclick="saveCurrentReportToServer({ manual: true })"><i class="fa-solid fa-cloud-arrow-up"></i> हा अहवाल ${dispDate} ला सर्व्हरवर सेव्ह करा</button>`;
+            if (existingRec) {
+                btns += `<button type="button" class="btn-xs btn-xs-view" onclick="loadSavedReportForDate('${dateISO}')"><i class="fa-solid fa-rotate-left"></i> सर्व्हरवरील ${dispDate} चा जुना अहवाल पहा</button>`;
+            }
+            banner.className = 'date-status-banner no-print status-pending';
+            banner.innerHTML = `
+                <span><i class="fa-solid fa-file-circle-check"></i> नवीन एक्सेल डेटा लोड आहे — निवडलेली तारीख: <b>${dispDate}</b> (अंतिम सेव्ह करण्यासाठी बटण दाबा)</span>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">${btns}</div>
+            `;
+            return;
+        }
+
+        if (currentReportSource === 'server_loaded' && existingRec) {
+            const syncIcon = existingRec.syncedToServer !== false
+                ? '<i class="fa-solid fa-cloud-check"></i> सर्व्हरवर सुरक्षित सेव्ह'
+                : '<i class="fa-solid fa-hard-drive"></i> स्थानिक कॅशमध्ये सेव्ह';
+            banner.className = 'date-status-banner no-print status-saved';
+            banner.innerHTML = `
+                <span>✅ दिनांक <b>${dispDate}</b> चा शेवटचा जतन केलेला अहवाल दाखवत आहे (${syncIcon} • अपडेट: ${escapeHtml(existingRec.updatedAtDisplay)})</span>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button type="button" class="btn-xs btn-xs-print" onclick="printCurrentReport()"><i class="fa-solid fa-print"></i> हा अहवाल प्रिंट करा</button>
+                </div>
+            `;
+            return;
+        }
+
+        if (currentReportSource === 'demo') {
+            banner.className = 'date-status-banner no-print status-demo';
+            banner.innerHTML = `
+                <span><i class="fa-solid fa-wand-magic-sparkles"></i> सध्या <b>नमुना डेटा (Demo)</b> दिसत आहे (दिनांक ${dispDate} साठी सर्व्हरवर अहवाल जतन नाही). खरा अहवाल सेव्ह करण्यासाठी वरील फॉर्म ६, ७, ८ फाईल्स अपलोड करा.</span>
+            `;
+            return;
+        }
+
+        banner.className = 'date-status-banner no-print status-empty';
+        banner.innerHTML = `
+            <span><i class="fa-solid fa-circle-exclamation"></i> दिनांक <b>${dispDate}</b> साठी सर्व्हरवर कोणताही अहवाल सेव्ह नाही. वरील एक्सेल फाईल्स अपलोड करा किंवा खालील यादीतून मागील तारीख निवडा.</span>
+            <button type="button" class="btn-xs btn-xs-view" onclick="loadSampleDemoData()"><i class="fa-solid fa-wand-magic-sparkles"></i> नमुना डेटा पहा</button>
+        `;
+    }
+
+    function updateSavedDateQuickSelect() {
+        const sel = document.getElementById('savedDateQuickSelect');
+        if (!sel) return;
+        const sortedDates = Object.keys(savedReportsMap).sort((a, b) => b.localeCompare(a));
+        const currentDate = getSelectedDateISO();
+        let html = `<option value="">📂 जतन तारखा (${sortedDates.length})</option>`;
+        sortedDates.forEach(d => {
+            const rec = savedReportsMap[d];
+            const m = rec.summaryMetrics || computeSummaryMetrics(rec.talukaSummary);
+            html += `<option value="${d}" ${d === currentDate ? 'selected' : ''}>${rec.dateFormatted} — Pend: ${m.totalPend} / Tot: ${m.totalForms}</option>`;
+        });
+        sel.innerHTML = html;
+    }
+
+    function renderSavedReportsHistory() {
+        const tbody = document.getElementById('savedReportsTbody');
+        const badge = document.getElementById('savedReportsCountBadge');
+        if (!tbody) return;
+
+        const searchVal = (document.getElementById('historySearchInput')?.value || '').trim().toLowerCase();
+        const activeDate = getSelectedDateISO();
+
+        const sortedDates = Object.keys(savedReportsMap).sort((a, b) => b.localeCompare(a));
+        if (badge) badge.textContent = `${sortedDates.length} दिवस`;
+
+        const filtered = sortedDates.filter(d => {
+            if (!searchVal) return true;
+            const rec = savedReportsMap[d];
+            return d.toLowerCase().includes(searchVal) || (rec.dateFormatted || '').toLowerCase().includes(searchVal);
+        });
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="padding:22px; color:#64748b;">
+                        ${sortedDates.length === 0
+                            ? 'सर्व्हरवर अद्याप कोणताही दिनांकनिहाय अहवाल सेव्ह केलेला नाही. वरील फॉर्म ६, ७, ८ फाईल्स अपलोड केल्यास तो दिनांकनिहाय आपोआप सेव्ह होईल.'
+                            : 'शोधलेल्या तारखेशी जुळणारा अहवाल सापडला नाही.'}
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        tbody.innerHTML = filtered.map(d => {
+            const rec = savedReportsMap[d];
+            const m = rec.summaryMetrics || computeSummaryMetrics(rec.talukaSummary);
+            const fNames = rec.fileNames || {};
+            const uploadedLabels = ['FORM6', 'FORM7', 'FORM8']
+                .filter(ft => fNames[ft])
+                .map(ft => `${ft.replace('FORM', 'F')}: ${escapeHtml(fNames[ft])}`)
+                .join(', ');
+            const isSelected = d === activeDate && currentReportSource === 'server_loaded';
+            const syncPill = rec.syncedToServer !== false
+                ? `<span style="color:#059669; font-weight:700;"><i class="fa-solid fa-cloud-check"></i> Cloud</span>`
+                : `<span style="color:#d97706; font-weight:700;"><i class="fa-solid fa-hard-drive"></i> Local</span>`;
+
+            return `
+                <tr class="${isSelected ? 'active-date-row' : ''}">
+                    <td>
+                        <div style="font-weight:800; color:#1e3a8a;">${escapeHtml(rec.dateFormatted)}</div>
+                        <div style="font-size:11px; color:#64748b;">${escapeHtml(d)}</div>
+                    </td>
+                    <td><span style="color:#b91c1c; font-weight:700;">${m.f6Pend}</span> / <b>${m.f6Tot}</b></td>
+                    <td><span style="color:#b91c1c; font-weight:700;">${m.f7Pend}</span> / <b>${m.f7Tot}</b></td>
+                    <td><span style="color:#b91c1c; font-weight:700;">${m.f8Pend}</span> / <b>${m.f8Tot}</b></td>
+                    <td><span style="color:#c00000; font-weight:800;">${m.totalPend}</span> / <b>${m.totalForms}</b></td>
+                    <td style="text-align:left; font-size:11.5px; max-width:260px;">
+                        <div>${syncPill} • ${escapeHtml(rec.updatedAtDisplay)}</div>
+                        ${uploadedLabels ? `<div style="color:#475569; margin-top:2px; word-break:break-word;">${uploadedLabels}</div>` : ''}
+                    </td>
+                    <td>
+                        <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
+                            <button type="button" class="btn-xs btn-xs-view" onclick="loadSavedReportForDate('${d}', { scrollToReport: true })" title="या तारखेचा अहवाल उघडा">
+                                <i class="fa-solid fa-eye"></i> पहा
+                            </button>
+                            <button type="button" class="btn-xs btn-xs-print" onclick="printSavedReportByDate('${d}')" title="थेट प्रिंट काढा">
+                                <i class="fa-solid fa-print"></i> प्रिंट
+                            </button>
+                            <button type="button" class="btn-xs btn-xs-excel" onclick="exportSavedReportByDate('${d}')" title="Excel डाउनलोड करा">
+                                <i class="fa-solid fa-file-excel"></i> Excel
+                            </button>
+                            <button type="button" class="btn-xs btn-xs-del" onclick="deleteSavedReportByDate('${d}')" title="हा अहवाल हटवा">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`;
+        }).join('');
+    }
+
+    function applyUploadBoxState(formType, fileName, partsCount) {
+        const statusEl = document.getElementById(formType === 'FORM6' ? 'statusF6' : formType === 'FORM7' ? 'statusF7' : 'statusF8');
+        const boxEl = document.getElementById(formType === 'FORM6' ? 'boxForm6' : formType === 'FORM7' ? 'boxForm7' : 'boxForm8');
+        if (!statusEl || !boxEl) return;
+
+        if (fileName || partsCount > 0) {
+            boxEl.classList.add('loaded');
+            const label = fileName ? `${escapeHtml(fileName)}` : 'सर्व्हरवरील जतन डेटा';
+            statusEl.innerHTML = `<span class="success">✔ ${label} (${partsCount} भाग लोड)</span>`;
+        } else {
+            boxEl.classList.remove('loaded');
+            statusEl.textContent = 'फाईल निवडलेली नाही';
+        }
+    }
+
+    function loadSavedReportForDate(dateISO, options = {}) {
+        const rec = savedReportsMap[dateISO];
+        if (!rec) return false;
+
+        const dateEl = document.getElementById('reportDate');
+        if (dateEl) dateEl.value = dateISO;
+
+        talukaSummary = JSON.parse(JSON.stringify(rec.talukaSummary || createEmptyTalukaSummary()));
+        parsedData = JSON.parse(JSON.stringify(rec.parsedData || createEmptyParsedData()));
+        uploadedFileNames = { ...(rec.fileNames || { FORM6: '', FORM7: '', FORM8: '' }) };
+
+        // Clear local file inputs so stale files don't look freshly selected
+        ['form6File', 'form7File', 'form8File'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+
+        ['FORM6', 'FORM7', 'FORM8'].forEach(ft => {
+            const pCount = Object.keys(parsedData[ft] || {}).length;
+            const rowSum = ['Devgad', 'Vaibhavwadi', 'Kankavli'].reduce((s, tal) => s + Number(((talukaSummary[ft] && talukaSummary[ft][tal]) || [])[6] || 0), 0);
+            applyUploadBoxState(ft, uploadedFileNames[ft], pCount > 0 ? pCount : (rowSum > 0 ? 1 : 0));
+        });
+
+        currentReportSource = 'server_loaded';
+        loadedReportDate = dateISO;
+        loadedReportUpdatedAtMs = Number(rec.updatedAtMs || 0);
+        updateTargetDateUI();
+        renderReport();
+        updateDateStatusBanner();
+        renderSavedReportsHistory();
+
+        if (options.scrollToReport) {
+            const paper = document.getElementById('reportPaper');
+            if (paper) paper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        if (!options.silent) {
+            showToast(`📂 दिनांक ${rec.dateFormatted} चा सर्व्हरवरील अहवाल लोड झाला!`);
+        }
+        return true;
+    }
+
+    function printSavedReportByDate(dateISO) {
+        if (!loadSavedReportForDate(dateISO, { silent: true, scrollToReport: false })) {
+            alert('या तारखेचा अहवाल आढळला नाही.');
+            return;
+        }
+        setTimeout(() => {
+            window.print();
+        }, 180);
+    }
+
+    function exportSavedReportByDate(dateISO) {
+        if (!loadSavedReportForDate(dateISO, { silent: true, scrollToReport: false })) {
+            alert('या तारखेचा अहवाल आढळला नाही.');
+            return;
+        }
+        exportToExcel();
+    }
+
+    async function deleteSavedReportByDate(dateISO) {
+        const disp = formatISOToDisplay(dateISO);
+        if (!confirm(`खात्री करा: दिनांक ${disp} चा सर्व्हरवर जतन केलेला अहवाल कायमचा हटवायचा का?`)) return;
+
+        delete savedReportsMap[dateISO];
+        saveLocalReportsCache();
+
+        try {
+            if (isFirebaseReady && db) {
+                await db.collection(FIRESTORE_COLLECTION).doc(dateISO).delete();
+            } else {
+                await fetch(`${FIRESTORE_REST_URL}/${encodeURIComponent(dateISO)}`, { method: 'DELETE' });
+            }
+            showToast(`🗑️ दिनांक ${disp} चा अहवाल सर्व्हरवरून हटवला!`);
+        } catch (err) {
+            console.warn('Server delete note:', err);
+            showToast(`दिनांक ${disp} चा अहवाल स्थानिक यादीतून हटवला.`);
+        }
+
+        if (loadedReportDate === dateISO || getSelectedDateISO() === dateISO) {
+            resetForm(true);
+        } else {
+            renderSavedReportsHistory();
+            updateSavedDateQuickSelect();
+            updateDateStatusBanner();
+        }
+    }
 
     // Part Range Definition
     function getTalukaByPartNo(p) {
@@ -863,12 +1794,26 @@
         return null;
     }
 
-    // Set default date to today
+    // Initialize App on Page Load
     document.addEventListener('DOMContentLoaded', () => {
-        let today = new Date().toISOString().split('T')[0];
+        const today = getLocalTodayISO();
         document.getElementById('reportDate').value = today;
-        // Load default demo view on start
-        loadSampleDemoData();
+
+        // 1. Load cached saved reports immediately
+        hydrateLocalReportsCache();
+        updateTargetDateUI();
+        renderSavedReportsHistory();
+        updateSavedDateQuickSelect();
+
+        // 2. If today already has a saved report, show it instead of demo; otherwise show demo preview
+        if (savedReportsMap[today]) {
+            loadSavedReportForDate(today, { silent: true, scrollToReport: false });
+        } else {
+            loadSampleDemoData(true);
+        }
+
+        // 3. Connect Firebase Cloud Firestore for real-time sync across devices
+        initFirebasePersistence();
     });
 
     // Toast helper
@@ -876,7 +1821,7 @@
         let t = document.getElementById('toast');
         t.textContent = msg;
         t.className = 'show';
-        setTimeout(() => { t.className = t.className.replace('show', ''); }, 3000);
+        setTimeout(() => { t.className = t.className.replace('show', ''); }, 3200);
     }
 
     // Setup drag and drop for upload boxes
@@ -1018,35 +1963,54 @@
     }
 
     // Handle single file upload
-    async function handleSingleFileUpload(formType, file) {
+    async function handleSingleFileUpload(formType, file, skipAutoSave = false) {
         let statusEl = document.getElementById(formType === 'FORM6' ? 'statusF6' : formType === 'FORM7' ? 'statusF7' : 'statusF8');
         let boxEl = document.getElementById(formType === 'FORM6' ? 'boxForm6' : formType === 'FORM7' ? 'boxForm7' : 'boxForm8');
 
         statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> फाईल वाचत आहे...`;
 
         try {
-            let { json, sheetName } = await readExcelFile(file);
+            let { json } = await readExcelFile(file);
             let parts = parseFormSheet(json);
             let count = Object.keys(parts).length;
 
             if (count === 0) {
                 statusEl.innerHTML = `<span style="color:#dc2626;">⚠ भाग क्रमांक ओळखता आले नाहीत. फाईल तपासा.</span>`;
                 boxEl.classList.remove('loaded');
-                return;
+                return false;
+            }
+
+            const targetDate = getSelectedDateISO();
+            // Do not mix demo data or a different date's loaded report into fresh uploads
+            if (currentReportSource === 'demo' || (currentReportSource === 'server_loaded' && loadedReportDate !== targetDate)) {
+                parsedData = createEmptyParsedData();
+                uploadedFileNames = { FORM6: '', FORM7: '', FORM8: '' };
+                ['FORM6', 'FORM7', 'FORM8'].forEach(ft => {
+                    if (ft !== formType) applyUploadBoxState(ft, '', 0);
+                });
             }
 
             parsedData[formType] = parts;
-            boxEl.classList.add('loaded');
-            statusEl.innerHTML = `<span class="success">✔ ${file.name} (${count} भाग डेटा लोड झाला)</span>`;
-            
-            // Recompute totals
+            uploadedFileNames[formType] = file.name;
+            applyUploadBoxState(formType, file.name, count);
+
+            // Recompute totals & update state
             recomputeTotals();
+            currentReportSource = 'fresh_upload';
+            loadedReportDate = targetDate;
             renderReport();
-            showToast(`${formType} डेटा यशस्वीरित्या लोड झाला! (${count} भाग)`);
+            updateDateStatusBanner();
+
+            if (!skipAutoSave) {
+                await saveCurrentReportToServer({ silent: true });
+                showToast(`✅ ${formType} लोड करून दिनांक ${formatISOToDisplay(targetDate)} साठी सर्व्हरवर सेव्ह केले!`);
+            }
+            return true;
         } catch (e) {
             console.error(e);
             statusEl.innerHTML = `<span style="color:#dc2626;">त्रुटी: फाईल वाचता आली नाही</span>`;
             boxEl.classList.remove('loaded');
+            return false;
         }
     }
 
@@ -1056,27 +2020,34 @@
         let f7 = document.getElementById('form7File').files[0];
         let f8 = document.getElementById('form8File').files[0];
 
-        if (!f6 && !f7 && !f8 && Object.keys(parsedData.FORM6).length === 0) {
+        if (!f6 && !f7 && !f8 && (!isReportNonEmpty(talukaSummary) || currentReportSource === 'demo')) {
             alert('कृपया किमान एक किंवा तिन्ही एक्सेल फाईल्स (Form 6, 7, 8) अपलोड करा, किंवा नमुना डेटा पहा.');
             return;
         }
 
-        if (f6) await handleSingleFileUpload('FORM6', f6);
-        if (f7) await handleSingleFileUpload('FORM7', f7);
-        if (f8) await handleSingleFileUpload('FORM8', f8);
+        // If files are picked, clear previous different-date or demo state first when starting batch
+        if (f6 || f7 || f8) {
+            const targetDate = getSelectedDateISO();
+            if (currentReportSource === 'demo' || (currentReportSource === 'server_loaded' && loadedReportDate !== targetDate)) {
+                parsedData = createEmptyParsedData();
+                uploadedFileNames = { FORM6: '', FORM7: '', FORM8: '' };
+                ['FORM6', 'FORM7', 'FORM8'].forEach(ft => applyUploadBoxState(ft, '', 0));
+            }
+            if (f6) await handleSingleFileUpload('FORM6', f6, true);
+            if (f7) await handleSingleFileUpload('FORM7', f7, true);
+            if (f8) await handleSingleFileUpload('FORM8', f8, true);
+            recomputeTotals();
+        }
 
-        recomputeTotals();
+        currentReportSource = 'fresh_upload';
+        loadedReportDate = getSelectedDateISO();
         renderReport();
-        showToast('अहवाल यशस्वीरित्या तयार झाला!');
+        await saveCurrentReportToServer({ silent: false, manual: true });
     }
 
     // Recompute Taluka summaries
     function recomputeTotals() {
-        talukaSummary = {
-            FORM6: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
-            FORM7: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
-            FORM8: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] }
-        };
+        talukaSummary = createEmptyTalukaSummary();
 
         ['FORM6', 'FORM7', 'FORM8'].forEach(ft => {
             let pObj = parsedData[ft];
@@ -1097,8 +2068,8 @@
         });
     }
 
-    // Load Exact Sample Data Matching User Image
-    function loadSampleDemoData() {
+    // Load Exact Sample Data Matching User Image (Demo only - never auto-saved to server)
+    function loadSampleDemoData(silent = false) {
         talukaSummary = {
             FORM6: {
                 Devgad:      [128, 145, 135, 35, 174, 489, 617],
@@ -1117,35 +2088,50 @@
             }
         };
 
-        // Populate sample individual part mock
-        parsedData = { FORM6: {}, FORM7: {}, FORM8: {} };
-        // Populate sample indicator badges
-        document.getElementById('statusF6').innerHTML = `<span class="success">✔ नमुना डेटा (Devgad, Vaibhavwadi, Kankavli)</span>`;
-        document.getElementById('statusF7').innerHTML = `<span class="success">✔ नमुना डेटा (Devgad, Vaibhavwadi, Kankavli)</span>`;
-        document.getElementById('statusF8').innerHTML = `<span class="success">✔ नमुना डेटा (Devgad, Vaibhavwadi, Kankavli)</span>`;
+        parsedData = createEmptyParsedData();
+        uploadedFileNames = { FORM6: '', FORM7: '', FORM8: '' };
+        currentReportSource = 'demo';
+        loadedReportDate = null;
+        loadedReportUpdatedAtMs = 0;
+
+        ['form6File', 'form7File', 'form8File'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+
+        document.getElementById('statusF6').innerHTML = `<span class="success">✔ नमुना डेटा (Demo Only)</span>`;
+        document.getElementById('statusF7').innerHTML = `<span class="success">✔ नमुना डेटा (Demo Only)</span>`;
+        document.getElementById('statusF8').innerHTML = `<span class="success">✔ नमुना डेटा (Demo Only)</span>`;
         document.getElementById('boxForm6').classList.add('loaded');
         document.getElementById('boxForm7').classList.add('loaded');
         document.getElementById('boxForm8').classList.add('loaded');
 
         renderReport();
-        showToast('फोटोप्रमाणे नमुना डेटा यशस्वीरित्या लोड झाला!');
+        updateDateStatusBanner();
+        if (!silent) showToast('फोटोप्रमाणे नमुना डेटा यशस्वीरित्या लोड झाला!');
     }
 
-    // Reset Form
-    function resetForm() {
-        parsedData = { FORM6: {}, FORM7: {}, FORM8: {} };
-        talukaSummary = {
-            FORM6: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
-            FORM7: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] },
-            FORM8: { Devgad: [0,0,0,0,0,0,0], Vaibhavwadi: [0,0,0,0,0,0,0], Kankavli: [0,0,0,0,0,0,0] }
-        };
+    // Reset Form UI (does NOT delete server history)
+    function resetForm(silent = false) {
+        parsedData = createEmptyParsedData();
+        talukaSummary = createEmptyTalukaSummary();
+        uploadedFileNames = { FORM6: '', FORM7: '', FORM8: '' };
+        currentReportSource = 'empty';
+        loadedReportDate = null;
+        loadedReportUpdatedAtMs = 0;
 
-        ['form6File', 'form7File', 'form8File'].forEach(id => document.getElementById(id).value = '');
-        ['statusF6', 'statusF7', 'statusF8'].forEach(id => document.getElementById(id).textContent = 'फाईल निवडलेली नाही');
-        ['boxForm6', 'boxForm7', 'boxForm8'].forEach(id => document.getElementById(id).classList.remove('loaded'));
+        ['form6File', 'form7File', 'form8File'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        ['FORM6', 'FORM7', 'FORM8'].forEach(ft => applyUploadBoxState(ft, '', 0));
 
         renderReport();
-        showToast('डेटा रीसेट करण्यात आला.');
+        updateTargetDateUI();
+        renderSavedReportsHistory();
+        updateSavedDateQuickSelect();
+        updateDateStatusBanner();
+        if (!silent) showToast('स्क्रीनवरील डेटा रीसेट करण्यात आला (सर्व्हर इतिहास सुरक्षित आहे).');
     }
 
     // Filter Change event
@@ -1155,8 +2141,64 @@
         renderReport();
     }
 
-    function onDateChange() {
+    async function onDateChange() {
+        const newDate = getSelectedDateISO();
+        updateTargetDateUI();
+        renderSavedReportsHistory();
+
+        if (currentReportSource === 'fresh_upload') {
+            renderReport();
+            updateDateStatusBanner();
+            return;
+        }
+
+        if (savedReportsMap[newDate]) {
+            loadSavedReportForDate(newDate, { silent: false, scrollToReport: false });
+            return;
+        }
+
+        // Direct single-doc check in Firestore in case local cache didn't have an older date
+        if (isFirebaseReady && db) {
+            try {
+                const snap = await db.collection(FIRESTORE_COLLECTION).doc(newDate).get();
+                if (snap.exists) {
+                    const rec = parseServerDoc(snap.id, snap.data());
+                    if (rec) {
+                        savedReportsMap[rec.date] = rec;
+                        saveLocalReportsCache();
+                        updateSavedDateQuickSelect();
+                        loadSavedReportForDate(newDate, { silent: false, scrollToReport: false });
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('Single date check warning:', e);
+            }
+        }
+
+        // No saved report found for selected date
+        parsedData = createEmptyParsedData();
+        talukaSummary = createEmptyTalukaSummary();
+        uploadedFileNames = { FORM6: '', FORM7: '', FORM8: '' };
+        ['FORM6', 'FORM7', 'FORM8'].forEach(ft => applyUploadBoxState(ft, '', 0));
+        currentReportSource = 'empty';
+        loadedReportDate = null;
+        loadedReportUpdatedAtMs = 0;
         renderReport();
+        updateDateStatusBanner();
+    }
+
+    function onQuickSavedDateSelect() {
+        const sel = document.getElementById('savedDateQuickSelect');
+        if (!sel || !sel.value) return;
+        const chosenDate = sel.value;
+        if (currentReportSource === 'fresh_upload' && loadedReportDate !== chosenDate) {
+            if (!confirm(`दिनांक ${formatISOToDisplay(chosenDate)} चा सर्व्हरवरील जतन केलेला अहवाल उघडायचा का?`)) {
+                updateTargetDateUI();
+                return;
+            }
+        }
+        loadSavedReportForDate(chosenDate, { silent: false, scrollToReport: true });
     }
 
     function selectTab(val) {
@@ -1458,8 +2500,11 @@
         return html;
     }
 
-    // Print Current Report
-    function printCurrentReport() {
+    // Print Current Report (auto-saves fresh uploads under selected date before printing)
+    async function printCurrentReport() {
+        if (currentReportSource === 'fresh_upload' && isReportNonEmpty(talukaSummary)) {
+            await saveCurrentReportToServer({ silent: true });
+        }
         window.print();
     }
 
